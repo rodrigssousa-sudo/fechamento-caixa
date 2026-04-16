@@ -1,0 +1,642 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>Fechamento de Caixa</title>
+  <style>
+    :root {
+      --bg: #07101d;
+      --bg-2: #0b1526;
+      --card: rgba(17, 24, 39, 0.92);
+      --card-2: #121b2d;
+      --border: rgba(255,255,255,0.08);
+      --text: #f8fafc;
+      --muted: #9fb0c9;
+      --accent: #2563eb;
+      --accent-2: #1d4ed8;
+      --green: #22c55e;
+      --red: #ef4444;
+      --amber: #f59e0b;
+      --shadow: 0 10px 30px rgba(0,0,0,0.32);
+      --radius: 18px;
+      --radius-sm: 14px;
+      --safe-bottom: env(safe-area-inset-bottom, 0px);
+    }
+
+    * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+
+    html, body { margin: 0; padding: 0; }
+
+    body {
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background:
+        radial-gradient(circle at top, rgba(37,99,235,0.16), transparent 30%),
+        linear-gradient(180deg, var(--bg) 0%, var(--bg-2) 100%);
+      color: var(--text);
+      min-height: 100vh;
+    }
+
+    .app {
+      width: 100%;
+      max-width: 760px;
+      margin: 0 auto;
+      padding: 14px 14px calc(92px + var(--safe-bottom));
+    }
+
+    .header {
+      position: sticky;
+      top: 0;
+      z-index: 40;
+      margin: -14px -14px 14px;
+      padding: 14px 14px 12px;
+      background: linear-gradient(180deg, rgba(7,16,29,0.96), rgba(7,16,29,0.86));
+      backdrop-filter: blur(10px);
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+    }
+
+    .title-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 12px;
+    }
+
+    h1 {
+      margin: 0;
+      font-size: 26px;
+      line-height: 1.05;
+      letter-spacing: -0.03em;
+    }
+
+    .subtitle {
+      margin: 8px 0 0;
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.45;
+      max-width: 520px;
+    }
+
+    .badge {
+      flex-shrink: 0;
+      font-size: 11px;
+      font-weight: 700;
+      padding: 8px 10px;
+      border-radius: 999px;
+      color: #dbeafe;
+      background: rgba(37,99,235,0.15);
+      border: 1px solid rgba(37,99,235,0.25);
+      white-space: nowrap;
+    }
+
+    .summary {
+      display: grid;
+      gap: 12px;
+      margin-bottom: 14px;
+    }
+
+    .card {
+      background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01)), var(--card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+    }
+
+    .summary-card {
+      padding: 16px;
+    }
+
+    .summary-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 14px;
+    }
+
+    .summary-head h2 {
+      margin: 0;
+      font-size: 17px;
+      letter-spacing: -0.02em;
+    }
+
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 999px;
+      padding: 8px 12px;
+      font-size: 12px;
+      font-weight: 800;
+      border: 1px solid transparent;
+      min-width: 96px;
+    }
+
+    .pill.positive { color: #8ff0b4; background: rgba(34,197,94,0.12); border-color: rgba(34,197,94,0.22); }
+    .pill.negative { color: #ffadad; background: rgba(239,68,68,0.12); border-color: rgba(239,68,68,0.22); }
+    .pill.neutral  { color: #ffd88a; background: rgba(245,158,11,0.12); border-color: rgba(245,158,11,0.22); }
+
+    .metrics {
+      display: grid;
+      gap: 10px;
+      grid-template-columns: 1fr;
+    }
+
+    .metric {
+      border-radius: 16px;
+      padding: 14px;
+      background: rgba(255,255,255,0.03);
+      border: 1px solid rgba(255,255,255,0.06);
+    }
+
+    .metric-label {
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 600;
+      margin-bottom: 8px;
+    }
+
+    .metric-value {
+      font-size: 27px;
+      font-weight: 900;
+      letter-spacing: -0.04em;
+      line-height: 1;
+    }
+
+    .metric-value.blue { color: #a8c7ff; }
+    .metric-value.green { color: #8ff0b4; }
+    .metric-value.red { color: #ffadad; }
+
+    .turnos {
+      display: grid;
+      gap: 14px;
+    }
+
+    .turno {
+      padding: 14px;
+      overflow: hidden;
+    }
+
+    .turno-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 14px;
+    }
+
+    .turno-head h3 {
+      margin: 0;
+      font-size: 18px;
+      letter-spacing: -0.02em;
+    }
+
+    .turno-head small {
+      display: block;
+      color: var(--muted);
+      margin-top: 4px;
+      font-size: 12px;
+    }
+
+    .turno-total {
+      text-align: right;
+      flex-shrink: 0;
+    }
+
+    .turno-total .label {
+      color: var(--muted);
+      font-size: 11px;
+      margin-bottom: 4px;
+    }
+
+    .turno-total .value {
+      font-size: 18px;
+      font-weight: 800;
+      color: #dbeafe;
+    }
+
+    .section-title {
+      margin: 14px 0 10px;
+      font-size: 12px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: #dbe7fb;
+    }
+
+    .fields {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 10px;
+    }
+
+    .field {
+      display: flex;
+      flex-direction: column;
+      gap: 7px;
+    }
+
+    .field label {
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--muted);
+    }
+
+    .field input {
+      width: 100%;
+      min-height: 48px;
+      border-radius: var(--radius-sm);
+      border: 1px solid rgba(255,255,255,0.07);
+      background: var(--card-2);
+      color: var(--text);
+      padding: 13px 14px;
+      font-size: 16px;
+      outline: none;
+    }
+
+    .field input:focus {
+      border-color: rgba(37,99,235,0.45);
+      box-shadow: 0 0 0 4px rgba(37,99,235,0.11);
+    }
+
+    .dynamic-list {
+      display: grid;
+      gap: 10px;
+    }
+
+    .dynamic-row {
+      display: grid;
+      grid-template-columns: 1.15fr 0.85fr auto;
+      gap: 8px;
+      align-items: end;
+    }
+
+    .dynamic-row .remove-btn {
+      min-height: 48px;
+      padding: 0 14px;
+      border-radius: 14px;
+      background: rgba(239,68,68,0.12);
+      color: #ffb3b3;
+      border: 1px solid rgba(239,68,68,0.2);
+      font-size: 13px;
+      font-weight: 800;
+      cursor: pointer;
+    }
+
+    .inline-actions {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-top: 10px;
+    }
+
+    button {
+      border: 0;
+      border-radius: 14px;
+      padding: 13px 16px;
+      font-size: 14px;
+      font-weight: 800;
+      cursor: pointer;
+    }
+
+    .btn-add {
+      color: white;
+      background: linear-gradient(135deg, var(--accent), var(--accent-2));
+    }
+
+    .btn-ghost {
+      color: white;
+      background: rgba(255,255,255,0.07);
+      border: 1px solid rgba(255,255,255,0.08);
+    }
+
+    .helper {
+      margin-top: 10px;
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.45;
+    }
+
+    .bottom-bar {
+      position: fixed;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      z-index: 50;
+      padding: 10px 14px calc(10px + var(--safe-bottom));
+      background: linear-gradient(180deg, rgba(7,16,29,0), rgba(7,16,29,0.88) 18%, rgba(7,16,29,0.98) 100%);
+      backdrop-filter: blur(10px);
+    }
+
+    .bottom-bar-inner {
+      width: 100%;
+      max-width: 760px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+
+    .bottom-bar button {
+      min-height: 52px;
+    }
+
+    .main-btn {
+      background: linear-gradient(135deg, var(--accent), var(--accent-2));
+      color: white;
+      box-shadow: 0 8px 25px rgba(37,99,235,0.3);
+    }
+
+    .secondary-btn {
+      background: rgba(255,255,255,0.08);
+      color: white;
+      border: 1px solid rgba(255,255,255,0.08);
+    }
+
+    @media (min-width: 768px) {
+      .app { max-width: 1180px; padding-left: 18px; padding-right: 18px; }
+      .header { margin-left: -18px; margin-right: -18px; padding-left: 18px; padding-right: 18px; }
+      .summary { grid-template-columns: 1fr; }
+      .metrics { grid-template-columns: repeat(4, 1fr); }
+      .turnos { grid-template-columns: 1fr 1fr; }
+      .fields.two-col { grid-template-columns: repeat(2, 1fr); }
+      .bottom-bar-inner { max-width: 1180px; width: calc(100% - 36px); }
+    }
+  </style>
+</head>
+<body>
+  <main class="app">
+    <header class="header">
+      <div class="title-row">
+        <div>
+          <h1>Fechamento de Caixa</h1>
+          <p class="subtitle">Calculadora mobile-first para comparar dois turnos, mostrar total de cada caixa e a diferença final. Nada é salvo.</p>
+        </div>
+        <div class="badge">Mobile first</div>
+      </div>
+    </header>
+
+    <section class="summary">
+      <article class="summary-card card">
+        <div class="summary-head">
+          <h2>Dashboard</h2>
+          <div id="statusPill" class="pill neutral">Sem diferença</div>
+        </div>
+        <div class="metrics">
+          <div class="metric">
+            <div class="metric-label">Turno 1 • Soma total de caixa</div>
+            <div class="metric-value blue" id="totalTurno1">R$ 0,00</div>
+          </div>
+          <div class="metric">
+            <div class="metric-label">Turno 2 • Soma total de caixa</div>
+            <div class="metric-value blue" id="totalTurno2">R$ 0,00</div>
+          </div>
+          <div class="metric">
+            <div class="metric-label">Diferença absoluta</div>
+            <div class="metric-value" id="diferencaAbs">R$ 0,00</div>
+          </div>
+          <div class="metric">
+            <div class="metric-label">Resultado final (Turno 2 - Turno 1)</div>
+            <div class="metric-value" id="resultadoFinal">R$ 0,00</div>
+          </div>
+        </div>
+        <div class="helper">Regra usada: <strong>Total do turno = Entradas + Carga de Fichas - Retiradas de Caixa - Pagos Pendentes</strong>. PPPoker e Suprema são multiplicados automaticamente por 400.</div>
+      </article>
+    </section>
+
+    <section class="turnos">
+      <article class="turno card" data-turno="t1">
+        <div class="turno-head">
+          <div>
+            <h3>Turno 1</h3>
+            <small>Preencha os dados do primeiro turno</small>
+          </div>
+          <div class="turno-total">
+            <div class="label">Total</div>
+            <div class="value" id="turno1InlineTotal">R$ 0,00</div>
+          </div>
+        </div>
+
+        <div class="section-title">Entradas / Plataformas</div>
+        <div class="fields two-col">
+          <div class="field"><label for="t1_banco">Banco Reca</label><input type="number" step="0.01" id="t1_banco" value="0"></div>
+          <div class="field"><label for="t1_pppoker">PPPoker (x400)</label><input type="number" step="0.01" id="t1_pppoker" value="0"></div>
+          <div class="field"><label for="t1_suprema">Suprema (x400)</label><input type="number" step="0.01" id="t1_suprema" value="0"></div>
+          <div class="field"><label for="t1_buffalo">Buffalo</label><input type="number" step="0.01" id="t1_buffalo" value="0"></div>
+          <div class="field"><label for="t1_ganamos">Ganamos</label><input type="number" step="0.01" id="t1_ganamos" value="0"></div>
+          <div class="field"><label for="t1_cargas">Carga de Fichas</label><input type="number" step="0.01" id="t1_cargas" value="0"></div>
+          <div class="field"><label for="t1_pendentes">Pagos Pendentes</label><input type="number" step="0.01" id="t1_pendentes" value="0"></div>
+        </div>
+
+        <div class="section-title">Retiradas fixas</div>
+        <div class="fields two-col">
+          <div class="field"><label for="t1_retirada">Retirada</label><input type="number" step="0.01" id="t1_retirada" value="0"></div>
+          <div class="field"><label for="t1_salario">Salário</label><input type="number" step="0.01" id="t1_salario" value="0"></div>
+          <div class="field"><label for="t1_pagocarga">Pago de Carga</label><input type="number" step="0.01" id="t1_pagocarga" value="0"></div>
+          <div class="field"><label for="t1_bonus">Bônus</label><input type="number" step="0.01" id="t1_bonus" value="0"></div>
+          <div class="field"><label for="t1_extra">Trabalhos Extra</label><input type="number" step="0.01" id="t1_extra" value="0"></div>
+          <div class="field"><label for="t1_marketing">Marketing</label><input type="number" step="0.01" id="t1_marketing" value="0"></div>
+        </div>
+
+        <div class="section-title">Categorias livres</div>
+        <div class="dynamic-list" id="t1_dynamic_list"></div>
+        <div class="inline-actions">
+          <button class="btn-add" type="button" data-add-row="t1">+ Adicionar categoria livre</button>
+        </div>
+        <div class="helper">Aqui você pode criar retiradas extras com qualquer nome, por exemplo: fornecedor, imposto, ajuste, prêmio, transporte, comissão.</div>
+      </article>
+
+      <article class="turno card" data-turno="t2">
+        <div class="turno-head">
+          <div>
+            <h3>Turno 2</h3>
+            <small>Preencha os dados do segundo turno</small>
+          </div>
+          <div class="turno-total">
+            <div class="label">Total</div>
+            <div class="value" id="turno2InlineTotal">R$ 0,00</div>
+          </div>
+        </div>
+
+        <div class="section-title">Entradas / Plataformas</div>
+        <div class="fields two-col">
+          <div class="field"><label for="t2_banco">Banco Reca</label><input type="number" step="0.01" id="t2_banco" value="0"></div>
+          <div class="field"><label for="t2_pppoker">PPPoker (x400)</label><input type="number" step="0.01" id="t2_pppoker" value="0"></div>
+          <div class="field"><label for="t2_suprema">Suprema (x400)</label><input type="number" step="0.01" id="t2_suprema" value="0"></div>
+          <div class="field"><label for="t2_buffalo">Buffalo</label><input type="number" step="0.01" id="t2_buffalo" value="0"></div>
+          <div class="field"><label for="t2_ganamos">Ganamos</label><input type="number" step="0.01" id="t2_ganamos" value="0"></div>
+          <div class="field"><label for="t2_cargas">Carga de Fichas</label><input type="number" step="0.01" id="t2_cargas" value="0"></div>
+          <div class="field"><label for="t2_pendentes">Pagos Pendentes</label><input type="number" step="0.01" id="t2_pendentes" value="0"></div>
+        </div>
+
+        <div class="section-title">Retiradas fixas</div>
+        <div class="fields two-col">
+          <div class="field"><label for="t2_retirada">Retirada</label><input type="number" step="0.01" id="t2_retirada" value="0"></div>
+          <div class="field"><label for="t2_salario">Salário</label><input type="number" step="0.01" id="t2_salario" value="0"></div>
+          <div class="field"><label for="t2_pagocarga">Pago de Carga</label><input type="number" step="0.01" id="t2_pagocarga" value="0"></div>
+          <div class="field"><label for="t2_bonus">Bônus</label><input type="number" step="0.01" id="t2_bonus" value="0"></div>
+          <div class="field"><label for="t2_extra">Trabalhos Extra</label><input type="number" step="0.01" id="t2_extra" value="0"></div>
+          <div class="field"><label for="t2_marketing">Marketing</label><input type="number" step="0.01" id="t2_marketing" value="0"></div>
+        </div>
+
+        <div class="section-title">Categorias livres</div>
+        <div class="dynamic-list" id="t2_dynamic_list"></div>
+        <div class="inline-actions">
+          <button class="btn-add" type="button" data-add-row="t2">+ Adicionar categoria livre</button>
+        </div>
+        <div class="helper">Use quantas categorias quiser. Elas entram automaticamente no cálculo das retiradas do turno.</div>
+      </article>
+    </section>
+  </main>
+
+  <div class="bottom-bar">
+    <div class="bottom-bar-inner">
+      <button class="secondary-btn" id="limpar">Limpar tudo</button>
+      <button class="main-btn" id="calcular">Calcular agora</button>
+    </div>
+  </div>
+
+  <script>
+    const money = new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' });
+
+    const fieldsByTurn = {
+      t1: {
+        banco: 't1_banco', pppoker: 't1_pppoker', suprema: 't1_suprema', buffalo: 't1_buffalo', ganamos: 't1_ganamos', cargas: 't1_cargas', pendentes: 't1_pendentes',
+        retirada: 't1_retirada', salario: 't1_salario', pagocarga: 't1_pagocarga', bonus: 't1_bonus', extra: 't1_extra', marketing: 't1_marketing'
+      },
+      t2: {
+        banco: 't2_banco', pppoker: 't2_pppoker', suprema: 't2_suprema', buffalo: 't2_buffalo', ganamos: 't2_ganamos', cargas: 't2_cargas', pendentes: 't2_pendentes',
+        retirada: 't2_retirada', salario: 't2_salario', pagocarga: 't2_pagocarga', bonus: 't2_bonus', extra: 't2_extra', marketing: 't2_marketing'
+      }
+    };
+
+    let dynamicRowCounter = 0;
+
+    function getValue(id) {
+      const el = document.getElementById(id);
+      if (!el) return 0;
+      const value = parseFloat(el.value);
+      return Number.isFinite(value) ? value : 0;
+    }
+
+    function getDynamicTotal(turno) {
+      const list = document.getElementById(`${turno}_dynamic_list`);
+      const inputs = list.querySelectorAll('input[data-dynamic-value]');
+      let total = 0;
+      inputs.forEach(input => {
+        const value = parseFloat(input.value);
+        if (Number.isFinite(value)) total += value;
+      });
+      return total;
+    }
+
+    function calcTurno(turno) {
+      const f = fieldsByTurn[turno];
+
+      const entradas =
+        getValue(f.banco) +
+        (getValue(f.pppoker) * 400) +
+        (getValue(f.suprema) * 400) +
+        getValue(f.buffalo) +
+        getValue(f.ganamos) +
+        getValue(f.cargas);
+
+      const retiradasFixas =
+        getValue(f.retirada) +
+        getValue(f.salario) +
+        getValue(f.pagocarga) +
+        getValue(f.bonus) +
+        getValue(f.extra) +
+        getValue(f.marketing);
+
+      const retiradasDinamicas = getDynamicTotal(turno);
+      const pendentes = getValue(f.pendentes);
+
+      return entradas - retiradasFixas - retiradasDinamicas - pendentes;
+    }
+
+    function setResultStyle(diff) {
+      const pill = document.getElementById('statusPill');
+      const result = document.getElementById('resultadoFinal');
+      result.classList.remove('green', 'red');
+
+      if (diff > 0) {
+        pill.className = 'pill positive';
+        pill.textContent = 'Positivo';
+        result.classList.add('green');
+      } else if (diff < 0) {
+        pill.className = 'pill negative';
+        pill.textContent = 'Negativo';
+        result.classList.add('red');
+      } else {
+        pill.className = 'pill neutral';
+        pill.textContent = 'Sem diferença';
+      }
+    }
+
+    function render() {
+      const total1 = calcTurno('t1');
+      const total2 = calcTurno('t2');
+      const diff = total2 - total1;
+      const abs = Math.abs(diff);
+
+      document.getElementById('totalTurno1').textContent = money.format(total1);
+      document.getElementById('turno1InlineTotal').textContent = money.format(total1);
+      document.getElementById('totalTurno2').textContent = money.format(total2);
+      document.getElementById('turno2InlineTotal').textContent = money.format(total2);
+      document.getElementById('diferencaAbs').textContent = money.format(abs);
+      document.getElementById('resultadoFinal').textContent = money.format(diff);
+      setResultStyle(diff);
+    }
+
+    function createDynamicRow(turno, name = '', value = 0) {
+      dynamicRowCounter += 1;
+      const rowId = `${turno}_row_${dynamicRowCounter}`;
+      const list = document.getElementById(`${turno}_dynamic_list`);
+
+      const row = document.createElement('div');
+      row.className = 'dynamic-row';
+      row.id = rowId;
+      row.innerHTML = `
+        <div class="field">
+          <label>Nome da categoria</label>
+          <input type="text" placeholder="Ex.: fornecedor, imposto, comissão" value="${name}">
+        </div>
+        <div class="field">
+          <label>Valor</label>
+          <input type="number" step="0.01" value="${value}" data-dynamic-value="true">
+        </div>
+        <button class="remove-btn" type="button" data-remove-row="${rowId}">Remover</button>
+      `;
+
+      list.appendChild(row);
+      row.querySelectorAll('input').forEach(input => input.addEventListener('input', render));
+      row.querySelector('[data-remove-row]').addEventListener('click', () => {
+        row.remove();
+        render();
+      });
+      render();
+    }
+
+    function limparTudo() {
+      document.querySelectorAll('input[type="number"]').forEach(input => input.value = 0);
+      document.querySelectorAll('input[type="text"]').forEach(input => input.value = '');
+      document.getElementById('t1_dynamic_list').innerHTML = '';
+      document.getElementById('t2_dynamic_list').innerHTML = '';
+      render();
+    }
+
+    document.getElementById('calcular').addEventListener('click', render);
+    document.getElementById('limpar').addEventListener('click', limparTudo);
+
+    document.querySelectorAll('input[type="number"]').forEach(input => input.addEventListener('input', render));
+    document.querySelectorAll('[data-add-row]').forEach(btn => {
+      btn.addEventListener('click', () => createDynamicRow(btn.dataset.addRow));
+    });
+
+    createDynamicRow('t1', 'Fornecedor', 0);
+    createDynamicRow('t2', 'Fornecedor', 0);
+    render();
+  </script>
+</body>
+</html>
