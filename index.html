@@ -428,13 +428,6 @@
           <div class="field"><label for="t1_pendentes">Pagos Pendentes</label><input type="number" step="0.01" id="t1_pendentes" value="0"></div>
         </div>
 
-        <div class="section-title">Retiradas de caixa</div>
-        <div class="dynamic-list" id="t1_dynamic_list"></div>
-        <div class="inline-actions">
-          <button class="btn-add" type="button" data-add-row="t1">+ Adicionar categoria</button>
-        </div>
-        <div class="helper">Todas as retiradas agora são dinâmicas. Você pode criar qualquer categoria e preencher apenas o que precisar no turno.</div>
-
         
       </article>
 
@@ -460,13 +453,6 @@
           <div class="field"><label for="t2_cargas">Carga de Fichas</label><input type="number" step="0.01" id="t2_cargas" value="0"></div>
           <div class="field"><label for="t2_pendentes">Pagos Pendentes</label><input type="number" step="0.01" id="t2_pendentes" value="0"></div>
         </div>
-
-        <div class="section-title">Retiradas de caixa</div>
-        <div class="dynamic-list" id="t2_dynamic_list"></div>
-        <div class="inline-actions">
-          <button class="btn-add" type="button" data-add-row="t2">+ Adicionar categoria</button>
-        </div>
-        <div class="helper">Todas as retiradas agora são dinâmicas. Você pode criar qualquer categoria e preencher apenas o que precisar no turno.</div>
 
         
       </article>
@@ -608,16 +594,8 @@
       btn.addEventListener('click', () => createDynamicRow(btn.dataset.addRow));
     });
 
-    createDynamicRow('t1', 'Retirada', 0);
-    createDynamicRow('t1', 'Salário', 0);
-    createDynamicRow('t1', 'Pago de Carga', 0);
-    createDynamicRow('t1', 'Bônus', 0);
-    createDynamicRow('t1', 'Marketing', 0);
-    createDynamicRow('t2', 'Retirada', 0);
-    createDynamicRow('t2', 'Salário', 0);
-    createDynamicRow('t2', 'Pago de Carga', 0);
-    createDynamicRow('t2', 'Bônus', 0);
-    createDynamicRow('t2', 'Marketing', 0);
+    
+    
     render();
   </script>
 </body>
