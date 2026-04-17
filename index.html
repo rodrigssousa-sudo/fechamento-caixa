@@ -908,13 +908,15 @@
     }
 
     .modal-backdrop{
-      position:absolute;
-      inset:0;
-      background:rgba(2,6,23,.72);
-      backdrop-filter:blur(6px);
-    }
+position:absolute;
+inset:0;
+background:rgba(2,6,23,.72)
+backdrop-filter:blur(6px);
+}
 
-    .modal-card{
+.modal-card
+
+{
       position:relative;
       width:100%;
       max-width:860px;
@@ -2537,7 +2539,7 @@
       const totalBancoReca = filtered.reduce((acc, item) => acc + getBancoRecaFromSnapshot(item.turno || {}), 0);
       const totalPendentes = filtered.reduce((acc, item) => acc + Number(item.turno?.pendentesTotal || 0), 0);
       const totalSaidas = filtered.reduce((acc, item) => acc + Number(item.turno?.saidasTotal || 0), 0);
-      const lucroReal = totalSaidas;
+      const lucroReal = totalBancoReca - totalPendentes - totalSaidas;
 
       const titleMap = {
         7: "Relatório semanal",
@@ -2577,7 +2579,11 @@
               </div>
               <div class="report-line">
                 <span>Lucro real</span>
-                <strong>${money(item.turno?.saidasTotal || 0)}</strong>
+                <strong>${money(
+                  getBancoRecaFromSnapshot(item.turno || {}) -
+                  Number(item.turno?.pendentesTotal || 0) -
+                  Number(item.turno?.saidasTotal || 0)
+                )}</strong>
               </div>
             </div>
           </div>
@@ -2951,4 +2957,3 @@
   </script>
 </body>
 </html>
-
