@@ -370,7 +370,7 @@
       <div class="title-row">
         <div>
           <h1>Fechamento de Caixa</h1>
-          <p class="subtitle">Calculadora mobile-first para comparar dois turnos, mostrar total de cada caixa e a diferença final. Nada é salvo.</p>
+          <p class="subtitle">Calculadora Central King.</p>
         </div>
         <div class="badge">Mobile first</div>
       </div>
@@ -419,8 +419,8 @@
 
         <div class="section-title">Entradas / Plataformas</div>
         <div class="fields two-col">
-          <div class="field"><label for="t1_banco">Banco Reca</label><input type="number" step="0.01" id="t1_banco" value="0"></div>
-          <div class="field"><label for="t1_pppoker">PPPoker (x400)</label><input type="number" step="0.01" id="t1_pppoker" value="0"></div>
+          <div class="field"><label for="t1_banco">Bank Reca</label><input type="number" step="0.01" id="t1_banco" value="0"></div>
+          <div class="field"><label for="t1_pppoker">Pppoker (x400)</label><input type="number" step="0.01" id="t1_pppoker" value="0"></div>
           <div class="field"><label for="t1_suprema">Suprema (x400)</label><input type="number" step="0.01" id="t1_suprema" value="0"></div>
           <div class="field"><label for="t1_buffalo">Buffalo</label><input type="number" step="0.01" id="t1_buffalo" value="0"></div>
           <div class="field"><label for="t1_ganamos">Ganamos</label><input type="number" step="0.01" id="t1_ganamos" value="0"></div>
@@ -445,8 +445,8 @@
 
         <div class="section-title">Entradas / Plataformas</div>
         <div class="fields two-col">
-          <div class="field"><label for="t2_banco">Banco Reca</label><input type="number" step="0.01" id="t2_banco" value="0"></div>
-          <div class="field"><label for="t2_pppoker">PPPoker (x400)</label><input type="number" step="0.01" id="t2_pppoker" value="0"></div>
+          <div class="field"><label for="t2_banco">Bank Reca</label><input type="number" step="0.01" id="t2_banco" value="0"></div>
+          <div class="field"><label for="t2_pppoker">Pppoker (x400)</label><input type="number" step="0.01" id="t2_pppoker" value="0"></div>
           <div class="field"><label for="t2_suprema">Suprema (x400)</label><input type="number" step="0.01" id="t2_suprema" value="0"></div>
           <div class="field"><label for="t2_buffalo">Buffalo</label><input type="number" step="0.01" id="t2_buffalo" value="0"></div>
           <div class="field"><label for="t2_ganamos">Ganamos</label><input type="number" step="0.01" id="t2_ganamos" value="0"></div>
@@ -461,8 +461,8 @@
 
   <div class="bottom-bar">
     <div class="bottom-bar-inner">
-      <button class="secondary-btn" id="limpar">Limpar tudo</button>
-      <button class="main-btn" id="calcular">Calcular agora</button>
+      <button class="secondary-btn" id="limpar">Limpar</button>
+      <button class="main-btn" id="calcular">Calcular</button>
     </div>
   </div>
 
@@ -502,7 +502,7 @@
       const f = fieldsByTurn[turno];
 
       const entradas =
-        getValue(f.banco) +
+        getValue(f.bank) +
         (getValue(f.pppoker) * 400) +
         (getValue(f.suprema) * 400) +
         getValue(f.buffalo) +
