@@ -572,13 +572,13 @@
             <div class="finance-total blue" id="t1_entradas_total">$ 0,00</div>
           </div>
           <div class="fields two-col">
-            <div class="field"><label for="t1_banco">Banco Reca</label><input type="number" step="0.01" id="t1_banco" value="0"></div>
-            <div class="field"><label for="t1_pppoker">PPPoker (x400)</label><input type="number" step="0.01" id="t1_pppoker" value="0"></div>
-            <div class="field"><label for="t1_suprema">Suprema (x400)</label><input type="number" step="0.01" id="t1_suprema" value="0"></div>
-            <div class="field"><label for="t1_buffalo">Buffalo</label><input type="number" step="0.01" id="t1_buffalo" value="0"></div>
-            <div class="field"><label for="t1_ganamos">Ganamos</label><input type="number" step="0.01" id="t1_ganamos" value="0"></div>
-            <div class="field"><label for="t1_cargas">Carga de Fichas</label><input type="number" step="0.01" id="t1_cargas" value="0"></div>
-            <div class="field"><label for="t1_cargas_poker">Cargas F. Poker (x400)</label><input type="number" step="0.01" id="t1_cargas_poker" value="0"></div>
+            <div class="field"><label for="t1_banco">Banco Reca</label><input type="text" inputmode="numeric" id="t1_banco" value=""></div>
+            <div class="field"><label for="t1_pppoker">PPPoker (x400)</label><input type="text" inputmode="numeric" id="t1_pppoker" value=""></div>
+            <div class="field"><label for="t1_suprema">Suprema (x400)</label><input type="text" inputmode="numeric" id="t1_suprema" value=""></div>
+            <div class="field"><label for="t1_buffalo">Buffalo</label><input type="text" inputmode="numeric" id="t1_buffalo" value=""></div>
+            <div class="field"><label for="t1_ganamos">Ganamos</label><input type="text" inputmode="numeric" id="t1_ganamos" value=""></div>
+            <div class="field"><label for="t1_cargas">Carga de Fichas</label><input type="text" inputmode="numeric" id="t1_cargas" value=""></div>
+            <div class="field"><label for="t1_cargas_poker">Cargas F. Poker (x400)</label><input type="text" inputmode="numeric" id="t1_cargas_poker" value=""></div>
           </div>
         </div>
 
@@ -623,13 +623,13 @@
             <div class="finance-total blue" id="t2_entradas_total">$ 0,00</div>
           </div>
           <div class="fields two-col">
-            <div class="field"><label for="t2_banco">Banco Reca</label><input type="number" step="0.01" id="t2_banco" value="0"></div>
-            <div class="field"><label for="t2_pppoker">PPPoker (x400)</label><input type="number" step="0.01" id="t2_pppoker" value="0"></div>
-            <div class="field"><label for="t2_suprema">Suprema (x400)</label><input type="number" step="0.01" id="t2_suprema" value="0"></div>
-            <div class="field"><label for="t2_buffalo">Buffalo</label><input type="number" step="0.01" id="t2_buffalo" value="0"></div>
-            <div class="field"><label for="t2_ganamos">Ganamos</label><input type="number" step="0.01" id="t2_ganamos" value="0"></div>
-            <div class="field"><label for="t2_cargas">Carga de Fichas</label><input type="number" step="0.01" id="t2_cargas" value="0"></div>
-            <div class="field"><label for="t2_cargas_poker">Cargas F. Poker (x400)</label><input type="number" step="0.01" id="t2_cargas_poker" value="0"></div>
+            <div class="field"><label for="t2_banco">Banco Reca</label><input type="text" inputmode="numeric" id="t2_banco" value=""></div>
+            <div class="field"><label for="t2_pppoker">PPPoker (x400)</label><input type="text" inputmode="numeric" id="t2_pppoker" value=""></div>
+            <div class="field"><label for="t2_suprema">Suprema (x400)</label><input type="text" inputmode="numeric" id="t2_suprema" value=""></div>
+            <div class="field"><label for="t2_buffalo">Buffalo</label><input type="text" inputmode="numeric" id="t2_buffalo" value=""></div>
+            <div class="field"><label for="t2_ganamos">Ganamos</label><input type="text" inputmode="numeric" id="t2_ganamos" value=""></div>
+            <div class="field"><label for="t2_cargas">Carga de Fichas</label><input type="text" inputmode="numeric" id="t2_cargas" value=""></div>
+            <div class="field"><label for="t2_cargas_poker">Cargas F. Poker (x400)</label><input type="text" inputmode="numeric" id="t2_cargas_poker" value=""></div>
           </div>
         </div>
 
@@ -686,6 +686,40 @@
       return `- ${money(value)}`;
     }
 
+    function formatDigitsToMoneyString(digits) {
+      const clean = (digits || '').replace(/\D/g, '');
+      if (!clean) return '';
+      const number = Number(clean) / 100;
+      return number.toLocaleString('pt-BR', {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2
+      });
+    }
+
+    function parseMoneyInput(value) {
+      if (!value) return 0;
+      const normalized = value
+        .replace(/\./g, '')
+        .replace(',', '.')
+        .replace(/[^\d.-]/g, '');
+      const number = parseFloat(normalized);
+      return Number.isFinite(number) ? number : 0;
+    }
+
+    function attachMoneyMask(input) {
+      input.addEventListener('input', () => {
+        const digits = input.value.replace(/\D/g, '');
+        input.value = formatDigitsToMoneyString(digits);
+        render();
+      });
+
+      input.addEventListener('blur', () => {
+        const digits = input.value.replace(/\D/g, '');
+        input.value = formatDigitsToMoneyString(digits);
+        render();
+      });
+    }
+
     const fieldsByTurn = {
       t1: {
         banco: 't1_banco',
@@ -713,8 +747,7 @@
     function getValue(id) {
       const el = document.getElementById(id);
       if (!el) return 0;
-      const value = parseFloat(el.value);
-      return Number.isFinite(value) ? value : 0;
+      return parseMoneyInput(el.value);
     }
 
     function getEntradasTotal(turno) {
@@ -738,8 +771,7 @@
       let total = 0;
 
       inputs.forEach(input => {
-        const value = parseFloat(input.value);
-        if (Number.isFinite(value)) total += value;
+        total += parseMoneyInput(input.value);
       });
 
       return total;
@@ -753,8 +785,7 @@
       let total = 0;
 
       inputs.forEach(input => {
-        const value = parseFloat(input.value);
-        if (Number.isFinite(value)) total += value;
+        total += parseMoneyInput(input.value);
       });
 
       return total;
@@ -793,8 +824,7 @@
       const preview = row.querySelector('.signed-preview');
       if (!preview) return;
 
-      const value = parseFloat(input.value);
-      const safeValue = Number.isFinite(value) ? value : 0;
+      const safeValue = parseMoneyInput(input.value);
       preview.textContent = negativeMoney(safeValue);
     }
 
@@ -855,17 +885,12 @@
     }
 
     function bindRow(row, kind) {
-      row.querySelectorAll('input').forEach(input => {
-        input.addEventListener('input', () => {
-          const valueInput = row.querySelector(
-            kind === 'pending'
-              ? 'input[data-pending-value]'
-              : 'input[data-dynamic-value]'
-          );
-
-          if (valueInput) updateRowPreview(valueInput);
-          render();
-        });
+      row.querySelectorAll('input[type="text"]').forEach(input => {
+        if (input.hasAttribute('data-dynamic-value') || input.hasAttribute('data-pending-value')) {
+          attachMoneyMask(input);
+        } else {
+          input.addEventListener('input', render);
+        }
       });
 
       row.querySelector('[data-remove-row]').addEventListener('click', () => {
@@ -882,7 +907,7 @@
       if (valueInput) updateRowPreview(valueInput);
     }
 
-    function createDynamicRow(turno, name = '', value = 0) {
+    function createDynamicRow(turno, name = '', value = '') {
       dynamicRowCounter += 1;
       const rowId = `${turno}_saida_${dynamicRowCounter}`;
       const list = document.getElementById(`${turno}_dynamic_list`);
@@ -897,7 +922,7 @@
         </div>
         <div class="field">
           <label>Valor</label>
-          <input type="number" step="0.01" value="${value}" data-dynamic-value="true">
+          <input type="text" inputmode="numeric" value="${value}" data-dynamic-value="true">
         </div>
         <div class="signed-preview red">- $ 0,00</div>
         <button class="remove-btn" type="button" data-remove-row="${rowId}">Remover</button>
@@ -908,7 +933,7 @@
       render();
     }
 
-    function createPendingRow(turno, name = '', value = 0) {
+    function createPendingRow(turno, name = '', value = '') {
       dynamicRowCounter += 1;
       const rowId = `${turno}_pending_${dynamicRowCounter}`;
       const list = document.getElementById(`${turno}_pending_list`);
@@ -923,7 +948,7 @@
         </div>
         <div class="field">
           <label>Valor</label>
-          <input type="number" step="0.01" value="${value}" data-pending-value="true">
+          <input type="text" inputmode="numeric" value="${value}" data-pending-value="true">
         </div>
         <div class="signed-preview amber">- $ 0,00</div>
         <button class="remove-btn" type="button" data-remove-row="${rowId}">Remover</button>
@@ -935,10 +960,6 @@
     }
 
     function limparTudo() {
-      document.querySelectorAll('input[type="number"]').forEach(input => {
-        input.value = 0;
-      });
-
       document.querySelectorAll('input[type="text"]').forEach(input => {
         input.value = '';
       });
@@ -954,8 +975,8 @@
     document.getElementById('calcular').addEventListener('click', render);
     document.getElementById('limpar').addEventListener('click', limparTudo);
 
-    document.querySelectorAll('input[type="number"]').forEach(input => {
-      input.addEventListener('input', render);
+    document.querySelectorAll('.fields input[type="text"]').forEach(input => {
+      attachMoneyMask(input);
     });
 
     document.querySelectorAll('[data-add-row]').forEach(btn => {
