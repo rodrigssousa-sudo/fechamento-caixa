@@ -17,14 +17,21 @@
       --green: #22c55e;
       --red: #ef4444;
       --amber: #f59e0b;
-      --shadow: 0 14px 34px rgba(0,0,0,0.45);
+      --shadow: 0 14px 34px rgba(0, 0, 0, 0.45);
       --radius: 20px;
       --radius-sm: 14px;
       --safe-bottom: env(safe-area-inset-bottom, 0px);
     }
 
-    * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
-    html, body { margin: 0; padding: 0; }
+    * {
+      box-sizing: border-box;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    html, body {
+      margin: 0;
+      padding: 0;
+    }
 
     body {
       font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
@@ -35,7 +42,9 @@
       min-height: 100vh;
     }
 
-    .hidden { display: none !important; }
+    .hidden {
+      display: none !important;
+    }
 
     .auth-screen {
       min-height: 100vh;
@@ -232,6 +241,30 @@
       gap: 12px;
     }
 
+    .menu-toggle-btn {
+      width: 42px;
+      height: 42px;
+      border-radius: 12px;
+      border: 1px solid rgba(148,163,184,0.12);
+      background: rgba(255,255,255,0.04);
+      display: inline-flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 4px;
+      padding: 0;
+      cursor: pointer;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.18);
+    }
+
+    .menu-toggle-btn span {
+      display: block;
+      width: 18px;
+      height: 2px;
+      border-radius: 999px;
+      background: #eaf2ff;
+    }
+
     .logo-bk {
       width: 42px;
       height: 42px;
@@ -282,7 +315,9 @@
       box-shadow: var(--shadow);
     }
 
-    .summary-card { padding: 16px; }
+    .summary-card {
+      padding: 16px;
+    }
 
     .summary-head {
       display: flex;
@@ -721,6 +756,152 @@
       font-weight: 800;
     }
 
+    .reports-menu {
+      position: fixed;
+      top: 76px;
+      left: 14px;
+      z-index: 130;
+      width: calc(100% - 28px);
+      max-width: 320px;
+      border-radius: 18px;
+      border: 1px solid rgba(148,163,184,0.12);
+      background: linear-gradient(180deg, rgba(10,18,34,0.98), rgba(10,18,34,1));
+      box-shadow: 0 24px 60px rgba(0,0,0,0.36);
+      padding: 10px;
+    }
+
+    .reports-menu-item {
+      width: 100%;
+      min-height: 46px;
+      border-radius: 14px;
+      border: 1px solid rgba(148,163,184,0.08);
+      background: rgba(255,255,255,0.03);
+      color: #eaf2ff;
+      text-align: left;
+      font-size: 14px;
+      font-weight: 800;
+      padding: 0 14px;
+      margin-bottom: 8px;
+      cursor: pointer;
+    }
+
+    .reports-menu-item:last-child {
+      margin-bottom: 0;
+    }
+
+    .report-screen {
+      width: 100%;
+      max-width: 1180px;
+      margin: 0 auto 14px;
+      padding: 16px;
+      border-radius: 20px;
+      border: 1px solid rgba(148,163,184,0.12);
+      background: linear-gradient(180deg, rgba(255,255,255,0.025), rgba(255,255,255,0.01));
+      box-shadow: var(--shadow);
+    }
+
+    .report-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 14px;
+    }
+
+    .report-head h3 {
+      margin: 0;
+      font-size: 18px;
+      letter-spacing: -0.03em;
+    }
+
+    .report-close-btn {
+      min-height: 38px;
+      padding: 0 14px;
+      border-radius: 12px;
+      background: rgba(239,68,68,0.12);
+      color: #ffb3b3;
+      border: 1px solid rgba(239,68,68,0.20);
+      font-size: 12px;
+      font-weight: 800;
+    }
+
+    .report-grid {
+      display: grid;
+      gap: 10px;
+      grid-template-columns: 1fr;
+    }
+
+    .report-card {
+      padding: 14px;
+      border-radius: 16px;
+      border: 1px solid rgba(148,163,184,0.10);
+      background: rgba(255,255,255,0.03);
+    }
+
+    .report-card-label {
+      font-size: 12px;
+      color: var(--muted);
+      margin-bottom: 8px;
+    }
+
+    .report-card-value {
+      font-size: 24px;
+      font-weight: 900;
+      letter-spacing: -0.03em;
+    }
+
+    .report-card-value.red {
+      color: #ffb3b3;
+    }
+
+    .report-card-value.green {
+      color: #b8ffd1;
+    }
+
+    .report-list {
+      margin-top: 14px;
+      display: grid;
+      gap: 10px;
+    }
+
+    .report-list-item {
+      padding: 12px;
+      border-radius: 16px;
+      border: 1px solid rgba(148,163,184,0.10);
+      background: rgba(255,255,255,0.02);
+    }
+
+    .report-list-top {
+      display: flex;
+      justify-content: space-between;
+      gap: 10px;
+      margin-bottom: 10px;
+    }
+
+    .report-list-name {
+      font-size: 13px;
+      font-weight: 800;
+      color: #eaf2ff;
+    }
+
+    .report-list-date {
+      font-size: 12px;
+      color: var(--muted);
+    }
+
+    .report-list-lines {
+      display: grid;
+      gap: 6px;
+    }
+
+    .report-line {
+      display: flex;
+      justify-content: space-between;
+      gap: 10px;
+      font-size: 12px;
+      color: #dbeafe;
+    }
+
     .bottom-bar {
       position: fixed;
       left: 0;
@@ -926,6 +1107,77 @@
       color: #ffb3b3;
     }
 
+    .clear-modal-card {
+      max-width: 520px;
+      border-radius: 26px 26px 0 0;
+    }
+
+    .clear-modal-actions {
+      display: grid;
+      gap: 12px;
+      margin-top: 6px;
+    }
+
+    .clear-option-btn {
+      width: 100%;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      text-align: left;
+      padding: 16px;
+      border-radius: 18px;
+      min-height: 76px;
+      border: 1px solid rgba(148,163,184,0.10);
+      background: rgba(255,255,255,0.03);
+      color: #f8fafc;
+      cursor: pointer;
+      transition: transform 0.16s ease, border-color 0.16s ease, background 0.16s ease;
+    }
+
+    .clear-option-btn:hover {
+      transform: translateY(-1px);
+    }
+
+    .clear-option-btn.blue {
+      background: linear-gradient(180deg, rgba(37,99,235,0.14), rgba(37,99,235,0.08));
+      border-color: rgba(96,165,250,0.22);
+    }
+
+    .clear-option-btn.amber {
+      background: linear-gradient(180deg, rgba(245,158,11,0.14), rgba(245,158,11,0.08));
+      border-color: rgba(245,158,11,0.24);
+    }
+
+    .clear-option-btn.red {
+      background: linear-gradient(180deg, rgba(239,68,68,0.14), rgba(239,68,68,0.08));
+      border-color: rgba(239,68,68,0.24);
+    }
+
+    .clear-option-icon {
+      font-size: 22px;
+      line-height: 1;
+      flex-shrink: 0;
+    }
+
+    .clear-option-text {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .clear-option-text strong {
+      font-size: 15px;
+      font-weight: 900;
+      color: #ffffff;
+      letter-spacing: -0.02em;
+    }
+
+    .clear-option-text small {
+      font-size: 12px;
+      color: #c7d2e5;
+      line-height: 1.35;
+    }
+
     @media (max-width: 700px) {
       .dynamic-row,
       .history-item-grid,
@@ -934,29 +1186,89 @@
         grid-template-columns: 1fr;
       }
 
-      .dynamic-row .remove-btn { width: 100%; }
-      .signed-preview { justify-content: flex-start; }
-      .bottom-bar-inner { grid-template-columns: repeat(4, 1fr); }
-      .bottom-bar button { font-size: 10px; }
-      .modal-card { max-height: 92vh; }
+      .dynamic-row .remove-btn {
+        width: 100%;
+      }
+
+      .signed-preview {
+        justify-content: flex-start;
+      }
+
+      .bottom-bar-inner {
+        grid-template-columns: repeat(4, 1fr);
+      }
+
+      .bottom-bar button {
+        font-size: 10px;
+      }
+
+      .modal-card {
+        max-height: 92vh;
+      }
     }
 
     @media (max-width: 520px) {
-      .auth-toggle { grid-template-columns: 1fr 1fr; }
-      .bottom-bar button { min-height: 40px; padding: 8px 6px; }
-      .title-row { align-items: flex-start; }
-      .badge { font-size: 10px; padding: 7px 10px; }
+      .auth-toggle {
+        grid-template-columns: 1fr 1fr;
+      }
+
+      .bottom-bar button {
+        min-height: 40px;
+        padding: 8px 6px;
+      }
+
+      .title-row {
+        align-items: flex-start;
+      }
+
+      .badge {
+        font-size: 10px;
+        padding: 7px 10px;
+      }
     }
 
     @media (min-width: 768px) {
-      .app { max-width: 1180px; padding-left: 18px; padding-right: 18px; }
-      .header { margin-left: -18px; margin-right: -18px; padding-left: 18px; padding-right: 18px; }
-      .summary { grid-template-columns: 1fr; }
-      .metrics { grid-template-columns: repeat(4, 1fr); }
-      .turnos { grid-template-columns: 1fr 1fr; }
-      .fields.two-col { grid-template-columns: repeat(2, 1fr); }
-      .bottom-bar-inner { max-width: 1180px; width: calc(100% - 36px); }
-      .bottom-bar button { font-size: 12px; }
+      .app {
+        max-width: 1180px;
+        padding-left: 18px;
+        padding-right: 18px;
+      }
+
+      .header {
+        margin-left: -18px;
+        margin-right: -18px;
+        padding-left: 18px;
+        padding-right: 18px;
+      }
+
+      .summary {
+        grid-template-columns: 1fr;
+      }
+
+      .metrics {
+        grid-template-columns: repeat(4, 1fr);
+      }
+
+      .turnos {
+        grid-template-columns: 1fr 1fr;
+      }
+
+      .fields.two-col {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      .bottom-bar-inner {
+        max-width: 1180px;
+        width: calc(100% - 36px);
+      }
+
+      .bottom-bar button {
+        font-size: 12px;
+      }
+
+      .report-grid {
+        grid-template-columns: repeat(4, 1fr);
+      }
     }
   </style>
 </head>
@@ -965,7 +1277,7 @@
     <div class="auth-card">
       <div class="auth-logo">BK</div>
       <h1 class="auth-title">Bank King</h1>
-      <p class="auth-subtitle">Acesso interno para fechamento de caixa e relatórios de turno.</p>
+      <p class="auth-subtitle">Acesso interno Central King.</p>
 
       <div class="auth-toggle">
         <button id="tabLogin" class="auth-tab active" type="button">Entrar</button>
@@ -989,7 +1301,7 @@
         </div>
 
         <button class="auth-submit" type="submit">Entrar agora</button>
-        <button id="forgotPasswordBtn" type="button" class="auth-tab" style="width:100%;">Esqueci a senha</button>
+        <button id="forgotPasswordBtn" type="button" class="auth-tab" style="width:100%;">Redefinir senha</button>
       </form>
 
       <form id="registerForm" class="auth-form hidden">
@@ -1012,19 +1324,23 @@
       </form>
 
       <form id="forgotPasswordForm" class="auth-form hidden">
+        <div class="auth-note" style="margin-top: -2px; margin-bottom: 4px;">
+          Use o código interno de redefinição para criar uma nova senha. Nenhum código será enviado por email.
+        </div>
+
         <div class="field">
           <label for="resetEmail">Email</label>
           <input id="resetEmail" type="email" placeholder="Digite o email cadastrado" />
         </div>
 
         <div class="field">
-          <label for="resetCode">Código de autorização</label>
-          <input id="resetCode" type="password" placeholder="Digite o código" />
+          <label for="resetCode">Código de redefinição</label>
+          <input id="resetCode" type="password" placeholder="Digite o código interno" />
         </div>
 
         <div class="field">
           <label for="newPassword">Nova senha</label>
-          <input id="newPassword" type="password" placeholder="Digite a nova senha" />
+          <input id="newPassword" type="password" placeholder="Nova senha" />
         </div>
 
         <button class="auth-submit" type="submit">Redefinir senha</button>
@@ -1042,6 +1358,11 @@
       <header class="header">
         <div class="title-row">
           <div class="brand">
+            <button id="menuToggle" class="menu-toggle-btn" type="button" aria-label="Abrir menu">
+              <span></span>
+              <span></span>
+              <span></span>
+            </button>
             <div class="logo-bk">BK</div>
             <h1>Bank King</h1>
           </div>
@@ -1070,8 +1391,8 @@
               <button class="hide-balance-btn" id="toggleBalance" type="button" aria-label="Mostrar ou ocultar saldo">
                 <span id="eyeIcon">
                   <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#eaf2ff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                    <path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7S1 12 1 12z"/>
-                    <circle cx="12" cy="12" r="3"/>
+                    <path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7S1 12 1 12z"></path>
+                    <circle cx="12" cy="12" r="3"></circle>
                   </svg>
                 </span>
               </button>
@@ -1134,13 +1455,13 @@
               <div class="finance-total blue" id="t1_entradas_total">$ 0,00</div>
             </div>
             <div class="fields two-col">
-              <div class="field"><label for="t1_banco">Banco Reca</label><input type="text" inputmode="numeric" id="t1_banco" placeholder="0,00"></div>
-              <div class="field"><label for="t1_pppoker">PPPoker (x400)</label><input type="text" inputmode="numeric" id="t1_pppoker" placeholder="0,00"></div>
-              <div class="field"><label for="t1_suprema">Suprema (x400)</label><input type="text" inputmode="numeric" id="t1_suprema" placeholder="0,00"></div>
-              <div class="field"><label for="t1_buffalo">Buffalo</label><input type="text" inputmode="numeric" id="t1_buffalo" placeholder="0,00"></div>
-              <div class="field"><label for="t1_ganamos">Ganamos</label><input type="text" inputmode="numeric" id="t1_ganamos" placeholder="0,00"></div>
-              <div class="field"><label for="t1_cargas">Carga de Fichas</label><input type="text" inputmode="numeric" id="t1_cargas" placeholder="0,00"></div>
-              <div class="field"><label for="t1_cargas_poker">Cargas F. Poker (x400)</label><input type="text" inputmode="numeric" id="t1_cargas_poker" placeholder="0,00"></div>
+              <div class="field"><label for="t1_banco">Banco Reca</label><input type="text" inputmode="numeric" id="t1_banco" placeholder="0,00" /></div>
+              <div class="field"><label for="t1_pppoker">PPPoker (x400)</label><input type="text" inputmode="numeric" id="t1_pppoker" placeholder="0,00" /></div>
+              <div class="field"><label for="t1_suprema">Suprema (x400)</label><input type="text" inputmode="numeric" id="t1_suprema" placeholder="0,00" /></div>
+              <div class="field"><label for="t1_buffalo">Buffalo</label><input type="text" inputmode="numeric" id="t1_buffalo" placeholder="0,00" /></div>
+              <div class="field"><label for="t1_ganamos">Ganamos</label><input type="text" inputmode="numeric" id="t1_ganamos" placeholder="0,00" /></div>
+              <div class="field"><label for="t1_cargas">Carga de Fichas</label><input type="text" inputmode="numeric" id="t1_cargas" placeholder="0,00" /></div>
+              <div class="field"><label for="t1_cargas_poker">Cargas F. Poker (x400)</label><input type="text" inputmode="numeric" id="t1_cargas_poker" placeholder="0,00" /></div>
             </div>
           </div>
 
@@ -1192,13 +1513,13 @@
               <div class="finance-total blue" id="t2_entradas_total">$ 0,00</div>
             </div>
             <div class="fields two-col">
-              <div class="field"><label for="t2_banco">Banco Reca</label><input type="text" inputmode="numeric" id="t2_banco" placeholder="0,00"></div>
-              <div class="field"><label for="t2_pppoker">PPPoker (x400)</label><input type="text" inputmode="numeric" id="t2_pppoker" placeholder="0,00"></div>
-              <div class="field"><label for="t2_suprema">Suprema (x400)</label><input type="text" inputmode="numeric" id="t2_suprema" placeholder="0,00"></div>
-              <div class="field"><label for="t2_buffalo">Buffalo</label><input type="text" inputmode="numeric" id="t2_buffalo" placeholder="0,00"></div>
-              <div class="field"><label for="t2_ganamos">Ganamos</label><input type="text" inputmode="numeric" id="t2_ganamos" placeholder="0,00"></div>
-              <div class="field"><label for="t2_cargas">Carga de Fichas</label><input type="text" inputmode="numeric" id="t2_cargas" placeholder="0,00"></div>
-              <div class="field"><label for="t2_cargas_poker">Cargas F. Poker (x400)</label><input type="text" inputmode="numeric" id="t2_cargas_poker" placeholder="0,00"></div>
+              <div class="field"><label for="t2_banco">Banco Reca</label><input type="text" inputmode="numeric" id="t2_banco" placeholder="0,00" /></div>
+              <div class="field"><label for="t2_pppoker">PPPoker (x400)</label><input type="text" inputmode="numeric" id="t2_pppoker" placeholder="0,00" /></div>
+              <div class="field"><label for="t2_suprema">Suprema (x400)</label><input type="text" inputmode="numeric" id="t2_suprema" placeholder="0,00" /></div>
+              <div class="field"><label for="t2_buffalo">Buffalo</label><input type="text" inputmode="numeric" id="t2_buffalo" placeholder="0,00" /></div>
+              <div class="field"><label for="t2_ganamos">Ganamos</label><input type="text" inputmode="numeric" id="t2_ganamos" placeholder="0,00" /></div>
+              <div class="field"><label for="t2_cargas">Carga de Fichas</label><input type="text" inputmode="numeric" id="t2_cargas" placeholder="0,00" /></div>
+              <div class="field"><label for="t2_cargas_poker">Cargas F. Poker (x400)</label><input type="text" inputmode="numeric" id="t2_cargas_poker" placeholder="0,00" /></div>
             </div>
           </div>
 
@@ -1227,6 +1548,46 @@
       </section>
     </main>
 
+    <section id="reportScreen" class="report-screen hidden">
+      <div class="report-head">
+        <div>
+          <h3 id="reportTitle">Relatório</h3>
+          <small id="reportSubtitle" style="color: var(--muted);">Fluxo de caixa do período</small>
+        </div>
+        <button id="closeReportScreen" class="report-close-btn" type="button">Fechar</button>
+      </div>
+
+      <div class="report-grid">
+        <div class="report-card">
+          <div class="report-card-label">Entrou em Banco Reca</div>
+          <div class="report-card-value" id="reportBancoReca">$ 0,00</div>
+        </div>
+
+        <div class="report-card">
+          <div class="report-card-label">Saiu em Pagos Pendentes</div>
+          <div class="report-card-value red" id="reportPendentes">$ 0,00</div>
+        </div>
+
+        <div class="report-card">
+          <div class="report-card-label">Saiu em Saídas de Caixa</div>
+          <div class="report-card-value red" id="reportSaidas">$ 0,00</div>
+        </div>
+
+        <div class="report-card">
+          <div class="report-card-label">Lucro real</div>
+          <div class="report-card-value green" id="reportLucro">$ 0,00</div>
+        </div>
+      </div>
+
+      <div id="reportList" class="report-list"></div>
+    </section>
+
+    <div id="reportsMenu" class="reports-menu hidden">
+      <button class="reports-menu-item" type="button" data-report-range="7">Relatório semanal</button>
+      <button class="reports-menu-item" type="button" data-report-range="15">Relatório quinzenal</button>
+      <button class="reports-menu-item" type="button" data-report-range="30">Relatório mensal</button>
+    </div>
+
     <div class="bottom-bar">
       <div class="bottom-bar-inner">
         <button class="secondary-btn" id="limpar">Limpar tudo</button>
@@ -1251,28 +1612,67 @@
     </div>
   </div>
 
+  <div id="clearModal" class="modal hidden">
+    <div class="modal-backdrop" id="clearModalBackdrop"></div>
+    <div class="modal-card clear-modal-card">
+      <div class="modal-head">
+        <div>
+          <h3>Limpar dados</h3>
+          <small>Escolha exatamente o que deseja limpar</small>
+        </div>
+        <button id="closeClearModal" class="modal-close-btn" type="button">Fechar</button>
+      </div>
+
+      <div class="clear-modal-actions">
+        <button id="clearTurnoAtualBtn" class="clear-option-btn blue" type="button">
+          <span class="clear-option-icon">🔵</span>
+          <span class="clear-option-text">
+            <strong>Limpar Turno Atual</strong>
+            <small>Remove apenas os dados do Turno 2</small>
+          </span>
+        </button>
+
+        <button id="clearTurnoAnteriorBtn" class="clear-option-btn amber" type="button">
+          <span class="clear-option-icon">🟡</span>
+          <span class="clear-option-text">
+            <strong>Limpar Turno Anterior</strong>
+            <small>Remove apenas os dados do Turno 1</small>
+          </span>
+        </button>
+
+        <button id="clearTodosBtn" class="clear-option-btn red" type="button">
+          <span class="clear-option-icon">🔴</span>
+          <span class="clear-option-text">
+            <strong>Limpar Tudo</strong>
+            <small>Remove Turno 1, Turno 2 e histórico salvo</small>
+          </span>
+        </button>
+      </div>
+    </div>
+  </div>
+
   <script>
-    const PDF_CODE = '351278';
-    const RESET_CODE = '351278';
-    const USERS_STORAGE_KEY = 'bank-king-users-v1';
-    const ACTIVE_USER_STORAGE_KEY = 'bank-king-active-user-v1';
-    const HISTORY_STORAGE_KEY = 'bank-king-turno-history-v5';
-    const REMEMBER_LOGIN_STORAGE_KEY = 'bank-king-remember-login-v1';
-    const REMEMBERED_EMAIL_STORAGE_KEY = 'bank-king-remembered-email-v1';
-    const SESSION_LAST_ACTIVITY_KEY = 'bank-king-session-last-activity-v1';
+    const PDF_CODE = "1520";
+    const RESET_CODE = "4br1l#2o26";
+    const USERS_STORAGE_KEY = "bank-king-users-v1";
+    const ACTIVE_USER_STORAGE_KEY = "bank-king-active-user-v1";
+    const HISTORY_STORAGE_KEY = "bank-king-turno-history-v5";
+    const REMEMBER_LOGIN_STORAGE_KEY = "bank-king-remember-login-v1";
+    const REMEMBERED_EMAIL_STORAGE_KEY = "bank-king-remembered-email-v1";
+    const SESSION_LAST_ACTIVITY_KEY = "bank-king-session-last-activity-v1";
     const SESSION_TIMEOUT_MS = 30 * 60 * 1000;
 
-    const authScreen = document.getElementById('authScreen');
-    const appShell = document.getElementById('appShell');
+    const authScreen = document.getElementById("authScreen");
+    const appShell = document.getElementById("appShell");
 
-    const tabLogin = document.getElementById('tabLogin');
-    const tabRegister = document.getElementById('tabRegister');
-    const loginForm = document.getElementById('loginForm');
-    const registerForm = document.getElementById('registerForm');
-    const forgotPasswordForm = document.getElementById('forgotPasswordForm');
-    const forgotPasswordBtn = document.getElementById('forgotPasswordBtn');
-    const backToLoginBtn = document.getElementById('backToLoginBtn');
-    const rememberLoginCheckbox = document.getElementById('rememberLogin');
+    const tabLogin = document.getElementById("tabLogin");
+    const tabRegister = document.getElementById("tabRegister");
+    const loginForm = document.getElementById("loginForm");
+    const registerForm = document.getElementById("registerForm");
+    const forgotPasswordForm = document.getElementById("forgotPasswordForm");
+    const forgotPasswordBtn = document.getElementById("forgotPasswordBtn");
+    const backToLoginBtn = document.getElementById("backToLoginBtn");
+    const rememberLoginCheckbox = document.getElementById("rememberLogin");
 
     let dynamicRowCounter = 0;
     let balanceVisible = true;
@@ -1280,15 +1680,14 @@
     let sessionInterval = null;
 
     function money(value) {
-      return `$ ${Number(value).toLocaleString('pt-BR', {
+      return `$ ${Number(value).toLocaleString("pt-BR", {
         minimumFractionDigits: 2,
         maximumFractionDigits: 2
       })}`;
     }
 
     function maskedMoney(value) {
-      const formatted = money(value);
-      return formatted.replace(/[0-9]/g, '•');
+      return money(value).replace(/[0-9]/g, "•");
     }
 
     function displayMoney(value) {
@@ -1301,18 +1700,18 @@
 
     function escapeHtml(text) {
       return String(text)
-        .replaceAll('&', '&amp;')
-        .replaceAll('<', '&lt;')
-        .replaceAll('>', '&gt;')
-        .replaceAll('"', '&quot;')
-        .replaceAll("'", '&#39;');
+        .replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .replaceAll('"', "&quot;")
+        .replaceAll("'", "&#39;");
     }
 
     function formatDigitsToMoneyString(digits) {
-      const clean = (digits || '').replace(/\D/g, '');
-      if (!clean) return '';
+      const clean = (digits || "").replace(/\D/g, "");
+      if (!clean) return "";
       const number = Number(clean) / 100;
-      return number.toLocaleString('pt-BR', {
+      return number.toLocaleString("pt-BR", {
         minimumFractionDigits: 2,
         maximumFractionDigits: 2
       });
@@ -1321,19 +1720,19 @@
     function parseMoneyInput(value) {
       if (!value) return 0;
       const normalized = value
-        .replace(/\./g, '')
-        .replace(',', '.')
-        .replace(/[^\d.-]/g, '');
+        .replace(/\./g, "")
+        .replace(",", ".")
+        .replace(/[^\d.-]/g, "");
       const number = parseFloat(normalized);
       return Number.isFinite(number) ? number : 0;
     }
 
     function getDigitsFromInput(input) {
-      return input?.dataset?.raw || '';
+      return input?.dataset?.raw || "";
     }
 
     function setDigitsToInput(input, digits) {
-      const clean = (digits || '').replace(/\D/g, '');
+      const clean = (digits || "").replace(/\D/g, "");
       input.dataset.raw = clean;
       input.value = formatDigitsToMoneyString(clean);
     }
@@ -1351,49 +1750,57 @@
       const now = new Date();
       const offset = now.getTimezoneOffset();
       const local = new Date(now.getTime() - offset * 60000);
-      return local.toISOString().split('T')[0];
+      return local.toISOString().split("T")[0];
     }
 
     function formatDateBR(dateStr) {
-      if (!dateStr) return 'Sem data';
-      const [y, m, d] = dateStr.split('-');
+      if (!dateStr) return "Sem data";
+      const [y, m, d] = dateStr.split("-");
       if (!y || !m || !d) return dateStr;
       return `${d}/${m}/${y}`;
     }
 
-    function ensureTurnDates() {
-      const t1 = document.getElementById('t1_data_fechamento');
-      const t2 = document.getElementById('t2_data_fechamento');
+    function formatDateTimeBR(iso) {
+      if (!iso) return "Sem data";
+      const dt = new Date(iso);
+      return `${dt.toLocaleDateString("pt-BR")} às ${dt.toLocaleTimeString("pt-BR", {
+        hour: "2-digit",
+        minute: "2-digit"
+      })}`;
+    }
 
-      if (t2 && !t2.value) t2.value = getTodayDateInput();
+    function ensureTurnDates() {
+      const t1 = document.getElementById("t1_data_fechamento");
+      const t2 = document.getElementById("t2_data_fechamento");
       if (t1 && !t1.value) t1.value = getTodayDateInput();
+      if (t2 && !t2.value) t2.value = getTodayDateInput();
     }
 
     function attachMoneyMask(input) {
-      if (input.dataset.maskAttached === 'true') return;
-      input.dataset.maskAttached = 'true';
-      input.dataset.raw = '';
-      input.placeholder = '0,00';
-      input.autocomplete = 'off';
+      if (input.dataset.maskAttached === "true") return;
+      input.dataset.maskAttached = "true";
+      input.dataset.raw = "";
+      input.placeholder = "0,00";
+      input.autocomplete = "off";
       input.spellcheck = false;
 
-      input.addEventListener('keydown', (e) => {
+      input.addEventListener("keydown", (e) => {
         const allowedControl =
-          e.key === 'Tab' ||
-          e.key === 'Shift' ||
-          e.key === 'Control' ||
-          e.key === 'Meta' ||
-          e.key === 'Alt' ||
-          e.key === 'ArrowLeft' ||
-          e.key === 'ArrowRight' ||
-          e.key === 'ArrowUp' ||
-          e.key === 'ArrowDown' ||
-          e.key === 'Home' ||
-          e.key === 'End';
+          e.key === "Tab" ||
+          e.key === "Shift" ||
+          e.key === "Control" ||
+          e.key === "Meta" ||
+          e.key === "Alt" ||
+          e.key === "ArrowLeft" ||
+          e.key === "ArrowRight" ||
+          e.key === "ArrowUp" ||
+          e.key === "ArrowDown" ||
+          e.key === "Home" ||
+          e.key === "End";
 
         if (allowedControl) return;
 
-        const isShortcut = (e.ctrlKey || e.metaKey) && ['a', 'c', 'v', 'x'].includes(e.key.toLowerCase());
+        const isShortcut = (e.ctrlKey || e.metaKey) && ["a", "c", "v", "x"].includes(e.key.toLowerCase());
         if (isShortcut) return;
 
         if (/^\d$/.test(e.key)) {
@@ -1405,7 +1812,7 @@
           return;
         }
 
-        if (e.key === 'Backspace') {
+        if (e.key === "Backspace") {
           e.preventDefault();
           const raw = getDigitsFromInput(input).slice(0, -1);
           setDigitsToInput(input, raw);
@@ -1414,9 +1821,9 @@
           return;
         }
 
-        if (e.key === 'Delete') {
+        if (e.key === "Delete") {
           e.preventDefault();
-          setDigitsToInput(input, '');
+          setDigitsToInput(input, "");
           moveCursorToEnd(input);
           render();
           return;
@@ -1425,10 +1832,10 @@
         e.preventDefault();
       });
 
-      input.addEventListener('paste', (e) => {
+      input.addEventListener("paste", (e) => {
         e.preventDefault();
-        const pasted = (e.clipboardData || window.clipboardData).getData('text') || '';
-        const digits = pasted.replace(/\D/g, '');
+        const pasted = (e.clipboardData || window.clipboardData).getData("text") || "";
+        const digits = pasted.replace(/\D/g, "");
         if (!digits) return;
         const raw = getDigitsFromInput(input) + digits;
         setDigitsToInput(input, raw);
@@ -1436,7 +1843,7 @@
         render();
       });
 
-      input.addEventListener('focus', () => {
+      input.addEventListener("focus", () => {
         moveCursorToEnd(input);
       });
     }
@@ -1474,8 +1881,8 @@
       }
     }
 
-    function setRememberLogin(enabled, email = '') {
-      localStorage.setItem(REMEMBER_LOGIN_STORAGE_KEY, enabled ? 'true' : 'false');
+    function setRememberLogin(enabled, email = "") {
+      localStorage.setItem(REMEMBER_LOGIN_STORAGE_KEY, enabled ? "true" : "false");
       if (enabled && email) {
         localStorage.setItem(REMEMBERED_EMAIL_STORAGE_KEY, email);
       } else if (!enabled) {
@@ -1484,32 +1891,32 @@
     }
 
     function getRememberLogin() {
-      return localStorage.getItem(REMEMBER_LOGIN_STORAGE_KEY) === 'true';
+      return localStorage.getItem(REMEMBER_LOGIN_STORAGE_KEY) === "true";
     }
 
     function getRememberedEmail() {
-      return localStorage.getItem(REMEMBERED_EMAIL_STORAGE_KEY) || '';
+      return localStorage.getItem(REMEMBERED_EMAIL_STORAGE_KEY) || "";
     }
 
     function preloadRememberedLogin() {
       const remember = getRememberLogin();
       const rememberedEmail = getRememberedEmail();
-      const loginEmail = document.getElementById('loginEmail');
-      const loginPassword = document.getElementById('loginPassword');
+      const loginEmail = document.getElementById("loginEmail");
+      const loginPassword = document.getElementById("loginPassword");
 
       rememberLoginCheckbox.checked = remember;
 
       if (rememberedEmail) {
         loginEmail.value = rememberedEmail;
         requestAnimationFrame(() => {
-          if (!authScreen.classList.contains('hidden')) {
+          if (!authScreen.classList.contains("hidden")) {
             loginPassword.focus();
           }
         });
       } else {
-        loginEmail.value = '';
+        loginEmail.value = "";
         requestAnimationFrame(() => {
-          if (!authScreen.classList.contains('hidden')) {
+          if (!authScreen.classList.contains("hidden")) {
             loginEmail.focus();
           }
         });
@@ -1547,14 +1954,14 @@
       stopSessionWatcher();
       sessionInterval = setInterval(() => {
         if (activeUser && getRememberLogin() && isSessionExpired()) {
-          alert('Sessão expirada por inatividade de 30 minutos.');
+          alert("Sessão expirada por inatividade de 30 minutos.");
           forceLogoutByTimeout();
         }
       }, 15000);
     }
 
     function bindSessionActivityEvents() {
-      const events = ['click', 'touchstart', 'keydown', 'input', 'scroll'];
+      const events = ["click", "touchstart", "keydown", "input", "scroll"];
       events.forEach((eventName) => {
         window.addEventListener(eventName, () => {
           setSessionActivity();
@@ -1567,9 +1974,9 @@
       clearSessionActivity();
       stopSessionWatcher();
       activeUser = null;
-      authScreen.classList.remove('hidden');
-      appShell.classList.add('hidden');
-      switchAuthTab('login');
+      authScreen.classList.remove("hidden");
+      appShell.classList.add("hidden");
+      switchAuthTab("login");
       preloadRememberedLogin();
     }
 
@@ -1578,15 +1985,15 @@
       clearSessionActivity();
       stopSessionWatcher();
       activeUser = null;
-      authScreen.classList.remove('hidden');
-      appShell.classList.add('hidden');
-      switchAuthTab('login');
+      authScreen.classList.remove("hidden");
+      appShell.classList.add("hidden");
+      switchAuthTab("login");
       preloadRememberedLogin();
     }
 
     function showApp() {
-      authScreen.classList.add('hidden');
-      appShell.classList.remove('hidden');
+      authScreen.classList.add("hidden");
+      appShell.classList.remove("hidden");
       updateActiveUserUI();
       ensureTurnDates();
       loadHistoryIntoTurn1();
@@ -1596,54 +2003,51 @@
     }
 
     function updateActiveUserUI() {
-      document.getElementById('activeUserName').textContent = activeUser?.name || 'Usuário';
-      document.getElementById('activeUserEmail').textContent = activeUser?.email || '';
+      document.getElementById("activeUserName").textContent = activeUser?.name || "Usuário";
+      document.getElementById("activeUserEmail").textContent = activeUser?.email || "";
     }
 
     function switchAuthTab(mode) {
-      const loginActive = mode === 'login';
-      const registerActive = mode === 'register';
-      const forgotActive = mode === 'forgot';
+      const loginActive = mode === "login";
+      const registerActive = mode === "register";
+      const forgotActive = mode === "forgot";
 
-      tabLogin.classList.toggle('active', loginActive);
-      tabRegister.classList.toggle('active', registerActive);
+      tabLogin.classList.toggle("active", loginActive);
+      tabRegister.classList.toggle("active", registerActive);
 
-      loginForm.classList.toggle('hidden', !loginActive);
-      registerForm.classList.toggle('hidden', !registerActive);
-      forgotPasswordForm.classList.toggle('hidden', !forgotActive);
+      loginForm.classList.toggle("hidden", !loginActive);
+      registerForm.classList.toggle("hidden", !registerActive);
+      forgotPasswordForm.classList.toggle("hidden", !forgotActive);
 
-      if (loginActive) {
-        preloadRememberedLogin();
-      }
+      if (loginActive) preloadRememberedLogin();
     }
 
-    tabLogin.addEventListener('click', () => switchAuthTab('login'));
-    tabRegister.addEventListener('click', () => switchAuthTab('register'));
-    forgotPasswordBtn.addEventListener('click', () => switchAuthTab('forgot'));
-    backToLoginBtn.addEventListener('click', () => switchAuthTab('login'));
+    tabLogin.addEventListener("click", () => switchAuthTab("login"));
+    tabRegister.addEventListener("click", () => switchAuthTab("register"));
+    forgotPasswordBtn.addEventListener("click", () => switchAuthTab("forgot"));
+    backToLoginBtn.addEventListener("click", () => switchAuthTab("login"));
 
-    registerForm.addEventListener('submit', (e) => {
+    registerForm.addEventListener("submit", (e) => {
       e.preventDefault();
 
-      const name = document.getElementById('registerName').value.trim();
-      const email = document.getElementById('registerEmail').value.trim().toLowerCase();
-      const password = document.getElementById('registerPassword').value;
+      const name = document.getElementById("registerName").value.trim();
+      const email = document.getElementById("registerEmail").value.trim().toLowerCase();
+      const password = document.getElementById("registerPassword").value;
 
       if (!name || !email || !password) {
-        alert('Preencha nome, email e senha.');
+        alert("Preencha nome, email e senha.");
         return;
       }
 
       const users = getUsers();
-      const exists = users.some(user => user.email === email);
+      const exists = users.some((user) => user.email === email);
 
       if (exists) {
-        alert('Esse email já está registrado.');
+        alert("Esse email já está registrado.");
         return;
       }
 
-      const user = { name, email, password };
-      users.push(user);
+      users.push({ name, email, password });
       saveUsers(users);
 
       saveActiveUser({ name, email });
@@ -1654,18 +2058,18 @@
       showApp();
     });
 
-    loginForm.addEventListener('submit', (e) => {
+    loginForm.addEventListener("submit", (e) => {
       e.preventDefault();
 
-      const email = document.getElementById('loginEmail').value.trim().toLowerCase();
-      const password = document.getElementById('loginPassword').value;
+      const email = document.getElementById("loginEmail").value.trim().toLowerCase();
+      const password = document.getElementById("loginPassword").value;
       const remember = rememberLoginCheckbox.checked;
 
       const users = getUsers();
-      const found = users.find(user => user.email === email && user.password === password);
+      const found = users.find((user) => user.email === email && user.password === password);
 
       if (!found) {
-        alert('Email ou senha inválidos.');
+        alert("Email ou senha inválidos.");
         return;
       }
 
@@ -1678,67 +2082,67 @@
       showApp();
     });
 
-    forgotPasswordForm.addEventListener('submit', (e) => {
+    forgotPasswordForm.addEventListener("submit", (e) => {
       e.preventDefault();
 
-      const email = document.getElementById('resetEmail').value.trim().toLowerCase();
-      const code = document.getElementById('resetCode').value.trim();
-      const newPassword = document.getElementById('newPassword').value;
+      const email = document.getElementById("resetEmail").value.trim().toLowerCase();
+      const code = document.getElementById("resetCode").value.trim();
+      const newPassword = document.getElementById("newPassword").value;
 
       if (!email || !code || !newPassword) {
-        alert('Preencha email, código e nova senha.');
+        alert("Preencha email, código e nova senha.");
         return;
       }
 
       if (code !== RESET_CODE) {
-        alert('Código de autorização inválido.');
+        alert("Código interno de redefinição inválido.");
         return;
       }
 
       const users = getUsers();
-      const userIndex = users.findIndex(user => user.email === email);
+      const userIndex = users.findIndex((user) => user.email === email);
 
       if (userIndex === -1) {
-        alert('Usuário não encontrado com esse email.');
+        alert("Usuário não encontrado com esse email.");
         return;
       }
 
       users[userIndex].password = newPassword;
       saveUsers(users);
 
-      alert('Senha redefinida com sucesso.');
+      alert("Senha redefinida com sucesso no modo local.");
       forgotPasswordForm.reset();
-      switchAuthTab('login');
+      switchAuthTab("login");
 
-      const loginEmail = document.getElementById('loginEmail');
+      const loginEmail = document.getElementById("loginEmail");
       loginEmail.value = email;
       requestAnimationFrame(() => {
-        document.getElementById('loginPassword').focus();
+        document.getElementById("loginPassword").focus();
       });
     });
 
-    document.getElementById('logoutBtn').addEventListener('click', logout);
+    document.getElementById("logoutBtn").addEventListener("click", logout);
 
     const fieldsByTurn = {
       t1: {
-        dataFechamento: 't1_data_fechamento',
-        banco: 't1_banco',
-        pppoker: 't1_pppoker',
-        suprema: 't1_suprema',
-        buffalo: 't1_buffalo',
-        ganamos: 't1_ganamos',
-        cargas: 't1_cargas',
-        cargasPoker: 't1_cargas_poker'
+        dataFechamento: "t1_data_fechamento",
+        banco: "t1_banco",
+        pppoker: "t1_pppoker",
+        suprema: "t1_suprema",
+        buffalo: "t1_buffalo",
+        ganamos: "t1_ganamos",
+        cargas: "t1_cargas",
+        cargasPoker: "t1_cargas_poker"
       },
       t2: {
-        dataFechamento: 't2_data_fechamento',
-        banco: 't2_banco',
-        pppoker: 't2_pppoker',
-        suprema: 't2_suprema',
-        buffalo: 't2_buffalo',
-        ganamos: 't2_ganamos',
-        cargas: 't2_cargas',
-        cargasPoker: 't2_cargas_poker'
+        dataFechamento: "t2_data_fechamento",
+        banco: "t2_banco",
+        pppoker: "t2_pppoker",
+        suprema: "t2_suprema",
+        buffalo: "t2_buffalo",
+        ganamos: "t2_ganamos",
+        cargas: "t2_cargas",
+        cargasPoker: "t2_cargas_poker"
       }
     };
 
@@ -1765,7 +2169,7 @@
       const list = document.getElementById(`${turno}_dynamic_list`);
       if (!list) return 0;
       let total = 0;
-      list.querySelectorAll('input[data-dynamic-value]').forEach(input => {
+      list.querySelectorAll('input[data-dynamic-value]').forEach((input) => {
         total += parseMoneyInput(input.value);
       });
       return total;
@@ -1775,94 +2179,90 @@
       const list = document.getElementById(`${turno}_pending_list`);
       if (!list) return 0;
       let total = 0;
-      list.querySelectorAll('input[data-pending-value]').forEach(input => {
+      list.querySelectorAll('input[data-pending-value]').forEach((input) => {
         total += parseMoneyInput(input.value);
       });
       return total;
     }
 
     function setResultStyle(diff) {
-      const pill = document.getElementById('statusPill');
-      const result = document.getElementById('resultadoFinal');
-      result.classList.remove('green', 'red');
+      const pill = document.getElementById("statusPill");
+      const result = document.getElementById("resultadoFinal");
+      result.classList.remove("green", "red");
 
       if (diff > 0) {
-        pill.className = 'pill positive';
-        pill.textContent = 'Positivo';
-        result.classList.add('green');
+        pill.className = "pill positive";
+        pill.textContent = "Positivo";
+        result.classList.add("green");
       } else if (diff < 0) {
-        pill.className = 'pill negative';
-        pill.textContent = 'Negativo';
-        result.classList.add('red');
+        pill.className = "pill negative";
+        pill.textContent = "Negativo";
+        result.classList.add("red");
       } else {
-        pill.className = 'pill neutral';
-        pill.textContent = 'Sem diferença';
+        pill.className = "pill neutral";
+        pill.textContent = "Sem diferença";
       }
     }
 
     function updateRowPreview(input) {
-      const row = input.closest('.dynamic-row');
+      const row = input.closest(".dynamic-row");
       if (!row) return;
-      const preview = row.querySelector('.signed-preview');
+      const preview = row.querySelector(".signed-preview");
       if (!preview) return;
       preview.textContent = negativeMoney(parseMoneyInput(input.value));
     }
 
     function updateEyeIcon() {
-      const icon = document.getElementById('eyeIcon');
+      const icon = document.getElementById("eyeIcon");
       if (!icon) return;
 
       if (balanceVisible) {
         icon.innerHTML = `
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#eaf2ff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7S1 12 1 12z"/>
-            <circle cx="12" cy="12" r="3"/>
+            <path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7S1 12 1 12z"></path>
+            <circle cx="12" cy="12" r="3"></circle>
           </svg>
         `;
       } else {
         icon.innerHTML = `
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#eaf2ff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M2 2l20 20"/>
-            <path d="M10.58 10.58a2 2 0 102.83 2.83"/>
-            <path d="M9.88 5.09A10.94 10.94 0 0112 5c7 0 11 7 11 7a21.8 21.8 0 01-5.17 5.94"/>
-            <path d="M6.61 6.61A21.8 21.8 0 001 12s4 7 11 7a10.94 10.94 0 005.09-1.17"/>
+            <path d="M2 2l20 20"></path>
+            <path d="M10.58 10.58a2 2 0 102.83 2.83"></path>
+            <path d="M9.88 5.09A10.94 10.94 0 0112 5c7 0 11 7 11 7a21.8 21.8 0 01-5.17 5.94"></path>
+            <path d="M6.61 6.61A21.8 21.8 0 001 12s4 7 11 7a10.94 10.94 0 005.09-1.17"></path>
           </svg>
         `;
       }
     }
 
     function bindRow(row, kind) {
-      const allInputs = row.querySelectorAll('input');
-
-      allInputs.forEach(input => {
-        if (input.hasAttribute('data-dynamic-value') || input.hasAttribute('data-pending-value')) {
+      row.querySelectorAll("input").forEach((input) => {
+        if (input.hasAttribute("data-dynamic-value") || input.hasAttribute("data-pending-value")) {
           attachMoneyMask(input);
         } else {
-          input.addEventListener('input', render);
+          input.addEventListener("input", render);
         }
       });
 
-      row.querySelector('[data-remove-row]').addEventListener('click', () => {
+      row.querySelector("[data-remove-row]").addEventListener("click", () => {
         row.remove();
         render();
       });
 
       const valueInput = row.querySelector(
-        kind === 'pending'
-          ? 'input[data-pending-value]'
-          : 'input[data-dynamic-value]'
+        kind === "pending" ? 'input[data-pending-value]' : 'input[data-dynamic-value]'
       );
 
       if (valueInput) updateRowPreview(valueInput);
     }
 
-    function createDynamicRow(turno, name = '', digits = '') {
+    function createDynamicRow(turno, name = "", digits = "") {
       dynamicRowCounter += 1;
       const rowId = `${turno}_saida_${dynamicRowCounter}`;
       const list = document.getElementById(`${turno}_dynamic_list`);
 
-      const row = document.createElement('div');
-      row.className = 'dynamic-row outflow';
+      const row = document.createElement("div");
+      row.className = "dynamic-row outflow";
       row.id = rowId;
       row.innerHTML = `
         <div class="field">
@@ -1878,7 +2278,7 @@
       `;
 
       list.appendChild(row);
-      bindRow(row, 'outflow');
+      bindRow(row, "outflow");
 
       const valueInput = row.querySelector('input[data-dynamic-value]');
       if (valueInput && digits) {
@@ -1889,13 +2289,13 @@
       render();
     }
 
-    function createPendingRow(turno, name = '', digits = '') {
+    function createPendingRow(turno, name = "", digits = "") {
       dynamicRowCounter += 1;
       const rowId = `${turno}_pending_${dynamicRowCounter}`;
       const list = document.getElementById(`${turno}_pending_list`);
 
-      const row = document.createElement('div');
-      row.className = 'dynamic-row pending';
+      const row = document.createElement("div");
+      row.className = "dynamic-row pending";
       row.id = rowId;
       row.innerHTML = `
         <div class="field">
@@ -1911,7 +2311,7 @@
       `;
 
       list.appendChild(row);
-      bindRow(row, 'pending');
+      bindRow(row, "pending");
 
       const valueInput = row.querySelector('input[data-pending-value]');
       if (valueInput && digits) {
@@ -1924,51 +2324,56 @@
 
     function clearTurn(turno) {
       const f = fieldsByTurn[turno];
+
       Object.values(f).forEach((id) => {
         const input = document.getElementById(id);
-        if (input) {
-          if (id === f.dataFechamento) {
-            input.value = getTodayDateInput();
-          } else {
-            input.value = '';
-            input.dataset.raw = '';
-          }
+        if (!input) return;
+
+        if (id === f.dataFechamento) {
+          input.value = getTodayDateInput();
+        } else {
+          input.value = "";
+          input.dataset.raw = "";
         }
       });
 
       const dynamicList = document.getElementById(`${turno}_dynamic_list`);
       const pendingList = document.getElementById(`${turno}_pending_list`);
-      if (dynamicList) dynamicList.innerHTML = '';
-      if (pendingList) pendingList.innerHTML = '';
+      if (dynamicList) dynamicList.innerHTML = "";
+      if (pendingList) pendingList.innerHTML = "";
+    }
+
+    function limparTurnoIndividual(turno) {
+      clearTurn(turno);
     }
 
     function buildTurnSnapshot(turno) {
       const f = fieldsByTurn[turno];
 
       const outflows = [...document.querySelectorAll(`#${turno}_dynamic_list .dynamic-row`)].map((row) => {
-        const inputs = row.querySelectorAll('input');
+        const inputs = row.querySelectorAll("input");
         return {
-          name: inputs[0]?.value || '',
-          value: parseMoneyInput(inputs[1]?.value || '')
+          name: inputs[0]?.value || "",
+          value: parseMoneyInput(inputs[1]?.value || "")
         };
       });
 
       const pendings = [...document.querySelectorAll(`#${turno}_pending_list .dynamic-row`)].map((row) => {
-        const inputs = row.querySelectorAll('input');
+        const inputs = row.querySelectorAll("input");
         return {
-          name: inputs[0]?.value || '',
-          value: parseMoneyInput(inputs[1]?.value || '')
+          name: inputs[0]?.value || "",
+          value: parseMoneyInput(inputs[1]?.value || "")
         };
       });
 
       const entries = [
-        { name: 'Banco Reca', value: getValue(f.banco) },
-        { name: 'PPPoker (x400)', value: getValue(f.pppoker) * 400 },
-        { name: 'Suprema (x400)', value: getValue(f.suprema) * 400 },
-        { name: 'Buffalo', value: getValue(f.buffalo) },
-        { name: 'Ganamos', value: getValue(f.ganamos) },
-        { name: 'Carga de Fichas', value: getValue(f.cargas) },
-        { name: 'Cargas F. Poker (x400)', value: getValue(f.cargasPoker) * 400 }
+        { name: "Banco Reca", value: getValue(f.banco) },
+        { name: "PPPoker (x400)", value: getValue(f.pppoker) * 400 },
+        { name: "Suprema (x400)", value: getValue(f.suprema) * 400 },
+        { name: "Buffalo", value: getValue(f.buffalo) },
+        { name: "Ganamos", value: getValue(f.ganamos) },
+        { name: "Carga de Fichas", value: getValue(f.cargas) },
+        { name: "Cargas F. Poker (x400)", value: getValue(f.cargasPoker) * 400 }
       ];
 
       const entradasTotal = entries.reduce((acc, item) => acc + item.value, 0);
@@ -1992,8 +2397,8 @@
     function serializeTurn(turno) {
       const turnSnapshot = buildTurnSnapshot(turno);
       return {
-        submittedByName: activeUser?.name || '',
-        submittedByEmail: activeUser?.email || '',
+        submittedByName: activeUser?.name || "",
+        submittedByEmail: activeUser?.email || "",
         submittedAt: new Date().toISOString(),
         fechamentoDate: turnSnapshot.dataFechamento,
         total: turnSnapshot.saldoLiquido,
@@ -2008,18 +2413,16 @@
       const f = fieldsByTurn[turno];
 
       const dateInput = document.getElementById(f.dataFechamento);
-      if (dateInput) {
-        dateInput.value = snapshot.dataFechamento || getTodayDateInput();
-      }
+      if (dateInput) dateInput.value = snapshot.dataFechamento || getTodayDateInput();
 
       const entryMap = {
-        'Banco Reca': f.banco,
-        'PPPoker (x400)': f.pppoker,
-        'Suprema (x400)': f.suprema,
-        'Buffalo': f.buffalo,
-        'Ganamos': f.ganamos,
-        'Carga de Fichas': f.cargas,
-        'Cargas F. Poker (x400)': f.cargasPoker
+        "Banco Reca": f.banco,
+        "PPPoker (x400)": f.pppoker,
+        "Suprema (x400)": f.suprema,
+        "Buffalo": f.buffalo,
+        "Ganamos": f.ganamos,
+        "Carga de Fichas": f.cargas,
+        "Cargas F. Poker (x400)": f.cargasPoker
       };
 
       (snapshot.entries || []).forEach((entry) => {
@@ -2027,7 +2430,7 @@
         if (!fieldId) return;
 
         let valueToSet = entry.value || 0;
-        if (entry.name === 'PPPoker (x400)' || entry.name === 'Suprema (x400)' || entry.name === 'Cargas F. Poker (x400)') {
+        if (entry.name === "PPPoker (x400)" || entry.name === "Suprema (x400)" || entry.name === "Cargas F. Poker (x400)") {
           valueToSet = valueToSet / 400;
         }
 
@@ -2039,28 +2442,107 @@
       });
 
       (snapshot.outflows || []).forEach((item) => {
-        createDynamicRow(turno, item.name || '', Math.round((item.value || 0) * 100).toString());
+        createDynamicRow(turno, item.name || "", Math.round((item.value || 0) * 100).toString());
       });
 
       (snapshot.pendings || []).forEach((item) => {
-        createPendingRow(turno, item.name || '', Math.round((item.value || 0) * 100).toString());
+        createPendingRow(turno, item.name || "", Math.round((item.value || 0) * 100).toString());
       });
 
       render();
     }
 
     function getCurrentDifference() {
-      const t1Entradas = getEntradasTotal('t1');
-      const t1Saidas = getDynamicTotal('t1');
-      const t1Pendentes = getPendingTotal('t1');
-      const t1Total = t1Entradas - t1Saidas - t1Pendentes;
-
-      const t2Entradas = getEntradasTotal('t2');
-      const t2Saidas = getDynamicTotal('t2');
-      const t2Pendentes = getPendingTotal('t2');
-      const t2Total = t2Entradas - t2Saidas - t2Pendentes;
-
+      const t1Total = getEntradasTotal("t1") - getDynamicTotal("t1") - getPendingTotal("t1");
+      const t2Total = getEntradasTotal("t2") - getDynamicTotal("t2") - getPendingTotal("t2");
       return t2Total - t1Total;
+    }
+
+    function isWithinLastDays(dateStr, days) {
+      if (!dateStr) return false;
+      const target = new Date(`${dateStr}T00:00:00`);
+      const today = new Date();
+      today.setHours(23, 59, 59, 999);
+      const diffMs = today - target;
+      const diffDays = diffMs / (1000 * 60 * 60 * 24);
+      return diffDays >= 0 && diffDays < days;
+    }
+
+    function getBancoRecaFromSnapshot(snapshot) {
+      const entry = (snapshot.entries || []).find((item) => item.name === "Banco Reca");
+      return entry ? Number(entry.value || 0) : 0;
+    }
+
+    function openReportsMenu() {
+      document.getElementById("reportsMenu").classList.toggle("hidden");
+    }
+
+    function closeReportsMenu() {
+      document.getElementById("reportsMenu").classList.add("hidden");
+    }
+
+    function renderCashflowReport(days) {
+      const history = loadHistory();
+      const filtered = history.filter((item) => isWithinLastDays(item.fechamentoDate, days));
+
+      const totalBancoReca = filtered.reduce((acc, item) => acc + getBancoRecaFromSnapshot(item.turno || {}), 0);
+      const totalPendentes = filtered.reduce((acc, item) => acc + Number(item.turno?.pendentesTotal || 0), 0);
+      const totalSaidas = filtered.reduce((acc, item) => acc + Number(item.turno?.saidasTotal || 0), 0);
+      const lucroReal = totalSaidas;
+
+      const titleMap = {
+        7: "Relatório semanal",
+        15: "Relatório quinzenal",
+        30: "Relatório mensal"
+      };
+
+      document.getElementById("reportTitle").textContent = titleMap[days] || "Relatório";
+      document.getElementById("reportSubtitle").textContent = `Fluxo de caixa dos últimos ${days} dias`;
+      document.getElementById("reportBancoReca").textContent = money(totalBancoReca);
+      document.getElementById("reportPendentes").textContent = negativeMoney(totalPendentes);
+      document.getElementById("reportSaidas").textContent = negativeMoney(totalSaidas);
+      document.getElementById("reportLucro").textContent = money(lucroReal);
+
+      const reportList = document.getElementById("reportList");
+
+      if (!filtered.length) {
+        reportList.innerHTML = `<div class="history-empty">Nenhum fechamento encontrado nesse período.</div>`;
+      } else {
+        reportList.innerHTML = filtered.map((item) => {
+          const turno = item.turno || {};
+          const bancoReca = getBancoRecaFromSnapshot(turno);
+
+          return `
+            <div class="report-list-item">
+              <div class="report-list-top">
+                <div class="report-list-name">${escapeHtml(item.submittedByName || "Não identificado")}</div>
+                <div class="report-list-date">${escapeHtml(formatDateBR(item.fechamentoDate || ""))} • ${escapeHtml(formatDateTimeBR(item.submittedAt))}</div>
+              </div>
+              <div class="report-list-lines">
+                <div class="report-line">
+                  <span>Banco Reca</span>
+                  <strong>${money(bancoReca)}</strong>
+                </div>
+                <div class="report-line">
+                  <span>Pagos Pendentes</span>
+                  <strong>${negativeMoney(turno.pendentesTotal || 0)}</strong>
+                </div>
+                <div class="report-line">
+                  <span>Saídas de Caixa</span>
+                  <strong>${negativeMoney(turno.saidasTotal || 0)}</strong>
+                </div>
+                <div class="report-line">
+                  <span>Lucro real</span>
+                  <strong>${money(turno.saidasTotal || 0)}</strong>
+                </div>
+              </div>
+            </div>
+          `;
+        }).join("");
+      }
+
+      document.getElementById("reportScreen").classList.remove("hidden");
+      closeReportsMenu();
     }
 
     function loadHistory() {
@@ -2080,51 +2562,46 @@
 
     function saveTurn2AsHistory() {
       if (!activeUser) {
-        alert('Faça login para fechar o turno.');
+        alert("Faça login para fechar o turno.");
         return;
       }
 
-      const serialized = serializeTurn('t2');
+      const serialized = serializeTurn("t2");
       serialized.diff = getCurrentDifference();
 
       const historyList = loadHistory();
       historyList.unshift(serialized);
-      const limitedHistory = historyList.slice(0, 4);
+      const limitedHistory = historyList.slice(0, 100);
       saveHistoryList(limitedHistory);
 
-      applySnapshotToTurn('t1', serialized.turno);
-      clearTurn('t2');
+      applySnapshotToTurn("t1", serialized.turno);
+      clearTurn("t2");
       render();
 
       alert(`Turno fechado com sucesso por ${activeUser.name}.`);
     }
 
     function loadHistoryMeta() {
-      const history = loadHistory();
-      const latest = history[0];
-
-      if (!latest || !latest.submittedAt) return 'Nenhum turno anterior salvo ainda.';
+      const latest = loadHistory()[0];
+      if (!latest || !latest.submittedAt) return "Nenhum turno anterior salvo ainda.";
 
       const dt = new Date(latest.submittedAt);
-      const fechamento = latest.fechamentoDate ? formatDateBR(latest.fechamentoDate) : 'Sem data';
-      return `Último turno fechado por ${latest.submittedByName || 'Não identificado'} • fechamento ${fechamento} • enviado em ${dt.toLocaleDateString('pt-BR')} às ${dt.toLocaleTimeString('pt-BR')}.`;
+      const fechamento = latest.fechamentoDate ? formatDateBR(latest.fechamentoDate) : "Sem data";
+      return `Último turno fechado por ${latest.submittedByName || "Não identificado"} • fechamento ${fechamento} • enviado em ${dt.toLocaleDateString("pt-BR")} às ${dt.toLocaleTimeString("pt-BR")}.`;
     }
 
     function updateHistoryInfo() {
-      const el = document.getElementById('historyInfo');
-      if (!el) return;
-      el.textContent = loadHistoryMeta();
+      const el = document.getElementById("historyInfo");
+      if (el) el.textContent = loadHistoryMeta();
     }
 
     function loadHistoryIntoTurn1() {
-      const history = loadHistory();
-      const latest = history[0];
-      if (!latest || !latest.turno) return;
-      applySnapshotToTurn('t1', latest.turno);
+      const latest = loadHistory()[0];
+      if (latest?.turno) applySnapshotToTurn("t1", latest.turno);
     }
 
     function renderHistoryList() {
-      const container = document.getElementById('historyList');
+      const container = document.getElementById("historyList");
       if (!container) return;
 
       const history = loadHistory();
@@ -2136,40 +2613,34 @@
 
       container.innerHTML = history.map((item, index) => {
         const dt = item.submittedAt ? new Date(item.submittedAt) : null;
-        const timeText = dt
-          ? `${dt.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })}`
-          : 'Sem horário';
-
-        const fechamento = item.fechamentoDate ? formatDateBR(item.fechamentoDate) : 'Sem data';
+        const timeText = dt ? dt.toLocaleTimeString("pt-BR", { hour: "2-digit", minute: "2-digit" }) : "Sem horário";
+        const fechamento = item.fechamentoDate ? formatDateBR(item.fechamentoDate) : "Sem data";
 
         return `
           <div class="history-item" data-history-index="${index}">
             <div class="history-item-top">
-              <div class="history-user">${escapeHtml(item.submittedByName || 'Não identificado')}</div>
+              <div class="history-user">${escapeHtml(item.submittedByName || "Não identificado")}</div>
               <div class="history-time">${escapeHtml(fechamento)} • ${escapeHtml(timeText)}</div>
             </div>
-
             <div class="history-item-grid">
               <div class="history-mini-card">
                 <div class="history-mini-label">Total</div>
                 <div class="history-mini-value">${money(item.total || 0)}</div>
               </div>
-
               <div class="history-mini-card">
                 <div class="history-mini-label">Diferença</div>
-                <div class="history-mini-value ${Number(item.diff || 0) < 0 ? 'red' : ''}">
+                <div class="history-mini-value ${Number(item.diff || 0) < 0 ? "red" : ""}">
                   ${money(item.diff || 0)}
                 </div>
               </div>
             </div>
           </div>
         `;
-      }).join('');
+      }).join("");
 
-      container.querySelectorAll('[data-history-index]').forEach((el) => {
-        el.addEventListener('click', () => {
-          const index = Number(el.dataset.historyIndex);
-          openHistoryModal(index);
+      container.querySelectorAll("[data-history-index]").forEach((el) => {
+        el.addEventListener("click", () => {
+          openHistoryModal(Number(el.dataset.historyIndex));
         });
       });
     }
@@ -2180,31 +2651,27 @@
       }
 
       return list.map((item) => `
-        <div class="modal-line ${negative ? 'negative' : ''}">
-          <span>${escapeHtml(item.name || '-')}</span>
+        <div class="modal-line ${negative ? "negative" : ""}">
+          <span>${escapeHtml(item.name || "-")}</span>
           <strong>${negative ? negativeMoney(item.value || 0) : money(item.value || 0)}</strong>
         </div>
-      `).join('');
+      `).join("");
     }
 
     function openHistoryModal(index) {
-      const history = loadHistory();
-      const item = history[index];
+      const item = loadHistory()[index];
       if (!item) return;
 
-      const modal = document.getElementById('historyModal');
-      const title = document.getElementById('historyModalTitle');
-      const sub = document.getElementById('historyModalSub');
-      const body = document.getElementById('historyModalBody');
+      const modal = document.getElementById("historyModal");
+      const title = document.getElementById("historyModalTitle");
+      const sub = document.getElementById("historyModalSub");
+      const body = document.getElementById("historyModalBody");
 
       const dt = item.submittedAt ? new Date(item.submittedAt) : null;
-      const dateText = dt
-        ? `${dt.toLocaleDateString('pt-BR')} às ${dt.toLocaleTimeString('pt-BR')}`
-        : 'Sem data';
+      const dateText = dt ? `${dt.toLocaleDateString("pt-BR")} às ${dt.toLocaleTimeString("pt-BR")}` : "Sem data";
+      const fechamentoText = item.fechamentoDate ? formatDateBR(item.fechamentoDate) : "Sem data";
 
-      const fechamentoText = item.fechamentoDate ? formatDateBR(item.fechamentoDate) : 'Sem data';
-
-      title.textContent = `Fechamento • ${item.submittedByName || 'Não identificado'}`;
+      title.textContent = `Fechamento • ${item.submittedByName || "Não identificado"}`;
       sub.textContent = `Data do fechamento: ${fechamentoText} • Enviado em: ${dateText}`;
 
       const turno = item.turno || {};
@@ -2222,7 +2689,7 @@
           </div>
           <div class="modal-summary-card">
             <div class="modal-summary-label">Responsável</div>
-            <div class="modal-summary-value">${escapeHtml(item.submittedByName || '-')}</div>
+            <div class="modal-summary-value">${escapeHtml(item.submittedByName || "-")}</div>
           </div>
           <div class="modal-summary-card">
             <div class="modal-summary-label">Data do fechamento</div>
@@ -2285,78 +2752,78 @@
         </div>
       `;
 
-      modal.classList.remove('hidden');
+      modal.classList.remove("hidden");
     }
 
     function closeHistoryModal() {
-      document.getElementById('historyModal').classList.add('hidden');
+      document.getElementById("historyModal").classList.add("hidden");
     }
 
-    document.getElementById('closeHistoryModal').addEventListener('click', closeHistoryModal);
-    document.getElementById('historyModalBackdrop').addEventListener('click', closeHistoryModal);
+    function openClearModal() {
+      document.getElementById("clearModal").classList.remove("hidden");
+    }
+
+    function closeClearModal() {
+      document.getElementById("clearModal").classList.add("hidden");
+    }
 
     function getEntryBreakdown(turno) {
       const f = fieldsByTurn[turno];
       return [
-        ['Banco Reca', getValue(f.banco)],
-        ['PPPoker (x400)', getValue(f.pppoker) * 400],
-        ['Suprema (x400)', getValue(f.suprema) * 400],
-        ['Buffalo', getValue(f.buffalo)],
-        ['Ganamos', getValue(f.ganamos)],
-        ['Carga de Fichas', getValue(f.cargas)],
-        ['Cargas F. Poker (x400)', getValue(f.cargasPoker) * 400]
+        ["Banco Reca", getValue(f.banco)],
+        ["PPPoker (x400)", getValue(f.pppoker) * 400],
+        ["Suprema (x400)", getValue(f.suprema) * 400],
+        ["Buffalo", getValue(f.buffalo)],
+        ["Ganamos", getValue(f.ganamos)],
+        ["Carga de Fichas", getValue(f.cargas)],
+        ["Cargas F. Poker (x400)", getValue(f.cargasPoker) * 400]
       ];
     }
 
     function getSummaryData() {
-      const t1Entradas = getEntradasTotal('t1');
-      const t1Saidas = getDynamicTotal('t1');
-      const t1Pendentes = getPendingTotal('t1');
+      const t1Entradas = getEntradasTotal("t1");
+      const t1Saidas = getDynamicTotal("t1");
+      const t1Pendentes = getPendingTotal("t1");
       const t1Total = t1Entradas - t1Saidas - t1Pendentes;
 
-      const t2Entradas = getEntradasTotal('t2');
-      const t2Saidas = getDynamicTotal('t2');
-      const t2Pendentes = getPendingTotal('t2');
+      const t2Entradas = getEntradasTotal("t2");
+      const t2Saidas = getDynamicTotal("t2");
+      const t2Pendentes = getPendingTotal("t2");
       const t2Total = t2Entradas - t2Saidas - t2Pendentes;
 
       const diff = t2Total - t1Total;
       const abs = Math.abs(diff);
 
-      const history = loadHistory();
-      const latest = history[0] || null;
-
       return {
-        saldoDisponivel: getValue('t2_banco'),
+        saldoDisponivel: getValue("t2_banco"),
         t1Entradas, t1Saidas, t1Pendentes, t1Total,
         t2Entradas, t2Saidas, t2Pendentes, t2Total,
         diff, abs,
-        history: latest,
-        t1Date: document.getElementById('t1_data_fechamento')?.value || '',
-        t2Date: document.getElementById('t2_data_fechamento')?.value || ''
+        history: loadHistory()[0] || null,
+        t1Date: document.getElementById("t1_data_fechamento")?.value || "",
+        t2Date: document.getElementById("t2_data_fechamento")?.value || ""
       };
     }
 
     function getDynamicRowsHtml(turno, type) {
-      const selector = type === 'saida'
+      const selector = type === "saida"
         ? `#${turno}_dynamic_list .dynamic-row`
         : `#${turno}_pending_list .dynamic-row`;
 
       const rows = [...document.querySelectorAll(selector)];
-      if (!rows.length) {
-        return `<div class="pdf-item empty">Sem registros</div>`;
-      }
+      if (!rows.length) return `<div class="pdf-item empty">Sem registros</div>`;
 
       return rows.map((row) => {
-        const inputs = row.querySelectorAll('input');
-        const name = inputs[0]?.value?.trim() || (type === 'saida' ? 'Saída' : 'Pendente');
-        const value = parseMoneyInput(inputs[1]?.value || '');
+        const inputs = row.querySelectorAll("input");
+        const name = inputs[0]?.value?.trim() || (type === "saida" ? "Saída" : "Pendente");
+        const value = parseMoneyInput(inputs[1]?.value || "");
         return `
           <div class="pdf-item">
             <span>${escapeHtml(name)}</span>
             <strong>${negativeMoney(value)}</strong>
           </div>
         `;
-      }).join('');
+      }).join("");
     }
 
     function getEntriesHtml(turno) {
@@ -2365,20 +2832,20 @@
           <span>${escapeHtml(label)}</span>
           <strong>${money(value)}</strong>
         </div>
-      `).join('');
+      `).join("");
     }
 
     function buildPremiumPdfHtml() {
       const data = getSummaryData();
       const now = new Date();
-      const nowText = `${now.toLocaleDateString('pt-BR')} • ${now.toLocaleTimeString('pt-BR')}`;
+      const nowText = `${now.toLocaleDateString("pt-BR")} • ${now.toLocaleTimeString("pt-BR")}`;
 
-      const savedBy = data.history?.submittedByName || activeUser?.name || 'Não identificado';
-      const savedEmail = data.history?.submittedByEmail || activeUser?.email || 'Não identificado';
+      const savedBy = data.history?.submittedByName || activeUser?.name || "Não identificado";
+      const savedEmail = data.history?.submittedByEmail || activeUser?.email || "Não identificado";
       const savedAt = data.history?.submittedAt
-        ? new Date(data.history.submittedAt).toLocaleDateString('pt-BR') + ' • ' + new Date(data.history.submittedAt).toLocaleTimeString('pt-BR')
-        : 'Sem fechamento salvo';
-      const fechamentoDate = data.t2Date ? formatDateBR(data.t2Date) : 'Sem data';
+        ? `${new Date(data.history.submittedAt).toLocaleDateString("pt-BR")} • ${new Date(data.history.submittedAt).toLocaleTimeString("pt-BR")}`
+        : "Sem fechamento salvo";
+      const fechamentoDate = data.t2Date ? formatDateBR(data.t2Date) : "Sem data";
 
       return `
         <!DOCTYPE html>
@@ -2395,10 +2862,7 @@
               color: #0f172a;
               padding: 26px;
             }
-            .sheet {
-              max-width: 1120px;
-              margin: 0 auto;
-            }
+            .sheet { max-width: 1120px; margin: 0 auto; }
             .hero {
               background: linear-gradient(135deg, #0b1831 0%, #163867 55%, #0b1831 100%);
               color: white;
@@ -2414,48 +2878,24 @@
               gap: 16px;
               margin-bottom: 22px;
             }
-            .brand {
-              display: flex;
-              align-items: center;
-              gap: 12px;
-            }
+            .brand { display: flex; align-items: center; gap: 12px; }
             .logo {
-              width: 44px;
-              height: 44px;
-              border-radius: 50%;
-              border: 2px solid #f59e0b;
-              color: #f59e0b;
-              display: flex;
-              align-items: center;
-              justify-content: center;
+              width: 44px; height: 44px; border-radius: 50%;
+              border: 2px solid #f59e0b; color: #f59e0b;
+              display: flex; align-items: center; justify-content: center;
               font-weight: 800;
             }
-            .title {
-              font-size: 28px;
-              font-weight: 800;
-              letter-spacing: -0.03em;
-            }
-            .date {
-              font-size: 13px;
-              color: #dbeafe;
-            }
+            .title { font-size: 28px; font-weight: 800; letter-spacing: -0.03em; }
+            .date { font-size: 13px; color: #dbeafe; }
             .hero-label {
-              font-size: 12px;
-              text-transform: uppercase;
-              letter-spacing: 0.08em;
-              color: #bfdbfe;
-              margin-bottom: 8px;
+              font-size: 12px; text-transform: uppercase; letter-spacing: 0.08em;
+              color: #bfdbfe; margin-bottom: 8px;
             }
             .hero-value {
-              font-size: 44px;
-              font-weight: 900;
-              letter-spacing: -0.05em;
+              font-size: 44px; font-weight: 900; letter-spacing: -0.05em;
             }
             .meta {
-              margin-top: 16px;
-              display: grid;
-              grid-template-columns: repeat(4, 1fr);
-              gap: 10px;
+              margin-top: 16px; display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px;
             }
             .meta-box {
               background: rgba(255,255,255,0.08);
@@ -2464,101 +2904,44 @@
               padding: 12px;
             }
             .meta-label {
-              font-size: 11px;
-              color: #bfdbfe;
-              text-transform: uppercase;
-              letter-spacing: 0.06em;
-              margin-bottom: 6px;
+              font-size: 11px; color: #bfdbfe; text-transform: uppercase;
+              letter-spacing: 0.06em; margin-bottom: 6px;
             }
-            .meta-value {
-              font-size: 13px;
-              font-weight: 700;
-            }
+            .meta-value { font-size: 13px; font-weight: 700; }
             .grid4 {
-              display: grid;
-              grid-template-columns: repeat(4, 1fr);
-              gap: 14px;
-              margin-bottom: 18px;
+              display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; margin-bottom: 18px;
             }
             .stat {
-              background: white;
-              border-radius: 18px;
-              padding: 16px;
-              border: 1px solid #dbe4f0;
-              box-shadow: 0 8px 18px rgba(15, 23, 42, 0.06);
+              background: white; border-radius: 18px; padding: 16px;
+              border: 1px solid #dbe4f0; box-shadow: 0 8px 18px rgba(15, 23, 42, 0.06);
             }
-            .stat-label {
-              font-size: 12px;
-              color: #64748b;
-              margin-bottom: 8px;
-            }
-            .stat-value {
-              font-size: 26px;
-              font-weight: 800;
-              letter-spacing: -0.04em;
-            }
-            .layout {
-              display: grid;
-              grid-template-columns: 1fr 1fr;
-              gap: 18px;
-            }
+            .stat-label { font-size: 12px; color: #64748b; margin-bottom: 8px; }
+            .stat-value { font-size: 26px; font-weight: 800; letter-spacing: -0.04em; }
+            .layout { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
             .panel {
-              background: white;
-              border-radius: 20px;
-              border: 1px solid #dbe4f0;
-              box-shadow: 0 8px 18px rgba(15, 23, 42, 0.06);
-              overflow: hidden;
+              background: white; border-radius: 20px; border: 1px solid #dbe4f0;
+              box-shadow: 0 8px 18px rgba(15, 23, 42, 0.06); overflow: hidden;
             }
             .panel-head {
-              padding: 16px 18px;
-              border-bottom: 1px solid #e8eef7;
-              background: #f8fbff;
+              padding: 16px 18px; border-bottom: 1px solid #e8eef7; background: #f8fbff;
             }
             .panel-title {
-              font-size: 18px;
-              font-weight: 800;
-              letter-spacing: -0.03em;
-              margin: 0;
+              font-size: 18px; font-weight: 800; letter-spacing: -0.03em; margin: 0;
             }
-            .panel-sub {
-              margin-top: 4px;
-              font-size: 12px;
-              color: #64748b;
-            }
-            .block {
-              padding: 16px 18px;
-              border-bottom: 1px solid #eef2f7;
-            }
-            .block:last-child {
-              border-bottom: 0;
-            }
+            .panel-sub { margin-top: 4px; font-size: 12px; color: #64748b; }
+            .block { padding: 16px 18px; border-bottom: 1px solid #eef2f7; }
+            .block:last-child { border-bottom: 0; }
             .block-title {
-              font-size: 13px;
-              font-weight: 800;
-              color: #334155;
-              text-transform: uppercase;
-              letter-spacing: 0.06em;
-              margin-bottom: 12px;
+              font-size: 13px; font-weight: 800; color: #334155;
+              text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 12px;
             }
             .pdf-item {
-              display: flex;
-              justify-content: space-between;
-              align-items: center;
-              gap: 12px;
-              padding: 8px 0;
-              border-bottom: 1px solid #f1f5f9;
-              font-size: 13px;
+              display: flex; justify-content: space-between; align-items: center;
+              gap: 12px; padding: 8px 0; border-bottom: 1px solid #f1f5f9; font-size: 13px;
             }
-            .pdf-item:last-child {
-              border-bottom: 0;
-            }
-            .pdf-item strong {
-              font-size: 13px;
-            }
-            .empty {
-              color: #94a3b8;
-              font-style: italic;
-            }
+            .pdf-item:last-child { border-bottom: 0; }
+            .pdf-item strong { font-size: 13px; }
+            .empty { color: #94a3b8; font-style: italic; }
             .neg { color: #dc2626; }
             .pos { color: #16a34a; }
             @media print {
@@ -2619,7 +3002,7 @@
               </div>
               <div class="stat">
                 <div class="stat-label">Resultado final</div>
-                <div class="stat-value ${data.diff < 0 ? 'neg' : data.diff > 0 ? 'pos' : ''}">${money(data.diff)}</div>
+                <div class="stat-value ${data.diff < 0 ? "neg" : data.diff > 0 ? "pos" : ""}">${money(data.diff)}</div>
               </div>
             </section>
 
@@ -2627,24 +3010,24 @@
               <article class="panel">
                 <div class="panel-head">
                   <h2 class="panel-title">Turno 1</h2>
-                  <div class="panel-sub">Data do fechamento: ${escapeHtml(formatDateBR(data.t1Date || ''))}</div>
+                  <div class="panel-sub">Data do fechamento: ${escapeHtml(formatDateBR(data.t1Date || ""))}</div>
                 </div>
 
                 <div class="block">
                   <div class="block-title">Entradas / material operacional</div>
-                  ${getEntriesHtml('t1')}
+                  ${getEntriesHtml("t1")}
                   <div class="pdf-item"><span>Total de entradas</span><strong>${money(data.t1Entradas)}</strong></div>
                 </div>
 
                 <div class="block">
                   <div class="block-title">Saídas de caixa</div>
-                  ${getDynamicRowsHtml('t1', 'saida')}
+                  ${getDynamicRowsHtml("t1", "saida")}
                   <div class="pdf-item"><span>Total de saídas</span><strong class="neg">${negativeMoney(data.t1Saidas)}</strong></div>
                 </div>
 
                 <div class="block">
                   <div class="block-title">Pagos pendentes</div>
-                  ${getDynamicRowsHtml('t1', 'pendente')}
+                  ${getDynamicRowsHtml("t1", "pendente")}
                   <div class="pdf-item"><span>Total de pendentes</span><strong class="neg">${negativeMoney(data.t1Pendentes)}</strong></div>
                 </div>
 
@@ -2657,24 +3040,24 @@
               <article class="panel">
                 <div class="panel-head">
                   <h2 class="panel-title">Turno 2</h2>
-                  <div class="panel-sub">Data do fechamento: ${escapeHtml(formatDateBR(data.t2Date || ''))}</div>
+                  <div class="panel-sub">Data do fechamento: ${escapeHtml(formatDateBR(data.t2Date || ""))}</div>
                 </div>
 
                 <div class="block">
                   <div class="block-title">Entradas / material operacional</div>
-                  ${getEntriesHtml('t2')}
+                  ${getEntriesHtml("t2")}
                   <div class="pdf-item"><span>Total de entradas</span><strong>${money(data.t2Entradas)}</strong></div>
                 </div>
 
                 <div class="block">
                   <div class="block-title">Saídas de caixa</div>
-                  ${getDynamicRowsHtml('t2', 'saida')}
+                  ${getDynamicRowsHtml("t2", "saida")}
                   <div class="pdf-item"><span>Total de saídas</span><strong class="neg">${negativeMoney(data.t2Saidas)}</strong></div>
                 </div>
 
                 <div class="block">
                   <div class="block-title">Pagos pendentes</div>
-                  ${getDynamicRowsHtml('t2', 'pendente')}
+                  ${getDynamicRowsHtml("t2", "pendente")}
                   <div class="pdf-item"><span>Total de pendentes</span><strong class="neg">${negativeMoney(data.t2Pendentes)}</strong></div>
                 </div>
 
@@ -2691,74 +3074,60 @@
     }
 
     function exportToPdfProtected() {
-      const code = prompt('Digite o código para autorizar exportar em PDF:');
+      const code = prompt("Digite o código para autorizar exportar em PDF:");
       if (code === null) return;
       if (code !== PDF_CODE) {
-        alert('Código inválido.');
+        alert("Código inválido.");
         return;
       }
 
-      const printWindow = window.open('', '_blank', 'width=1200,height=900');
+      const printWindow = window.open("", "_blank", "width=1200,height=900");
       if (!printWindow) {
-        alert('Não foi possível abrir a janela de impressão.');
+        alert("Não foi possível abrir a janela de impressão.");
         return;
       }
 
-      const html = buildPremiumPdfHtml();
       printWindow.document.open();
-      printWindow.document.write(html);
+      printWindow.document.write(buildPremiumPdfHtml());
       printWindow.document.close();
       printWindow.focus();
       printWindow.onload = () => printWindow.print();
     }
 
     function limparTudo() {
-      document.querySelectorAll('.fields input[type="text"]').forEach(input => {
-        input.value = '';
-        input.dataset.raw = '';
-      });
-
-      ['t1_dynamic_list', 't2_dynamic_list', 't1_pending_list', 't2_pending_list'].forEach(id => {
-        const el = document.getElementById(id);
-        if (el) el.innerHTML = '';
-      });
-
-      const t2Date = document.getElementById('t2_data_fechamento');
-      if (t2Date) t2Date.value = getTodayDateInput();
-
-      render();
+      openClearModal();
     }
 
     function render() {
       ensureTurnDates();
 
-      const t1Entradas = getEntradasTotal('t1');
-      const t1Saidas = getDynamicTotal('t1');
-      const t1Pendentes = getPendingTotal('t1');
+      const t1Entradas = getEntradasTotal("t1");
+      const t1Saidas = getDynamicTotal("t1");
+      const t1Pendentes = getPendingTotal("t1");
       const t1Total = t1Entradas - t1Saidas - t1Pendentes;
 
-      const t2Entradas = getEntradasTotal('t2');
-      const t2Saidas = getDynamicTotal('t2');
-      const t2Pendentes = getPendingTotal('t2');
+      const t2Entradas = getEntradasTotal("t2");
+      const t2Saidas = getDynamicTotal("t2");
+      const t2Pendentes = getPendingTotal("t2");
       const t2Total = t2Entradas - t2Saidas - t2Pendentes;
 
       const diff = t2Total - t1Total;
       const abs = Math.abs(diff);
 
-      document.getElementById('saldoContaDestaque').textContent = displayMoney(getValue('t2_banco'));
-      document.getElementById('t1_entradas_total').textContent = money(t1Entradas);
-      document.getElementById('t1_saidas_total').textContent = negativeMoney(t1Saidas);
-      document.getElementById('t1_pendentes_total').textContent = negativeMoney(t1Pendentes);
-      document.getElementById('t2_entradas_total').textContent = money(t2Entradas);
-      document.getElementById('t2_saidas_total').textContent = negativeMoney(t2Saidas);
-      document.getElementById('t2_pendentes_total').textContent = negativeMoney(t2Pendentes);
+      document.getElementById("saldoContaDestaque").textContent = displayMoney(getValue("t2_banco"));
+      document.getElementById("t1_entradas_total").textContent = money(t1Entradas);
+      document.getElementById("t1_saidas_total").textContent = negativeMoney(t1Saidas);
+      document.getElementById("t1_pendentes_total").textContent = negativeMoney(t1Pendentes);
+      document.getElementById("t2_entradas_total").textContent = money(t2Entradas);
+      document.getElementById("t2_saidas_total").textContent = negativeMoney(t2Saidas);
+      document.getElementById("t2_pendentes_total").textContent = negativeMoney(t2Pendentes);
 
-      document.getElementById('totalTurno1').textContent = money(t1Total);
-      document.getElementById('turno1InlineTotal').textContent = money(t1Total);
-      document.getElementById('totalTurno2').textContent = money(t2Total);
-      document.getElementById('turno2InlineTotal').textContent = money(t2Total);
-      document.getElementById('diferencaAbs').textContent = money(abs);
-      document.getElementById('resultadoFinal').textContent = money(diff);
+      document.getElementById("totalTurno1").textContent = money(t1Total);
+      document.getElementById("turno1InlineTotal").textContent = money(t1Total);
+      document.getElementById("totalTurno2").textContent = money(t2Total);
+      document.getElementById("turno2InlineTotal").textContent = money(t2Total);
+      document.getElementById("diferencaAbs").textContent = money(abs);
+      document.getElementById("resultadoFinal").textContent = money(diff);
 
       updateEyeIcon();
       setResultStyle(diff);
@@ -2766,30 +3135,79 @@
       renderHistoryList();
     }
 
-    document.getElementById('limpar').addEventListener('click', limparTudo);
-    document.getElementById('fecharTurno').addEventListener('click', saveTurn2AsHistory);
-    document.getElementById('exportarPdf').addEventListener('click', exportToPdfProtected);
-    document.getElementById('calcular').addEventListener('click', render);
+    document.getElementById("closeHistoryModal").addEventListener("click", closeHistoryModal);
+    document.getElementById("historyModalBackdrop").addEventListener("click", closeHistoryModal);
 
-    document.querySelectorAll('.fields input[type="text"]').forEach(input => {
+    document.getElementById("limpar").addEventListener("click", limparTudo);
+    document.getElementById("fecharTurno").addEventListener("click", saveTurn2AsHistory);
+    document.getElementById("exportarPdf").addEventListener("click", exportToPdfProtected);
+    document.getElementById("calcular").addEventListener("click", render);
+
+    document.querySelectorAll('.fields input[type="text"]').forEach((input) => {
       attachMoneyMask(input);
     });
 
-    document.querySelectorAll('[data-add-row]').forEach(btn => {
-      btn.addEventListener('click', () => createDynamicRow(btn.dataset.addRow));
+    document.querySelectorAll("[data-add-row]").forEach((btn) => {
+      btn.addEventListener("click", () => createDynamicRow(btn.dataset.addRow));
     });
 
-    document.querySelectorAll('[data-add-pending]').forEach(btn => {
-      btn.addEventListener('click', () => createPendingRow(btn.dataset.addPending));
+    document.querySelectorAll("[data-add-pending]").forEach((btn) => {
+      btn.addEventListener("click", () => createPendingRow(btn.dataset.addPending));
     });
 
-    document.getElementById('toggleBalance').addEventListener('click', () => {
+    document.getElementById("toggleBalance").addEventListener("click", () => {
       balanceVisible = !balanceVisible;
       render();
     });
 
-    document.getElementById('t1_data_fechamento').addEventListener('change', render);
-    document.getElementById('t2_data_fechamento').addEventListener('change', render);
+    document.getElementById("menuToggle").addEventListener("click", openReportsMenu);
+
+    document.getElementById("closeReportScreen").addEventListener("click", () => {
+      document.getElementById("reportScreen").classList.add("hidden");
+    });
+
+    document.querySelectorAll("[data-report-range]").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        renderCashflowReport(Number(btn.dataset.reportRange));
+      });
+    });
+
+    document.addEventListener("click", (e) => {
+      const menu = document.getElementById("reportsMenu");
+      const toggle = document.getElementById("menuToggle");
+
+      if (!menu.classList.contains("hidden")) {
+        const clickedInsideMenu = menu.contains(e.target);
+        const clickedToggle = toggle.contains(e.target);
+        if (!clickedInsideMenu && !clickedToggle) closeReportsMenu();
+      }
+    });
+
+    document.getElementById("t1_data_fechamento").addEventListener("change", render);
+    document.getElementById("t2_data_fechamento").addEventListener("change", render);
+
+    document.getElementById("closeClearModal").addEventListener("click", closeClearModal);
+    document.getElementById("clearModalBackdrop").addEventListener("click", closeClearModal);
+
+    document.getElementById("clearTurnoAtualBtn").addEventListener("click", () => {
+      limparTurnoIndividual("t2");
+      closeClearModal();
+      render();
+    });
+
+    document.getElementById("clearTurnoAnteriorBtn").addEventListener("click", () => {
+      limparTurnoIndividual("t1");
+      closeClearModal();
+      render();
+    });
+
+    document.getElementById("clearTodosBtn").addEventListener("click", () => {
+      limparTurnoIndividual("t1");
+      limparTurnoIndividual("t2");
+      localStorage.removeItem(HISTORY_STORAGE_KEY);
+      closeClearModal();
+      render();
+    });
 
     bindSessionActivityEvents();
 
@@ -2802,7 +3220,7 @@
     } else {
       clearActiveUserStorage();
       clearSessionActivity();
-      switchAuthTab('login');
+      switchAuthTab("login");
     }
   </script>
 </body>
