@@ -1596,38 +1596,56 @@
       </section>
 
       <section id="reportScreen" class="report-screen hidden">
-        <div class="report-head">
-          <div>
-            <h3 id="reportTitle">Relatório</h3>
-            <small id="reportSubtitle" style="color: var(--muted);">Fluxo de caixa do período</small>
-          </div>
-          <button id="closeReportScreen" class="report-close-btn" type="button">Fechar</button>
-        </div>
+  <div class="report-head">
+    <div>
+      <h3 id="reportTitle">Relatório</h3>
+      <small id="reportSubtitle" style="color: var(--muted);">Fluxo de caixa do período</small>
+    </div>
+    <button id="closeReportScreen" class="report-close-btn" type="button">Fechar</button>
+  </div>
 
-        <div class="report-grid">
-          <div class="report-card">
-            <div class="report-card-label">Entrou em Banco Reca</div>
-            <div class="report-card-value" id="reportBancoReca">$ 0,00</div>
-          </div>
+<div class="turno-meta" style="margin-bottom: 14px;">
+  <div class="fields two-col">
+    <div class="field">
+      <label for="reportDateStart">Data inicial</label>
+      <input type="date" id="reportDateStart" />
+    </div>
 
-          <div class="report-card">
-            <div class="report-card-label">Saiu em Pagos Pendentes</div>
-            <div class="report-card-value red" id="reportPendentes">$ 0,00</div>
-          </div>
+    <div class="field">
+      <label for="reportDateEnd">Data final</label>
+      <input type="date" id="reportDateEnd" />
+    </div>
+  </div>
 
-          <div class="report-card">
-            <div class="report-card-label">Saiu em Saídas de Caixa</div>
-            <div class="report-card-value red" id="reportSaidas">$ 0,00</div>
-          </div>
+  <div class="inline-actions" style="margin-top:12px;">
+    <button class="btn-add" type="button" id="applyCustomReportRange">Aplicar período</button>
+    <button class="pdf-btn" type="button" id="exportCustomPdf">Exportar comprovante PDF</button>
+  </div>
+</div>
+  <div class="report-grid">
+    <div class="report-card">
+      <div class="report-card-label">Entrou em Banco Reca</div>
+      <div class="report-card-value" id="reportBancoReca">$ 0,00</div>
+    </div>
 
-          <div class="report-card">
-            <div class="report-card-label">Lucro real</div>
-            <div class="report-card-value green" id="reportLucro">$ 0,00</div>
-          </div>
-        </div>
+    <div class="report-card">
+      <div class="report-card-label">Saiu em Pagos Pendentes</div>
+      <div class="report-card-value red" id="reportPendentes">$ 0,00</div>
+    </div>
 
-        <div id="reportList" class="report-list"></div>
-      </section>
+    <div class="report-card">
+      <div class="report-card-label">Saiu em Saídas de Caixa</div>
+      <div class="report-card-value red" id="reportSaidas">$ 0,00</div>
+    </div>
+
+    <div class="report-card">
+      <div class="report-card-label">Lucro real</div>
+      <div class="report-card-value green" id="reportLucro">$ 0,00</div>
+    </div>
+  </div>
+
+  <div id="reportList" class="report-list"></div>
+</section>
     </main>
 
     <div id="reportsMenu" class="reports-menu hidden">
@@ -1683,10 +1701,10 @@
   </div>
 
   <script>
-    const PDF_CODE = "1520";
-    const REPORT_CODE = "1520";
+    const PDF_CODE = "2613";
+    const REPORT_CODE = "2613";
     const RESET_CODE = "4br1l#2o26";
-    const DELETE_HISTORY_CODE = "1520";
+    const DELETE_HISTORY_CODE = "2613";
     const ADMIN_CODE = "9087";
 
     const USERS_STORAGE_KEY = "bank-king-users-v1";
@@ -1731,6 +1749,115 @@
         .replaceAll('"', "&quot;")
         .replaceAll("'", "&#39;");
     }
+
+function isDateBetween(dateStr, startDate, endDate) {
+  if (!dateStr) return false;
+
+  const current = new Date(dateStr + "T00:00:00");
+  const start = new Date(startDate + "T00:00:00");
+  const end = new Date(endDate + "T23:59:59");
+
+  return current >= start && current <= end;
+}
+
+function renderCashflowReportByDateRange(startDate, endDate) {
+  const history = loadHistory();
+
+  const filtered = history.filter((item) => {
+    return isDateBetween(item.fechamentoDate, startDate, endDate);
+  });
+
+  const totalBancoReca = filtered.reduce((acc, item) => {
+    return acc + getBancoRecaFromSnapshot(item.turno || {});
+  }, 0);
+
+  const totalPendentes = filtered.reduce((acc, item) => {
+    return acc + Number(item.turno?.pendentesTotal || 0);
+  }, 0);
+
+  const totalSaidas = filtered.reduce((acc, item) => {
+    return acc + Number(item.turno?.saidasTotal || 0);
+  }, 0);
+
+  const lucroReal = totalBancoReca - totalPendentes - totalSaidas;
+
+  document.getElementById("reportTitle").textContent = "Relatório personalizado";
+  document.getElementById("reportSubtitle").textContent =
+    `Período de ${formatDateBR(startDate)} até ${formatDateBR(endDate)}`;
+
+  document.getElementById("reportBancoReca").textContent = money(totalBancoReca);
+  document.getElementById("reportPendentes").textContent = negativeMoney(totalPendentes);
+  document.getElementById("reportSaidas").textContent = negativeMoney(totalSaidas);
+  document.getElementById("reportLucro").textContent = money(lucroReal);
+
+  const reportList = document.getElementById("reportList");
+
+  if (!filtered.length) {
+    reportList.innerHTML = `
+      <div class="history-empty">
+        Nenhum fechamento encontrado nesse período.
+      </div>
+    `;
+    return;
+  }
+
+  reportList.innerHTML = filtered.map((item) => {
+    const turno = item.turno || {};
+    const bancoReca = getBancoRecaFromSnapshot(turno);
+
+    return `
+  <div class="report-list-item">
+    <div class="report-list-top">
+      <div class="report-list-name">${escapeHtml(item.submittedByName || "Não identificado")}</div>
+      <div class="report-list-date">${escapeHtml(formatDateBR(item.fechamentoDate || ""))}</div>
+    </div>
+
+    <div class="report-list-lines">
+      <div class="report-line">
+        <span>Banco Reca</span>
+        <strong>${money(bancoReca)}</strong>
+      </div>
+
+      <div class="report-line">
+        <span>Pagos Pendentes</span>
+        <strong>${negativeMoney(turno.pendentesTotal || 0)}</strong>
+      </div>
+
+      <div class="report-line">
+        <span>Saídas de Caixa</span>
+        <strong>${negativeMoney(turno.saidasTotal || 0)}</strong>
+      </div>
+
+      <div class="report-line">
+        <span>Lucro real</span>
+        <strong>${money(
+          (getBancoRecaFromSnapshot(item.turno || {})) -
+          (item.turno?.pendentesTotal || 0) -
+          (item.turno?.saidasTotal || 0)
+        )}</strong>
+      </div>
+    </div>
+  </div>
+`;
+  }).join("");
+}
+
+document.getElementById("applyCustomReportRange").addEventListener("click", () => {
+  const startDate = document.getElementById("reportDateStart").value;
+  const endDate = document.getElementById("reportDateEnd").value;
+
+  if (!startDate || !endDate) {
+    alert("Selecione a data inicial e a data final.");
+    return;
+  }
+
+  if (startDate > endDate) {
+    alert("A data inicial não pode ser maior que a data final.");
+    return;
+  }
+
+  renderCashflowReportByDateRange(startDate, endDate);
+});
 
     function getTodayDateInput(){
       const now = new Date();
@@ -2537,7 +2664,7 @@
       const totalBancoReca = filtered.reduce((acc, item) => acc + getBancoRecaFromSnapshot(item.turno || {}), 0);
       const totalPendentes = filtered.reduce((acc, item) => acc + Number(item.turno?.pendentesTotal || 0), 0);
       const totalSaidas = filtered.reduce((acc, item) => acc + Number(item.turno?.saidasTotal || 0), 0);
-      const lucroReal = totalSaidas;
+      const lucroReal = totalBancoReca - totalPendentes - totalSaidas;
 
       const titleMap = {
         7: "Relatório semanal",
@@ -2557,89 +2684,358 @@
         reportList.innerHTML = `<div class="history-empty">Nenhum fechamento encontrado nesse período.</div>`;
       }else{
         reportList.innerHTML = filtered.map((item) => `
-          <div class="report-list-item">
-            <div class="report-list-top">
-              <div class="report-list-name">${escapeHtml(item.submittedByName || "Sistema")}</div>
-              <div class="report-list-date">${escapeHtml(formatDateBR(item.fechamentoDate || ""))}</div>
-            </div>
-            <div class="report-list-lines">
-              <div class="report-line">
-                <span>Banco Reca</span>
-                <strong>${money(getBancoRecaFromSnapshot(item.turno || {}))}</strong>
-              </div>
-              <div class="report-line">
-                <span>Pagos Pendentes</span>
-                <strong>${negativeMoney(item.turno?.pendentesTotal || 0)}</strong>
-              </div>
-              <div class="report-line">
-                <span>Saídas</span>
-                <strong>${negativeMoney(item.turno?.saidasTotal || 0)}</strong>
-              </div>
-              <div class="report-line">
-                <span>Lucro real</span>
-                <strong>${money(item.turno?.saidasTotal || 0)}</strong>
-              </div>
-            </div>
-          </div>
-        `).join("");
+  <div class="report-list-item">
+    <div class="report-list-top">
+      <div class="report-list-name">${escapeHtml(item.submittedByName || "Sistema")}</div>
+      <div class="report-list-date">${escapeHtml(formatDateBR(item.fechamentoDate || ""))}</div>
+    </div>
+
+    <div class="report-list-lines">
+      <div class="report-line">
+        <span>Banco Reca</span>
+        <strong>${money(getBancoRecaFromSnapshot(item.turno || {}))}</strong>
+      </div>
+
+      <div class="report-line">
+        <span>Pagos Pendentes</span>
+        <strong>${negativeMoney(item.turno?.pendentesTotal || 0)}</strong>
+      </div>
+
+      <div class="report-line">
+        <span>Saídas</span>
+        <strong>${negativeMoney(item.turno?.saidasTotal || 0)}</strong>
+      </div>
+
+      <div class="report-line">
+        <span>Lucro real</span>
+        <strong>${money(
+          (getBancoRecaFromSnapshot(item.turno || {})) -
+          (item.turno?.pendentesTotal || 0) -
+          (item.turno?.saidasTotal || 0)
+        )}</strong>
+      </div>
+    </div>
+  </div>
+`).join("");
       }
 
       document.getElementById("reportScreen").classList.remove("hidden");
     }
 
-    function buildPremiumPdfHtml(){
-      const t1Entradas = getEntradasTotal("t1");
-      const t1Saidas = getDynamicTotal("t1");
-      const t1Pendentes = getPendingTotal("t1");
-      const t1Total = t1Entradas - t1Saidas - t1Pendentes;
+function buildBankReceiptPdfHtml(startDate = "", endDate = "") {
+  const history = loadHistory();
 
-      const t2Entradas = getEntradasTotal("t2");
-      const t2Saidas = getDynamicTotal("t2");
-      const t2Pendentes = getPendingTotal("t2");
-      const t2Total = t2Entradas - t2Saidas - t2Pendentes;
+  let filtered = history;
 
-      return `
-        <!DOCTYPE html>
-        <html lang="pt-BR">
-        <head>
-          <meta charset="UTF-8">
-          <title>Bank King PDF</title>
-          <style>
-            body{font-family:Arial,sans-serif;padding:24px;color:#0f172a;}
-            h1{margin-bottom:20px;}
-            .grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;}
-            .card{border:1px solid #cbd5e1;border-radius:12px;padding:16px;}
-            .label{font-size:12px;color:#64748b;}
-            .value{font-size:24px;font-weight:700;margin-top:6px;}
-          </style>
-        </head>
-        <body>
-          <h1>Bank King • Fechamento</h1>
-          <div class="grid">
-            <div class="card">
-              <div class="label">Turno 1</div>
-              <div class="value">${money(t1Total)}</div>
+  if (startDate && endDate) {
+    filtered = history.filter((item) => isDateBetween(item.fechamentoDate, startDate, endDate));
+  }
+
+  const totalBancoReca = filtered.reduce((acc, item) => {
+    return acc + getBancoRecaFromSnapshot(item.turno || {});
+  }, 0);
+
+  const totalPendentes = filtered.reduce((acc, item) => {
+    return acc + Number(item.turno?.pendentesTotal || 0);
+  }, 0);
+
+  const totalSaidas = filtered.reduce((acc, item) => {
+    return acc + Number(item.turno?.saidasTotal || 0);
+  }, 0);
+
+  const lucroReal = totalBancoReca - totalPendentes - totalSaidas;
+
+  const now = new Date();
+  const nowText = `${now.toLocaleDateString("pt-BR")} às ${now.toLocaleTimeString("pt-BR")}`;
+
+  const periodoTexto = startDate && endDate
+    ? `${formatDateBR(startDate)} até ${formatDateBR(endDate)}`
+    : "Período geral";
+
+  const transacoesHtml = filtered.map((item, index) => {
+    const turno = item.turno || {};
+
+    return `
+      <div class="tx-item">
+        <div class="tx-top">
+          <span>Fechamento ${index + 1}</span>
+          <strong>${formatDateBR(item.fechamentoDate || "")}</strong>
+        </div>
+        <div class="tx-line">
+          <span>Responsável</span>
+          <strong>${escapeHtml(item.submittedByName || "Não identificado")}</strong>
+        </div>
+        <div class="tx-line">
+          <span>Banco Reca</span>
+          <strong>${money(getBancoRecaFromSnapshot(turno))}</strong>
+        </div>
+        <div class="tx-line">
+          <span>Pagos Pendentes</span>
+          <strong>${negativeMoney(turno.pendentesTotal || 0)}</strong>
+        </div>
+        <div class="tx-line">
+          <span>Saídas de Caixa</span>
+          <strong>${negativeMoney(turno.saidasTotal || 0)}</strong>
+        </div>
+      </div>
+    `;
+  }).join("");
+
+  return `
+    <!DOCTYPE html>
+    <html lang="pt-BR">
+    <head>
+      <meta charset="UTF-8" />
+      <title>Comprovante Bank King</title>
+      <style>
+        * { box-sizing: border-box; }
+
+        body {
+          margin: 0;
+          padding: 24px;
+          background: #eef2f7;
+          font-family: Arial, sans-serif;
+          color: #0f172a;
+        }
+
+        .receipt {
+          max-width: 520px;
+          margin: 0 auto;
+          background: #fff;
+          border-radius: 22px;
+          overflow: hidden;
+          border: 1px solid #dbe4f0;
+          box-shadow: 0 18px 40px rgba(15, 23, 42, 0.10);
+        }
+
+        .receipt-head {
+          background: linear-gradient(135deg, #0b1831 0%, #163867 55%, #0b1831 100%);
+          color: white;
+          padding: 22px;
+        }
+
+        .brand {
+          font-size: 24px;
+          font-weight: 900;
+          letter-spacing: -0.03em;
+          margin-bottom: 8px;
+        }
+
+        .subtitle {
+          font-size: 13px;
+          color: #dbeafe;
+        }
+
+        .main-amount {
+          margin-top: 18px;
+        }
+
+        .main-amount-label {
+          font-size: 12px;
+          text-transform: uppercase;
+          color: #bfdbfe;
+          margin-bottom: 6px;
+        }
+
+        .main-amount-value {
+          font-size: 34px;
+          font-weight: 900;
+          letter-spacing: -0.04em;
+        }
+
+        .receipt-body {
+          padding: 20px;
+        }
+
+        .section {
+          margin-bottom: 18px;
+        }
+
+        .section-title {
+          font-size: 12px;
+          text-transform: uppercase;
+          letter-spacing: 0.06em;
+          color: #64748b;
+          margin-bottom: 10px;
+          font-weight: 800;
+        }
+
+        .line {
+          display: flex;
+          justify-content: space-between;
+          gap: 12px;
+          padding: 10px 0;
+          border-bottom: 1px solid #edf2f7;
+          font-size: 14px;
+        }
+
+        .line:last-child {
+          border-bottom: 0;
+        }
+
+        .line strong {
+          text-align: right;
+        }
+
+        .negative {
+          color: #dc2626;
+        }
+
+        .positive {
+          color: #16a34a;
+        }
+
+        .tx-item {
+          border: 1px solid #e2e8f0;
+          border-radius: 14px;
+          padding: 12px;
+          margin-bottom: 12px;
+          background: #f8fbff;
+        }
+
+        .tx-top {
+          display: flex;
+          justify-content: space-between;
+          gap: 10px;
+          font-size: 13px;
+          font-weight: 800;
+          margin-bottom: 10px;
+        }
+
+        .tx-line {
+          display: flex;
+          justify-content: space-between;
+          gap: 10px;
+          padding: 6px 0;
+          font-size: 13px;
+        }
+
+        .footer {
+          padding: 18px 20px 24px;
+          font-size: 12px;
+          color: #64748b;
+          text-align: center;
+        }
+
+        @media print {
+          body {
+            background: white;
+            padding: 0;
+          }
+
+          .receipt {
+            box-shadow: none;
+            border: 1px solid #dbe4f0;
+          }
+        }
+      </style>
+    </head>
+    <body>
+      <div class="receipt">
+        <div class="receipt-head">
+          <div class="brand">BANK KING</div>
+          <div class="subtitle">Comprovante financeiro</div>
+
+          <div class="main-amount">
+            <div class="main-amount-label">Lucro real do período</div>
+            <div class="main-amount-value">${money(lucroReal)}</div>
+          </div>
+        </div>
+
+        <div class="receipt-body">
+          <div class="section">
+            <div class="section-title">Dados do comprovante</div>
+
+            <div class="line">
+              <span>Emitido em</span>
+              <strong>${nowText}</strong>
             </div>
 
-            <div class="card">
-              <div class="label">Turno 2</div>
-              <div class="value">${money(t2Total)}</div>
+            <div class="line">
+              <span>Período</span>
+              <strong>${periodoTexto}</strong>
             </div>
 
-            <div class="card">
-              <div class="label">Entradas Totais</div>
-              <div class="value">${money(t1Entradas + t2Entradas)}</div>
-            </div>
-
-            <div class="card">
-              <div class="label">Saídas Totais</div>
-              <div class="value">${money(t1Saidas + t2Saidas + t1Pendentes + t2Pendentes)}</div>
+            <div class="line">
+              <span>Total de fechamentos</span>
+              <strong>${filtered.length}</strong>
             </div>
           </div>
-        </body>
-        </html>
-      `;
-    }
+
+          <div class="section">
+            <div class="section-title">Resumo financeiro</div>
+
+            <div class="line">
+              <span>Entrou em Banco Reca</span>
+              <strong>${money(totalBancoReca)}</strong>
+            </div>
+
+            <div class="line">
+              <span>Saiu em Pagos Pendentes</span>
+              <strong class="negative">${negativeMoney(totalPendentes)}</strong>
+            </div>
+
+            <div class="line">
+              <span>Saiu em Saídas de Caixa</span>
+              <strong class="negative">${negativeMoney(totalSaidas)}</strong>
+            </div>
+
+            <div class="line">
+              <span>Lucro real</span>
+              <strong class="positive">${money(lucroReal)}</strong>
+            </div>
+          </div>
+
+          <div class="section">
+            <div class="section-title">Movimentações do período</div>
+            ${transacoesHtml || '<div class="tx-item">Nenhuma movimentação encontrada.</div>'}
+          </div>
+        </div>
+
+        <div class="footer">
+          Comprovante gerado automaticamente pelo sistema Bank King.
+        </div>
+      </div>
+    </body>
+    </html>
+  `;
+}
+
+
+function exportCustomPdfProtected() {
+  const code = prompt("Digite código interno:");
+  if (code === null) return;
+
+  if (code !== PDF_CODE) {
+    alert("Código interno incorreto.");
+    return;
+  }
+
+  const startDate = document.getElementById("reportDateStart").value;
+  const endDate = document.getElementById("reportDateEnd").value;
+
+  if (!startDate || !endDate) {
+    alert("Selecione a data inicial e a data final.");
+    return;
+  }
+
+  if (startDate > endDate) {
+    alert("A data inicial não pode ser maior que a data final.");
+    return;
+  }
+
+  const printWindow = window.open("", "_blank", "width=800,height=900");
+  if (!printWindow) {
+    alert("Não foi possível abrir a janela de impressão.");
+    return;
+  }
+
+  printWindow.document.open();
+  printWindow.document.write(buildBankReceiptPdfHtml(startDate, endDate));
+  printWindow.document.close();
+  printWindow.focus();
+  printWindow.onload = () => printWindow.print();
+}
 
     function exportToPdfProtected(){
       const code = prompt("Digite código interno:");
@@ -2657,7 +3053,7 @@
       }
 
       printWindow.document.open();
-      printWindow.document.write(buildPremiumPdfHtml());
+      printWindow.document.write(buildBankReceiptPdfHtml());
       printWindow.document.close();
       printWindow.focus();
       printWindow.onload = () => printWindow.print();
@@ -2865,47 +3261,58 @@
         alert("Turno fechado com sucesso.");
       });
 
-      document.getElementById("exportarPdf").addEventListener("click", exportToPdfProtected);
+// =========================
+// BOTÕES PRINCIPAIS
+// =========================
 
-      document.getElementById("closeReportScreen").addEventListener("click", () => {
-        document.getElementById("reportScreen").classList.add("hidden");
-      });
+// PDF padrão
+document.getElementById("exportarPdf").addEventListener("click", exportToPdfProtected);
 
-      document.getElementById("menuToggle").addEventListener("click", () => {
-        document.getElementById("reportsMenu").classList.toggle("hidden");
-      });
+// ✅ PDF por período (NOVO)
+document.getElementById("exportCustomPdf").addEventListener("click", exportCustomPdfProtected);
 
-      document.querySelectorAll("[data-report-range]").forEach((btn) => {
-        btn.addEventListener("click", () => {
-          const senha = prompt("Digite código interno:");
-          if(senha === null) return;
+// Fechar tela de relatório
+document.getElementById("closeReportScreen").addEventListener("click", () => {
+  document.getElementById("reportScreen").classList.add("hidden");
+});
 
-          if(senha !== REPORT_CODE){
-            alert("Código interno incorreto.");
-            return;
-          }
+// Menu toggle
+document.getElementById("menuToggle").addEventListener("click", () => {
+  document.getElementById("reportsMenu").classList.toggle("hidden");
+});
 
-          renderCashflowReport(Number(btn.dataset.reportRange));
-          document.getElementById("reportsMenu").classList.add("hidden");
-        });
-      });
+// Relatórios com senha
+document.querySelectorAll("[data-report-range]").forEach((btn) => {
+  btn.addEventListener("click", () => {
+    const senha = prompt("Digite código interno:");
+    if (senha === null) return;
 
-      document.getElementById("deleteHistoryBtn").addEventListener("click", () => {
-        const senha = prompt("Digite código interno:");
-        if(senha === null) return;
+    if (senha !== REPORT_CODE) {
+      alert("Código interno incorreto.");
+      return;
+    }
 
-        if(senha !== DELETE_HISTORY_CODE){
-          alert("Código interno incorreto.");
-          return;
-        }
+    renderCashflowReport(Number(btn.dataset.reportRange));
+    document.getElementById("reportsMenu").classList.add("hidden");
+  });
+});
 
-        if(!confirm("Deseja realmente apagar todo o histórico?")) return;
+// Excluir histórico
+document.getElementById("deleteHistoryBtn").addEventListener("click", () => {
+  const senha = prompt("Digite código interno:");
+  if (senha === null) return;
 
-        localStorage.removeItem(HISTORY_STORAGE_KEY);
-        clearTurn("t1");
-        render();
-      });
+  if (senha !== DELETE_HISTORY_CODE) {
+    alert("Código interno incorreto.");
+    return;
+  }
 
+  if (!confirm("Deseja realmente apagar todo o histórico?")) return;
+
+  localStorage.removeItem(HISTORY_STORAGE_KEY);
+clearTurn("t1");
+render();
+});
       document.getElementById("logoutBtn").addEventListener("click", logout);
 
       document.getElementById("closeHistoryModal").addEventListener("click", closeHistoryModal);
