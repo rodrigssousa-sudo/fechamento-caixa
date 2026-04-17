@@ -2253,26 +2253,33 @@ COLE ANTES DE </body>
 <style>
   .admin-fab {
     position: fixed;
-    right: 16px;
-    bottom: calc(88px + env(safe-area-inset-bottom, 0px));
-    z-index: 95;
-    min-height: 46px;
-    padding: 0 16px;
+    right: 20px;
+    bottom: 20px;
+    z-index: 9999;
+
+    min-height: 50px;
+    padding: 0 18px;
+
     border-radius: 999px;
     border: 1px solid rgba(148,163,184,.16);
-    background: linear-gradient(135deg, rgba(15,76,189,.95), rgba(37,99,235,.95));
+
+    background: linear-gradient(135deg, #0f4cbd, #2563eb);
     color: #fff;
+
     font-size: 13px;
     font-weight: 900;
     letter-spacing: -.01em;
-    box-shadow: 0 14px 30px rgba(15,76,189,.28);
-    display: inline-flex;
+
+    box-shadow: 0 14px 30px rgba(15,76,189,.35);
+
+    display: flex;
     align-items: center;
     justify-content: center;
     gap: 8px;
+
     cursor: pointer;
   }
-
+</style>
   .admin-modal {
     position: fixed;
     inset: 0;
