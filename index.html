@@ -745,7 +745,7 @@ CONFERIR QUEBRA
     </div>
   </section>
 
-  <div id="appShell" class="app-shell">
+  <div id="appShell" class="app-shell hidden">
     <main class="app">
       <header class="header">
         <div class="title-row">
@@ -912,13 +912,10 @@ document.getElementById("toggleBalance").addEventListener("click", () => {
   render();
 });
 
-document.getElementById("toggleBalance").addEventListener("click", () => {
-  balanceVisible = !balanceVisible;
-  render();
-});
-
 document.getElementById("deleteHistoryBtn").addEventListener("click", () => {
   const senha = prompt("Digite a senha para excluir:");
+
+  if (senha === null) return;
 
   if (senha !== "1520") {
     alert("Senha incorreta.");
