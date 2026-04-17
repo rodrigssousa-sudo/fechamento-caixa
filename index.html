@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-  <title>Fechamento de Caixa</title>
+  <title>Bank King</title>
   <style>
     :root {
       --bg: #030712;
@@ -66,23 +66,24 @@
     .brand {
       display: flex;
       align-items: center;
-      gap: 10px;
+      gap: 12px;
     }
 
     .logo-bk {
-      width: 40px;
-      height: 40px;
-      border-radius: 12px;
+      width: 42px;
+      height: 42px;
+      border-radius: 50%;
       display: flex;
       align-items: center;
       justify-content: center;
       font-weight: 900;
       font-size: 16px;
       letter-spacing: -0.02em;
-      color: #ffffff;
-      background: linear-gradient(135deg, #0f4cbd, #2563eb);
-      box-shadow: 0 6px 18px rgba(15,76,189,0.45);
-      border: 1px solid rgba(255,255,255,0.08);
+      color: #f59e0b;
+      background: transparent;
+      border: 2px solid #f59e0b;
+      box-shadow: 0 0 0 2px rgba(245,158,11,0.12);
+      flex-shrink: 0;
     }
 
     h1 {
@@ -90,14 +91,6 @@
       font-size: 26px;
       line-height: 1.05;
       letter-spacing: -0.03em;
-    }
-
-    .subtitle {
-      margin: 8px 0 0;
-      color: var(--muted);
-      font-size: 13px;
-      line-height: 1.45;
-      max-width: 520px;
     }
 
     .badge {
@@ -157,6 +150,66 @@
     .pill.positive { color: #b8ffd1; background: rgba(34,197,94,0.12); border-color: rgba(34,197,94,0.22); }
     .pill.negative { color: #ffb3b3; background: rgba(239,68,68,0.12); border-color: rgba(239,68,68,0.22); }
     .pill.neutral  { color: #ffe29c; background: rgba(245,158,11,0.12); border-color: rgba(245,158,11,0.22); }
+
+    .bank-card {
+      position: relative;
+      overflow: hidden;
+      border-radius: 22px;
+      padding: 18px;
+      margin-bottom: 14px;
+      background:
+        radial-gradient(circle at top right, rgba(96,165,250,0.18), transparent 30%),
+        linear-gradient(135deg, rgba(9,20,42,1) 0%, rgba(13,32,67,1) 55%, rgba(8,16,30,1) 100%);
+      border: 1px solid rgba(96,165,250,0.14);
+      box-shadow: 0 18px 40px rgba(0,0,0,0.35);
+    }
+
+    .bank-topline {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 12px;
+    }
+
+    .bank-label {
+      font-size: 12px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: #bad1ff;
+    }
+
+    .hide-balance-btn {
+      width: 42px;
+      height: 42px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.06);
+      color: #eef4ff;
+      border: 1px solid rgba(255,255,255,0.10);
+      cursor: pointer;
+      padding: 0;
+      backdrop-filter: blur(6px);
+      flex-shrink: 0;
+    }
+
+    .hide-balance-btn:hover {
+      background: rgba(255,255,255,0.10);
+    }
+
+    .bank-value {
+      position: relative;
+      z-index: 1;
+      font-size: clamp(48px, 9vw, 72px);
+      line-height: 1;
+      letter-spacing: -0.05em;
+      font-weight: 900;
+      color: #ffffff;
+      text-shadow: 0 0 26px rgba(96,165,250,0.22);
+    }
 
     .metrics {
       display: grid;
@@ -467,10 +520,16 @@
         <div class="bank-card">
           <div class="bank-topline">
             <div class="bank-label">Saldo Disponível</div>
-            <button class="hide-balance-btn" id="toggleBalance" type="button">Ocultar valor</button>
+            <button class="hide-balance-btn" id="toggleBalance" type="button" aria-label="Mostrar ou ocultar saldo">
+              <span id="eyeIcon">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#eaf2ff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7S1 12 1 12z"/>
+                  <circle cx="12" cy="12" r="3"/>
+                </svg>
+              </span>
+            </button>
           </div>
           <div class="bank-value" id="saldoContaDestaque">$ 0,00</div>
-          <div class="bank-subtext">Disponível agora na conta para uso imediato no caixa.</div>
         </div>
 
         <div class="metrics">
@@ -634,7 +693,8 @@
         suprema: 't1_suprema',
         buffalo: 't1_buffalo',
         ganamos: 't1_ganamos',
-        cargas: 't1_cargas', cargasPoker: 't1_cargas_poker'
+        cargas: 't1_cargas',
+        cargasPoker: 't1_cargas_poker'
       },
       t2: {
         banco: 't2_banco',
@@ -642,7 +702,8 @@
         suprema: 't2_suprema',
         buffalo: 't2_buffalo',
         ganamos: 't2_ganamos',
-        cargas: 't2_cargas', cargasPoker: 't2_cargas_poker'
+        cargas: 't2_cargas',
+        cargasPoker: 't2_cargas_poker'
       }
     };
 
@@ -664,31 +725,38 @@
         (getValue(f.suprema) * 400) +
         getValue(f.buffalo) +
         getValue(f.ganamos) +
-        getValue(f.cargas) + getValue(f.cargasPoker)
+        getValue(f.cargas) +
+        getValue(f.cargasPoker)
       );
     }
 
     function getDynamicTotal(turno) {
       const list = document.getElementById(`${turno}_dynamic_list`);
       if (!list) return 0;
+
       const inputs = list.querySelectorAll('input[data-dynamic-value]');
       let total = 0;
+
       inputs.forEach(input => {
         const value = parseFloat(input.value);
         if (Number.isFinite(value)) total += value;
       });
+
       return total;
     }
 
     function getPendingTotal(turno) {
       const list = document.getElementById(`${turno}_pending_list`);
       if (!list) return 0;
+
       const inputs = list.querySelectorAll('input[data-pending-value]');
       let total = 0;
+
       inputs.forEach(input => {
         const value = parseFloat(input.value);
         if (Number.isFinite(value)) total += value;
       });
+
       return total;
     }
 
@@ -718,14 +786,39 @@
       }
     }
 
-    function updateRowPreview(input, kind) {
+    function updateRowPreview(input) {
       const row = input.closest('.dynamic-row');
       if (!row) return;
+
       const preview = row.querySelector('.signed-preview');
       if (!preview) return;
+
       const value = parseFloat(input.value);
       const safeValue = Number.isFinite(value) ? value : 0;
-      preview.textContent = kind === 'pending' ? negativeMoney(safeValue) : negativeMoney(safeValue);
+      preview.textContent = negativeMoney(safeValue);
+    }
+
+    function updateEyeIcon() {
+      const icon = document.getElementById('eyeIcon');
+      if (!icon) return;
+
+      if (balanceVisible) {
+        icon.innerHTML = `
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#eaf2ff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7S1 12 1 12z"/>
+            <circle cx="12" cy="12" r="3"/>
+          </svg>
+        `;
+      } else {
+        icon.innerHTML = `
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#eaf2ff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M2 2l20 20"/>
+            <path d="M10.58 10.58a2 2 0 102.83 2.83"/>
+            <path d="M9.88 5.09A10.94 10.94 0 0112 5c7 0 11 7 11 7a21.8 21.8 0 01-5.17 5.94"/>
+            <path d="M6.61 6.61A21.8 21.8 0 001 12s4 7 11 7a10.94 10.94 0 005.09-1.17"/>
+          </svg>
+        `;
+      }
     }
 
     function render() {
@@ -750,7 +843,6 @@
       document.getElementById('t2_saidas_total').textContent = negativeMoney(t2Saidas);
       document.getElementById('t2_pendentes_total').textContent = negativeMoney(t2Pendentes);
 
-      document.getElementById('saldoLiquidoDestaque').textContent = money(t2Total);
       document.getElementById('totalTurno1').textContent = money(t1Total);
       document.getElementById('turno1InlineTotal').textContent = money(t1Total);
       document.getElementById('totalTurno2').textContent = money(t2Total);
@@ -758,14 +850,20 @@
       document.getElementById('diferencaAbs').textContent = money(abs);
       document.getElementById('resultadoFinal').textContent = money(diff);
 
+      updateEyeIcon();
       setResultStyle(diff);
     }
 
     function bindRow(row, kind) {
       row.querySelectorAll('input').forEach(input => {
         input.addEventListener('input', () => {
-          const valueInput = row.querySelector(kind === 'pending' ? 'input[data-pending-value]' : 'input[data-dynamic-value]');
-          if (valueInput) updateRowPreview(valueInput, kind);
+          const valueInput = row.querySelector(
+            kind === 'pending'
+              ? 'input[data-pending-value]'
+              : 'input[data-dynamic-value]'
+          );
+
+          if (valueInput) updateRowPreview(valueInput);
           render();
         });
       });
@@ -775,8 +873,13 @@
         render();
       });
 
-      const valueInput = row.querySelector(kind === 'pending' ? 'input[data-pending-value]' : 'input[data-dynamic-value]');
-      if (valueInput) updateRowPreview(valueInput, kind);
+      const valueInput = row.querySelector(
+        kind === 'pending'
+          ? 'input[data-pending-value]'
+          : 'input[data-dynamic-value]'
+      );
+
+      if (valueInput) updateRowPreview(valueInput);
     }
 
     function createDynamicRow(turno, name = '', value = 0) {
@@ -832,11 +935,15 @@
     }
 
     function limparTudo() {
-      document.querySelectorAll('input[type="number"]').forEach(input => input.value = 0);
-      document.querySelectorAll('input[type="text"]').forEach(input => input.value = '');
+      document.querySelectorAll('input[type="number"]').forEach(input => {
+        input.value = 0;
+      });
 
-      const ids = ['t1_dynamic_list', 't2_dynamic_list', 't1_pending_list', 't2_pending_list'];
-      ids.forEach(id => {
+      document.querySelectorAll('input[type="text"]').forEach(input => {
+        input.value = '';
+      });
+
+      ['t1_dynamic_list', 't2_dynamic_list', 't1_pending_list', 't2_pending_list'].forEach(id => {
         const el = document.getElementById(id);
         if (el) el.innerHTML = '';
       });
@@ -859,19 +966,12 @@
       btn.addEventListener('click', () => createPendingRow(btn.dataset.addPending));
     });
 
+    document.getElementById('toggleBalance').addEventListener('click', () => {
+      balanceVisible = !balanceVisible;
+      render();
+    });
+
     render();
-  </script>
-  <script>
-    (function () {
-      const btn = document.getElementById('toggleBalance');
-      if (btn) {
-        btn.addEventListener('click', () => {
-          balanceVisible = !balanceVisible;
-          btn.textContent = balanceVisible ? 'Ocultar valor' : 'Mostrar valor';
-          render();
-        });
-      }
-    })();
   </script>
 </body>
 </html>
