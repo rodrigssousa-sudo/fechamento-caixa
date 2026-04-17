@@ -1036,7 +1036,7 @@
       font-size:13px;
     }
 
-        .modal-line:last-child{border-bottom:0;}
+    .modal-line:last-child{border-bottom:0;}
     .modal-line strong{font-size:13px;}
     .modal-line.negative strong{color:#ffb3b3;}
 
@@ -1062,6 +1062,209 @@
       cursor:pointer;
     }
 
+    .admin-modal{
+      position:fixed;
+      inset:0;
+      z-index:220;
+      display:flex;
+      align-items:flex-end;
+      justify-content:center;
+    }
+
+    .admin-modal.hidden{display:none !important;}
+
+    .admin-modal-backdrop{
+      position:absolute;
+      inset:0;
+      background:rgba(2,6,23,.76);
+      backdrop-filter:blur(7px);
+    }
+
+    .admin-modal-card{
+      position:relative;
+      width:100%;
+      max-width:920px;
+      max-height:88vh;
+      overflow:auto;
+      border-radius:26px 26px 0 0;
+      background:linear-gradient(180deg, rgba(10,18,34,.98), rgba(10,18,34,.995));
+      border:1px solid rgba(148,163,184,.12);
+      box-shadow:0 24px 60px rgba(0,0,0,.45);
+      padding:18px;
+    }
+
+    .admin-head h3{
+      margin:0;
+      font-size:20px;
+      letter-spacing:-.03em;
+      color:#f8fafc;
+    }
+
+    .admin-head small{
+      display:block;
+      margin-top:4px;
+      color:#8fa2c0;
+      font-size:12px;
+    }
+
+    .admin-close-btn{
+      min-height:40px;
+      padding:0 14px;
+      border-radius:12px;
+      background:rgba(239,68,68,.12);
+      color:#ffb3b3;
+      border:1px solid rgba(239,68,68,.2);
+      font-size:12px;
+      font-weight:800;
+      cursor:pointer;
+    }
+
+    .admin-toolbar{
+      display:grid;
+      grid-template-columns:1fr auto;
+      gap:10px;
+      margin-bottom:14px;
+    }
+
+    .admin-search{
+      width:100%;
+      min-height:46px;
+      border-radius:14px;
+      border:1px solid rgba(148,163,184,.10);
+      background:linear-gradient(180deg, rgba(15,23,42,.96), rgba(13,26,48,.96));
+      color:#f8fafc;
+      padding:12px 14px;
+      font-size:14px;
+      outline:none;
+    }
+
+    .admin-danger-all-btn{
+      min-height:46px;
+      padding:0 14px;
+      border-radius:14px;
+      background:rgba(239,68,68,.12);
+      color:#ffb3b3;
+      border:1px solid rgba(239,68,68,.2);
+      font-size:13px;
+      font-weight:900;
+      cursor:pointer;
+      white-space:nowrap;
+    }
+
+    .admin-list{
+      display:grid;
+      gap:12px;
+    }
+
+    .admin-empty{
+      padding:16px;
+      border-radius:16px;
+      border:1px dashed rgba(148,163,184,.16);
+      color:#8fa2c0;
+      font-size:13px;
+    }
+
+    .admin-user-card{
+      padding:14px;
+      border-radius:18px;
+      border:1px solid rgba(148,163,184,.10);
+      background:linear-gradient(180deg, rgba(255,255,255,.03), rgba(255,255,255,.015));
+    }
+
+    .admin-user-top{
+      display:flex;
+      justify-content:space-between;
+      align-items:flex-start;
+      gap:12px;
+      margin-bottom:12px;
+    }
+
+    .admin-user-name{
+      font-size:15px;
+      font-weight:900;
+      color:#f8fafc;
+      margin-bottom:4px;
+    }
+
+    .admin-user-email{
+      font-size:12px;
+      color:#8fa2c0;
+      word-break:break-word;
+    }
+
+    .admin-user-badge{
+      padding:7px 10px;
+      border-radius:999px;
+      border:1px solid rgba(96,165,250,.16);
+      background:rgba(37,99,235,.10);
+      color:#dbeafe;
+      font-size:11px;
+      font-weight:800;
+      white-space:nowrap;
+    }
+
+    .admin-actions{
+      display:grid;
+      grid-template-columns:repeat(3, 1fr);
+      gap:8px;
+    }
+
+    .admin-action-btn{
+      min-height:42px;
+      border-radius:14px;
+      font-size:12px;
+      font-weight:900;
+      cursor:pointer;
+      border:1px solid rgba(148,163,184,.10);
+    }
+
+    .admin-view-btn{
+      background:rgba(37,99,235,.12);
+      color:#dbeafe;
+      border-color:rgba(96,165,250,.18);
+    }
+
+    .admin-reset-btn{
+      background:rgba(245,158,11,.12);
+      color:#ffe29c;
+      border-color:rgba(245,158,11,.18);
+    }
+
+    .admin-delete-btn{
+      background:rgba(239,68,68,.12);
+      color:#ffb3b3;
+      border-color:rgba(239,68,68,.18);
+    }
+
+    .admin-inline-details{
+      margin-top:12px;
+      padding:12px;
+      border-radius:14px;
+      border:1px solid rgba(148,163,184,.10);
+      background:rgba(255,255,255,.02);
+      display:none;
+    }
+
+    .admin-inline-details.show{display:block;}
+
+    .admin-inline-line{
+      display:flex;
+      justify-content:space-between;
+      gap:10px;
+      padding:7px 0;
+      border-bottom:1px solid rgba(148,163,184,.08);
+      font-size:12px;
+      color:#dbeafe;
+    }
+
+    .admin-inline-line:last-child{border-bottom:0;}
+
+    .admin-inline-line strong{
+      color:#fff;
+      text-align:right;
+      word-break:break-word;
+    }
+
     @media (max-width:700px){
       .history-item-grid,
       .modal-summary-grid,
@@ -1077,6 +1280,22 @@
 
       .bottom-bar button{
         font-size:10px;
+      }
+
+      .signed-preview{
+        justify-content:flex-start;
+      }
+
+      .remove-btn{
+        width:100%;
+      }
+
+      .admin-toolbar{
+        grid-template-columns:1fr;
+      }
+
+      .admin-fab{
+        right:12px;
       }
     }
 
@@ -1099,140 +1318,1637 @@
     }
   </style>
 </head>
-
 <body>
+  <section id="authScreen" class="auth-screen">
+    <div class="auth-card">
+      <div class="auth-logo">BK</div>
+      <h1 class="auth-title">Bank King</h1>
+      <p class="auth-subtitle">Acesso interno Central King.</p>
 
-  <!-- APP ROOT -->
-  <div id="app"></div>
+      <div class="auth-toggle">
+        <button id="tabLogin" class="auth-tab active" type="button">Entrar</button>
+        <button id="tabRegister" class="auth-tab" type="button">Registrar</button>
+        <button id="tabForgot" class="auth-tab" type="button">Senha</button>
+      </div>
 
-  <!-- FIREBASE -->
-  <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-app.js";
-    import {
-      getFirestore,
-      collection,
-      addDoc,
-      getDocs,
-      deleteDoc,
-      doc,
-      onSnapshot,
-      query,
-      orderBy,
-      limit
-    } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-firestore.js";
+      <form id="loginForm" class="auth-form">
+        <div class="field">
+          <label for="loginEmail">Email</label>
+          <input id="loginEmail" type="email" placeholder="Digite seu email" required />
+        </div>
 
-    const firebaseConfig = {
-  apiKey: "AIzaSyAuyfJNu2vwvVyH5gRsvg82m98teFCmPXw",
-  authDomain: "bank-king-c53cf.firebaseapp.com",
-  projectId: "bank-king-c53cf",
-  storageBucket: "bank-king-c53cf.firebasestorage.app",
-  messagingSenderId: "108865328748",
-  appId: "1:108865328748:web:65dbbcf146a67f95512a49",
-  measurementId: "G-S43L7WM4LH"
-};
-    const app = initializeApp(firebaseConfig);
-    const db = getFirestore(app);
+        <div class="field">
+          <label for="loginPassword">Senha</label>
+          <input id="loginPassword" type="password" placeholder="Digite sua senha" required />
+        </div>
 
-    window.db = db;
-    window.fns = {
-      collection,
-      addDoc,
-      getDocs,
-      deleteDoc,
-      doc,
-      onSnapshot,
-      query,
-      orderBy,
-      limit
-    };
-  </script>
+        <div class="remember-row">
+          <input id="rememberLogin" type="checkbox" />
+          <label for="rememberLogin">Manter login salvo neste aparelho</label>
+        </div>
 
-  <!-- SCRIPT PRINCIPAL -->
-  <script type="module">
-    const { db, fns } = window;
+        <button class="auth-submit" type="submit">Entrar agora</button>
+      </form>
 
-    async function loadHistory(){
-      const q = fns.query(
-        fns.collection(db, "history"),
-        fns.orderBy("submittedAt", "desc"),
-        fns.limit(100)
-      );
+      <form id="registerForm" class="auth-form hidden">
+        <div class="field">
+          <label for="registerName">Nome</label>
+          <input id="registerName" type="text" placeholder="Digite seu nome" required />
+        </div>
 
-      const snap = await fns.getDocs(q);
-      return snap.docs.map(d => ({ id: d.id, ...d.data() }));
+        <div class="field">
+          <label for="registerEmail">Email</label>
+          <input id="registerEmail" type="email" placeholder="Digite seu email" required />
+        </div>
+
+        <div class="field">
+          <label for="registerPassword">Senha</label>
+          <input id="registerPassword" type="password" placeholder="Crie sua senha" required />
+        </div>
+
+        <button class="auth-submit" type="submit">Registrar acesso</button>
+      </form>
+
+      <form id="forgotPasswordForm" class="auth-form hidden">
+        <div class="auth-note" style="margin-top:-2px; margin-bottom:4px;">
+          Use o código interno de redefinição. Nenhum código será enviado por email.
+        </div>
+
+        <div class="field">
+          <label for="resetEmail">Email</label>
+          <input id="resetEmail" type="email" placeholder="Digite o email cadastrado" />
+        </div>
+
+        <div class="field">
+          <label for="resetCode">Código de redefinição</label>
+          <input id="resetCode" type="password" placeholder="Digite código interno" />
+        </div>
+
+        <div class="field">
+          <label for="newPassword">Nova senha</label>
+          <input id="newPassword" type="password" placeholder="Digite a nova senha" />
+        </div>
+
+        <button class="auth-submit" type="submit">Redefinir senha</button>
+      </form>
+
+      <div class="auth-note">
+        Login inicial demo: admin@bankking.com / casino12
+      </div>
+    </div>
+  </section>
+
+  <div id="appShell" class="app-shell hidden">
+    <main class="app">
+      <header class="header">
+        <div class="title-row">
+          <div class="brand">
+            <button id="menuToggle" class="menu-toggle-btn" type="button" aria-label="Abrir menu">
+              <span></span><span></span><span></span>
+            </button>
+            <div class="logo-bk">BK</div>
+            <h1>Bank King</h1>
+          </div>
+          <div class="badge">PRO</div>
+        </div>
+      </header>
+
+      <div class="top-user-bar">
+        <div class="top-user-info">
+          <div class="top-user-name" id="activeUserName">Usuário</div>
+          <div class="top-user-email" id="activeUserEmail">email@exemplo.com</div>
+        </div>
+        <button id="logoutBtn" class="logout-btn" type="button">Sair</button>
+      </div>
+
+      <section class="summary">
+        <article class="summary-card card">
+          <div class="summary-head">
+            <h2>Painel Financeiro</h2>
+            <div id="statusPill" class="pill neutral">Sem diferença</div>
+          </div>
+
+          <div class="bank-card">
+            <div class="bank-topline">
+              <span class="bank-label">BANCA TOTAL</span>
+              <button id="toggleBalance" class="hide-balance-btn" type="button" aria-label="Mostrar ou ocultar banca">
+                <svg id="eyeIcon" width="20" height="20" viewBox="0 0 24 24" fill="none">
+                  <path d="M2 12C4.5 7 8.5 5 12 5C15.5 5 19.5 7 22 12C19.5 17 15.5 19 12 19C8.5 19 4.5 17 2 12Z" stroke="currentColor" stroke-width="1.6"/>
+                  <circle cx="12" cy="12" r="3" stroke="currentColor" stroke-width="1.6"/>
+                </svg>
+              </button>
+            </div>
+            <div id="bankValue" class="bank-value">$ 0,00</div>
+          </div>
+
+          <div class="metrics">
+            <div class="metric">
+              <div class="metric-label">Entradas Turno 1</div>
+              <div id="totalEntradasT1" class="metric-value green">$ 0,00</div>
+            </div>
+            <div class="metric">
+              <div class="metric-label">Entradas Turno 2</div>
+              <div id="totalEntradasT2" class="metric-value green">$ 0,00</div>
+            </div>
+            <div class="metric">
+              <div class="metric-label">Diferença</div>
+              <div id="lucroTotal" class="metric-value blue">$ 0,00</div>
+            </div>
+          </div>
+        </article>
+
+        <article class="history-card">
+          <div class="history-card-top">
+            <div>
+              <div class="history-card-title">Histórico automático</div>
+              <div id="historyInfo" class="history-card-text">
+                Nenhum turno anterior salvo ainda.
+              </div>
+            </div>
+          </div>
+
+          <div id="historyList" class="history-list"></div>
+
+          <button id="deleteHistoryBtn" class="danger-mini-btn" type="button" style="margin-top:10px; width:100%;">
+            🔴 Excluir Histórico
+          </button>
+        </article>
+      </section>
+
+      <section class="turnos">
+        <article class="turno card" data-turno="t1">
+          <div class="turno-head">
+            <div>
+              <h3>Turno 1</h3>
+              <small>Carregado automaticamente do último fechamento</small>
+            </div>
+            <div class="turno-total">
+              <div class="label">Saldo líquido</div>
+              <div class="value" id="turno1InlineTotal">$ 0,00</div>
+            </div>
+          </div>
+
+          <div class="turno-meta">
+            <div class="field">
+              <label for="t1_data_fechamento">Data do fechamento</label>
+              <input type="date" id="t1_data_fechamento" />
+            </div>
+          </div>
+
+          <div class="finance-block">
+            <div class="finance-head">
+              <h4>Entradas</h4>
+              <div class="finance-total blue" id="t1_entradas_total">$ 0,00</div>
+            </div>
+
+            <div class="fields two-col">
+              <div class="field"><label for="t1_banco">Banco Reca</label><input type="text" inputmode="numeric" id="t1_banco" placeholder="0,00" /></div>
+              <div class="field"><label for="t1_pppoker">PPPoker (x400)</label><input type="text" inputmode="numeric" id="t1_pppoker" placeholder="0,00" /></div>
+              <div class="field"><label for="t1_suprema">Suprema (x400)</label><input type="text" inputmode="numeric" id="t1_suprema" placeholder="0,00" /></div>
+              <div class="field"><label for="t1_buffalo">Buffalo</label><input type="text" inputmode="numeric" id="t1_buffalo" placeholder="0,00" /></div>
+              <div class="field"><label for="t1_ganamos">Ganamos</label><input type="text" inputmode="numeric" id="t1_ganamos" placeholder="0,00" /></div>
+              <div class="field"><label for="t1_cargas">Carga de Fichas</label><input type="text" inputmode="numeric" id="t1_cargas" placeholder="0,00" /></div>
+              <div class="field"><label for="t1_cargas_poker">Cargas F. Poker (x400)</label><input type="text" inputmode="numeric" id="t1_cargas_poker" placeholder="0,00" /></div>
+            </div>
+          </div>
+
+          <div class="finance-block">
+            <div class="finance-head">
+              <h4>Saídas de caixa</h4>
+              <div class="finance-total red" id="t1_saidas_total">- $ 0,00</div>
+            </div>
+            <div class="dynamic-list" id="t1_dynamic_list"></div>
+            <div class="inline-actions">
+              <button class="btn-add" type="button" data-add-row="t1">+ Adicionar saída</button>
+            </div>
+          </div>
+
+          <div class="finance-block">
+            <div class="finance-head">
+              <h4>Pagos pendentes</h4>
+              <div class="finance-total red" id="t1_pendentes_total">- $ 0,00</div>
+            </div>
+            <div class="dynamic-list" id="t1_pending_list"></div>
+            <div class="inline-actions">
+              <button class="btn-add" type="button" data-add-pending="t1">+ Adicionar pendente</button>
+            </div>
+          </div>
+        </article>
+
+        <article class="turno card" data-turno="t2">
+          <div class="turno-head">
+            <div>
+              <h3>Turno 2</h3>
+              <small>Turno atual para preenchimento</small>
+            </div>
+            <div class="turno-total">
+              <div class="label">Saldo líquido</div>
+              <div class="value" id="turno2InlineTotal">$ 0,00</div>
+            </div>
+          </div>
+
+          <div class="turno-meta">
+            <div class="field">
+              <label for="t2_data_fechamento">Data do fechamento</label>
+              <input type="date" id="t2_data_fechamento" />
+            </div>
+          </div>
+
+          <div class="finance-block">
+            <div class="finance-head">
+              <h4>Entradas</h4>
+              <div class="finance-total blue" id="t2_entradas_total">$ 0,00</div>
+            </div>
+
+            <div class="fields two-col">
+              <div class="field"><label for="t2_banco">Banco Reca</label><input type="text" inputmode="numeric" id="t2_banco" placeholder="0,00" /></div>
+              <div class="field"><label for="t2_pppoker">PPPoker (x400)</label><input type="text" inputmode="numeric" id="t2_pppoker" placeholder="0,00" /></div>
+              <div class="field"><label for="t2_suprema">Suprema (x400)</label><input type="text" inputmode="numeric" id="t2_suprema" placeholder="0,00" /></div>
+              <div class="field"><label for="t2_buffalo">Buffalo</label><input type="text" inputmode="numeric" id="t2_buffalo" placeholder="0,00" /></div>
+              <div class="field"><label for="t2_ganamos">Ganamos</label><input type="text" inputmode="numeric" id="t2_ganamos" placeholder="0,00" /></div>
+              <div class="field"><label for="t2_cargas">Carga de Fichas</label><input type="text" inputmode="numeric" id="t2_cargas" placeholder="0,00" /></div>
+              <div class="field"><label for="t2_cargas_poker">Cargas F. Poker (x400)</label><input type="text" inputmode="numeric" id="t2_cargas_poker" placeholder="0,00" /></div>
+            </div>
+          </div>
+
+          <div class="finance-block">
+            <div class="finance-head">
+              <h4>Saídas de caixa</h4>
+              <div class="finance-total red" id="t2_saidas_total">- $ 0,00</div>
+            </div>
+            <div class="dynamic-list" id="t2_dynamic_list"></div>
+            <div class="inline-actions">
+              <button class="btn-add" type="button" data-add-row="t2">+ Adicionar saída</button>
+            </div>
+          </div>
+
+          <div class="finance-block">
+            <div class="finance-head">
+              <h4>Pagos pendentes</h4>
+              <div class="finance-total red" id="t2_pendentes_total">- $ 0,00</div>
+            </div>
+            <div class="dynamic-list" id="t2_pending_list"></div>
+            <div class="inline-actions">
+              <button class="btn-add" type="button" data-add-pending="t2">+ Adicionar pendente</button>
+            </div>
+          </div>
+        </article>
+      </section>
+
+      <section id="reportScreen" class="report-screen hidden">
+        <div class="report-head">
+          <div>
+            <h3 id="reportTitle">Relatório</h3>
+            <small id="reportSubtitle" style="color: var(--muted);">Fluxo de caixa do período</small>
+          </div>
+          <button id="closeReportScreen" class="report-close-btn" type="button">Fechar</button>
+        </div>
+
+        <div class="report-grid">
+          <div class="report-card">
+            <div class="report-card-label">Entrou em Banco Reca</div>
+            <div class="report-card-value" id="reportBancoReca">$ 0,00</div>
+          </div>
+
+          <div class="report-card">
+            <div class="report-card-label">Saiu em Pagos Pendentes</div>
+            <div class="report-card-value red" id="reportPendentes">$ 0,00</div>
+          </div>
+
+          <div class="report-card">
+            <div class="report-card-label">Saiu em Saídas de Caixa</div>
+            <div class="report-card-value red" id="reportSaidas">$ 0,00</div>
+          </div>
+
+          <div class="report-card">
+            <div class="report-card-label">Lucro real</div>
+            <div class="report-card-value green" id="reportLucro">$ 0,00</div>
+          </div>
+        </div>
+
+        <div id="reportList" class="report-list"></div>
+      </section>
+    </main>
+
+    <div id="reportsMenu" class="reports-menu hidden">
+      <button class="reports-menu-item" type="button" data-report-range="7">Relatório semanal</button>
+      <button class="reports-menu-item" type="button" data-report-range="15">Relatório quinzenal</button>
+      <button class="reports-menu-item" type="button" data-report-range="30">Relatório mensal</button>
+    </div>
+
+    <div class="bottom-bar">
+      <div class="bottom-bar-inner">
+        <button class="secondary-btn" id="limpar" type="button">Limpar</button>
+        <button class="close-btn" id="fecharTurno" type="button">Fechar turno</button>
+        <button class="pdf-btn" id="exportarPdf" type="button">Exportar PDF</button>
+        <button class="main-btn" id="calcular" type="button">Calcular</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="historyModal" class="modal hidden">
+    <div class="modal-backdrop" id="historyModalBackdrop"></div>
+    <div class="modal-card">
+      <div class="modal-head">
+        <div>
+          <h3 id="historyModalTitle">Detalhes do fechamento</h3>
+          <small id="historyModalSub">Turno salvo</small>
+        </div>
+        <button id="closeHistoryModal" class="modal-close-btn" type="button">Fechar</button>
+      </div>
+      <div class="modal-body" id="historyModalBody"></div>
+    </div>
+  </div>
+
+  <button id="adminOpenBtn" class="admin-fab" type="button">⚙️ ADMIN</button>
+
+  <div id="adminModal" class="admin-modal hidden">
+    <div class="admin-modal-backdrop" id="adminModalBackdrop"></div>
+    <div class="admin-modal-card">
+      <div class="admin-head">
+        <div>
+          <h3>Painel Administrativo</h3>
+          <small>Gerencie usuários cadastrados sem DevTools.</small>
+        </div>
+        <button id="adminCloseBtn" class="admin-close-btn" type="button">Fechar</button>
+      </div>
+
+      <div class="admin-toolbar">
+        <input id="adminSearchInput" class="admin-search" type="text" placeholder="Buscar por nome ou email" />
+        <button id="adminDeleteAllBtn" class="admin-danger-all-btn" type="button">🗑 Excluir todos</button>
+      </div>
+
+      <div id="adminUsersList" class="admin-list"></div>
+    </div>
+  </div>
+
+  <script>
+    const PDF_CODE = "1520";
+    const REPORT_CODE = "1520";
+    const RESET_CODE = "4br1l#2o26";
+    const DELETE_HISTORY_CODE = "1520";
+    const ADMIN_CODE = "9087";
+
+    const USERS_STORAGE_KEY = "bank-king-users-v1";
+    const ACTIVE_USER_STORAGE_KEY = "bank-king-active-user-v1";
+    const HISTORY_STORAGE_KEY = "bank-king-history-v1";
+    const REMEMBER_LOGIN_STORAGE_KEY = "bank-king-remember-login-v1";
+    const REMEMBERED_EMAIL_STORAGE_KEY = "bank-king-remembered-email-v1";
+    const SESSION_LAST_ACTIVITY_KEY = "bank-king-session-last-activity-v1";
+
+    const SESSION_TIMEOUT_MS = 30 * 60 * 1000;
+
+    const LOGIN_DEMO_EMAIL = "admin@bankking.com";
+    const LOGIN_DEMO_PASSWORD = "casino12";
+
+    const authScreen = document.getElementById("authScreen");
+    const appShell = document.getElementById("appShell");
+    const loginForm = document.getElementById("loginForm");
+    const registerForm = document.getElementById("registerForm");
+    const forgotPasswordForm = document.getElementById("forgotPasswordForm");
+    const rememberLoginCheckbox = document.getElementById("rememberLogin");
+
+    let balanceVisible = true;
+    let dynamicRowCounter = 0;
+    let sessionWatcher = null;
+
+    function money(value){
+      return `$ ${Number(value || 0).toLocaleString("pt-BR", {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2
+      })}`;
     }
 
-    async function saveHistory(item){
-      const current = await loadHistory();
-      const prev = current[0]?.total || 0;
-
-      item.diff = item.total - prev;
-
-      await fns.addDoc(fns.collection(db, "history"), item);
-    }
-
-    async function deleteAll(){
-      const snap = await fns.getDocs(fns.collection(db, "history"));
-
-      for (const d of snap.docs){
-        await fns.deleteDoc(fns.doc(db, "history", d.id));
-      }
-    }
-
-    function money(v){
-      return `$ ${Number(v || 0).toLocaleString("pt-BR",{minimumFractionDigits:2})}`;
-    }
-
-    function negativeMoney(v){
-      return `- ${money(v)}`;
+    function negativeMoney(value){
+      return `- ${money(value)}`;
     }
 
     function escapeHtml(text){
-      return String(text || "")
-        .replaceAll("&","&amp;")
-        .replaceAll("<","&lt;")
-        .replaceAll(">","&gt;");
+      return String(text ?? "")
+        .replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .replaceAll('"', "&quot;")
+        .replaceAll("'", "&#39;");
+    }
+
+    function getTodayDateInput(){
+      const now = new Date();
+      const offset = now.getTimezoneOffset();
+      const local = new Date(now.getTime() - offset * 60000);
+      return local.toISOString().split("T")[0];
     }
 
     function formatDateBR(dateStr){
-      if(!dateStr) return "-";
+      if(!dateStr) return "Sem data";
       const [y,m,d] = dateStr.split("-");
+      if(!y || !m || !d) return dateStr;
       return `${d}/${m}/${y}`;
     }
 
-    function renderHistoryList(history){
-      const container = document.getElementById("app");
-
-      if(!history.length){
-        container.innerHTML = "<p>Sem histórico</p>";
-        return;
-      }
-
-      container.innerHTML = history.slice(0,5).map((item)=>`
-        <div style="padding:12px;border:1px solid #333;margin-bottom:8px;border-radius:10px;">
-          <strong>${escapeHtml(item.submittedByName || "Sistema")}</strong><br/>
-          <small>${formatDateBR(item.fechamentoDate)}</small><br/>
-          Total: ${money(item.total)}<br/>
-          Diferença: ${money(item.diff)}
-        </div>
-      `).join("");
+    function formatDateTimeBR(iso){
+      if(!iso) return "Sem data";
+      const dt = new Date(iso);
+      return `${dt.toLocaleDateString("pt-BR")} às ${dt.toLocaleTimeString("pt-BR", {hour:"2-digit", minute:"2-digit"})}`;
     }
 
-    function startRealtime(){
-      const q = fns.query(
-        fns.collection(db, "history"),
-        fns.orderBy("submittedAt", "desc"),
-        fns.limit(100)
-      );
+    function parseMoneyInput(value){
+      if(!value) return 0;
+      const normalized = String(value)
+        .replace(/\./g, "")
+        .replace(",", ".")
+        .replace(/[^\d.-]/g, "");
+      const number = parseFloat(normalized);
+      return Number.isFinite(number) ? number : 0;
+    }
 
-      fns.onSnapshot(q, (snap)=>{
-        const data = snap.docs.map(d => ({ id:d.id, ...d.data() }));
-        renderHistoryList(data);
+    function formatDigitsToMoneyString(digits){
+      const clean = String(digits || "").replace(/\D/g, "");
+      if(!clean) return "";
+      const number = Number(clean) / 100;
+      return number.toLocaleString("pt-BR", {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2
       });
     }
 
-    startRealtime();
-  </script>
+    function setDigitsToInput(input, digits){
+      const clean = String(digits || "").replace(/\D/g, "");
+      input.dataset.raw = clean;
+      input.value = formatDigitsToMoneyString(clean);
+    }
 
+    function getDigitsFromInput(input){
+      return input?.dataset?.raw || "";
+    }
+
+    function moveCursorToEnd(input){
+      requestAnimationFrame(() => {
+        const len = input.value.length;
+        try{ input.setSelectionRange(len, len); }catch(_){}
+      });
+    }
+
+    function attachMoneyMask(input){
+      if(!input || input.dataset.maskAttached === "true") return;
+
+      input.dataset.maskAttached = "true";
+      input.dataset.raw = input.dataset.raw || "";
+      input.placeholder = "0,00";
+      input.autocomplete = "off";
+      input.spellcheck = false;
+
+      input.addEventListener("keydown", (e) => {
+        const allowed = [
+          "Tab","Shift","Control","Meta","Alt",
+          "ArrowLeft","ArrowRight","ArrowUp","ArrowDown","Home","End"
+        ].includes(e.key);
+
+        if(allowed) return;
+
+        const shortcut = (e.ctrlKey || e.metaKey) && ["a","c","v","x"].includes(e.key.toLowerCase());
+        if(shortcut) return;
+
+        if(/^\d$/.test(e.key)){
+          e.preventDefault();
+          setDigitsToInput(input, getDigitsFromInput(input) + e.key);
+          moveCursorToEnd(input);
+          render();
+          return;
+        }
+
+        if(e.key === "Backspace"){
+          e.preventDefault();
+          setDigitsToInput(input, getDigitsFromInput(input).slice(0, -1));
+          moveCursorToEnd(input);
+          render();
+          return;
+        }
+
+        if(e.key === "Delete"){
+          e.preventDefault();
+          setDigitsToInput(input, "");
+          moveCursorToEnd(input);
+          render();
+          return;
+        }
+
+        e.preventDefault();
+      });
+
+      input.addEventListener("paste", (e) => {
+        e.preventDefault();
+        const pasted = (e.clipboardData || window.clipboardData).getData("text") || "";
+        const digits = pasted.replace(/\D/g, "");
+        setDigitsToInput(input, getDigitsFromInput(input) + digits);
+        moveCursorToEnd(input);
+        render();
+      });
+
+      input.addEventListener("focus", () => moveCursorToEnd(input));
+    }
+
+    function getUsers(){
+      const raw = localStorage.getItem(USERS_STORAGE_KEY);
+      if(!raw) return [];
+      try{
+        const parsed = JSON.parse(raw);
+        return Array.isArray(parsed) ? parsed : [];
+      }catch{
+        return [];
+      }
+    }
+
+    function saveUsers(users){
+      localStorage.setItem(USERS_STORAGE_KEY, JSON.stringify(users));
+    }
+
+    function ensureDemoUser(){
+      const users = getUsers();
+      const exists = users.some(u => u.email === LOGIN_DEMO_EMAIL);
+      if(!exists){
+        users.push({
+          name: "Admin",
+          email: LOGIN_DEMO_EMAIL,
+          password: LOGIN_DEMO_PASSWORD
+        });
+        saveUsers(users);
+      }
+    }
+
+    function saveRememberedLogin(enabled, email = ""){
+      localStorage.setItem(REMEMBER_LOGIN_STORAGE_KEY, enabled ? "true" : "false");
+      if(enabled){
+        localStorage.setItem(REMEMBERED_EMAIL_STORAGE_KEY, email);
+      }else{
+        localStorage.removeItem(REMEMBERED_EMAIL_STORAGE_KEY);
+      }
+    }
+
+    function getRememberedLogin(){
+      return localStorage.getItem(REMEMBER_LOGIN_STORAGE_KEY) === "true";
+    }
+
+    function getRememberedEmail(){
+      return localStorage.getItem(REMEMBERED_EMAIL_STORAGE_KEY) || "";
+    }
+
+    function saveActiveUser(user){
+      localStorage.setItem(ACTIVE_USER_STORAGE_KEY, JSON.stringify(user));
+    }
+
+    function loadActiveUser(){
+      const raw = localStorage.getItem(ACTIVE_USER_STORAGE_KEY);
+      if(!raw) return null;
+      try{
+        return JSON.parse(raw);
+      }catch{
+        return null;
+      }
+    }
+
+    function removeActiveUser(){
+      localStorage.removeItem(ACTIVE_USER_STORAGE_KEY);
+    }
+
+    function setSessionActivity(){
+      if(loadActiveUser()){
+        localStorage.setItem(SESSION_LAST_ACTIVITY_KEY, String(Date.now()));
+      }
+    }
+
+    function getSessionLastActivity(){
+      return Number(localStorage.getItem(SESSION_LAST_ACTIVITY_KEY) || 0);
+    }
+
+    function isSessionExpired(){
+      const last = getSessionLastActivity();
+      if(!last) return true;
+      return (Date.now() - last) > SESSION_TIMEOUT_MS;
+    }
+
+    function stopSessionWatcher(){
+      if(sessionWatcher){
+        clearInterval(sessionWatcher);
+        sessionWatcher = null;
+      }
+    }
+
+    function startSessionWatcher(){
+      stopSessionWatcher();
+      sessionWatcher = setInterval(() => {
+        if(loadActiveUser() && isSessionExpired()){
+          alert("Sessão expirada por inatividade de 30 minutos.");
+          logout();
+        }
+      }, 15000);
+    }
+
+    function bindSessionEvents(){
+      ["click","touchstart","keydown","input","scroll"].forEach((eventName) => {
+        window.addEventListener(eventName, () => {
+          if(loadActiveUser()) setSessionActivity();
+        }, { passive:true });
+      });
+    }
+
+    function showApp(user){
+      document.getElementById("activeUserName").textContent = user?.name || "Usuário";
+      document.getElementById("activeUserEmail").textContent = user?.email || "";
+      authScreen.classList.add("hidden");
+      appShell.classList.remove("hidden");
+      ensureDates();
+      loadHistoryIntoTurn1();
+      setSessionActivity();
+      startSessionWatcher();
+      render();
+    }
+
+    function logout(){
+      removeActiveUser();
+      localStorage.removeItem(SESSION_LAST_ACTIVITY_KEY);
+      stopSessionWatcher();
+      authScreen.classList.remove("hidden");
+      appShell.classList.add("hidden");
+      preloadLogin();
+      switchTab("login");
+    }
+
+    function preloadLogin(){
+      const remember = getRememberedLogin();
+      const rememberedEmail = getRememberedEmail();
+
+      const emailInput = document.getElementById("loginEmail");
+      const passwordInput = document.getElementById("loginPassword");
+
+      rememberLoginCheckbox.checked = remember;
+
+      if(rememberedEmail){
+        emailInput.value = rememberedEmail;
+        requestAnimationFrame(() => passwordInput.focus());
+      }else{
+        emailInput.value = "";
+        requestAnimationFrame(() => emailInput.focus());
+      }
+    }
+
+    function switchTab(mode){
+      document.getElementById("tabLogin").classList.toggle("active", mode === "login");
+      document.getElementById("tabRegister").classList.toggle("active", mode === "register");
+      document.getElementById("tabForgot").classList.toggle("active", mode === "forgot");
+
+      loginForm.classList.toggle("hidden", mode !== "login");
+      registerForm.classList.toggle("hidden", mode !== "register");
+      forgotPasswordForm.classList.toggle("hidden", mode !== "forgot");
+
+      if(mode === "login") preloadLogin();
+    }
+
+    document.getElementById("tabLogin").addEventListener("click", () => switchTab("login"));
+    document.getElementById("tabRegister").addEventListener("click", () => switchTab("register"));
+    document.getElementById("tabForgot").addEventListener("click", () => switchTab("forgot"));
+
+    loginForm.addEventListener("submit", (e) => {
+      e.preventDefault();
+
+      const email = document.getElementById("loginEmail").value.trim().toLowerCase();
+      const password = document.getElementById("loginPassword").value;
+      const remember = rememberLoginCheckbox.checked;
+
+      const users = getUsers();
+      const found = users.find((u) => u.email === email && u.password === password);
+
+      if(!found){
+        alert("Email ou senha incorretos.");
+        return;
+      }
+
+      saveRememberedLogin(remember, email);
+      const user = { name: found.name, email: found.email };
+      saveActiveUser(user);
+      showApp(user);
+    });
+
+    registerForm.addEventListener("submit", (e) => {
+      e.preventDefault();
+
+      const name = document.getElementById("registerName").value.trim();
+      const email = document.getElementById("registerEmail").value.trim().toLowerCase();
+      const password = document.getElementById("registerPassword").value;
+
+      if(!name || !email || !password){
+        alert("Preencha todos os campos.");
+        return;
+      }
+
+      const users = getUsers();
+      if(users.some((u) => u.email === email)){
+        alert("Esse email já está cadastrado.");
+        return;
+      }
+
+      users.push({ name, email, password });
+      saveUsers(users);
+      alert("Usuário registrado com sucesso.");
+      switchTab("login");
+      document.getElementById("loginEmail").value = email;
+      requestAnimationFrame(() => document.getElementById("loginPassword").focus());
+    });
+
+    forgotPasswordForm.addEventListener("submit", (e) => {
+      e.preventDefault();
+
+      const email = document.getElementById("resetEmail").value.trim().toLowerCase();
+      const code = document.getElementById("resetCode").value.trim();
+      const newPassword = document.getElementById("newPassword").value;
+
+      if(!email || !code || !newPassword){
+        alert("Preencha email, código e nova senha.");
+        return;
+      }
+
+      if(code !== RESET_CODE){
+        alert("Código interno incorreto.");
+        return;
+      }
+
+      const users = getUsers();
+      const index = users.findIndex((u) => u.email === email);
+      if(index === -1){
+        alert("Usuário não encontrado.");
+        return;
+      }
+
+      users[index].password = newPassword;
+      saveUsers(users);
+      alert("Senha redefinida com sucesso.");
+      switchTab("login");
+      document.getElementById("loginEmail").value = email;
+      requestAnimationFrame(() => document.getElementById("loginPassword").focus());
+    });
+
+    function ensureDates(){
+      const t1 = document.getElementById("t1_data_fechamento");
+      const t2 = document.getElementById("t2_data_fechamento");
+      if(t1 && !t1.value) t1.value = getTodayDateInput();
+      if(t2 && !t2.value) t2.value = getTodayDateInput();
+    }
+
+    const fieldsByTurn = {
+      t1: {
+        dataFechamento: "t1_data_fechamento",
+        banco: "t1_banco",
+        pppoker: "t1_pppoker",
+        suprema: "t1_suprema",
+        buffalo: "t1_buffalo",
+        ganamos: "t1_ganamos",
+        cargas: "t1_cargas",
+        cargasPoker: "t1_cargas_poker"
+      },
+      t2: {
+        dataFechamento: "t2_data_fechamento",
+        banco: "t2_banco",
+        pppoker: "t2_pppoker",
+        suprema: "t2_suprema",
+        buffalo: "t2_buffalo",
+        ganamos: "t2_ganamos",
+        cargas: "t2_cargas",
+        cargasPoker: "t2_cargas_poker"
+      }
+    };
+
+    function getValue(id){
+      const el = document.getElementById(id);
+      return el ? parseMoneyInput(el.value) : 0;
+    }
+
+    function getEntradasTotal(turno){
+      const f = fieldsByTurn[turno];
+      return (
+        getValue(f.banco) +
+        (getValue(f.pppoker) * 400) +
+        (getValue(f.suprema) * 400) +
+        getValue(f.buffalo) +
+        getValue(f.ganamos) +
+        getValue(f.cargas) +
+        (getValue(f.cargasPoker) * 400)
+      );
+    }
+
+    function getDynamicTotal(turno){
+      const list = document.getElementById(`${turno}_dynamic_list`);
+      if(!list) return 0;
+      let total = 0;
+      list.querySelectorAll('input[data-dynamic-value="true"]').forEach((input) => {
+        total += parseMoneyInput(input.value);
+      });
+      return total;
+    }
+
+    function getPendingTotal(turno){
+      const list = document.getElementById(`${turno}_pending_list`);
+      if(!list) return 0;
+      let total = 0;
+      list.querySelectorAll('input[data-pending-value="true"]').forEach((input) => {
+        total += parseMoneyInput(input.value);
+      });
+      return total;
+    }
+
+    function updateStatusPill(value){
+      const pill = document.getElementById("statusPill");
+      if(value > 0){
+        pill.textContent = "Positivo";
+        pill.className = "pill positive";
+      }else if(value < 0){
+        pill.textContent = "Negativo";
+        pill.className = "pill negative";
+      }else{
+        pill.textContent = "Sem diferença";
+        pill.className = "pill neutral";
+      }
+    }
+
+    function updateEyeIcon(){
+      const eye = document.getElementById("eyeIcon");
+      if(balanceVisible){
+        eye.innerHTML = `
+          <path d="M2 12C4.5 7 8.5 5 12 5C15.5 5 19.5 7 22 12C19.5 17 15.5 19 12 19C8.5 19 4.5 17 2 12Z" stroke="currentColor" stroke-width="1.6"/>
+          <circle cx="12" cy="12" r="3" stroke="currentColor" stroke-width="1.6"/>
+        `;
+      }else{
+        eye.innerHTML = `
+          <path d="M3 3L21 21" stroke="currentColor" stroke-width="1.6"/>
+          <path d="M10.5 10.5C10.2 10.8 10 11.3 10 12C10 13.1 10.9 14 12 14C12.7 14 13.2 13.8 13.5 13.5" stroke="currentColor" stroke-width="1.6"/>
+          <path d="M6.5 6.5C5 7.7 3.7 9.5 2 12C4.5 17 8.5 19 12 19C13.5 19 15 18.5 16.5 17.5" stroke="currentColor" stroke-width="1.6"/>
+          <path d="M17.5 17.5C19 16.3 20.3 14.5 22 12C19.5 7 15.5 5 12 5C10.5 5 9 5.5 7.5 6.5" stroke="currentColor" stroke-width="1.6"/>
+        `;
+      }
+    }
+
+    function updatePreviewForRow(row, value, pending = false){
+      const preview = row.querySelector(".signed-preview");
+      if(!preview) return;
+      preview.textContent = negativeMoney(value);
+      preview.className = `signed-preview ${pending ? "amber" : "red"}`;
+    }
+
+    function bindDynamicRow(row, pending = false){
+      const valueInput = row.querySelector(pending ? '[data-pending-value="true"]' : '[data-dynamic-value="true"]');
+      const textInput = row.querySelector('input[type="text"]:not([data-dynamic-value="true"]):not([data-pending-value="true"])');
+
+      if(valueInput){
+        attachMoneyMask(valueInput);
+        valueInput.addEventListener("input", () => {
+          updatePreviewForRow(row, parseMoneyInput(valueInput.value), pending);
+          render();
+        });
+      }
+
+      if(textInput){
+        textInput.addEventListener("input", render);
+      }
+
+      const removeBtn = row.querySelector(".remove-btn");
+      if(removeBtn){
+        removeBtn.addEventListener("click", () => {
+          row.remove();
+          render();
+        });
+      }
+
+      updatePreviewForRow(row, parseMoneyInput(valueInput?.value || 0), pending);
+    }
+
+    function createDynamicRow(turno, name = "", digits = ""){
+      dynamicRowCounter += 1;
+      const row = document.createElement("div");
+      row.className = "dynamic-row outflow";
+      row.innerHTML = `
+        <div class="field">
+          <label>Saída</label>
+          <input type="text" placeholder="Ex.: salário, fornecedor, marketing" value="${escapeHtml(name)}" />
+        </div>
+        <div class="field">
+          <label>Valor</label>
+          <input type="text" inputmode="numeric" data-dynamic-value="true" placeholder="0,00" />
+        </div>
+        <div class="signed-preview red">- $ 0,00</div>
+        <button class="remove-btn" type="button">Remover</button>
+      `;
+      document.getElementById(`${turno}_dynamic_list`).appendChild(row);
+      const valueInput = row.querySelector('[data-dynamic-value="true"]');
+      if(digits) setDigitsToInput(valueInput, digits);
+      bindDynamicRow(row, false);
+      render();
+    }
+
+    function createPendingRow(turno, name = "", digits = ""){
+      dynamicRowCounter += 1;
+      const row = document.createElement("div");
+      row.className = "dynamic-row pending";
+      row.innerHTML = `
+        <div class="field">
+          <label>Nome do cliente</label>
+          <input type="text" placeholder="Ex.: João, Carlos, Maria" value="${escapeHtml(name)}" />
+        </div>
+        <div class="field">
+          <label>Valor</label>
+          <input type="text" inputmode="numeric" data-pending-value="true" placeholder="0,00" />
+        </div>
+        <div class="signed-preview amber">- $ 0,00</div>
+        <button class="remove-btn" type="button">Remover</button>
+      `;
+      document.getElementById(`${turno}_pending_list`).appendChild(row);
+      const valueInput = row.querySelector('[data-pending-value="true"]');
+      if(digits) setDigitsToInput(valueInput, digits);
+      bindDynamicRow(row, true);
+      render();
+    }
+
+    function clearTurn(turno){
+      const f = fieldsByTurn[turno];
+      Object.values(f).forEach((id) => {
+        const input = document.getElementById(id);
+        if(!input) return;
+        if(id === f.dataFechamento){
+          input.value = getTodayDateInput();
+        }else{
+          input.value = "";
+          input.dataset.raw = "";
+        }
+      });
+      document.getElementById(`${turno}_dynamic_list`).innerHTML = "";
+      document.getElementById(`${turno}_pending_list`).innerHTML = "";
+    }
+
+    function serializeTurn(turno){
+      const f = fieldsByTurn[turno];
+
+      const entries = [
+        { name: "Banco Reca", value: getValue(f.banco) },
+        { name: "PPPoker (x400)", value: getValue(f.pppoker) * 400 },
+        { name: "Suprema (x400)", value: getValue(f.suprema) * 400 },
+        { name: "Buffalo", value: getValue(f.buffalo) },
+        { name: "Ganamos", value: getValue(f.ganamos) },
+        { name: "Carga de Fichas", value: getValue(f.cargas) },
+        { name: "Cargas F. Poker (x400)", value: getValue(f.cargasPoker) * 400 }
+      ];
+
+      const outflows = [...document.querySelectorAll(`#${turno}_dynamic_list .dynamic-row`)].map((row) => {
+        const inputs = row.querySelectorAll("input");
+        return {
+          name: inputs[0]?.value || "",
+          value: parseMoneyInput(inputs[1]?.value || "")
+        };
+      });
+
+      const pendings = [...document.querySelectorAll(`#${turno}_pending_list .dynamic-row`)].map((row) => {
+        const inputs = row.querySelectorAll("input");
+        return {
+          name: inputs[0]?.value || "",
+          value: parseMoneyInput(inputs[1]?.value || "")
+        };
+      });
+
+      const entradasTotal = entries.reduce((acc, item) => acc + item.value, 0);
+      const saidasTotal = outflows.reduce((acc, item) => acc + item.value, 0);
+      const pendentesTotal = pendings.reduce((acc, item) => acc + item.value, 0);
+      const saldoLiquido = entradasTotal - saidasTotal - pendentesTotal;
+
+      const activeUser = loadActiveUser();
+
+      return {
+        submittedByName: activeUser?.name || "Usuário",
+        submittedByEmail: activeUser?.email || "",
+        submittedAt: new Date().toISOString(),
+        fechamentoDate: document.getElementById(f.dataFechamento)?.value || getTodayDateInput(),
+        total: saldoLiquido,
+        turno: {
+          dataFechamento: document.getElementById(f.dataFechamento)?.value || getTodayDateInput(),
+          entries,
+          outflows,
+          pendings,
+          entradasTotal,
+          saidasTotal,
+          pendentesTotal,
+          saldoLiquido
+        }
+      };
+    }
+
+    function loadHistory(){
+      const raw = localStorage.getItem(HISTORY_STORAGE_KEY);
+      if(!raw) return [];
+      try{
+        const parsed = JSON.parse(raw);
+        return Array.isArray(parsed) ? parsed : [];
+      }catch{
+        return [];
+      }
+    }
+
+    function saveHistoryItem(item){
+      const history = loadHistory();
+      const previousTotal = history[0]?.total || 0;
+      item.diff = item.total - previousTotal;
+      history.unshift(item);
+      localStorage.setItem(HISTORY_STORAGE_KEY, JSON.stringify(history.slice(0, 100)));
+    }
+
+    function applySnapshotToTurn(turno, snapshot){
+      if(!snapshot) return;
+
+      clearTurn(turno);
+
+      const f = fieldsByTurn[turno];
+      document.getElementById(f.dataFechamento).value = snapshot.dataFechamento || getTodayDateInput();
+
+      const map = {
+        "Banco Reca": f.banco,
+        "PPPoker (x400)": f.pppoker,
+        "Suprema (x400)": f.suprema,
+        "Buffalo": f.buffalo,
+        "Ganamos": f.ganamos,
+        "Carga de Fichas": f.cargas,
+        "Cargas F. Poker (x400)": f.cargasPoker
+      };
+
+      (snapshot.entries || []).forEach((entry) => {
+        const id = map[entry.name];
+        if(!id) return;
+        let rawValue = entry.value || 0;
+        if(entry.name.includes("(x400)")) rawValue = rawValue / 400;
+        setDigitsToInput(document.getElementById(id), Math.round(rawValue * 100).toString());
+      });
+
+      (snapshot.outflows || []).forEach((item) => {
+        createDynamicRow(turno, item.name, Math.round((item.value || 0) * 100).toString());
+      });
+
+      (snapshot.pendings || []).forEach((item) => {
+        createPendingRow(turno, item.name, Math.round((item.value || 0) * 100).toString());
+      });
+    }
+
+    function loadHistoryIntoTurn1(){
+      const history = loadHistory();
+      if(history[0]?.turno){
+        applySnapshotToTurn("t1", history[0].turno);
+      }
+    }
+
+    function renderHistoryList(){
+      const list = document.getElementById("historyList");
+      const history = loadHistory();
+
+      if(!history.length){
+        list.innerHTML = `<div class="history-empty">Sem histórico ainda.</div>`;
+        document.getElementById("historyInfo").textContent = "Nenhum turno anterior salvo ainda.";
+        return;
+      }
+
+      list.innerHTML = history.slice(0, 4).map((item, index) => `
+        <div class="history-item" data-history-index="${index}">
+          <div class="history-item-top">
+            <div class="history-user">${escapeHtml(item.submittedByName || "Sistema")}</div>
+            <div class="history-time">${escapeHtml(formatDateBR(item.fechamentoDate || ""))}</div>
+          </div>
+          <div class="history-item-grid">
+            <div class="history-mini-card">
+              <div class="history-mini-label">Total</div>
+              <div class="history-mini-value">${money(item.total || 0)}</div>
+            </div>
+            <div class="history-mini-card">
+              <div class="history-mini-label">Diferença</div>
+              <div class="history-mini-value ${(item.diff || 0) < 0 ? "red" : ""}">${money(item.diff || 0)}</div>
+            </div>
+          </div>
+        </div>
+      `).join("");
+
+      document.getElementById("historyInfo").textContent =
+        `Último fechamento: ${history[0]?.submittedByName || "Sistema"} • ${formatDateBR(history[0]?.fechamentoDate || "")}`;
+
+      list.querySelectorAll("[data-history-index]").forEach((el) => {
+        el.addEventListener("click", () => {
+          openHistoryModal(Number(el.dataset.historyIndex));
+        });
+      });
+    }
+
+    function openHistoryModal(index){
+      const history = loadHistory();
+      const item = history[index];
+      if(!item) return;
+
+      document.getElementById("historyModalTitle").textContent = `Fechamento • ${item.submittedByName || "Sistema"}`;
+      document.getElementById("historyModalSub").textContent = `Data do fechamento: ${formatDateBR(item.fechamentoDate || "")} • Enviado em: ${formatDateTimeBR(item.submittedAt)}`;
+
+      const turno = item.turno || {};
+      const diffValue = Number(item.diff || 0);
+
+      document.getElementById("historyModalBody").innerHTML = `
+        <div class="modal-summary-grid">
+          <div class="modal-summary-card">
+            <div class="modal-summary-label">Total do fechamento</div>
+            <div class="modal-summary-value">${money(item.total || 0)}</div>
+          </div>
+          <div class="modal-summary-card">
+            <div class="modal-summary-label">Diferença</div>
+            <div class="modal-summary-value">${money(diffValue)}</div>
+          </div>
+          <div class="modal-summary-card">
+            <div class="modal-summary-label">Responsável</div>
+            <div class="modal-summary-value">${escapeHtml(item.submittedByName || "-")}</div>
+          </div>
+          <div class="modal-summary-card">
+            <div class="modal-summary-label">Data</div>
+            <div class="modal-summary-value">${escapeHtml(formatDateBR(item.fechamentoDate || ""))}</div>
+          </div>
+        </div>
+
+        <div class="modal-turnos-grid">
+          <div class="modal-panel">
+            <div class="modal-panel-head"><h4>Entradas</h4></div>
+            <div class="modal-panel-body">
+              <div>
+                <div class="modal-block-title">Detalhamento</div>
+                ${(turno.entries || []).map((entry) => `
+                  <div class="modal-line">
+                    <span>${escapeHtml(entry.name || "-")}</span>
+                    <strong>${money(entry.value || 0)}</strong>
+                  </div>
+                `).join("") || `<div class="modal-line"><span>Sem registros</span><strong>$ 0,00</strong></div>`}
+              </div>
+            </div>
+          </div>
+
+          <div class="modal-panel">
+            <div class="modal-panel-head"><h4>Saídas e Pendentes</h4></div>
+            <div class="modal-panel-body">
+              <div>
+                <div class="modal-block-title">Saídas</div>
+                ${(turno.outflows || []).map((entry) => `
+                  <div class="modal-line negative">
+                    <span>${escapeHtml(entry.name || "-")}</span>
+                    <strong>${negativeMoney(entry.value || 0)}</strong>
+                  </div>
+                `).join("") || `<div class="modal-line"><span>Sem registros</span><strong>$ 0,00</strong></div>`}
+              </div>
+
+              <div>
+                <div class="modal-block-title">Pendentes</div>
+                ${(turno.pendings || []).map((entry) => `
+                  <div class="modal-line negative">
+                    <span>${escapeHtml(entry.name || "-")}</span>
+                    <strong>${negativeMoney(entry.value || 0)}</strong>
+                  </div>
+                `).join("") || `<div class="modal-line"><span>Sem registros</span><strong>$ 0,00</strong></div>`}
+              </div>
+            </div>
+          </div>
+        </div>
+      `;
+
+      document.getElementById("historyModal").classList.remove("hidden");
+    }
+
+    function closeHistoryModal(){
+      document.getElementById("historyModal").classList.add("hidden");
+    }
+
+    function getBancoRecaFromSnapshot(snapshot){
+      return (snapshot.entries || []).find((item) => item.name === "Banco Reca")?.value || 0;
+    }
+
+    function renderCashflowReport(days){
+      const history = loadHistory();
+
+      const filtered = history.filter((item) => {
+        if(!item.fechamentoDate) return false;
+        const target = new Date(item.fechamentoDate + "T00:00:00");
+        const today = new Date();
+        today.setHours(23,59,59,999);
+        const diffDays = (today - target) / (1000 * 60 * 60 * 24);
+        return diffDays >= 0 && diffDays < days;
+      });
+
+      const totalBancoReca = filtered.reduce((acc, item) => acc + getBancoRecaFromSnapshot(item.turno || {}), 0);
+      const totalPendentes = filtered.reduce((acc, item) => acc + Number(item.turno?.pendentesTotal || 0), 0);
+      const totalSaidas = filtered.reduce((acc, item) => acc + Number(item.turno?.saidasTotal || 0), 0);
+      const lucroReal = totalSaidas;
+
+      const titleMap = {
+        7: "Relatório semanal",
+        15: "Relatório quinzenal",
+        30: "Relatório mensal"
+      };
+
+      document.getElementById("reportTitle").textContent = titleMap[days] || "Relatório";
+      document.getElementById("reportSubtitle").textContent = `Fluxo de caixa dos últimos ${days} dias`;
+      document.getElementById("reportBancoReca").textContent = money(totalBancoReca);
+      document.getElementById("reportPendentes").textContent = negativeMoney(totalPendentes);
+      document.getElementById("reportSaidas").textContent = negativeMoney(totalSaidas);
+      document.getElementById("reportLucro").textContent = money(lucroReal);
+
+      const reportList = document.getElementById("reportList");
+      if(!filtered.length){
+        reportList.innerHTML = `<div class="history-empty">Nenhum fechamento encontrado nesse período.</div>`;
+      }else{
+        reportList.innerHTML = filtered.map((item) => `
+          <div class="report-list-item">
+            <div class="report-list-top">
+              <div class="report-list-name">${escapeHtml(item.submittedByName || "Sistema")}</div>
+              <div class="report-list-date">${escapeHtml(formatDateBR(item.fechamentoDate || ""))}</div>
+            </div>
+            <div class="report-list-lines">
+              <div class="report-line">
+                <span>Banco Reca</span>
+                <strong>${money(getBancoRecaFromSnapshot(item.turno || {}))}</strong>
+              </div>
+              <div class="report-line">
+                <span>Pagos Pendentes</span>
+                <strong>${negativeMoney(item.turno?.pendentesTotal || 0)}</strong>
+              </div>
+              <div class="report-line">
+                <span>Saídas</span>
+                <strong>${negativeMoney(item.turno?.saidasTotal || 0)}</strong>
+              </div>
+              <div class="report-line">
+                <span>Lucro real</span>
+                <strong>${money(item.turno?.saidasTotal || 0)}</strong>
+              </div>
+            </div>
+          </div>
+        `).join("");
+      }
+
+      document.getElementById("reportScreen").classList.remove("hidden");
+    }
+
+    function buildPremiumPdfHtml(){
+      const t1Entradas = getEntradasTotal("t1");
+      const t1Saidas = getDynamicTotal("t1");
+      const t1Pendentes = getPendingTotal("t1");
+      const t1Total = t1Entradas - t1Saidas - t1Pendentes;
+
+      const t2Entradas = getEntradasTotal("t2");
+      const t2Saidas = getDynamicTotal("t2");
+      const t2Pendentes = getPendingTotal("t2");
+      const t2Total = t2Entradas - t2Saidas - t2Pendentes;
+
+      return `
+        <!DOCTYPE html>
+        <html lang="pt-BR">
+        <head>
+          <meta charset="UTF-8">
+          <title>Bank King PDF</title>
+          <style>
+            body{font-family:Arial,sans-serif;padding:24px;color:#0f172a;}
+            h1{margin-bottom:20px;}
+            .grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;}
+            .card{border:1px solid #cbd5e1;border-radius:12px;padding:16px;}
+            .label{font-size:12px;color:#64748b;}
+            .value{font-size:24px;font-weight:700;margin-top:6px;}
+          </style>
+        </head>
+        <body>
+          <h1>Bank King • Fechamento</h1>
+          <div class="grid">
+            <div class="card">
+              <div class="label">Turno 1</div>
+              <div class="value">${money(t1Total)}</div>
+            </div>
+
+            <div class="card">
+              <div class="label">Turno 2</div>
+              <div class="value">${money(t2Total)}</div>
+            </div>
+
+            <div class="card">
+              <div class="label">Entradas Totais</div>
+              <div class="value">${money(t1Entradas + t2Entradas)}</div>
+            </div>
+
+            <div class="card">
+              <div class="label">Saídas Totais</div>
+              <div class="value">${money(t1Saidas + t2Saidas + t1Pendentes + t2Pendentes)}</div>
+            </div>
+          </div>
+        </body>
+        </html>
+      `;
+    }
+
+    function exportToPdfProtected(){
+      const code = prompt("Digite código interno:");
+      if(code === null) return;
+
+      if(code !== PDF_CODE){
+        alert("Código interno incorreto.");
+        return;
+      }
+
+      const printWindow = window.open("", "_blank", "width=1200,height=900");
+      if(!printWindow){
+        alert("Não foi possível abrir a janela de impressão.");
+        return;
+      }
+
+      printWindow.document.open();
+      printWindow.document.write(buildPremiumPdfHtml());
+      printWindow.document.close();
+      printWindow.focus();
+      printWindow.onload = () => printWindow.print();
+    }
+
+    function render(){
+      ensureDates();
+
+      const t1Entradas = getEntradasTotal("t1");
+      const t1Saidas = getDynamicTotal("t1");
+      const t1Pendentes = getPendingTotal("t1");
+      const t1Total = t1Entradas - t1Saidas - t1Pendentes;
+
+      const t2Entradas = getEntradasTotal("t2");
+      const t2Saidas = getDynamicTotal("t2");
+      const t2Pendentes = getPendingTotal("t2");
+      const t2Total = t2Entradas - t2Saidas - t2Pendentes;
+
+      const diff = t2Total - t1Total;
+
+      document.getElementById("t1_entradas_total").textContent = money(t1Entradas);
+      document.getElementById("t1_saidas_total").textContent = negativeMoney(t1Saidas);
+      document.getElementById("t1_pendentes_total").textContent = negativeMoney(t1Pendentes);
+      document.getElementById("t2_entradas_total").textContent = money(t2Entradas);
+      document.getElementById("t2_saidas_total").textContent = negativeMoney(t2Saidas);
+      document.getElementById("t2_pendentes_total").textContent = negativeMoney(t2Pendentes);
+
+      document.getElementById("turno1InlineTotal").textContent = money(t1Total);
+      document.getElementById("turno2InlineTotal").textContent = money(t2Total);
+
+      document.getElementById("totalEntradasT1").textContent = money(t1Entradas);
+      document.getElementById("totalEntradasT2").textContent = money(t2Entradas);
+      document.getElementById("lucroTotal").textContent = money(diff);
+
+      document.getElementById("bankValue").textContent = balanceVisible ? money(diff) : "••••••";
+      updateEyeIcon();
+      updateStatusPill(diff);
+      renderHistoryList();
+    }
+
+    function openAdminModal(){
+      const code = prompt("Digite código interno:");
+      if(code === null) return;
+
+      if(code !== ADMIN_CODE){
+        alert("Código interno incorreto.");
+        return;
+      }
+
+      renderAdminUsers();
+      document.getElementById("adminModal").classList.remove("hidden");
+      requestAnimationFrame(() => document.getElementById("adminSearchInput").focus());
+    }
+
+    function closeAdminModal(){
+      document.getElementById("adminModal").classList.add("hidden");
+      document.getElementById("adminSearchInput").value = "";
+    }
+
+    function renderAdminUsers(){
+      const users = getUsers();
+      const term = document.getElementById("adminSearchInput").value.trim().toLowerCase();
+
+      const filtered = users.filter((user) => {
+        const name = String(user?.name || "").toLowerCase();
+        const email = String(user?.email || "").toLowerCase();
+        return !term || name.includes(term) || email.includes(term);
+      });
+
+      const adminUsersList = document.getElementById("adminUsersList");
+
+      if(!filtered.length){
+        adminUsersList.innerHTML = `<div class="admin-empty">Nenhum usuário encontrado.</div>`;
+        return;
+      }
+
+      adminUsersList.innerHTML = filtered.map((user, index) => {
+        const originalIndex = users.findIndex((u) => u.email === user.email && u.name === user.name);
+
+        return `
+          <div class="admin-user-card">
+            <div class="admin-user-top">
+              <div>
+                <div class="admin-user-name">${escapeHtml(user.name || "Sem nome")}</div>
+                <div class="admin-user-email">${escapeHtml(user.email || "Sem email")}</div>
+              </div>
+              <div class="admin-user-badge">Usuário ${index + 1}</div>
+            </div>
+
+            <div class="admin-actions">
+              <button class="admin-action-btn admin-view-btn" type="button" data-admin-view="${originalIndex}">👁 Ver</button>
+              <button class="admin-action-btn admin-reset-btn" type="button" data-admin-reset="${originalIndex}">🔒 Resetar senha</button>
+              <button class="admin-action-btn admin-delete-btn" type="button" data-admin-delete="${originalIndex}">🗑 Excluir</button>
+            </div>
+
+            <div class="admin-inline-details" id="adminDetails_${originalIndex}">
+              <div class="admin-inline-line"><span>Nome</span><strong>${escapeHtml(user.name || "-")}</strong></div>
+              <div class="admin-inline-line"><span>Email</span><strong>${escapeHtml(user.email || "-")}</strong></div>
+              <div class="admin-inline-line"><span>Senha atual</span><strong>${escapeHtml(user.password || "-")}</strong></div>
+            </div>
+          </div>
+        `;
+      }).join("");
+
+      bindAdminActions();
+    }
+
+    function bindAdminActions(){
+      document.querySelectorAll("[data-admin-view]").forEach((btn) => {
+        btn.addEventListener("click", () => {
+          const idx = btn.dataset.adminView;
+          const box = document.getElementById(`adminDetails_${idx}`);
+          if(box) box.classList.toggle("show");
+        });
+      });
+
+      document.querySelectorAll("[data-admin-reset]").forEach((btn) => {
+        btn.addEventListener("click", () => {
+          const idx = Number(btn.dataset.adminReset);
+          const users = getUsers();
+          const user = users[idx];
+          if(!user) return;
+
+          const newPassword = prompt(`Nova senha para ${user.name}:`);
+          if(newPassword === null) return;
+
+          const clean = newPassword.trim();
+          if(!clean){
+            alert("Senha inválida.");
+            return;
+          }
+
+          users[idx].password = clean;
+          saveUsers(users);
+          renderAdminUsers();
+          alert("Senha atualizada com sucesso.");
+        });
+      });
+
+      document.querySelectorAll("[data-admin-delete]").forEach((btn) => {
+        btn.addEventListener("click", () => {
+          const idx = Number(btn.dataset.adminDelete);
+          const users = getUsers();
+          const user = users[idx];
+          if(!user) return;
+
+          if(!confirm(`Excluir o usuário ${user.name}?`)) return;
+
+          if(loadActiveUser()?.email === user.email){
+            removeActiveUser();
+            localStorage.removeItem(SESSION_LAST_ACTIVITY_KEY);
+          }
+
+          if(getRememberedEmail() === user.email){
+            saveRememberedLogin(false, "");
+          }
+
+          users.splice(idx, 1);
+          saveUsers(users);
+          renderAdminUsers();
+          alert("Usuário excluído com sucesso.");
+        });
+      });
+    }
+
+    document.addEventListener("DOMContentLoaded", () => {
+      ensureDemoUser();
+      bindSessionEvents();
+
+      [
+        "t1_banco","t1_pppoker","t1_suprema","t1_buffalo","t1_ganamos","t1_cargas","t1_cargas_poker",
+        "t2_banco","t2_pppoker","t2_suprema","t2_buffalo","t2_ganamos","t2_cargas","t2_cargas_poker"
+      ].forEach((id) => {
+        const input = document.getElementById(id);
+        if(input) attachMoneyMask(input);
+      });
+
+      document.querySelectorAll("[data-add-row]").forEach((btn) => {
+        btn.addEventListener("click", () => createDynamicRow(btn.dataset.addRow));
+      });
+
+      document.querySelectorAll("[data-add-pending]").forEach((btn) => {
+        btn.addEventListener("click", () => createPendingRow(btn.dataset.addPending));
+      });
+
+      document.getElementById("toggleBalance").addEventListener("click", () => {
+        balanceVisible = !balanceVisible;
+        render();
+      });
+
+      document.getElementById("calcular").addEventListener("click", render);
+
+      document.getElementById("limpar").addEventListener("click", () => {
+        if(!confirm("Deseja limpar apenas o Turno 2 atual?")) return;
+        clearTurn("t2");
+        render();
+      });
+
+      document.getElementById("fecharTurno").addEventListener("click", () => {
+        const item = serializeTurn("t2");
+        saveHistoryItem(item);
+        loadHistoryIntoTurn1();
+        clearTurn("t2");
+        render();
+        alert("Turno fechado com sucesso.");
+      });
+
+      document.getElementById("exportarPdf").addEventListener("click", exportToPdfProtected);
+
+      document.getElementById("closeReportScreen").addEventListener("click", () => {
+        document.getElementById("reportScreen").classList.add("hidden");
+      });
+
+      document.getElementById("menuToggle").addEventListener("click", () => {
+        document.getElementById("reportsMenu").classList.toggle("hidden");
+      });
+
+      document.querySelectorAll("[data-report-range]").forEach((btn) => {
+        btn.addEventListener("click", () => {
+          const senha = prompt("Digite código interno:");
+          if(senha === null) return;
+
+          if(senha !== REPORT_CODE){
+            alert("Código interno incorreto.");
+            return;
+          }
+
+          renderCashflowReport(Number(btn.dataset.reportRange));
+          document.getElementById("reportsMenu").classList.add("hidden");
+        });
+      });
+
+      document.getElementById("deleteHistoryBtn").addEventListener("click", () => {
+        const senha = prompt("Digite código interno:");
+        if(senha === null) return;
+
+        if(senha !== DELETE_HISTORY_CODE){
+          alert("Código interno incorreto.");
+          return;
+        }
+
+        if(!confirm("Deseja realmente apagar todo o histórico?")) return;
+
+        localStorage.removeItem(HISTORY_STORAGE_KEY);
+        clearTurn("t1");
+        render();
+      });
+
+      document.getElementById("logoutBtn").addEventListener("click", logout);
+
+      document.getElementById("closeHistoryModal").addEventListener("click", closeHistoryModal);
+      document.getElementById("historyModalBackdrop").addEventListener("click", closeHistoryModal);
+
+      document.getElementById("adminOpenBtn").addEventListener("click", openAdminModal);
+      document.getElementById("adminCloseBtn").addEventListener("click", closeAdminModal);
+      document.getElementById("adminModalBackdrop").addEventListener("click", closeAdminModal);
+      document.getElementById("adminSearchInput").addEventListener("input", renderAdminUsers);
+
+      document.getElementById("adminDeleteAllBtn").addEventListener("click", () => {
+        const code = prompt("Digite código interno:");
+        if(code === null) return;
+
+        if(code !== ADMIN_CODE){
+          alert("Código interno incorreto.");
+          return;
+        }
+
+        if(!confirm("Tem certeza que deseja excluir TODOS os usuários?")) return;
+
+        localStorage.removeItem(USERS_STORAGE_KEY);
+        localStorage.removeItem(ACTIVE_USER_STORAGE_KEY);
+        localStorage.removeItem(REMEMBER_LOGIN_STORAGE_KEY);
+        localStorage.removeItem(REMEMBERED_EMAIL_STORAGE_KEY);
+        localStorage.removeItem(SESSION_LAST_ACTIVITY_KEY);
+
+        ensureDemoUser();
+        renderAdminUsers();
+        alert("Todos os usuários foram removidos. O usuário demo foi recriado.");
+      });
+
+      const rememberedUser = loadActiveUser();
+      if(rememberedUser && getRememberedLogin() && !isSessionExpired()){
+        showApp(rememberedUser);
+      }else{
+        authScreen.classList.remove("hidden");
+        appShell.classList.add("hidden");
+        preloadLogin();
+        switchTab("login");
+      }
+    });
+  </script>
 </body>
 </html>
+
