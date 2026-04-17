@@ -720,7 +720,25 @@
           <input id="registerPassword" type="password" placeholder="Crie uma senha" required />
         </div>
         <button class="auth-submit" type="submit">Registrar acesso</button>
-      </form>
+      <form id="forgotPasswordForm" class="auth-form hidden">
+  <div class="field">
+    <label for="resetEmail">Email</label>
+    <input id="resetEmail" type="email" placeholder="Digite o email cadastrado" />
+  </div>
+
+  <div class="field">
+    <label for="resetCode">Código de autorização</label>
+    <input id="resetCode" type="password" placeholder="Digite o código" />
+  </div>
+
+  <div class="field">
+    <label for="newPassword">Nova senha</label>
+    <input id="newPassword" type="password" placeholder="Digite a nova senha" />
+  </div>
+
+  <button class="auth-submit" type="submit">Redefinir senha</button>
+  <button id="backToLoginBtn" type="button" class="auth-tab" style="width:100%;">Voltar para login</button>
+</form>
 
       <div class="auth-note">
         O nome do usuário logado será salvo no fechamento do turno e aparecerá no PDF como responsável pelo envio.
