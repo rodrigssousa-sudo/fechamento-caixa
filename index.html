@@ -359,21 +359,24 @@
       color: #bad1ff;
     }
 
-    .hide-balance-btn {
-      width: 42px;
-      height: 42px;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      border-radius: 50%;
-      background: rgba(255,255,255,0.06);
-      color: #eef4ff;
-      border: 1px solid rgba(255,255,255,0.10);
-      padding: 0;
-      backdrop-filter: blur(6px);
-      flex-shrink: 0;
-    }
+.hide-balance-btn {
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  background: rgba(255,255,255,.05);
+  border: 1px solid rgba(255,255,255,.10);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #eaf2ff;
+  cursor: pointer;
+  transition: all .2s ease;
+}
 
+.hide-balance-btn:hover {
+  background: rgba(255,255,255,.10);
+  transform: scale(1.05);
+}
     .bank-value {
       font-size: clamp(38px, 8vw, 68px);
       line-height: 1;
@@ -1271,7 +1274,12 @@
           <div class="bank-card">
             <div class="bank-topline">
               <span class="bank-label">BANCA TOTAL</span>
-              <button id="toggleBalance" class="hide-balance-btn" type="button">👁</button>
+              <button id="toggleBalance" class="hide-balance-btn" type="button">
+  <svg id="eyeIcon" width="20" height="20" viewBox="0 0 24 24" fill="none">
+    <path d="M2 12C4.5 7 8.5 5 12 5C15.5 5 19.5 7 22 12C19.5 17 15.5 19 12 19C8.5 19 4.5 17 2 12Z" stroke="currentColor" stroke-width="1.6"/>
+    <circle cx="12" cy="12" r="3" stroke="currentColor" stroke-width="1.6"/>
+  </svg>
+</button>
             </div>
             <div id="bankValue" class="bank-value">$ 0,00</div>
           </div>
@@ -1554,18 +1562,31 @@
     const REMEMBERED_EMAIL_STORAGE_KEY = "bank-king-remembered-email-v1";
     const ACTIVE_USER_STORAGE_KEY = "bank-king-active-user-v1";
 
-    let balanceVisible = true;
-    let dynamicRowCounter = 0;
+let balanceVisible = true;
 
-    const authScreen = document.getElementById("authScreen");
-    const appShell = document.getElementById("appShell");
+document.getElementById("toggleBalance").addEventListener("click", () => {
+  balanceVisible = !balanceVisible;
 
-    function money(value) {
-      return Number(value || 0).toLocaleString("pt-BR", {
-        style: "currency",
-        currency: "BRL"
-      });
-    }
+  const bank = document.getElementById("bankValue");
+  const icon = document.getElementById("eyeIcon");
+
+  if (balanceVisible) {
+    bank.textContent = formatCurrency(currentBalance); // usa tua variável
+    icon.innerHTML = `
+      <path d="M2 12C4.5 7 8.5 5 12 5C15.5 5 19.5 7 22 12C19.5 17 15.5 19 12 19C8.5 19 4.5 17 2 12Z" stroke="currentColor" stroke-width="1.6"/>
+      <circle cx="12" cy="12" r="3" stroke="currentColor" stroke-width="1.6"/>
+    `;
+  } else {
+    bank.textContent = "••••••";
+    icon.innerHTML = `
+      <path d="M3 3L21 21" stroke="currentColor" stroke-width="1.6"/>
+      <path d="M10.5 10.5C10.2 10.8 10 11.3 10 12C10 13.1 10.9 14 12 14C12.7 14 13.2 13.8 13.5 13.5" stroke="currentColor" stroke-width="1.6"/>
+      <path d="M6.5 6.5C5 7.7 3.7 9.5 2 12C4.5 17 8.5 19 12 19C13.5 19 15 18.5 16.5 17.5" stroke="currentColor" stroke-width="1.6"/>
+      <path d="M17.5 17.5C19 16.3 20.3 14.5 22 12C19.5 7 15.5 5 12 5C10.5 5 9 5.5 7.5 6.5" stroke="currentColor" stroke-width="1.6"/>
+    `;
+  }
+});
+  }
 
     function negativeMoney(value) {
       return `- ${money(value)}`;
