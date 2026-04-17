@@ -135,6 +135,11 @@
       outline: none;
     }
 
+    .field input[type="date"] {
+      color-scheme: dark;
+      min-height: 48px;
+    }
+
     .field input::placeholder {
       color: #6f84a8;
       opacity: 1;
@@ -156,6 +161,33 @@
       background: linear-gradient(135deg, #0f4cbd, #2563eb);
       box-shadow: 0 10px 28px rgba(15,76,189,0.34);
       margin-top: 4px;
+    }
+
+    .remember-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 12px;
+      border-radius: 14px;
+      border: 1px solid rgba(148,163,184,0.10);
+      background: rgba(255,255,255,0.03);
+    }
+
+    .remember-row input[type="checkbox"] {
+      width: 18px;
+      height: 18px;
+      min-height: unset;
+      margin: 0;
+      accent-color: #2563eb;
+      cursor: pointer;
+    }
+
+    .remember-row label {
+      margin: 0;
+      font-size: 13px;
+      font-weight: 700;
+      color: #dbeafe;
+      cursor: pointer;
     }
 
     .auth-note {
@@ -394,6 +426,85 @@
       line-height: 1.45;
     }
 
+    .history-list {
+      display: grid;
+      gap: 10px;
+      margin-top: 12px;
+    }
+
+    .history-item {
+      padding: 14px;
+      border-radius: 16px;
+      border: 1px solid rgba(96,165,250,0.12);
+      background: linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0.015));
+      cursor: pointer;
+      transition: transform 0.16s ease, border-color 0.16s ease, background 0.16s ease;
+    }
+
+    .history-item:hover {
+      transform: translateY(-1px);
+      border-color: rgba(96,165,250,0.22);
+      background: linear-gradient(180deg, rgba(255,255,255,0.045), rgba(255,255,255,0.02));
+    }
+
+    .history-item-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      margin-bottom: 10px;
+    }
+
+    .history-user {
+      font-size: 14px;
+      font-weight: 900;
+      color: #eaf2ff;
+    }
+
+    .history-time {
+      font-size: 12px;
+      color: var(--muted);
+      white-space: nowrap;
+      text-align: right;
+    }
+
+    .history-item-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+
+    .history-mini-card {
+      padding: 10px 12px;
+      border-radius: 14px;
+      background: rgba(255,255,255,0.03);
+      border: 1px solid rgba(148,163,184,0.10);
+    }
+
+    .history-mini-label {
+      font-size: 11px;
+      color: var(--muted);
+      margin-bottom: 6px;
+    }
+
+    .history-mini-value {
+      font-size: 15px;
+      font-weight: 900;
+      color: #ffffff;
+    }
+
+    .history-mini-value.red {
+      color: #ffb3b3;
+    }
+
+    .history-empty {
+      padding: 14px;
+      border-radius: 16px;
+      border: 1px dashed rgba(148,163,184,0.16);
+      color: var(--muted);
+      font-size: 13px;
+    }
+
     .turnos {
       display: grid;
       gap: 14px;
@@ -407,7 +518,7 @@
     .turno-head {
       display: flex;
       justify-content: space-between;
-      align-items: center;
+      align-items: flex-start;
       gap: 10px;
       margin-bottom: 14px;
     }
@@ -440,6 +551,14 @@
       font-size: 18px;
       font-weight: 800;
       color: #e2ebff;
+    }
+
+    .turno-meta {
+      margin-top: 12px;
+      padding: 12px;
+      border-radius: 16px;
+      border: 1px solid rgba(148,163,184,0.10);
+      background: rgba(255,255,255,0.025);
     }
 
     .finance-block {
@@ -654,12 +773,172 @@
       box-shadow: 0 10px 28px rgba(16,185,129,0.25);
     }
 
+    .modal {
+      position: fixed;
+      inset: 0;
+      z-index: 120;
+      display: flex;
+      align-items: flex-end;
+      justify-content: center;
+    }
+
+    .modal-backdrop {
+      position: absolute;
+      inset: 0;
+      background: rgba(2,6,23,0.72);
+      backdrop-filter: blur(6px);
+    }
+
+    .modal-card {
+      position: relative;
+      width: 100%;
+      max-width: 860px;
+      max-height: 88vh;
+      overflow: auto;
+      margin: 0;
+      border-radius: 24px 24px 0 0;
+      background: linear-gradient(180deg, rgba(10, 18, 34, 0.98), rgba(10, 18, 34, 0.99));
+      border: 1px solid rgba(148,163,184,0.12);
+      box-shadow: 0 24px 60px rgba(0,0,0,0.45);
+      padding: 18px;
+    }
+
+    .modal-head {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 10px;
+      margin-bottom: 14px;
+    }
+
+    .modal-head h3 {
+      margin: 0;
+      font-size: 20px;
+      letter-spacing: -0.03em;
+    }
+
+    .modal-head small {
+      display: block;
+      margin-top: 4px;
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    .modal-close-btn {
+      min-height: 40px;
+      padding: 0 14px;
+      border-radius: 12px;
+      background: rgba(239,68,68,0.12);
+      color: #ffb3b3;
+      border: 1px solid rgba(239,68,68,0.2);
+      font-size: 12px;
+      font-weight: 800;
+    }
+
+    .modal-body {
+      display: grid;
+      gap: 14px;
+    }
+
+    .modal-summary-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 10px;
+    }
+
+    .modal-summary-card {
+      padding: 14px;
+      border-radius: 16px;
+      background: rgba(255,255,255,0.03);
+      border: 1px solid rgba(148,163,184,0.10);
+    }
+
+    .modal-summary-label {
+      font-size: 11px;
+      color: var(--muted);
+      margin-bottom: 8px;
+    }
+
+    .modal-summary-value {
+      font-size: 18px;
+      font-weight: 900;
+      color: #ffffff;
+    }
+
+    .modal-turnos-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+    }
+
+    .modal-panel {
+      border-radius: 18px;
+      border: 1px solid rgba(148,163,184,0.10);
+      background: rgba(255,255,255,0.02);
+      overflow: hidden;
+    }
+
+    .modal-panel-head {
+      padding: 14px;
+      border-bottom: 1px solid rgba(148,163,184,0.08);
+      background: rgba(255,255,255,0.03);
+    }
+
+    .modal-panel-head h4 {
+      margin: 0;
+      font-size: 16px;
+    }
+
+    .modal-panel-body {
+      padding: 14px;
+      display: grid;
+      gap: 14px;
+    }
+
+    .modal-block-title {
+      font-size: 12px;
+      font-weight: 900;
+      color: #dbeafe;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      margin-bottom: 10px;
+    }
+
+    .modal-line {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 8px 0;
+      border-bottom: 1px solid rgba(148,163,184,0.08);
+      font-size: 13px;
+    }
+
+    .modal-line:last-child {
+      border-bottom: 0;
+    }
+
+    .modal-line strong {
+      font-size: 13px;
+    }
+
+    .modal-line.negative strong {
+      color: #ffb3b3;
+    }
+
     @media (max-width: 700px) {
-      .dynamic-row { grid-template-columns: 1fr; }
+      .dynamic-row,
+      .history-item-grid,
+      .modal-summary-grid,
+      .modal-turnos-grid {
+        grid-template-columns: 1fr;
+      }
+
       .dynamic-row .remove-btn { width: 100%; }
       .signed-preview { justify-content: flex-start; }
       .bottom-bar-inner { grid-template-columns: repeat(4, 1fr); }
       .bottom-bar button { font-size: 10px; }
+      .modal-card { max-height: 92vh; }
     }
 
     @media (max-width: 520px) {
@@ -694,51 +973,63 @@
       </div>
 
       <form id="loginForm" class="auth-form">
-  <div class="field">
-    <label for="loginEmail">Email</label>
-    <input id="loginEmail" type="email" placeholder="Digite seu email" required />
-  </div>
-  <div class="field">
-    <label for="loginPassword">Senha</label>
-    <input id="loginPassword" type="password" placeholder="Digite sua senha" required />
-  </div>
-  <button class="auth-submit" type="submit">Entrar agora</button>
-  <button id="forgotPasswordBtn" type="button" class="auth-tab" style="width:100%;">Esqueci a senha</button>
-</form>
+        <div class="field">
+          <label for="loginEmail">Email</label>
+          <input id="loginEmail" type="email" placeholder="Digite seu email" required />
+        </div>
+
+        <div class="field">
+          <label for="loginPassword">Senha</label>
+          <input id="loginPassword" type="password" placeholder="Digite sua senha" required />
+        </div>
+
+        <div class="remember-row">
+          <input id="rememberLogin" type="checkbox" />
+          <label for="rememberLogin">Manter login salvo neste aparelho</label>
+        </div>
+
+        <button class="auth-submit" type="submit">Entrar agora</button>
+        <button id="forgotPasswordBtn" type="button" class="auth-tab" style="width:100%;">Esqueci a senha</button>
+      </form>
 
       <form id="registerForm" class="auth-form hidden">
         <div class="field">
           <label for="registerName">Nome</label>
           <input id="registerName" type="text" placeholder="Digite seu nome" required />
         </div>
+
         <div class="field">
           <label for="registerEmail">Email</label>
           <input id="registerEmail" type="email" placeholder="Digite seu email" required />
         </div>
+
         <div class="field">
           <label for="registerPassword">Senha</label>
           <input id="registerPassword" type="password" placeholder="Crie uma senha" required />
         </div>
+
         <button class="auth-submit" type="submit">Registrar acesso</button>
+      </form>
+
       <form id="forgotPasswordForm" class="auth-form hidden">
-  <div class="field">
-    <label for="resetEmail">Email</label>
-    <input id="resetEmail" type="email" placeholder="Digite o email cadastrado" />
-  </div>
+        <div class="field">
+          <label for="resetEmail">Email</label>
+          <input id="resetEmail" type="email" placeholder="Digite o email cadastrado" />
+        </div>
 
-  <div class="field">
-    <label for="resetCode">Código de autorização</label>
-    <input id="resetCode" type="password" placeholder="Digite o código" />
-  </div>
+        <div class="field">
+          <label for="resetCode">Código de autorização</label>
+          <input id="resetCode" type="password" placeholder="Digite o código" />
+        </div>
 
-  <div class="field">
-    <label for="newPassword">Nova senha</label>
-    <input id="newPassword" type="password" placeholder="Digite a nova senha" />
-  </div>
+        <div class="field">
+          <label for="newPassword">Nova senha</label>
+          <input id="newPassword" type="password" placeholder="Digite a nova senha" />
+        </div>
 
-  <button class="auth-submit" type="submit">Redefinir senha</button>
-  <button id="backToLoginBtn" type="button" class="auth-tab" style="width:100%;">Voltar para login</button>
-</form>
+        <button class="auth-submit" type="submit">Redefinir senha</button>
+        <button id="backToLoginBtn" type="button" class="auth-tab" style="width:100%;">Voltar para login</button>
+      </form>
 
       <div class="auth-note">
         O nome do usuário logado será salvo no fechamento do turno e aparecerá no PDF como responsável pelo envio.
@@ -808,9 +1099,11 @@
           </div>
 
           <div class="history-card">
+            <div class="history-card-title">Histórico automático do turno</div>
             <div class="history-card-text" id="historyInfo">
               Nenhum turno anterior salvo ainda.
             </div>
+            <div id="historyList" class="history-list"></div>
           </div>
         </article>
       </section>
@@ -825,6 +1118,13 @@
             <div class="turno-total">
               <div class="label">Saldo líquido</div>
               <div class="value" id="turno1InlineTotal">$ 0,00</div>
+            </div>
+          </div>
+
+          <div class="turno-meta">
+            <div class="field">
+              <label for="t1_data_fechamento">Data do fechamento</label>
+              <input type="date" id="t1_data_fechamento" />
             </div>
           </div>
 
@@ -879,6 +1179,13 @@
             </div>
           </div>
 
+          <div class="turno-meta">
+            <div class="field">
+              <label for="t2_data_fechamento">Data do fechamento</label>
+              <input type="date" id="t2_data_fechamento" />
+            </div>
+          </div>
+
           <div class="finance-block">
             <div class="finance-head">
               <h4>Entradas / material operacional</h4>
@@ -930,11 +1237,30 @@
     </div>
   </div>
 
+  <div id="historyModal" class="modal hidden">
+    <div class="modal-backdrop" id="historyModalBackdrop"></div>
+    <div class="modal-card">
+      <div class="modal-head">
+        <div>
+          <h3 id="historyModalTitle">Detalhes do fechamento</h3>
+          <small id="historyModalSub">Turno salvo</small>
+        </div>
+        <button id="closeHistoryModal" class="modal-close-btn" type="button">Fechar</button>
+      </div>
+      <div class="modal-body" id="historyModalBody"></div>
+    </div>
+  </div>
+
   <script>
     const PDF_CODE = '351278';
+    const RESET_CODE = '351278';
     const USERS_STORAGE_KEY = 'bank-king-users-v1';
     const ACTIVE_USER_STORAGE_KEY = 'bank-king-active-user-v1';
-    const HISTORY_STORAGE_KEY = 'bank-king-turno-anterior-v3';
+    const HISTORY_STORAGE_KEY = 'bank-king-turno-history-v5';
+    const REMEMBER_LOGIN_STORAGE_KEY = 'bank-king-remember-login-v1';
+    const REMEMBERED_EMAIL_STORAGE_KEY = 'bank-king-remembered-email-v1';
+    const SESSION_LAST_ACTIVITY_KEY = 'bank-king-session-last-activity-v1';
+    const SESSION_TIMEOUT_MS = 30 * 60 * 1000;
 
     const authScreen = document.getElementById('authScreen');
     const appShell = document.getElementById('appShell');
@@ -943,10 +1269,15 @@
     const tabRegister = document.getElementById('tabRegister');
     const loginForm = document.getElementById('loginForm');
     const registerForm = document.getElementById('registerForm');
+    const forgotPasswordForm = document.getElementById('forgotPasswordForm');
+    const forgotPasswordBtn = document.getElementById('forgotPasswordBtn');
+    const backToLoginBtn = document.getElementById('backToLoginBtn');
+    const rememberLoginCheckbox = document.getElementById('rememberLogin');
 
     let dynamicRowCounter = 0;
     let balanceVisible = true;
     let activeUser = null;
+    let sessionInterval = null;
 
     function money(value) {
       return `$ ${Number(value).toLocaleString('pt-BR', {
@@ -1014,6 +1345,28 @@
           input.setSelectionRange(len, len);
         } catch (_) {}
       });
+    }
+
+    function getTodayDateInput() {
+      const now = new Date();
+      const offset = now.getTimezoneOffset();
+      const local = new Date(now.getTime() - offset * 60000);
+      return local.toISOString().split('T')[0];
+    }
+
+    function formatDateBR(dateStr) {
+      if (!dateStr) return 'Sem data';
+      const [y, m, d] = dateStr.split('-');
+      if (!y || !m || !d) return dateStr;
+      return `${d}/${m}/${y}`;
+    }
+
+    function ensureTurnDates() {
+      const t1 = document.getElementById('t1_data_fechamento');
+      const t2 = document.getElementById('t2_data_fechamento');
+
+      if (t2 && !t2.value) t2.value = getTodayDateInput();
+      if (t1 && !t1.value) t1.value = getTodayDateInput();
     }
 
     function attachMoneyMask(input) {
@@ -1107,6 +1460,10 @@
       localStorage.setItem(ACTIVE_USER_STORAGE_KEY, JSON.stringify(user));
     }
 
+    function clearActiveUserStorage() {
+      localStorage.removeItem(ACTIVE_USER_STORAGE_KEY);
+    }
+
     function loadActiveUser() {
       const raw = localStorage.getItem(ACTIVE_USER_STORAGE_KEY);
       if (!raw) return null;
@@ -1117,18 +1474,124 @@
       }
     }
 
-    function logout() {
-      localStorage.removeItem(ACTIVE_USER_STORAGE_KEY);
+    function setRememberLogin(enabled, email = '') {
+      localStorage.setItem(REMEMBER_LOGIN_STORAGE_KEY, enabled ? 'true' : 'false');
+      if (enabled && email) {
+        localStorage.setItem(REMEMBERED_EMAIL_STORAGE_KEY, email);
+      } else if (!enabled) {
+        localStorage.removeItem(REMEMBERED_EMAIL_STORAGE_KEY);
+      }
+    }
+
+    function getRememberLogin() {
+      return localStorage.getItem(REMEMBER_LOGIN_STORAGE_KEY) === 'true';
+    }
+
+    function getRememberedEmail() {
+      return localStorage.getItem(REMEMBERED_EMAIL_STORAGE_KEY) || '';
+    }
+
+    function preloadRememberedLogin() {
+      const remember = getRememberLogin();
+      const rememberedEmail = getRememberedEmail();
+      const loginEmail = document.getElementById('loginEmail');
+      const loginPassword = document.getElementById('loginPassword');
+
+      rememberLoginCheckbox.checked = remember;
+
+      if (rememberedEmail) {
+        loginEmail.value = rememberedEmail;
+        requestAnimationFrame(() => {
+          if (!authScreen.classList.contains('hidden')) {
+            loginPassword.focus();
+          }
+        });
+      } else {
+        loginEmail.value = '';
+        requestAnimationFrame(() => {
+          if (!authScreen.classList.contains('hidden')) {
+            loginEmail.focus();
+          }
+        });
+      }
+    }
+
+    function setSessionActivity() {
+      if (activeUser && getRememberLogin()) {
+        localStorage.setItem(SESSION_LAST_ACTIVITY_KEY, String(Date.now()));
+      }
+    }
+
+    function getSessionLastActivity() {
+      return Number(localStorage.getItem(SESSION_LAST_ACTIVITY_KEY) || 0);
+    }
+
+    function clearSessionActivity() {
+      localStorage.removeItem(SESSION_LAST_ACTIVITY_KEY);
+    }
+
+    function isSessionExpired() {
+      const last = getSessionLastActivity();
+      if (!last) return true;
+      return (Date.now() - last) > SESSION_TIMEOUT_MS;
+    }
+
+    function stopSessionWatcher() {
+      if (sessionInterval) {
+        clearInterval(sessionInterval);
+        sessionInterval = null;
+      }
+    }
+
+    function startSessionWatcher() {
+      stopSessionWatcher();
+      sessionInterval = setInterval(() => {
+        if (activeUser && getRememberLogin() && isSessionExpired()) {
+          alert('Sessão expirada por inatividade de 30 minutos.');
+          forceLogoutByTimeout();
+        }
+      }, 15000);
+    }
+
+    function bindSessionActivityEvents() {
+      const events = ['click', 'touchstart', 'keydown', 'input', 'scroll'];
+      events.forEach((eventName) => {
+        window.addEventListener(eventName, () => {
+          setSessionActivity();
+        }, { passive: true });
+      });
+    }
+
+    function forceLogoutByTimeout() {
+      clearActiveUserStorage();
+      clearSessionActivity();
+      stopSessionWatcher();
       activeUser = null;
       authScreen.classList.remove('hidden');
       appShell.classList.add('hidden');
+      switchAuthTab('login');
+      preloadRememberedLogin();
+    }
+
+    function logout() {
+      clearActiveUserStorage();
+      clearSessionActivity();
+      stopSessionWatcher();
+      activeUser = null;
+      authScreen.classList.remove('hidden');
+      appShell.classList.add('hidden');
+      switchAuthTab('login');
+      preloadRememberedLogin();
     }
 
     function showApp() {
       authScreen.classList.add('hidden');
       appShell.classList.remove('hidden');
       updateActiveUserUI();
+      ensureTurnDates();
       loadHistoryIntoTurn1();
+      setSessionActivity();
+      startSessionWatcher();
       render();
     }
 
@@ -1139,17 +1602,29 @@
 
     function switchAuthTab(mode) {
       const loginActive = mode === 'login';
+      const registerActive = mode === 'register';
+      const forgotActive = mode === 'forgot';
+
       tabLogin.classList.toggle('active', loginActive);
-      tabRegister.classList.toggle('active', !loginActive);
+      tabRegister.classList.toggle('active', registerActive);
+
       loginForm.classList.toggle('hidden', !loginActive);
-      registerForm.classList.toggle('hidden', loginActive);
+      registerForm.classList.toggle('hidden', !registerActive);
+      forgotPasswordForm.classList.toggle('hidden', !forgotActive);
+
+      if (loginActive) {
+        preloadRememberedLogin();
+      }
     }
 
     tabLogin.addEventListener('click', () => switchAuthTab('login'));
     tabRegister.addEventListener('click', () => switchAuthTab('register'));
+    forgotPasswordBtn.addEventListener('click', () => switchAuthTab('forgot'));
+    backToLoginBtn.addEventListener('click', () => switchAuthTab('login'));
 
     registerForm.addEventListener('submit', (e) => {
       e.preventDefault();
+
       const name = document.getElementById('registerName').value.trim();
       const email = document.getElementById('registerEmail').value.trim().toLowerCase();
       const password = document.getElementById('registerPassword').value;
@@ -1161,6 +1636,7 @@
 
       const users = getUsers();
       const exists = users.some(user => user.email === email);
+
       if (exists) {
         alert('Esse email já está registrado.');
         return;
@@ -1169,14 +1645,21 @@
       const user = { name, email, password };
       users.push(user);
       saveUsers(users);
+
       saveActiveUser({ name, email });
+      setRememberLogin(true, email);
+
+      registerForm.reset();
+      rememberLoginCheckbox.checked = true;
       showApp();
     });
 
     loginForm.addEventListener('submit', (e) => {
       e.preventDefault();
+
       const email = document.getElementById('loginEmail').value.trim().toLowerCase();
       const password = document.getElementById('loginPassword').value;
+      const remember = rememberLoginCheckbox.checked;
 
       const users = getUsers();
       const found = users.find(user => user.email === email && user.password === password);
@@ -1187,13 +1670,58 @@
       }
 
       saveActiveUser({ name: found.name, email: found.email });
+      setRememberLogin(remember, email);
+      setSessionActivity();
+
+      loginForm.reset();
+      preloadRememberedLogin();
       showApp();
+    });
+
+    forgotPasswordForm.addEventListener('submit', (e) => {
+      e.preventDefault();
+
+      const email = document.getElementById('resetEmail').value.trim().toLowerCase();
+      const code = document.getElementById('resetCode').value.trim();
+      const newPassword = document.getElementById('newPassword').value;
+
+      if (!email || !code || !newPassword) {
+        alert('Preencha email, código e nova senha.');
+        return;
+      }
+
+      if (code !== RESET_CODE) {
+        alert('Código de autorização inválido.');
+        return;
+      }
+
+      const users = getUsers();
+      const userIndex = users.findIndex(user => user.email === email);
+
+      if (userIndex === -1) {
+        alert('Usuário não encontrado com esse email.');
+        return;
+      }
+
+      users[userIndex].password = newPassword;
+      saveUsers(users);
+
+      alert('Senha redefinida com sucesso.');
+      forgotPasswordForm.reset();
+      switchAuthTab('login');
+
+      const loginEmail = document.getElementById('loginEmail');
+      loginEmail.value = email;
+      requestAnimationFrame(() => {
+        document.getElementById('loginPassword').focus();
+      });
     });
 
     document.getElementById('logoutBtn').addEventListener('click', logout);
 
     const fieldsByTurn = {
       t1: {
+        dataFechamento: 't1_data_fechamento',
         banco: 't1_banco',
         pppoker: 't1_pppoker',
         suprema: 't1_suprema',
@@ -1203,6 +1731,7 @@
         cargasPoker: 't1_cargas_poker'
       },
       t2: {
+        dataFechamento: 't2_data_fechamento',
         banco: 't2_banco',
         pppoker: 't2_pppoker',
         suprema: 't2_suprema',
@@ -1302,6 +1831,470 @@
       }
     }
 
+    function bindRow(row, kind) {
+      const allInputs = row.querySelectorAll('input');
+
+      allInputs.forEach(input => {
+        if (input.hasAttribute('data-dynamic-value') || input.hasAttribute('data-pending-value')) {
+          attachMoneyMask(input);
+        } else {
+          input.addEventListener('input', render);
+        }
+      });
+
+      row.querySelector('[data-remove-row]').addEventListener('click', () => {
+        row.remove();
+        render();
+      });
+
+      const valueInput = row.querySelector(
+        kind === 'pending'
+          ? 'input[data-pending-value]'
+          : 'input[data-dynamic-value]'
+      );
+
+      if (valueInput) updateRowPreview(valueInput);
+    }
+
+    function createDynamicRow(turno, name = '', digits = '') {
+      dynamicRowCounter += 1;
+      const rowId = `${turno}_saida_${dynamicRowCounter}`;
+      const list = document.getElementById(`${turno}_dynamic_list`);
+
+      const row = document.createElement('div');
+      row.className = 'dynamic-row outflow';
+      row.id = rowId;
+      row.innerHTML = `
+        <div class="field">
+          <label>Saída</label>
+          <input type="text" placeholder="Ex.: salário, fornecedor, marketing" value="${escapeHtml(name)}">
+        </div>
+        <div class="field">
+          <label>Valor</label>
+          <input type="text" inputmode="numeric" placeholder="0,00" data-dynamic-value="true">
+        </div>
+        <div class="signed-preview red">- $ 0,00</div>
+        <button class="remove-btn" type="button" data-remove-row="${rowId}">Remover</button>
+      `;
+
+      list.appendChild(row);
+      bindRow(row, 'outflow');
+
+      const valueInput = row.querySelector('input[data-dynamic-value]');
+      if (valueInput && digits) {
+        setDigitsToInput(valueInput, digits);
+        updateRowPreview(valueInput);
+      }
+
+      render();
+    }
+
+    function createPendingRow(turno, name = '', digits = '') {
+      dynamicRowCounter += 1;
+      const rowId = `${turno}_pending_${dynamicRowCounter}`;
+      const list = document.getElementById(`${turno}_pending_list`);
+
+      const row = document.createElement('div');
+      row.className = 'dynamic-row pending';
+      row.id = rowId;
+      row.innerHTML = `
+        <div class="field">
+          <label>Nome do cliente</label>
+          <input type="text" placeholder="Ex.: João, Carlos, Maria" value="${escapeHtml(name)}">
+        </div>
+        <div class="field">
+          <label>Valor</label>
+          <input type="text" inputmode="numeric" placeholder="0,00" data-pending-value="true">
+        </div>
+        <div class="signed-preview amber">- $ 0,00</div>
+        <button class="remove-btn" type="button" data-remove-row="${rowId}">Remover</button>
+      `;
+
+      list.appendChild(row);
+      bindRow(row, 'pending');
+
+      const valueInput = row.querySelector('input[data-pending-value]');
+      if (valueInput && digits) {
+        setDigitsToInput(valueInput, digits);
+        updateRowPreview(valueInput);
+      }
+
+      render();
+    }
+
+    function clearTurn(turno) {
+      const f = fieldsByTurn[turno];
+      Object.values(f).forEach((id) => {
+        const input = document.getElementById(id);
+        if (input) {
+          if (id === f.dataFechamento) {
+            input.value = getTodayDateInput();
+          } else {
+            input.value = '';
+            input.dataset.raw = '';
+          }
+        }
+      });
+
+      const dynamicList = document.getElementById(`${turno}_dynamic_list`);
+      const pendingList = document.getElementById(`${turno}_pending_list`);
+      if (dynamicList) dynamicList.innerHTML = '';
+      if (pendingList) pendingList.innerHTML = '';
+    }
+
+    function buildTurnSnapshot(turno) {
+      const f = fieldsByTurn[turno];
+
+      const outflows = [...document.querySelectorAll(`#${turno}_dynamic_list .dynamic-row`)].map((row) => {
+        const inputs = row.querySelectorAll('input');
+        return {
+          name: inputs[0]?.value || '',
+          value: parseMoneyInput(inputs[1]?.value || '')
+        };
+      });
+
+      const pendings = [...document.querySelectorAll(`#${turno}_pending_list .dynamic-row`)].map((row) => {
+        const inputs = row.querySelectorAll('input');
+        return {
+          name: inputs[0]?.value || '',
+          value: parseMoneyInput(inputs[1]?.value || '')
+        };
+      });
+
+      const entries = [
+        { name: 'Banco Reca', value: getValue(f.banco) },
+        { name: 'PPPoker (x400)', value: getValue(f.pppoker) * 400 },
+        { name: 'Suprema (x400)', value: getValue(f.suprema) * 400 },
+        { name: 'Buffalo', value: getValue(f.buffalo) },
+        { name: 'Ganamos', value: getValue(f.ganamos) },
+        { name: 'Carga de Fichas', value: getValue(f.cargas) },
+        { name: 'Cargas F. Poker (x400)', value: getValue(f.cargasPoker) * 400 }
+      ];
+
+      const entradasTotal = entries.reduce((acc, item) => acc + item.value, 0);
+      const saidasTotal = outflows.reduce((acc, item) => acc + item.value, 0);
+      const pendentesTotal = pendings.reduce((acc, item) => acc + item.value, 0);
+      const saldoLiquido = entradasTotal - saidasTotal - pendentesTotal;
+      const dataFechamento = document.getElementById(f.dataFechamento)?.value || getTodayDateInput();
+
+      return {
+        dataFechamento,
+        entries,
+        outflows,
+        pendings,
+        entradasTotal,
+        saidasTotal,
+        pendentesTotal,
+        saldoLiquido
+      };
+    }
+
+    function serializeTurn(turno) {
+      const turnSnapshot = buildTurnSnapshot(turno);
+      return {
+        submittedByName: activeUser?.name || '',
+        submittedByEmail: activeUser?.email || '',
+        submittedAt: new Date().toISOString(),
+        fechamentoDate: turnSnapshot.dataFechamento,
+        total: turnSnapshot.saldoLiquido,
+        turno: turnSnapshot
+      };
+    }
+
+    function applySnapshotToTurn(turno, snapshot) {
+      if (!snapshot) return;
+
+      clearTurn(turno);
+      const f = fieldsByTurn[turno];
+
+      const dateInput = document.getElementById(f.dataFechamento);
+      if (dateInput) {
+        dateInput.value = snapshot.dataFechamento || getTodayDateInput();
+      }
+
+      const entryMap = {
+        'Banco Reca': f.banco,
+        'PPPoker (x400)': f.pppoker,
+        'Suprema (x400)': f.suprema,
+        'Buffalo': f.buffalo,
+        'Ganamos': f.ganamos,
+        'Carga de Fichas': f.cargas,
+        'Cargas F. Poker (x400)': f.cargasPoker
+      };
+
+      (snapshot.entries || []).forEach((entry) => {
+        const fieldId = entryMap[entry.name];
+        if (!fieldId) return;
+
+        let valueToSet = entry.value || 0;
+        if (entry.name === 'PPPoker (x400)' || entry.name === 'Suprema (x400)' || entry.name === 'Cargas F. Poker (x400)') {
+          valueToSet = valueToSet / 400;
+        }
+
+        const input = document.getElementById(fieldId);
+        if (input) {
+          const digits = Math.round(valueToSet * 100).toString();
+          setDigitsToInput(input, digits);
+        }
+      });
+
+      (snapshot.outflows || []).forEach((item) => {
+        createDynamicRow(turno, item.name || '', Math.round((item.value || 0) * 100).toString());
+      });
+
+      (snapshot.pendings || []).forEach((item) => {
+        createPendingRow(turno, item.name || '', Math.round((item.value || 0) * 100).toString());
+      });
+
+      render();
+    }
+
+    function getCurrentDifference() {
+      const t1Entradas = getEntradasTotal('t1');
+      const t1Saidas = getDynamicTotal('t1');
+      const t1Pendentes = getPendingTotal('t1');
+      const t1Total = t1Entradas - t1Saidas - t1Pendentes;
+
+      const t2Entradas = getEntradasTotal('t2');
+      const t2Saidas = getDynamicTotal('t2');
+      const t2Pendentes = getPendingTotal('t2');
+      const t2Total = t2Entradas - t2Saidas - t2Pendentes;
+
+      return t2Total - t1Total;
+    }
+
+    function loadHistory() {
+      const raw = localStorage.getItem(HISTORY_STORAGE_KEY);
+      if (!raw) return [];
+      try {
+        const parsed = JSON.parse(raw);
+        return Array.isArray(parsed) ? parsed : [];
+      } catch {
+        return [];
+      }
+    }
+
+    function saveHistoryList(historyList) {
+      localStorage.setItem(HISTORY_STORAGE_KEY, JSON.stringify(historyList));
+    }
+
+    function saveTurn2AsHistory() {
+      if (!activeUser) {
+        alert('Faça login para fechar o turno.');
+        return;
+      }
+
+      const serialized = serializeTurn('t2');
+      serialized.diff = getCurrentDifference();
+
+      const historyList = loadHistory();
+      historyList.unshift(serialized);
+      const limitedHistory = historyList.slice(0, 4);
+      saveHistoryList(limitedHistory);
+
+      applySnapshotToTurn('t1', serialized.turno);
+      clearTurn('t2');
+      render();
+
+      alert(`Turno fechado com sucesso por ${activeUser.name}.`);
+    }
+
+    function loadHistoryMeta() {
+      const history = loadHistory();
+      const latest = history[0];
+
+      if (!latest || !latest.submittedAt) return 'Nenhum turno anterior salvo ainda.';
+
+      const dt = new Date(latest.submittedAt);
+      const fechamento = latest.fechamentoDate ? formatDateBR(latest.fechamentoDate) : 'Sem data';
+      return `Último turno fechado por ${latest.submittedByName || 'Não identificado'} • fechamento ${fechamento} • enviado em ${dt.toLocaleDateString('pt-BR')} às ${dt.toLocaleTimeString('pt-BR')}.`;
+    }
+
+    function updateHistoryInfo() {
+      const el = document.getElementById('historyInfo');
+      if (!el) return;
+      el.textContent = loadHistoryMeta();
+    }
+
+    function loadHistoryIntoTurn1() {
+      const history = loadHistory();
+      const latest = history[0];
+      if (!latest || !latest.turno) return;
+      applySnapshotToTurn('t1', latest.turno);
+    }
+
+    function renderHistoryList() {
+      const container = document.getElementById('historyList');
+      if (!container) return;
+
+      const history = loadHistory();
+
+      if (!history.length) {
+        container.innerHTML = `<div class="history-empty">Nenhum fechamento salvo ainda.</div>`;
+        return;
+      }
+
+      container.innerHTML = history.map((item, index) => {
+        const dt = item.submittedAt ? new Date(item.submittedAt) : null;
+        const timeText = dt
+          ? `${dt.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })}`
+          : 'Sem horário';
+
+        const fechamento = item.fechamentoDate ? formatDateBR(item.fechamentoDate) : 'Sem data';
+
+        return `
+          <div class="history-item" data-history-index="${index}">
+            <div class="history-item-top">
+              <div class="history-user">${escapeHtml(item.submittedByName || 'Não identificado')}</div>
+              <div class="history-time">${escapeHtml(fechamento)} • ${escapeHtml(timeText)}</div>
+            </div>
+
+            <div class="history-item-grid">
+              <div class="history-mini-card">
+                <div class="history-mini-label">Total</div>
+                <div class="history-mini-value">${money(item.total || 0)}</div>
+              </div>
+
+              <div class="history-mini-card">
+                <div class="history-mini-label">Diferença</div>
+                <div class="history-mini-value ${Number(item.diff || 0) < 0 ? 'red' : ''}">
+                  ${money(item.diff || 0)}
+                </div>
+              </div>
+            </div>
+          </div>
+        `;
+      }).join('');
+
+      container.querySelectorAll('[data-history-index]').forEach((el) => {
+        el.addEventListener('click', () => {
+          const index = Number(el.dataset.historyIndex);
+          openHistoryModal(index);
+        });
+      });
+    }
+
+    function renderModalLines(list, negative = false) {
+      if (!list || !list.length) {
+        return `<div class="modal-line"><span>Sem registros</span><strong>$ 0,00</strong></div>`;
+      }
+
+      return list.map((item) => `
+        <div class="modal-line ${negative ? 'negative' : ''}">
+          <span>${escapeHtml(item.name || '-')}</span>
+          <strong>${negative ? negativeMoney(item.value || 0) : money(item.value || 0)}</strong>
+        </div>
+      `).join('');
+    }
+
+    function openHistoryModal(index) {
+      const history = loadHistory();
+      const item = history[index];
+      if (!item) return;
+
+      const modal = document.getElementById('historyModal');
+      const title = document.getElementById('historyModalTitle');
+      const sub = document.getElementById('historyModalSub');
+      const body = document.getElementById('historyModalBody');
+
+      const dt = item.submittedAt ? new Date(item.submittedAt) : null;
+      const dateText = dt
+        ? `${dt.toLocaleDateString('pt-BR')} às ${dt.toLocaleTimeString('pt-BR')}`
+        : 'Sem data';
+
+      const fechamentoText = item.fechamentoDate ? formatDateBR(item.fechamentoDate) : 'Sem data';
+
+      title.textContent = `Fechamento • ${item.submittedByName || 'Não identificado'}`;
+      sub.textContent = `Data do fechamento: ${fechamentoText} • Enviado em: ${dateText}`;
+
+      const turno = item.turno || {};
+      const diffValue = Number(item.diff || 0);
+
+      body.innerHTML = `
+        <div class="modal-summary-grid">
+          <div class="modal-summary-card">
+            <div class="modal-summary-label">Total do fechamento</div>
+            <div class="modal-summary-value">${money(item.total || 0)}</div>
+          </div>
+          <div class="modal-summary-card">
+            <div class="modal-summary-label">Diferença</div>
+            <div class="modal-summary-value">${money(diffValue)}</div>
+          </div>
+          <div class="modal-summary-card">
+            <div class="modal-summary-label">Responsável</div>
+            <div class="modal-summary-value">${escapeHtml(item.submittedByName || '-')}</div>
+          </div>
+          <div class="modal-summary-card">
+            <div class="modal-summary-label">Data do fechamento</div>
+            <div class="modal-summary-value">${escapeHtml(fechamentoText)}</div>
+          </div>
+        </div>
+
+        <div class="modal-turnos-grid">
+          <div class="modal-panel">
+            <div class="modal-panel-head">
+              <h4>Entradas</h4>
+            </div>
+            <div class="modal-panel-body">
+              <div>
+                <div class="modal-block-title">Detalhamento</div>
+                ${renderModalLines(turno.entries || [], false)}
+              </div>
+              <div>
+                <div class="modal-block-title">Total de entradas</div>
+                <div class="modal-line">
+                  <span>Total</span>
+                  <strong>${money(turno.entradasTotal || 0)}</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="modal-panel">
+            <div class="modal-panel-head">
+              <h4>Saídas e Pendentes</h4>
+            </div>
+            <div class="modal-panel-body">
+              <div>
+                <div class="modal-block-title">Saídas de caixa</div>
+                ${renderModalLines(turno.outflows || [], true)}
+                <div class="modal-line negative">
+                  <span>Total de saídas</span>
+                  <strong>${negativeMoney(turno.saidasTotal || 0)}</strong>
+                </div>
+              </div>
+
+              <div>
+                <div class="modal-block-title">Pagos pendentes</div>
+                ${renderModalLines(turno.pendings || [], true)}
+                <div class="modal-line negative">
+                  <span>Total de pendentes</span>
+                  <strong>${negativeMoney(turno.pendentesTotal || 0)}</strong>
+                </div>
+              </div>
+
+              <div>
+                <div class="modal-block-title">Saldo líquido</div>
+                <div class="modal-line">
+                  <span>Total final</span>
+                  <strong>${money(turno.saldoLiquido || 0)}</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      `;
+
+      modal.classList.remove('hidden');
+    }
+
+    function closeHistoryModal() {
+      document.getElementById('historyModal').classList.add('hidden');
+    }
+
+    document.getElementById('closeHistoryModal').addEventListener('click', closeHistoryModal);
+    document.getElementById('historyModalBackdrop').addEventListener('click', closeHistoryModal);
+
     function getEntryBreakdown(turno) {
       const f = fieldsByTurn[turno];
       return [
@@ -1330,13 +2323,16 @@
       const abs = Math.abs(diff);
 
       const history = loadHistory();
+      const latest = history[0] || null;
 
       return {
         saldoDisponivel: getValue('t2_banco'),
         t1Entradas, t1Saidas, t1Pendentes, t1Total,
         t2Entradas, t2Saidas, t2Pendentes, t2Total,
         diff, abs,
-        history
+        history: latest,
+        t1Date: document.getElementById('t1_data_fechamento')?.value || '',
+        t2Date: document.getElementById('t2_data_fechamento')?.value || ''
       };
     }
 
@@ -1382,6 +2378,7 @@
       const savedAt = data.history?.submittedAt
         ? new Date(data.history.submittedAt).toLocaleDateString('pt-BR') + ' • ' + new Date(data.history.submittedAt).toLocaleTimeString('pt-BR')
         : 'Sem fechamento salvo';
+      const fechamentoDate = data.t2Date ? formatDateBR(data.t2Date) : 'Sem data';
 
       return `
         <!DOCTYPE html>
@@ -1457,7 +2454,7 @@
             .meta {
               margin-top: 16px;
               display: grid;
-              grid-template-columns: repeat(3, 1fr);
+              grid-template-columns: repeat(4, 1fr);
               gap: 10px;
             }
             .meta-box {
@@ -1597,7 +2594,11 @@
                   <div class="meta-value">${escapeHtml(savedEmail)}</div>
                 </div>
                 <div class="meta-box">
-                  <div class="meta-label">Turno fechado em</div>
+                  <div class="meta-label">Data do fechamento</div>
+                  <div class="meta-value">${escapeHtml(fechamentoDate)}</div>
+                </div>
+                <div class="meta-box">
+                  <div class="meta-label">Enviado em</div>
                   <div class="meta-value">${escapeHtml(savedAt)}</div>
                 </div>
               </div>
@@ -1626,7 +2627,7 @@
               <article class="panel">
                 <div class="panel-head">
                   <h2 class="panel-title">Turno 1</h2>
-                  <div class="panel-sub">Histórico automático do último turno fechado</div>
+                  <div class="panel-sub">Data do fechamento: ${escapeHtml(formatDateBR(data.t1Date || ''))}</div>
                 </div>
 
                 <div class="block">
@@ -1656,7 +2657,7 @@
               <article class="panel">
                 <div class="panel-head">
                   <h2 class="panel-title">Turno 2</h2>
-                  <div class="panel-sub">Turno atual preenchido na tela</div>
+                  <div class="panel-sub">Data do fechamento: ${escapeHtml(formatDateBR(data.t2Date || ''))}</div>
                 </div>
 
                 <div class="block">
@@ -1711,220 +2712,6 @@
       printWindow.onload = () => printWindow.print();
     }
 
-    function bindRow(row, kind) {
-      const allInputs = row.querySelectorAll('input');
-
-      allInputs.forEach(input => {
-        if (input.hasAttribute('data-dynamic-value') || input.hasAttribute('data-pending-value')) {
-          attachMoneyMask(input);
-        } else {
-          input.addEventListener('input', render);
-        }
-      });
-
-      row.querySelector('[data-remove-row]').addEventListener('click', () => {
-        row.remove();
-        render();
-      });
-
-      const valueInput = row.querySelector(
-        kind === 'pending'
-          ? 'input[data-pending-value]'
-          : 'input[data-dynamic-value]'
-      );
-
-      if (valueInput) updateRowPreview(valueInput);
-    }
-
-    function createDynamicRow(turno, name = '', digits = '') {
-      dynamicRowCounter += 1;
-      const rowId = `${turno}_saida_${dynamicRowCounter}`;
-      const list = document.getElementById(`${turno}_dynamic_list`);
-
-      const row = document.createElement('div');
-      row.className = 'dynamic-row outflow';
-      row.id = rowId;
-      row.innerHTML = `
-        <div class="field">
-          <label>Saída</label>
-          <input type="text" placeholder="Ex.: salário, fornecedor, marketing" value="${escapeHtml(name)}">
-        </div>
-        <div class="field">
-          <label>Valor</label>
-          <input type="text" inputmode="numeric" placeholder="0,00" data-dynamic-value="true">
-        </div>
-        <div class="signed-preview red">- $ 0,00</div>
-        <button class="remove-btn" type="button" data-remove-row="${rowId}">Remover</button>
-      `;
-
-      list.appendChild(row);
-      bindRow(row, 'outflow');
-
-      const valueInput = row.querySelector('input[data-dynamic-value]');
-      if (valueInput && digits) {
-        setDigitsToInput(valueInput, digits);
-        updateRowPreview(valueInput);
-      }
-
-      render();
-    }
-
-    function createPendingRow(turno, name = '', digits = '') {
-      dynamicRowCounter += 1;
-      const rowId = `${turno}_pending_${dynamicRowCounter}`;
-      const list = document.getElementById(`${turno}_pending_list`);
-
-      const row = document.createElement('div');
-      row.className = 'dynamic-row pending';
-      row.id = rowId;
-      row.innerHTML = `
-        <div class="field">
-          <label>Nome do cliente</label>
-          <input type="text" placeholder="Ex.: João, Carlos, Maria" value="${escapeHtml(name)}">
-        </div>
-        <div class="field">
-          <label>Valor</label>
-          <input type="text" inputmode="numeric" placeholder="0,00" data-pending-value="true">
-        </div>
-        <div class="signed-preview amber">- $ 0,00</div>
-        <button class="remove-btn" type="button" data-remove-row="${rowId}">Remover</button>
-      `;
-
-      list.appendChild(row);
-      bindRow(row, 'pending');
-
-      const valueInput = row.querySelector('input[data-pending-value]');
-      if (valueInput && digits) {
-        setDigitsToInput(valueInput, digits);
-        updateRowPreview(valueInput);
-      }
-
-      render();
-    }
-
-    function serializeTurn(turno) {
-      const f = fieldsByTurn[turno];
-
-      const outflows = [...document.querySelectorAll(`#${turno}_dynamic_list .dynamic-row`)].map((row) => {
-        const inputs = row.querySelectorAll('input');
-        const valueInput = row.querySelector('input[data-dynamic-value]');
-        return {
-          name: inputs[0]?.value || '',
-          digits: getDigitsFromInput(valueInput || { dataset: { raw: '' } })
-        };
-      });
-
-      const pendings = [...document.querySelectorAll(`#${turno}_pending_list .dynamic-row`)].map((row) => {
-        const inputs = row.querySelectorAll('input');
-        const valueInput = row.querySelector('input[data-pending-value]');
-        return {
-          name: inputs[0]?.value || '',
-          digits: getDigitsFromInput(valueInput || { dataset: { raw: '' } })
-        };
-      });
-
-      return {
-        submittedByName: activeUser?.name || '',
-        submittedByEmail: activeUser?.email || '',
-        submittedAt: new Date().toISOString(),
-        fields: {
-          banco: getDigitsFromInput(document.getElementById(f.banco)),
-          pppoker: getDigitsFromInput(document.getElementById(f.pppoker)),
-          suprema: getDigitsFromInput(document.getElementById(f.suprema)),
-          buffalo: getDigitsFromInput(document.getElementById(f.buffalo)),
-          ganamos: getDigitsFromInput(document.getElementById(f.ganamos)),
-          cargas: getDigitsFromInput(document.getElementById(f.cargas)),
-          cargasPoker: getDigitsFromInput(document.getElementById(f.cargasPoker))
-        },
-        outflows,
-        pendings
-      };
-    }
-
-    function clearTurn(turno) {
-      const f = fieldsByTurn[turno];
-      Object.values(f).forEach((id) => {
-        const input = document.getElementById(id);
-        if (input) {
-          input.value = '';
-          input.dataset.raw = '';
-        }
-      });
-
-      const dynamicList = document.getElementById(`${turno}_dynamic_list`);
-      const pendingList = document.getElementById(`${turno}_pending_list`);
-      if (dynamicList) dynamicList.innerHTML = '';
-      if (pendingList) pendingList.innerHTML = '';
-    }
-
-    function applySerializedTurn(turno, data) {
-      if (!data) return;
-
-      clearTurn(turno);
-      const f = fieldsByTurn[turno];
-
-      Object.entries(data.fields || {}).forEach(([key, digits]) => {
-        const id = f[key];
-        const input = id ? document.getElementById(id) : null;
-        if (input) setDigitsToInput(input, digits || '');
-      });
-
-      (data.outflows || []).forEach((item) => {
-        createDynamicRow(turno, item.name || '', item.digits || '');
-      });
-
-      (data.pendings || []).forEach((item) => {
-        createPendingRow(turno, item.name || '', item.digits || '');
-      });
-
-      render();
-    }
-
-    function saveTurn2AsHistory() {
-      if (!activeUser) {
-        alert('Faça login para fechar o turno.');
-        return;
-      }
-
-      const serialized = serializeTurn('t2');
-      localStorage.setItem(HISTORY_STORAGE_KEY, JSON.stringify(serialized));
-      applySerializedTurn('t1', serialized);
-      clearTurn('t2');
-      render();
-
-      alert(`Turno fechado com sucesso por ${activeUser.name}.`);
-    }
-
-    function loadHistory() {
-      const raw = localStorage.getItem(HISTORY_STORAGE_KEY);
-      if (!raw) return null;
-      try {
-        return JSON.parse(raw);
-      } catch {
-        return null;
-      }
-    }
-
-    function loadHistoryMeta() {
-      const history = loadHistory();
-      if (!history || !history.submittedAt) return 'Nenhum turno anterior salvo ainda.';
-
-      const dt = new Date(history.submittedAt);
-      return `Último turno fechado por ${history.submittedByName || 'Não identificado'} em ${dt.toLocaleDateString('pt-BR')} às ${dt.toLocaleTimeString('pt-BR')}.`;
-    }
-
-    function updateHistoryInfo() {
-      const el = document.getElementById('historyInfo');
-      if (!el) return;
-      el.textContent = loadHistoryMeta();
-    }
-
-    function loadHistoryIntoTurn1() {
-      const history = loadHistory();
-      if (!history) return;
-      applySerializedTurn('t1', history);
-    }
-
     function limparTudo() {
       document.querySelectorAll('.fields input[type="text"]').forEach(input => {
         input.value = '';
@@ -1936,12 +2723,15 @@
         if (el) el.innerHTML = '';
       });
 
-      localStorage.removeItem(HISTORY_STORAGE_KEY);
-      updateHistoryInfo();
+      const t2Date = document.getElementById('t2_data_fechamento');
+      if (t2Date) t2Date.value = getTodayDateInput();
+
       render();
     }
 
     function render() {
+      ensureTurnDates();
+
       const t1Entradas = getEntradasTotal('t1');
       const t1Saidas = getDynamicTotal('t1');
       const t1Pendentes = getPendingTotal('t1');
@@ -1973,6 +2763,7 @@
       updateEyeIcon();
       setResultStyle(diff);
       updateHistoryInfo();
+      renderHistoryList();
     }
 
     document.getElementById('limpar').addEventListener('click', limparTudo);
@@ -1997,11 +2788,20 @@
       render();
     });
 
-    const bootUser = loadActiveUser();
-    if (bootUser) {
+    document.getElementById('t1_data_fechamento').addEventListener('change', render);
+    document.getElementById('t2_data_fechamento').addEventListener('change', render);
+
+    bindSessionActivityEvents();
+
+    const bootUser = getRememberLogin() ? loadActiveUser() : null;
+    preloadRememberedLogin();
+
+    if (bootUser && !isSessionExpired()) {
       activeUser = bootUser;
       showApp();
     } else {
+      clearActiveUserStorage();
+      clearSessionActivity();
       switchAuthTab('login');
     }
   </script>
