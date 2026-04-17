@@ -42,7 +42,7 @@
       width: 100%;
       max-width: 760px;
       margin: 0 auto;
-      padding: 14px 14px calc(140px + var(--safe-bottom));
+      padding: 14px 14px calc(150px + var(--safe-bottom));
     }
 
     .header {
@@ -241,6 +241,27 @@
     .metric-value.blue { color: #b8d4ff; }
     .metric-value.green { color: #b8ffd1; }
     .metric-value.red { color: #ffb3b3; }
+
+    .history-card {
+      margin-top: 12px;
+      padding: 14px;
+      border-radius: 16px;
+      border: 1px solid rgba(96,165,250,0.12);
+      background: rgba(255,255,255,0.02);
+    }
+
+    .history-card-title {
+      font-size: 13px;
+      font-weight: 800;
+      color: #dbeafe;
+      margin-bottom: 6px;
+    }
+
+    .history-card-text {
+      font-size: 12px;
+      color: var(--muted);
+      line-height: 1.45;
+    }
 
     .turnos {
       display: grid;
@@ -460,7 +481,7 @@
       max-width: 760px;
       margin: 0 auto;
       display: grid;
-      grid-template-columns: 1fr 1fr 1fr;
+      grid-template-columns: 1fr 1fr 1fr 1fr;
       gap: 10px;
     }
 
@@ -482,6 +503,12 @@
       background: linear-gradient(135deg, #b45309, #f59e0b);
       color: white;
       box-shadow: 0 10px 28px rgba(245,158,11,0.28);
+    }
+
+    .close-btn {
+      background: linear-gradient(135deg, #047857, #10b981);
+      color: white;
+      box-shadow: 0 10px 28px rgba(16,185,129,0.25);
     }
 
     @media (max-width: 700px) {
@@ -554,6 +581,13 @@
             <div class="metric-value" id="resultadoFinal">$ 0,00</div>
           </div>
         </div>
+
+        <div class="history-card">
+          <div class="history-card-title">Histórico automático</div>
+          <div class="history-card-text" id="historyInfo">
+            Nenhum turno anterior salvo ainda.
+          </div>
+        </div>
       </article>
     </section>
 
@@ -562,7 +596,7 @@
         <div class="turno-head">
           <div>
             <h3>Turno 1</h3>
-            <small>Preencha os dados do primeiro turno</small>
+            <small>Carregado automaticamente do último turno fechado</small>
           </div>
           <div class="turno-total">
             <div class="label">Saldo líquido</div>
@@ -613,7 +647,7 @@
         <div class="turno-head">
           <div>
             <h3>Turno 2</h3>
-            <small>Preencha os dados do segundo turno</small>
+            <small>Turno atual para preenchimento e fechamento</small>
           </div>
           <div class="turno-total">
             <div class="label">Saldo líquido</div>
@@ -665,6 +699,7 @@
   <div class="bottom-bar">
     <div class="bottom-bar-inner">
       <button class="secondary-btn" id="limpar">Limpar tudo</button>
+      <button class="close-btn" id="fecharTurno">Fechar turno</button>
       <button class="pdf-btn" id="exportarPdf">Exportar PDF</button>
       <button class="main-btn" id="calcular">Calcular agora</button>
     </div>
@@ -672,6 +707,7 @@
 
   <script>
     const PDF_CODE = '351278';
+    const HISTORY_STORAGE_KEY = 'bank-king-turno-anterior-v2';
 
     function money(value) {
       return `$ ${Number(value).toLocaleString('pt-BR', {
@@ -917,6 +953,19 @@
       }
     }
 
+    function getEntryBreakdown(turno) {
+      const f = fieldsByTurn[turno];
+      return [
+        ['Banco Reca', getValue(f.banco)],
+        ['PPPoker (x400)', getValue(f.pppoker) * 400],
+        ['Suprema (x400)', getValue(f.suprema) * 400],
+        ['Buffalo', getValue(f.buffalo)],
+        ['Ganamos', getValue(f.ganamos)],
+        ['Carga de Fichas', getValue(f.cargas)],
+        ['Cargas F. Poker (x400)', getValue(f.cargasPoker) * 400]
+      ];
+    }
+
     function getSummaryData() {
       const t1Entradas = getEntradasTotal('t1');
       const t1Saidas = getDynamicTotal('t1');
@@ -941,17 +990,13 @@
       };
     }
 
-    function getEntryBreakdown(turno) {
-      const f = fieldsByTurn[turno];
-      return [
-        ['Banco Reca', getValue(f.banco)],
-        ['PPPoker (x400)', getValue(f.pppoker) * 400],
-        ['Suprema (x400)', getValue(f.suprema) * 400],
-        ['Buffalo', getValue(f.buffalo)],
-        ['Ganamos', getValue(f.ganamos)],
-        ['Carga de Fichas', getValue(f.cargas)],
-        ['Cargas F. Poker (x400)', getValue(f.cargasPoker) * 400]
-      ];
+    function escapeHtml(text) {
+      return String(text)
+        .replaceAll('&', '&amp;')
+        .replaceAll('<', '&lt;')
+        .replaceAll('>', '&gt;')
+        .replaceAll('"', '&quot;')
+        .replaceAll("'", '&#39;');
     }
 
     function getDynamicRowsHtml(turno, type) {
@@ -971,7 +1016,7 @@
         return `
           <div class="pdf-item">
             <span>${escapeHtml(name)}</span>
-            <strong>${type === 'saida' || type === 'pendente' ? negativeMoney(value) : money(value)}</strong>
+            <strong>${negativeMoney(value)}</strong>
           </div>
         `;
       }).join('');
@@ -986,19 +1031,11 @@
       `).join('');
     }
 
-    function escapeHtml(text) {
-      return String(text)
-        .replaceAll('&', '&amp;')
-        .replaceAll('<', '&lt;')
-        .replaceAll('>', '&gt;')
-        .replaceAll('"', '&quot;')
-        .replaceAll("'", '&#39;');
-    }
-
     function buildPremiumPdfHtml() {
       const data = getSummaryData();
       const now = new Date();
       const nowText = `${now.toLocaleDateString('pt-BR')} • ${now.toLocaleTimeString('pt-BR')}`;
+      const historyInfo = loadHistoryMeta();
 
       return `
         <!DOCTYPE html>
@@ -1070,6 +1107,11 @@
               font-size: 44px;
               font-weight: 900;
               letter-spacing: -0.05em;
+            }
+            .history {
+              margin-top: 16px;
+              font-size: 12px;
+              color: #dbeafe;
             }
             .grid4 {
               display: grid;
@@ -1156,12 +1198,8 @@
               color: #94a3b8;
               font-style: italic;
             }
-            .neg {
-              color: #dc2626;
-            }
-            .pos {
-              color: #16a34a;
-            }
+            .neg { color: #dc2626; }
+            .pos { color: #16a34a; }
             @media print {
               body { background: white; padding: 0; }
               .sheet { max-width: 100%; }
@@ -1180,10 +1218,12 @@
                     <div class="date">Relatório premium de fechamento • ${escapeHtml(nowText)}</div>
                   </div>
                 </div>
-                <div></div>
               </div>
               <div class="hero-label">Saldo Disponível</div>
               <div class="hero-value">${money(data.saldoDisponivel)}</div>
+              <div class="history">
+                Histórico automático: ${escapeHtml(historyInfo)}
+              </div>
             </section>
 
             <section class="grid4">
@@ -1209,7 +1249,7 @@
               <article class="panel">
                 <div class="panel-head">
                   <h2 class="panel-title">Turno 1</h2>
-                  <div class="panel-sub">Resumo detalhado do primeiro turno</div>
+                  <div class="panel-sub">Puxado automaticamente do histórico salvo</div>
                 </div>
 
                 <div class="block">
@@ -1239,7 +1279,7 @@
               <article class="panel">
                 <div class="panel-head">
                   <h2 class="panel-title">Turno 2</h2>
-                  <div class="panel-sub">Resumo detalhado do segundo turno</div>
+                  <div class="panel-sub">Turno atual preenchido na tela</div>
                 </div>
 
                 <div class="block">
@@ -1290,11 +1330,8 @@
       printWindow.document.open();
       printWindow.document.write(html);
       printWindow.document.close();
-
       printWindow.focus();
-      printWindow.onload = () => {
-        printWindow.print();
-      };
+      printWindow.onload = () => printWindow.print();
     }
 
     function render() {
@@ -1328,6 +1365,7 @@
 
       updateEyeIcon();
       setResultStyle(diff);
+      updateHistoryInfo();
     }
 
     function bindRow(row, kind) {
@@ -1355,7 +1393,7 @@
       if (valueInput) updateRowPreview(valueInput);
     }
 
-    function createDynamicRow(turno, name = '') {
+    function createDynamicRow(turno, name = '', digits = '') {
       dynamicRowCounter += 1;
       const rowId = `${turno}_saida_${dynamicRowCounter}`;
       const list = document.getElementById(`${turno}_dynamic_list`);
@@ -1366,7 +1404,7 @@
       row.innerHTML = `
         <div class="field">
           <label>Saída</label>
-          <input type="text" placeholder="Ex.: salário, fornecedor, marketing" value="${name}">
+          <input type="text" placeholder="Ex.: salário, fornecedor, marketing" value="${escapeHtml(name)}">
         </div>
         <div class="field">
           <label>Valor</label>
@@ -1378,10 +1416,17 @@
 
       list.appendChild(row);
       bindRow(row, 'outflow');
+
+      const valueInput = row.querySelector('input[data-dynamic-value]');
+      if (valueInput && digits) {
+        setDigitsToInput(valueInput, digits);
+        updateRowPreview(valueInput);
+      }
+
       render();
     }
 
-    function createPendingRow(turno, name = '') {
+    function createPendingRow(turno, name = '', digits = '') {
       dynamicRowCounter += 1;
       const rowId = `${turno}_pending_${dynamicRowCounter}`;
       const list = document.getElementById(`${turno}_pending_list`);
@@ -1392,7 +1437,7 @@
       row.innerHTML = `
         <div class="field">
           <label>Nome do cliente</label>
-          <input type="text" placeholder="Ex.: João, Carlos, Maria" value="${name}">
+          <input type="text" placeholder="Ex.: João, Carlos, Maria" value="${escapeHtml(name)}">
         </div>
         <div class="field">
           <label>Valor</label>
@@ -1404,7 +1449,130 @@
 
       list.appendChild(row);
       bindRow(row, 'pending');
+
+      const valueInput = row.querySelector('input[data-pending-value]');
+      if (valueInput && digits) {
+        setDigitsToInput(valueInput, digits);
+        updateRowPreview(valueInput);
+      }
+
       render();
+    }
+
+    function serializeTurn(turno) {
+      const f = fieldsByTurn[turno];
+
+      const outflows = [...document.querySelectorAll(`#${turno}_dynamic_list .dynamic-row`)].map((row) => {
+        const inputs = row.querySelectorAll('input');
+        const valueInput = row.querySelector('input[data-dynamic-value]');
+        return {
+          name: inputs[0]?.value || '',
+          digits: getDigitsFromInput(valueInput || { dataset: { raw: '' } })
+        };
+      });
+
+      const pendings = [...document.querySelectorAll(`#${turno}_pending_list .dynamic-row`)].map((row) => {
+        const inputs = row.querySelectorAll('input');
+        const valueInput = row.querySelector('input[data-pending-value]');
+        return {
+          name: inputs[0]?.value || '',
+          digits: getDigitsFromInput(valueInput || { dataset: { raw: '' } })
+        };
+      });
+
+      return {
+        savedAt: new Date().toISOString(),
+        fields: {
+          banco: getDigitsFromInput(document.getElementById(f.banco)),
+          pppoker: getDigitsFromInput(document.getElementById(f.pppoker)),
+          suprema: getDigitsFromInput(document.getElementById(f.suprema)),
+          buffalo: getDigitsFromInput(document.getElementById(f.buffalo)),
+          ganamos: getDigitsFromInput(document.getElementById(f.ganamos)),
+          cargas: getDigitsFromInput(document.getElementById(f.cargas)),
+          cargasPoker: getDigitsFromInput(document.getElementById(f.cargasPoker))
+        },
+        outflows,
+        pendings
+      };
+    }
+
+    function clearTurn(turno) {
+      const f = fieldsByTurn[turno];
+      Object.values(f).forEach((id) => {
+        const input = document.getElementById(id);
+        if (input) {
+          input.value = '';
+          input.dataset.raw = '';
+        }
+      });
+
+      const dynamicList = document.getElementById(`${turno}_dynamic_list`);
+      const pendingList = document.getElementById(`${turno}_pending_list`);
+      if (dynamicList) dynamicList.innerHTML = '';
+      if (pendingList) pendingList.innerHTML = '';
+    }
+
+    function applySerializedTurn(turno, data) {
+      if (!data) return;
+
+      clearTurn(turno);
+      const f = fieldsByTurn[turno];
+
+      Object.entries(data.fields || {}).forEach(([key, digits]) => {
+        const id = f[key];
+        const input = id ? document.getElementById(id) : null;
+        if (input) setDigitsToInput(input, digits || '');
+      });
+
+      (data.outflows || []).forEach((item) => {
+        createDynamicRow(turno, item.name || '', item.digits || '');
+      });
+
+      (data.pendings || []).forEach((item) => {
+        createPendingRow(turno, item.name || '', item.digits || '');
+      });
+
+      render();
+    }
+
+    function saveTurn2AsHistory() {
+      const serialized = serializeTurn('t2');
+      localStorage.setItem(HISTORY_STORAGE_KEY, JSON.stringify(serialized));
+      applySerializedTurn('t1', serialized);
+      clearTurn('t2');
+      render();
+      alert('Turno fechado com sucesso. O Turno 2 foi salvo como histórico e passou para o Turno 1.');
+    }
+
+    function loadHistory() {
+      const raw = localStorage.getItem(HISTORY_STORAGE_KEY);
+      if (!raw) return null;
+
+      try {
+        return JSON.parse(raw);
+      } catch (error) {
+        console.error('Erro ao ler histórico:', error);
+        return null;
+      }
+    }
+
+    function loadHistoryMeta() {
+      const history = loadHistory();
+      if (!history || !history.savedAt) return 'Nenhum turno anterior salvo.';
+      const dt = new Date(history.savedAt);
+      return `Último turno fechado em ${dt.toLocaleDateString('pt-BR')} às ${dt.toLocaleTimeString('pt-BR')}.`;
+    }
+
+    function updateHistoryInfo() {
+      const el = document.getElementById('historyInfo');
+      if (!el) return;
+      el.textContent = loadHistoryMeta();
+    }
+
+    function loadHistoryIntoTurn1() {
+      const history = loadHistory();
+      if (!history) return;
+      applySerializedTurn('t1', history);
     }
 
     function limparTudo() {
@@ -1418,11 +1586,14 @@
         if (el) el.innerHTML = '';
       });
 
+      localStorage.removeItem(HISTORY_STORAGE_KEY);
+      updateHistoryInfo();
       render();
     }
 
     document.getElementById('calcular').addEventListener('click', render);
     document.getElementById('limpar').addEventListener('click', limparTudo);
+    document.getElementById('fecharTurno').addEventListener('click', saveTurn2AsHistory);
     document.getElementById('exportarPdf').addEventListener('click', exportToPdfProtected);
 
     document.querySelectorAll('.fields input[type="text"]').forEach(input => {
@@ -1442,6 +1613,7 @@
       render();
     });
 
+    loadHistoryIntoTurn1();
     render();
   </script>
 </body>
