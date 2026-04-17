@@ -320,6 +320,11 @@
       outline: none;
     }
 
+    .field input::placeholder {
+      color: #6f84a8;
+      opacity: 1;
+    }
+
     .field input:focus {
       border-color: rgba(96,165,250,0.34);
       box-shadow: 0 0 0 4px rgba(29,78,216,0.12);
@@ -353,7 +358,6 @@
       white-space: nowrap;
     }
 
-    .finance-total.green { color: #b8ffd1; }
     .finance-total.red { color: #ffb3b3; }
     .finance-total.blue { color: #b8d4ff; }
 
@@ -440,13 +444,6 @@
       box-shadow: 0 8px 20px rgba(15,76,189,0.28);
     }
 
-    .helper {
-      margin-top: 10px;
-      color: var(--muted);
-      font-size: 12px;
-      line-height: 1.45;
-    }
-
     .bottom-bar {
       position: fixed;
       left: 0;
@@ -487,10 +484,6 @@
       box-shadow: 0 10px 28px rgba(245,158,11,0.28);
     }
 
-    .print-area {
-      display: none;
-    }
-
     @media (max-width: 700px) {
       .dynamic-row { grid-template-columns: 1fr; }
       .dynamic-row .remove-btn { width: 100%; }
@@ -506,92 +499,6 @@
       .turnos { grid-template-columns: 1fr 1fr; }
       .fields.two-col { grid-template-columns: repeat(2, 1fr); }
       .bottom-bar-inner { max-width: 1180px; width: calc(100% - 36px); }
-    }
-
-    @media print {
-      body {
-        background: white !important;
-        color: #111827 !important;
-      }
-
-      .app, .bottom-bar, .header {
-        display: none !important;
-      }
-
-      .print-area {
-        display: block !important;
-        padding: 24px;
-        font-family: Arial, sans-serif;
-        color: #111827;
-      }
-
-      .print-title {
-        font-size: 24px;
-        font-weight: 700;
-        margin-bottom: 8px;
-      }
-
-      .print-subtitle {
-        font-size: 12px;
-        color: #4b5563;
-        margin-bottom: 24px;
-      }
-
-      .print-grid {
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-        gap: 14px;
-        margin-bottom: 18px;
-      }
-
-      .print-card {
-        border: 1px solid #d1d5db;
-        border-radius: 12px;
-        padding: 14px;
-        break-inside: avoid;
-      }
-
-      .print-card h3 {
-        margin: 0 0 10px;
-        font-size: 15px;
-      }
-
-      .print-row {
-        display: flex;
-        justify-content: space-between;
-        gap: 12px;
-        padding: 6px 0;
-        border-bottom: 1px solid #f3f4f6;
-        font-size: 13px;
-      }
-
-      .print-row:last-child {
-        border-bottom: 0;
-      }
-
-      .print-main {
-        border: 2px solid #111827;
-        border-radius: 14px;
-        padding: 16px;
-        margin-bottom: 18px;
-      }
-
-      .print-main-label {
-        font-size: 12px;
-        color: #4b5563;
-        margin-bottom: 6px;
-      }
-
-      .print-main-value {
-        font-size: 30px;
-        font-weight: 800;
-      }
-
-      .print-section-title {
-        font-size: 18px;
-        font-weight: 700;
-        margin: 20px 0 10px;
-      }
     }
   </style>
 </head>
@@ -669,13 +576,13 @@
             <div class="finance-total blue" id="t1_entradas_total">$ 0,00</div>
           </div>
           <div class="fields two-col">
-            <div class="field"><label for="t1_banco">Banco Reca</label><input type="text" inputmode="numeric" id="t1_banco" value=""></div>
-            <div class="field"><label for="t1_pppoker">PPPoker (x400)</label><input type="text" inputmode="numeric" id="t1_pppoker" value=""></div>
-            <div class="field"><label for="t1_suprema">Suprema (x400)</label><input type="text" inputmode="numeric" id="t1_suprema" value=""></div>
-            <div class="field"><label for="t1_buffalo">Buffalo</label><input type="text" inputmode="numeric" id="t1_buffalo" value=""></div>
-            <div class="field"><label for="t1_ganamos">Ganamos</label><input type="text" inputmode="numeric" id="t1_ganamos" value=""></div>
-            <div class="field"><label for="t1_cargas">Carga de Fichas</label><input type="text" inputmode="numeric" id="t1_cargas" value=""></div>
-            <div class="field"><label for="t1_cargas_poker">Cargas F. Poker (x400)</label><input type="text" inputmode="numeric" id="t1_cargas_poker" value=""></div>
+            <div class="field"><label for="t1_banco">Banco Reca</label><input type="text" inputmode="numeric" id="t1_banco" placeholder="0,00"></div>
+            <div class="field"><label for="t1_pppoker">PPPoker (x400)</label><input type="text" inputmode="numeric" id="t1_pppoker" placeholder="0,00"></div>
+            <div class="field"><label for="t1_suprema">Suprema (x400)</label><input type="text" inputmode="numeric" id="t1_suprema" placeholder="0,00"></div>
+            <div class="field"><label for="t1_buffalo">Buffalo</label><input type="text" inputmode="numeric" id="t1_buffalo" placeholder="0,00"></div>
+            <div class="field"><label for="t1_ganamos">Ganamos</label><input type="text" inputmode="numeric" id="t1_ganamos" placeholder="0,00"></div>
+            <div class="field"><label for="t1_cargas">Carga de Fichas</label><input type="text" inputmode="numeric" id="t1_cargas" placeholder="0,00"></div>
+            <div class="field"><label for="t1_cargas_poker">Cargas F. Poker (x400)</label><input type="text" inputmode="numeric" id="t1_cargas_poker" placeholder="0,00"></div>
           </div>
         </div>
 
@@ -720,13 +627,13 @@
             <div class="finance-total blue" id="t2_entradas_total">$ 0,00</div>
           </div>
           <div class="fields two-col">
-            <div class="field"><label for="t2_banco">Banco Reca</label><input type="text" inputmode="numeric" id="t2_banco" value=""></div>
-            <div class="field"><label for="t2_pppoker">PPPoker (x400)</label><input type="text" inputmode="numeric" id="t2_pppoker" value=""></div>
-            <div class="field"><label for="t2_suprema">Suprema (x400)</label><input type="text" inputmode="numeric" id="t2_suprema" value=""></div>
-            <div class="field"><label for="t2_buffalo">Buffalo</label><input type="text" inputmode="numeric" id="t2_buffalo" value=""></div>
-            <div class="field"><label for="t2_ganamos">Ganamos</label><input type="text" inputmode="numeric" id="t2_ganamos" value=""></div>
-            <div class="field"><label for="t2_cargas">Carga de Fichas</label><input type="text" inputmode="numeric" id="t2_cargas" value=""></div>
-            <div class="field"><label for="t2_cargas_poker">Cargas F. Poker (x400)</label><input type="text" inputmode="numeric" id="t2_cargas_poker" value=""></div>
+            <div class="field"><label for="t2_banco">Banco Reca</label><input type="text" inputmode="numeric" id="t2_banco" placeholder="0,00"></div>
+            <div class="field"><label for="t2_pppoker">PPPoker (x400)</label><input type="text" inputmode="numeric" id="t2_pppoker" placeholder="0,00"></div>
+            <div class="field"><label for="t2_suprema">Suprema (x400)</label><input type="text" inputmode="numeric" id="t2_suprema" placeholder="0,00"></div>
+            <div class="field"><label for="t2_buffalo">Buffalo</label><input type="text" inputmode="numeric" id="t2_buffalo" placeholder="0,00"></div>
+            <div class="field"><label for="t2_ganamos">Ganamos</label><input type="text" inputmode="numeric" id="t2_ganamos" placeholder="0,00"></div>
+            <div class="field"><label for="t2_cargas">Carga de Fichas</label><input type="text" inputmode="numeric" id="t2_cargas" placeholder="0,00"></div>
+            <div class="field"><label for="t2_cargas_poker">Cargas F. Poker (x400)</label><input type="text" inputmode="numeric" id="t2_cargas_poker" placeholder="0,00"></div>
           </div>
         </div>
 
@@ -762,48 +669,6 @@
       <button class="main-btn" id="calcular">Calcular agora</button>
     </div>
   </div>
-
-  <section class="print-area" id="printArea">
-    <div class="print-title">Bank King — Relatório de Fechamento</div>
-    <div class="print-subtitle" id="printDate"></div>
-
-    <div class="print-main">
-      <div class="print-main-label">Saldo Disponível</div>
-      <div class="print-main-value" id="printSaldoDisponivel">$ 0,00</div>
-    </div>
-
-    <div class="print-grid">
-      <div class="print-card">
-        <h3>Resumo Geral</h3>
-        <div class="print-row"><span>Turno 1 • Saldo líquido</span><strong id="printTotalT1">$ 0,00</strong></div>
-        <div class="print-row"><span>Turno 2 • Saldo líquido</span><strong id="printTotalT2">$ 0,00</strong></div>
-        <div class="print-row"><span>Diferença absoluta</span><strong id="printDiffAbs">$ 0,00</strong></div>
-        <div class="print-row"><span>Resultado final</span><strong id="printResultado">$ 0,00</strong></div>
-      </div>
-
-      <div class="print-card">
-        <h3>Turno 1</h3>
-        <div class="print-row"><span>Entradas</span><strong id="printT1Entradas">$ 0,00</strong></div>
-        <div class="print-row"><span>Saídas</span><strong id="printT1Saidas">- $ 0,00</strong></div>
-        <div class="print-row"><span>Pendentes</span><strong id="printT1Pendentes">- $ 0,00</strong></div>
-        <div class="print-row"><span>Saldo líquido</span><strong id="printT1Liquido">$ 0,00</strong></div>
-      </div>
-
-      <div class="print-card">
-        <h3>Turno 2</h3>
-        <div class="print-row"><span>Entradas</span><strong id="printT2Entradas">$ 0,00</strong></div>
-        <div class="print-row"><span>Saídas</span><strong id="printT2Saidas">- $ 0,00</strong></div>
-        <div class="print-row"><span>Pendentes</span><strong id="printT2Pendentes">- $ 0,00</strong></div>
-        <div class="print-row"><span>Saldo líquido</span><strong id="printT2Liquido">$ 0,00</strong></div>
-      </div>
-
-      <div class="print-card">
-        <h3>Conta Bancária</h3>
-        <div class="print-row"><span>Banco Reca • Turno 1</span><strong id="printBancoT1">$ 0,00</strong></div>
-        <div class="print-row"><span>Banco Reca • Turno 2</span><strong id="printBancoT2">$ 0,00</strong></div>
-      </div>
-    </div>
-  </section>
 
   <script>
     const PDF_CODE = '351278';
@@ -848,17 +713,94 @@
       return Number.isFinite(number) ? number : 0;
     }
 
+    function getDigitsFromInput(input) {
+      return input.dataset.raw || '';
+    }
+
+    function setDigitsToInput(input, digits) {
+      const clean = (digits || '').replace(/\D/g, '');
+      input.dataset.raw = clean;
+      input.value = formatDigitsToMoneyString(clean);
+    }
+
+    function moveCursorToEnd(input) {
+      requestAnimationFrame(() => {
+        const len = input.value.length;
+        try {
+          input.setSelectionRange(len, len);
+        } catch (_) {}
+      });
+    }
+
     function attachMoneyMask(input) {
-      input.addEventListener('input', () => {
-        const digits = input.value.replace(/\D/g, '');
-        input.value = formatDigitsToMoneyString(digits);
+      if (input.dataset.maskAttached === 'true') return;
+      input.dataset.maskAttached = 'true';
+      input.dataset.raw = '';
+      input.placeholder = '0,00';
+      input.autocomplete = 'off';
+      input.spellcheck = false;
+
+      input.addEventListener('keydown', (e) => {
+        const allowedControl =
+          e.key === 'Tab' ||
+          e.key === 'Shift' ||
+          e.key === 'Control' ||
+          e.key === 'Meta' ||
+          e.key === 'Alt' ||
+          e.key === 'ArrowLeft' ||
+          e.key === 'ArrowRight' ||
+          e.key === 'ArrowUp' ||
+          e.key === 'ArrowDown' ||
+          e.key === 'Home' ||
+          e.key === 'End';
+
+        if (allowedControl) return;
+
+        const isShortcut = (e.ctrlKey || e.metaKey) && ['a', 'c', 'v', 'x'].includes(e.key.toLowerCase());
+        if (isShortcut) return;
+
+        if (/^\d$/.test(e.key)) {
+          e.preventDefault();
+          const raw = getDigitsFromInput(input) + e.key;
+          setDigitsToInput(input, raw);
+          moveCursorToEnd(input);
+          render();
+          return;
+        }
+
+        if (e.key === 'Backspace') {
+          e.preventDefault();
+          const raw = getDigitsFromInput(input).slice(0, -1);
+          setDigitsToInput(input, raw);
+          moveCursorToEnd(input);
+          render();
+          return;
+        }
+
+        if (e.key === 'Delete') {
+          e.preventDefault();
+          setDigitsToInput(input, '');
+          moveCursorToEnd(input);
+          render();
+          return;
+        }
+
+        e.preventDefault();
+      });
+
+      input.addEventListener('paste', (e) => {
+        e.preventDefault();
+        const pasted = (e.clipboardData || window.clipboardData).getData('text') || '';
+        const digits = pasted.replace(/\D/g, '');
+        if (!digits) return;
+        const raw = getDigitsFromInput(input) + digits;
+        setDigitsToInput(input, raw);
+        moveCursorToEnd(input);
         render();
       });
 
-      input.addEventListener('blur', () => {
-        const digits = input.value.replace(/\D/g, '');
-        input.value = formatDigitsToMoneyString(digits);
-        render();
+      input.addEventListener('focus', () => {
+        moveCursorToEnd(input);
       });
     }
 
@@ -908,36 +850,21 @@
     function getDynamicTotal(turno) {
       const list = document.getElementById(`${turno}_dynamic_list`);
       if (!list) return 0;
-
-      const inputs = list.querySelectorAll('input[data-dynamic-value]');
       let total = 0;
-
-      inputs.forEach(input => {
+      list.querySelectorAll('input[data-dynamic-value]').forEach(input => {
         total += parseMoneyInput(input.value);
       });
-
       return total;
     }
 
     function getPendingTotal(turno) {
       const list = document.getElementById(`${turno}_pending_list`);
       if (!list) return 0;
-
-      const inputs = list.querySelectorAll('input[data-pending-value]');
       let total = 0;
-
-      inputs.forEach(input => {
+      list.querySelectorAll('input[data-pending-value]').forEach(input => {
         total += parseMoneyInput(input.value);
       });
-
       return total;
-    }
-
-    function calcTurno(turno) {
-      const entradas = getEntradasTotal(turno);
-      const saidas = getDynamicTotal(turno);
-      const pendentes = getPendingTotal(turno);
-      return entradas - saidas - pendentes;
     }
 
     function setResultStyle(diff) {
@@ -962,12 +889,9 @@
     function updateRowPreview(input) {
       const row = input.closest('.dynamic-row');
       if (!row) return;
-
       const preview = row.querySelector('.signed-preview');
       if (!preview) return;
-
-      const safeValue = parseMoneyInput(input.value);
-      preview.textContent = negativeMoney(safeValue);
+      preview.textContent = negativeMoney(parseMoneyInput(input.value));
     }
 
     function updateEyeIcon() {
@@ -1017,69 +941,399 @@
       };
     }
 
-    function renderPrintData() {
+    function getEntryBreakdown(turno) {
+      const f = fieldsByTurn[turno];
+      return [
+        ['Banco Reca', getValue(f.banco)],
+        ['PPPoker (x400)', getValue(f.pppoker) * 400],
+        ['Suprema (x400)', getValue(f.suprema) * 400],
+        ['Buffalo', getValue(f.buffalo)],
+        ['Ganamos', getValue(f.ganamos)],
+        ['Carga de Fichas', getValue(f.cargas)],
+        ['Cargas F. Poker (x400)', getValue(f.cargasPoker) * 400]
+      ];
+    }
+
+    function getDynamicRowsHtml(turno, type) {
+      const selector = type === 'saida'
+        ? `#${turno}_dynamic_list .dynamic-row`
+        : `#${turno}_pending_list .dynamic-row`;
+
+      const rows = [...document.querySelectorAll(selector)];
+      if (!rows.length) {
+        return `<div class="pdf-item empty">Sem registros</div>`;
+      }
+
+      return rows.map((row) => {
+        const inputs = row.querySelectorAll('input');
+        const name = inputs[0]?.value?.trim() || (type === 'saida' ? 'Saída' : 'Pendente');
+        const value = parseMoneyInput(inputs[1]?.value || '');
+        return `
+          <div class="pdf-item">
+            <span>${escapeHtml(name)}</span>
+            <strong>${type === 'saida' || type === 'pendente' ? negativeMoney(value) : money(value)}</strong>
+          </div>
+        `;
+      }).join('');
+    }
+
+    function getEntriesHtml(turno) {
+      return getEntryBreakdown(turno).map(([label, value]) => `
+        <div class="pdf-item">
+          <span>${escapeHtml(label)}</span>
+          <strong>${money(value)}</strong>
+        </div>
+      `).join('');
+    }
+
+    function escapeHtml(text) {
+      return String(text)
+        .replaceAll('&', '&amp;')
+        .replaceAll('<', '&lt;')
+        .replaceAll('>', '&gt;')
+        .replaceAll('"', '&quot;')
+        .replaceAll("'", '&#39;');
+    }
+
+    function buildPremiumPdfHtml() {
       const data = getSummaryData();
+      const now = new Date();
+      const nowText = `${now.toLocaleDateString('pt-BR')} • ${now.toLocaleTimeString('pt-BR')}`;
 
-      document.getElementById('printDate').textContent =
-        `Gerado em ${new Date().toLocaleDateString('pt-BR')} às ${new Date().toLocaleTimeString('pt-BR')}`;
+      return `
+        <!DOCTYPE html>
+        <html lang="pt-BR">
+        <head>
+          <meta charset="UTF-8" />
+          <title>Bank King PDF</title>
+          <style>
+            * { box-sizing: border-box; }
+            body {
+              margin: 0;
+              font-family: Inter, Arial, sans-serif;
+              background: #eef3fb;
+              color: #0f172a;
+              padding: 26px;
+            }
+            .sheet {
+              max-width: 1120px;
+              margin: 0 auto;
+            }
+            .hero {
+              background: linear-gradient(135deg, #0b1831 0%, #163867 55%, #0b1831 100%);
+              color: white;
+              border-radius: 22px;
+              padding: 24px;
+              box-shadow: 0 18px 40px rgba(15, 23, 42, 0.18);
+              margin-bottom: 18px;
+            }
+            .hero-top {
+              display: flex;
+              justify-content: space-between;
+              align-items: center;
+              gap: 16px;
+              margin-bottom: 22px;
+            }
+            .brand {
+              display: flex;
+              align-items: center;
+              gap: 12px;
+            }
+            .logo {
+              width: 44px;
+              height: 44px;
+              border-radius: 50%;
+              border: 2px solid #f59e0b;
+              color: #f59e0b;
+              display: flex;
+              align-items: center;
+              justify-content: center;
+              font-weight: 800;
+            }
+            .title {
+              font-size: 28px;
+              font-weight: 800;
+              letter-spacing: -0.03em;
+            }
+            .date {
+              font-size: 13px;
+              color: #dbeafe;
+            }
+            .hero-label {
+              font-size: 12px;
+              text-transform: uppercase;
+              letter-spacing: 0.08em;
+              color: #bfdbfe;
+              margin-bottom: 8px;
+            }
+            .hero-value {
+              font-size: 44px;
+              font-weight: 900;
+              letter-spacing: -0.05em;
+            }
+            .grid4 {
+              display: grid;
+              grid-template-columns: repeat(4, 1fr);
+              gap: 14px;
+              margin-bottom: 18px;
+            }
+            .stat {
+              background: white;
+              border-radius: 18px;
+              padding: 16px;
+              border: 1px solid #dbe4f0;
+              box-shadow: 0 8px 18px rgba(15, 23, 42, 0.06);
+            }
+            .stat-label {
+              font-size: 12px;
+              color: #64748b;
+              margin-bottom: 8px;
+            }
+            .stat-value {
+              font-size: 26px;
+              font-weight: 800;
+              letter-spacing: -0.04em;
+            }
+            .layout {
+              display: grid;
+              grid-template-columns: 1fr 1fr;
+              gap: 18px;
+            }
+            .panel {
+              background: white;
+              border-radius: 20px;
+              border: 1px solid #dbe4f0;
+              box-shadow: 0 8px 18px rgba(15, 23, 42, 0.06);
+              overflow: hidden;
+            }
+            .panel-head {
+              padding: 16px 18px;
+              border-bottom: 1px solid #e8eef7;
+              background: #f8fbff;
+            }
+            .panel-title {
+              font-size: 18px;
+              font-weight: 800;
+              letter-spacing: -0.03em;
+              margin: 0;
+            }
+            .panel-sub {
+              margin-top: 4px;
+              font-size: 12px;
+              color: #64748b;
+            }
+            .block {
+              padding: 16px 18px;
+              border-bottom: 1px solid #eef2f7;
+            }
+            .block:last-child {
+              border-bottom: 0;
+            }
+            .block-title {
+              font-size: 13px;
+              font-weight: 800;
+              color: #334155;
+              text-transform: uppercase;
+              letter-spacing: 0.06em;
+              margin-bottom: 12px;
+            }
+            .pdf-item {
+              display: flex;
+              justify-content: space-between;
+              align-items: center;
+              gap: 12px;
+              padding: 8px 0;
+              border-bottom: 1px solid #f1f5f9;
+              font-size: 13px;
+            }
+            .pdf-item:last-child {
+              border-bottom: 0;
+            }
+            .pdf-item strong {
+              font-size: 13px;
+            }
+            .empty {
+              color: #94a3b8;
+              font-style: italic;
+            }
+            .neg {
+              color: #dc2626;
+            }
+            .pos {
+              color: #16a34a;
+            }
+            @media print {
+              body { background: white; padding: 0; }
+              .sheet { max-width: 100%; }
+              .panel, .stat, .hero { box-shadow: none; }
+            }
+          </style>
+        </head>
+        <body>
+          <div class="sheet">
+            <section class="hero">
+              <div class="hero-top">
+                <div class="brand">
+                  <div class="logo">BK</div>
+                  <div>
+                    <div class="title">Bank King</div>
+                    <div class="date">Relatório premium de fechamento • ${escapeHtml(nowText)}</div>
+                  </div>
+                </div>
+                <div></div>
+              </div>
+              <div class="hero-label">Saldo Disponível</div>
+              <div class="hero-value">${money(data.saldoDisponivel)}</div>
+            </section>
 
-      document.getElementById('printSaldoDisponivel').textContent = money(data.saldoDisponivel);
-      document.getElementById('printTotalT1').textContent = money(data.t1Total);
-      document.getElementById('printTotalT2').textContent = money(data.t2Total);
-      document.getElementById('printDiffAbs').textContent = money(data.abs);
-      document.getElementById('printResultado').textContent = money(data.diff);
+            <section class="grid4">
+              <div class="stat">
+                <div class="stat-label">Turno 1 • Saldo líquido</div>
+                <div class="stat-value">${money(data.t1Total)}</div>
+              </div>
+              <div class="stat">
+                <div class="stat-label">Turno 2 • Saldo líquido</div>
+                <div class="stat-value">${money(data.t2Total)}</div>
+              </div>
+              <div class="stat">
+                <div class="stat-label">Diferença absoluta</div>
+                <div class="stat-value">${money(data.abs)}</div>
+              </div>
+              <div class="stat">
+                <div class="stat-label">Resultado final</div>
+                <div class="stat-value ${data.diff < 0 ? 'neg' : data.diff > 0 ? 'pos' : ''}">${money(data.diff)}</div>
+              </div>
+            </section>
 
-      document.getElementById('printT1Entradas').textContent = money(data.t1Entradas);
-      document.getElementById('printT1Saidas').textContent = negativeMoney(data.t1Saidas);
-      document.getElementById('printT1Pendentes').textContent = negativeMoney(data.t1Pendentes);
-      document.getElementById('printT1Liquido').textContent = money(data.t1Total);
+            <section class="layout">
+              <article class="panel">
+                <div class="panel-head">
+                  <h2 class="panel-title">Turno 1</h2>
+                  <div class="panel-sub">Resumo detalhado do primeiro turno</div>
+                </div>
 
-      document.getElementById('printT2Entradas').textContent = money(data.t2Entradas);
-      document.getElementById('printT2Saidas').textContent = negativeMoney(data.t2Saidas);
-      document.getElementById('printT2Pendentes').textContent = negativeMoney(data.t2Pendentes);
-      document.getElementById('printT2Liquido').textContent = money(data.t2Total);
+                <div class="block">
+                  <div class="block-title">Entradas / material operacional</div>
+                  ${getEntriesHtml('t1')}
+                  <div class="pdf-item"><span>Total de entradas</span><strong>${money(data.t1Entradas)}</strong></div>
+                </div>
 
-      document.getElementById('printBancoT1').textContent = money(data.bancoT1);
-      document.getElementById('printBancoT2').textContent = money(data.bancoT2);
+                <div class="block">
+                  <div class="block-title">Saídas de caixa</div>
+                  ${getDynamicRowsHtml('t1', 'saida')}
+                  <div class="pdf-item"><span>Total de saídas</span><strong class="neg">${negativeMoney(data.t1Saidas)}</strong></div>
+                </div>
+
+                <div class="block">
+                  <div class="block-title">Pagos pendentes</div>
+                  ${getDynamicRowsHtml('t1', 'pendente')}
+                  <div class="pdf-item"><span>Total de pendentes</span><strong class="neg">${negativeMoney(data.t1Pendentes)}</strong></div>
+                </div>
+
+                <div class="block">
+                  <div class="block-title">Fechamento</div>
+                  <div class="pdf-item"><span>Saldo líquido</span><strong>${money(data.t1Total)}</strong></div>
+                </div>
+              </article>
+
+              <article class="panel">
+                <div class="panel-head">
+                  <h2 class="panel-title">Turno 2</h2>
+                  <div class="panel-sub">Resumo detalhado do segundo turno</div>
+                </div>
+
+                <div class="block">
+                  <div class="block-title">Entradas / material operacional</div>
+                  ${getEntriesHtml('t2')}
+                  <div class="pdf-item"><span>Total de entradas</span><strong>${money(data.t2Entradas)}</strong></div>
+                </div>
+
+                <div class="block">
+                  <div class="block-title">Saídas de caixa</div>
+                  ${getDynamicRowsHtml('t2', 'saida')}
+                  <div class="pdf-item"><span>Total de saídas</span><strong class="neg">${negativeMoney(data.t2Saidas)}</strong></div>
+                </div>
+
+                <div class="block">
+                  <div class="block-title">Pagos pendentes</div>
+                  ${getDynamicRowsHtml('t2', 'pendente')}
+                  <div class="pdf-item"><span>Total de pendentes</span><strong class="neg">${negativeMoney(data.t2Pendentes)}</strong></div>
+                </div>
+
+                <div class="block">
+                  <div class="block-title">Fechamento</div>
+                  <div class="pdf-item"><span>Saldo líquido</span><strong>${money(data.t2Total)}</strong></div>
+                </div>
+              </article>
+            </section>
+          </div>
+        </body>
+        </html>
+      `;
     }
 
     function exportToPdfProtected() {
       const code = prompt('Digite o código para autorizar exportar em PDF:');
       if (code === null) return;
-
       if (code !== PDF_CODE) {
         alert('Código inválido.');
         return;
       }
 
-      renderPrintData();
-      window.print();
+      const printWindow = window.open('', '_blank', 'width=1200,height=900');
+      if (!printWindow) {
+        alert('Não foi possível abrir a janela de impressão.');
+        return;
+      }
+
+      const html = buildPremiumPdfHtml();
+      printWindow.document.open();
+      printWindow.document.write(html);
+      printWindow.document.close();
+
+      printWindow.focus();
+      printWindow.onload = () => {
+        printWindow.print();
+      };
     }
 
     function render() {
-      const data = getSummaryData();
+      const t1Entradas = getEntradasTotal('t1');
+      const t1Saidas = getDynamicTotal('t1');
+      const t1Pendentes = getPendingTotal('t1');
+      const t1Total = t1Entradas - t1Saidas - t1Pendentes;
 
-      document.getElementById('saldoContaDestaque').textContent = displayMoney(data.saldoDisponivel);
-      document.getElementById('t1_entradas_total').textContent = money(data.t1Entradas);
-      document.getElementById('t1_saidas_total').textContent = negativeMoney(data.t1Saidas);
-      document.getElementById('t1_pendentes_total').textContent = negativeMoney(data.t1Pendentes);
-      document.getElementById('t2_entradas_total').textContent = money(data.t2Entradas);
-      document.getElementById('t2_saidas_total').textContent = negativeMoney(data.t2Saidas);
-      document.getElementById('t2_pendentes_total').textContent = negativeMoney(data.t2Pendentes);
+      const t2Entradas = getEntradasTotal('t2');
+      const t2Saidas = getDynamicTotal('t2');
+      const t2Pendentes = getPendingTotal('t2');
+      const t2Total = t2Entradas - t2Saidas - t2Pendentes;
 
-      document.getElementById('totalTurno1').textContent = money(data.t1Total);
-      document.getElementById('turno1InlineTotal').textContent = money(data.t1Total);
-      document.getElementById('totalTurno2').textContent = money(data.t2Total);
-      document.getElementById('turno2InlineTotal').textContent = money(data.t2Total);
-      document.getElementById('diferencaAbs').textContent = money(data.abs);
-      document.getElementById('resultadoFinal').textContent = money(data.diff);
+      const diff = t2Total - t1Total;
+      const abs = Math.abs(diff);
+
+      document.getElementById('saldoContaDestaque').textContent = displayMoney(getValue('t2_banco'));
+      document.getElementById('t1_entradas_total').textContent = money(t1Entradas);
+      document.getElementById('t1_saidas_total').textContent = negativeMoney(t1Saidas);
+      document.getElementById('t1_pendentes_total').textContent = negativeMoney(t1Pendentes);
+      document.getElementById('t2_entradas_total').textContent = money(t2Entradas);
+      document.getElementById('t2_saidas_total').textContent = negativeMoney(t2Saidas);
+      document.getElementById('t2_pendentes_total').textContent = negativeMoney(t2Pendentes);
+
+      document.getElementById('totalTurno1').textContent = money(t1Total);
+      document.getElementById('turno1InlineTotal').textContent = money(t1Total);
+      document.getElementById('totalTurno2').textContent = money(t2Total);
+      document.getElementById('turno2InlineTotal').textContent = money(t2Total);
+      document.getElementById('diferencaAbs').textContent = money(abs);
+      document.getElementById('resultadoFinal').textContent = money(diff);
 
       updateEyeIcon();
-      setResultStyle(data.diff);
+      setResultStyle(diff);
     }
 
     function bindRow(row, kind) {
-      row.querySelectorAll('input[type="text"]').forEach(input => {
+      const allInputs = row.querySelectorAll('input');
+
+      allInputs.forEach(input => {
         if (input.hasAttribute('data-dynamic-value') || input.hasAttribute('data-pending-value')) {
           attachMoneyMask(input);
         } else {
@@ -1101,7 +1355,7 @@
       if (valueInput) updateRowPreview(valueInput);
     }
 
-    function createDynamicRow(turno, name = '', value = '') {
+    function createDynamicRow(turno, name = '') {
       dynamicRowCounter += 1;
       const rowId = `${turno}_saida_${dynamicRowCounter}`;
       const list = document.getElementById(`${turno}_dynamic_list`);
@@ -1116,7 +1370,7 @@
         </div>
         <div class="field">
           <label>Valor</label>
-          <input type="text" inputmode="numeric" value="${value}" data-dynamic-value="true">
+          <input type="text" inputmode="numeric" placeholder="0,00" data-dynamic-value="true">
         </div>
         <div class="signed-preview red">- $ 0,00</div>
         <button class="remove-btn" type="button" data-remove-row="${rowId}">Remover</button>
@@ -1127,7 +1381,7 @@
       render();
     }
 
-    function createPendingRow(turno, name = '', value = '') {
+    function createPendingRow(turno, name = '') {
       dynamicRowCounter += 1;
       const rowId = `${turno}_pending_${dynamicRowCounter}`;
       const list = document.getElementById(`${turno}_pending_list`);
@@ -1142,7 +1396,7 @@
         </div>
         <div class="field">
           <label>Valor</label>
-          <input type="text" inputmode="numeric" value="${value}" data-pending-value="true">
+          <input type="text" inputmode="numeric" placeholder="0,00" data-pending-value="true">
         </div>
         <div class="signed-preview amber">- $ 0,00</div>
         <button class="remove-btn" type="button" data-remove-row="${rowId}">Remover</button>
@@ -1154,8 +1408,9 @@
     }
 
     function limparTudo() {
-      document.querySelectorAll('input[type="text"]').forEach(input => {
+      document.querySelectorAll('.fields input[type="text"]').forEach(input => {
         input.value = '';
+        input.dataset.raw = '';
       });
 
       ['t1_dynamic_list', 't2_dynamic_list', 't1_pending_list', 't2_pending_list'].forEach(id => {
