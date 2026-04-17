@@ -578,7 +578,7 @@
             <div class="field"><label for="t1_buffalo">Buffalo</label><input type="number" step="0.01" id="t1_buffalo" value="0"></div>
             <div class="field"><label for="t1_ganamos">Ganamos</label><input type="number" step="0.01" id="t1_ganamos" value="0"></div>
             <div class="field"><label for="t1_cargas">Carga de Fichas</label><input type="number" step="0.01" id="t1_cargas" value="0"></div>
-            <div class="field"><label for="t1_cargas_poker">Cargas F. Poker</label><input type="number" step="0.01" id="t1_cargas_poker" value="0"></div>
+            <div class="field"><label for="t1_cargas_poker">Cargas F. Poker (x400)</label><input type="number" step="0.01" id="t1_cargas_poker" value="0"></div>
           </div>
         </div>
 
@@ -629,7 +629,7 @@
             <div class="field"><label for="t2_buffalo">Buffalo</label><input type="number" step="0.01" id="t2_buffalo" value="0"></div>
             <div class="field"><label for="t2_ganamos">Ganamos</label><input type="number" step="0.01" id="t2_ganamos" value="0"></div>
             <div class="field"><label for="t2_cargas">Carga de Fichas</label><input type="number" step="0.01" id="t2_cargas" value="0"></div>
-            <div class="field"><label for="t2_cargas_poker">Cargas F. Poker</label><input type="number" step="0.01" id="t2_cargas_poker" value="0"></div>
+            <div class="field"><label for="t2_cargas_poker">Cargas F. Poker (x400)</label><input type="number" step="0.01" id="t2_cargas_poker" value="0"></div>
           </div>
         </div>
 
@@ -726,7 +726,7 @@
         getValue(f.buffalo) +
         getValue(f.ganamos) +
         getValue(f.cargas) +
-        getValue(f.cargasPoker)
+        (getValue(f.cargasPoker) * 400)
       );
     }
 
