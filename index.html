@@ -3180,16 +3180,6 @@ printWindow.document.write(await buildBankReceiptPdfHtml(startDate, endDate));
       await renderHistoryList();
     }
 
-async function renderHistoryListFromCache(){
-  const list = document.getElementById("historyList");
-  const history = window._historyCache || [];
-
-  if(!history.length){
-    list.innerHTML = `<div class="history-empty">Sem histórico ainda.</div>`;
-    document.getElementById("historyInfo").textContent = "Nenhum turno anterior salvo ainda.";
-    return;
-  }
-
   list.innerHTML = history.slice(0, 4).map((item, index) => `
     <div class="history-item" data-history-index="${index}">
       <div class="history-item-top">
@@ -3256,7 +3246,6 @@ async function renderHistoryListFromCache(){
     return;
   }
 
-  list.innerHTML = history.slice(0, 4).map((item, index) => `
     <div class="history-item" data-history-index="${index}">
       <div class="history-item-top">
         <div class="history-user">${escapeHtml(item.submittedByName || "Sistema")}</div>
@@ -3482,8 +3471,7 @@ document.querySelectorAll("[data-report-range]").forEach((btn) => {
 });
 
 // Excluir histórico
-document.getElementById("deleteHistoryBtn").addEventListener("click", () => {
-  const senha = prompt("Digite código interno:");
+document.getElementById("deleteHistoryBtn").addEventListener("click", async () => {  const senha = prompt("Digite código interno:");
   if (senha === null) return;
 
   if (senha !== DELETE_HISTORY_CODE) {
