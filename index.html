@@ -231,6 +231,178 @@
       align-items: center;
       gap: 12px;
     }
+.menu-toggle-btn {
+  width: 42px;
+  height: 42px;
+  border-radius: 12px;
+  border: 1px solid rgba(148,163,184,0.12);
+  background: rgba(255,255,255,0.04);
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  padding: 0;
+  cursor: pointer;
+  box-shadow: 0 8px 20px rgba(0,0,0,0.18);
+}
+
+.menu-toggle-btn span {
+  display: block;
+  width: 18px;
+  height: 2px;
+  border-radius: 999px;
+  background: #eaf2ff;
+}
+
+.reports-menu {
+  position: fixed;
+  top: 76px;
+  left: 14px;
+  z-index: 130;
+  width: calc(100% - 28px);
+  max-width: 320px;
+  border-radius: 18px;
+  border: 1px solid rgba(148,163,184,0.12);
+  background: linear-gradient(180deg, rgba(10,18,34,0.98), rgba(10,18,34,1));
+  box-shadow: 0 24px 60px rgba(0,0,0,0.36);
+  padding: 10px;
+}
+
+.reports-menu-item {
+  width: 100%;
+  min-height: 46px;
+  border-radius: 14px;
+  border: 1px solid rgba(148,163,184,0.08);
+  background: rgba(255,255,255,0.03);
+  color: #eaf2ff;
+  text-align: left;
+  font-size: 14px;
+  font-weight: 800;
+  padding: 0 14px;
+  margin-bottom: 8px;
+  cursor: pointer;
+}
+
+.reports-menu-item:last-child {
+  margin-bottom: 0;
+}
+
+.report-screen {
+  margin-top: 14px;
+  padding: 16px;
+  border-radius: 20px;
+  border: 1px solid rgba(148,163,184,0.12);
+  background: linear-gradient(180deg, rgba(255,255,255,0.025), rgba(255,255,255,0.01));
+  box-shadow: var(--shadow);
+}
+
+.report-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 14px;
+}
+
+.report-head h3 {
+  margin: 0;
+  font-size: 18px;
+  letter-spacing: -0.03em;
+}
+
+.report-close-btn {
+  min-height: 38px;
+  padding: 0 14px;
+  border-radius: 12px;
+  background: rgba(239,68,68,0.12);
+  color: #ffb3b3;
+  border: 1px solid rgba(239,68,68,0.20);
+  font-size: 12px;
+  font-weight: 800;
+}
+
+.report-grid {
+  display: grid;
+  gap: 10px;
+  grid-template-columns: 1fr;
+}
+
+.report-card {
+  padding: 14px;
+  border-radius: 16px;
+  border: 1px solid rgba(148,163,184,0.10);
+  background: rgba(255,255,255,0.03);
+}
+
+.report-card-label {
+  font-size: 12px;
+  color: var(--muted);
+  margin-bottom: 8px;
+}
+
+.report-card-value {
+  font-size: 24px;
+  font-weight: 900;
+  letter-spacing: -0.03em;
+}
+
+.report-card-value.red {
+  color: #ffb3b3;
+}
+
+.report-card-value.green {
+  color: #b8ffd1;
+}
+
+.report-list {
+  margin-top: 14px;
+  display: grid;
+  gap: 10px;
+}
+
+.report-list-item {
+  padding: 12px;
+  border-radius: 16px;
+  border: 1px solid rgba(148,163,184,0.10);
+  background: rgba(255,255,255,0.02);
+}
+
+.report-list-top {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+
+.report-list-name {
+  font-size: 13px;
+  font-weight: 800;
+  color: #eaf2ff;
+}
+
+.report-list-date {
+  font-size: 12px;
+  color: var(--muted);
+}
+
+.report-list-lines {
+  display: grid;
+  gap: 6px;
+}
+
+.report-line {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  font-size: 12px;
+  color: #dbeafe;
+}
+
+@media (min-width: 768px) {
+  .report-grid {
+    grid-template-columns: repeat(4, 1fr);
+  }
 
     .logo-bk {
       width: 42px;
@@ -965,7 +1137,7 @@
     <div class="auth-card">
       <div class="auth-logo">BK</div>
       <h1 class="auth-title">Bank King</h1>
-      <p class="auth-subtitle">Acesso interno para fechamento de caixa e relatórios de turno.</p>
+      <p class="auth-subtitle">Acesso interno Central King.</p>
 
       <div class="auth-toggle">
         <button id="tabLogin" class="auth-tab active" type="button">Entrar</button>
@@ -989,7 +1161,7 @@
         </div>
 
         <button class="auth-submit" type="submit">Entrar agora</button>
-        <button id="forgotPasswordBtn" type="button" class="auth-tab" style="width:100%;">Esqueci a senha</button>
+        <button id="forgotPasswordBtn" type="button" class="auth-tab" style="width:100%;">Redefinir senha</button>
       </form>
 
       <form id="registerForm" class="auth-form hidden">
@@ -1012,19 +1184,21 @@
       </form>
 
       <form id="forgotPasswordForm" class="auth-form hidden">
+<div class="auth-note" style="margin-top: -2px; margin-bottom: 4px;">
+  Use o código interno de redefinição para criar uma nova senha.
+</div>
         <div class="field">
           <label for="resetEmail">Email</label>
           <input id="resetEmail" type="email" placeholder="Digite o email cadastrado" />
         </div>
 
         <div class="field">
-          <label for="resetCode">Código de autorização</label>
-          <input id="resetCode" type="password" placeholder="Digite o código" />
-        </div>
+          <label for="resetCode">Código de redefinição</label>
+<input id="resetCode" type="password" placeholder="Digite o código interno" />        </div>
 
         <div class="field">
           <label for="newPassword">Nova senha</label>
-          <input id="newPassword" type="password" placeholder="Digite a nova senha" />
+          <input id="newPassword" type="password" placeholder="Nova senha" />
         </div>
 
         <button class="auth-submit" type="submit">Redefinir senha</button>
@@ -1039,16 +1213,19 @@
 
   <div id="appShell" class="app-shell hidden">
     <main class="app">
-      <header class="header">
-        <div class="title-row">
-          <div class="brand">
-            <div class="logo-bk">BK</div>
-            <h1>Bank King</h1>
-          </div>
-          <div class="badge">Finance Pro</div>
-        </div>
-      </header>
-
+<header class="header">
+  <div class="title-row">
+    <div class="brand">
+      <button id="menuToggle" class="menu-toggle-btn" type="button" aria-label="Abrir menu">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+      <div class="logo-bk">BK</div>
+      <h1>Bank King</h1>
+    </div>
+  </div>
+</header>
       <div class="top-user-bar">
         <div class="top-user-info">
           <div class="top-user-name" id="activeUserName">Usuário</div>
@@ -1227,6 +1404,46 @@
       </section>
     </main>
 
+<section id="reportScreen" class="report-screen hidden">
+  <div class="report-head">
+    <div>
+      <h3 id="reportTitle">Relatório</h3>
+      <small id="reportSubtitle" style="color: var(--muted);">Fluxo de caixa do período</small>
+    </div>
+    <button id="closeReportScreen" class="report-close-btn" type="button">Fechar</button>
+  </div>
+
+  <div class="report-grid">
+    <div class="report-card">
+      <div class="report-card-label">Entrou em Banco Reca</div>
+      <div class="report-card-value" id="reportBancoReca">$ 0,00</div>
+    </div>
+
+    <div class="report-card">
+      <div class="report-card-label">Saiu em Pagos Pendentes</div>
+      <div class="report-card-value red" id="reportPendentes">$ 0,00</div>
+    </div>
+
+    <div class="report-card">
+      <div class="report-card-label">Saiu em Saídas de Caixa</div>
+      <div class="report-card-value red" id="reportSaidas">$ 0,00</div>
+    </div>
+
+    <div class="report-card">
+      <div class="report-card-label">Lucro real</div>
+      <div class="report-card-value green" id="reportLucro">$ 0,00</div>
+    </div>
+  </div>
+
+  <div id="reportList" class="report-list"></div>
+</section>
+
+<div id="reportsMenu" class="reports-menu hidden">
+  <button class="reports-menu-item" type="button" data-report-range="7">Relatório semanal</button>
+  <button class="reports-menu-item" type="button" data-report-range="15">Relatório quinzenal</button>
+  <button class="reports-menu-item" type="button" data-report-range="30">Relatório mensal</button>
+</div>
+
     <div class="bottom-bar">
       <div class="bottom-bar-inner">
         <button class="secondary-btn" id="limpar">Limpar tudo</button>
@@ -1252,8 +1469,8 @@
   </div>
 
   <script>
-    const PDF_CODE = '351278';
-    const RESET_CODE = '351278';
+    const PDF_CODE = '1520';
+    const RESET_CODE = '4br1l#2o26';
     const USERS_STORAGE_KEY = 'bank-king-users-v1';
     const ACTIVE_USER_STORAGE_KEY = 'bank-king-active-user-v1';
     const HISTORY_STORAGE_KEY = 'bank-king-turno-history-v5';
@@ -1691,9 +1908,9 @@
       }
 
       if (code !== RESET_CODE) {
-        alert('Código de autorização inválido.');
-        return;
-      }
+  alert('Código interno de redefinição inválido.');
+  return;
+}
 
       const users = getUsers();
       const userIndex = users.findIndex(user => user.email === email);
@@ -1922,25 +2139,28 @@
       render();
     }
 
-    function clearTurn(turno) {
-      const f = fieldsByTurn[turno];
-      Object.values(f).forEach((id) => {
-        const input = document.getElementById(id);
-        if (input) {
-          if (id === f.dataFechamento) {
-            input.value = getTodayDateInput();
-          } else {
-            input.value = '';
-            input.dataset.raw = '';
-          }
-        }
-      });
+function limparTurnoIndividual(turno) {
+  const f = fieldsByTurn[turno];
 
-      const dynamicList = document.getElementById(`${turno}_dynamic_list`);
-      const pendingList = document.getElementById(`${turno}_pending_list`);
-      if (dynamicList) dynamicList.innerHTML = '';
-      if (pendingList) pendingList.innerHTML = '';
+  Object.values(f).forEach(id => {
+    const input = document.getElementById(id);
+    if (input) {
+      input.value = '';
+      input.dataset.raw = '';
     }
+  });
+
+  const dynamicList = document.getElementById(`${turno}_dynamic_list`);
+  const pendingList = document.getElementById(`${turno}_pending_list`);
+
+  if (dynamicList) dynamicList.innerHTML = '';
+  if (pendingList) pendingList.innerHTML = '';
+}montar um modal elegante (tipo iPhone) com botões:
+•	🔵 Limpar Turno Atual
+•	🟡 Limpar Turno Anterior
+•	🔴 Limpar Tudo
+
+👉 MUITO mais profissional (vale a pena)
 
     function buildTurnSnapshot(turno) {
       const f = fieldsByTurn[turno];
@@ -2063,6 +2283,119 @@
       return t2Total - t1Total;
     }
 
+function formatDateTimeBR(iso) {
+  if (!iso) return 'Sem data';
+  const dt = new Date(iso);
+  return `${dt.toLocaleDateString('pt-BR')} às ${dt.toLocaleTimeString('pt-BR', {
+    hour: '2-digit',
+    minute: '2-digit'
+  })}`;
+}
+
+function isWithinLastDays(dateStr, days) {
+  if (!dateStr) return false;
+
+  const target = new Date(dateStr + 'T00:00:00');
+  const today = new Date();
+  today.setHours(23, 59, 59, 999);
+
+  const diffMs = today - target;
+  const diffDays = diffMs / (1000 * 60 * 60 * 24);
+
+  return diffDays >= 0 && diffDays < days;
+}
+
+function getBancoRecaFromSnapshot(snapshot) {
+  const entry = (snapshot.entries || []).find(item => item.name === 'Banco Reca');
+  return entry ? Number(entry.value || 0) : 0;
+}
+
+function openReportsMenu() {
+  document.getElementById('reportsMenu').classList.toggle('hidden');
+}
+
+function closeReportsMenu() {
+  document.getElementById('reportsMenu').classList.add('hidden');
+}
+
+function renderCashflowReport(days) {
+  const history = loadHistory();
+  const filtered = history.filter(item => isWithinLastDays(item.fechamentoDate, days));
+
+  const totalBancoReca = filtered.reduce((acc, item) => {
+    return acc + getBancoRecaFromSnapshot(item.turno || {});
+  }, 0);
+
+  const totalPendentes = filtered.reduce((acc, item) => {
+    return acc + Number(item.turno?.pendentesTotal || 0);
+  }, 0);
+
+  const totalSaidas = filtered.reduce((acc, item) => {
+    return acc + Number(item.turno?.saidasTotal || 0);
+  }, 0);
+
+  const lucroReal = totalSaidas;
+
+  const titleMap = {
+    7: 'Relatório semanal',
+    15: 'Relatório quinzenal',
+    30: 'Relatório mensal'
+  };
+
+  document.getElementById('reportTitle').textContent = titleMap[days] || 'Relatório';
+  document.getElementById('reportSubtitle').textContent = `Fluxo de caixa dos últimos ${days} dias`;
+  document.getElementById('reportBancoReca').textContent = money(totalBancoReca);
+  document.getElementById('reportPendentes').textContent = negativeMoney(totalPendentes);
+  document.getElementById('reportSaidas').textContent = negativeMoney(totalSaidas);
+  document.getElementById('reportLucro').textContent = money(lucroReal);
+
+  const reportList = document.getElementById('reportList');
+
+  if (!filtered.length) {
+    reportList.innerHTML = `
+      <div class="history-empty">
+        Nenhum fechamento encontrado nesse período.
+      </div>
+    `;
+  } else {
+    reportList.innerHTML = filtered.map(item => {
+      const turno = item.turno || {};
+      const bancoReca = getBancoRecaFromSnapshot(turno);
+
+      return `
+        <div class="report-list-item">
+          <div class="report-list-top">
+            <div class="report-list-name">${escapeHtml(item.submittedByName || 'Não identificado')}</div>
+            <div class="report-list-date">${escapeHtml(formatDateBR(item.fechamentoDate || ''))} • ${escapeHtml(formatDateTimeBR(item.submittedAt))}</div>
+          </div>
+
+          <div class="report-list-lines">
+            <div class="report-line">
+              <span>Banco Reca</span>
+              <strong>${money(bancoReca)}</strong>
+            </div>
+            <div class="report-line">
+              <span>Pagos Pendentes</span>
+              <strong>${negativeMoney(turno.pendentesTotal || 0)}</strong>
+            </div>
+            <div class="report-line">
+              <span>Saídas de Caixa</span>
+              <strong>${negativeMoney(turno.saidasTotal || 0)}</strong>
+            </div>
+            <div class="report-line">
+              <span>Lucro real</span>
+              <strong>${money(turno.saidasTotal || 0)}</strong>
+            </div>
+          </div>
+        </div>
+      `;
+    }).join('');
+  }
+
+  document.getElementById('reportScreen').classList.remove('hidden');
+  closeReportsMenu();
+}
+
     function loadHistory() {
       const raw = localStorage.getItem(HISTORY_STORAGE_KEY);
       if (!raw) return [];
@@ -2089,7 +2422,7 @@
 
       const historyList = loadHistory();
       historyList.unshift(serialized);
-      const limitedHistory = historyList.slice(0, 4);
+      const limitedHistory = historyList.slice(0, 100);
       saveHistoryList(limitedHistory);
 
       applySnapshotToTurn('t1', serialized.turno);
@@ -2713,20 +3046,42 @@
     }
 
     function limparTudo() {
-      document.querySelectorAll('.fields input[type="text"]').forEach(input => {
-        input.value = '';
-        input.dataset.raw = '';
-      });
+  const escolha = prompt(
+`O que você deseja limpar?
 
-      ['t1_dynamic_list', 't2_dynamic_list', 't1_pending_list', 't2_pending_list'].forEach(id => {
-        const el = document.getElementById(id);
-        if (el) el.innerHTML = '';
-      });
+1 - Apenas Turno 2 (atual)
+2 - Apenas Turno 1 (anterior)
+3 - Limpar ambos os turnos
 
-      const t2Date = document.getElementById('t2_data_fechamento');
-      if (t2Date) t2Date.value = getTodayDateInput();
+Digite 1, 2 ou 3:`
+  );
 
-      render();
+  if (!escolha) return;
+
+  if (escolha === '1') {
+    limparTurnoIndividual('t2');
+    alert('Turno 2 limpo com sucesso.');
+
+  } else if (escolha === '2') {
+    limparTurnoIndividual('t1');
+    alert('Turno 1 limpo com sucesso.');
+
+  } else if (escolha === '3') {
+    limparTurnoIndividual('t1');
+    limparTurnoIndividual('t2');
+
+    // remove histórico salvo também
+    localStorage.removeItem(HISTORY_STORAGE_KEY);
+
+    alert('Todos os turnos foram limpos.');
+
+  } else {
+    alert('Opção inválida.');
+    return;
+  }
+
+  render();
+}
     }
 
     function render() {
@@ -2787,6 +3142,32 @@
       balanceVisible = !balanceVisible;
       render();
     });
+
+document.getElementById('menuToggle').addEventListener('click', openReportsMenu);
+
+document.getElementById('closeReportScreen').addEventListener('click', () => {
+  document.getElementById('reportScreen').classList.add('hidden');
+});
+
+document.querySelectorAll('[data-report-range]').forEach(btn => {
+  btn.addEventListener('click', () => {
+    renderCashflowReport(Number(btn.dataset.reportRange));
+  });
+});
+
+document.addEventListener('click', (e) => {
+  const menu = document.getElementById('reportsMenu');
+  const toggle = document.getElementById('menuToggle');
+
+  if (!menu.classList.contains('hidden')) {
+    const clickedInsideMenu = menu.contains(e.target);
+    const clickedToggle = toggle.contains(e.target);
+
+    if (!clickedInsideMenu && !clickedToggle) {
+      closeReportsMenu();
+    }
+  }
+});
 
     document.getElementById('t1_data_fechamento').addEventListener('change', render);
     document.getElementById('t2_data_fechamento').addEventListener('change', render);
