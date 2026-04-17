@@ -1,12 +1,15 @@
 name: fechamento-caixa
+
 static_sites:
   - name: web
     github:
+      repo: rodrigssousa-sudo/fechamento-caixa
       branch: main
       deploy_on_push: true
-      repo: rodrigssousa-sudo/fechamento-caixa
+
     source_dir: /
     index_document: index.html
     catchall_document: index.html
+
     routes:
       - path: /
