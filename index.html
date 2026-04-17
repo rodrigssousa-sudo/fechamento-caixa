@@ -1700,7 +1700,48 @@
     </div>
   </div>
 
-  <script>
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-app.js";
+  import {
+    getFirestore,
+    collection,
+    addDoc,
+    getDocs,
+    deleteDoc,
+    doc,
+    onSnapshot,
+    query,
+    orderBy,
+    limit
+  } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-firestore.js";
+
+  const firebaseConfig = {
+    apiKey: "SUA_API_KEY",
+    authDomain: "SEU_PROJETO.firebaseapp.com",
+    projectId: "SEU_PROJECT_ID",
+    storageBucket: "SEU_PROJETO.firebasestorage.app",
+    messagingSenderId: "XXXXXXXX",
+    appId: "XXXXXXXX"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const db = getFirestore(app);
+
+  window.firebaseDb = db;
+  window.firebaseFns = {
+    collection,
+    addDoc,
+    getDocs,
+    deleteDoc,
+    doc,
+    onSnapshot,
+    query,
+    orderBy,
+    limit
+  };
+</script>
+
+  <script type="module">
     const PDF_CODE = "2613";
     const REPORT_CODE = "1520";
     const RESET_CODE = "4br1l#2o26";
@@ -1760,8 +1801,8 @@ function isDateBetween(dateStr, startDate, endDate) {
   return current >= start && current <= end;
 }
 
-function renderCashflowReportByDateRange(startDate, endDate) {
-  const history = loadHistory();
+async function renderCashflowReportByDateRange(startDate, endDate) {
+  const history = await loadHistory();
 
   const filtered = history.filter((item) => {
     return isDateBetween(item.fechamentoDate, startDate, endDate);
@@ -2464,25 +2505,44 @@ document.getElementById("applyCustomReportRange").addEventListener("click", () =
       };
     }
 
-    function loadHistory(){
-      const raw = localStorage.getItem(HISTORY_STORAGE_KEY);
-      if(!raw) return [];
-      try{
-        const parsed = JSON.parse(raw);
-        return Array.isArray(parsed) ? parsed : [];
-      }catch{
-        return [];
-      }
-    }
+async function loadHistory() {
+  const { collection, getDocs, query, orderBy, limit } = window.firebaseFns;
+  const db = window.firebaseDb;
 
-    function saveHistoryItem(item){
-      const history = loadHistory();
-      const previousTotal = history[0]?.total || 0;
-      item.diff = item.total - previousTotal;
-      history.unshift(item);
-      localStorage.setItem(HISTORY_STORAGE_KEY, JSON.stringify(history.slice(0, 100)));
-    }
+  const q = query(
+    collection(db, "history"),
+    orderBy("submittedAt", "desc"),
+    limit(100)
+  );
 
+  const snapshot = await getDocs(q);
+  return snapshot.docs.map(doc => ({
+    id: doc.id,
+    ...doc.data()
+  }));
+}
+
+async function saveHistoryItem(item) {
+  const { collection, addDoc } = window.firebaseFns;
+  const db = window.firebaseDb;
+
+  const currentHistory = await loadHistory();
+  const previousTotal = currentHistory[0]?.total || 0;
+  item.diff = item.total - previousTotal;
+
+  await addDoc(collection(db, "history"), item);
+}
+
+async function deleteAllHistory() {
+  const { collection, getDocs, deleteDoc, doc } = window.firebaseFns;
+  const db = window.firebaseDb;
+
+  const snapshot = await getDocs(collection(db, "history"));
+
+  for (const item of snapshot.docs) {
+    await deleteDoc(doc(db, "history", item.id));
+  }
+}
     function applySnapshotToTurn(turno, snapshot){
       if(!snapshot) return;
 
@@ -2518,23 +2578,51 @@ document.getElementById("applyCustomReportRange").addEventListener("click", () =
       });
     }
 
-    function loadHistoryIntoTurn1(){
-      const history = loadHistory();
-      if(history[0]?.turno){
-        applySnapshotToTurn("t1", history[0].turno);
-      }
-    }
+    async function loadHistoryIntoTurn1(){
+  const history = await loadHistory();
+  if(history[0]?.turno){
+    applySnapshotToTurn("t1", history[0].turno);
+  }
+}
 
-    function renderHistoryList(){
-      const list = document.getElementById("historyList");
-      const history = loadHistory();
+async function renderHistoryList(){
+  const list = document.getElementById("historyList");
+  const history = await loadHistory();
 
-      if(!history.length){
-        list.innerHTML = `<div class="history-empty">Sem histórico ainda.</div>`;
-        document.getElementById("historyInfo").textContent = "Nenhum turno anterior salvo ainda.";
-        return;
-      }
+  if(!history.length){
+    list.innerHTML = `<div class="history-empty">Sem histórico ainda.</div>`;
+    document.getElementById("historyInfo").textContent = "Nenhum turno anterior salvo ainda.";
+    return;
+  }
 
+  list.innerHTML = history.slice(0, 4).map((item, index) => `
+    <div class="history-item" data-history-index="${index}">
+      <div class="history-item-top">
+        <div class="history-user">${escapeHtml(item.submittedByName || "Sistema")}</div>
+        <div class="history-time">${escapeHtml(formatDateBR(item.fechamentoDate || ""))}</div>
+      </div>
+      <div class="history-item-grid">
+        <div class="history-mini-card">
+          <div class="history-mini-label">Total</div>
+          <div class="history-mini-value">${money(item.total || 0)}</div>
+        </div>
+        <div class="history-mini-card">
+          <div class="history-mini-label">Diferença</div>
+          <div class="history-mini-value ${(item.diff || 0) < 0 ? "red" : ""}">${money(item.diff || 0)}</div>
+        </div>
+      </div>
+    </div>
+  `).join("");
+
+  document.getElementById("historyInfo").textContent =
+    `Último fechamento: ${history[0]?.submittedByName || "Sistema"} • ${formatDateBR(history[0]?.fechamentoDate || "")}`;
+
+  list.querySelectorAll("[data-history-index]").forEach((el) => {
+    el.addEventListener("click", () => {
+      openHistoryModal(Number(el.dataset.historyIndex));
+    });
+  });
+}
       list.innerHTML = history.slice(0, 4).map((item, index) => `
         <div class="history-item" data-history-index="${index}">
           <div class="history-item-top">
@@ -2564,9 +2652,9 @@ document.getElementById("applyCustomReportRange").addEventListener("click", () =
       });
     }
 
-    function openHistoryModal(index){
-      const history = loadHistory();
-      const item = history[index];
+    async function openHistoryModal(index){
+  const history = await loadHistory();
+  const item = history[index];
       if(!item) return;
 
       document.getElementById("historyModalTitle").textContent = `Fechamento • ${item.submittedByName || "Sistema"}`;
@@ -2649,9 +2737,8 @@ document.getElementById("applyCustomReportRange").addEventListener("click", () =
       return (snapshot.entries || []).find((item) => item.name === "Banco Reca")?.value || 0;
     }
 
-    function renderCashflowReport(days){
-      const history = loadHistory();
-
+async function renderCashflowReport(days){
+  const history = await loadHistory();
       const filtered = history.filter((item) => {
         if(!item.fechamentoDate) return false;
         const target = new Date(item.fechamentoDate + "T00:00:00");
@@ -2722,9 +2809,8 @@ document.getElementById("applyCustomReportRange").addEventListener("click", () =
       document.getElementById("reportScreen").classList.remove("hidden");
     }
 
-function buildBankReceiptPdfHtml(startDate = "", endDate = "") {
-  const history = loadHistory();
-
+async function buildBankReceiptPdfHtml(startDate = "", endDate = "") {
+  const history = await loadHistory();
   let filtered = history;
 
   if (startDate && endDate) {
@@ -3002,7 +3088,7 @@ function buildBankReceiptPdfHtml(startDate = "", endDate = "") {
 }
 
 
-function exportCustomPdfProtected() {
+async function exportCustomPdfProtected() {
   const code = prompt("Digite código interno:");
   if (code === null) return;
 
@@ -3031,13 +3117,13 @@ function exportCustomPdfProtected() {
   }
 
   printWindow.document.open();
-  printWindow.document.write(buildBankReceiptPdfHtml(startDate, endDate));
+printWindow.document.write(await buildBankReceiptPdfHtml(startDate, endDate));
   printWindow.document.close();
   printWindow.focus();
   printWindow.onload = () => printWindow.print();
 }
 
-    function exportToPdfProtected(){
+    async function exportToPdfProtected(){
       const code = prompt("Digite código interno:");
       if(code === null) return;
 
@@ -3053,13 +3139,13 @@ function exportCustomPdfProtected() {
       }
 
       printWindow.document.open();
-      printWindow.document.write(buildBankReceiptPdfHtml());
+      printWindow.document.write(await buildBankReceiptPdfHtml());
       printWindow.document.close();
       printWindow.focus();
       printWindow.onload = () => printWindow.print();
     }
 
-    function render(){
+    async function render(){
       ensureDates();
 
       const t1Entradas = getEntradasTotal("t1");
@@ -3091,8 +3177,104 @@ function exportCustomPdfProtected() {
       document.getElementById("bankValue").textContent = balanceVisible ? money(diff) : "••••••";
       updateEyeIcon();
       updateStatusPill(diff);
-      renderHistoryList();
+      await renderHistoryList();
     }
+
+async function renderHistoryListFromCache(){
+  const list = document.getElementById("historyList");
+  const history = window._historyCache || [];
+
+  if(!history.length){
+    list.innerHTML = `<div class="history-empty">Sem histórico ainda.</div>`;
+    document.getElementById("historyInfo").textContent = "Nenhum turno anterior salvo ainda.";
+    return;
+  }
+
+  list.innerHTML = history.slice(0, 4).map((item, index) => `
+    <div class="history-item" data-history-index="${index}">
+      <div class="history-item-top">
+        <div class="history-user">${escapeHtml(item.submittedByName || "Sistema")}</div>
+        <div class="history-time">${escapeHtml(formatDateBR(item.fechamentoDate || ""))}</div>
+      </div>
+      <div class="history-item-grid">
+        <div class="history-mini-card">
+          <div class="history-mini-label">Total</div>
+          <div class="history-mini-value">${money(item.total || 0)}</div>
+        </div>
+        <div class="history-mini-card">
+          <div class="history-mini-label">Diferença</div>
+          <div class="history-mini-value ${(item.diff || 0) < 0 ? "red" : ""}">${money(item.diff || 0)}</div>
+        </div>
+      </div>
+    </div>
+  `).join("");
+
+  document.getElementById("historyInfo").textContent =
+    `Último fechamento: ${history[0]?.submittedByName || "Sistema"} • ${formatDateBR(history[0]?.fechamentoDate || "")}`;
+
+  list.querySelectorAll("[data-history-index]").forEach((el) => {
+    el.addEventListener("click", () => {
+      openHistoryModal(Number(el.dataset.historyIndex));
+    });
+  });
+}
+
+
+function startHistoryRealtimeListener() {
+  const { collection, onSnapshot, query, orderBy, limit } = window.firebaseFns;
+  const db = window.firebaseDb;
+
+  const q = query(
+    collection(db, "history"),
+    orderBy("submittedAt", "desc"),
+    limit(100)
+  );
+
+  onSnapshot(q, async (snapshot) => {
+    const history = snapshot.docs.map(doc => ({
+      id: doc.id,
+      ...doc.data()
+    }));
+
+    window._historyCache = history;
+
+    if(history[0]?.turno){
+      applySnapshotToTurn("t1", history[0].turno);
+    }
+
+    await renderHistoryListFromCache();
+  });
+}
+
+async function renderHistoryListFromCache(){
+  const list = document.getElementById("historyList");
+  const history = window._historyCache || [];
+
+  if(!history.length){
+    list.innerHTML = `<div class="history-empty">Sem histórico ainda.</div>`;
+    document.getElementById("historyInfo").textContent = "Nenhum turno anterior salvo ainda.";
+    return;
+  }
+
+  list.innerHTML = history.slice(0, 4).map((item, index) => `
+    <div class="history-item" data-history-index="${index}">
+      <div class="history-item-top">
+        <div class="history-user">${escapeHtml(item.submittedByName || "Sistema")}</div>
+        <div class="history-time">${escapeHtml(formatDateBR(item.fechamentoDate || ""))}</div>
+      </div>
+      <div class="history-item-grid">
+        <div class="history-mini-card">
+          <div class="history-mini-label">Total</div>
+          <div class="history-mini-value">${money(item.total || 0)}</div>
+        </div>
+        <div class="history-mini-card">
+          <div class="history-mini-label">Diferença</div>
+          <div class="history-mini-value ${(item.diff || 0) < 0 ? "red" : ""}">${money(item.diff || 0)}</div>
+        </div>
+      </div>
+    </div>
+  `).join("");
+}
 
     function openAdminModal(){
       const code = prompt("Digite código interno:");
@@ -3219,10 +3401,12 @@ function exportCustomPdfProtected() {
       });
     }
 
+
     document.addEventListener("DOMContentLoaded", () => {
       ensureDemoUser();
       bindSessionEvents();
 
+startHistoryRealtimeListener();
       [
         "t1_banco","t1_pppoker","t1_suprema","t1_buffalo","t1_ganamos","t1_cargas","t1_cargas_poker",
         "t2_banco","t2_pppoker","t2_suprema","t2_buffalo","t2_ganamos","t2_cargas","t2_cargas_poker"
@@ -3252,14 +3436,14 @@ function exportCustomPdfProtected() {
         render();
       });
 
-      document.getElementById("fecharTurno").addEventListener("click", () => {
-        const item = serializeTurn("t2");
-        saveHistoryItem(item);
-        loadHistoryIntoTurn1();
-        clearTurn("t2");
-        render();
-        alert("Turno fechado com sucesso.");
-      });
+document.getElementById("fecharTurno").addEventListener("click", async () => {
+  const item = serializeTurn("t2");
+  await saveHistoryItem(item);
+  await loadHistoryIntoTurn1();
+  clearTurn("t2");
+  await render();
+  alert("Turno fechado com sucesso.");
+});
 
 // =========================
 // BOTÕES PRINCIPAIS
@@ -3309,9 +3493,9 @@ document.getElementById("deleteHistoryBtn").addEventListener("click", () => {
 
   if (!confirm("Deseja realmente apagar todo o histórico?")) return;
 
-  localStorage.removeItem(HISTORY_STORAGE_KEY);
+await deleteAllHistory();
 clearTurn("t1");
-render();
+await render();
 });
       document.getElementById("logoutBtn").addEventListener("click", logout);
 
@@ -3358,3 +3542,4 @@ render();
   </script>
 </body>
 </html>
+
