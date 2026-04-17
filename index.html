@@ -60,8 +60,7 @@
       padding: 22px;
     }
 
-    .auth-logo,
-    .logo-bk {
+    .auth-logo, .logo-bk {
       border-radius: 50%;
       display: flex;
       align-items: center;
@@ -92,8 +91,7 @@
       letter-spacing: -.04em;
     }
 
-    .auth-subtitle,
-    .auth-note {
+    .auth-subtitle, .auth-note {
       color: var(--muted);
       font-size: 13px;
       line-height: 1.45;
@@ -109,9 +107,7 @@
       margin-bottom: 16px;
     }
 
-    .auth-tab,
-    .auth-submit,
-    button {
+    .auth-tab, .auth-submit, button {
       border: 0;
       cursor: pointer;
       font-weight: 800;
@@ -157,6 +153,10 @@
       padding: 13px 14px;
       font-size: 16px;
       outline: none;
+    }
+
+    .field input[type="date"] {
+      color-scheme: dark;
     }
 
     .field input::placeholder {
@@ -232,10 +232,12 @@
     .brand,
     .summary-head,
     .bank-topline,
+    .finance-head,
     .top-user-bar,
     .history-item-top,
     .report-head,
-    .report-list-top {
+    .report-list-top,
+    .modal-head {
       display: flex;
       justify-content: space-between;
       align-items: center;
@@ -303,9 +305,7 @@
       box-shadow: var(--shadow);
     }
 
-    .summary-card {
-      padding: 16px;
-    }
+    .summary-card { padding: 16px; }
 
     .summary-head h2 {
       margin: 0;
@@ -334,6 +334,7 @@
       overflow: hidden;
       border-radius: 22px;
       padding: 18px;
+      margin-bottom: 14px;
       background:
         radial-gradient(circle at top right, rgba(96,165,250,.18), transparent 30%),
         linear-gradient(135deg, rgba(9,20,42,1) 0%, rgba(13,32,67,1) 55%, rgba(8,16,30,1) 100%);
@@ -365,7 +366,7 @@
     }
 
     .bank-value {
-      font-size: clamp(38px, 8vw, 68px);
+      font-size: clamp(48px, 9vw, 72px);
       line-height: 1;
       letter-spacing: -.05em;
       font-weight: 900;
@@ -405,11 +406,11 @@
     .metric-value.red { color: #ffb3b3; }
 
     .history-card {
+      margin-top: 12px;
       padding: 14px;
       border-radius: 16px;
       border: 1px solid rgba(96,165,250,.12);
       background: rgba(255,255,255,.02);
-      margin-top: 14px;
     }
 
     .history-card-top {
@@ -514,6 +515,170 @@
       font-size: 13px;
     }
 
+    .turnos {
+      display: grid;
+      gap: 14px;
+    }
+
+    .turno {
+      padding: 14px;
+      overflow: hidden;
+    }
+
+    .turno-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 10px;
+      margin-bottom: 14px;
+    }
+
+    .turno-head h3 {
+      margin: 0;
+      font-size: 18px;
+      letter-spacing: -.02em;
+    }
+
+    .turno-head small {
+      display: block;
+      color: var(--muted);
+      margin-top: 4px;
+      font-size: 12px;
+    }
+
+    .turno-total {
+      text-align: right;
+      flex-shrink: 0;
+    }
+
+    .turno-total .label {
+      color: var(--muted);
+      font-size: 11px;
+      margin-bottom: 4px;
+    }
+
+    .turno-total .value {
+      font-size: 18px;
+      font-weight: 800;
+      color: #e2ebff;
+    }
+
+    .turno-meta {
+      margin-top: 12px;
+      padding: 12px;
+      border-radius: 16px;
+      border: 1px solid rgba(148,163,184,.10);
+      background: rgba(255,255,255,.025);
+    }
+
+    .finance-block {
+      margin-top: 14px;
+      padding: 14px;
+      border-radius: 18px;
+      border: 1px solid rgba(148,163,184,.10);
+      background: linear-gradient(180deg, rgba(255,255,255,.018), rgba(255,255,255,.01));
+    }
+
+    .finance-head h4 {
+      margin: 0;
+      font-size: 14px;
+      letter-spacing: -.02em;
+    }
+
+    .finance-total {
+      font-size: 14px;
+      font-weight: 900;
+      white-space: nowrap;
+    }
+
+    .finance-total.red { color: #ffb3b3; }
+    .finance-total.blue { color: #b8d4ff; }
+
+    .fields {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 10px;
+    }
+
+    .dynamic-list {
+      display: grid;
+      gap: 10px;
+      margin-top: 2px;
+    }
+
+    .dynamic-row {
+      display: grid;
+      grid-template-columns: 1.15fr .85fr auto auto;
+      gap: 8px;
+      align-items: end;
+      padding: 10px;
+      border: 1px solid rgba(148,163,184,.10);
+      border-radius: 14px;
+      background: rgba(255,255,255,.018);
+    }
+
+    .dynamic-row.outflow {
+      background: linear-gradient(180deg, rgba(239,68,68,.05), rgba(239,68,68,.025));
+      border-color: rgba(239,68,68,.14);
+    }
+
+    .dynamic-row.pending {
+      background: linear-gradient(180deg, rgba(245,158,11,.05), rgba(245,158,11,.025));
+      border-color: rgba(245,158,11,.14);
+    }
+
+    .signed-preview {
+      min-height: 48px;
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      padding: 0 14px;
+      border-radius: 14px;
+      font-size: 15px;
+      font-weight: 900;
+      white-space: nowrap;
+      border: 1px solid rgba(148,163,184,.08);
+      background: rgba(6,15,30,.95);
+    }
+
+    .signed-preview.red { color: #ff9b9b; }
+    .signed-preview.amber { color: #ffd88a; }
+
+    .remove-btn {
+      min-height: 48px;
+      padding: 0 14px;
+      border-radius: 14px;
+      background: rgba(239,68,68,.12);
+      color: #ffb3b3;
+      border: 1px solid rgba(239,68,68,.2);
+      font-size: 13px;
+      font-weight: 800;
+    }
+
+    .inline-actions {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-top: 10px;
+      margin-bottom: 6px;
+    }
+
+    button {
+      border-radius: 14px;
+      padding: 13px 16px;
+      font-size: 14px;
+    }
+
+    .btn-add {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 42px;
+      color: white;
+      background: linear-gradient(135deg, #0f4cbd, #1d4ed8);
+      box-shadow: 0 8px 20px rgba(15,76,189,.28);
+    }
+
     .top-user-bar {
       margin-bottom: 12px;
       padding: 12px 14px;
@@ -578,9 +743,7 @@
       margin-bottom: 8px;
     }
 
-    .reports-menu-item:last-child {
-      margin-bottom: 0;
-    }
+    .reports-menu-item:last-child { margin-bottom: 0; }
 
     .report-screen {
       width: 100%;
@@ -675,10 +838,290 @@
       color: #dbeafe;
     }
 
+    .bottom-bar {
+      position: fixed;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      z-index: 50;
+      padding: 8px 10px calc(8px + var(--safe-bottom));
+      background: linear-gradient(180deg, rgba(3,7,18,0), rgba(3,7,18,.90) 18%, rgba(3,7,18,.98) 100%);
+      backdrop-filter: blur(10px);
+    }
+
+    .bottom-bar-inner {
+      width: 100%;
+      max-width: 760px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 8px;
+    }
+
+    .bottom-bar button {
+      min-height: 42px;
+      padding: 10px 8px;
+      font-size: 11px;
+      border-radius: 12px;
+      letter-spacing: -.01em;
+    }
+
+    .main-btn {
+      background: linear-gradient(135deg, #0f4cbd, #2563eb);
+      color: white;
+      box-shadow: 0 10px 28px rgba(15,76,189,.34);
+    }
+
+    .secondary-btn {
+      background: rgba(255,255,255,.06);
+      color: white;
+      border: 1px solid rgba(148,163,184,.10);
+    }
+
+    .pdf-btn {
+      background: linear-gradient(135deg, #b45309, #f59e0b);
+      color: white;
+      box-shadow: 0 10px 28px rgba(245,158,11,.28);
+    }
+
+    .close-btn {
+      background: linear-gradient(135deg, #047857, #10b981);
+      color: white;
+      box-shadow: 0 10px 28px rgba(16,185,129,.25);
+    }
+
+    .modal {
+      position: fixed;
+      inset: 0;
+      z-index: 120;
+      display: flex;
+      align-items: flex-end;
+      justify-content: center;
+    }
+
+    .modal-backdrop {
+      position: absolute;
+      inset: 0;
+      background: rgba(2,6,23,.72);
+      backdrop-filter: blur(6px);
+    }
+
+    .modal-card {
+      position: relative;
+      width: 100%;
+      max-width: 860px;
+      max-height: 88vh;
+      overflow: auto;
+      margin: 0;
+      border-radius: 24px 24px 0 0;
+      background: linear-gradient(180deg, rgba(10, 18, 34, .98), rgba(10, 18, 34, .99));
+      border: 1px solid rgba(148,163,184,.12);
+      box-shadow: 0 24px 60px rgba(0,0,0,.45);
+      padding: 18px;
+    }
+
+    .modal-head {
+      align-items: flex-start;
+      margin-bottom: 14px;
+    }
+
+    .modal-head h3 {
+      margin: 0;
+      font-size: 20px;
+      letter-spacing: -.03em;
+    }
+
+    .modal-head small {
+      display: block;
+      margin-top: 4px;
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    .modal-close-btn {
+      min-height: 40px;
+      padding: 0 14px;
+      border-radius: 12px;
+      background: rgba(239,68,68,.12);
+      color: #ffb3b3;
+      border: 1px solid rgba(239,68,68,.2);
+      font-size: 12px;
+      font-weight: 800;
+    }
+
+    .modal-body {
+      display: grid;
+      gap: 14px;
+    }
+
+    .modal-summary-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 10px;
+    }
+
+    .modal-summary-card {
+      padding: 14px;
+      border-radius: 16px;
+      background: rgba(255,255,255,.03);
+      border: 1px solid rgba(148,163,184,.10);
+    }
+
+    .modal-summary-label {
+      font-size: 11px;
+      color: var(--muted);
+      margin-bottom: 8px;
+    }
+
+    .modal-summary-value {
+      font-size: 18px;
+      font-weight: 900;
+      color: #fff;
+    }
+
+    .modal-turnos-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+    }
+
+    .modal-panel {
+      border-radius: 18px;
+      border: 1px solid rgba(148,163,184,.10);
+      background: rgba(255,255,255,.02);
+      overflow: hidden;
+    }
+
+    .modal-panel-head {
+      padding: 14px;
+      border-bottom: 1px solid rgba(148,163,184,.08);
+      background: rgba(255,255,255,.03);
+    }
+
+    .modal-panel-head h4 {
+      margin: 0;
+      font-size: 16px;
+    }
+
+    .modal-panel-body {
+      padding: 14px;
+      display: grid;
+      gap: 14px;
+    }
+
+    .modal-block-title {
+      font-size: 12px;
+      font-weight: 900;
+      color: #dbeafe;
+      text-transform: uppercase;
+      letter-spacing: .06em;
+      margin-bottom: 10px;
+    }
+
+    .modal-line {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 8px 0;
+      border-bottom: 1px solid rgba(148,163,184,.08);
+      font-size: 13px;
+    }
+
+    .modal-line:last-child { border-bottom: 0; }
+    .modal-line strong { font-size: 13px; }
+    .modal-line.negative strong { color: #ffb3b3; }
+
+    .clear-modal-card {
+      max-width: 520px;
+      border-radius: 26px 26px 0 0;
+    }
+
+    .clear-modal-actions {
+      display: grid;
+      gap: 12px;
+      margin-top: 6px;
+    }
+
+    .clear-option-btn {
+      width: 100%;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      text-align: left;
+      padding: 16px;
+      border-radius: 18px;
+      min-height: 76px;
+      border: 1px solid rgba(148,163,184,.10);
+      background: rgba(255,255,255,.03);
+      color: #f8fafc;
+      transition: transform .16s ease, border-color .16s ease, background .16s ease;
+    }
+
+    .clear-option-btn:hover {
+      transform: translateY(-1px);
+    }
+
+    .clear-option-btn.blue {
+      background: linear-gradient(180deg, rgba(37,99,235,.14), rgba(37,99,235,.08));
+      border-color: rgba(96,165,250,.22);
+    }
+
+    .clear-option-btn.amber {
+      background: linear-gradient(180deg, rgba(245,158,11,.14), rgba(245,158,11,.08));
+      border-color: rgba(245,158,11,.24);
+    }
+
+    .clear-option-btn.red {
+      background: linear-gradient(180deg, rgba(239,68,68,.14), rgba(239,68,68,.08));
+      border-color: rgba(239,68,68,.24);
+    }
+
+    .clear-option-icon {
+      font-size: 22px;
+      line-height: 1;
+      flex-shrink: 0;
+    }
+
+    .clear-option-text {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .clear-option-text strong {
+      font-size: 15px;
+      font-weight: 900;
+      color: #fff;
+      letter-spacing: -.02em;
+    }
+
+    .clear-option-text small {
+      font-size: 12px;
+      color: #c7d2e5;
+      line-height: 1.35;
+    }
+
     @media (max-width: 700px) {
-      .history-item-grid {
+      .dynamic-row,
+      .history-item-grid,
+      .modal-summary-grid,
+      .modal-turnos-grid {
         grid-template-columns: 1fr;
       }
+
+      .dynamic-row .remove-btn { width: 100%; }
+      .signed-preview { justify-content: flex-start; }
+      .bottom-bar-inner { grid-template-columns: repeat(4, 1fr); }
+      .bottom-bar button { font-size: 10px; }
+      .modal-card { max-height: 92vh; }
+    }
+
+    @media (max-width: 520px) {
+      .auth-toggle { grid-template-columns: 1fr 1fr; }
+      .bottom-bar button { min-height: 40px; padding: 8px 6px; }
+      .title-row { align-items: flex-start; }
+      .badge { font-size: 10px; padding: 7px 10px; }
     }
 
     @media (min-width: 768px) {
@@ -695,18 +1138,23 @@
         padding-right: 18px;
       }
 
-      .metrics {
-        grid-template-columns: repeat(3, 1fr);
+      .summary { grid-template-columns: 1fr; }
+      .metrics { grid-template-columns: repeat(4, 1fr); }
+      .turnos { grid-template-columns: 1fr 1fr; }
+      .fields.two-col { grid-template-columns: repeat(2, 1fr); }
+
+      .bottom-bar-inner {
+        max-width: 1180px;
+        width: calc(100% - 36px);
       }
 
-      .report-grid {
-        grid-template-columns: repeat(4, 1fr);
-      }
+      .bottom-bar button { font-size: 12px; }
+      .report-grid { grid-template-columns: repeat(4, 1fr); }
     }
   </style>
 </head>
 <body>
-  <section id="authScreen" class="auth-screen hidden">
+  <section id="authScreen" class="auth-screen">
     <div class="auth-card">
       <div class="auth-logo">BK</div>
       <h1 class="auth-title">Bank King</h1>
@@ -730,19 +1178,60 @@
 
         <div class="remember-row">
           <input id="rememberLogin" type="checkbox" />
-          <label for="rememberLogin">Manter login salvo neste aparelho</label>
+          <label for="rememberLogin">Manter login salvo</label>
         </div>
 
         <button class="auth-submit" type="submit">Entrar agora</button>
+        <button id="forgotPasswordBtn" type="button" class="auth-tab" style="width:100%;">Redefinir senha</button>
       </form>
 
-      <div class="auth-note">
-        Demo local simplificada.
-      </div>
+      <form id="registerForm" class="auth-form hidden">
+        <div class="field">
+          <label for="registerName">Nome</label>
+          <input id="registerName" type="text" placeholder="Digite seu nome" required />
+        </div>
+
+        <div class="field">
+          <label for="registerEmail">Email</label>
+          <input id="registerEmail" type="email" placeholder="Digite seu email" required />
+        </div>
+
+        <div class="field">
+          <label for="registerPassword">Senha</label>
+          <input id="registerPassword" type="password" placeholder="Crie uma senha" required />
+        </div>
+
+        <button class="auth-submit" type="submit">Registrar acesso</button>
+      </form>
+
+      <form id="forgotPasswordForm" class="auth-form hidden">
+        <div class="auth-note" style="margin-top: -2px; margin-bottom: 4px;">
+          Use o código interno de redefinição para criar uma nova senha.
+        </div>
+
+        <div class="field">
+          <label for="resetEmail">Email</label>
+          <input id="resetEmail" type="email" placeholder="Digite o email cadastrado" />
+        </div>
+
+        <div class="field">
+          <label for="resetCode">Código de redefinição</label>
+          <input id="resetCode" type="password" placeholder="Digite o código interno" />
+        </div>
+
+        <div class="field">
+          <label for="newPassword">Nova senha</label>
+          <input id="newPassword" type="password" placeholder="Nova senha" />
+        </div>
+
+        <button class="auth-submit" type="submit">Redefinir senha</button>
+        <button id="backToLoginBtn" type="button" class="auth-tab" style="width:100%;">Voltar para login</button>
+      </form>
+
     </div>
   </section>
 
-  <div id="appShell" class="app-shell">
+  <div id="appShell" class="app-shell hidden">
     <main class="app">
       <header class="header">
         <div class="title-row">
@@ -761,8 +1250,8 @@
 
       <div class="top-user-bar">
         <div class="top-user-info">
-          <div class="top-user-name" id="activeUserName">Bruno</div>
-          <div class="top-user-email" id="activeUserEmail">bruno@demo.com</div>
+          <div class="top-user-name" id="activeUserName">Usuário</div>
+          <div class="top-user-email" id="activeUserEmail">email@exemplo.com</div>
         </div>
         <button id="logoutBtn" class="logout-btn" type="button">Sair</button>
       </div>
@@ -771,92 +1260,64 @@
         <article class="summary-card card">
           <div class="summary-head">
             <h2>Painel Financeiro</h2>
-            <div id="statusPill" class="pill neutral">Sem diferença</div>
-          </div>
-
-          <div class="bank-card">
-            <div class="bank-topline">
-              <span class="bank-label">BANCA TOTAL</span>
-              <button id="toggleBalance" class="hide-balance-btn" type="button">👁</button>
-            </div>
-            <div id="bankValue" class="bank-value">R$ 0,00</div>
-          </div>
-
-          <div class="metrics">
-            <div class="metric">
-              <div class="metric-label">Entradas</div>
-              <div id="totalEntradas" class="metric-value green">R$ 0,00</div>
-            </div>
-
-            <div class="metric">
-              <div class="metric-label">Saídas</div>
-              <div id="totalSaidas" class="metric-value red">R$ 0,00</div>
-            </div>
-
-            <div class="metric">
-              <div class="metric-label">Lucro / Prejuízo</div>
-              <div id="lucroTotal" class="metric-value blue">R$ 0,00</div>
-            </div>
+            <div id="statusPill" class="pill neutral">Sem diferença</
+</div>
           </div>
         </article>
 
-        <article class="history-card">
-          <div class="history-card-top">
-            <div>
-              <div class="history-card-title">Histórico automático do turno</div>
-              <div id="historyInfo" class="history-card-text">
-                Nenhum turno anterior salvo ainda.
-              </div>
-            </div>
+        <article class="bank-card">
+          <div class="bank-topline">
+            <span class="bank-label">BANCA TOTAL</span>
+            <button id="toggleBalance" class="hide-balance-btn">👁</button>
+          </div>
+          <div id="bankValue" class="bank-value">$ 0,00</div>
+        </article>
+
+        <div class="metrics">
+          <div class="metric">
+            <div class="metric-label">Entradas</div>
+            <div id="totalEntradas" class="metric-value green">$ 0,00</div>
           </div>
 
-          <div id="historyList" class="history-list"></div>
+          <div class="metric">
+            <div class="metric-label">Saídas</div>
+            <div id="totalSaidas" class="metric-value red">$ 0,00</div>
+          </div>
 
-          <button id="deleteHistoryBtn" class="danger-mini-btn" type="button" style="margin-top:10px; width:100%;">
-            🔴 Excluir Histórico
-          </button>
-        </article>
+          <div class="metric">
+            <div class="metric-label">Lucro / Prejuízo</div>
+            <div id="lucroTotal" class="metric-value blue">$ 0,00</div>
+          </div>
+        </div>
       </section>
 
-      <section id="reportScreen" class="report-screen hidden">
-        <div class="report-head">
+      <section class="history-card">
+        <div class="history-card-top">
           <div>
-            <h3 id="reportTitle">Relatório</h3>
-            <small id="reportSubtitle" style="color: var(--muted);">Fluxo de caixa do período</small>
+            <div class="history-card-title">Histórico automático</div>
+            <div id="historyInfo" class="history-card-text">
+              Nenhum turno anterior salvo ainda.
+            </div>
           </div>
-          <button id="closeReportScreen" class="report-close-btn" type="button">Fechar</button>
         </div>
 
-        <div class="report-grid">
-          <div class="report-card">
-            <div class="report-card-label">Entrou em Banco Reca</div>
-            <div class="report-card-value" id="reportBancoReca">R$ 0,00</div>
-          </div>
+        <div id="historyList" class="history-list"></div>
 
-          <div class="report-card">
-            <div class="report-card-label">Saiu em Pagos Pendentes</div>
-            <div class="report-card-value red" id="reportPendentes">R$ 0,00</div>
-          </div>
+        <button id="deleteHistoryBtn" class="danger-mini-btn" type="button" style="margin-top:10px; width:100%;">
+          🔴 Excluir Histórico
+        </button>
+      </section>
 
-       <div class="report-card">
-  <div class="report-card-label">Saiu em Saídas de Caixa</div>
-  <div class="report-card-value red" id="reportSaidas">R$ 0,00</div>
-</div>
-
-<div class="report-card">
-  <div class="report-card-label">Lucro / Prejuízo</div>
-  <div class="report-card-value" id="reportLucro">R$ 0,00</div>
-</div>
-
-</div> <!-- fecha report-grid -->
-
-<div class="report-list" id="reportList"></div>
-
-</section> <!-- fecha report-screen -->
-
+    </main>
+  </div>
 
 <script>
-const REPORT_STORAGE_KEY = "bank_history";
+const HISTORY_STORAGE_KEY = "bank_history";
+const DELETE_HISTORY_CODE = "1520";
+const REPORT_CODE = "1520";
+const PDF_CODE = "1520";
+
+let balanceVisible = true;
 
 function formatCurrency(value) {
   return value.toLocaleString("pt-BR", {
@@ -865,54 +1326,59 @@ function formatCurrency(value) {
   });
 }
 
-function renderCashflowReport(days) {
-  const history = JSON.parse(localStorage.getItem(REPORT_STORAGE_KEY)) || [];
+function render() {
+  const entradas = 0;
+  const saidas = 0;
+  const lucro = entradas - saidas;
 
-  const now = new Date();
-  const filtered = history.filter(item => {
-    const itemDate = new Date(item.rawDate || item.date);
-    const diff = (now - itemDate) / (1000 * 60 * 60 * 24);
-    return diff <= days;
-  });
+  document.getElementById("totalEntradas").textContent = formatCurrency(entradas);
+  document.getElementById("totalSaidas").textContent = formatCurrency(saidas);
+  document.getElementById("lucroTotal").textContent = formatCurrency(lucro);
 
-  let totalEntradas = 0;
-  let totalSaidas = 0;
+  document.getElementById("bankValue").textContent = balanceVisible
+    ? formatCurrency(lucro)
+    : "••••••";
 
-  filtered.forEach(item => {
-    if (item.value >= 0) {
-      totalEntradas += item.value;
-    } else {
-      totalSaidas += Math.abs(item.value);
-    }
-  });
+  const pill = document.getElementById("statusPill");
 
-  const lucro = totalEntradas - totalSaidas;
+  if (lucro > 0) {
+    pill.textContent = "Lucro";
+    pill.className = "pill positive";
+  } else if (lucro < 0) {
+    pill.textContent = "Prejuízo";
+    pill.className = "pill negative";
+  } else {
+    pill.textContent = "Sem diferença";
+    pill.className = "pill neutral";
+  }
 
-  document.getElementById("reportEntradas").textContent = formatCurrency(totalEntradas);
-  document.getElementById("reportSaidas").textContent = formatCurrency(totalSaidas);
-  document.getElementById("reportLucro").textContent = formatCurrency(lucro);
+  loadHistory();
+}
 
-  const list = document.getElementById("reportList");
+function loadHistory() {
+  const history = JSON.parse(localStorage.getItem(HISTORY_STORAGE_KEY)) || [];
+  const list = document.getElementById("historyList");
+
   list.innerHTML = "";
 
-  if (filtered.length === 0) {
-    list.innerHTML = `<div class="history-empty">Nenhum dado nesse período.</div>`;
+  if (history.length === 0) {
+    list.innerHTML = `<div class="history-empty">Sem histórico ainda.</div>`;
     return;
   }
 
-  filtered.reverse().forEach(item => {
+  history.reverse().forEach((item) => {
     const div = document.createElement("div");
-    div.className = "report-list-item";
+    div.className = "history-item";
 
     div.innerHTML = `
-      <div class="report-list-name">${item.user || "Sistema"}</div>
-      <div class="report-list-date">${item.date}</div>
-      <div class="report-list-lines">
-        <div class="report-line">
-          <span>Valor</span>
-          <strong style="color:${item.value >= 0 ? '#22c55e' : '#ef4444'}">
-            ${formatCurrency(item.value)}
-          </strong>
+      <div class="history-item-top">
+        <div class="history-user">${item.user || "Sistema"}</div>
+        <div class="history-time">${item.date}</div>
+      </div>
+      <div class="history-item-grid">
+        <div class="history-mini-card">
+          <div class="history-mini-label">Lucro</div>
+          <div class="history-mini-value">${formatCurrency(item.value)}</div>
         </div>
       </div>
     `;
@@ -921,23 +1387,33 @@ function renderCashflowReport(days) {
   });
 }
 
+function deleteHistoryProtected() {
+  const senha = prompt("Digite a senha de 4 dígitos:");
 
-// 🔒 proteção com senha
-document.querySelectorAll("[data-report-range]").forEach(btn => {
-  btn.addEventListener("click", () => {
+  if (senha === null) return;
 
-    const senha = prompt("Digite a senha para acessar o relatório:");
+  if (senha !== DELETE_HISTORY_CODE) {
+    alert("Senha incorreta.");
+    return;
+  }
 
-    if (senha === null) return;
+  if (!confirm("Tem certeza que deseja excluir tudo?")) return;
 
-    if (senha !== "1520") {
-      alert("Senha incorreta.");
-      return;
-    }
+  localStorage.removeItem(HISTORY_STORAGE_KEY);
 
-    const range = Number(btn.dataset.reportRange);
-    renderCashflowReport(range);
+  alert("Histórico apagado.");
+  render();
+}
 
-  });
+document.getElementById("deleteHistoryBtn").addEventListener("click", deleteHistoryProtected);
+
+document.getElementById("toggleBalance").addEventListener("click", () => {
+  balanceVisible = !balanceVisible;
+  render();
 });
+
+render();
 </script>
+
+</body>
+</html>
