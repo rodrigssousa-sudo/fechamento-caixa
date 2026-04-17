@@ -6,23 +6,23 @@
   <title>Fechamento de Caixa</title>
   <style>
     :root {
-      --bg: #020611;
-      --bg-2: #07101d;
-      --card: rgba(8, 15, 28, 0.98);
-      --card-2: #0b1730;
-      --card-3: #0e1c36;
-      --border: rgba(148, 163, 184, 0.10);
+      --bg: #030712;
+      --bg-2: #081120;
+      --card: rgba(10, 18, 34, 0.96);
+      --card-2: #0d1a30;
+      --card-3: #101b2e;
+      --border: rgba(148, 163, 184, 0.12);
       --text: #f8fafc;
-      --muted: #8ea0bd;
+      --muted: #8fa2c0;
       --accent: #0f4cbd;
-      --accent-2: #2563eb;
+      --accent-2: #1d4ed8;
       --accent-3: #60a5fa;
       --green: #22c55e;
       --red: #ef4444;
       --amber: #f59e0b;
-      --shadow: 0 16px 40px rgba(0,0,0,0.48);
-      --radius: 22px;
-      --radius-sm: 16px;
+      --shadow: 0 14px 34px rgba(0,0,0,0.45);
+      --radius: 20px;
+      --radius-sm: 14px;
       --safe-bottom: env(safe-area-inset-bottom, 0px);
     }
 
@@ -32,8 +32,8 @@
     body {
       font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
       background:
-        radial-gradient(circle at top, rgba(37,99,235,0.20), transparent 26%),
-        linear-gradient(180deg, #01040b 0%, #04101d 46%, #020611 100%);
+        radial-gradient(circle at top, rgba(29,78,216,0.18), transparent 28%),
+        linear-gradient(180deg, #020611 0%, #06101d 45%, #030712 100%);
       color: var(--text);
       min-height: 100vh;
     }
@@ -51,16 +51,38 @@
       z-index: 40;
       margin: -14px -14px 14px;
       padding: 14px 14px 12px;
-      background: linear-gradient(180deg, rgba(2,6,17,0.98), rgba(2,6,17,0.88));
-      backdrop-filter: blur(14px);
+      background: linear-gradient(180deg, rgba(3,7,18,0.98), rgba(3,7,18,0.88));
+      backdrop-filter: blur(12px);
       border-bottom: 1px solid rgba(96,165,250,0.08);
     }
 
     .title-row {
       display: flex;
       justify-content: space-between;
-      align-items: flex-start;
+      align-items: center;
       gap: 12px;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .logo-bk {
+      width: 40px;
+      height: 40px;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 900;
+      font-size: 16px;
+      letter-spacing: -0.02em;
+      color: #ffffff;
+      background: linear-gradient(135deg, #0f4cbd, #2563eb);
+      box-shadow: 0 6px 18px rgba(15,76,189,0.45);
+      border: 1px solid rgba(255,255,255,0.08);
     }
 
     h1 {
@@ -85,13 +107,17 @@
       padding: 8px 12px;
       border-radius: 999px;
       color: #dbeafe;
-      background: linear-gradient(135deg, rgba(15,76,189,0.30), rgba(37,99,235,0.16));
+      background: linear-gradient(135deg, rgba(15,76,189,0.28), rgba(29,78,216,0.18));
       border: 1px solid rgba(96,165,250,0.16);
       white-space: nowrap;
       box-shadow: inset 0 1px 0 rgba(255,255,255,0.04);
     }
 
-    .summary { display: grid; gap: 12px; margin-bottom: 14px; }
+    .summary {
+      display: grid;
+      gap: 12px;
+      margin-bottom: 14px;
+    }
 
     .card {
       background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01)), var(--card);
@@ -100,7 +126,7 @@
       box-shadow: var(--shadow);
     }
 
-    .summary-card { padding: 18px; }
+    .summary-card { padding: 16px; }
 
     .summary-head {
       display: flex;
@@ -132,84 +158,10 @@
     .pill.negative { color: #ffb3b3; background: rgba(239,68,68,0.12); border-color: rgba(239,68,68,0.22); }
     .pill.neutral  { color: #ffe29c; background: rgba(245,158,11,0.12); border-color: rgba(245,158,11,0.22); }
 
-    .bank-card {
-      grid-column: 1 / -1;
-      padding: 20px;
-      border-radius: 24px;
-      background:
-        radial-gradient(circle at top right, rgba(96,165,250,0.26), transparent 28%),
-        linear-gradient(135deg, rgba(9,20,42,1) 0%, rgba(13,32,67,1) 55%, rgba(8,16,30,1) 100%);
-      border: 1px solid rgba(96,165,250,0.16);
-      box-shadow: 0 18px 50px rgba(2,6,23,0.55), inset 0 1px 0 rgba(255,255,255,0.05);
-      position: relative;
-      overflow: hidden;
-    }
-
-    .bank-card::after {
-      content: "";
-      position: absolute;
-      inset: 0;
-      background: linear-gradient(180deg, rgba(255,255,255,0.04), transparent 24%);
-      pointer-events: none;
-    }
-
-    .bank-topline {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 10px;
-      margin-bottom: 12px;
-      position: relative;
-      z-index: 1;
-    }
-
-    .bank-label {
-      font-size: 12px;
-      font-weight: 700;
-      letter-spacing: 0.08em;
-      text-transform: uppercase;
-      color: #bad1ff;
-    }
-
-    .hide-balance-btn {
-      min-height: 40px;
-      padding: 0 14px;
-      border-radius: 999px;
-      background: rgba(255,255,255,0.08);
-      color: #eef4ff;
-      border: 1px solid rgba(255,255,255,0.10);
-      font-size: 13px;
-      font-weight: 800;
-      cursor: pointer;
-      backdrop-filter: blur(6px);
-    }
-
-    .bank-value {
-      position: relative;
-      z-index: 1;
-      font-size: clamp(38px, 7vw, 62px);
-      line-height: 1;
-      letter-spacing: -0.05em;
-      font-weight: 900;
-      color: #ffffff;
-      text-shadow: 0 0 22px rgba(96,165,250,0.18);
-    }
-
-    .bank-subtext {
-      position: relative;
-      z-index: 1;
-      margin-top: 10px;
-      color: #c9daff;
-      font-size: 13px;
-      line-height: 1.45;
-      max-width: 420px;
-    }
-
     .metrics {
       display: grid;
       gap: 10px;
       grid-template-columns: 1fr;
-      margin-top: 12px;
     }
 
     .metric {
@@ -237,8 +189,15 @@
     .metric-value.green { color: #b8ffd1; }
     .metric-value.red { color: #ffb3b3; }
 
-    .turnos { display: grid; gap: 14px; }
-    .turno { padding: 14px; overflow: hidden; }
+    .turnos {
+      display: grid;
+      gap: 14px;
+    }
+
+    .turno {
+      padding: 14px;
+      overflow: hidden;
+    }
 
     .turno-head {
       display: flex;
@@ -248,16 +207,53 @@
       margin-bottom: 14px;
     }
 
-    .turno-head h3 { margin: 0; font-size: 18px; letter-spacing: -0.02em; }
-    .turno-head small { display: block; color: var(--muted); margin-top: 4px; font-size: 12px; }
+    .turno-head h3 {
+      margin: 0;
+      font-size: 18px;
+      letter-spacing: -0.02em;
+    }
 
-    .turno-total { text-align: right; flex-shrink: 0; }
-    .turno-total .label { color: var(--muted); font-size: 11px; margin-bottom: 4px; }
-    .turno-total .value { font-size: 18px; font-weight: 800; color: #e2ebff; }
+    .turno-head small {
+      display: block;
+      color: var(--muted);
+      margin-top: 4px;
+      font-size: 12px;
+    }
 
-    .fields { display: grid; grid-template-columns: 1fr; gap: 10px; }
-    .field { display: flex; flex-direction: column; gap: 7px; }
-    .field label { font-size: 12px; font-weight: 700; color: var(--muted); }
+    .turno-total {
+      text-align: right;
+      flex-shrink: 0;
+    }
+
+    .turno-total .label {
+      color: var(--muted);
+      font-size: 11px;
+      margin-bottom: 4px;
+    }
+
+    .turno-total .value {
+      font-size: 18px;
+      font-weight: 800;
+      color: #e2ebff;
+    }
+
+    .fields {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 10px;
+    }
+
+    .field {
+      display: flex;
+      flex-direction: column;
+      gap: 7px;
+    }
+
+    .field label {
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--muted);
+    }
 
     .field input {
       width: 100%;
@@ -292,12 +288,27 @@
       margin-bottom: 10px;
     }
 
-    .finance-head h4 { margin: 0; font-size: 14px; letter-spacing: -0.02em; }
-    .finance-total { font-size: 14px; font-weight: 900; white-space: nowrap; }
+    .finance-head h4 {
+      margin: 0;
+      font-size: 14px;
+      letter-spacing: -0.02em;
+    }
+
+    .finance-total {
+      font-size: 14px;
+      font-weight: 900;
+      white-space: nowrap;
+    }
+
+    .finance-total.green { color: #b8ffd1; }
     .finance-total.red { color: #ffb3b3; }
     .finance-total.blue { color: #b8d4ff; }
 
-    .dynamic-list { display: grid; gap: 10px; margin-top: 2px; }
+    .dynamic-list {
+      display: grid;
+      gap: 10px;
+      margin-top: 2px;
+    }
 
     .dynamic-row {
       display: grid;
@@ -372,11 +383,16 @@
       justify-content: center;
       min-height: 46px;
       color: white;
-      background: linear-gradient(135deg, #0f4cbd, #2563eb);
+      background: linear-gradient(135deg, #0f4cbd, #1d4ed8);
       box-shadow: 0 8px 20px rgba(15,76,189,0.28);
     }
 
-    .helper { margin-top: 10px; color: var(--muted); font-size: 12px; line-height: 1.45; }
+    .helper {
+      margin-top: 10px;
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.45;
+    }
 
     .bottom-bar {
       position: fixed;
@@ -385,7 +401,7 @@
       bottom: 0;
       z-index: 50;
       padding: 10px 14px calc(10px + var(--safe-bottom));
-      background: linear-gradient(180deg, rgba(2,6,17,0), rgba(2,6,17,0.90) 18%, rgba(2,6,17,0.98) 100%);
+      background: linear-gradient(180deg, rgba(3,7,18,0), rgba(3,7,18,0.90) 18%, rgba(3,7,18,0.98) 100%);
       backdrop-filter: blur(10px);
     }
 
@@ -433,9 +449,9 @@
   <main class="app">
     <header class="header">
       <div class="title-row">
-        <div>
-          <h1>Fechamento de Caixa</h1>
-          <p class="subtitle">Painel financeiro mobile para comparar turnos, visualizar entradas, saídas e pendentes em tempo real.</p>
+        <div class="brand">
+          <div class="logo-bk">BK</div>
+          <h1>Bank King</h1>
         </div>
         <div class="badge">Finance Pro</div>
       </div>
@@ -598,6 +614,15 @@
       })}`;
     }
 
+    function maskedMoney(value) {
+      const formatted = money(value);
+      return formatted.replace(/[0-9]/g, '•');
+    }
+
+    function displayMoney(value) {
+      return balanceVisible ? money(value) : maskedMoney(value);
+    }
+
     function negativeMoney(value) {
       return `- ${money(value)}`;
     }
@@ -717,7 +742,7 @@
       const diff = t2Total - t1Total;
       const abs = Math.abs(diff);
 
-      document.getElementById('saldoContaDestaque').textContent = money(getValue('t2_banco'));
+      document.getElementById('saldoContaDestaque').textContent = displayMoney(getValue('t2_banco'));
       document.getElementById('t1_entradas_total').textContent = money(t1Entradas);
       document.getElementById('t1_saidas_total').textContent = negativeMoney(t1Saidas);
       document.getElementById('t1_pendentes_total').textContent = negativeMoney(t1Pendentes);
@@ -835,6 +860,18 @@
     });
 
     render();
+  </script>
+  <script>
+    (function () {
+      const btn = document.getElementById('toggleBalance');
+      if (btn) {
+        btn.addEventListener('click', () => {
+          balanceVisible = !balanceVisible;
+          btn.textContent = balanceVisible ? 'Ocultar valor' : 'Mostrar valor';
+          render();
+        });
+      }
+    })();
   </script>
 </body>
 </html>
