@@ -6,22 +6,22 @@
   <title>Fechamento de Caixa</title>
   <style>
     :root {
-      --bg: #07101d;
-      --bg-2: #0b1526;
-      --card: rgba(17, 24, 39, 0.92);
-      --card-2: #121b2d;
-      --card-3: #0f1728;
-      --border: rgba(255,255,255,0.08);
+      --bg: #030712;
+      --bg-2: #081120;
+      --card: rgba(10, 18, 34, 0.96);
+      --card-2: #0d1a30;
+      --card-3: #101b2e;
+      --border: rgba(148, 163, 184, 0.12);
       --text: #f8fafc;
-      --muted: #9fb0c9;
-      --accent: #2563eb;
+      --muted: #8fa2c0;
+      --accent: #0f4cbd;
       --accent-2: #1d4ed8;
+      --accent-3: #60a5fa;
       --green: #22c55e;
       --red: #ef4444;
-      --red-soft: rgba(239,68,68,0.12);
       --amber: #f59e0b;
-      --shadow: 0 10px 30px rgba(0,0,0,0.32);
-      --radius: 18px;
+      --shadow: 0 14px 34px rgba(0,0,0,0.45);
+      --radius: 20px;
       --radius-sm: 14px;
       --safe-bottom: env(safe-area-inset-bottom, 0px);
     }
@@ -32,8 +32,8 @@
     body {
       font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
       background:
-        radial-gradient(circle at top, rgba(37,99,235,0.16), transparent 30%),
-        linear-gradient(180deg, var(--bg) 0%, var(--bg-2) 100%);
+        radial-gradient(circle at top, rgba(29,78,216,0.18), transparent 28%),
+        linear-gradient(180deg, #020611 0%, #06101d 45%, #030712 100%);
       color: var(--text);
       min-height: 100vh;
     }
@@ -51,9 +51,9 @@
       z-index: 40;
       margin: -14px -14px 14px;
       padding: 14px 14px 12px;
-      background: linear-gradient(180deg, rgba(7,16,29,0.96), rgba(7,16,29,0.86));
-      backdrop-filter: blur(10px);
-      border-bottom: 1px solid rgba(255,255,255,0.06);
+      background: linear-gradient(180deg, rgba(3,7,18,0.98), rgba(3,7,18,0.88));
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid rgba(96,165,250,0.08);
     }
 
     .title-row {
@@ -82,12 +82,13 @@
       flex-shrink: 0;
       font-size: 11px;
       font-weight: 700;
-      padding: 8px 10px;
+      padding: 8px 12px;
       border-radius: 999px;
       color: #dbeafe;
-      background: rgba(37,99,235,0.15);
-      border: 1px solid rgba(37,99,235,0.25);
+      background: linear-gradient(135deg, rgba(15,76,189,0.28), rgba(29,78,216,0.18));
+      border: 1px solid rgba(96,165,250,0.16);
       white-space: nowrap;
+      box-shadow: inset 0 1px 0 rgba(255,255,255,0.04);
     }
 
     .summary {
@@ -131,9 +132,9 @@
       min-width: 96px;
     }
 
-    .pill.positive { color: #8ff0b4; background: rgba(34,197,94,0.12); border-color: rgba(34,197,94,0.22); }
-    .pill.negative { color: #ffadad; background: rgba(239,68,68,0.12); border-color: rgba(239,68,68,0.22); }
-    .pill.neutral  { color: #ffd88a; background: rgba(245,158,11,0.12); border-color: rgba(245,158,11,0.22); }
+    .pill.positive { color: #b8ffd1; background: rgba(34,197,94,0.12); border-color: rgba(34,197,94,0.22); }
+    .pill.negative { color: #ffb3b3; background: rgba(239,68,68,0.12); border-color: rgba(239,68,68,0.22); }
+    .pill.neutral  { color: #ffe29c; background: rgba(245,158,11,0.12); border-color: rgba(245,158,11,0.22); }
 
     .metrics {
       display: grid;
@@ -142,10 +143,10 @@
     }
 
     .metric {
-      border-radius: 16px;
+      border-radius: 18px;
       padding: 14px;
-      background: rgba(255,255,255,0.03);
-      border: 1px solid rgba(255,255,255,0.06);
+      background: linear-gradient(180deg, rgba(255,255,255,0.025), rgba(255,255,255,0.01));
+      border: 1px solid rgba(148,163,184,0.10);
     }
 
     .metric-label {
@@ -162,9 +163,9 @@
       line-height: 1;
     }
 
-    .metric-value.blue { color: #a8c7ff; }
-    .metric-value.green { color: #8ff0b4; }
-    .metric-value.red { color: #ffadad; }
+    .metric-value.blue { color: #b8d4ff; }
+    .metric-value.green { color: #b8ffd1; }
+    .metric-value.red { color: #ffb3b3; }
 
     .turnos {
       display: grid;
@@ -211,16 +212,7 @@
     .turno-total .value {
       font-size: 18px;
       font-weight: 800;
-      color: #dbeafe;
-    }
-
-    .section-title {
-      margin: 14px 0 10px;
-      font-size: 12px;
-      font-weight: 800;
-      text-transform: uppercase;
-      letter-spacing: 0.08em;
-      color: #dbe7fb;
+      color: #e2ebff;
     }
 
     .fields {
@@ -245,8 +237,8 @@
       width: 100%;
       min-height: 48px;
       border-radius: var(--radius-sm);
-      border: 1px solid rgba(255,255,255,0.07);
-      background: var(--card-2);
+      border: 1px solid rgba(148,163,184,0.10);
+      background: linear-gradient(180deg, rgba(15,23,42,0.96), rgba(13,26,48,0.96));
       color: var(--text);
       padding: 13px 14px;
       font-size: 16px;
@@ -254,16 +246,16 @@
     }
 
     .field input:focus {
-      border-color: rgba(37,99,235,0.45);
-      box-shadow: 0 0 0 4px rgba(37,99,235,0.11);
+      border-color: rgba(96,165,250,0.34);
+      box-shadow: 0 0 0 4px rgba(29,78,216,0.12);
     }
 
     .finance-block {
       margin-top: 14px;
       padding: 14px;
-      border-radius: 16px;
-      border: 1px solid rgba(255,255,255,0.06);
-      background: rgba(255,255,255,0.025);
+      border-radius: 18px;
+      border: 1px solid rgba(148,163,184,0.10);
+      background: linear-gradient(180deg, rgba(255,255,255,0.018), rgba(255,255,255,0.01));
     }
 
     .finance-head {
@@ -286,9 +278,9 @@
       white-space: nowrap;
     }
 
-    .finance-total.green { color: #8ff0b4; }
-    .finance-total.red { color: #ffadad; }
-    .finance-total.blue { color: #a8c7ff; }
+    .finance-total.green { color: #b8ffd1; }
+    .finance-total.red { color: #ffb3b3; }
+    .finance-total.blue { color: #b8d4ff; }
 
     .dynamic-list {
       display: grid;
@@ -298,22 +290,22 @@
 
     .dynamic-row {
       display: grid;
-      grid-template-columns: 1.15fr 0.85fr auto;
+      grid-template-columns: 1.15fr 0.85fr auto auto;
       gap: 8px;
       align-items: end;
       padding: 10px;
-      border: 1px solid rgba(255,255,255,0.06);
+      border: 1px solid rgba(148,163,184,0.10);
       border-radius: 14px;
-      background: rgba(255,255,255,0.02);
+      background: rgba(255,255,255,0.018);
     }
 
     .dynamic-row.outflow {
-      background: linear-gradient(180deg, rgba(239,68,68,0.06), rgba(239,68,68,0.03));
+      background: linear-gradient(180deg, rgba(239,68,68,0.05), rgba(239,68,68,0.025));
       border-color: rgba(239,68,68,0.14);
     }
 
     .dynamic-row.pending {
-      background: linear-gradient(180deg, rgba(245,158,11,0.06), rgba(245,158,11,0.03));
+      background: linear-gradient(180deg, rgba(245,158,11,0.05), rgba(245,158,11,0.025));
       border-color: rgba(245,158,11,0.14);
     }
 
@@ -327,8 +319,8 @@
       font-size: 15px;
       font-weight: 900;
       white-space: nowrap;
-      border: 1px solid rgba(255,255,255,0.06);
-      background: var(--card-3);
+      border: 1px solid rgba(148,163,184,0.08);
+      background: rgba(6,15,30,0.95);
     }
 
     .signed-preview.red { color: #ff9b9b; }
@@ -369,8 +361,8 @@
       justify-content: center;
       min-height: 46px;
       color: white;
-      background: linear-gradient(135deg, var(--accent), var(--accent-2));
-      box-shadow: 0 8px 20px rgba(37,99,235,0.20);
+      background: linear-gradient(135deg, #0f4cbd, #1d4ed8);
+      box-shadow: 0 8px 20px rgba(15,76,189,0.28);
     }
 
     .helper {
@@ -387,7 +379,7 @@
       bottom: 0;
       z-index: 50;
       padding: 10px 14px calc(10px + var(--safe-bottom));
-      background: linear-gradient(180deg, rgba(7,16,29,0), rgba(7,16,29,0.88) 18%, rgba(7,16,29,0.98) 100%);
+      background: linear-gradient(180deg, rgba(3,7,18,0), rgba(3,7,18,0.90) 18%, rgba(3,7,18,0.98) 100%);
       backdrop-filter: blur(10px);
     }
 
@@ -403,18 +395,18 @@
     .bottom-bar button { min-height: 52px; }
 
     .main-btn {
-      background: linear-gradient(135deg, var(--accent), var(--accent-2));
+      background: linear-gradient(135deg, #0f4cbd, #2563eb);
       color: white;
-      box-shadow: 0 8px 25px rgba(37,99,235,0.3);
+      box-shadow: 0 10px 28px rgba(15,76,189,0.34);
     }
 
     .secondary-btn {
-      background: rgba(255,255,255,0.08);
+      background: rgba(255,255,255,0.06);
       color: white;
-      border: 1px solid rgba(255,255,255,0.08);
+      border: 1px solid rgba(148,163,184,0.10);
     }
 
-    @media (max-width: 560px) {
+    @media (max-width: 700px) {
       .dynamic-row { grid-template-columns: 1fr; }
       .dynamic-row .remove-btn { width: 100%; }
       .signed-preview { justify-content: flex-start; }
@@ -444,19 +436,24 @@
     </header>
 
     <section class="summary">
-      <article class="summary-card card">
+      <article class="summary-card card" style="border: 1px solid rgba(96,165,250,0.16); background: linear-gradient(180deg, rgba(15,76,189,0.12), rgba(255,255,255,0.015)), var(--card);">
         <div class="summary-head">
-          <h2>Dashboard</h2>
+          <h2>Saldo disponível em caixa</h2>
           <div id="statusPill" class="pill neutral">Sem diferença</div>
         </div>
 
         <div class="metrics">
+          <div class="metric" style="grid-column: 1 / -1; padding: 18px; background: linear-gradient(180deg, rgba(15,76,189,0.16), rgba(29,78,216,0.05)); border: 1px solid rgba(96,165,250,0.18);">
+            <div class="metric-label">Saldo bancário disponível para uso imediato</div>
+            <div class="metric-value blue" id="saldoContaDestaque" style="font-size: clamp(36px, 6vw, 58px);">$ 0,00</div>
+            <div class="helper" style="margin-top: 8px;">Esse é o valor principal do painel. Ele representa o dinheiro que está disponível na conta para uso imediato no caixa.</div>
+          </div>
           <div class="metric">
-            <div class="metric-label">Turno 1 • Soma total de caixa</div>
+            <div class="metric-label">Turno 1 • Saldo líquido</div>
             <div class="metric-value blue" id="totalTurno1">$ 0,00</div>
           </div>
           <div class="metric">
-            <div class="metric-label">Turno 2 • Soma total de caixa</div>
+            <div class="metric-label">Turno 2 • Saldo líquido</div>
             <div class="metric-value blue" id="totalTurno2">$ 0,00</div>
           </div>
           <div class="metric">
@@ -467,12 +464,6 @@
             <div class="metric-label">Resultado final (Turno 2 - Turno 1)</div>
             <div class="metric-value" id="resultadoFinal">$ 0,00</div>
           </div>
-        </div>
-
-        <div class="helper">
-          Regra usada:
-          <strong>Total do turno = Entradas + Carga de Fichas - Saídas de caixa - Pagos Pendentes</strong>.
-          PPPoker e Suprema são multiplicados automaticamente por 400.
         </div>
       </article>
     </section>
@@ -485,14 +476,14 @@
             <small>Preencha os dados do primeiro turno</small>
           </div>
           <div class="turno-total">
-            <div class="label">Total</div>
+            <div class="label">Saldo líquido</div>
             <div class="value" id="turno1InlineTotal">$ 0,00</div>
           </div>
         </div>
 
         <div class="finance-block">
           <div class="finance-head">
-            <h4>Entradas</h4>
+            <h4>Entradas / material operacional</h4>
             <div class="finance-total blue" id="t1_entradas_total">$ 0,00</div>
           </div>
           <div class="fields two-col">
@@ -535,14 +526,14 @@
             <small>Preencha os dados do segundo turno</small>
           </div>
           <div class="turno-total">
-            <div class="label">Total</div>
+            <div class="label">Saldo líquido</div>
             <div class="value" id="turno2InlineTotal">$ 0,00</div>
           </div>
         </div>
 
         <div class="finance-block">
           <div class="finance-head">
-            <h4>Entradas</h4>
+            <h4>Entradas / material operacional</h4>
             <div class="finance-total blue" id="t2_entradas_total">$ 0,00</div>
           </div>
           <div class="fields two-col">
@@ -713,6 +704,7 @@
       const diff = t2Total - t1Total;
       const abs = Math.abs(diff);
 
+      document.getElementById('saldoContaDestaque').textContent = money(getValue('t2_banco'));
       document.getElementById('t1_entradas_total').textContent = money(t1Entradas);
       document.getElementById('t1_saidas_total').textContent = negativeMoney(t1Saidas);
       document.getElementById('t1_pendentes_total').textContent = negativeMoney(t1Pendentes);
@@ -720,6 +712,7 @@
       document.getElementById('t2_saidas_total').textContent = negativeMoney(t2Saidas);
       document.getElementById('t2_pendentes_total').textContent = negativeMoney(t2Pendentes);
 
+      document.getElementById('saldoLiquidoDestaque').textContent = money(t2Total);
       document.getElementById('totalTurno1').textContent = money(t1Total);
       document.getElementById('turno1InlineTotal').textContent = money(t1Total);
       document.getElementById('totalTurno2').textContent = money(t2Total);
@@ -739,4 +732,96 @@
         });
       });
 
-      row.querySelector('[data-remove-row]').addEventListener('click',
+      row.querySelector('[data-remove-row]').addEventListener('click', () => {
+        row.remove();
+        render();
+      });
+
+      const valueInput = row.querySelector(kind === 'pending' ? 'input[data-pending-value]' : 'input[data-dynamic-value]');
+      if (valueInput) updateRowPreview(valueInput, kind);
+    }
+
+    function createDynamicRow(turno, name = '', value = 0) {
+      dynamicRowCounter += 1;
+      const rowId = `${turno}_saida_${dynamicRowCounter}`;
+      const list = document.getElementById(`${turno}_dynamic_list`);
+
+      const row = document.createElement('div');
+      row.className = 'dynamic-row outflow';
+      row.id = rowId;
+      row.innerHTML = `
+        <div class="field">
+          <label>Saída</label>
+          <input type="text" placeholder="Ex.: salário, fornecedor, marketing" value="${name}">
+        </div>
+        <div class="field">
+          <label>Valor</label>
+          <input type="number" step="0.01" value="${value}" data-dynamic-value="true">
+        </div>
+        <div class="signed-preview red">- $ 0,00</div>
+        <button class="remove-btn" type="button" data-remove-row="${rowId}">Remover</button>
+      `;
+
+      list.appendChild(row);
+      bindRow(row, 'outflow');
+      render();
+    }
+
+    function createPendingRow(turno, name = '', value = 0) {
+      dynamicRowCounter += 1;
+      const rowId = `${turno}_pending_${dynamicRowCounter}`;
+      const list = document.getElementById(`${turno}_pending_list`);
+
+      const row = document.createElement('div');
+      row.className = 'dynamic-row pending';
+      row.id = rowId;
+      row.innerHTML = `
+        <div class="field">
+          <label>Nome do cliente</label>
+          <input type="text" placeholder="Ex.: João, Carlos, Maria" value="${name}">
+        </div>
+        <div class="field">
+          <label>Valor</label>
+          <input type="number" step="0.01" value="${value}" data-pending-value="true">
+        </div>
+        <div class="signed-preview amber">- $ 0,00</div>
+        <button class="remove-btn" type="button" data-remove-row="${rowId}">Remover</button>
+      `;
+
+      list.appendChild(row);
+      bindRow(row, 'pending');
+      render();
+    }
+
+    function limparTudo() {
+      document.querySelectorAll('input[type="number"]').forEach(input => input.value = 0);
+      document.querySelectorAll('input[type="text"]').forEach(input => input.value = '');
+
+      const ids = ['t1_dynamic_list', 't2_dynamic_list', 't1_pending_list', 't2_pending_list'];
+      ids.forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.innerHTML = '';
+      });
+
+      render();
+    }
+
+    document.getElementById('calcular').addEventListener('click', render);
+    document.getElementById('limpar').addEventListener('click', limparTudo);
+
+    document.querySelectorAll('input[type="number"]').forEach(input => {
+      input.addEventListener('input', render);
+    });
+
+    document.querySelectorAll('[data-add-row]').forEach(btn => {
+      btn.addEventListener('click', () => createDynamicRow(btn.dataset.addRow));
+    });
+
+    document.querySelectorAll('[data-add-pending]').forEach(btn => {
+      btn.addEventListener('click', () => createPendingRow(btn.dataset.addPending));
+    });
+
+    render();
+  </script>
+</body>
+</html>
