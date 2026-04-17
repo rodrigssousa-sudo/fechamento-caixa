@@ -1562,31 +1562,18 @@
     const REMEMBERED_EMAIL_STORAGE_KEY = "bank-king-remembered-email-v1";
     const ACTIVE_USER_STORAGE_KEY = "bank-king-active-user-v1";
 
-let balanceVisible = true;
+    let balanceVisible = true;
+    let dynamicRowCounter = 0;
 
-document.getElementById("toggleBalance").addEventListener("click", () => {
-  balanceVisible = !balanceVisible;
+    const authScreen = document.getElementById("authScreen");
+    const appShell = document.getElementById("appShell");
 
-  const bank = document.getElementById("bankValue");
-  const icon = document.getElementById("eyeIcon");
-
-  if (balanceVisible) {
-    bank.textContent = formatCurrency(currentBalance); // usa tua variável
-    icon.innerHTML = `
-      <path d="M2 12C4.5 7 8.5 5 12 5C15.5 5 19.5 7 22 12C19.5 17 15.5 19 12 19C8.5 19 4.5 17 2 12Z" stroke="currentColor" stroke-width="1.6"/>
-      <circle cx="12" cy="12" r="3" stroke="currentColor" stroke-width="1.6"/>
-    `;
-  } else {
-    bank.textContent = "••••••";
-    icon.innerHTML = `
-      <path d="M3 3L21 21" stroke="currentColor" stroke-width="1.6"/>
-      <path d="M10.5 10.5C10.2 10.8 10 11.3 10 12C10 13.1 10.9 14 12 14C12.7 14 13.2 13.8 13.5 13.5" stroke="currentColor" stroke-width="1.6"/>
-      <path d="M6.5 6.5C5 7.7 3.7 9.5 2 12C4.5 17 8.5 19 12 19C13.5 19 15 18.5 16.5 17.5" stroke="currentColor" stroke-width="1.6"/>
-      <path d="M17.5 17.5C19 16.3 20.3 14.5 22 12C19.5 7 15.5 5 12 5C10.5 5 9 5.5 7.5 6.5" stroke="currentColor" stroke-width="1.6"/>
-    `;
-  }
-});
-  }
+    function money(value) {
+      return Number(value || 0).toLocaleString("pt-BR", {
+        style: "currency",
+        currency: "BRL"
+      });
+    }
 
     function negativeMoney(value) {
       return `- ${money(value)}`;
