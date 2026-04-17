@@ -9,14 +9,11 @@
       --bg: #030712;
       --bg-2: #081120;
       --card: rgba(10, 18, 34, 0.96);
-      --card-2: #0d1a30;
-      --card-3: #101b2e;
       --border: rgba(148, 163, 184, 0.12);
       --text: #f8fafc;
       --muted: #8fa2c0;
       --accent: #0f4cbd;
       --accent-2: #1d4ed8;
-      --accent-3: #60a5fa;
       --green: #22c55e;
       --red: #ef4444;
       --amber: #f59e0b;
@@ -38,11 +35,145 @@
       min-height: 100vh;
     }
 
+    .hidden { display: none !important; }
+
+    .auth-screen {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+
+    .auth-card {
+      width: 100%;
+      max-width: 420px;
+      background: linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0.015)), var(--card);
+      border: 1px solid var(--border);
+      border-radius: 24px;
+      box-shadow: var(--shadow);
+      padding: 22px;
+    }
+
+    .auth-logo {
+      width: 54px;
+      height: 54px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 900;
+      font-size: 18px;
+      letter-spacing: -0.02em;
+      color: #f59e0b;
+      border: 2px solid #f59e0b;
+      margin-bottom: 14px;
+      box-shadow: 0 0 0 2px rgba(245,158,11,0.10);
+    }
+
+    .auth-title {
+      margin: 0 0 6px;
+      font-size: 30px;
+      letter-spacing: -0.04em;
+    }
+
+    .auth-subtitle {
+      margin: 0 0 18px;
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.45;
+    }
+
+    .auth-toggle {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+      margin-bottom: 16px;
+    }
+
+    .auth-tab {
+      min-height: 42px;
+      border-radius: 14px;
+      border: 1px solid rgba(148,163,184,0.10);
+      background: rgba(255,255,255,0.05);
+      color: #dbeafe;
+      font-weight: 800;
+      cursor: pointer;
+    }
+
+    .auth-tab.active {
+      background: linear-gradient(135deg, #0f4cbd, #2563eb);
+      border-color: rgba(96,165,250,0.18);
+    }
+
+    .auth-form {
+      display: grid;
+      gap: 12px;
+    }
+
+    .field {
+      display: flex;
+      flex-direction: column;
+      gap: 7px;
+    }
+
+    .field label {
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--muted);
+    }
+
+    .field input {
+      width: 100%;
+      min-height: 48px;
+      border-radius: var(--radius-sm);
+      border: 1px solid rgba(148,163,184,0.10);
+      background: linear-gradient(180deg, rgba(15,23,42,0.96), rgba(13,26,48,0.96));
+      color: var(--text);
+      padding: 13px 14px;
+      font-size: 16px;
+      outline: none;
+    }
+
+    .field input::placeholder {
+      color: #6f84a8;
+      opacity: 1;
+    }
+
+    .field input:focus {
+      border-color: rgba(96,165,250,0.34);
+      box-shadow: 0 0 0 4px rgba(29,78,216,0.12);
+    }
+
+    .auth-submit {
+      min-height: 50px;
+      border-radius: 14px;
+      border: 0;
+      color: white;
+      font-size: 15px;
+      font-weight: 900;
+      cursor: pointer;
+      background: linear-gradient(135deg, #0f4cbd, #2563eb);
+      box-shadow: 0 10px 28px rgba(15,76,189,0.34);
+      margin-top: 4px;
+    }
+
+    .auth-note {
+      margin-top: 12px;
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.45;
+    }
+
+    .app-shell {
+      width: 100%;
+    }
+
     .app {
       width: 100%;
       max-width: 760px;
       margin: 0 auto;
-      padding: 14px 14px calc(150px + var(--safe-bottom));
+      padding: 14px 14px calc(98px + var(--safe-bottom));
     }
 
     .header {
@@ -311,46 +442,6 @@
       color: #e2ebff;
     }
 
-    .fields {
-      display: grid;
-      grid-template-columns: 1fr;
-      gap: 10px;
-    }
-
-    .field {
-      display: flex;
-      flex-direction: column;
-      gap: 7px;
-    }
-
-    .field label {
-      font-size: 12px;
-      font-weight: 700;
-      color: var(--muted);
-    }
-
-    .field input {
-      width: 100%;
-      min-height: 48px;
-      border-radius: var(--radius-sm);
-      border: 1px solid rgba(148,163,184,0.10);
-      background: linear-gradient(180deg, rgba(15,23,42,0.96), rgba(13,26,48,0.96));
-      color: var(--text);
-      padding: 13px 14px;
-      font-size: 16px;
-      outline: none;
-    }
-
-    .field input::placeholder {
-      color: #6f84a8;
-      opacity: 1;
-    }
-
-    .field input:focus {
-      border-color: rgba(96,165,250,0.34);
-      box-shadow: 0 0 0 4px rgba(29,78,216,0.12);
-    }
-
     .finance-block {
       margin-top: 14px;
       padding: 14px;
@@ -381,6 +472,12 @@
 
     .finance-total.red { color: #ffb3b3; }
     .finance-total.blue { color: #b8d4ff; }
+
+    .fields {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 10px;
+    }
 
     .dynamic-list {
       display: grid;
@@ -459,10 +556,50 @@
       display: inline-flex;
       align-items: center;
       justify-content: center;
-      min-height: 46px;
+      min-height: 42px;
       color: white;
       background: linear-gradient(135deg, #0f4cbd, #1d4ed8);
       box-shadow: 0 8px 20px rgba(15,76,189,0.28);
+    }
+
+    .top-user-bar {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 12px;
+      padding: 12px 14px;
+      border-radius: 16px;
+      border: 1px solid rgba(148,163,184,0.10);
+      background: rgba(255,255,255,0.02);
+    }
+
+    .top-user-info {
+      display: flex;
+      flex-direction: column;
+      gap: 3px;
+    }
+
+    .top-user-name {
+      font-size: 13px;
+      font-weight: 800;
+      color: #e2ebff;
+    }
+
+    .top-user-email {
+      font-size: 12px;
+      color: var(--muted);
+    }
+
+    .logout-btn {
+      min-height: 38px;
+      padding: 0 14px;
+      border-radius: 12px;
+      background: rgba(239,68,68,0.12);
+      color: #ffb3b3;
+      border: 1px solid rgba(239,68,68,0.22);
+      font-size: 12px;
+      font-weight: 800;
     }
 
     .bottom-bar {
@@ -471,7 +608,7 @@
       right: 0;
       bottom: 0;
       z-index: 50;
-      padding: 10px 14px calc(10px + var(--safe-bottom));
+      padding: 8px 10px calc(8px + var(--safe-bottom));
       background: linear-gradient(180deg, rgba(3,7,18,0), rgba(3,7,18,0.90) 18%, rgba(3,7,18,0.98) 100%);
       backdrop-filter: blur(10px);
     }
@@ -481,11 +618,17 @@
       max-width: 760px;
       margin: 0 auto;
       display: grid;
-      grid-template-columns: 1fr 1fr 1fr 1fr;
-      gap: 10px;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 8px;
     }
 
-    .bottom-bar button { min-height: 52px; }
+    .bottom-bar button {
+      min-height: 42px;
+      padding: 10px 8px;
+      font-size: 11px;
+      border-radius: 12px;
+      letter-spacing: -0.01em;
+    }
 
     .main-btn {
       background: linear-gradient(135deg, #0f4cbd, #2563eb);
@@ -515,7 +658,15 @@
       .dynamic-row { grid-template-columns: 1fr; }
       .dynamic-row .remove-btn { width: 100%; }
       .signed-preview { justify-content: flex-start; }
-      .bottom-bar-inner { grid-template-columns: 1fr; }
+      .bottom-bar-inner { grid-template-columns: repeat(4, 1fr); }
+      .bottom-bar button { font-size: 10px; }
+    }
+
+    @media (max-width: 520px) {
+      .auth-toggle { grid-template-columns: 1fr 1fr; }
+      .bottom-bar button { min-height: 40px; padding: 8px 6px; }
+      .title-row { align-items: flex-start; }
+      .badge { font-size: 10px; padding: 7px 10px; }
     }
 
     @media (min-width: 768px) {
@@ -526,187 +677,257 @@
       .turnos { grid-template-columns: 1fr 1fr; }
       .fields.two-col { grid-template-columns: repeat(2, 1fr); }
       .bottom-bar-inner { max-width: 1180px; width: calc(100% - 36px); }
+      .bottom-bar button { font-size: 12px; }
     }
   </style>
 </head>
 <body>
-  <main class="app">
-    <header class="header">
-      <div class="title-row">
-        <div class="brand">
-          <div class="logo-bk">BK</div>
-          <h1>Bank King</h1>
-        </div>
-        <div class="badge">Finance Pro</div>
+  <section id="authScreen" class="auth-screen">
+    <div class="auth-card">
+      <div class="auth-logo">BK</div>
+      <h1 class="auth-title">Bank King</h1>
+      <p class="auth-subtitle">Acesso interno para fechamento de caixa e relatórios de turno.</p>
+
+      <div class="auth-toggle">
+        <button id="tabLogin" class="auth-tab active" type="button">Entrar</button>
+        <button id="tabRegister" class="auth-tab" type="button">Registrar</button>
       </div>
-    </header>
 
-    <section class="summary">
-      <article class="summary-card card">
-        <div class="summary-head">
-          <h2>Painel Financeiro</h2>
-          <div id="statusPill" class="pill neutral">Sem diferença</div>
+      <form id="loginForm" class="auth-form">
+        <div class="field">
+          <label for="loginEmail">Email</label>
+          <input id="loginEmail" type="email" placeholder="Digite seu email" required />
         </div>
-
-        <div class="bank-card">
-          <div class="bank-topline">
-            <div class="bank-label">Saldo Disponível</div>
-            <button class="hide-balance-btn" id="toggleBalance" type="button" aria-label="Mostrar ou ocultar saldo">
-              <span id="eyeIcon">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#eaf2ff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                  <path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7S1 12 1 12z"/>
-                  <circle cx="12" cy="12" r="3"/>
-                </svg>
-              </span>
-            </button>
-          </div>
-          <div class="bank-value" id="saldoContaDestaque">$ 0,00</div>
+        <div class="field">
+          <label for="loginPassword">Senha</label>
+          <input id="loginPassword" type="password" placeholder="Digite sua senha" required />
         </div>
+        <button class="auth-submit" type="submit">Entrar agora</button>
+      </form>
 
-        <div class="metrics">
-          <div class="metric">
-            <div class="metric-label">Turno 1 • Saldo líquido</div>
-            <div class="metric-value blue" id="totalTurno1">$ 0,00</div>
-          </div>
-          <div class="metric">
-            <div class="metric-label">Turno 2 • Saldo líquido</div>
-            <div class="metric-value blue" id="totalTurno2">$ 0,00</div>
-          </div>
-          <div class="metric">
-            <div class="metric-label">Diferença absoluta</div>
-            <div class="metric-value" id="diferencaAbs">$ 0,00</div>
-          </div>
-          <div class="metric">
-            <div class="metric-label">Resultado final (Turno 2 - Turno 1)</div>
-            <div class="metric-value" id="resultadoFinal">$ 0,00</div>
-          </div>
+      <form id="registerForm" class="auth-form hidden">
+        <div class="field">
+          <label for="registerName">Nome</label>
+          <input id="registerName" type="text" placeholder="Digite seu nome" required />
         </div>
-
-        <div class="history-card">
-          <div class="history-card-text" id="historyInfo">
-            Nenhum turno anterior salvo ainda.
-          </div>
+        <div class="field">
+          <label for="registerEmail">Email</label>
+          <input id="registerEmail" type="email" placeholder="Digite seu email" required />
         </div>
-      </article>
-    </section>
-
-    <section class="turnos">
-      <article class="turno card" data-turno="t1">
-        <div class="turno-head">
-          <div>
-            <h3>Turno 1</h3>
-            <small>Carregado automaticamente do último turno fechado</small>
-          </div>
-          <div class="turno-total">
-            <div class="label">Saldo líquido</div>
-            <div class="value" id="turno1InlineTotal">$ 0,00</div>
-          </div>
+        <div class="field">
+          <label for="registerPassword">Senha</label>
+          <input id="registerPassword" type="password" placeholder="Crie uma senha" required />
         </div>
+        <button class="auth-submit" type="submit">Registrar acesso</button>
+      </form>
 
-        <div class="finance-block">
-          <div class="finance-head">
-            <h4>Entradas / material operacional</h4>
-            <div class="finance-total blue" id="t1_entradas_total">$ 0,00</div>
+      <div class="auth-note">
+        O nome do usuário logado será salvo no fechamento do turno e aparecerá no PDF como responsável pelo envio.
+      </div>
+    </div>
+  </section>
+
+  <div id="appShell" class="app-shell hidden">
+    <main class="app">
+      <header class="header">
+        <div class="title-row">
+          <div class="brand">
+            <div class="logo-bk">BK</div>
+            <h1>Bank King</h1>
           </div>
-          <div class="fields two-col">
-            <div class="field"><label for="t1_banco">Banco Reca</label><input type="text" inputmode="numeric" id="t1_banco" placeholder="0,00"></div>
-            <div class="field"><label for="t1_pppoker">PPPoker (x400)</label><input type="text" inputmode="numeric" id="t1_pppoker" placeholder="0,00"></div>
-            <div class="field"><label for="t1_suprema">Suprema (x400)</label><input type="text" inputmode="numeric" id="t1_suprema" placeholder="0,00"></div>
-            <div class="field"><label for="t1_buffalo">Buffalo</label><input type="text" inputmode="numeric" id="t1_buffalo" placeholder="0,00"></div>
-            <div class="field"><label for="t1_ganamos">Ganamos</label><input type="text" inputmode="numeric" id="t1_ganamos" placeholder="0,00"></div>
-            <div class="field"><label for="t1_cargas">Carga de Fichas</label><input type="text" inputmode="numeric" id="t1_cargas" placeholder="0,00"></div>
-            <div class="field"><label for="t1_cargas_poker">Cargas F. Poker (x400)</label><input type="text" inputmode="numeric" id="t1_cargas_poker" placeholder="0,00"></div>
-          </div>
+          <div class="badge">Finance Pro</div>
         </div>
+      </header>
 
-        <div class="finance-block">
-          <div class="finance-head">
-            <h4>Saídas de caixa</h4>
-            <div class="finance-total red" id="t1_saidas_total">- $ 0,00</div>
-          </div>
-          <div class="dynamic-list" id="t1_dynamic_list"></div>
-          <div class="inline-actions">
-            <button class="btn-add" type="button" data-add-row="t1">+ Adicionar saída</button>
-          </div>
+      <div class="top-user-bar">
+        <div class="top-user-info">
+          <div class="top-user-name" id="activeUserName">Usuário</div>
+          <div class="top-user-email" id="activeUserEmail">email@exemplo.com</div>
         </div>
+        <button id="logoutBtn" class="logout-btn" type="button">Sair</button>
+      </div>
 
-        <div class="finance-block">
-          <div class="finance-head">
-            <h4>Pagos Pendentes</h4>
-            <div class="finance-total red" id="t1_pendentes_total">- $ 0,00</div>
+      <section class="summary">
+        <article class="summary-card card">
+          <div class="summary-head">
+            <h2>Painel Financeiro</h2>
+            <div id="statusPill" class="pill neutral">Sem diferença</div>
           </div>
-          <div class="dynamic-list" id="t1_pending_list"></div>
-          <div class="inline-actions">
-            <button class="btn-add" type="button" data-add-pending="t1">+ Adicionar pago pendente</button>
-          </div>
-        </div>
-      </article>
 
-      <article class="turno card" data-turno="t2">
-        <div class="turno-head">
-          <div>
-            <h3>Turno 2</h3>
-            <small>Turno atual para preenchimento e fechamento</small>
+          <div class="bank-card">
+            <div class="bank-topline">
+              <div class="bank-label">Saldo Disponível</div>
+              <button class="hide-balance-btn" id="toggleBalance" type="button" aria-label="Mostrar ou ocultar saldo">
+                <span id="eyeIcon">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#eaf2ff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7S1 12 1 12z"/>
+                    <circle cx="12" cy="12" r="3"/>
+                  </svg>
+                </span>
+              </button>
+            </div>
+            <div class="bank-value" id="saldoContaDestaque">$ 0,00</div>
           </div>
-          <div class="turno-total">
-            <div class="label">Saldo líquido</div>
-            <div class="value" id="turno2InlineTotal">$ 0,00</div>
-          </div>
-        </div>
 
-        <div class="finance-block">
-          <div class="finance-head">
-            <h4>Entradas / material operacional</h4>
-            <div class="finance-total blue" id="t2_entradas_total">$ 0,00</div>
+          <div class="metrics">
+            <div class="metric">
+              <div class="metric-label">Turno 1 • Saldo líquido</div>
+              <div class="metric-value blue" id="totalTurno1">$ 0,00</div>
+            </div>
+            <div class="metric">
+              <div class="metric-label">Turno 2 • Saldo líquido</div>
+              <div class="metric-value blue" id="totalTurno2">$ 0,00</div>
+            </div>
+            <div class="metric">
+              <div class="metric-label">Diferença absoluta</div>
+              <div class="metric-value" id="diferencaAbs">$ 0,00</div>
+            </div>
+            <div class="metric">
+              <div class="metric-label">Resultado final (Turno 2 - Turno 1)</div>
+              <div class="metric-value" id="resultadoFinal">$ 0,00</div>
+            </div>
           </div>
-          <div class="fields two-col">
-            <div class="field"><label for="t2_banco">Banco Reca</label><input type="text" inputmode="numeric" id="t2_banco" placeholder="0,00"></div>
-            <div class="field"><label for="t2_pppoker">PPPoker (x400)</label><input type="text" inputmode="numeric" id="t2_pppoker" placeholder="0,00"></div>
-            <div class="field"><label for="t2_suprema">Suprema (x400)</label><input type="text" inputmode="numeric" id="t2_suprema" placeholder="0,00"></div>
-            <div class="field"><label for="t2_buffalo">Buffalo</label><input type="text" inputmode="numeric" id="t2_buffalo" placeholder="0,00"></div>
-            <div class="field"><label for="t2_ganamos">Ganamos</label><input type="text" inputmode="numeric" id="t2_ganamos" placeholder="0,00"></div>
-            <div class="field"><label for="t2_cargas">Carga de Fichas</label><input type="text" inputmode="numeric" id="t2_cargas" placeholder="0,00"></div>
-            <div class="field"><label for="t2_cargas_poker">Cargas F. Poker (x400)</label><input type="text" inputmode="numeric" id="t2_cargas_poker" placeholder="0,00"></div>
-          </div>
-        </div>
 
-        <div class="finance-block">
-          <div class="finance-head">
-            <h4>Saídas de caixa</h4>
-            <div class="finance-total red" id="t2_saidas_total">- $ 0,00</div>
+          <div class="history-card">
+            <div class="history-card-text" id="historyInfo">
+              Nenhum turno anterior salvo ainda.
+            </div>
           </div>
-          <div class="dynamic-list" id="t2_dynamic_list"></div>
-          <div class="inline-actions">
-            <button class="btn-add" type="button" data-add-row="t2">+ Adicionar saída</button>
-          </div>
-        </div>
+        </article>
+      </section>
 
-        <div class="finance-block">
-          <div class="finance-head">
-            <h4>Pagos Pendentes</h4>
-            <div class="finance-total red" id="t2_pendentes_total">- $ 0,00</div>
+      <section class="turnos">
+        <article class="turno card" data-turno="t1">
+          <div class="turno-head">
+            <div>
+              <h3>Turno 1</h3>
+              <small>Carregado automaticamente do último turno fechado</small>
+            </div>
+            <div class="turno-total">
+              <div class="label">Saldo líquido</div>
+              <div class="value" id="turno1InlineTotal">$ 0,00</div>
+            </div>
           </div>
-          <div class="dynamic-list" id="t2_pending_list"></div>
-          <div class="inline-actions">
-            <button class="btn-add" type="button" data-add-pending="t2">+ Adicionar pago pendente</button>
-          </div>
-        </div>
-      </article>
-    </section>
-  </main>
 
-  <div class="bottom-bar">
-    <div class="bottom-bar-inner">
-      <button class="secondary-btn" id="limpar">Limpar tudo</button>
-      <button class="close-btn" id="fecharTurno">Fechar turno</button>
-      <button class="pdf-btn" id="exportarPdf">Exportar PDF</button>
-      <button class="main-btn" id="calcular">Calcular agora</button>
+          <div class="finance-block">
+            <div class="finance-head">
+              <h4>Entradas / material operacional</h4>
+              <div class="finance-total blue" id="t1_entradas_total">$ 0,00</div>
+            </div>
+            <div class="fields two-col">
+              <div class="field"><label for="t1_banco">Banco Reca</label><input type="text" inputmode="numeric" id="t1_banco" placeholder="0,00"></div>
+              <div class="field"><label for="t1_pppoker">PPPoker (x400)</label><input type="text" inputmode="numeric" id="t1_pppoker" placeholder="0,00"></div>
+              <div class="field"><label for="t1_suprema">Suprema (x400)</label><input type="text" inputmode="numeric" id="t1_suprema" placeholder="0,00"></div>
+              <div class="field"><label for="t1_buffalo">Buffalo</label><input type="text" inputmode="numeric" id="t1_buffalo" placeholder="0,00"></div>
+              <div class="field"><label for="t1_ganamos">Ganamos</label><input type="text" inputmode="numeric" id="t1_ganamos" placeholder="0,00"></div>
+              <div class="field"><label for="t1_cargas">Carga de Fichas</label><input type="text" inputmode="numeric" id="t1_cargas" placeholder="0,00"></div>
+              <div class="field"><label for="t1_cargas_poker">Cargas F. Poker (x400)</label><input type="text" inputmode="numeric" id="t1_cargas_poker" placeholder="0,00"></div>
+            </div>
+          </div>
+
+          <div class="finance-block">
+            <div class="finance-head">
+              <h4>Saídas de caixa</h4>
+              <div class="finance-total red" id="t1_saidas_total">- $ 0,00</div>
+            </div>
+            <div class="dynamic-list" id="t1_dynamic_list"></div>
+            <div class="inline-actions">
+              <button class="btn-add" type="button" data-add-row="t1">+ Adicionar saída</button>
+            </div>
+          </div>
+
+          <div class="finance-block">
+            <div class="finance-head">
+              <h4>Pagos Pendentes</h4>
+              <div class="finance-total red" id="t1_pendentes_total">- $ 0,00</div>
+            </div>
+            <div class="dynamic-list" id="t1_pending_list"></div>
+            <div class="inline-actions">
+              <button class="btn-add" type="button" data-add-pending="t1">+ Adicionar pago pendente</button>
+            </div>
+          </div>
+        </article>
+
+        <article class="turno card" data-turno="t2">
+          <div class="turno-head">
+            <div>
+              <h3>Turno 2</h3>
+              <small>Turno atual para preenchimento e fechamento</small>
+            </div>
+            <div class="turno-total">
+              <div class="label">Saldo líquido</div>
+              <div class="value" id="turno2InlineTotal">$ 0,00</div>
+            </div>
+          </div>
+
+          <div class="finance-block">
+            <div class="finance-head">
+              <h4>Entradas / material operacional</h4>
+              <div class="finance-total blue" id="t2_entradas_total">$ 0,00</div>
+            </div>
+            <div class="fields two-col">
+              <div class="field"><label for="t2_banco">Banco Reca</label><input type="text" inputmode="numeric" id="t2_banco" placeholder="0,00"></div>
+              <div class="field"><label for="t2_pppoker">PPPoker (x400)</label><input type="text" inputmode="numeric" id="t2_pppoker" placeholder="0,00"></div>
+              <div class="field"><label for="t2_suprema">Suprema (x400)</label><input type="text" inputmode="numeric" id="t2_suprema" placeholder="0,00"></div>
+              <div class="field"><label for="t2_buffalo">Buffalo</label><input type="text" inputmode="numeric" id="t2_buffalo" placeholder="0,00"></div>
+              <div class="field"><label for="t2_ganamos">Ganamos</label><input type="text" inputmode="numeric" id="t2_ganamos" placeholder="0,00"></div>
+              <div class="field"><label for="t2_cargas">Carga de Fichas</label><input type="text" inputmode="numeric" id="t2_cargas" placeholder="0,00"></div>
+              <div class="field"><label for="t2_cargas_poker">Cargas F. Poker (x400)</label><input type="text" inputmode="numeric" id="t2_cargas_poker" placeholder="0,00"></div>
+            </div>
+          </div>
+
+          <div class="finance-block">
+            <div class="finance-head">
+              <h4>Saídas de caixa</h4>
+              <div class="finance-total red" id="t2_saidas_total">- $ 0,00</div>
+            </div>
+            <div class="dynamic-list" id="t2_dynamic_list"></div>
+            <div class="inline-actions">
+              <button class="btn-add" type="button" data-add-row="t2">+ Adicionar saída</button>
+            </div>
+          </div>
+
+          <div class="finance-block">
+            <div class="finance-head">
+              <h4>Pagos Pendentes</h4>
+              <div class="finance-total red" id="t2_pendentes_total">- $ 0,00</div>
+            </div>
+            <div class="dynamic-list" id="t2_pending_list"></div>
+            <div class="inline-actions">
+              <button class="btn-add" type="button" data-add-pending="t2">+ Adicionar pago pendente</button>
+            </div>
+          </div>
+        </article>
+      </section>
+    </main>
+
+    <div class="bottom-bar">
+      <div class="bottom-bar-inner">
+        <button class="secondary-btn" id="limpar">Limpar tudo</button>
+        <button class="close-btn" id="fecharTurno">Fechar turno</button>
+        <button class="pdf-btn" id="exportarPdf">Exportar PDF</button>
+        <button class="main-btn" id="calcular">Calcular agora</button>
+      </div>
     </div>
   </div>
 
   <script>
     const PDF_CODE = '351278';
-    const HISTORY_STORAGE_KEY = 'bank-king-turno-anterior-v2';
+    const USERS_STORAGE_KEY = 'bank-king-users-v1';
+    const ACTIVE_USER_STORAGE_KEY = 'bank-king-active-user-v1';
+    const HISTORY_STORAGE_KEY = 'bank-king-turno-anterior-v3';
+
+    const authScreen = document.getElementById('authScreen');
+    const appShell = document.getElementById('appShell');
+
+    const tabLogin = document.getElementById('tabLogin');
+    const tabRegister = document.getElementById('tabRegister');
+    const loginForm = document.getElementById('loginForm');
+    const registerForm = document.getElementById('registerForm');
+
+    let dynamicRowCounter = 0;
+    let balanceVisible = true;
+    let activeUser = null;
 
     function money(value) {
       return `$ ${Number(value).toLocaleString('pt-BR', {
@@ -726,6 +947,15 @@
 
     function negativeMoney(value) {
       return `- ${money(value)}`;
+    }
+
+    function escapeHtml(text) {
+      return String(text)
+        .replaceAll('&', '&amp;')
+        .replaceAll('<', '&lt;')
+        .replaceAll('>', '&gt;')
+        .replaceAll('"', '&quot;')
+        .replaceAll("'", '&#39;');
     }
 
     function formatDigitsToMoneyString(digits) {
@@ -749,7 +979,7 @@
     }
 
     function getDigitsFromInput(input) {
-      return input.dataset.raw || '';
+      return input?.dataset?.raw || '';
     }
 
     function setDigitsToInput(input, digits) {
@@ -839,6 +1069,110 @@
       });
     }
 
+    function getUsers() {
+      const raw = localStorage.getItem(USERS_STORAGE_KEY);
+      if (!raw) return [];
+      try {
+        return JSON.parse(raw);
+      } catch {
+        return [];
+      }
+    }
+
+    function saveUsers(users) {
+      localStorage.setItem(USERS_STORAGE_KEY, JSON.stringify(users));
+    }
+
+    function saveActiveUser(user) {
+      activeUser = user;
+      localStorage.setItem(ACTIVE_USER_STORAGE_KEY, JSON.stringify(user));
+    }
+
+    function loadActiveUser() {
+      const raw = localStorage.getItem(ACTIVE_USER_STORAGE_KEY);
+      if (!raw) return null;
+      try {
+        return JSON.parse(raw);
+      } catch {
+        return null;
+      }
+    }
+
+    function logout() {
+      localStorage.removeItem(ACTIVE_USER_STORAGE_KEY);
+      activeUser = null;
+      authScreen.classList.remove('hidden');
+      appShell.classList.add('hidden');
+    }
+
+    function showApp() {
+      authScreen.classList.add('hidden');
+      appShell.classList.remove('hidden');
+      updateActiveUserUI();
+      loadHistoryIntoTurn1();
+      render();
+    }
+
+    function updateActiveUserUI() {
+      document.getElementById('activeUserName').textContent = activeUser?.name || 'Usuário';
+      document.getElementById('activeUserEmail').textContent = activeUser?.email || '';
+    }
+
+    function switchAuthTab(mode) {
+      const loginActive = mode === 'login';
+      tabLogin.classList.toggle('active', loginActive);
+      tabRegister.classList.toggle('active', !loginActive);
+      loginForm.classList.toggle('hidden', !loginActive);
+      registerForm.classList.toggle('hidden', loginActive);
+    }
+
+    tabLogin.addEventListener('click', () => switchAuthTab('login'));
+    tabRegister.addEventListener('click', () => switchAuthTab('register'));
+
+    registerForm.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const name = document.getElementById('registerName').value.trim();
+      const email = document.getElementById('registerEmail').value.trim().toLowerCase();
+      const password = document.getElementById('registerPassword').value;
+
+      if (!name || !email || !password) {
+        alert('Preencha nome, email e senha.');
+        return;
+      }
+
+      const users = getUsers();
+      const exists = users.some(user => user.email === email);
+      if (exists) {
+        alert('Esse email já está registrado.');
+        return;
+      }
+
+      const user = { name, email, password };
+      users.push(user);
+      saveUsers(users);
+      saveActiveUser({ name, email });
+      showApp();
+    });
+
+    loginForm.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const email = document.getElementById('loginEmail').value.trim().toLowerCase();
+      const password = document.getElementById('loginPassword').value;
+
+      const users = getUsers();
+      const found = users.find(user => user.email === email && user.password === password);
+
+      if (!found) {
+        alert('Email ou senha inválidos.');
+        return;
+      }
+
+      saveActiveUser({ name: found.name, email: found.email });
+      showApp();
+    });
+
+    document.getElementById('logoutBtn').addEventListener('click', logout);
+
     const fieldsByTurn = {
       t1: {
         banco: 't1_banco',
@@ -859,9 +1193,6 @@
         cargasPoker: 't2_cargas_poker'
       }
     };
-
-    let dynamicRowCounter = 0;
-    let balanceVisible = true;
 
     function getValue(id) {
       const el = document.getElementById(id);
@@ -979,23 +1310,15 @@
       const diff = t2Total - t1Total;
       const abs = Math.abs(diff);
 
+      const history = loadHistory();
+
       return {
         saldoDisponivel: getValue('t2_banco'),
-        bancoT1: getValue('t1_banco'),
-        bancoT2: getValue('t2_banco'),
         t1Entradas, t1Saidas, t1Pendentes, t1Total,
         t2Entradas, t2Saidas, t2Pendentes, t2Total,
-        diff, abs
+        diff, abs,
+        history
       };
-    }
-
-    function escapeHtml(text) {
-      return String(text)
-        .replaceAll('&', '&amp;')
-        .replaceAll('<', '&lt;')
-        .replaceAll('>', '&gt;')
-        .replaceAll('"', '&quot;')
-        .replaceAll("'", '&#39;');
     }
 
     function getDynamicRowsHtml(turno, type) {
@@ -1034,7 +1357,12 @@
       const data = getSummaryData();
       const now = new Date();
       const nowText = `${now.toLocaleDateString('pt-BR')} • ${now.toLocaleTimeString('pt-BR')}`;
-      const historyInfo = loadHistoryMeta();
+
+      const savedBy = data.history?.submittedByName || activeUser?.name || 'Não identificado';
+      const savedEmail = data.history?.submittedByEmail || activeUser?.email || 'Não identificado';
+      const savedAt = data.history?.submittedAt
+        ? new Date(data.history.submittedAt).toLocaleDateString('pt-BR') + ' • ' + new Date(data.history.submittedAt).toLocaleTimeString('pt-BR')
+        : 'Sem fechamento salvo';
 
       return `
         <!DOCTYPE html>
@@ -1107,10 +1435,28 @@
               font-weight: 900;
               letter-spacing: -0.05em;
             }
-            .history {
+            .meta {
               margin-top: 16px;
-              font-size: 12px;
-              color: #dbeafe;
+              display: grid;
+              grid-template-columns: repeat(3, 1fr);
+              gap: 10px;
+            }
+            .meta-box {
+              background: rgba(255,255,255,0.08);
+              border: 1px solid rgba(255,255,255,0.10);
+              border-radius: 14px;
+              padding: 12px;
+            }
+            .meta-label {
+              font-size: 11px;
+              color: #bfdbfe;
+              text-transform: uppercase;
+              letter-spacing: 0.06em;
+              margin-bottom: 6px;
+            }
+            .meta-value {
+              font-size: 13px;
+              font-weight: 700;
             }
             .grid4 {
               display: grid;
@@ -1218,10 +1564,23 @@
                   </div>
                 </div>
               </div>
+
               <div class="hero-label">Saldo Disponível</div>
               <div class="hero-value">${money(data.saldoDisponivel)}</div>
-              <div class="history">
-                Histórico automático: ${escapeHtml(historyInfo)}
+
+              <div class="meta">
+                <div class="meta-box">
+                  <div class="meta-label">Responsável</div>
+                  <div class="meta-value">${escapeHtml(savedBy)}</div>
+                </div>
+                <div class="meta-box">
+                  <div class="meta-label">Email</div>
+                  <div class="meta-value">${escapeHtml(savedEmail)}</div>
+                </div>
+                <div class="meta-box">
+                  <div class="meta-label">Turno fechado em</div>
+                  <div class="meta-value">${escapeHtml(savedAt)}</div>
+                </div>
               </div>
             </section>
 
@@ -1248,7 +1607,7 @@
               <article class="panel">
                 <div class="panel-head">
                   <h2 class="panel-title">Turno 1</h2>
-                  <div class="panel-sub">Puxado automaticamente do histórico salvo</div>
+                  <div class="panel-sub">Histórico automático do último turno fechado</div>
                 </div>
 
                 <div class="block">
@@ -1331,40 +1690,6 @@
       printWindow.document.close();
       printWindow.focus();
       printWindow.onload = () => printWindow.print();
-    }
-
-    function render() {
-      const t1Entradas = getEntradasTotal('t1');
-      const t1Saidas = getDynamicTotal('t1');
-      const t1Pendentes = getPendingTotal('t1');
-      const t1Total = t1Entradas - t1Saidas - t1Pendentes;
-
-      const t2Entradas = getEntradasTotal('t2');
-      const t2Saidas = getDynamicTotal('t2');
-      const t2Pendentes = getPendingTotal('t2');
-      const t2Total = t2Entradas - t2Saidas - t2Pendentes;
-
-      const diff = t2Total - t1Total;
-      const abs = Math.abs(diff);
-
-      document.getElementById('saldoContaDestaque').textContent = displayMoney(getValue('t2_banco'));
-      document.getElementById('t1_entradas_total').textContent = money(t1Entradas);
-      document.getElementById('t1_saidas_total').textContent = negativeMoney(t1Saidas);
-      document.getElementById('t1_pendentes_total').textContent = negativeMoney(t1Pendentes);
-      document.getElementById('t2_entradas_total').textContent = money(t2Entradas);
-      document.getElementById('t2_saidas_total').textContent = negativeMoney(t2Saidas);
-      document.getElementById('t2_pendentes_total').textContent = negativeMoney(t2Pendentes);
-
-      document.getElementById('totalTurno1').textContent = money(t1Total);
-      document.getElementById('turno1InlineTotal').textContent = money(t1Total);
-      document.getElementById('totalTurno2').textContent = money(t2Total);
-      document.getElementById('turno2InlineTotal').textContent = money(t2Total);
-      document.getElementById('diferencaAbs').textContent = money(abs);
-      document.getElementById('resultadoFinal').textContent = money(diff);
-
-      updateEyeIcon();
-      setResultStyle(diff);
-      updateHistoryInfo();
     }
 
     function bindRow(row, kind) {
@@ -1480,7 +1805,9 @@
       });
 
       return {
-        savedAt: new Date().toISOString(),
+        submittedByName: activeUser?.name || '',
+        submittedByEmail: activeUser?.email || '',
+        submittedAt: new Date().toISOString(),
         fields: {
           banco: getDigitsFromInput(document.getElementById(f.banco)),
           pppoker: getDigitsFromInput(document.getElementById(f.pppoker)),
@@ -1535,31 +1862,36 @@
     }
 
     function saveTurn2AsHistory() {
+      if (!activeUser) {
+        alert('Faça login para fechar o turno.');
+        return;
+      }
+
       const serialized = serializeTurn('t2');
       localStorage.setItem(HISTORY_STORAGE_KEY, JSON.stringify(serialized));
       applySerializedTurn('t1', serialized);
       clearTurn('t2');
       render();
-      alert('Turno fechado com sucesso. O Turno 2 foi salvo como histórico e passou para o Turno 1.');
+
+      alert(`Turno fechado com sucesso por ${activeUser.name}.`);
     }
 
     function loadHistory() {
       const raw = localStorage.getItem(HISTORY_STORAGE_KEY);
       if (!raw) return null;
-
       try {
         return JSON.parse(raw);
-      } catch (error) {
-        console.error('Erro ao ler histórico:', error);
+      } catch {
         return null;
       }
     }
 
     function loadHistoryMeta() {
       const history = loadHistory();
-      if (!history || !history.savedAt) return 'Nenhum turno anterior salvo.';
-      const dt = new Date(history.savedAt);
-      return `Último turno fechado em ${dt.toLocaleDateString('pt-BR')} às ${dt.toLocaleTimeString('pt-BR')}.`;
+      if (!history || !history.submittedAt) return 'Nenhum turno anterior salvo ainda.';
+
+      const dt = new Date(history.submittedAt);
+      return `Último turno fechado por ${history.submittedByName || 'Não identificado'} em ${dt.toLocaleDateString('pt-BR')} às ${dt.toLocaleTimeString('pt-BR')}.`;
     }
 
     function updateHistoryInfo() {
@@ -1590,10 +1922,44 @@
       render();
     }
 
-    document.getElementById('calcular').addEventListener('click', render);
+    function render() {
+      const t1Entradas = getEntradasTotal('t1');
+      const t1Saidas = getDynamicTotal('t1');
+      const t1Pendentes = getPendingTotal('t1');
+      const t1Total = t1Entradas - t1Saidas - t1Pendentes;
+
+      const t2Entradas = getEntradasTotal('t2');
+      const t2Saidas = getDynamicTotal('t2');
+      const t2Pendentes = getPendingTotal('t2');
+      const t2Total = t2Entradas - t2Saidas - t2Pendentes;
+
+      const diff = t2Total - t1Total;
+      const abs = Math.abs(diff);
+
+      document.getElementById('saldoContaDestaque').textContent = displayMoney(getValue('t2_banco'));
+      document.getElementById('t1_entradas_total').textContent = money(t1Entradas);
+      document.getElementById('t1_saidas_total').textContent = negativeMoney(t1Saidas);
+      document.getElementById('t1_pendentes_total').textContent = negativeMoney(t1Pendentes);
+      document.getElementById('t2_entradas_total').textContent = money(t2Entradas);
+      document.getElementById('t2_saidas_total').textContent = negativeMoney(t2Saidas);
+      document.getElementById('t2_pendentes_total').textContent = negativeMoney(t2Pendentes);
+
+      document.getElementById('totalTurno1').textContent = money(t1Total);
+      document.getElementById('turno1InlineTotal').textContent = money(t1Total);
+      document.getElementById('totalTurno2').textContent = money(t2Total);
+      document.getElementById('turno2InlineTotal').textContent = money(t2Total);
+      document.getElementById('diferencaAbs').textContent = money(abs);
+      document.getElementById('resultadoFinal').textContent = money(diff);
+
+      updateEyeIcon();
+      setResultStyle(diff);
+      updateHistoryInfo();
+    }
+
     document.getElementById('limpar').addEventListener('click', limparTudo);
     document.getElementById('fecharTurno').addEventListener('click', saveTurn2AsHistory);
     document.getElementById('exportarPdf').addEventListener('click', exportToPdfProtected);
+    document.getElementById('calcular').addEventListener('click', render);
 
     document.querySelectorAll('.fields input[type="text"]').forEach(input => {
       attachMoneyMask(input);
@@ -1612,8 +1978,13 @@
       render();
     });
 
-    loadHistoryIntoTurn1();
-    render();
+    const bootUser = loadActiveUser();
+    if (bootUser) {
+      activeUser = bootUser;
+      showApp();
+    } else {
+      switchAuthTab('login');
+    }
   </script>
 </body>
 </html>
