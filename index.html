@@ -42,7 +42,7 @@
       width: 100%;
       max-width: 760px;
       margin: 0 auto;
-      padding: 14px 14px calc(92px + var(--safe-bottom));
+      padding: 14px 14px calc(140px + var(--safe-bottom));
     }
 
     .header {
@@ -463,7 +463,7 @@
       max-width: 760px;
       margin: 0 auto;
       display: grid;
-      grid-template-columns: 1fr 1fr;
+      grid-template-columns: 1fr 1fr 1fr;
       gap: 10px;
     }
 
@@ -481,10 +481,21 @@
       border: 1px solid rgba(148,163,184,0.10);
     }
 
+    .pdf-btn {
+      background: linear-gradient(135deg, #b45309, #f59e0b);
+      color: white;
+      box-shadow: 0 10px 28px rgba(245,158,11,0.28);
+    }
+
+    .print-area {
+      display: none;
+    }
+
     @media (max-width: 700px) {
       .dynamic-row { grid-template-columns: 1fr; }
       .dynamic-row .remove-btn { width: 100%; }
       .signed-preview { justify-content: flex-start; }
+      .bottom-bar-inner { grid-template-columns: 1fr; }
     }
 
     @media (min-width: 768px) {
@@ -495,6 +506,92 @@
       .turnos { grid-template-columns: 1fr 1fr; }
       .fields.two-col { grid-template-columns: repeat(2, 1fr); }
       .bottom-bar-inner { max-width: 1180px; width: calc(100% - 36px); }
+    }
+
+    @media print {
+      body {
+        background: white !important;
+        color: #111827 !important;
+      }
+
+      .app, .bottom-bar, .header {
+        display: none !important;
+      }
+
+      .print-area {
+        display: block !important;
+        padding: 24px;
+        font-family: Arial, sans-serif;
+        color: #111827;
+      }
+
+      .print-title {
+        font-size: 24px;
+        font-weight: 700;
+        margin-bottom: 8px;
+      }
+
+      .print-subtitle {
+        font-size: 12px;
+        color: #4b5563;
+        margin-bottom: 24px;
+      }
+
+      .print-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 14px;
+        margin-bottom: 18px;
+      }
+
+      .print-card {
+        border: 1px solid #d1d5db;
+        border-radius: 12px;
+        padding: 14px;
+        break-inside: avoid;
+      }
+
+      .print-card h3 {
+        margin: 0 0 10px;
+        font-size: 15px;
+      }
+
+      .print-row {
+        display: flex;
+        justify-content: space-between;
+        gap: 12px;
+        padding: 6px 0;
+        border-bottom: 1px solid #f3f4f6;
+        font-size: 13px;
+      }
+
+      .print-row:last-child {
+        border-bottom: 0;
+      }
+
+      .print-main {
+        border: 2px solid #111827;
+        border-radius: 14px;
+        padding: 16px;
+        margin-bottom: 18px;
+      }
+
+      .print-main-label {
+        font-size: 12px;
+        color: #4b5563;
+        margin-bottom: 6px;
+      }
+
+      .print-main-value {
+        font-size: 30px;
+        font-weight: 800;
+      }
+
+      .print-section-title {
+        font-size: 18px;
+        font-weight: 700;
+        margin: 20px 0 10px;
+      }
     }
   </style>
 </head>
@@ -661,11 +758,56 @@
   <div class="bottom-bar">
     <div class="bottom-bar-inner">
       <button class="secondary-btn" id="limpar">Limpar tudo</button>
+      <button class="pdf-btn" id="exportarPdf">Exportar PDF</button>
       <button class="main-btn" id="calcular">Calcular agora</button>
     </div>
   </div>
 
+  <section class="print-area" id="printArea">
+    <div class="print-title">Bank King — Relatório de Fechamento</div>
+    <div class="print-subtitle" id="printDate"></div>
+
+    <div class="print-main">
+      <div class="print-main-label">Saldo Disponível</div>
+      <div class="print-main-value" id="printSaldoDisponivel">$ 0,00</div>
+    </div>
+
+    <div class="print-grid">
+      <div class="print-card">
+        <h3>Resumo Geral</h3>
+        <div class="print-row"><span>Turno 1 • Saldo líquido</span><strong id="printTotalT1">$ 0,00</strong></div>
+        <div class="print-row"><span>Turno 2 • Saldo líquido</span><strong id="printTotalT2">$ 0,00</strong></div>
+        <div class="print-row"><span>Diferença absoluta</span><strong id="printDiffAbs">$ 0,00</strong></div>
+        <div class="print-row"><span>Resultado final</span><strong id="printResultado">$ 0,00</strong></div>
+      </div>
+
+      <div class="print-card">
+        <h3>Turno 1</h3>
+        <div class="print-row"><span>Entradas</span><strong id="printT1Entradas">$ 0,00</strong></div>
+        <div class="print-row"><span>Saídas</span><strong id="printT1Saidas">- $ 0,00</strong></div>
+        <div class="print-row"><span>Pendentes</span><strong id="printT1Pendentes">- $ 0,00</strong></div>
+        <div class="print-row"><span>Saldo líquido</span><strong id="printT1Liquido">$ 0,00</strong></div>
+      </div>
+
+      <div class="print-card">
+        <h3>Turno 2</h3>
+        <div class="print-row"><span>Entradas</span><strong id="printT2Entradas">$ 0,00</strong></div>
+        <div class="print-row"><span>Saídas</span><strong id="printT2Saidas">- $ 0,00</strong></div>
+        <div class="print-row"><span>Pendentes</span><strong id="printT2Pendentes">- $ 0,00</strong></div>
+        <div class="print-row"><span>Saldo líquido</span><strong id="printT2Liquido">$ 0,00</strong></div>
+      </div>
+
+      <div class="print-card">
+        <h3>Conta Bancária</h3>
+        <div class="print-row"><span>Banco Reca • Turno 1</span><strong id="printBancoT1">$ 0,00</strong></div>
+        <div class="print-row"><span>Banco Reca • Turno 2</span><strong id="printBancoT2">$ 0,00</strong></div>
+      </div>
+    </div>
+  </section>
+
   <script>
+    const PDF_CODE = '351278';
+
     function money(value) {
       return `$ ${Number(value).toLocaleString('pt-BR', {
         minimumFractionDigits: 2,
@@ -851,7 +993,7 @@
       }
     }
 
-    function render() {
+    function getSummaryData() {
       const t1Entradas = getEntradasTotal('t1');
       const t1Saidas = getDynamicTotal('t1');
       const t1Pendentes = getPendingTotal('t1');
@@ -865,23 +1007,75 @@
       const diff = t2Total - t1Total;
       const abs = Math.abs(diff);
 
-      document.getElementById('saldoContaDestaque').textContent = displayMoney(getValue('t2_banco'));
-      document.getElementById('t1_entradas_total').textContent = money(t1Entradas);
-      document.getElementById('t1_saidas_total').textContent = negativeMoney(t1Saidas);
-      document.getElementById('t1_pendentes_total').textContent = negativeMoney(t1Pendentes);
-      document.getElementById('t2_entradas_total').textContent = money(t2Entradas);
-      document.getElementById('t2_saidas_total').textContent = negativeMoney(t2Saidas);
-      document.getElementById('t2_pendentes_total').textContent = negativeMoney(t2Pendentes);
+      return {
+        saldoDisponivel: getValue('t2_banco'),
+        bancoT1: getValue('t1_banco'),
+        bancoT2: getValue('t2_banco'),
+        t1Entradas, t1Saidas, t1Pendentes, t1Total,
+        t2Entradas, t2Saidas, t2Pendentes, t2Total,
+        diff, abs
+      };
+    }
 
-      document.getElementById('totalTurno1').textContent = money(t1Total);
-      document.getElementById('turno1InlineTotal').textContent = money(t1Total);
-      document.getElementById('totalTurno2').textContent = money(t2Total);
-      document.getElementById('turno2InlineTotal').textContent = money(t2Total);
-      document.getElementById('diferencaAbs').textContent = money(abs);
-      document.getElementById('resultadoFinal').textContent = money(diff);
+    function renderPrintData() {
+      const data = getSummaryData();
+
+      document.getElementById('printDate').textContent =
+        `Gerado em ${new Date().toLocaleDateString('pt-BR')} às ${new Date().toLocaleTimeString('pt-BR')}`;
+
+      document.getElementById('printSaldoDisponivel').textContent = money(data.saldoDisponivel);
+      document.getElementById('printTotalT1').textContent = money(data.t1Total);
+      document.getElementById('printTotalT2').textContent = money(data.t2Total);
+      document.getElementById('printDiffAbs').textContent = money(data.abs);
+      document.getElementById('printResultado').textContent = money(data.diff);
+
+      document.getElementById('printT1Entradas').textContent = money(data.t1Entradas);
+      document.getElementById('printT1Saidas').textContent = negativeMoney(data.t1Saidas);
+      document.getElementById('printT1Pendentes').textContent = negativeMoney(data.t1Pendentes);
+      document.getElementById('printT1Liquido').textContent = money(data.t1Total);
+
+      document.getElementById('printT2Entradas').textContent = money(data.t2Entradas);
+      document.getElementById('printT2Saidas').textContent = negativeMoney(data.t2Saidas);
+      document.getElementById('printT2Pendentes').textContent = negativeMoney(data.t2Pendentes);
+      document.getElementById('printT2Liquido').textContent = money(data.t2Total);
+
+      document.getElementById('printBancoT1').textContent = money(data.bancoT1);
+      document.getElementById('printBancoT2').textContent = money(data.bancoT2);
+    }
+
+    function exportToPdfProtected() {
+      const code = prompt('Digite o código para autorizar exportar em PDF:');
+      if (code === null) return;
+
+      if (code !== PDF_CODE) {
+        alert('Código inválido.');
+        return;
+      }
+
+      renderPrintData();
+      window.print();
+    }
+
+    function render() {
+      const data = getSummaryData();
+
+      document.getElementById('saldoContaDestaque').textContent = displayMoney(data.saldoDisponivel);
+      document.getElementById('t1_entradas_total').textContent = money(data.t1Entradas);
+      document.getElementById('t1_saidas_total').textContent = negativeMoney(data.t1Saidas);
+      document.getElementById('t1_pendentes_total').textContent = negativeMoney(data.t1Pendentes);
+      document.getElementById('t2_entradas_total').textContent = money(data.t2Entradas);
+      document.getElementById('t2_saidas_total').textContent = negativeMoney(data.t2Saidas);
+      document.getElementById('t2_pendentes_total').textContent = negativeMoney(data.t2Pendentes);
+
+      document.getElementById('totalTurno1').textContent = money(data.t1Total);
+      document.getElementById('turno1InlineTotal').textContent = money(data.t1Total);
+      document.getElementById('totalTurno2').textContent = money(data.t2Total);
+      document.getElementById('turno2InlineTotal').textContent = money(data.t2Total);
+      document.getElementById('diferencaAbs').textContent = money(data.abs);
+      document.getElementById('resultadoFinal').textContent = money(data.diff);
 
       updateEyeIcon();
-      setResultStyle(diff);
+      setResultStyle(data.diff);
     }
 
     function bindRow(row, kind) {
@@ -974,6 +1168,7 @@
 
     document.getElementById('calcular').addEventListener('click', render);
     document.getElementById('limpar').addEventListener('click', limparTudo);
+    document.getElementById('exportarPdf').addEventListener('click', exportToPdfProtected);
 
     document.querySelectorAll('.fields input[type="text"]').forEach(input => {
       attachMoneyMask(input);
