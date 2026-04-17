@@ -2201,23 +2201,549 @@
         <body>
           <h1>Bank King • Fechamento</h1>
           <div class="grid">
-            <div class="card">
-              <div class="label">Turno 1</div>
-              <div class="value">${money(t1Total)}</div>
+printWindow.document.write(`
+  <div class="card">
+    <div class="label">Turno 1</div>
+    <div class="value">${money(t1Total)}</div>
+  </div>
+
+  <div class="card">
+    <div class="label">Turno 2</div>
+    <div class="value">${money(t2Total)}</div>
+  </div>
+
+  <div class="card">
+    <div class="label">Entradas Totais</div>
+    <div class="value">${money(t1Entradas + t2Entradas)}</div>
+  </div>
+
+  <div class="card">
+    <div class="label">Saídas Totais</div>
+    <div class="value">${money(t1Saidas + t2Saidas + t1Pendentes + t2Pendentes)}</div>
+  </div>
+`);
+
+</script>
+
+<!-- =========================
+BANK KING - PAINEL ADMIN
+COLE ANTES DE </body>
+========================= -->
+<style>
+  .admin-fab {
+    position: fixed;
+    right: 16px;
+    bottom: calc(88px + env(safe-area-inset-bottom, 0px));
+    z-index: 95;
+    min-height: 46px;
+    padding: 0 16px;
+    border-radius: 999px;
+    border: 1px solid rgba(148,163,184,.16);
+    background: linear-gradient(135deg, rgba(15,76,189,.95), rgba(37,99,235,.95));
+    color: #fff;
+    font-size: 13px;
+    font-weight: 900;
+    letter-spacing: -.01em;
+    box-shadow: 0 14px 30px rgba(15,76,189,.28);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    cursor: pointer;
+  }
+
+  .admin-modal {
+    position: fixed;
+    inset: 0;
+    z-index: 200;
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+  }
+
+  .admin-modal.hidden {
+    display: none !important;
+  }
+
+  .admin-modal-backdrop {
+    position: absolute;
+    inset: 0;
+    background: rgba(2,6,23,.76);
+    backdrop-filter: blur(7px);
+  }
+
+  .admin-modal-card {
+    position: relative;
+    width: 100%;
+    max-width: 920px;
+    max-height: 88vh;
+    overflow: auto;
+    border-radius: 26px 26px 0 0;
+    background: linear-gradient(180deg, rgba(10,18,34,.98), rgba(10,18,34,.995));
+    border: 1px solid rgba(148,163,184,.12);
+    box-shadow: 0 24px 60px rgba(0,0,0,.45);
+    padding: 18px;
+  }
+
+  .admin-head {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 12px;
+    margin-bottom: 14px;
+  }
+
+  .admin-head h3 {
+    margin: 0;
+    font-size: 20px;
+    letter-spacing: -.03em;
+    color: #f8fafc;
+  }
+
+  .admin-head small {
+    display: block;
+    margin-top: 4px;
+    color: #8fa2c0;
+    font-size: 12px;
+  }
+
+  .admin-close-btn {
+    min-height: 40px;
+    padding: 0 14px;
+    border-radius: 12px;
+    background: rgba(239,68,68,.12);
+    color: #ffb3b3;
+    border: 1px solid rgba(239,68,68,.2);
+    font-size: 12px;
+    font-weight: 800;
+    cursor: pointer;
+  }
+
+  .admin-toolbar {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 10px;
+    margin-bottom: 14px;
+  }
+
+  .admin-search {
+    width: 100%;
+    min-height: 46px;
+    border-radius: 14px;
+    border: 1px solid rgba(148,163,184,.10);
+    background: linear-gradient(180deg, rgba(15,23,42,.96), rgba(13,26,48,.96));
+    color: #f8fafc;
+    padding: 12px 14px;
+    font-size: 14px;
+    outline: none;
+  }
+
+  .admin-danger-all-btn {
+    min-height: 46px;
+    padding: 0 14px;
+    border-radius: 14px;
+    background: rgba(239,68,68,.12);
+    color: #ffb3b3;
+    border: 1px solid rgba(239,68,68,.2);
+    font-size: 13px;
+    font-weight: 900;
+    cursor: pointer;
+    white-space: nowrap;
+  }
+
+  .admin-list {
+    display: grid;
+    gap: 12px;
+  }
+
+  .admin-empty {
+    padding: 16px;
+    border-radius: 16px;
+    border: 1px dashed rgba(148,163,184,.16);
+    color: #8fa2c0;
+    font-size: 13px;
+  }
+
+  .admin-user-card {
+    padding: 14px;
+    border-radius: 18px;
+    border: 1px solid rgba(148,163,184,.10);
+    background: linear-gradient(180deg, rgba(255,255,255,.03), rgba(255,255,255,.015));
+  }
+
+  .admin-user-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 12px;
+    margin-bottom: 12px;
+  }
+
+  .admin-user-name {
+    font-size: 15px;
+    font-weight: 900;
+    color: #f8fafc;
+    margin-bottom: 4px;
+  }
+
+  .admin-user-email {
+    font-size: 12px;
+    color: #8fa2c0;
+    word-break: break-word;
+  }
+
+  .admin-user-badge {
+    padding: 7px 10px;
+    border-radius: 999px;
+    border: 1px solid rgba(96,165,250,.16);
+    background: rgba(37,99,235,.10);
+    color: #dbeafe;
+    font-size: 11px;
+    font-weight: 800;
+    white-space: nowrap;
+  }
+
+  .admin-actions {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 8px;
+  }
+
+  .admin-action-btn {
+    min-height: 42px;
+    border-radius: 14px;
+    font-size: 12px;
+    font-weight: 900;
+    cursor: pointer;
+    border: 1px solid rgba(148,163,184,.10);
+  }
+
+  .admin-view-btn {
+    background: rgba(37,99,235,.12);
+    color: #dbeafe;
+    border-color: rgba(96,165,250,.18);
+  }
+
+  .admin-reset-btn {
+    background: rgba(245,158,11,.12);
+    color: #ffe29c;
+    border-color: rgba(245,158,11,.18);
+  }
+
+  .admin-delete-btn {
+    background: rgba(239,68,68,.12);
+    color: #ffb3b3;
+    border-color: rgba(239,68,68,.18);
+  }
+
+  .admin-inline-details {
+    margin-top: 12px;
+    padding: 12px;
+    border-radius: 14px;
+    border: 1px solid rgba(148,163,184,.10);
+    background: rgba(255,255,255,.02);
+    display: none;
+  }
+
+  .admin-inline-details.show {
+    display: block;
+  }
+
+  .admin-inline-line {
+    display: flex;
+    justify-content: space-between;
+    gap: 10px;
+    padding: 7px 0;
+    border-bottom: 1px solid rgba(148,163,184,.08);
+    font-size: 12px;
+    color: #dbeafe;
+  }
+
+  .admin-inline-line:last-child {
+    border-bottom: 0;
+  }
+
+  .admin-inline-line strong {
+    color: #fff;
+    text-align: right;
+    word-break: break-word;
+  }
+
+  @media (max-width: 700px) {
+    .admin-toolbar {
+      grid-template-columns: 1fr;
+    }
+
+    .admin-actions {
+      grid-template-columns: 1fr;
+    }
+
+    .admin-modal-card {
+      max-height: 92vh;
+    }
+
+    .admin-fab {
+      right: 12px;
+      bottom: calc(84px + env(safe-area-inset-bottom, 0px));
+    }
+  }
+</style>
+
+<button id="adminOpenBtn" class="admin-fab" type="button">⚙️ ADMIN</button>
+
+<div id="adminModal" class="admin-modal hidden">
+  <div class="admin-modal-backdrop" id="adminModalBackdrop"></div>
+
+  <div class="admin-modal-card">
+    <div class="admin-head">
+      <div>
+        <h3>Painel Administrativo</h3>
+        <small>Gerencie usuários cadastrados sem entrar no DevTools.</small>
+      </div>
+      <button id="adminCloseBtn" class="admin-close-btn" type="button">Fechar</button>
+    </div>
+
+    <div class="admin-toolbar">
+      <input
+        id="adminSearchInput"
+        class="admin-search"
+        type="text"
+        placeholder="Buscar por nome ou email"
+      />
+      <button id="adminDeleteAllBtn" class="admin-danger-all-btn" type="button">
+        🗑 Excluir todos
+      </button>
+    </div>
+
+    <div id="adminUsersList" class="admin-list"></div>
+  </div>
+</div>
+
+<script>
+  (function () {
+    const ADMIN_CODE = "9087"; // <- TROQUE AQUI SE QUISER
+    const USERS_STORAGE_KEY = "bank-king-users-v1";
+    const ACTIVE_USER_STORAGE_KEY = "bank-king-active-user-v1";
+    const REMEMBER_LOGIN_STORAGE_KEY = "bank-king-remember-login-v1";
+    const REMEMBERED_EMAIL_STORAGE_KEY = "bank-king-remembered-email-v1";
+    const SESSION_LAST_ACTIVITY_KEY = "bank-king-session-last-activity-v1";
+
+    const adminOpenBtn = document.getElementById("adminOpenBtn");
+    const adminModal = document.getElementById("adminModal");
+    const adminModalBackdrop = document.getElementById("adminModalBackdrop");
+    const adminCloseBtn = document.getElementById("adminCloseBtn");
+    const adminUsersList = document.getElementById("adminUsersList");
+    const adminSearchInput = document.getElementById("adminSearchInput");
+    const adminDeleteAllBtn = document.getElementById("adminDeleteAllBtn");
+
+    function adminEscapeHtml(text) {
+      return String(text ?? "")
+        .replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .replaceAll('"', "&quot;")
+        .replaceAll("'", "&#39;");
+    }
+
+    function getStoredUsers() {
+      const raw = localStorage.getItem(USERS_STORAGE_KEY);
+      if (!raw) return [];
+      try {
+        const parsed = JSON.parse(raw);
+        return Array.isArray(parsed) ? parsed : [];
+      } catch {
+        return [];
+      }
+    }
+
+    function saveStoredUsers(users) {
+      localStorage.setItem(USERS_STORAGE_KEY, JSON.stringify(users));
+    }
+
+    function closeAdminModal() {
+      adminModal.classList.add("hidden");
+      adminSearchInput.value = "";
+    }
+
+    function openAdminModal() {
+      const code = prompt("Digite código interno:");
+      if (code === null) return;
+
+      if (code !== ADMIN_CODE) {
+        alert("Código interno incorreto.");
+        return;
+      }
+
+      renderAdminUsers();
+      adminModal.classList.remove("hidden");
+      requestAnimationFrame(() => adminSearchInput.focus());
+    }
+
+    function clearRememberedSessionIfMatches(email) {
+      try {
+        const activeRaw = localStorage.getItem(ACTIVE_USER_STORAGE_KEY);
+        if (activeRaw) {
+          const active = JSON.parse(activeRaw);
+          if (active?.email === email) {
+            localStorage.removeItem(ACTIVE_USER_STORAGE_KEY);
+            localStorage.removeItem(SESSION_LAST_ACTIVITY_KEY);
+          }
+        }
+      } catch {}
+
+      if (localStorage.getItem(REMEMBERED_EMAIL_STORAGE_KEY) === email) {
+        localStorage.removeItem(REMEMBERED_EMAIL_STORAGE_KEY);
+        localStorage.setItem(REMEMBER_LOGIN_STORAGE_KEY, "false");
+      }
+    }
+
+    function renderAdminUsers() {
+      const users = getStoredUsers();
+      const term = adminSearchInput.value.trim().toLowerCase();
+
+      const filtered = users.filter((user) => {
+        const name = String(user?.name || "").toLowerCase();
+        const email = String(user?.email || "").toLowerCase();
+        return !term || name.includes(term) || email.includes(term);
+      });
+
+      if (!filtered.length) {
+        adminUsersList.innerHTML = `
+          <div class="admin-empty">
+            Nenhum usuário encontrado.
+          </div>
+        `;
+        return;
+      }
+
+      adminUsersList.innerHTML = filtered.map((user, index) => {
+        const originalIndex = users.findIndex(
+          (u) => u.email === user.email && u.name === user.name
+        );
+
+        return `
+          <div class="admin-user-card" data-admin-user-index="${originalIndex}">
+            <div class="admin-user-top">
+              <div>
+                <div class="admin-user-name">${adminEscapeHtml(user.name || "Sem nome")}</div>
+                <div class="admin-user-email">${adminEscapeHtml(user.email || "Sem email")}</div>
+              </div>
+              <div class="admin-user-badge">Usuário ${index + 1}</div>
             </div>
-            <div class="card">
-              <div class="label">Turno 2</div>
-              <div class="value">${money(t2Total)}</div>
+
+            <div class="admin-actions">
+              <button class="admin-action-btn admin-view-btn" type="button" data-admin-view="${originalIndex}">
+                👁 Ver
+              </button>
+              <button class="admin-action-btn admin-reset-btn" type="button" data-admin-reset="${originalIndex}">
+                🔒 Resetar senha
+              </button>
+              <button class="admin-action-btn admin-delete-btn" type="button" data-admin-delete="${originalIndex}">
+                🗑 Excluir
+              </button>
             </div>
-            <div class="card">
-              <div class="label">Entradas Totais</div>
-              <div class="value">${money(t1Entradas + t2Entradas)}</div>
-            </div>
-            <div class="card">
-              <div class="label">Saídas Totais</div>
-              <div class="value">${money(t1Saidas + t2Saidas + t1Pendentes + t2Pendentes)}</div>
+
+            <div class="admin-inline-details" id="adminDetails_${originalIndex}">
+              <div class="admin-inline-line">
+                <span>Nome</span>
+                <strong>${adminEscapeHtml(user.name || "-")}</strong>
+              </div>
+              <div class="admin-inline-line">
+                <span>Email</span>
+                <strong>${adminEscapeHtml(user.email || "-")}</strong>
+              </div>
+              <div class="admin-inline-line">
+                <span>Senha atual</span>
+                <strong>${adminEscapeHtml(user.password || "-")}</strong>
+              </div>
             </div>
           </div>
+        `;
+      }).join("");
+
+      bindAdminActions();
+    }
+
+    function bindAdminActions() {
+      adminUsersList.querySelectorAll("[data-admin-view]").forEach((btn) => {
+        btn.addEventListener("click", () => {
+          const idx = btn.dataset.adminView;
+          const box = document.getElementById(`adminDetails_${idx}`);
+          if (box) box.classList.toggle("show");
+        });
+      });
+
+      adminUsersList.querySelectorAll("[data-admin-reset]").forEach((btn) => {
+        btn.addEventListener("click", () => {
+          const idx = Number(btn.dataset.adminReset);
+          const users = getStoredUsers();
+          const user = users[idx];
+          if (!user) return;
+
+          const newPassword = prompt(`Nova senha para ${user.name}:`);
+          if (newPassword === null) return;
+
+          const clean = newPassword.trim();
+          if (!clean) {
+            alert("Senha inválida.");
+            return;
+          }
+
+          users[idx].password = clean;
+          saveStoredUsers(users);
+          renderAdminUsers();
+          alert("Senha atualizada com sucesso.");
+        });
+      });
+
+      adminUsersList.querySelectorAll("[data-admin-delete]").forEach((btn) => {
+        btn.addEventListener("click", () => {
+          const idx = Number(btn.dataset.adminDelete);
+          const users = getStoredUsers();
+          const user = users[idx];
+          if (!user) return;
+
+          const confirmed = confirm(`Excluir o usuário ${user.name}?`);
+          if (!confirmed) return;
+
+          clearRememberedSessionIfMatches(user.email);
+          users.splice(idx, 1);
+          saveStoredUsers(users);
+          renderAdminUsers();
+          alert("Usuário excluído com sucesso.");
+        });
+      });
+    }
+
+    adminOpenBtn.addEventListener("click", openAdminModal);
+    adminCloseBtn.addEventListener("click", closeAdminModal);
+    adminModalBackdrop.addEventListener("click", closeAdminModal);
+    adminSearchInput.addEventListener("input", renderAdminUsers);
+
+    adminDeleteAllBtn.addEventListener("click", () => {
+      const code = prompt("Digite código interno para excluir todos:");
+      if (code === null) return;
+
+      if (code !== ADMIN_CODE) {
+        alert("Código interno incorreto.");
+        return;
+      }
+
+      const confirmed = confirm("Tem certeza que deseja excluir TODOS os usuários?");
+      if (!confirmed) return;
+
+      localStorage.removeItem(USERS_STORAGE_KEY);
+      localStorage.removeItem(ACTIVE_USER_STORAGE_KEY);
+      localStorage.removeItem(REMEMBER_LOGIN_STORAGE_KEY);
+      localStorage.removeItem(REMEMBERED_EMAIL_STORAGE_KEY);
+      localStorage.removeItem(SESSION_LAST_ACTIVITY_KEY);
+
+      renderAdminUsers();
+      alert("Todos os usuários foram removidos.");
+    });
+  })();
+</script>
+
         </body>
         </html>
       `;
