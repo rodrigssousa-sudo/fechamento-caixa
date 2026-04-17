@@ -17,7 +17,7 @@
       --green: #22c55e;
       --red: #ef4444;
       --amber: #f59e0b;
-      --shadow: 0 14px 34px rgba(0, 0, 0, 0.45);
+      --shadow: 0 14px 34px rgba(0,0,0,0.45);
       --radius: 20px;
       --radius-sm: 14px;
       --safe-bottom: env(safe-area-inset-bottom, 0px);
@@ -42,9 +42,7 @@
       min-height: 100vh;
     }
 
-    .hidden {
-      display: none !important;
-    }
+    .hidden { display: none !important; }
 
     .auth-screen {
       min-height: 100vh;
@@ -64,20 +62,30 @@
       padding: 22px;
     }
 
-    .auth-logo {
-      width: 54px;
-      height: 54px;
+    .auth-logo,
+    .logo-bk {
       border-radius: 50%;
       display: flex;
       align-items: center;
       justify-content: center;
       font-weight: 900;
-      font-size: 18px;
-      letter-spacing: -0.02em;
       color: #f59e0b;
       border: 2px solid #f59e0b;
-      margin-bottom: 14px;
       box-shadow: 0 0 0 2px rgba(245,158,11,0.10);
+      flex-shrink: 0;
+    }
+
+    .auth-logo {
+      width: 54px;
+      height: 54px;
+      font-size: 18px;
+      margin-bottom: 14px;
+    }
+
+    .logo-bk {
+      width: 42px;
+      height: 42px;
+      font-size: 16px;
     }
 
     .auth-title {
@@ -86,12 +94,15 @@
       letter-spacing: -0.04em;
     }
 
-    .auth-subtitle {
-      margin: 0 0 18px;
+    .auth-subtitle,
+    .auth-note {
       color: var(--muted);
       font-size: 13px;
       line-height: 1.45;
     }
+
+    .auth-subtitle { margin: 0 0 18px; }
+    .auth-note { margin-top: 12px; font-size: 12px; }
 
     .auth-toggle {
       display: grid;
@@ -100,14 +111,20 @@
       margin-bottom: 16px;
     }
 
+    .auth-tab,
+    .auth-submit,
+    button {
+      border: 0;
+      cursor: pointer;
+      font-weight: 800;
+    }
+
     .auth-tab {
       min-height: 42px;
       border-radius: 14px;
       border: 1px solid rgba(148,163,184,0.10);
       background: rgba(255,255,255,0.05);
       color: #dbeafe;
-      font-weight: 800;
-      cursor: pointer;
     }
 
     .auth-tab.active {
@@ -146,7 +163,6 @@
 
     .field input[type="date"] {
       color-scheme: dark;
-      min-height: 48px;
     }
 
     .field input::placeholder {
@@ -162,11 +178,8 @@
     .auth-submit {
       min-height: 50px;
       border-radius: 14px;
-      border: 0;
       color: white;
       font-size: 15px;
-      font-weight: 900;
-      cursor: pointer;
       background: linear-gradient(135deg, #0f4cbd, #2563eb);
       box-shadow: 0 10px 28px rgba(15,76,189,0.34);
       margin-top: 4px;
@@ -199,20 +212,13 @@
       cursor: pointer;
     }
 
-    .auth-note {
-      margin-top: 12px;
-      color: var(--muted);
-      font-size: 12px;
-      line-height: 1.45;
-    }
-
     .app-shell {
       width: 100%;
     }
 
     .app {
       width: 100%;
-      max-width: 760px;
+      max-width: 1180px;
       margin: 0 auto;
       padding: 14px 14px calc(98px + var(--safe-bottom));
     }
@@ -228,16 +234,25 @@
       border-bottom: 1px solid rgba(96,165,250,0.08);
     }
 
-    .title-row {
+    .title-row,
+    .brand,
+    .summary-head,
+    .bank-topline,
+    .top-user-bar,
+    .history-item-top,
+    .report-head,
+    .report-list-top,
+    .turno-head,
+    .finance-head,
+    .modal-head {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      gap: 12px;
+      gap: 10px;
     }
 
     .brand {
-      display: flex;
-      align-items: center;
+      justify-content: flex-start;
       gap: 12px;
     }
 
@@ -253,7 +268,6 @@
       justify-content: center;
       gap: 4px;
       padding: 0;
-      cursor: pointer;
       box-shadow: 0 8px 20px rgba(0,0,0,0.18);
     }
 
@@ -263,23 +277,6 @@
       height: 2px;
       border-radius: 999px;
       background: #eaf2ff;
-    }
-
-    .logo-bk {
-      width: 42px;
-      height: 42px;
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-weight: 900;
-      font-size: 16px;
-      letter-spacing: -0.02em;
-      color: #f59e0b;
-      background: transparent;
-      border: 2px solid #f59e0b;
-      box-shadow: 0 0 0 2px rgba(245,158,11,0.12);
-      flex-shrink: 0;
     }
 
     h1 {
@@ -319,14 +316,6 @@
       padding: 16px;
     }
 
-    .summary-head {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 10px;
-      margin-bottom: 14px;
-    }
-
     .summary-head h2 {
       margin: 0;
       font-size: 17px;
@@ -362,14 +351,6 @@
       box-shadow: 0 18px 40px rgba(0,0,0,0.35);
     }
 
-    .bank-topline {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 12px;
-      margin-bottom: 12px;
-    }
-
     .bank-label {
       font-size: 12px;
       font-weight: 800;
@@ -388,24 +369,17 @@
       background: rgba(255,255,255,0.06);
       color: #eef4ff;
       border: 1px solid rgba(255,255,255,0.10);
-      cursor: pointer;
       padding: 0;
       backdrop-filter: blur(6px);
       flex-shrink: 0;
     }
 
-    .hide-balance-btn:hover {
-      background: rgba(255,255,255,0.10);
-    }
-
     .bank-value {
-      position: relative;
-      z-index: 1;
-      font-size: clamp(48px, 9vw, 72px);
+      font-size: clamp(38px, 8vw, 68px);
       line-height: 1;
       letter-spacing: -0.05em;
       font-weight: 900;
-      color: #ffffff;
+      color: #fff;
       text-shadow: 0 0 26px rgba(96,165,250,0.22);
     }
 
@@ -441,49 +415,44 @@
     .metric-value.red { color: #ffb3b3; }
 
     .history-card {
-      margin-top: 12px;
       padding: 14px;
       border-radius: 16px;
       border: 1px solid rgba(96,165,250,0.12);
       background: rgba(255,255,255,0.02);
+      margin-top: 14px;
     }
 
-    .history-card-head {
+    .history-card-top {
       display: flex;
-      align-items: center;
       justify-content: space-between;
+      align-items: flex-start;
       gap: 10px;
-      margin-bottom: 8px;
+      margin-bottom: 6px;
     }
 
     .history-card-title {
       font-size: 13px;
       font-weight: 800;
       color: #dbeafe;
-      margin-bottom: 0;
-    }
-
-    .delete-history-btn {
-      min-height: 36px;
-      padding: 0 12px;
-      border-radius: 12px;
-      background: rgba(239,68,68,0.12);
-      color: #ffb3b3;
-      border: 1px solid rgba(239,68,68,0.22);
-      font-size: 12px;
-      font-weight: 800;
-      cursor: pointer;
-      white-space: nowrap;
-    }
-
-    .delete-history-btn:hover {
-      background: rgba(239,68,68,0.18);
+      margin-bottom: 6px;
     }
 
     .history-card-text {
       font-size: 12px;
       color: var(--muted);
       line-height: 1.45;
+    }
+
+    .danger-mini-btn {
+      min-height: 34px;
+      padding: 0 12px;
+      border-radius: 10px;
+      background: rgba(239,68,68,0.12);
+      color: #ffb3b3;
+      border: 1px solid rgba(239,68,68,0.22);
+      font-size: 11px;
+      font-weight: 800;
+      white-space: nowrap;
     }
 
     .history-list {
@@ -505,14 +474,6 @@
       transform: translateY(-1px);
       border-color: rgba(96,165,250,0.22);
       background: linear-gradient(180deg, rgba(255,255,255,0.045), rgba(255,255,255,0.02));
-    }
-
-    .history-item-top {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 10px;
-      margin-bottom: 10px;
     }
 
     .history-user {
@@ -550,12 +511,10 @@
     .history-mini-value {
       font-size: 15px;
       font-weight: 900;
-      color: #ffffff;
+      color: #fff;
     }
 
-    .history-mini-value.red {
-      color: #ffb3b3;
-    }
+    .history-mini-value.red { color: #ffb3b3; }
 
     .history-empty {
       padding: 14px;
@@ -568,6 +527,7 @@
     .turnos {
       display: grid;
       gap: 14px;
+      margin-top: 14px;
     }
 
     .turno {
@@ -576,10 +536,7 @@
     }
 
     .turno-head {
-      display: flex;
-      justify-content: space-between;
       align-items: flex-start;
-      gap: 10px;
       margin-bottom: 14px;
     }
 
@@ -629,14 +586,6 @@
       background: linear-gradient(180deg, rgba(255,255,255,0.018), rgba(255,255,255,0.01));
     }
 
-    .finance-head {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 10px;
-      margin-bottom: 10px;
-    }
-
     .finance-head h4 {
       margin: 0;
       font-size: 14px;
@@ -666,7 +615,7 @@
 
     .dynamic-row {
       display: grid;
-      grid-template-columns: 1.15fr 0.85fr auto auto;
+      grid-template-columns: 1.15fr .85fr auto auto;
       gap: 8px;
       align-items: end;
       padding: 10px;
@@ -702,7 +651,7 @@
     .signed-preview.red { color: #ff9b9b; }
     .signed-preview.amber { color: #ffd88a; }
 
-    .dynamic-row .remove-btn {
+    .remove-btn {
       min-height: 48px;
       padding: 0 14px;
       border-radius: 14px;
@@ -711,7 +660,6 @@
       border: 1px solid rgba(239,68,68,0.2);
       font-size: 13px;
       font-weight: 800;
-      cursor: pointer;
     }
 
     .inline-actions {
@@ -723,12 +671,9 @@
     }
 
     button {
-      border: 0;
       border-radius: 14px;
       padding: 13px 16px;
       font-size: 14px;
-      font-weight: 800;
-      cursor: pointer;
     }
 
     .btn-add {
@@ -742,10 +687,6 @@
     }
 
     .top-user-bar {
-      display: flex;
-      gap: 10px;
-      align-items: center;
-      justify-content: space-between;
       margin-bottom: 12px;
       padding: 12px 14px;
       border-radius: 16px;
@@ -767,7 +708,7 @@
 
     .top-user-email {
       font-size: 12px;
-      color: var(--muted);
+      color: #8fa2c0;
     }
 
     .logout-btn {
@@ -807,7 +748,6 @@
       font-weight: 800;
       padding: 0 14px;
       margin-bottom: 8px;
-      cursor: pointer;
     }
 
     .reports-menu-item:last-child {
@@ -823,14 +763,6 @@
       border: 1px solid rgba(148,163,184,0.12);
       background: linear-gradient(180deg, rgba(255,255,255,0.025), rgba(255,255,255,0.01));
       box-shadow: var(--shadow);
-    }
-
-    .report-head {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 10px;
-      margin-bottom: 14px;
     }
 
     .report-head h3 {
@@ -875,13 +807,8 @@
       letter-spacing: -0.03em;
     }
 
-    .report-card-value.red {
-      color: #ffb3b3;
-    }
-
-    .report-card-value.green {
-      color: #b8ffd1;
-    }
+    .report-card-value.red { color: #ffb3b3; }
+    .report-card-value.green { color: #b8ffd1; }
 
     .report-list {
       margin-top: 14px;
@@ -894,13 +821,6 @@
       border-radius: 16px;
       border: 1px solid rgba(148,163,184,0.10);
       background: rgba(255,255,255,0.02);
-    }
-
-    .report-list-top {
-      display: flex;
-      justify-content: space-between;
-      gap: 10px;
-      margin-bottom: 10px;
     }
 
     .report-list-name {
@@ -940,7 +860,7 @@
 
     .bottom-bar-inner {
       width: 100%;
-      max-width: 760px;
+      max-width: 1180px;
       margin: 0 auto;
       display: grid;
       grid-template-columns: repeat(4, 1fr);
@@ -1003,17 +923,14 @@
       overflow: auto;
       margin: 0;
       border-radius: 24px 24px 0 0;
-      background: linear-gradient(180deg, rgba(10, 18, 34, 0.98), rgba(10, 18, 34, 0.99));
+      background: linear-gradient(180deg, rgba(10,18,34,0.98), rgba(10,18,34,0.99));
       border: 1px solid rgba(148,163,184,0.12);
       box-shadow: 0 24px 60px rgba(0,0,0,0.45);
       padding: 18px;
     }
 
     .modal-head {
-      display: flex;
       align-items: flex-start;
-      justify-content: space-between;
-      gap: 10px;
       margin-bottom: 14px;
     }
 
@@ -1068,7 +985,7 @@
     .modal-summary-value {
       font-size: 18px;
       font-weight: 900;
-      color: #ffffff;
+      color: #fff;
     }
 
     .modal-turnos-grid {
@@ -1120,17 +1037,9 @@
       font-size: 13px;
     }
 
-    .modal-line:last-child {
-      border-bottom: 0;
-    }
-
-    .modal-line strong {
-      font-size: 13px;
-    }
-
-    .modal-line.negative strong {
-      color: #ffb3b3;
-    }
+    .modal-line:last-child { border-bottom: 0; }
+    .modal-line strong { font-size: 13px; }
+    .modal-line.negative strong { color: #ffb3b3; }
 
     .clear-modal-card {
       max-width: 520px;
@@ -1155,7 +1064,6 @@
       border: 1px solid rgba(148,163,184,0.10);
       background: rgba(255,255,255,0.03);
       color: #f8fafc;
-      cursor: pointer;
       transition: transform 0.16s ease, border-color 0.16s ease, background 0.16s ease;
     }
 
@@ -1193,7 +1101,7 @@
     .clear-option-text strong {
       font-size: 15px;
       font-weight: 900;
-      color: #ffffff;
+      color: #fff;
       letter-spacing: -0.02em;
     }
 
@@ -1204,19 +1112,11 @@
     }
 
     @media (max-width: 700px) {
-      .dynamic-row,
       .history-item-grid,
       .modal-summary-grid,
-      .modal-turnos-grid {
+      .modal-turnos-grid,
+      .dynamic-row {
         grid-template-columns: 1fr;
-      }
-
-      .dynamic-row .remove-btn {
-        width: 100%;
-      }
-
-      .signed-preview {
-        justify-content: flex-start;
       }
 
       .bottom-bar-inner {
@@ -1227,59 +1127,21 @@
         font-size: 10px;
       }
 
-      .modal-card {
-        max-height: 92vh;
-      }
-    }
-
-    @media (max-width: 520px) {
-      .auth-toggle {
-        grid-template-columns: 1fr 1fr;
+      .signed-preview {
+        justify-content: flex-start;
       }
 
-      .bottom-bar button {
-        min-height: 40px;
-        padding: 8px 6px;
-      }
-
-      .title-row {
-        align-items: flex-start;
-      }
-
-      .badge {
-        font-size: 10px;
-        padding: 7px 10px;
-      }
-
-      .history-card-head {
-        flex-direction: column;
-        align-items: stretch;
-      }
-
-      .delete-history-btn {
+      .remove-btn {
         width: 100%;
       }
     }
 
     @media (min-width: 768px) {
-      .app {
-        max-width: 1180px;
-        padding-left: 18px;
-        padding-right: 18px;
-      }
-
-      .header {
-        margin-left: -18px;
-        margin-right: -18px;
-        padding-left: 18px;
-        padding-right: 18px;
-      }
-
-      .summary {
-        grid-template-columns: 1fr;
-      }
-
       .metrics {
+        grid-template-columns: repeat(3, 1fr);
+      }
+
+      .report-grid {
         grid-template-columns: repeat(4, 1fr);
       }
 
@@ -1289,19 +1151,6 @@
 
       .fields.two-col {
         grid-template-columns: repeat(2, 1fr);
-      }
-
-      .bottom-bar-inner {
-        max-width: 1180px;
-        width: calc(100% - 36px);
-      }
-
-      .bottom-bar button {
-        font-size: 12px;
-      }
-
-      .report-grid {
-        grid-template-columns: repeat(4, 1fr);
       }
     }
   </style>
@@ -1351,7 +1200,7 @@
 
         <div class="field">
           <label for="registerPassword">Senha</label>
-          <input id="registerPassword" type="password" placeholder="Crie uma senha" required />
+          <input id="registerPassword" type="password" placeholder="Crie sua senha" required />
         </div>
 
         <button class="auth-submit" type="submit">Registrar acesso</button>
@@ -1359,7 +1208,7 @@
 
       <form id="forgotPasswordForm" class="auth-form hidden">
         <div class="auth-note" style="margin-top: -2px; margin-bottom: 4px;">
-          Use o código interno de redefinição para criar uma nova senha. Nenhum código será enviado por email.
+          Use o código interno de redefinição. Nenhum código será enviado por email.
         </div>
 
         <div class="field">
@@ -1374,7 +1223,7 @@
 
         <div class="field">
           <label for="newPassword">Nova senha</label>
-          <input id="newPassword" type="password" placeholder="Nova senha" />
+          <input id="newPassword" type="password" placeholder="Digite a nova senha" />
         </div>
 
         <button class="auth-submit" type="submit">Redefinir senha</button>
@@ -1382,7 +1231,7 @@
       </form>
 
       <div class="auth-note">
-        O nome do usuário logado será salvo no fechamento do turno e aparecerá no PDF como responsável pelo envio.
+        Senhas internas padrão: redefinição = 4br1l#2o26 | PDF / relatórios / excluir histórico = 1520
       </div>
     </div>
   </section>
@@ -1421,203 +1270,262 @@
 
           <div class="bank-card">
             <div class="bank-topline">
-              <div class="bank-label">Saldo Disponível</div>
-              <button class="hide-balance-btn" id="toggleBalance" type="button" aria-label="Mostrar ou ocultar saldo">
-                <span id="eyeIcon">
-                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#eaf2ff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                    <path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7S1 12 1 12z"></path>
-                    <circle cx="12" cy="12" r="3"></circle>
-                  </svg>
-                </span>
-              </button>
+              <span class="bank-label">BANCA TOTAL</span>
+              <button id="toggleBalance" class="hide-balance-btn" type="button">👁</button>
             </div>
-            <div class="bank-value" id="saldoContaDestaque">$ 0,00</div>
+            <div id="bankValue" class="bank-value">$ 0,00</div>
           </div>
 
           <div class="metrics">
             <div class="metric">
-              <div class="metric-label">Turno 1 • Saldo líquido</div>
-              <div class="metric-value blue" id="totalTurno1">$ 0,00</div>
+              <div class="metric-label">Entradas Turno 1</div>
+              <div id="totalEntradasT1" class="metric-value green">$ 0,00</div>
             </div>
             <div class="metric">
-              <div class="metric-label">Turno 2 • Saldo líquido</div>
-              <div class="metric-value blue" id="totalTurno2">$ 0,00</div>
+              <div class="metric-label">Entradas Turno 2</div>
+              <div id="totalEntradasT2" class="metric-value green">$ 0,00</div>
             </div>
             <div class="metric">
-              <div class="metric-label">Diferença absoluta</div>
-              <div class="metric-value" id="diferencaAbs">$ 0,00</div>
+              <div class="metric-label">Diferença</div>
+              <div id="lucroTotal" class="metric-value blue">$ 0,00</div>
             </div>
-            <div class="metric">
-              <div class="metric-label">Resultado final (Turno 2 - Turno 1)</div>
-              <div class="metric-value" id="resultadoFinal">$ 0,00</div>
+          </div>
+        </article>
+
+        <article class="history-card">
+          <div class="history-card-top">
+            <div>
+              <div class="history-card-title">Histórico automático</div>
+              <div id="historyInfo" class="history-card-text">
+                Nenhum turno anterior salvo ainda.
+              </div>
             </div>
           </div>
 
-          <div class="history-card">
-            <div class="history-card-head">
-              <div class="history-card-title">Histórico automático do turno</div>
-              <button id="deleteHistoryBtn" class="delete-history-btn" type="button">Excluir histórico</button>
-            </div>
-            <div class="history-card-text" id="historyInfo">
-              Nenhum turno anterior salvo ainda.
-            </div>
-            <div id="historyList" class="history-list"></div>
-          </div>
+          <div id="historyList" class="history-list"></div>
+
+          <button id="deleteHistoryBtn" class="danger-mini-btn" type="button" style="margin-top:10px; width:100%;">
+            🔴 Excluir Histórico
+          </button>
         </article>
       </section>
 
       <section class="turnos">
-        <article class="turno card" data-turno="t1">
-          <div class="turno-head">
-            <div>
-              <h3>Turno 1</h3>
-              <small>Carregado automaticamente do último turno fechado</small>
-            </div>
-            <div class="turno-total">
-              <div class="label">Saldo líquido</div>
-              <div class="value" id="turno1InlineTotal">$ 0,00</div>
-            </div>
-          </div>
+  <article class="turno card" data-turno="t1">
+    <div class="turno-head">
+      <div>
+        <h3>Turno 1</h3>
+        <small>Carregado automaticamente do último fechamento</small>
+      </div>
+      <div class="turno-total">
+        <div class="label">Saldo líquido</div>
+        <div class="value" id="turno1InlineTotal">$ 0,00</div>
+      </div>
+    </div>
 
-          <div class="turno-meta">
-            <div class="field">
-              <label for="t1_data_fechamento">Data do fechamento</label>
-              <input type="date" id="t1_data_fechamento" />
-            </div>
-          </div>
+    <div class="turno-meta">
+      <div class="field">
+        <label for="t1_data_fechamento">Data do fechamento</label>
+        <input type="date" id="t1_data_fechamento" />
+      </div>
+    </div>
 
-          <div class="finance-block">
-            <div class="finance-head">
-              <h4>Entradas / material operacional</h4>
-              <div class="finance-total blue" id="t1_entradas_total">$ 0,00</div>
-            </div>
-            <div class="fields two-col">
-              <div class="field"><label for="t1_banco">Banco Reca</label><input type="text" inputmode="numeric" id="t1_banco" placeholder="0,00" /></div>
-              <div class="field"><label for="t1_pppoker">PPPoker (x400)</label><input type="text" inputmode="numeric" id="t1_pppoker" placeholder="0,00" /></div>
-              <div class="field"><label for="t1_suprema">Suprema (x400)</label><input type="text" inputmode="numeric" id="t1_suprema" placeholder="0,00" /></div>
-              <div class="field"><label for="t1_buffalo">Buffalo</label><input type="text" inputmode="numeric" id="t1_buffalo" placeholder="0,00" /></div>
-              <div class="field"><label for="t1_ganamos">Ganamos</label><input type="text" inputmode="numeric" id="t1_ganamos" placeholder="0,00" /></div>
-              <div class="field"><label for="t1_cargas">Carga de Fichas</label><input type="text" inputmode="numeric" id="t1_cargas" placeholder="0,00" /></div>
-              <div class="field"><label for="t1_cargas_poker">Cargas F. Poker (x400)</label><input type="text" inputmode="numeric" id="t1_cargas_poker" placeholder="0,00" /></div>
-            </div>
-          </div>
+    <div class="finance-block">
+      <div class="finance-head">
+        <h4>Entradas</h4>
+        <div class="finance-total blue" id="t1_entradas_total">$ 0,00</div>
+      </div>
 
-          <div class="finance-block">
-            <div class="finance-head">
-              <h4>Saídas de caixa</h4>
-              <div class="finance-total red" id="t1_saidas_total">- $ 0,00</div>
-            </div>
-            <div class="dynamic-list" id="t1_dynamic_list"></div>
-            <div class="inline-actions">
-              <button class="btn-add" type="button" data-add-row="t1">+ Adicionar saída</button>
-            </div>
-          </div>
+      <div class="fields two-col">
+        <div class="field">
+          <label for="t1_banco">Banco Reca</label>
+          <input type="text" inputmode="numeric" id="t1_banco" placeholder="0,00" />
+        </div>
 
-          <div class="finance-block">
-            <div class="finance-head">
-              <h4>Pagos Pendentes</h4>
-              <div class="finance-total red" id="t1_pendentes_total">- $ 0,00</div>
-            </div>
-            <div class="dynamic-list" id="t1_pending_list"></div>
-            <div class="inline-actions">
-              <button class="btn-add" type="button" data-add-pending="t1">+ Adicionar pago pendente</button>
-            </div>
-          </div>
-        </article>
+        <div class="field">
+          <label for="t1_pppoker">PPPoker (x400)</label>
+          <input type="text" inputmode="numeric" id="t1_pppoker" placeholder="0,00" />
+        </div>
 
-        <article class="turno card" data-turno="t2">
-          <div class="turno-head">
-            <div>
-              <h3>Turno 2</h3>
-              <small>Turno atual para preenchimento e fechamento</small>
-            </div>
-            <div class="turno-total">
-              <div class="label">Saldo líquido</div>
-              <div class="value" id="turno2InlineTotal">$ 0,00</div>
-            </div>
-          </div>
+        <div class="field">
+          <label for="t1_suprema">Suprema (x400)</label>
+          <input type="text" inputmode="numeric" id="t1_suprema" placeholder="0,00" />
+        </div>
 
-          <div class="turno-meta">
-            <div class="field">
-              <label for="t2_data_fechamento">Data do fechamento</label>
-              <input type="date" id="t2_data_fechamento" />
-            </div>
-          </div>
+        <div class="field">
+          <label for="t1_buffalo">Buffalo</label>
+          <input type="text" inputmode="numeric" id="t1_buffalo" placeholder="0,00" />
+        </div>
 
-          <div class="finance-block">
-            <div class="finance-head">
-              <h4>Entradas / material operacional</h4>
-              <div class="finance-total blue" id="t2_entradas_total">$ 0,00</div>
-            </div>
-            <div class="fields two-col">
-              <div class="field"><label for="t2_banco">Banco Reca</label><input type="text" inputmode="numeric" id="t2_banco" placeholder="0,00" /></div>
-              <div class="field"><label for="t2_pppoker">PPPoker (x400)</label><input type="text" inputmode="numeric" id="t2_pppoker" placeholder="0,00" /></div>
-              <div class="field"><label for="t2_suprema">Suprema (x400)</label><input type="text" inputmode="numeric" id="t2_suprema" placeholder="0,00" /></div>
-              <div class="field"><label for="t2_buffalo">Buffalo</label><input type="text" inputmode="numeric" id="t2_buffalo" placeholder="0,00" /></div>
-              <div class="field"><label for="t2_ganamos">Ganamos</label><input type="text" inputmode="numeric" id="t2_ganamos" placeholder="0,00" /></div>
-              <div class="field"><label for="t2_cargas">Carga de Fichas</label><input type="text" inputmode="numeric" id="t2_cargas" placeholder="0,00" /></div>
-              <div class="field"><label for="t2_cargas_poker">Cargas F. Poker (x400)</label><input type="text" inputmode="numeric" id="t2_cargas_poker" placeholder="0,00" /></div>
-            </div>
-          </div>
+        <div class="field">
+          <label for="t1_ganamos">Ganamos</label>
+          <input type="text" inputmode="numeric" id="t1_ganamos" placeholder="0,00" />
+        </div>
 
-          <div class="finance-block">
-            <div class="finance-head">
-              <h4>Saídas de caixa</h4>
-              <div class="finance-total red" id="t2_saidas_total">- $ 0,00</div>
-            </div>
-            <div class="dynamic-list" id="t2_dynamic_list"></div>
-            <div class="inline-actions">
-              <button class="btn-add" type="button" data-add-row="t2">+ Adicionar saída</button>
-            </div>
-          </div>
+        <div class="field">
+          <label for="t1_cargas">Carga de Fichas</label>
+          <input type="text" inputmode="numeric" id="t1_cargas" placeholder="0,00" />
+        </div>
 
-          <div class="finance-block">
-            <div class="finance-head">
-              <h4>Pagos Pendentes</h4>
-              <div class="finance-total red" id="t2_pendentes_total">- $ 0,00</div>
-            </div>
-            <div class="dynamic-list" id="t2_pending_list"></div>
-            <div class="inline-actions">
-              <button class="btn-add" type="button" data-add-pending="t2">+ Adicionar pago pendente</button>
-            </div>
-          </div>
-        </article>
-      </section>
+        <div class="field">
+          <label for="t1_cargas_poker">Cargas F. Poker (x400)</label>
+          <input type="text" inputmode="numeric" id="t1_cargas_poker" placeholder="0,00" />
+        </div>
+      </div>
+    </div>
+
+    <div class="finance-block">
+      <div class="finance-head">
+        <h4>Saídas de caixa</h4>
+        <div class="finance-total red" id="t1_saidas_total">- $ 0,00</div>
+      </div>
+
+      <div class="dynamic-list" id="t1_dynamic_list"></div>
+
+      <div class="inline-actions">
+        <button class="btn-add" type="button" data-add-row="t1">+ Adicionar saída</button>
+      </div>
+    </div>
+
+    <div class="finance-block">
+      <div class="finance-head">
+        <h4>Pagos pendentes</h4>
+        <div class="finance-total red" id="t1_pendentes_total">- $ 0,00</div>
+      </div>
+
+      <div class="dynamic-list" id="t1_pending_list"></div>
+
+      <div class="inline-actions">
+        <button class="btn-add" type="button" data-add-pending="t1">+ Adicionar pendente</button>
+      </div>
+    </div>
+  </article>
+
+  <article class="turno card" data-turno="t2">
+    <div class="turno-head">
+      <div>
+        <h3>Turno 2</h3>
+        <small>Turno atual para preenchimento</small>
+      </div>
+      <div class="turno-total">
+        <div class="label">Saldo líquido</div>
+        <div class="value" id="turno2InlineTotal">$ 0,00</div>
+      </div>
+    </div>
+
+    <div class="turno-meta">
+      <div class="field">
+        <label for="t2_data_fechamento">Data do fechamento</label>
+        <input type="date" id="t2_data_fechamento" />
+      </div>
+    </div>
+
+    <div class="finance-block">
+      <div class="finance-head">
+        <h4>Entradas</h4>
+        <div class="finance-total blue" id="t2_entradas_total">$ 0,00</div>
+      </div>
+
+      <div class="fields two-col">
+        <div class="field">
+          <label for="t2_banco">Banco Reca</label>
+          <input type="text" inputmode="numeric" id="t2_banco" placeholder="0,00" />
+        </div>
+
+        <div class="field">
+          <label for="t2_pppoker">PPPoker (x400)</label>
+          <input type="text" inputmode="numeric" id="t2_pppoker" placeholder="0,00" />
+        </div>
+
+        <div class="field">
+          <label for="t2_suprema">Suprema (x400)</label>
+          <input type="text" inputmode="numeric" id="t2_suprema" placeholder="0,00" />
+        </div>
+
+        <div class="field">
+          <label for="t2_buffalo">Buffalo</label>
+          <input type="text" inputmode="numeric" id="t2_buffalo" placeholder="0,00" />
+        </div>
+
+        <div class="field">
+          <label for="t2_ganamos">Ganamos</label>
+          <input type="text" inputmode="numeric" id="t2_ganamos" placeholder="0,00" />
+        </div>
+
+        <div class="field">
+          <label for="t2_cargas">Carga de Fichas</label>
+          <input type="text" inputmode="numeric" id="t2_cargas" placeholder="0,00" />
+        </div>
+
+        <div class="field">
+          <label for="t2_cargas_poker">Cargas F. Poker (x400)</label>
+          <input type="text" inputmode="numeric" id="t2_cargas_poker" placeholder="0,00" />
+        </div>
+      </div>
+    </div>
+
+    <div class="finance-block">
+      <div class="finance-head">
+        <h4>Saídas de caixa</h4>
+        <div class="finance-total red" id="t2_saidas_total">- $ 0,00</div>
+      </div>
+
+      <div class="dynamic-list" id="t2_dynamic_list"></div>
+
+      <div class="inline-actions">
+        <button class="btn-add" type="button" data-add-row="t2">+ Adicionar saída</button>
+      </div>
+    </div>
+
+    <div class="finance-block">
+      <div class="finance-head">
+        <h4>Pagos pendentes</h4>
+        <div class="finance-total red" id="t2_pendentes_total">- $ 0,00</div>
+      </div>
+
+      <div class="dynamic-list" id="t2_pending_list"></div>
+
+      <div class="inline-actions">
+        <button class="btn-add" type="button" data-add-pending="t2">+ Adicionar pendente</button>
+      </div>
+    </div>
+  </article>
+</section>
+
+<section id="reportScreen" class="report-screen hidden">
+  <div class="report-head">
+    <div>
+      <h3 id="reportTitle">Relatório</h3>
+      <small id="reportSubtitle" style="color: var(--muted);">Fluxo de caixa do período</small>
+    </div>
+    <button id="closeReportScreen" class="report-close-btn" type="button">Fechar</button>
+  </div>
+
+  <div class="report-grid">
+    <div class="report-card">
+      <div class="report-card-label">Entrou em Banco Reca</div>
+      <div class="report-card-value" id="reportBancoReca">$ 0,00</div>
+    </div>
+
+    <div class="report-card">
+      <div class="report-card-label">Saiu em Pagos Pendentes</div>
+      <div class="report-card-value red" id="reportPendentes">$ 0,00</div>
+    </div>
+
+    <div class="report-card">
+      <div class="report-card-label">Saiu em Saídas de Caixa</div>
+      <div class="report-card-value red" id="reportSaidas">$ 0,00</div>
+    </div>
+
+    <div class="report-card">
+      <div class="report-card-label">Lucro real</div>
+      <div class="report-card-value green" id="reportLucro">$ 0,00</div>
+    </div>
+  </div>
+
+  <div id="reportList" class="report-list"></div>
+</section>
     </main>
-
-    <section id="reportScreen" class="report-screen hidden">
-      <div class="report-head">
-        <div>
-          <h3 id="reportTitle">Relatório</h3>
-          <small id="reportSubtitle" style="color: var(--muted);">Fluxo de caixa do período</small>
-        </div>
-        <button id="closeReportScreen" class="report-close-btn" type="button">Fechar</button>
-      </div>
-
-      <div class="report-grid">
-        <div class="report-card">
-          <div class="report-card-label">Entrou em Banco Reca</div>
-          <div class="report-card-value" id="reportBancoReca">$ 0,00</div>
-        </div>
-
-        <div class="report-card">
-          <div class="report-card-label">Saiu em Pagos Pendentes</div>
-          <div class="report-card-value red" id="reportPendentes">$ 0,00</div>
-        </div>
-
-        <div class="report-card">
-          <div class="report-card-label">Saiu em Saídas de Caixa</div>
-          <div class="report-card-value red" id="reportSaidas">$ 0,00</div>
-        </div>
-
-        <div class="report-card">
-          <div class="report-card-label">Lucro real</div>
-          <div class="report-card-value green" id="reportLucro">$ 0,00</div>
-        </div>
-      </div>
-
-      <div id="reportList" class="report-list"></div>
-    </section>
 
     <div id="reportsMenu" class="reports-menu hidden">
       <button class="reports-menu-item" type="button" data-report-range="7">Relatório semanal</button>
@@ -1627,63 +1535,10 @@
 
     <div class="bottom-bar">
       <div class="bottom-bar-inner">
-        <button class="secondary-btn" id="limpar">Limpar tudo</button>
-        <button class="close-btn" id="fecharTurno">Fechar turno</button>
-        <button class="pdf-btn" id="exportarPdf">Exportar PDF</button>
-        <button class="main-btn" id="calcular">Calcular agora</button>
-      </div>
-    </div>
-  </div>
-
-  <div id="historyModal" class="modal hidden">
-    <div class="modal-backdrop" id="historyModalBackdrop"></div>
-    <div class="modal-card">
-      <div class="modal-head">
-        <div>
-          <h3 id="historyModalTitle">Detalhes do fechamento</h3>
-          <small id="historyModalSub">Turno salvo</small>
-        </div>
-        <button id="closeHistoryModal" class="modal-close-btn" type="button">Fechar</button>
-      </div>
-      <div class="modal-body" id="historyModalBody"></div>
-    </div>
-  </div>
-
-  <div id="clearModal" class="modal hidden">
-    <div class="modal-backdrop" id="clearModalBackdrop"></div>
-    <div class="modal-card clear-modal-card">
-      <div class="modal-head">
-        <div>
-          <h3>Limpar dados</h3>
-          <small>Escolha exatamente o que deseja limpar</small>
-        </div>
-        <button id="closeClearModal" class="modal-close-btn" type="button">Fechar</button>
-      </div>
-
-      <div class="clear-modal-actions">
-        <button id="clearTurnoAtualBtn" class="clear-option-btn blue" type="button">
-          <span class="clear-option-icon">🔵</span>
-          <span class="clear-option-text">
-            <strong>Limpar Turno Atual</strong>
-            <small>Remove apenas os dados do Turno 2</small>
-          </span>
-        </button>
-
-        <button id="clearTurnoAnteriorBtn" class="clear-option-btn amber" type="button">
-          <span class="clear-option-icon">🟡</span>
-          <span class="clear-option-text">
-            <strong>Limpar Turno Anterior</strong>
-            <small>Remove apenas os dados do Turno 1</small>
-          </span>
-        </button>
-
-        <button id="clearTodosBtn" class="clear-option-btn red" type="button">
-          <span class="clear-option-icon">🔴</span>
-          <span class="clear-option-text">
-            <strong>Limpar Tudo</strong>
-            <small>Remove Turno 1, Turno 2 e histórico salvo</small>
-          </span>
-        </button>
+        <button class="secondary-btn" id="limpar" type="button">Limpar</button>
+        <button class="close-btn" id="fecharTurno" type="button">Fechar turno</button>
+        <button class="pdf-btn" id="exportarPdf" type="button">Exportar PDF</button>
+        <button class="main-btn" id="calcular" type="button">Calcular</button>
       </div>
     </div>
   </div>
@@ -1691,47 +1546,25 @@
   <script>
     const PDF_CODE = "1520";
     const REPORT_CODE = "1520";
-    const DELETE_HISTORY_CODE = "1520";
-    const RESET_CODE = "4br1l#2o26";
+    const LOGIN_DEMO_EMAIL = "admin@bankking.com";
+    const LOGIN_DEMO_PASSWORD = "1520";
 
-    const USERS_STORAGE_KEY = "bank-king-users-v1";
-    const ACTIVE_USER_STORAGE_KEY = "bank-king-active-user-v1";
-    const HISTORY_STORAGE_KEY = "bank-king-turno-history-v5";
+    const HISTORY_STORAGE_KEY = "bank-king-history-v1";
     const REMEMBER_LOGIN_STORAGE_KEY = "bank-king-remember-login-v1";
     const REMEMBERED_EMAIL_STORAGE_KEY = "bank-king-remembered-email-v1";
-    const SESSION_LAST_ACTIVITY_KEY = "bank-king-session-last-activity-v1";
-    const SESSION_TIMEOUT_MS = 30 * 60 * 1000;
+    const ACTIVE_USER_STORAGE_KEY = "bank-king-active-user-v1";
+
+    let balanceVisible = true;
+    let dynamicRowCounter = 0;
 
     const authScreen = document.getElementById("authScreen");
     const appShell = document.getElementById("appShell");
 
-    const tabLogin = document.getElementById("tabLogin");
-    const tabRegister = document.getElementById("tabRegister");
-    const loginForm = document.getElementById("loginForm");
-    const registerForm = document.getElementById("registerForm");
-    const forgotPasswordForm = document.getElementById("forgotPasswordForm");
-    const forgotPasswordBtn = document.getElementById("forgotPasswordBtn");
-    const backToLoginBtn = document.getElementById("backToLoginBtn");
-    const rememberLoginCheckbox = document.getElementById("rememberLogin");
-
-    let dynamicRowCounter = 0;
-    let balanceVisible = true;
-    let activeUser = null;
-    let sessionInterval = null;
-
     function money(value) {
-      return `$ ${Number(value).toLocaleString("pt-BR", {
-        minimumFractionDigits: 2,
-        maximumFractionDigits: 2
-      })}`;
-    }
-
-    function maskedMoney(value) {
-      return money(value).replace(/[0-9]/g, "•");
-    }
-
-    function displayMoney(value) {
-      return balanceVisible ? money(value) : maskedMoney(value);
+      return Number(value || 0).toLocaleString("pt-BR", {
+        style: "currency",
+        currency: "BRL"
+      });
     }
 
     function negativeMoney(value) {
@@ -1739,51 +1572,12 @@
     }
 
     function escapeHtml(text) {
-      return String(text)
+      return String(text ?? "")
         .replaceAll("&", "&amp;")
         .replaceAll("<", "&lt;")
         .replaceAll(">", "&gt;")
         .replaceAll('"', "&quot;")
         .replaceAll("'", "&#39;");
-    }
-
-    function formatDigitsToMoneyString(digits) {
-      const clean = (digits || "").replace(/\D/g, "");
-      if (!clean) return "";
-      const number = Number(clean) / 100;
-      return number.toLocaleString("pt-BR", {
-        minimumFractionDigits: 2,
-        maximumFractionDigits: 2
-      });
-    }
-
-    function parseMoneyInput(value) {
-      if (!value) return 0;
-      const normalized = value
-        .replace(/\./g, "")
-        .replace(",", ".")
-        .replace(/[^\d.-]/g, "");
-      const number = parseFloat(normalized);
-      return Number.isFinite(number) ? number : 0;
-    }
-
-    function getDigitsFromInput(input) {
-      return input?.dataset?.raw || "";
-    }
-
-    function setDigitsToInput(input, digits) {
-      const clean = (digits || "").replace(/\D/g, "");
-      input.dataset.raw = clean;
-      input.value = formatDigitsToMoneyString(clean);
-    }
-
-    function moveCursorToEnd(input) {
-      requestAnimationFrame(() => {
-        const len = input.value.length;
-        try {
-          input.setSelectionRange(len, len);
-        } catch (_) {}
-      });
     }
 
     function getTodayDateInput() {
@@ -1800,43 +1594,60 @@
       return `${d}/${m}/${y}`;
     }
 
-    function formatDateTimeBR(iso) {
-      if (!iso) return "Sem data";
-      const dt = new Date(iso);
-      return `${dt.toLocaleDateString("pt-BR")} às ${dt.toLocaleTimeString("pt-BR", {
-        hour: "2-digit",
-        minute: "2-digit"
-      })}`;
+    function parseMoneyInput(value) {
+      if (!value) return 0;
+      const normalized = String(value)
+        .replace(/\./g, "")
+        .replace(",", ".")
+        .replace(/[^\d.-]/g, "");
+      const number = parseFloat(normalized);
+      return Number.isFinite(number) ? number : 0;
     }
 
-    function ensureTurnDates() {
-      const t1 = document.getElementById("t1_data_fechamento");
-      const t2 = document.getElementById("t2_data_fechamento");
-      if (t1 && !t1.value) t1.value = getTodayDateInput();
-      if (t2 && !t2.value) t2.value = getTodayDateInput();
+    function formatDigitsToMoneyString(digits) {
+      const clean = String(digits || "").replace(/\D/g, "");
+      if (!clean) return "";
+      const number = Number(clean) / 100;
+      return number.toLocaleString("pt-BR", {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2
+      });
+    }
+
+    function setDigitsToInput(input, digits) {
+      const clean = String(digits || "").replace(/\D/g, "");
+      input.dataset.raw = clean;
+      input.value = formatDigitsToMoneyString(clean);
+    }
+
+    function getDigitsFromInput(input) {
+      return input?.dataset?.raw || "";
+    }
+
+    function moveCursorToEnd(input) {
+      requestAnimationFrame(() => {
+        const len = input.value.length;
+        try {
+          input.setSelectionRange(len, len);
+        } catch (_) {}
+      });
     }
 
     function attachMoneyMask(input) {
-      if (input.dataset.maskAttached === "true") return;
+      if (!input || input.dataset.maskAttached === "true") return;
+
       input.dataset.maskAttached = "true";
-      input.dataset.raw = "";
+      input.dataset.raw = input.dataset.raw || "";
       input.placeholder = "0,00";
       input.autocomplete = "off";
       input.spellcheck = false;
 
       input.addEventListener("keydown", (e) => {
-        const allowedControl =
-          e.key === "Tab" ||
-          e.key === "Shift" ||
-          e.key === "Control" ||
-          e.key === "Meta" ||
-          e.key === "Alt" ||
-          e.key === "ArrowLeft" ||
-          e.key === "ArrowRight" ||
-          e.key === "ArrowUp" ||
-          e.key === "ArrowDown" ||
-          e.key === "Home" ||
-          e.key === "End";
+        const allowedControl = [
+          "Tab", "Shift", "Control", "Meta", "Alt",
+          "ArrowLeft", "ArrowRight", "ArrowUp", "ArrowDown",
+          "Home", "End"
+        ].includes(e.key);
 
         if (allowedControl) return;
 
@@ -1876,39 +1687,34 @@
         e.preventDefault();
         const pasted = (e.clipboardData || window.clipboardData).getData("text") || "";
         const digits = pasted.replace(/\D/g, "");
-        if (!digits) return;
         const raw = getDigitsFromInput(input) + digits;
         setDigitsToInput(input, raw);
         moveCursorToEnd(input);
         render();
       });
 
-      input.addEventListener("focus", () => {
-        moveCursorToEnd(input);
-      });
+      input.addEventListener("focus", () => moveCursorToEnd(input));
     }
 
-    function getUsers() {
-      const raw = localStorage.getItem(USERS_STORAGE_KEY);
-      if (!raw) return [];
-      try {
-        return JSON.parse(raw);
-      } catch {
-        return [];
+    function saveRememberedLogin(enabled, email = "") {
+      localStorage.setItem(REMEMBER_LOGIN_STORAGE_KEY, enabled ? "true" : "false");
+      if (enabled) {
+        localStorage.setItem(REMEMBERED_EMAIL_STORAGE_KEY, email);
+      } else {
+        localStorage.removeItem(REMEMBERED_EMAIL_STORAGE_KEY);
       }
     }
 
-    function saveUsers(users) {
-      localStorage.setItem(USERS_STORAGE_KEY, JSON.stringify(users));
+    function getRememberedLogin() {
+      return localStorage.getItem(REMEMBER_LOGIN_STORAGE_KEY) === "true";
+    }
+
+    function getRememberedEmail() {
+      return localStorage.getItem(REMEMBERED_EMAIL_STORAGE_KEY) || "";
     }
 
     function saveActiveUser(user) {
-      activeUser = user;
       localStorage.setItem(ACTIVE_USER_STORAGE_KEY, JSON.stringify(user));
-    }
-
-    function clearActiveUserStorage() {
-      localStorage.removeItem(ACTIVE_USER_STORAGE_KEY);
     }
 
     function loadActiveUser() {
@@ -1921,247 +1727,48 @@
       }
     }
 
-    function setRememberLogin(enabled, email = "") {
-      localStorage.setItem(REMEMBER_LOGIN_STORAGE_KEY, enabled ? "true" : "false");
-      if (enabled && email) {
-        localStorage.setItem(REMEMBERED_EMAIL_STORAGE_KEY, email);
-      } else if (!enabled) {
-        localStorage.removeItem(REMEMBERED_EMAIL_STORAGE_KEY);
-      }
-    }
-
-    function getRememberLogin() {
-      return localStorage.getItem(REMEMBER_LOGIN_STORAGE_KEY) === "true";
-    }
-
-    function getRememberedEmail() {
-      return localStorage.getItem(REMEMBERED_EMAIL_STORAGE_KEY) || "";
-    }
-
-    function preloadRememberedLogin() {
-      const remember = getRememberLogin();
-      const rememberedEmail = getRememberedEmail();
-      const loginEmail = document.getElementById("loginEmail");
-      const loginPassword = document.getElementById("loginPassword");
-
-      rememberLoginCheckbox.checked = remember;
-
-      if (rememberedEmail) {
-        loginEmail.value = rememberedEmail;
-        requestAnimationFrame(() => {
-          if (!authScreen.classList.contains("hidden")) {
-            loginPassword.focus();
-          }
-        });
-      } else {
-        loginEmail.value = "";
-        requestAnimationFrame(() => {
-          if (!authScreen.classList.contains("hidden")) {
-            loginEmail.focus();
-          }
-        });
-      }
-    }
-
-    function setSessionActivity() {
-      if (activeUser && getRememberLogin()) {
-        localStorage.setItem(SESSION_LAST_ACTIVITY_KEY, String(Date.now()));
-      }
-    }
-
-    function getSessionLastActivity() {
-      return Number(localStorage.getItem(SESSION_LAST_ACTIVITY_KEY) || 0);
-    }
-
-    function clearSessionActivity() {
-      localStorage.removeItem(SESSION_LAST_ACTIVITY_KEY);
-    }
-
-    function isSessionExpired() {
-      const last = getSessionLastActivity();
-      if (!last) return true;
-      return (Date.now() - last) > SESSION_TIMEOUT_MS;
-    }
-
-    function stopSessionWatcher() {
-      if (sessionInterval) {
-        clearInterval(sessionInterval);
-        sessionInterval = null;
-      }
-    }
-
-    function startSessionWatcher() {
-      stopSessionWatcher();
-      sessionInterval = setInterval(() => {
-        if (activeUser && getRememberLogin() && isSessionExpired()) {
-          alert("Sessão expirada por inatividade de 30 minutos.");
-          forceLogoutByTimeout();
-        }
-      }, 15000);
-    }
-
-    function bindSessionActivityEvents() {
-      const events = ["click", "touchstart", "keydown", "input", "scroll"];
-      events.forEach((eventName) => {
-        window.addEventListener(eventName, () => {
-          setSessionActivity();
-        }, { passive: true });
-      });
-    }
-
-    function forceLogoutByTimeout() {
-      clearActiveUserStorage();
-      clearSessionActivity();
-      stopSessionWatcher();
-      activeUser = null;
-      authScreen.classList.remove("hidden");
-      appShell.classList.add("hidden");
-      switchAuthTab("login");
-      preloadRememberedLogin();
-    }
-
     function logout() {
-      clearActiveUserStorage();
-      clearSessionActivity();
-      stopSessionWatcher();
-      activeUser = null;
+      localStorage.removeItem(ACTIVE_USER_STORAGE_KEY);
       authScreen.classList.remove("hidden");
       appShell.classList.add("hidden");
-      switchAuthTab("login");
-      preloadRememberedLogin();
+      preloadLogin();
     }
 
-    function showApp() {
+    function showApp(user) {
+      document.getElementById("activeUserName").textContent = user?.name || "Usuário";
+      document.getElementById("activeUserEmail").textContent = user?.email || "";
       authScreen.classList.add("hidden");
       appShell.classList.remove("hidden");
-      updateActiveUserUI();
-      ensureTurnDates();
+      ensureDates();
       loadHistoryIntoTurn1();
-      setSessionActivity();
-      startSessionWatcher();
       render();
     }
 
-    function updateActiveUserUI() {
-      document.getElementById("activeUserName").textContent = activeUser?.name || "Usuário";
-      document.getElementById("activeUserEmail").textContent = activeUser?.email || "";
+    function preloadLogin() {
+      const remember = getRememberedLogin();
+      const rememberedEmail = getRememberedEmail();
+
+      const emailInput = document.getElementById("loginEmail");
+      const passwordInput = document.getElementById("loginPassword");
+      const rememberCheckbox = document.getElementById("rememberLogin");
+
+      rememberCheckbox.checked = remember;
+
+      if (rememberedEmail) {
+        emailInput.value = rememberedEmail;
+        requestAnimationFrame(() => passwordInput.focus());
+      } else {
+        emailInput.value = "";
+        requestAnimationFrame(() => emailInput.focus());
+      }
     }
 
-    function switchAuthTab(mode) {
-      const loginActive = mode === "login";
-      const registerActive = mode === "register";
-      const forgotActive = mode === "forgot";
-
-      tabLogin.classList.toggle("active", loginActive);
-      tabRegister.classList.toggle("active", registerActive);
-
-      loginForm.classList.toggle("hidden", !loginActive);
-      registerForm.classList.toggle("hidden", !registerActive);
-      forgotPasswordForm.classList.toggle("hidden", !forgotActive);
-
-      if (loginActive) preloadRememberedLogin();
+    function ensureDates() {
+      const t1 = document.getElementById("t1_data_fechamento");
+      const t2 = document.getElementById("t2_data_fechamento");
+      if (t1 && !t1.value) t1.value = getTodayDateInput();
+      if (t2 && !t2.value) t2.value = getTodayDateInput();
     }
-
-    tabLogin.addEventListener("click", () => switchAuthTab("login"));
-    tabRegister.addEventListener("click", () => switchAuthTab("register"));
-    forgotPasswordBtn.addEventListener("click", () => switchAuthTab("forgot"));
-    backToLoginBtn.addEventListener("click", () => switchAuthTab("login"));
-
-    registerForm.addEventListener("submit", (e) => {
-      e.preventDefault();
-
-      const name = document.getElementById("registerName").value.trim();
-      const email = document.getElementById("registerEmail").value.trim().toLowerCase();
-      const password = document.getElementById("registerPassword").value;
-
-      if (!name || !email || !password) {
-        alert("Preencha nome, email e senha.");
-        return;
-      }
-
-      const users = getUsers();
-      const exists = users.some((user) => user.email === email);
-
-      if (exists) {
-        alert("Esse email já está registrado.");
-        return;
-      }
-
-      users.push({ name, email, password });
-      saveUsers(users);
-
-      saveActiveUser({ name, email });
-      setRememberLogin(true, email);
-
-      registerForm.reset();
-      rememberLoginCheckbox.checked = true;
-      showApp();
-    });
-
-    loginForm.addEventListener("submit", (e) => {
-      e.preventDefault();
-
-      const email = document.getElementById("loginEmail").value.trim().toLowerCase();
-      const password = document.getElementById("loginPassword").value;
-      const remember = rememberLoginCheckbox.checked;
-
-      const users = getUsers();
-      const found = users.find((user) => user.email === email && user.password === password);
-
-      if (!found) {
-        alert("Email ou senha inválidos.");
-        return;
-      }
-
-      saveActiveUser({ name: found.name, email: found.email });
-      setRememberLogin(remember, email);
-      setSessionActivity();
-
-      loginForm.reset();
-      preloadRememberedLogin();
-      showApp();
-    });
-
-    forgotPasswordForm.addEventListener("submit", (e) => {
-      e.preventDefault();
-
-      const email = document.getElementById("resetEmail").value.trim().toLowerCase();
-      const code = document.getElementById("resetCode").value.trim();
-      const newPassword = document.getElementById("newPassword").value;
-
-      if (!email || !code || !newPassword) {
-        alert("Preencha email, código e nova senha.");
-        return;
-      }
-
-      if (code !== RESET_CODE) {
-        alert("Código interno de redefinição inválido.");
-        return;
-      }
-
-      const users = getUsers();
-      const userIndex = users.findIndex((user) => user.email === email);
-
-      if (userIndex === -1) {
-        alert("Usuário não encontrado com esse email.");
-        return;
-      }
-
-      users[userIndex].password = newPassword;
-      saveUsers(users);
-
-      alert("Senha redefinida com sucesso no modo local.");
-      forgotPasswordForm.reset();
-      switchAuthTab("login");
-
-      const loginEmail = document.getElementById("loginEmail");
-      loginEmail.value = email;
-      requestAnimationFrame(() => {
-        document.getElementById("loginPassword").focus();
-      });
-    });
-
-    document.getElementById("logoutBtn").addEventListener("click", logout);
 
     const fieldsByTurn = {
       t1: {
@@ -2209,7 +1816,7 @@
       const list = document.getElementById(`${turno}_dynamic_list`);
       if (!list) return 0;
       let total = 0;
-      list.querySelectorAll('input[data-dynamic-value]').forEach((input) => {
+      list.querySelectorAll('input[data-dynamic-value="true"]').forEach((input) => {
         total += parseMoneyInput(input.value);
       });
       return total;
@@ -2219,156 +1826,111 @@
       const list = document.getElementById(`${turno}_pending_list`);
       if (!list) return 0;
       let total = 0;
-      list.querySelectorAll('input[data-pending-value]').forEach((input) => {
+      list.querySelectorAll('input[data-pending-value="true"]').forEach((input) => {
         total += parseMoneyInput(input.value);
       });
       return total;
     }
 
-    function setResultStyle(diff) {
+    function updateStatusPill(value) {
       const pill = document.getElementById("statusPill");
-      const result = document.getElementById("resultadoFinal");
-      result.classList.remove("green", "red");
-
-      if (diff > 0) {
-        pill.className = "pill positive";
+      if (value > 0) {
         pill.textContent = "Positivo";
-        result.classList.add("green");
-      } else if (diff < 0) {
-        pill.className = "pill negative";
+        pill.className = "pill positive";
+      } else if (value < 0) {
         pill.textContent = "Negativo";
-        result.classList.add("red");
+        pill.className = "pill negative";
       } else {
-        pill.className = "pill neutral";
         pill.textContent = "Sem diferença";
+        pill.className = "pill neutral";
       }
     }
 
-    function updateRowPreview(input) {
-      const row = input.closest(".dynamic-row");
-      if (!row) return;
+    function updatePreviewForRow(row, value, pending = false) {
       const preview = row.querySelector(".signed-preview");
       if (!preview) return;
-      preview.textContent = negativeMoney(parseMoneyInput(input.value));
+      preview.textContent = negativeMoney(value);
+      preview.className = `signed-preview ${pending ? "amber" : "red"}`;
     }
 
-    function updateEyeIcon() {
-      const icon = document.getElementById("eyeIcon");
-      if (!icon) return;
+    function bindDynamicRow(row, pending = false) {
+      const valueInput = row.querySelector(pending ? '[data-pending-value="true"]' : '[data-dynamic-value="true"]');
+      const textInput = row.querySelector('input[type="text"]:not([data-dynamic-value="true"]):not([data-pending-value="true"])');
 
-      if (balanceVisible) {
-        icon.innerHTML = `
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#eaf2ff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7S1 12 1 12z"></path>
-            <circle cx="12" cy="12" r="3"></circle>
-          </svg>
-        `;
-      } else {
-        icon.innerHTML = `
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#eaf2ff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M2 2l20 20"></path>
-            <path d="M10.58 10.58a2 2 0 102.83 2.83"></path>
-            <path d="M9.88 5.09A10.94 10.94 0 0112 5c7 0 11 7 11 7a21.8 21.8 0 01-5.17 5.94"></path>
-            <path d="M6.61 6.61A21.8 21.8 0 001 12s4 7 11 7a10.94 10.94 0 005.09-1.17"></path>
-          </svg>
-        `;
+      if (valueInput) {
+        attachMoneyMask(valueInput);
+        valueInput.addEventListener("input", () => {
+          updatePreviewForRow(row, parseMoneyInput(valueInput.value), pending);
+          render();
+        });
       }
-    }
 
-    function bindRow(row, kind) {
-      row.querySelectorAll("input").forEach((input) => {
-        if (input.hasAttribute("data-dynamic-value") || input.hasAttribute("data-pending-value")) {
-          attachMoneyMask(input);
-        } else {
-          input.addEventListener("input", render);
-        }
-      });
+      if (textInput) {
+        textInput.addEventListener("input", render);
+      }
 
-      row.querySelector("[data-remove-row]").addEventListener("click", () => {
-        row.remove();
-        render();
-      });
+      const removeBtn = row.querySelector(".remove-btn");
+      if (removeBtn) {
+        removeBtn.addEventListener("click", () => {
+          row.remove();
+          render();
+        });
+      }
 
-      const valueInput = row.querySelector(
-        kind === "pending" ? 'input[data-pending-value]' : 'input[data-dynamic-value]'
-      );
-
-      if (valueInput) updateRowPreview(valueInput);
+      updatePreviewForRow(row, parseMoneyInput(valueInput?.value || 0), pending);
     }
 
     function createDynamicRow(turno, name = "", digits = "") {
       dynamicRowCounter += 1;
-      const rowId = `${turno}_saida_${dynamicRowCounter}`;
-      const list = document.getElementById(`${turno}_dynamic_list`);
-
       const row = document.createElement("div");
       row.className = "dynamic-row outflow";
-      row.id = rowId;
       row.innerHTML = `
         <div class="field">
           <label>Saída</label>
-          <input type="text" placeholder="Ex.: salário, fornecedor, marketing" value="${escapeHtml(name)}">
+          <input type="text" placeholder="Ex.: salário, fornecedor, marketing" value="${escapeHtml(name)}" />
         </div>
         <div class="field">
           <label>Valor</label>
-          <input type="text" inputmode="numeric" placeholder="0,00" data-dynamic-value="true">
+          <input type="text" inputmode="numeric" data-dynamic-value="true" placeholder="0,00" />
         </div>
         <div class="signed-preview red">- $ 0,00</div>
-        <button class="remove-btn" type="button" data-remove-row="${rowId}">Remover</button>
+        <button class="remove-btn" type="button">Remover</button>
       `;
-
-      list.appendChild(row);
-      bindRow(row, "outflow");
-
-      const valueInput = row.querySelector('input[data-dynamic-value]');
-      if (valueInput && digits) {
-        setDigitsToInput(valueInput, digits);
-        updateRowPreview(valueInput);
-      }
-
+      document.getElementById(`${turno}_dynamic_list`).appendChild(row);
+      const valueInput = row.querySelector('[data-dynamic-value="true"]');
+      if (digits) setDigitsToInput(valueInput, digits);
+      bindDynamicRow(row, false);
       render();
     }
 
     function createPendingRow(turno, name = "", digits = "") {
       dynamicRowCounter += 1;
-      const rowId = `${turno}_pending_${dynamicRowCounter}`;
-      const list = document.getElementById(`${turno}_pending_list`);
-
       const row = document.createElement("div");
       row.className = "dynamic-row pending";
-      row.id = rowId;
       row.innerHTML = `
         <div class="field">
           <label>Nome do cliente</label>
-          <input type="text" placeholder="Ex.: João, Carlos, Maria" value="${escapeHtml(name)}">
+          <input type="text" placeholder="Ex.: João, Carlos, Maria" value="${escapeHtml(name)}" />
         </div>
         <div class="field">
           <label>Valor</label>
-          <input type="text" inputmode="numeric" placeholder="0,00" data-pending-value="true">
+          <input type="text" inputmode="numeric" data-pending-value="true" placeholder="0,00" />
         </div>
         <div class="signed-preview amber">- $ 0,00</div>
-        <button class="remove-btn" type="button" data-remove-row="${rowId}">Remover</button>
+        <button class="remove-btn" type="button">Remover</button>
       `;
-
-      list.appendChild(row);
-      bindRow(row, "pending");
-
-      const valueInput = row.querySelector('input[data-pending-value]');
-      if (valueInput && digits) {
-        setDigitsToInput(valueInput, digits);
-        updateRowPreview(valueInput);
-      }
-
+      document.getElementById(`${turno}_pending_list`).appendChild(row);
+      const valueInput = row.querySelector('[data-pending-value="true"]');
+      if (digits) setDigitsToInput(valueInput, digits);
+      bindDynamicRow(row, true);
       render();
     }
 
     function clearTurn(turno) {
       const f = fieldsByTurn[turno];
-
       Object.values(f).forEach((id) => {
         const input = document.getElementById(id);
         if (!input) return;
-
         if (id === f.dataFechamento) {
           input.value = getTodayDateInput();
         } else {
@@ -2377,18 +1939,22 @@
         }
       });
 
-      const dynamicList = document.getElementById(`${turno}_dynamic_list`);
-      const pendingList = document.getElementById(`${turno}_pending_list`);
-      if (dynamicList) dynamicList.innerHTML = "";
-      if (pendingList) pendingList.innerHTML = "";
+      document.getElementById(`${turno}_dynamic_list`).innerHTML = "";
+      document.getElementById(`${turno}_pending_list`).innerHTML = "";
     }
 
-    function limparTurnoIndividual(turno) {
-      clearTurn(turno);
-    }
-
-    function buildTurnSnapshot(turno) {
+    function serializeTurn(turno) {
       const f = fieldsByTurn[turno];
+
+      const entries = [
+        { name: "Banco Reca", value: getValue(f.banco) },
+        { name: "PPPoker (x400)", value: getValue(f.pppoker) * 400 },
+        { name: "Suprema (x400)", value: getValue(f.suprema) * 400 },
+        { name: "Buffalo", value: getValue(f.buffalo) },
+        { name: "Ganamos", value: getValue(f.ganamos) },
+        { name: "Carga de Fichas", value: getValue(f.cargas) },
+        { name: "Cargas F. Poker (x400)", value: getValue(f.cargasPoker) * 400 }
+      ];
 
       const outflows = [...document.querySelectorAll(`#${turno}_dynamic_list .dynamic-row`)].map((row) => {
         const inputs = row.querySelectorAll("input");
@@ -2406,56 +1972,60 @@
         };
       });
 
-      const entries = [
-        { name: "Banco Reca", value: getValue(f.banco) },
-        { name: "PPPoker (x400)", value: getValue(f.pppoker) * 400 },
-        { name: "Suprema (x400)", value: getValue(f.suprema) * 400 },
-        { name: "Buffalo", value: getValue(f.buffalo) },
-        { name: "Ganamos", value: getValue(f.ganamos) },
-        { name: "Carga de Fichas", value: getValue(f.cargas) },
-        { name: "Cargas F. Poker (x400)", value: getValue(f.cargasPoker) * 400 }
-      ];
-
       const entradasTotal = entries.reduce((acc, item) => acc + item.value, 0);
       const saidasTotal = outflows.reduce((acc, item) => acc + item.value, 0);
       const pendentesTotal = pendings.reduce((acc, item) => acc + item.value, 0);
       const saldoLiquido = entradasTotal - saidasTotal - pendentesTotal;
-      const dataFechamento = document.getElementById(f.dataFechamento)?.value || getTodayDateInput();
+
+      const activeUser = loadActiveUser();
 
       return {
-        dataFechamento,
-        entries,
-        outflows,
-        pendings,
-        entradasTotal,
-        saidasTotal,
-        pendentesTotal,
-        saldoLiquido
+        submittedByName: activeUser?.name || "Usuário",
+        submittedByEmail: activeUser?.email || "",
+        submittedAt: new Date().toISOString(),
+        fechamentoDate: document.getElementById(f.dataFechamento)?.value || getTodayDateInput(),
+        total: saldoLiquido,
+        turno: {
+          dataFechamento: document.getElementById(f.dataFechamento)?.value || getTodayDateInput(),
+          entries,
+          outflows,
+          pendings,
+          entradasTotal,
+          saidasTotal,
+          pendentesTotal,
+          saldoLiquido
+        }
       };
     }
 
-    function serializeTurn(turno) {
-      const turnSnapshot = buildTurnSnapshot(turno);
-      return {
-        submittedByName: activeUser?.name || "",
-        submittedByEmail: activeUser?.email || "",
-        submittedAt: new Date().toISOString(),
-        fechamentoDate: turnSnapshot.dataFechamento,
-        total: turnSnapshot.saldoLiquido,
-        turno: turnSnapshot
-      };
+    function saveHistoryItem(item) {
+      const history = loadHistory();
+      const previousTotal = history[0]?.total || 0;
+      item.diff = item.total - previousTotal;
+      history.unshift(item);
+      localStorage.setItem(HISTORY_STORAGE_KEY, JSON.stringify(history.slice(0, 100)));
+    }
+
+    function loadHistory() {
+      const raw = localStorage.getItem(HISTORY_STORAGE_KEY);
+      if (!raw) return [];
+      try {
+        const parsed = JSON.parse(raw);
+        return Array.isArray(parsed) ? parsed : [];
+      } catch {
+        return [];
+      }
     }
 
     function applySnapshotToTurn(turno, snapshot) {
       if (!snapshot) return;
 
       clearTurn(turno);
+
       const f = fieldsByTurn[turno];
+      document.getElementById(f.dataFechamento).value = snapshot.dataFechamento || getTodayDateInput();
 
-      const dateInput = document.getElementById(f.dataFechamento);
-      if (dateInput) dateInput.value = snapshot.dataFechamento || getTodayDateInput();
-
-      const entryMap = {
+      const map = {
         "Banco Reca": f.banco,
         "PPPoker (x400)": f.pppoker,
         "Suprema (x400)": f.suprema,
@@ -2466,74 +2036,76 @@
       };
 
       (snapshot.entries || []).forEach((entry) => {
-        const fieldId = entryMap[entry.name];
-        if (!fieldId) return;
-
-        let valueToSet = entry.value || 0;
-        if (entry.name === "PPPoker (x400)" || entry.name === "Suprema (x400)" || entry.name === "Cargas F. Poker (x400)") {
-          valueToSet = valueToSet / 400;
-        }
-
-        const input = document.getElementById(fieldId);
-        if (input) {
-          const digits = Math.round(valueToSet * 100).toString();
-          setDigitsToInput(input, digits);
-        }
+        const id = map[entry.name];
+        if (!id) return;
+        let rawValue = entry.value || 0;
+        if (entry.name.includes("(x400)")) rawValue = rawValue / 400;
+        setDigitsToInput(document.getElementById(id), Math.round(rawValue * 100).toString());
       });
 
       (snapshot.outflows || []).forEach((item) => {
-        createDynamicRow(turno, item.name || "", Math.round((item.value || 0) * 100).toString());
+        createDynamicRow(turno, item.name, Math.round((item.value || 0) * 100).toString());
       });
 
       (snapshot.pendings || []).forEach((item) => {
-        createPendingRow(turno, item.name || "", Math.round((item.value || 0) * 100).toString());
+        createPendingRow(turno, item.name, Math.round((item.value || 0) * 100).toString());
       });
-
-      render();
     }
 
-    function getCurrentDifference() {
-      const t1Total = getEntradasTotal("t1") - getDynamicTotal("t1") - getPendingTotal("t1");
-      const t2Total = getEntradasTotal("t2") - getDynamicTotal("t2") - getPendingTotal("t2");
-      return t2Total - t1Total;
+    function loadHistoryIntoTurn1() {
+      const history = loadHistory();
+      if (history[0]?.turno) {
+        applySnapshotToTurn("t1", history[0].turno);
+      }
     }
 
-    function isWithinLastDays(dateStr, days) {
-      if (!dateStr) return false;
-      const target = new Date(`${dateStr}T00:00:00`);
-      const today = new Date();
-      today.setHours(23, 59, 59, 999);
-      const diffMs = today - target;
-      const diffDays = diffMs / (1000 * 60 * 60 * 24);
-      return diffDays >= 0 && diffDays < days;
+    function renderHistoryList() {
+      const list = document.getElementById("historyList");
+      const history = loadHistory();
+
+      if (!history.length) {
+        list.innerHTML = `<div class="history-empty">Sem histórico ainda.</div>`;
+        return;
+      }
+
+      list.innerHTML = history.slice(0, 4).map((item) => `
+        <div class="history-item">
+          <div class="history-item-top">
+            <div class="history-user">${escapeHtml(item.submittedByName || "Sistema")}</div>
+            <div class="history-time">${escapeHtml(formatDateBR(item.fechamentoDate || ""))}</div>
+          </div>
+          <div class="history-item-grid">
+            <div class="history-mini-card">
+              <div class="history-mini-label">Total</div>
+              <div class="history-mini-value">${money(item.total || 0)}</div>
+            </div>
+            <div class="history-mini-card">
+              <div class="history-mini-label">Diferença</div>
+              <div class="history-mini-value ${(item.diff || 0) < 0 ? "red" : ""}">${money(item.diff || 0)}</div>
+            </div>
+          </div>
+        </div>
+      `).join("");
+
+      document.getElementById("historyInfo").textContent =
+        `Último fechamento: ${history[0]?.submittedByName || "Sistema"} • ${formatDateBR(history[0]?.fechamentoDate || "")}`;
     }
 
     function getBancoRecaFromSnapshot(snapshot) {
-      const entry = (snapshot.entries || []).find((item) => item.name === "Banco Reca");
-      return entry ? Number(entry.value || 0) : 0;
-    }
-
-    function openReportsMenu() {
-      document.getElementById("reportsMenu").classList.toggle("hidden");
-    }
-
-    function closeReportsMenu() {
-      document.getElementById("reportsMenu").classList.add("hidden");
-    }
-
-    function validateReportAccess() {
-      const code = prompt("Digite a senha 1520 para abrir o relatório:");
-      if (code === null) return false;
-      if (code !== REPORT_CODE) {
-        alert("Senha inválida.");
-        return false;
-      }
-      return true;
+      return (snapshot.entries || []).find((item) => item.name === "Banco Reca")?.value || 0;
     }
 
     function renderCashflowReport(days) {
       const history = loadHistory();
-      const filtered = history.filter((item) => isWithinLastDays(item.fechamentoDate, days));
+
+      const filtered = history.filter((item) => {
+        if (!item.fechamentoDate) return false;
+        const target = new Date(item.fechamentoDate + "T00:00:00");
+        const today = new Date();
+        today.setHours(23, 59, 59, 999);
+        const diffDays = (today - target) / (1000 * 60 * 60 * 24);
+        return diffDays >= 0 && diffDays < days;
+      });
 
       const totalBancoReca = filtered.reduce((acc, item) => acc + getBancoRecaFromSnapshot(item.turno || {}), 0);
       const totalPendentes = filtered.reduce((acc, item) => acc + Number(item.turno?.pendentesTotal || 0), 0);
@@ -2554,306 +2126,41 @@
       document.getElementById("reportLucro").textContent = money(lucroReal);
 
       const reportList = document.getElementById("reportList");
-
       if (!filtered.length) {
         reportList.innerHTML = `<div class="history-empty">Nenhum fechamento encontrado nesse período.</div>`;
       } else {
-        reportList.innerHTML = filtered.map((item) => {
-          const turno = item.turno || {};
-          const bancoReca = getBancoRecaFromSnapshot(turno);
-
-          return `
-            <div class="report-list-item">
-              <div class="report-list-top">
-                <div class="report-list-name">${escapeHtml(item.submittedByName || "Não identificado")}</div>
-                <div class="report-list-date">${escapeHtml(formatDateBR(item.fechamentoDate || ""))} • ${escapeHtml(formatDateTimeBR(item.submittedAt))}</div>
+        reportList.innerHTML = filtered.map((item) => `
+          <div class="report-list-item">
+            <div class="report-list-top">
+              <div class="report-list-name">${escapeHtml(item.submittedByName || "Sistema")}</div>
+              <div class="report-list-date">${escapeHtml(formatDateBR(item.fechamentoDate || ""))}</div>
+            </div>
+            <div class="report-list-lines">
+              <div class="report-line">
+                <span>Banco Reca</span>
+                <strong>${money(getBancoRecaFromSnapshot(item.turno || {}))}</strong>
               </div>
-              <div class="report-list-lines">
-                <div class="report-line">
-                  <span>Banco Reca</span>
-                  <strong>${money(bancoReca)}</strong>
-                </div>
-                <div class="report-line">
-                  <span>Pagos Pendentes</span>
-                  <strong>${negativeMoney(turno.pendentesTotal || 0)}</strong>
-                </div>
-                <div class="report-line">
-                  <span>Saídas de Caixa</span>
-                  <strong>${negativeMoney(turno.saidasTotal || 0)}</strong>
-                </div>
-                <div class="report-line">
-                  <span>Lucro real</span>
-                  <strong>${money(turno.saidasTotal || 0)}</strong>
-                </div>
+              <div class="report-line">
+                <span>Pagos Pendentes</span>
+                <strong>${negativeMoney(item.turno?.pendentesTotal || 0)}</strong>
+              </div>
+              <div class="report-line">
+                <span>Saídas</span>
+                <strong>${negativeMoney(item.turno?.saidasTotal || 0)}</strong>
+              </div>
+              <div class="report-line">
+                <span>Lucro real</span>
+                <strong>${money(item.turno?.saidasTotal || 0)}</strong>
               </div>
             </div>
-          `;
-        }).join("");
+          </div>
+        `).join("");
       }
 
       document.getElementById("reportScreen").classList.remove("hidden");
-      closeReportsMenu();
     }
 
-    function loadHistory() {
-      const raw = localStorage.getItem(HISTORY_STORAGE_KEY);
-      if (!raw) return [];
-      try {
-        const parsed = JSON.parse(raw);
-        return Array.isArray(parsed) ? parsed : [];
-      } catch {
-        return [];
-      }
-    }
-
-    function saveHistoryList(historyList) {
-      localStorage.setItem(HISTORY_STORAGE_KEY, JSON.stringify(historyList));
-    }
-
-    function saveTurn2AsHistory() {
-      if (!activeUser) {
-        alert("Faça login para fechar o turno.");
-        return;
-      }
-
-      const serialized = serializeTurn("t2");
-      serialized.diff = getCurrentDifference();
-
-      const historyList = loadHistory();
-      historyList.unshift(serialized);
-      const limitedHistory = historyList.slice(0, 100);
-      saveHistoryList(limitedHistory);
-
-      applySnapshotToTurn("t1", serialized.turno);
-      clearTurn("t2");
-      render();
-
-      alert(`Turno fechado com sucesso por ${activeUser.name}.`);
-    }
-
-    function deleteHistoryProtected() {
-      const code = prompt("Digite a senha 1520 para excluir o histórico:");
-      if (code === null) return;
-      if (code !== DELETE_HISTORY_CODE) {
-        alert("Senha inválida.");
-        return;
-      }
-
-      const confirmDelete = confirm("Tem certeza que deseja excluir todo o histórico automático de turno?");
-      if (!confirmDelete) return;
-
-      localStorage.removeItem(HISTORY_STORAGE_KEY);
-      clearTurn("t1");
-
-      const t1Date = document.getElementById("t1_data_fechamento");
-      if (t1Date) t1Date.value = getTodayDateInput();
-
-      closeHistoryModal();
-      render();
-
-      alert("Histórico automático excluído com sucesso.");
-    }
-
-    function loadHistoryMeta() {
-      const latest = loadHistory()[0];
-      if (!latest || !latest.submittedAt) return "Nenhum turno anterior salvo ainda.";
-
-      const dt = new Date(latest.submittedAt);
-      const fechamento = latest.fechamentoDate ? formatDateBR(latest.fechamentoDate) : "Sem data";
-      return `Último turno fechado por ${latest.submittedByName || "Não identificado"} • fechamento ${fechamento} • enviado em ${dt.toLocaleDateString("pt-BR")} às ${dt.toLocaleTimeString("pt-BR")}.`;
-    }
-
-    function updateHistoryInfo() {
-      const el = document.getElementById("historyInfo");
-      if (el) el.textContent = loadHistoryMeta();
-    }
-
-    function loadHistoryIntoTurn1() {
-      const latest = loadHistory()[0];
-      if (latest?.turno) applySnapshotToTurn("t1", latest.turno);
-    }
-
-    function renderHistoryList() {
-      const container = document.getElementById("historyList");
-      if (!container) return;
-
-      const history = loadHistory();
-
-      if (!history.length) {
-        container.innerHTML = `<div class="history-empty">Nenhum fechamento salvo ainda.</div>`;
-        return;
-      }
-
-      container.innerHTML = history.map((item, index) => {
-        const dt = item.submittedAt ? new Date(item.submittedAt) : null;
-        const timeText = dt ? dt.toLocaleTimeString("pt-BR", { hour: "2-digit", minute: "2-digit" }) : "Sem horário";
-        const fechamento = item.fechamentoDate ? formatDateBR(item.fechamentoDate) : "Sem data";
-
-        return `
-          <div class="history-item" data-history-index="${index}">
-            <div class="history-item-top">
-              <div class="history-user">${escapeHtml(item.submittedByName || "Não identificado")}</div>
-              <div class="history-time">${escapeHtml(fechamento)} • ${escapeHtml(timeText)}</div>
-            </div>
-            <div class="history-item-grid">
-              <div class="history-mini-card">
-                <div class="history-mini-label">Total</div>
-                <div class="history-mini-value">${money(item.total || 0)}</div>
-              </div>
-              <div class="history-mini-card">
-                <div class="history-mini-label">Diferença</div>
-                <div class="history-mini-value ${Number(item.diff || 0) < 0 ? "red" : ""}">
-                  ${money(item.diff || 0)}
-                </div>
-              </div>
-            </div>
-          </div>
-        `;
-      }).join("");
-
-      container.querySelectorAll("[data-history-index]").forEach((el) => {
-        el.addEventListener("click", () => {
-          openHistoryModal(Number(el.dataset.historyIndex));
-        });
-      });
-    }
-
-    function renderModalLines(list, negative = false) {
-      if (!list || !list.length) {
-        return `<div class="modal-line"><span>Sem registros</span><strong>$ 0,00</strong></div>`;
-      }
-
-      return list.map((item) => `
-        <div class="modal-line ${negative ? "negative" : ""}">
-          <span>${escapeHtml(item.name || "-")}</span>
-          <strong>${negative ? negativeMoney(item.value || 0) : money(item.value || 0)}</strong>
-        </div>
-      `).join("");
-    }
-
-    function openHistoryModal(index) {
-      const item = loadHistory()[index];
-      if (!item) return;
-
-      const modal = document.getElementById("historyModal");
-      const title = document.getElementById("historyModalTitle");
-      const sub = document.getElementById("historyModalSub");
-      const body = document.getElementById("historyModalBody");
-
-      const dt = item.submittedAt ? new Date(item.submittedAt) : null;
-      const dateText = dt ? `${dt.toLocaleDateString("pt-BR")} às ${dt.toLocaleTimeString("pt-BR")}` : "Sem data";
-      const fechamentoText = item.fechamentoDate ? formatDateBR(item.fechamentoDate) : "Sem data";
-
-      title.textContent = `Fechamento • ${item.submittedByName || "Não identificado"}`;
-      sub.textContent = `Data do fechamento: ${fechamentoText} • Enviado em: ${dateText}`;
-
-      const turno = item.turno || {};
-      const diffValue = Number(item.diff || 0);
-
-      body.innerHTML = `
-        <div class="modal-summary-grid">
-          <div class="modal-summary-card">
-            <div class="modal-summary-label">Total do fechamento</div>
-            <div class="modal-summary-value">${money(item.total || 0)}</div>
-          </div>
-          <div class="modal-summary-card">
-            <div class="modal-summary-label">Diferença</div>
-            <div class="modal-summary-value">${money(diffValue)}</div>
-          </div>
-          <div class="modal-summary-card">
-            <div class="modal-summary-label">Responsável</div>
-            <div class="modal-summary-value">${escapeHtml(item.submittedByName || "-")}</div>
-          </div>
-          <div class="modal-summary-card">
-            <div class="modal-summary-label">Data do fechamento</div>
-            <div class="modal-summary-value">${escapeHtml(fechamentoText)}</div>
-          </div>
-        </div>
-
-        <div class="modal-turnos-grid">
-          <div class="modal-panel">
-            <div class="modal-panel-head">
-              <h4>Entradas</h4>
-            </div>
-            <div class="modal-panel-body">
-              <div>
-                <div class="modal-block-title">Detalhamento</div>
-                ${renderModalLines(turno.entries || [], false)}
-              </div>
-              <div>
-                <div class="modal-block-title">Total de entradas</div>
-                <div class="modal-line">
-                  <span>Total</span>
-                  <strong>${money(turno.entradasTotal || 0)}</strong>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <div class="modal-panel">
-            <div class="modal-panel-head">
-              <h4>Saídas e Pendentes</h4>
-            </div>
-            <div class="modal-panel-body">
-              <div>
-                <div class="modal-block-title">Saídas de caixa</div>
-                ${renderModalLines(turno.outflows || [], true)}
-                <div class="modal-line negative">
-                  <span>Total de saídas</span>
-                  <strong>${negativeMoney(turno.saidasTotal || 0)}</strong>
-                </div>
-              </div>
-
-              <div>
-                <div class="modal-block-title">Pagos pendentes</div>
-                ${renderModalLines(turno.pendings || [], true)}
-                <div class="modal-line negative">
-                  <span>Total de pendentes</span>
-                  <strong>${negativeMoney(turno.pendentesTotal || 0)}</strong>
-                </div>
-              </div>
-
-              <div>
-                <div class="modal-block-title">Saldo líquido</div>
-                <div class="modal-line">
-                  <span>Total final</span>
-                  <strong>${money(turno.saldoLiquido || 0)}</strong>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      `;
-
-      modal.classList.remove("hidden");
-    }
-
-    function closeHistoryModal() {
-      document.getElementById("historyModal").classList.add("hidden");
-    }
-
-    function openClearModal() {
-      document.getElementById("clearModal").classList.remove("hidden");
-    }
-
-    function closeClearModal() {
-      document.getElementById("clearModal").classList.add("hidden");
-    }
-
-    function getEntryBreakdown(turno) {
-      const f = fieldsByTurn[turno];
-      return [
-        ["Banco Reca", getValue(f.banco)],
-        ["PPPoker (x400)", getValue(f.pppoker) * 400],
-        ["Suprema (x400)", getValue(f.suprema) * 400],
-        ["Buffalo", getValue(f.buffalo)],
-        ["Ganamos", getValue(f.ganamos)],
-        ["Carga de Fichas", getValue(f.cargas)],
-        ["Cargas F. Poker (x400)", getValue(f.cargasPoker) * 400]
-      ];
-    }
-
-    function getSummaryData() {
+    function buildPremiumPdfHtml() {
       const t1Entradas = getEntradasTotal("t1");
       const t1Saidas = getDynamicTotal("t1");
       const t1Pendentes = getPendingTotal("t1");
@@ -2864,282 +2171,52 @@
       const t2Pendentes = getPendingTotal("t2");
       const t2Total = t2Entradas - t2Saidas - t2Pendentes;
 
-      const diff = t2Total - t1Total;
-      const abs = Math.abs(diff);
-
-      return {
-        saldoDisponivel: getValue("t2_banco"),
-        t1Entradas, t1Saidas, t1Pendentes, t1Total,
-        t2Entradas, t2Saidas, t2Pendentes, t2Total,
-        diff, abs,
-        history: loadHistory()[0] || null,
-        t1Date: document.getElementById("t1_data_fechamento")?.value || "",
-        t2Date: document.getElementById("t2_data_fechamento")?.value || ""
-      };
-    }
-
-    function getDynamicRowsHtml(turno, type) {
-      const selector = type === "saida"
-        ? `#${turno}_dynamic_list .dynamic-row`
-        : `#${turno}_pending_list .dynamic-row`;
-
-      const rows = [...document.querySelectorAll(selector)];
-      if (!rows.length) return `<div class="pdf-item empty">Sem registros</div>`;
-
-      return rows.map((row) => {
-        const inputs = row.querySelectorAll("input");
-        const name = inputs[0]?.value?.trim() || (type === "saida" ? "Saída" : "Pendente");
-        const value = parseMoneyInput(inputs[1]?.value || "");
-        return `
-          <div class="pdf-item">
-            <span>${escapeHtml(name)}</span>
-            <strong>${negativeMoney(value)}</strong>
-          </div>
-        `;
-      }).join("");
-    }
-
-    function getEntriesHtml(turno) {
-      return getEntryBreakdown(turno).map(([label, value]) => `
-        <div class="pdf-item">
-          <span>${escapeHtml(label)}</span>
-          <strong>${money(value)}</strong>
-        </div>
-      `).join("");
-    }
-
-    function buildPremiumPdfHtml() {
-      const data = getSummaryData();
-      const now = new Date();
-      const nowText = `${now.toLocaleDateString("pt-BR")} • ${now.toLocaleTimeString("pt-BR")}`;
-
-      const savedBy = data.history?.submittedByName || activeUser?.name || "Não identificado";
-      const savedEmail = data.history?.submittedByEmail || activeUser?.email || "Não identificado";
-      const savedAt = data.history?.submittedAt
-        ? `${new Date(data.history.submittedAt).toLocaleDateString("pt-BR")} • ${new Date(data.history.submittedAt).toLocaleTimeString("pt-BR")}`
-        : "Sem fechamento salvo";
-      const fechamentoDate = data.t2Date ? formatDateBR(data.t2Date) : "Sem data";
-
       return `
         <!DOCTYPE html>
         <html lang="pt-BR">
         <head>
-          <meta charset="UTF-8" />
+          <meta charset="UTF-8">
           <title>Bank King PDF</title>
           <style>
-            * { box-sizing: border-box; }
             body {
-              margin: 0;
-              font-family: Inter, Arial, sans-serif;
-              background: #eef3fb;
-              color: #0f172a;
-              padding: 26px;
-            }
-            .sheet { max-width: 1120px; margin: 0 auto; }
-            .hero {
-              background: linear-gradient(135deg, #0b1831 0%, #163867 55%, #0b1831 100%);
-              color: white;
-              border-radius: 22px;
+              font-family: Arial, sans-serif;
               padding: 24px;
-              box-shadow: 0 18px 40px rgba(15, 23, 42, 0.18);
-              margin-bottom: 18px;
+              color: #0f172a;
             }
-            .hero-top {
-              display: flex;
-              justify-content: space-between;
-              align-items: center;
+            h1 { margin-bottom: 20px; }
+            .grid {
+              display: grid;
+              grid-template-columns: 1fr 1fr;
               gap: 16px;
-              margin-bottom: 22px;
             }
-            .brand { display: flex; align-items: center; gap: 12px; }
-            .logo {
-              width: 44px; height: 44px; border-radius: 50%;
-              border: 2px solid #f59e0b; color: #f59e0b;
-              display: flex; align-items: center; justify-content: center;
-              font-weight: 800;
+            .card {
+              border: 1px solid #cbd5e1;
+              border-radius: 12px;
+              padding: 16px;
             }
-            .title { font-size: 28px; font-weight: 800; letter-spacing: -0.03em; }
-            .date { font-size: 13px; color: #dbeafe; }
-            .hero-label {
-              font-size: 12px; text-transform: uppercase; letter-spacing: 0.08em;
-              color: #bfdbfe; margin-bottom: 8px;
-            }
-            .hero-value {
-              font-size: 44px; font-weight: 900; letter-spacing: -0.05em;
-            }
-            .meta {
-              margin-top: 16px; display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px;
-            }
-            .meta-box {
-              background: rgba(255,255,255,0.08);
-              border: 1px solid rgba(255,255,255,0.10);
-              border-radius: 14px;
-              padding: 12px;
-            }
-            .meta-label {
-              font-size: 11px; color: #bfdbfe; text-transform: uppercase;
-              letter-spacing: 0.06em; margin-bottom: 6px;
-            }
-            .meta-value { font-size: 13px; font-weight: 700; }
-            .grid4 {
-              display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; margin-bottom: 18px;
-            }
-            .stat {
-              background: white; border-radius: 18px; padding: 16px;
-              border: 1px solid #dbe4f0; box-shadow: 0 8px 18px rgba(15, 23, 42, 0.06);
-            }
-            .stat-label { font-size: 12px; color: #64748b; margin-bottom: 8px; }
-            .stat-value { font-size: 26px; font-weight: 800; letter-spacing: -0.04em; }
-            .layout { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
-            .panel {
-              background: white; border-radius: 20px; border: 1px solid #dbe4f0;
-              box-shadow: 0 8px 18px rgba(15, 23, 42, 0.06); overflow: hidden;
-            }
-            .panel-head {
-              padding: 16px 18px; border-bottom: 1px solid #e8eef7; background: #f8fbff;
-            }
-            .panel-title {
-              font-size: 18px; font-weight: 800; letter-spacing: -0.03em; margin: 0;
-            }
-            .panel-sub { margin-top: 4px; font-size: 12px; color: #64748b; }
-            .block { padding: 16px 18px; border-bottom: 1px solid #eef2f7; }
-            .block:last-child { border-bottom: 0; }
-            .block-title {
-              font-size: 13px; font-weight: 800; color: #334155;
-              text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 12px;
-            }
-            .pdf-item {
-              display: flex; justify-content: space-between; align-items: center;
-              gap: 12px; padding: 8px 0; border-bottom: 1px solid #f1f5f9; font-size: 13px;
-            }
-            .pdf-item:last-child { border-bottom: 0; }
-            .pdf-item strong { font-size: 13px; }
-            .empty { color: #94a3b8; font-style: italic; }
-            .neg { color: #dc2626; }
-            .pos { color: #16a34a; }
-            @media print {
-              body { background: white; padding: 0; }
-              .sheet { max-width: 100%; }
-              .panel, .stat, .hero { box-shadow: none; }
-            }
+            .label { font-size: 12px; color: #64748b; }
+            .value { font-size: 24px; font-weight: 700; margin-top: 6px; }
           </style>
         </head>
         <body>
-          <div class="sheet">
-            <section class="hero">
-              <div class="hero-top">
-                <div class="brand">
-                  <div class="logo">BK</div>
-                  <div>
-                    <div class="title">Bank King</div>
-                    <div class="date">Relatório premium de fechamento • ${escapeHtml(nowText)}</div>
-                  </div>
-                </div>
-              </div>
-
-              <div class="hero-label">Saldo Disponível</div>
-              <div class="hero-value">${money(data.saldoDisponivel)}</div>
-
-              <div class="meta">
-                <div class="meta-box">
-                  <div class="meta-label">Responsável</div>
-                  <div class="meta-value">${escapeHtml(savedBy)}</div>
-                </div>
-                <div class="meta-box">
-                  <div class="meta-label">Email</div>
-                  <div class="meta-value">${escapeHtml(savedEmail)}</div>
-                </div>
-                <div class="meta-box">
-                  <div class="meta-label">Data do fechamento</div>
-                  <div class="meta-value">${escapeHtml(fechamentoDate)}</div>
-                </div>
-                <div class="meta-box">
-                  <div class="meta-label">Enviado em</div>
-                  <div class="meta-value">${escapeHtml(savedAt)}</div>
-                </div>
-              </div>
-            </section>
-
-            <section class="grid4">
-              <div class="stat">
-                <div class="stat-label">Turno 1 • Saldo líquido</div>
-                <div class="stat-value">${money(data.t1Total)}</div>
-              </div>
-              <div class="stat">
-                <div class="stat-label">Turno 2 • Saldo líquido</div>
-                <div class="stat-value">${money(data.t2Total)}</div>
-              </div>
-              <div class="stat">
-                <div class="stat-label">Diferença absoluta</div>
-                <div class="stat-value">${money(data.abs)}</div>
-              </div>
-              <div class="stat">
-                <div class="stat-label">Resultado final</div>
-                <div class="stat-value ${data.diff < 0 ? "neg" : data.diff > 0 ? "pos" : ""}">${money(data.diff)}</div>
-              </div>
-            </section>
-
-            <section class="layout">
-              <article class="panel">
-                <div class="panel-head">
-                  <h2 class="panel-title">Turno 1</h2>
-                  <div class="panel-sub">Data do fechamento: ${escapeHtml(formatDateBR(data.t1Date || ""))}</div>
-                </div>
-
-                <div class="block">
-                  <div class="block-title">Entradas / material operacional</div>
-                  ${getEntriesHtml("t1")}
-                  <div class="pdf-item"><span>Total de entradas</span><strong>${money(data.t1Entradas)}</strong></div>
-                </div>
-
-                <div class="block">
-                  <div class="block-title">Saídas de caixa</div>
-                  ${getDynamicRowsHtml("t1", "saida")}
-                  <div class="pdf-item"><span>Total de saídas</span><strong class="neg">${negativeMoney(data.t1Saidas)}</strong></div>
-                </div>
-
-                <div class="block">
-                  <div class="block-title">Pagos pendentes</div>
-                  ${getDynamicRowsHtml("t1", "pendente")}
-                  <div class="pdf-item"><span>Total de pendentes</span><strong class="neg">${negativeMoney(data.t1Pendentes)}</strong></div>
-                </div>
-
-                <div class="block">
-                  <div class="block-title">Fechamento</div>
-                  <div class="pdf-item"><span>Saldo líquido</span><strong>${money(data.t1Total)}</strong></div>
-                </div>
-              </article>
-
-              <article class="panel">
-                <div class="panel-head">
-                  <h2 class="panel-title">Turno 2</h2>
-                  <div class="panel-sub">Data do fechamento: ${escapeHtml(formatDateBR(data.t2Date || ""))}</div>
-                </div>
-
-                <div class="block">
-                  <div class="block-title">Entradas / material operacional</div>
-                  ${getEntriesHtml("t2")}
-                  <div class="pdf-item"><span>Total de entradas</span><strong>${money(data.t2Entradas)}</strong></div>
-                </div>
-
-                <div class="block">
-                  <div class="block-title">Saídas de caixa</div>
-                  ${getDynamicRowsHtml("t2", "saida")}
-                  <div class="pdf-item"><span>Total de saídas</span><strong class="neg">${negativeMoney(data.t2Saidas)}</strong></div>
-                </div>
-
-                <div class="block">
-                  <div class="block-title">Pagos pendentes</div>
-                  ${getDynamicRowsHtml("t2", "pendente")}
-                  <div class="pdf-item"><span>Total de pendentes</span><strong class="neg">${negativeMoney(data.t2Pendentes)}</strong></div>
-                </div>
-
-                <div class="block">
-                  <div class="block-title">Fechamento</div>
-                  <div class="pdf-item"><span>Saldo líquido</span><strong>${money(data.t2Total)}</strong></div>
-                </div>
-              </article>
-            </section>
+          <h1>Bank King • Fechamento</h1>
+          <div class="grid">
+            <div class="card">
+              <div class="label">Turno 1</div>
+              <div class="value">${money(t1Total)}</div>
+            </div>
+            <div class="card">
+              <div class="label">Turno 2</div>
+              <div class="value">${money(t2Total)}</div>
+            </div>
+            <div class="card">
+              <div class="label">Entradas Totais</div>
+              <div class="value">${money(t1Entradas + t2Entradas)}</div>
+            </div>
+            <div class="card">
+              <div class="label">Saídas Totais</div>
+              <div class="value">${money(t1Saidas + t2Saidas + t1Pendentes + t2Pendentes)}</div>
+            </div>
           </div>
         </body>
         </html>
@@ -3147,10 +2224,10 @@
     }
 
     function exportToPdfProtected() {
-      const code = prompt("Digite o código para autorizar exportar em PDF:");
+      const code = prompt("Digite a senha para exportar PDF:");
       if (code === null) return;
       if (code !== PDF_CODE) {
-        alert("Código inválido.");
+        alert("Senha incorreta.");
         return;
       }
 
@@ -3167,12 +2244,8 @@
       printWindow.onload = () => printWindow.print();
     }
 
-    function limparTudo() {
-      openClearModal();
-    }
-
     function render() {
-      ensureTurnDates();
+      ensureDates();
 
       const t1Entradas = getEntradasTotal("t1");
       const t1Saidas = getDynamicTotal("t1");
@@ -3184,10 +2257,10 @@
       const t2Pendentes = getPendingTotal("t2");
       const t2Total = t2Entradas - t2Saidas - t2Pendentes;
 
-      const diff = t2Total - t1Total;
-      const abs = Math.abs(diff);
+      const totalEntradas = t1Entradas + t2Entradas;
+      const totalSaidas = t1Saidas + t1Pendentes + t2Saidas + t2Pendentes;
+      const lucro = totalEntradas - totalSaidas;
 
-      document.getElementById("saldoContaDestaque").textContent = displayMoney(getValue("t2_banco"));
       document.getElementById("t1_entradas_total").textContent = money(t1Entradas);
       document.getElementById("t1_saidas_total").textContent = negativeMoney(t1Saidas);
       document.getElementById("t1_pendentes_total").textContent = negativeMoney(t1Pendentes);
@@ -3195,109 +2268,127 @@
       document.getElementById("t2_saidas_total").textContent = negativeMoney(t2Saidas);
       document.getElementById("t2_pendentes_total").textContent = negativeMoney(t2Pendentes);
 
-      document.getElementById("totalTurno1").textContent = money(t1Total);
       document.getElementById("turno1InlineTotal").textContent = money(t1Total);
-      document.getElementById("totalTurno2").textContent = money(t2Total);
       document.getElementById("turno2InlineTotal").textContent = money(t2Total);
-      document.getElementById("diferencaAbs").textContent = money(abs);
-      document.getElementById("resultadoFinal").textContent = money(diff);
 
-      updateEyeIcon();
-      setResultStyle(diff);
-      updateHistoryInfo();
+      document.getElementById("totalEntradas").textContent = money(totalEntradas);
+      document.getElementById("totalSaidas").textContent = money(totalSaidas);
+      document.getElementById("lucroTotal").textContent = money(lucro);
+
+      document.getElementById("bankValue").textContent = balanceVisible ? money(lucro) : "••••••";
+      updateStatusPill(lucro);
       renderHistoryList();
     }
 
-    document.getElementById("closeHistoryModal").addEventListener("click", closeHistoryModal);
-    document.getElementById("historyModalBackdrop").addEventListener("click", closeHistoryModal);
+    document.addEventListener("DOMContentLoaded", () => {
+      const staticMoneyInputs = [
+        "t1_banco", "t1_pppoker", "t1_suprema", "t1_buffalo", "t1_ganamos", "t1_cargas", "t1_cargas_poker",
+        "t2_banco", "t2_pppoker", "t2_suprema", "t2_buffalo", "t2_ganamos", "t2_cargas", "t2_cargas_poker"
+      ];
 
-    document.getElementById("deleteHistoryBtn").addEventListener("click", deleteHistoryProtected);
-
-    document.getElementById("limpar").addEventListener("click", limparTudo);
-    document.getElementById("fecharTurno").addEventListener("click", saveTurn2AsHistory);
-    document.getElementById("exportarPdf").addEventListener("click", exportToPdfProtected);
-    document.getElementById("calcular").addEventListener("click", render);
-
-    document.querySelectorAll('.fields input[type="text"]').forEach((input) => {
-      attachMoneyMask(input);
-    });
-
-    document.querySelectorAll("[data-add-row]").forEach((btn) => {
-      btn.addEventListener("click", () => createDynamicRow(btn.dataset.addRow));
-    });
-
-    document.querySelectorAll("[data-add-pending]").forEach((btn) => {
-      btn.addEventListener("click", () => createPendingRow(btn.dataset.addPending));
-    });
-
-    document.getElementById("toggleBalance").addEventListener("click", () => {
-      balanceVisible = !balanceVisible;
-      render();
-    });
-
-    document.getElementById("menuToggle").addEventListener("click", openReportsMenu);
-
-    document.getElementById("closeReportScreen").addEventListener("click", () => {
-      document.getElementById("reportScreen").classList.add("hidden");
-    });
-
-    document.querySelectorAll("[data-report-range]").forEach((btn) => {
-      btn.addEventListener("click", () => {
-        if (!validateReportAccess()) return;
-        renderCashflowReport(Number(btn.dataset.reportRange));
+      staticMoneyInputs.forEach((id) => {
+        const input = document.getElementById(id);
+        if (input) attachMoneyMask(input);
       });
-    });
 
-    document.addEventListener("click", (e) => {
-      const menu = document.getElementById("reportsMenu");
-      const toggle = document.getElementById("menuToggle");
+      document.querySelectorAll("[data-add-row]").forEach((btn) => {
+        btn.addEventListener("click", () => createDynamicRow(btn.dataset.addRow));
+      });
 
-      if (!menu.classList.contains("hidden")) {
-        const clickedInsideMenu = menu.contains(e.target);
-        const clickedToggle = toggle.contains(e.target);
-        if (!clickedInsideMenu && !clickedToggle) closeReportsMenu();
+      document.querySelectorAll("[data-add-pending]").forEach((btn) => {
+        btn.addEventListener("click", () => createPendingRow(btn.dataset.addPending));
+      });
+
+      document.getElementById("toggleBalance").addEventListener("click", () => {
+        balanceVisible = !balanceVisible;
+        render();
+      });
+
+      document.getElementById("calcular").addEventListener("click", render);
+
+      document.getElementById("limpar").addEventListener("click", () => {
+        if (!confirm("Deseja limpar apenas o Turno 2 atual?")) return;
+        clearTurn("t2");
+        render();
+      });
+
+      document.getElementById("fecharTurno").addEventListener("click", () => {
+        const item = serializeTurn("t2");
+        saveHistoryItem(item);
+        loadHistoryIntoTurn1();
+        clearTurn("t2");
+        render();
+        alert("Turno fechado com sucesso.");
+      });
+
+      document.getElementById("exportarPdf").addEventListener("click", exportToPdfProtected);
+
+      document.getElementById("closeReportScreen").addEventListener("click", () => {
+        document.getElementById("reportScreen").classList.add("hidden");
+      });
+
+      document.getElementById("menuToggle").addEventListener("click", () => {
+        document.getElementById("reportsMenu").classList.toggle("hidden");
+      });
+
+document.querySelectorAll("[data-report-range]").forEach((btn) => {
+  btn.addEventListener("click", () => {
+    const senha = prompt("Digite código interno:");
+    if (senha === null) return;
+
+    if (senha !== REPORT_CODE) {
+      alert("Código interno incorreto.");
+      return;
+    }
+
+    renderCashflowReport(Number(btn.dataset.reportRange));
+    document.getElementById("reportsMenu").classList.add("hidden");
+  });
+});
+
+document.getElementById("deleteHistoryBtn").addEventListener("click", () => {
+  const senha = prompt("Digite código interno:");
+  if (senha === null) return;
+
+  if (senha !== "1520") {
+    alert("Código interno incorreto.");
+    return;
+  }
+
+  if (!confirm("Deseja realmente apagar todo o histórico?")) return;
+
+  localStorage.removeItem(HISTORY_STORAGE_KEY);
+  render();
+});
+      document.getElementById("logoutBtn").addEventListener("click", logout);
+
+      document.getElementById("loginForm").addEventListener("submit", (e) => {
+        e.preventDefault();
+
+        const email = document.getElementById("loginEmail").value.trim().toLowerCase();
+        const password = document.getElementById("loginPassword").value;
+        const remember = document.getElementById("rememberLogin").checked;
+
+        if (email !== LOGIN_DEMO_EMAIL || password !== LOGIN_DEMO_PASSWORD) {
+          alert("Email ou senha incorretos.");
+          return;
+        }
+
+        saveRememberedLogin(remember, email);
+        const user = { name: "Bruno", email };
+        saveActiveUser(user);
+        showApp(user);
+      });
+
+      const rememberedUser = loadActiveUser();
+      if (rememberedUser && getRememberedLogin()) {
+        showApp(rememberedUser);
+      } else {
+        authScreen.classList.remove("hidden");
+        appShell.classList.add("hidden");
+        preloadLogin();
       }
     });
-
-    document.getElementById("t1_data_fechamento").addEventListener("change", render);
-    document.getElementById("t2_data_fechamento").addEventListener("change", render);
-
-    document.getElementById("closeClearModal").addEventListener("click", closeClearModal);
-    document.getElementById("clearModalBackdrop").addEventListener("click", closeClearModal);
-
-    document.getElementById("clearTurnoAtualBtn").addEventListener("click", () => {
-      limparTurnoIndividual("t2");
-      closeClearModal();
-      render();
-    });
-
-    document.getElementById("clearTurnoAnteriorBtn").addEventListener("click", () => {
-      limparTurnoIndividual("t1");
-      closeClearModal();
-      render();
-    });
-
-    document.getElementById("clearTodosBtn").addEventListener("click", () => {
-      limparTurnoIndividual("t1");
-      limparTurnoIndividual("t2");
-      localStorage.removeItem(HISTORY_STORAGE_KEY);
-      closeClearModal();
-      render();
-    });
-
-    bindSessionActivityEvents();
-
-    const bootUser = getRememberLogin() ? loadActiveUser() : null;
-    preloadRememberedLogin();
-
-    if (bootUser && !isSessionExpired()) {
-      activeUser = bootUser;
-      showApp();
-    } else {
-      clearActiveUserStorage();
-      clearSessionActivity();
-      switchAuthTab("login");
-    }
   </script>
 </body>
 </html>
