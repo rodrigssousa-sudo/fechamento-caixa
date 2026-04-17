@@ -1,6 +1,3 @@
-CONFERIR QUEBRA 
-
-
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
@@ -553,131 +550,6 @@ CONFERIR QUEBRA
       font-weight: 800;
     }
 
-    .reports-menu {
-      position: fixed;
-      top: 76px;
-      left: 14px;
-      z-index: 130;
-      width: calc(100% - 28px);
-      max-width: 320px;
-      border-radius: 18px;
-      border: 1px solid rgba(148,163,184,.12);
-      background: linear-gradient(180deg, rgba(10,18,34,.98), rgba(10,18,34,1));
-      box-shadow: 0 24px 60px rgba(0,0,0,.36);
-      padding: 10px;
-    }
-
-    .reports-menu-item {
-      width: 100%;
-      min-height: 46px;
-      border-radius: 14px;
-      border: 1px solid rgba(148,163,184,.08);
-      background: rgba(255,255,255,.03);
-      color: #eaf2ff;
-      text-align: left;
-      font-size: 14px;
-      font-weight: 800;
-      padding: 0 14px;
-      margin-bottom: 8px;
-    }
-
-    .reports-menu-item:last-child {
-      margin-bottom: 0;
-    }
-
-    .report-screen {
-      width: 100%;
-      max-width: 1180px;
-      margin: 0 auto 14px;
-      padding: 16px;
-      border-radius: 20px;
-      border: 1px solid rgba(148,163,184,.12);
-      background: linear-gradient(180deg, rgba(255,255,255,.025), rgba(255,255,255,.01));
-      box-shadow: var(--shadow);
-    }
-
-    .report-head h3 {
-      margin: 0;
-      font-size: 18px;
-      letter-spacing: -.03em;
-    }
-
-    .report-close-btn {
-      min-height: 38px;
-      padding: 0 14px;
-      border-radius: 12px;
-      background: rgba(239,68,68,.12);
-      color: #ffb3b3;
-      border: 1px solid rgba(239,68,68,.20);
-      font-size: 12px;
-      font-weight: 800;
-    }
-
-    .report-grid {
-      display: grid;
-      gap: 10px;
-      grid-template-columns: 1fr;
-    }
-
-    .report-card {
-      padding: 14px;
-      border-radius: 16px;
-      border: 1px solid rgba(148,163,184,.10);
-      background: rgba(255,255,255,.03);
-    }
-
-    .report-card-label {
-      font-size: 12px;
-      color: var(--muted);
-      margin-bottom: 8px;
-    }
-
-    .report-card-value {
-      font-size: 24px;
-      font-weight: 900;
-      letter-spacing: -.03em;
-    }
-
-    .report-card-value.red { color: #ffb3b3; }
-    .report-card-value.green { color: #b8ffd1; }
-
-    .report-list {
-      margin-top: 14px;
-      display: grid;
-      gap: 10px;
-    }
-
-    .report-list-item {
-      padding: 12px;
-      border-radius: 16px;
-      border: 1px solid rgba(148,163,184,.10);
-      background: rgba(255,255,255,.02);
-    }
-
-    .report-list-name {
-      font-size: 13px;
-      font-weight: 800;
-      color: #eaf2ff;
-    }
-
-    .report-list-date {
-      font-size: 12px;
-      color: var(--muted);
-    }
-
-    .report-list-lines {
-      display: grid;
-      gap: 6px;
-    }
-
-    .report-line {
-      display: flex;
-      justify-content: space-between;
-      gap: 10px;
-      font-size: 12px;
-      color: #dbeafe;
-    }
-
     @media (max-width: 700px) {
       .history-item-grid {
         grid-template-columns: 1fr;
@@ -700,10 +572,6 @@ CONFERIR QUEBRA
 
       .metrics {
         grid-template-columns: repeat(3, 1fr);
-      }
-
-      .report-grid {
-        grid-template-columns: repeat(4, 1fr);
       }
     }
   </style>
@@ -783,156 +651,190 @@ CONFERIR QUEBRA
               <button id="toggleBalance" class="hide-balance-btn" type="button">👁</button>
             </div>
             <div id="bankValue" class="bank-value">R$ 0,00</div>
-</div>
-
-<div class="metrics">
-  <div class="metric">
-    <div class="metric-label">Entradas</div>
-    <div id="totalEntradas" class="metric-value green">R$ 0,00</div>
-  </div>
-
-  <div class="metric">
-    <div class="metric-label">Saídas</div>
-    <div id="totalSaidas" class="metric-value red">R$ 0,00</div>
-  </div>
-
-  <div class="metric">
-    <div class="metric-label">Lucro / Prejuízo</div>
-    <div id="lucroTotal" class="metric-value blue">R$ 0,00</div>
-  </div>
-</div>
-</article>
-
-<article class="history-card">
-  <div class="history-card-top">
-    <div>
-      <div class="history-card-title">Histórico automático do turno</div>
-      <div id="historyInfo" class="history-card-text">
-        Nenhum turno anterior salvo ainda.
-      </div>
-    </div>
-  </div>
-
-  <div id="historyList" class="history-list"></div>
-
-  <button id="deleteHistoryBtn" class="danger-mini-btn" type="button" style="margin-top:10px; width:100%;">
-    🔴 Excluir Histórico
-  </button>
-</article>
-</section>
-
-<script>
-const HISTORY_STORAGE_KEY = "bank_history";
-
-let balanceVisible = true;
-
-function formatCurrency(value) {
-  return value.toLocaleString("pt-BR", {
-    style: "currency",
-    currency: "BRL"
-  });
-}
-
-function render() {
-  const history = JSON.parse(localStorage.getItem(HISTORY_STORAGE_KEY)) || [];
-
-  let entradas = 0;
-  let saidas = 0;
-
-  history.forEach(item => {
-    if (item.value >= 0) {
-      entradas += item.value;
-    } else {
-      saidas += Math.abs(item.value);
-    }
-  });
-
-  const lucro = entradas - saidas;
-
-  document.getElementById("totalEntradas").textContent = formatCurrency(entradas);
-  document.getElementById("totalSaidas").textContent = formatCurrency(saidas);
-  document.getElementById("lucroTotal").textContent = formatCurrency(lucro);
-
-  document.getElementById("bankValue").textContent = balanceVisible
-    ? formatCurrency(lucro)
-    : "••••••";
-
-  const pill = document.getElementById("statusPill");
-
-  if (lucro > 0) {
-    pill.textContent = "Lucro";
-    pill.className = "pill positive";
-  } else if (lucro < 0) {
-    pill.textContent = "Prejuízo";
-    pill.className = "pill negative";
-  } else {
-    pill.textContent = "Sem diferença";
-    pill.className = "pill neutral";
-  }
-
-  loadHistory();
-}
-
-function loadHistory() {
-  const history = JSON.parse(localStorage.getItem(HISTORY_STORAGE_KEY)) || [];
-  const list = document.getElementById("historyList");
-
-  list.innerHTML = "";
-
-  if (history.length === 0) {
-    list.innerHTML = `<div class="history-empty">Sem histórico ainda.</div>`;
-    return;
-  }
-
-  history.slice().reverse().forEach(item => {
-    const div = document.createElement("div");
-    div.className = "history-item";
-
-    div.innerHTML = `
-      <div class="history-item-top">
-        <div class="history-user">${item.user || "Sistema"}</div>
-        <div class="history-time">${item.date}</div>
-      </div>
-      <div class="history-item-grid">
-        <div class="history-mini-card">
-          <div class="history-mini-label">Valor</div>
-          <div class="history-mini-value ${item.value < 0 ? 'red' : ''}">
-            ${formatCurrency(item.value)}
           </div>
-        </div>
-      </div>
-    `;
 
-    list.appendChild(div);
-  });
-}
+          <div class="metrics">
+            <div class="metric">
+              <div class="metric-label">Entradas</div>
+              <div id="totalEntradas" class="metric-value green">R$ 0,00</div>
+            </div>
 
-document.getElementById("toggleBalance").addEventListener("click", () => {
-  balanceVisible = !balanceVisible;
-  render();
-});
+            <div class="metric">
+              <div class="metric-label">Saídas</div>
+              <div id="totalSaidas" class="metric-value red">R$ 0,00</div>
+            </div>
 
-document.getElementById("deleteHistoryBtn").addEventListener("click", () => {
-  const senha = prompt("Digite a senha para excluir:");
+            <div class="metric">
+              <div class="metric-label">Lucro / Prejuízo</div>
+              <div id="lucroTotal" class="metric-value blue">R$ 0,00</div>
+            </div>
+          </div>
+        </article>
 
-  if (senha === null) return;
+        <article class="history-card">
+          <div class="history-card-top">
+            <div>
+              <div class="history-card-title">Histórico automático do turno</div>
+              <div id="historyInfo" class="history-card-text">
+                Nenhum turno anterior salvo ainda.
+              </div>
+            </div>
+          </div>
 
-  if (senha !== "1520") {
-    alert("Senha incorreta.");
-    return;
-  }
+          <div id="historyList" class="history-list"></div>
 
-  if (!confirm("Deseja realmente apagar tudo?")) return;
-
-  localStorage.removeItem(HISTORY_STORAGE_KEY);
-  render();
-});
-
-render();
-</script>
-
+          <button id="deleteHistoryBtn" class="danger-mini-btn" type="button" style="margin-top:10px; width:100%;">
+            🔴 Excluir Histórico
+          </button>
+        </article>
+      </section>
     </main>
   </div>
+
+  <script>
+    const HISTORY_STORAGE_KEY = "bank_history";
+    const LOGIN_EMAIL = "admin@bankking.com";
+    const LOGIN_PASSWORD = "1520";
+
+    let balanceVisible = true;
+
+    function formatCurrency(value) {
+      return Number(value).toLocaleString("pt-BR", {
+        style: "currency",
+        currency: "BRL"
+      });
+    }
+
+    function render() {
+      const history = JSON.parse(localStorage.getItem(HISTORY_STORAGE_KEY)) || [];
+
+      let entradas = 0;
+      let saidas = 0;
+
+      history.forEach(item => {
+        const value = Number(item.value || 0);
+        if (value >= 0) {
+          entradas += value;
+        } else {
+          saidas += Math.abs(value);
+        }
+      });
+
+      const lucro = entradas - saidas;
+
+      document.getElementById("totalEntradas").textContent = formatCurrency(entradas);
+      document.getElementById("totalSaidas").textContent = formatCurrency(saidas);
+      document.getElementById("lucroTotal").textContent = formatCurrency(lucro);
+
+      document.getElementById("bankValue").textContent = balanceVisible
+        ? formatCurrency(lucro)
+        : "••••••";
+
+      const pill = document.getElementById("statusPill");
+
+      if (lucro > 0) {
+        pill.textContent = "Lucro";
+        pill.className = "pill positive";
+      } else if (lucro < 0) {
+        pill.textContent = "Prejuízo";
+        pill.className = "pill negative";
+      } else {
+        pill.textContent = "Sem diferença";
+        pill.className = "pill neutral";
+      }
+
+      loadHistory();
+    }
+
+    function loadHistory() {
+      const history = JSON.parse(localStorage.getItem(HISTORY_STORAGE_KEY)) || [];
+      const list = document.getElementById("historyList");
+      const info = document.getElementById("historyInfo");
+
+      list.innerHTML = "";
+
+      if (history.length === 0) {
+        info.textContent = "Nenhum turno anterior salvo ainda.";
+        list.innerHTML = `<div class="history-empty">Sem histórico ainda.</div>`;
+        return;
+      }
+
+      info.textContent = `${history.length} registro(s) encontrado(s).`;
+
+      history.slice().reverse().forEach(item => {
+        const value = Number(item.value || 0);
+
+        const div = document.createElement("div");
+        div.className = "history-item";
+
+        div.innerHTML = `
+          <div class="history-item-top">
+            <div class="history-user">${item.user || "Sistema"}</div>
+            <div class="history-time">${item.date || "-"}</div>
+          </div>
+          <div class="history-item-grid">
+            <div class="history-mini-card">
+              <div class="history-mini-label">Valor</div>
+              <div class="history-mini-value ${value < 0 ? 'red' : ''}">
+                ${formatCurrency(value)}
+              </div>
+            </div>
+          </div>
+        `;
+
+        list.appendChild(div);
+      });
+    }
+
+    function showApp() {
+      document.getElementById("authScreen").classList.add("hidden");
+      document.getElementById("appShell").classList.remove("hidden");
+      render();
+    }
+
+    document.getElementById("loginForm").addEventListener("submit", (e) => {
+      e.preventDefault();
+
+      const email = document.getElementById("loginEmail").value.trim();
+      const password = document.getElementById("loginPassword").value.trim();
+
+      if (email !== LOGIN_EMAIL || password !== LOGIN_PASSWORD) {
+        alert("Email ou senha inválidos.");
+        return;
+      }
+
+      document.getElementById("activeUserName").textContent = "Bruno";
+      document.getElementById("activeUserEmail").textContent = email;
+
+      showApp();
+    });
+
+    document.getElementById("toggleBalance").addEventListener("click", () => {
+      balanceVisible = !balanceVisible;
+      render();
+    });
+
+    document.getElementById("deleteHistoryBtn").addEventListener("click", () => {
+      const senha = prompt("Digite a senha para excluir:");
+
+      if (senha === null) return;
+
+      if (senha !== "1520") {
+        alert("Senha incorreta.");
+        return;
+      }
+
+      if (!confirm("Deseja realmente apagar tudo?")) return;
+
+      localStorage.removeItem(HISTORY_STORAGE_KEY);
+      render();
+    });
+
+    document.getElementById("logoutBtn").addEventListener("click", () => {
+      document.getElementById("appShell").classList.add("hidden");
+      document.getElementById("authScreen").classList.remove("hidden");
+      document.getElementById("loginForm").reset();
+    });
+  </script>
 </body>
 </html>
-
