@@ -311,14 +311,15 @@
       box-shadow:var(--shadow);
     }
 
-    .summary-card{padding:16px;}
-
-    .summary-head h2{
-      margin:0;
-      font-size:17px;
-      letter-spacing:-.02em;
-    }
-
+.summary-card{
+  padding:20px;
+  border-radius:22px;
+  background:
+    linear-gradient(180deg, rgba(255,255,255,.03), rgba(255,255,255,.015)),
+    linear-gradient(135deg, rgba(8,18,38,.96), rgba(7,15,30,.98));
+  border:1px solid rgba(148,163,184,.08);
+  box-shadow:0 20px 50px rgba(0,0,0,.35);
+}
     .pill{
       display:inline-flex;
       align-items:center;
@@ -335,19 +336,20 @@
     .pill.negative{color:#ffb3b3; background:rgba(239,68,68,.12); border-color:rgba(239,68,68,.22);}
     .pill.neutral{color:#ffe29c; background:rgba(245,158,11,.12); border-color:rgba(245,158,11,.22);}
 
-    .bank-card{
-      position:relative;
-      overflow:hidden;
-      border-radius:22px;
-      padding:18px;
-      margin-bottom:14px;
-      background:
-        radial-gradient(circle at top right, rgba(96,165,250,.18), transparent 30%),
-        linear-gradient(135deg, rgba(9,20,42,1) 0%, rgba(13,32,67,1) 55%, rgba(8,16,30,1) 100%);
-      border:1px solid rgba(96,165,250,.14);
-      box-shadow:0 18px 40px rgba(0,0,0,.35);
-    }
-
+  .bank-card{
+  position:relative;
+  overflow:hidden;
+  border-radius:24px;
+  padding:22px;
+  margin-bottom:16px;
+  background:
+    radial-gradient(circle at top right, rgba(96,165,250,.22), transparent 30%),
+    linear-gradient(135deg, #07152e 0%, #0c2a55 55%, #06101f 100%);
+  border:1px solid rgba(96,165,250,.18);
+  box-shadow:
+    0 25px 60px rgba(0,0,0,.45),
+    inset 0 1px 0 rgba(255,255,255,.03);
+}
     .bank-label{
       font-size:12px;
       font-weight:800;
@@ -375,28 +377,30 @@
       transform:scale(1.05);
     }
 
-    .bank-value{
-      font-size:clamp(38px, 8vw, 68px);
-      line-height:1;
-      letter-spacing:-.05em;
-      font-weight:900;
-      color:#fff;
-      text-shadow:0 0 26px rgba(96,165,250,.22);
-    }
-
+ .bank-value{
+  font-size:clamp(42px, 8vw, 72px);
+  font-weight:900;
+  letter-spacing:-.06em;
+  color:#ffffff;
+  margin-top:10px;
+  text-shadow:
+    0 0 30px rgba(96,165,250,.25),
+    0 0 60px rgba(96,165,250,.10);
+}
     .metrics{
       display:grid;
       gap:10px;
       grid-template-columns:1fr;
     }
 
-    .metric{
-      border-radius:18px;
-      padding:14px;
-      background:linear-gradient(180deg, rgba(255,255,255,.025), rgba(255,255,255,.01));
-      border:1px solid rgba(148,163,184,.10);
-    }
-
+.metric{
+  border-radius:18px;
+  padding:16px;
+  background:
+    linear-gradient(180deg, rgba(255,255,255,.035), rgba(255,255,255,.015));
+  border:1px solid rgba(148,163,184,.08);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.02);
+}
     .metric-label{
       color:var(--muted);
       font-size:12px;
@@ -415,14 +419,13 @@
     .metric-value.green{color:#b8ffd1;}
     .metric-value.red{color:#ffb3b3;}
 
-    .history-card{
-      padding:14px;
-      border-radius:16px;
-      border:1px solid rgba(96,165,250,.12);
-      background:rgba(255,255,255,.02);
-      margin-top:14px;
-    }
-
+.history-card{
+  padding:12px 14px;
+  border-radius:16px;
+  border:1px solid rgba(148,163,184,.06);
+  background:rgba(255,255,255,.015);
+  margin-top:10px;
+}
     .history-card-top{
       display:flex;
       justify-content:space-between;
@@ -456,12 +459,15 @@
       white-space:nowrap;
     }
 
-    .history-list{
-      display:grid;
-      gap:10px;
-      margin-top:12px;
-    }
+   .history-list{
+  display:grid;
+  gap:10px;
+  margin-top:12px;
+}
 
+.history-list.hidden{
+  display:none;
+}
     .history-item{
       padding:14px;
       border-radius:16px;
@@ -1446,21 +1452,29 @@
           </div>
         </article>
 
-        <article class="history-card">
-          <div class="history-card-top">
-            <div>
-              <div class="history-card-title">Histórico automático</div>
-              <div id="historyInfo" class="history-card-text">
-                Nenhum turno anterior salvo ainda.
-              </div>
-            </div>
-          </div>
-          <div id="historyList" class="history-list"></div>
+<article class="history-card">
 
-          <button id="deleteHistoryBtn" class="danger-mini-btn" type="button" style="margin-top:10px; width:100%;">
-            🔴 Excluir Histórico
-          </button>
-        </article>
+  <div class="history-card-top">
+    <div>
+      <div class="history-card-title">Histórico automático</div>
+      <div id="historyInfo" class="history-card-text">
+        Nenhum turno anterior salvo ainda.
+      </div>
+    </div>
+
+    <button id="toggleHistoryBtn" class="history-toggle-btn" type="button">
+      Ver
+    </button>
+  </div>
+
+  <!-- 🔥 AQUI ESTÁ O MAIS IMPORTANTE -->
+  <div id="historyList" class="history-list hidden"></div>
+
+  <button id="deleteHistoryBtn" class="danger-mini-btn" type="button" style="margin-top:10px; width:100%;">
+    🔴 Excluir Histórico
+  </button>
+
+</article>
       </section>
 
       <section class="turnos">
@@ -1721,10 +1735,13 @@ onAuthStateChanged(auth, (user) => {
     saveActiveUser(userData);
     showApp(userData);
   } else {
-    console.log("Usuário não logado");
+    removeActiveUser();
+    localStorage.removeItem(SESSION_LAST_ACTIVITY_KEY);
+    authScreen.classList.remove("hidden");
+    appShell.classList.add("hidden");
   }
-});
-    const PDF_CODE = "1520";
+});    
+const PDF_CODE = "1520";
     const REPORT_CODE = "1520";
     const RESET_CODE = "4br1l#2o26";
     const DELETE_HISTORY_CODE = "1520";
@@ -1745,16 +1762,17 @@ onAuthStateChanged(auth, (user) => {
     const loginForm = document.getElementById("loginForm");
     const registerForm = document.getElementById("registerForm");
     const forgotPasswordForm = document.getElementById("forgotPasswordForm");
-    const rememberLoginCheckbox = document.getElementById("rememberLogin");
+const rememberLoginCheckbox = document.getElementById("rememberLogin");
 
-    let balanceVisible = true;
-    let sessionWatcher = null;
-    let historyUnsubscribe = null;
-    let historyRealtimeStarted = false;
-    let historyCache = [];
+let balanceVisible = true;
+let sessionWatcher = null;
+let historyUnsubscribe = null;
+let historyRealtimeStarted = false;
+let historyCache = [];
+let activeHistoryIndex = null;
+let historyVisible = false; // 👈 CONTROLE DO HISTÓRICO (NOVO)
 
-    function money(value){
-      return `$ ${Number(value || 0).toLocaleString("pt-BR", {
+function money(value){      return `$ ${Number(value || 0).toLocaleString("pt-BR", {
         minimumFractionDigits: 2,
         maximumFractionDigits: 2
       })}`;
@@ -1806,12 +1824,24 @@ async function deleteUserDocFromFirestore(uid){
       return `${d}/${m}/${y}`;
     }
 
-    function formatDateTimeBR(iso){
-      if(!iso) return "Sem data";
-      const dt = new Date(iso);
-      return `${dt.toLocaleDateString("pt-BR")} às ${dt.toLocaleTimeString("pt-BR", {hour:"2-digit", minute:"2-digit"})}`;
-    }
+function formatDateTimeBR(value){
+  if(!value) return "Sem data";
 
+  let dt;
+
+  if (value?.toDate) {
+    dt = value.toDate(); // Firestore Timestamp
+  } else {
+    dt = new Date(value);
+  }
+
+  if (isNaN(dt.getTime())) return "Sem data";
+
+  return `${dt.toLocaleDateString("pt-BR")} às ${dt.toLocaleTimeString("pt-BR", {
+    hour: "2-digit",
+    minute: "2-digit"
+  })}`;
+}
     function parseMoneyInput(value){
       if(!value) return 0;
       const normalized = String(value)
@@ -2015,7 +2045,7 @@ async function deleteUserDocFromFirestore(uid){
       }
     }
 
-    function showApp(user){
+function showApp(user){
   document.getElementById("activeUserName").textContent = user?.name || "Usuário";
   document.getElementById("activeUserEmail").textContent = user?.email || "";
   authScreen.classList.add("hidden");
@@ -2025,33 +2055,32 @@ async function deleteUserDocFromFirestore(uid){
   startSessionWatcher();
   render();
 }
-    function logout(){
-      removeActiveUser();
-      localStorage.removeItem(SESSION_LAST_ACTIVITY_KEY);
-      stopSessionWatcher();
-      authScreen.classList.remove("hidden");
-      appShell.classList.add("hidden");
-      preloadLogin();
-      switchTab("login");
-    }
 
-    document.getElementById("tabLogin").addEventListener("click", () => switchTab("login"));
-    document.getElementById("tabRegister").addEventListener("click", () => switchTab("register"));
-    document.getElementById("tabForgot").addEventListener("click", () => switchTab("forgot"));  
+async function logout(){
+  try{
+    await signOut(auth);
+  }catch(error){
+    console.error("Erro ao sair do Firebase:", error);
+  }
+
+  removeActiveUser();
+  localStorage.removeItem(SESSION_LAST_ACTIVITY_KEY);
+  stopSessionWatcher();
+  authScreen.classList.remove("hidden");
+  appShell.classList.add("hidden");
+  preloadLogin();
+  switchTab("login");
+}
+
+document.getElementById("tabLogin").addEventListener("click", () => switchTab("login"));
+document.getElementById("tabRegister").addEventListener("click", () => switchTab("register"));
+document.getElementById("tabForgot").addEventListener("click", () => switchTab("forgot"));
+
 loginForm.addEventListener("submit", async (e) => {
   e.preventDefault();
-
   const email = document.getElementById("loginEmail").value.trim().toLowerCase();
   const password = document.getElementById("loginPassword").value;
   const remember = rememberLoginCheckbox.checked;
-
-loginForm.addEventListener("submit", async (e) => {
-  e.preventDefault();
-
-  const email = document.getElementById("loginEmail").value.trim().toLowerCase();
-  const password = document.getElementById("loginPassword").value;
-  const remember = rememberLoginCheckbox.checked;
-
   try {
     const userCredential = await signInWithEmailAndPassword(auth, email, password);
 
@@ -2164,25 +2193,6 @@ registerForm.addEventListener("submit", async (e) => {
     }
   }
 });
-      if(code !== RESET_CODE){
-        alert("Código interno incorreto.");
-        return;
-      }
-
-      const users = getUsers();
-      const index = users.findIndex((u) => u.email === email);
-      if(index === -1){
-        alert("Usuário não encontrado.");
-        return;
-      }
-
-      users[index].password = newPassword;
-      saveUsers(users);
-      alert("Senha redefinida com sucesso.");
-      switchTab("login");
-      document.getElementById("loginEmail").value = email;
-      requestAnimationFrame(() => document.getElementById("loginPassword").focus());
-    });
 
     function ensureDates(){
       const t1 = document.getElementById("t1_data_fechamento");
@@ -2252,20 +2262,34 @@ registerForm.addEventListener("submit", async (e) => {
       return total;
     }
 
-    function updateStatusPill(value){
-      const pill = document.getElementById("statusPill");
-      if(value > 0){
-        pill.textContent = "Positivo";
-        pill.className = "pill positive";
-      }else if(value < 0){
-        pill.textContent = "Negativo";
-        pill.className = "pill negative";
-      }else{
-        pill.textContent = "Sem diferença";
-        pill.className = "pill neutral";
-      }
-    }
+function updateStatusPill(value){
+  const pill = document.getElementById("statusPill");
+  if(value > 0){
+    pill.textContent = "Positivo";
+    pill.className = "pill positive";
+  }else if(value < 0){
+    pill.textContent = "Negativo";
+    pill.className = "pill negative";
+  }else{
+    pill.textContent = "Sem diferença";
+    pill.className = "pill neutral";
+  }
+}
 
+function updateHistoryVisibility(){
+  const list = document.getElementById("historyList");
+  const btn = document.getElementById("toggleHistoryBtn");
+
+  if(!list || !btn) return;
+
+  if(historyVisible){
+    list.classList.remove("hidden");
+    btn.textContent = "Ocultar";
+  } else {
+    list.classList.add("hidden");
+    btn.textContent = "Ver";
+  }
+}
     function updateEyeIcon(){
       const eye = document.getElementById("eyeIcon");
       if(balanceVisible){
@@ -2509,56 +2533,58 @@ async function deleteAllHistory(){
       document.getElementById("historyModal").classList.add("hidden");
     }
 
-    function renderHistoryListFromCache(){
-      const list = document.getElementById("historyList");
-      const history = historyCache || [];
+function renderHistoryListFromCache(){
+  const list = document.getElementById("historyList");
+  const history = historyCache || [];
 
-      if(!history.length){
-        list.innerHTML = `<div class="history-empty">Sem histórico ainda.</div>`;
-        document.getElementById("historyInfo").textContent = "Nenhum turno anterior salvo ainda.";
-        return;
-      }
+  if(!history.length){
+    list.innerHTML = `<div class="history-empty">Sem histórico ainda.</div>`;
+    document.getElementById("historyInfo").textContent = "Nenhum turno anterior salvo ainda.";
+    updateHistoryVisibility(); // 👈 ADICIONADO
+    return;
+  }
 
-list.innerHTML = history.slice(0, 4).map((item, index) => `
-  <div class="history-item" data-history-index="${index}">
-    <div class="history-item-top">
-      <div class="history-user">${escapeHtml(item.submittedByName || "Sistema")}</div>
-      <div class="history-time">${escapeHtml(formatDateBR(item.fechamentoDate || ""))}</div>
-    </div>
-
-    <div class="history-item-grid">
-      <div class="history-mini-card">
-        <div class="history-mini-label">Total</div>
-        <div class="history-mini-value">${money(item.total || 0)}</div>
+  list.innerHTML = history.slice(0, 4).map((item, index) => `
+    <div class="history-item" data-history-index="${index}">
+      <div class="history-item-top">
+        <div class="history-user">${escapeHtml(item.submittedByName || "Sistema")}</div>
+        <div class="history-time">${escapeHtml(formatDateBR(item.fechamentoDate || ""))}</div>
       </div>
 
-      <div class="history-mini-card">
-        <div class="history-mini-label">Lucro do turno</div>
-        <div class="history-mini-value ${(item.turnProfit || 0) < 0 ? "red" : ""}">
-          ${money(item.turnProfit || 0)}
+      <div class="history-item-grid">
+        <div class="history-mini-card">
+          <div class="history-mini-label">Total</div>
+          <div class="history-mini-value">${money(item.total || 0)}</div>
+        </div>
+
+        <div class="history-mini-card">
+          <div class="history-mini-label">Lucro do turno</div>
+          <div class="history-mini-value ${(item.turnProfit || 0) < 0 ? "red" : ""}">
+            ${money(item.turnProfit || 0)}
+          </div>
+        </div>
+
+        <div class="history-mini-card">
+          <div class="history-mini-label">Variação da banca</div>
+          <div class="history-mini-value ${(item.bankVariation || 0) < 0 ? "red" : ""}">
+            ${money(item.bankVariation || 0)}
+          </div>
         </div>
       </div>
-
-      <div class="history-mini-card">
-        <div class="history-mini-label">Variação da banca</div>
-        <div class="history-mini-value ${(item.bankVariation || 0) < 0 ? "red" : ""}">
-          ${money(item.bankVariation || 0)}
-        </div>
-      </div>
     </div>
-  </div>
-`).join("");
+  `).join("");
 
-      document.getElementById("historyInfo").textContent =
-        `Último fechamento: ${history[0]?.submittedByName || "Sistema"} • ${formatDateBR(history[0]?.fechamentoDate || "")}`;
+  document.getElementById("historyInfo").textContent =
+    `Último fechamento: ${history[0]?.submittedByName || "Sistema"} • ${formatDateBR(history[0]?.fechamentoDate || "")}`;
 
-      list.querySelectorAll("[data-history-index]").forEach((el) => {
-        el.addEventListener("click", () => {
-          openHistoryModal(Number(el.dataset.historyIndex));
-        });
-      });
-    }
+  list.querySelectorAll("[data-history-index]").forEach((el) => {
+    el.addEventListener("click", () => {
+      openHistoryModal(Number(el.dataset.historyIndex));
+    });
+  });
 
+  updateHistoryVisibility(); // 👈 ESSENCIAL
+}
     function openHistoryModal(index){
       const item = historyCache[index];
       if(!item) return;
@@ -2944,35 +2970,107 @@ function bindAdminActions(){
   document.querySelectorAll("[data-admin-delete]").forEach((btn) => {
     btn.addEventListener("click", async () => {
       const uid = btn.dataset.adminDelete;
-      if(!uid) return;
 
-      const confirmacao = confirm("Deseja excluir este usuário da lista?");
-      if(!confirmacao) return;
+      if (!uid) {
+        alert("ID do usuário inválido.");
+        return;
+      }
+
+      const confirmacao = confirm("Confirma a exclusão deste usuário?");
+      if (!confirmacao) return;
 
       try {
         await deleteUserDocFromFirestore(uid);
         await renderAdminUsers();
-        alert("Usuário removido da coleção users com sucesso.");
+        alert("Usuário removido da coleção 'users' com sucesso.\n(A conta no Firebase Auth NÃO foi excluída)");
       } catch (error) {
         console.error("Erro ao excluir usuário:", error);
-        alert("Não foi possível excluir o usuário.");
+        alert("Erro ao excluir usuário. Verifique o console.");
       }
     });
   });
 }
+  document.querySelectorAll("[data-admin-delete]").forEach((btn) => {
+    btn.addEventListener("click", async () => {
+      const uid = btn.dataset.adminDelete;
 
-    document.addEventListener("DOMContentLoaded", () => {
-  bindSessionEvents();
-  startHistoryRealtimeListener();
+      if (!uid) {
+        alert("ID do usuário inválido.");
+        return;
+      }
 
-      [
-        "t1_banco","t1_pppoker","t1_suprema","t1_buffalo","t1_ganamos","t1_cargas","t1_cargas_poker",
-        "t2_banco","t2_pppoker","t2_suprema","t2_buffalo","t2_ganamos","t2_cargas","t2_cargas_poker"
-      ].forEach((id) => {
-        const input = document.getElementById(id);
-        if(input) attachMoneyMask(input);
-      });
+      const confirmacao = confirm("Confirma a exclusão deste usuário?");
+      if (!confirmacao) return;
 
+      try {
+        await deleteUserDocFromFirestore(uid);
+        await renderAdminUsers();
+        alert("Usuário removido da coleção 'users' com sucesso.\n(A conta no Firebase Auth NÃO foi excluída)");
+      } catch (error) {
+        console.error("Erro ao excluir usuário:", error);
+        alert("Erro ao excluir usuário. Verifique o console.");
+      }
+    });
+  });
+}  document.querySelectorAll("[data-admin-delete]").forEach((btn) => {
+    btn.addEventListener("click", async () => {
+      const uid = btn.dataset.adminDelete;
+      if(!uid) return;
+
+document.querySelectorAll("[data-admin-delete]").forEach((btn) => {
+  btn.addEventListener("click", async () => {
+    const uid = btn.dataset.adminDelete;
+
+    if (!uid) {
+      alert("ID do usuário inválido.");
+      return;
+    }
+
+    const confirmacao = confirm("Confirma a exclusão deste usuário?");
+    if (!confirmacao) return;
+
+    try {
+      await deleteUserDocFromFirestore(uid);
+      await renderAdminUsers();
+      alert("Usuário removido da coleção 'users' com sucesso.\n(A conta no Firebase Auth NÃO foi excluída)");
+    } catch (error) {
+      console.error("Erro ao excluir usuário:", error);
+      alert("Erro ao excluir usuário. Verifique o console.");
+    }
+  });
+});
+  await deleteUserDocFromFirestore(uid);
+  await renderAdminUsers();
+
+  alert("Usuário removido da coleção 'users' com sucesso.\n(A conta no Firebase Auth NÃO foi excluída)");
+
+} catch (error) {
+  console.error("Erro ao excluir usuário:", error);
+  alert("Erro ao excluir usuário. Verifique o console.");
+}    });
+  });
+}
+
+document.addEventListener("DOMContentLoaded", () => {
+bindSessionEvents();
+startHistoryRealtimeListener();
+
+// botão mostrar/ocultar histórico
+document.getElementById("toggleHistoryBtn").addEventListener("click", () => {
+historyVisible = !historyVisible;
+updateHistoryVisibility();
+});
+
+// estado inicial do histórico
+updateHistoryVisibility();
+
+[
+"t1_banco","t1_pppoker","t1_suprema","t1_buffalo","t1_ganamos","t1_cargas","t1_cargas_poker",
+"t2_banco","t2_pppoker","t2_suprema","t2_buffalo","t2_ganamos","t2_cargas","t2_cargas_poker"
+].forEach((id) => {
+const input = document.getElementById(id);
+if(input) attachMoneyMask(input);
+});
       document.querySelectorAll("[data-add-row]").forEach((btn) => {
         btn.addEventListener("click", () => {
           createDynamicRow(btn.dataset.addRow);
@@ -3105,29 +3203,30 @@ document.getElementById("deleteHistoryBtn").addEventListener("click", async () =
           return;
         }
 
-        if(!confirm("Tem certeza que deseja excluir TODOS os usuários?")) return;
+if(!confirm("Tem certeza que deseja limpar os dados locais deste dispositivo?")) return;
 
-        localStorage.removeItem(USERS_STORAGE_KEY);
-        localStorage.removeItem(ACTIVE_USER_STORAGE_KEY);
-        localStorage.removeItem(REMEMBER_LOGIN_STORAGE_KEY);
-        localStorage.removeItem(REMEMBERED_EMAIL_STORAGE_KEY);
-        localStorage.removeItem(SESSION_LAST_ACTIVITY_KEY);
+// 🔴 NÃO existe USERS_STORAGE_KEY → removido
+
+localStorage.removeItem(ACTIVE_USER_STORAGE_KEY);
+localStorage.removeItem(REMEMBER_LOGIN_STORAGE_KEY);
+localStorage.removeItem(REMEMBERED_EMAIL_STORAGE_KEY);
+localStorage.removeItem(SESSION_LAST_ACTIVITY_KEY);
 
 renderAdminUsers();
-alert("Todos os usuários foram removidos.");
-      });
 
-      const rememberedUser = loadActiveUser();
-      if(rememberedUser && getRememberedLogin() && !isSessionExpired()){
-        showApp(rememberedUser);
-      }else{
-        authScreen.classList.remove("hidden");
-        appShell.classList.add("hidden");
-        preloadLogin();
-        switchTab("login");
-      }
-    });
-  </script>
+alert("Dados locais removidos com sucesso.\n(Usuários no Firebase NÃO foram excluídos)");
+});
+
+const rememberedUser = loadActiveUser();
+if(rememberedUser && getRememberedLogin() && !isSessionExpired()){
+  showApp(rememberedUser);
+}else{
+  authScreen.classList.remove("hidden");
+  appShell.classList.add("hidden");
+  preloadLogin();
+  switchTab("login");
+}
+});
+</script>
 </body>
 </html>
-
