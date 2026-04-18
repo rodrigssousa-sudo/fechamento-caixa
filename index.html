@@ -2948,38 +2948,6 @@ function bindAdminActions(){
     });
   });
 }
-          users[idx].password = clean;
-          saveUsers(users);
-          renderAdminUsers();
-          alert("Senha atualizada com sucesso.");
-        });
-      });
-
-      document.querySelectorAll("[data-admin-delete]").forEach((btn) => {
-        btn.addEventListener("click", () => {
-          const idx = Number(btn.dataset.adminDelete);
-          const users = getUsers();
-          const user = users[idx];
-          if(!user) return;
-
-          if(!confirm(`Excluir o usuário ${user.name}?`)) return;
-
-          if(loadActiveUser()?.email === user.email){
-            removeActiveUser();
-            localStorage.removeItem(SESSION_LAST_ACTIVITY_KEY);
-          }
-
-          if(getRememberedEmail() === user.email){
-            saveRememberedLogin(false, "");
-          }
-
-          users.splice(idx, 1);
-          saveUsers(users);
-          renderAdminUsers();
-          alert("Usuário excluído com sucesso.");
-        });
-      });
-    }
 
     document.addEventListener("DOMContentLoaded", () => {
   bindSessionEvents();
