@@ -1696,6 +1696,14 @@ import {
   limit,
   serverTimestamp
 } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-firestore.js";
+
+import {
+  getAuth,
+  createUserWithEmailAndPassword,
+  signInWithEmailAndPassword,
+  signOut,
+  onAuthStateChanged
+} from "https://www.gstatic.com/firebasejs/12.0.0/firebase-auth.js";
     const firebaseConfig = {
       apiKey: "AIzaSyAuyfJNu2vwvVyH5gRsvg82m98teFCmPXw",
       authDomain: "bank-king-c53cf.firebaseapp.com",
@@ -1708,6 +1716,21 @@ import {
 
     const app = initializeApp(firebaseConfig);
     const db = getFirestore(app);
+const auth = getAuth(app);
+onAuthStateChanged(auth, (user) => {
+  if (user) {
+    const userData = {
+      name: user.email?.split("@")[0] || "Usuário",
+      email: user.email,
+      uid: user.uid
+    };
+
+    saveActiveUser(userData);
+    showApp(userData);
+  } else {
+    console.log("Usuário não logado");
+  }
+});
 
     const PDF_CODE = "1520";
     const REPORT_CODE = "1520";
@@ -1715,7 +1738,7 @@ import {
     const DELETE_HISTORY_CODE = "1520";
     const ADMIN_CODE = "9087";
 
-    const USERS_STORAGE_KEY = "bank-king-users-v1";
+  
     const ACTIVE_USER_STORAGE_KEY = "bank-king-active-user-v1";
     const REMEMBER_LOGIN_STORAGE_KEY = "bank-king-remember-login-v1";
     const REMEMBERED_EMAIL_STORAGE_KEY = "bank-king-remembered-email-v1";
@@ -1875,34 +1898,6 @@ import {
       input.addEventListener("focus", () => moveCursorToEnd(input));
     }
 
-    function getUsers(){
-      const raw = localStorage.getItem(USERS_STORAGE_KEY);
-      if(!raw) return [];
-      try{
-        const parsed = JSON.parse(raw);
-        return Array.isArray(parsed) ? parsed : [];
-      }catch{
-        return [];
-      }
-    }
-
-    function saveUsers(users){
-      localStorage.setItem(USERS_STORAGE_KEY, JSON.stringify(users));
-    }
-
-    function ensureDemoUser(){
-      const users = getUsers();
-      const exists = users.some(u => u.email === LOGIN_DEMO_EMAIL);
-      if(!exists){
-        users.push({
-          name: "Admin",
-          email: LOGIN_DEMO_EMAIL,
-          password: LOGIN_DEMO_PASSWORD
-        });
-        saveUsers(users);
-      }
-    }
-
     function saveRememberedLogin(enabled, email = ""){
       localStorage.setItem(REMEMBER_LOGIN_STORAGE_KEY, enabled ? "true" : "false");
       if(enabled){
@@ -2032,53 +2027,84 @@ import {
     document.getElementById("tabLogin").addEventListener("click", () => switchTab("login"));
     document.getElementById("tabRegister").addEventListener("click", () => switchTab("register"));
     document.getElementById("tabForgot").addEventListener("click", () => switchTab("forgot"));  
-  loginForm.addEventListener("submit", (e) => {
-      e.preventDefault();
+loginForm.addEventListener("submit", async (e) => {
+  e.preventDefault();
 
-      const email = document.getElementById("loginEmail").value.trim().toLowerCase();
-      const password = document.getElementById("loginPassword").value;
-      const remember = rememberLoginCheckbox.checked;
+  const email = document.getElementById("loginEmail").value.trim().toLowerCase();
+  const password = document.getElementById("loginPassword").value;
+  const remember = rememberLoginCheckbox.checked;
 
-      const users = getUsers();
-      const found = users.find((u) => u.email === email && u.password === password);
+  try {
+    const userCredential = await signInWithEmailAndPassword(auth, email, password);
 
-      if(!found){
-        alert("Email ou senha incorretos.");
-        return;
-      }
+    saveRememberedLogin(remember, email);
 
-      saveRememberedLogin(remember, email);
-      const user = { name: found.name, email: found.email };
-      saveActiveUser(user);
-      showApp(user);
+    const user = {
+      name: userCredential.user.email?.split("@")[0] || "Usuário",
+      email: userCredential.user.email,
+      uid: userCredential.user.uid
+    };
+
+    saveActiveUser(user);
+    showApp(user);
+  } catch (error) {
+    console.error("Erro ao fazer login:", error);
+
+    if (
+      error.code === "auth/invalid-credential" ||
+      error.code === "auth/user-not-found" ||
+      error.code === "auth/wrong-password" ||
+      error.code === "auth/invalid-login-credentials"
+    ) {
+      alert("Email ou senha incorretos.");
+    } else if (error.code === "auth/invalid-email") {
+      alert("Email inválido.");
+    } else {
+      alert("Erro ao fazer login.");
+    }
+  }
+});
+    registerForm.addEventListener("submit", async (e) => {
+  e.preventDefault();
+
+  const name = document.getElementById("registerName").value.trim();
+  const email = document.getElementById("registerEmail").value.trim().toLowerCase();
+  const password = document.getElementById("registerPassword").value;
+
+  if(!name || !email || !password){
+    alert("Preencha todos os campos.");
+    return;
+  }
+
+  try {
+    const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+
+    saveActiveUser({
+      name,
+      email,
+      uid: userCredential.user.uid
     });
 
-    registerForm.addEventListener("submit", (e) => {
-      e.preventDefault();
-
-      const name = document.getElementById("registerName").value.trim();
-      const email = document.getElementById("registerEmail").value.trim().toLowerCase();
-      const password = document.getElementById("registerPassword").value;
-
-      if(!name || !email || !password){
-        alert("Preencha todos os campos.");
-        return;
-      }
-
-      const users = getUsers();
-      if(users.some((u) => u.email === email)){
-        alert("Esse email já está cadastrado.");
-        return;
-      }
-
-      users.push({ name, email, password });
-      saveUsers(users);
-      alert("Usuário registrado com sucesso.");
-      switchTab("login");
-      document.getElementById("loginEmail").value = email;
-      requestAnimationFrame(() => document.getElementById("loginPassword").focus());
+    alert("Usuário registrado com sucesso.");
+    showApp({
+      name,
+      email,
+      uid: userCredential.user.uid
     });
+  } catch (error) {
+    console.error("Erro ao registrar usuário:", error);
 
+    if (error.code === "auth/email-already-in-use") {
+      alert("Esse email já está cadastrado.");
+    } else if (error.code === "auth/weak-password") {
+      alert("A senha precisa ter pelo menos 6 caracteres.");
+    } else if (error.code === "auth/invalid-email") {
+      alert("Email inválido.");
+    } else {
+      alert("Erro ao registrar usuário.");
+    }
+  }
+});
     forgotPasswordForm.addEventListener("submit", (e) => {
       e.preventDefault();
 
@@ -3023,3 +3049,4 @@ alert("Erro ao salvar histórico. Abra o console para ver o detalhe.");
   </script>
 </body>
 </html>
+
