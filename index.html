@@ -2821,7 +2821,7 @@ const bankVariationValue = Number(item.bankVariation || 0);
       const t2Pendentes = getPendingTotal("t2");
       const t2Total = t2Entradas - t2Saidas - t2Pendentes;
 
-      const diff = t2Total - t1Total;
+      const ultimoLucroDoTurno = Number(historyCache[0]?.turnProfit || 0);
 
       document.getElementById("t1_entradas_total").textContent = money(t1Entradas);
       document.getElementById("t1_saidas_total").textContent = negativeMoney(t1Saidas);
@@ -2836,7 +2836,7 @@ const bankVariationValue = Number(item.bankVariation || 0);
 
       document.getElementById("totalEntradasT1").textContent = money(t1Entradas);
       document.getElementById("totalEntradasT2").textContent = money(t2Entradas);
-      document.getElementById("lucroTotal").textContent = money(diff);
+      document.getElementById("lucroTotal").textContent = money(ultimoLucroDoTurno);
 
 const bancaTotalAtualBruta = historyCache[0]?.total || 0;
 const bancaTotalAtual = Math.max(0, Number(bancaTotalAtualBruta || 0));
