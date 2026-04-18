@@ -1328,7 +1328,7 @@
       <div class="auth-toggle">
         <button id="tabLogin" class="auth-tab active" type="button">Entrar</button>
         <button id="tabRegister" class="auth-tab" type="button">Registrar</button>
-        <button id="tabForgot" class="auth-tab" type="button">Senha</button>
+        <button id="tabForgot" class="auth-tab" type="button">Redefinir senha</button>
       </div>
 
       <form id="loginForm" class="auth-form">
@@ -1370,26 +1370,15 @@
       </form>
 
       <form id="forgotPasswordForm" class="auth-form hidden">
-        <div class="auth-note" style="margin-top:-2px; margin-bottom:4px;">
-          Use o código interno de redefinição. Nenhum código será enviado por email.
-        </div>
+        <h3>Redefinir senha</h3>
+        <p class="auth-subtitle">Você receberá um link no email para criar uma nova senha.</p>
 
         <div class="field">
           <label for="resetEmail">Email</label>
-          <input id="resetEmail" type="email" placeholder="Digite o email cadastrado" />
+          <input id="resetEmail" type="email" placeholder="Digite seu email" />
         </div>
 
-        <div class="field">
-          <label for="resetCode">Código de redefinição</label>
-          <input id="resetCode" type="password" placeholder="Digite código interno" />
-        </div>
-
-        <div class="field">
-          <label for="newPassword">Nova senha</label>
-          <input id="newPassword" type="password" placeholder="Digite a nova senha" />
-        </div>
-
-        <button class="auth-submit" type="submit">Redefinir senha</button>
+        <button class="auth-submit" type="submit">Enviar link de redefinição</button>
       </form>
 
       <div class="auth-note">
@@ -1451,7 +1440,7 @@
               <div id="totalEntradasT2" class="metric-value green">$ 0,00</div>
             </div>
             <div class="metric">
-              <div class="metric-label">Diferença</div>
+              <div class="metric-label">Lucro do turno</div>
               <div id="lucroTotal" class="metric-value blue">$ 0,00</div>
             </div>
           </div>
@@ -1466,7 +1455,6 @@
               </div>
             </div>
           </div>
-
           <div id="historyList" class="history-list"></div>
 
           <button id="deleteHistoryBtn" class="danger-mini-btn" type="button" style="margin-top:10px; width:100%;">
