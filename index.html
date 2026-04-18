@@ -1409,7 +1409,7 @@
             <div class="logo-bk">BK</div>
             <h1>Bank King</h1>
           </div>
-          <div class="badge">PRO</div>
+          <div class="badge">BRS SYST</div>
         </div>
       </header>
 
@@ -1690,6 +1690,7 @@ import {
   getDocs,
   deleteDoc,
   doc,
+  setDoc,
   onSnapshot,
   query,
   orderBy,
@@ -1702,7 +1703,8 @@ import {
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
   signOut,
-  onAuthStateChanged
+  onAuthStateChanged,
+sendPasswordResetEmail
 } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-auth.js";
     const firebaseConfig = {
       apiKey: "AIzaSyAuyfJNu2vwvVyH5gRsvg82m98teFCmPXw",
@@ -1787,6 +1789,25 @@ onAuthStateChanged(auth, (user) => {
       const local = new Date(now.getTime() - offset * 60000);
       return local.toISOString().split("T")[0];
     }
+
+async function getUsersFromFirestore(){
+  const q = query(
+    collection(db, "users"),
+    orderBy("createdAt", "desc")
+  );
+
+  const snapshot = await getDocs(q);
+
+  return snapshot.docs.map((docItem) => ({
+    id: docItem.id,
+    ...docItem.data()
+  }));
+}
+
+async function deleteUserDocFromFirestore(uid){
+  if (!uid) return;
+  await deleteDoc(doc(db, "users", uid));
+}
 
     function formatDateBR(dateStr){
       if(!dateStr) return "Sem data";
@@ -2064,7 +2085,7 @@ loginForm.addEventListener("submit", async (e) => {
     }
   }
 });
-    registerForm.addEventListener("submit", async (e) => {
+registerForm.addEventListener("submit", async (e) => {
   e.preventDefault();
 
   const name = document.getElementById("registerName").value.trim();
@@ -2078,6 +2099,14 @@ loginForm.addEventListener("submit", async (e) => {
 
   try {
     const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+
+    await setDoc(doc(db, "users", userCredential.user.uid), {
+      uid: userCredential.user.uid,
+      name,
+      email,
+      role: "user",
+      createdAt: serverTimestamp()
+    });
 
     saveActiveUser({
       name,
@@ -2104,8 +2133,7 @@ loginForm.addEventListener("submit", async (e) => {
       alert("Erro ao registrar usuário.");
     }
   }
-});
-    forgotPasswordForm.addEventListener("submit", (e) => {
+});    forgotPasswordForm.addEventListener("submit", (e) => {
       e.preventDefault();
 
       const email = document.getElementById("resetEmail").value.trim().toLowerCase();
@@ -2826,23 +2854,52 @@ document.getElementById("bankValue").textContent =
       document.getElementById("adminSearchInput").value = "";
     }
 
-    function renderAdminUsers(){
-      const users = getUsers();
-      const term = document.getElementById("adminSearchInput").value.trim().toLowerCase();
+async function renderAdminUsers(){
+  const users = await getUsersFromFirestore();
+  const term = document.getElementById("adminSearchInput").value.trim().toLowerCase();
 
-      const filtered = users.filter((user) => {
-        const name = String(user?.name || "").toLowerCase();
-        const email = String(user?.email || "").toLowerCase();
-        return !term || name.includes(term) || email.includes(term);
-      });
+  const filtered = users.filter((user) => {
+    const name = String(user?.name || "").toLowerCase();
+    const email = String(user?.email || "").toLowerCase();
+    return !term || name.includes(term) || email.includes(term);
+  });
 
-      const adminUsersList = document.getElementById("adminUsersList");
+  const adminUsersList = document.getElementById("adminUsersList");
 
-      if(!filtered.length){
-        adminUsersList.innerHTML = `<div class="admin-empty">Nenhum usuário encontrado.</div>`;
-        return;
-      }
+  if(!filtered.length){
+    adminUsersList.innerHTML = `<div class="admin-empty">Nenhum usuário encontrado.</div>`;
+    return;
+  }
 
+  adminUsersList.innerHTML = filtered.map((user, index) => {
+    return `
+      <div class="admin-user-card">
+        <div class="admin-user-top">
+          <div>
+            <div class="admin-user-name">${escapeHtml(user.name || "Sem nome")}</div>
+            <div class="admin-user-email">${escapeHtml(user.email || "Sem email")}</div>
+          </div>
+          <div class="admin-user-badge">${escapeHtml(user.role || "user")}</div>
+        </div>
+
+        <div class="admin-actions">
+          <button class="admin-action-btn admin-view-btn" type="button" data-admin-view="${user.id}">👁 Ver</button>
+          <button class="admin-action-btn admin-reset-btn" type="button" data-admin-reset="${user.email}">🔒 Resetar senha</button>
+          <button class="admin-action-btn admin-delete-btn" type="button" data-admin-delete="${user.id}">🗑 Excluir</button>
+        </div>
+
+        <div class="admin-inline-details" id="adminDetails_${user.id}">
+          <div class="admin-inline-line"><span>Nome</span><strong>${escapeHtml(user.name || "-")}</strong></div>
+          <div class="admin-inline-line"><span>Email</span><strong>${escapeHtml(user.email || "-")}</strong></div>
+          <div class="admin-inline-line"><span>UID</span><strong>${escapeHtml(user.uid || "-")}</strong></div>
+          <div class="admin-inline-line"><span>Perfil</span><strong>${escapeHtml(user.role || "user")}</strong></div>
+        </div>
+      </div>
+    `;
+  }).join("");
+
+  bindAdminActions();
+}
       adminUsersList.innerHTML = filtered.map((user, index) => {
         const originalIndex = users.findIndex((u) => u.email === user.email && u.name === user.name);
 
@@ -2874,31 +2931,52 @@ document.getElementById("bankValue").textContent =
       bindAdminActions();
     }
 
-    function bindAdminActions(){
-      document.querySelectorAll("[data-admin-view]").forEach((btn) => {
-        btn.addEventListener("click", () => {
-          const idx = btn.dataset.adminView;
-          const box = document.getElementById(`adminDetails_${idx}`);
-          if(box) box.classList.toggle("show");
-        });
-      });
+function bindAdminActions(){
+  document.querySelectorAll("[data-admin-view]").forEach((btn) => {
+    btn.addEventListener("click", () => {
+      const id = btn.dataset.adminView;
+      const box = document.getElementById(`adminDetails_${id}`);
+      if(box) box.classList.toggle("show");
+    });
+  });
 
-      document.querySelectorAll("[data-admin-reset]").forEach((btn) => {
-        btn.addEventListener("click", () => {
-          const idx = Number(btn.dataset.adminReset);
-          const users = getUsers();
-          const user = users[idx];
-          if(!user) return;
+  document.querySelectorAll("[data-admin-reset]").forEach((btn) => {
+    btn.addEventListener("click", async () => {
+      const email = btn.dataset.adminReset;
+      if(!email) return;
 
-          const newPassword = prompt(`Nova senha para ${user.name}:`);
-          if(newPassword === null) return;
+      const confirmacao = confirm(`Enviar email de redefinição de senha para ${email}?`);
+      if(!confirmacao) return;
 
-          const clean = newPassword.trim();
-          if(!clean){
-            alert("Senha inválida.");
-            return;
-          }
+      try {
+        await sendPasswordResetEmail(auth, email);
+        alert("Email de redefinição enviado com sucesso.");
+      } catch (error) {
+        console.error("Erro ao enviar redefinição:", error);
+        alert("Não foi possível enviar o email de redefinição.");
+      }
+    });
+  });
 
+  document.querySelectorAll("[data-admin-delete]").forEach((btn) => {
+    btn.addEventListener("click", async () => {
+      const uid = btn.dataset.adminDelete;
+      if(!uid) return;
+
+      const confirmacao = confirm("Deseja excluir este usuário da lista?");
+      if(!confirmacao) return;
+
+      try {
+        await deleteUserDocFromFirestore(uid);
+        await renderAdminUsers();
+        alert("Usuário removido da coleção users com sucesso.");
+      } catch (error) {
+        console.error("Erro ao excluir usuário:", error);
+        alert("Não foi possível excluir o usuário.");
+      }
+    });
+  });
+}
           users[idx].password = clean;
           saveUsers(users);
           renderAdminUsers();
