@@ -1569,9 +1569,8 @@
               <div class="field"><label for="t2_cargas">Carga de Fichas</label><input type="text" inputmode="numeric" id="t2_cargas" placeholder="0,00" /></div>
               <div class="field"><label for="t2_cargas_poker">Cargas F. Poker (x400)</label><input type="text" inputmode="numeric" id="t2_cargas_poker" placeholder="0,00" /></div>
             </div>
-          </div>
-
-          <div class="finance-block">
+          </div>          
+<div class="finance-block">
             <div class="finance-head">
               <h4>Saídas de caixa</h4>
               <div class="finance-total red" id="t2_saidas_total">- $ 0,00</div>
@@ -1602,25 +1601,6 @@
             <small id="reportSubtitle" style="color: var(--muted);">Fluxo de caixa do período</small>
           </div>
           <button id="closeReportScreen" class="report-close-btn" type="button">Fechar</button>
-        </div>
-
-        <div class="turno-meta" style="margin-bottom:14px;">
-          <div class="fields two-col">
-            <div class="field">
-              <label for="reportDateStart">Data inicial</label>
-              <input type="date" id="reportDateStart" />
-            </div>
-
-            <div class="field">
-              <label for="reportDateEnd">Data final</label>
-              <input type="date" id="reportDateEnd" />
-            </div>
-          </div>
-
-          <div class="inline-actions" style="margin-top:12px;">
-            <button class="btn-add" type="button" id="applyCustomReportRange">Aplicar período</button>
-            <button class="pdf-btn" type="button" id="exportCustomPdf">Exportar comprovante PDF</button>
-          </div>
         </div>
 
         <div class="report-grid">
@@ -1703,19 +1683,19 @@
 
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-app.js";
-    import {
-      getFirestore,
-      collection,
-      addDoc,
-      getDocs,
-      deleteDoc,
-      doc,
-      onSnapshot,
-      query,
-      orderBy,
-      limit
-    } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-firestore.js";
-
+import {
+  getFirestore,
+  collection,
+  addDoc,
+  getDocs,
+  deleteDoc,
+  doc,
+  onSnapshot,
+  query,
+  orderBy,
+  limit,
+  serverTimestamp
+} from "https://www.gstatic.com/firebasejs/12.0.0/firebase-firestore.js";
     const firebaseConfig = {
       apiKey: "AIzaSyAuyfJNu2vwvVyH5gRsvg82m98teFCmPXw",
       authDomain: "bank-king-c53cf.firebaseapp.com",
@@ -1729,21 +1709,6 @@
     const app = initializeApp(firebaseConfig);
     const db = getFirestore(app);
 
-    window.firebaseDb = db;
-    window.firebaseFns = {
-      collection,
-      addDoc,
-      getDocs,
-      deleteDoc,
-      doc,
-      onSnapshot,
-      query,
-      orderBy,
-      limit
-    };
-  </script>
-
-  <script type="module">
     const PDF_CODE = "1520";
     const REPORT_CODE = "1520";
     const RESET_CODE = "4br1l#2o26";
@@ -1757,7 +1722,6 @@
     const SESSION_LAST_ACTIVITY_KEY = "bank-king-session-last-activity-v1";
 
     const SESSION_TIMEOUT_MS = 30 * 60 * 1000;
-
     const LOGIN_DEMO_EMAIL = "admin@bankking.com";
     const LOGIN_DEMO_PASSWORD = "casino12";
 
@@ -1769,11 +1733,10 @@
     const rememberLoginCheckbox = document.getElementById("rememberLogin");
 
     let balanceVisible = true;
-    let dynamicRowCounter = 0;
     let sessionWatcher = null;
-    let historyRealtimeStarted = false;
     let historyUnsubscribe = null;
-    window._historyCache = [];
+    let historyRealtimeStarted = false;
+    let historyCache = [];
 
     function money(value){
       return `$ ${Number(value || 0).toLocaleString("pt-BR", {
@@ -1836,6 +1799,7 @@
     }
 
     function setDigitsToInput(input, digits){
+      if(!input) return;
       const clean = String(digits || "").replace(/\D/g, "");
       input.dataset.raw = clean;
       input.value = formatDigitsToMoneyString(clean);
@@ -2015,26 +1979,16 @@
       });
     }
 
-    function showApp(user){
-      document.getElementById("activeUserName").textContent = user?.name || "Usuário";
-      document.getElementById("activeUserEmail").textContent = user?.email || "";
-      authScreen.classList.add("hidden");
-      appShell.classList.remove("hidden");
-      ensureDates();
-      setSessionActivity();
-      startSessionWatcher();
-      startHistoryRealtimeListener();
-      render();
-    }
+    function switchTab(mode){
+      document.getElementById("tabLogin").classList.toggle("active", mode === "login");
+      document.getElementById("tabRegister").classList.toggle("active", mode === "register");
+      document.getElementById("tabForgot").classList.toggle("active", mode === "forgot");
 
-    function logout(){
-      removeActiveUser();
-      localStorage.removeItem(SESSION_LAST_ACTIVITY_KEY);
-      stopSessionWatcher();
-      authScreen.classList.remove("hidden");
-      appShell.classList.add("hidden");
-      preloadLogin();
-      switchTab("login");
+      loginForm.classList.toggle("hidden", mode !== "login");
+      registerForm.classList.toggle("hidden", mode !== "register");
+      forgotPasswordForm.classList.toggle("hidden", mode !== "forgot");
+
+      if(mode === "login") preloadLogin();
     }
 
     function preloadLogin(){
@@ -2055,23 +2009,30 @@
       }
     }
 
-    function switchTab(mode){
-      document.getElementById("tabLogin").classList.toggle("active", mode === "login");
-      document.getElementById("tabRegister").classList.toggle("active", mode === "register");
-      document.getElementById("tabForgot").classList.toggle("active", mode === "forgot");
-
-      loginForm.classList.toggle("hidden", mode !== "login");
-      registerForm.classList.toggle("hidden", mode !== "register");
-      forgotPasswordForm.classList.toggle("hidden", mode !== "forgot");
-
-      if(mode === "login") preloadLogin();
+    function showApp(user){
+  document.getElementById("activeUserName").textContent = user?.name || "Usuário";
+  document.getElementById("activeUserEmail").textContent = user?.email || "";
+  authScreen.classList.add("hidden");
+  appShell.classList.remove("hidden");
+  ensureDates();
+  setSessionActivity();
+  startSessionWatcher();
+  render();
+}
+    function logout(){
+      removeActiveUser();
+      localStorage.removeItem(SESSION_LAST_ACTIVITY_KEY);
+      stopSessionWatcher();
+      authScreen.classList.remove("hidden");
+      appShell.classList.add("hidden");
+      preloadLogin();
+      switchTab("login");
     }
 
     document.getElementById("tabLogin").addEventListener("click", () => switchTab("login"));
     document.getElementById("tabRegister").addEventListener("click", () => switchTab("register"));
-    document.getElementById("tabForgot").addEventListener("click", () => switchTab("forgot"));
-
-    loginForm.addEventListener("submit", (e) => {
+    document.getElementById("tabForgot").addEventListener("click", () => switchTab("forgot"));  
+  loginForm.addEventListener("submit", (e) => {
       e.preventDefault();
 
       const email = document.getElementById("loginEmail").value.trim().toLowerCase();
@@ -2149,6 +2110,7 @@
       document.getElementById("loginEmail").value = email;
       requestAnimationFrame(() => document.getElementById("loginPassword").focus());
     });
+
     function ensureDates(){
       const t1 = document.getElementById("t1_data_fechamento");
       const t2 = document.getElementById("t2_data_fechamento");
@@ -2256,12 +2218,8 @@
     }
 
     function bindDynamicRow(row, pending = false){
-      const valueInput = row.querySelector(
-        pending ? '[data-pending-value="true"]' : '[data-dynamic-value="true"]'
-      );
-      const textInput = row.querySelector(
-        'input[type="text"]:not([data-dynamic-value="true"]):not([data-pending-value="true"])'
-      );
+      const valueInput = row.querySelector(pending ? '[data-pending-value="true"]' : '[data-dynamic-value="true"]');
+      const textInput = row.querySelector('input[type="text"]:not([data-dynamic-value="true"]):not([data-pending-value="true"])');
 
       if(valueInput){
         attachMoneyMask(valueInput);
@@ -2287,7 +2245,6 @@
     }
 
     function createDynamicRow(turno, name = "", digits = ""){
-      dynamicRowCounter += 1;
       const row = document.createElement("div");
       row.className = "dynamic-row outflow";
       row.innerHTML = `
@@ -2306,11 +2263,9 @@
       const valueInput = row.querySelector('[data-dynamic-value="true"]');
       if(digits) setDigitsToInput(valueInput, digits);
       bindDynamicRow(row, false);
-      render();
     }
 
     function createPendingRow(turno, name = "", digits = ""){
-      dynamicRowCounter += 1;
       const row = document.createElement("div");
       row.className = "dynamic-row pending";
       row.innerHTML = `
@@ -2329,7 +2284,6 @@
       const valueInput = row.querySelector('[data-pending-value="true"]');
       if(digits) setDigitsToInput(valueInput, digits);
       bindDynamicRow(row, true);
-      render();
     }
 
     function clearTurn(turno){
@@ -2387,7 +2341,7 @@
       return {
         submittedByName: activeUser?.name || "Usuário",
         submittedByEmail: activeUser?.email || "",
-        submittedAt: new Date().toISOString(),
+        submittedAt: serverTimestamp(),
         fechamentoDate: document.getElementById(f.dataFechamento)?.value || getTodayDateInput(),
         total: saldoLiquido,
         turno: {
@@ -2404,9 +2358,6 @@
     }
 
     async function loadHistory(){
-      const { collection, getDocs, query, orderBy, limit } = window.firebaseFns;
-      const db = window.firebaseDb;
-
       const q = query(
         collection(db, "history"),
         orderBy("submittedAt", "desc"),
@@ -2414,30 +2365,29 @@
       );
 
       const snapshot = await getDocs(q);
-      return snapshot.docs.map(docItem => ({
+      return snapshot.docs.map((docItem) => ({
         id: docItem.id,
         ...docItem.data()
       }));
     }
 
-    async function saveHistoryItem(item){
-      const { collection, addDoc } = window.firebaseFns;
-      const db = window.firebaseDb;
+   async function saveHistoryItem(item){
+  const q = query(
+    collection(db, "history"),
+    orderBy("submittedAt", "desc"),
+    limit(1)
+  );
 
-      const currentHistory = await loadHistory();
-      const previousTotal = currentHistory[0]?.total || 0;
-      item.diff = item.total - previousTotal;
+  const snapshot = await getDocs(q);
+  const previousTotal = snapshot.docs[0]?.data()?.total || 0;
 
-      await addDoc(collection(db, "history"), item);
-    }
+  item.diff = item.total - previousTotal;
 
+  await addDoc(collection(db, "history"), item);
+}
     async function deleteAllHistory(){
-      const { collection, getDocs, deleteDoc, doc } = window.firebaseFns;
-      const db = window.firebaseDb;
-
       const snapshot = await getDocs(collection(db, "history"));
-
-      for(const item of snapshot.docs){
+      for (const item of snapshot.docs) {
         await deleteDoc(doc(db, "history", item.id));
       }
     }
@@ -2477,16 +2427,17 @@
       });
     }
 
-    async function loadHistoryIntoTurn1(){
-      const history = window._historyCache?.length ? window._historyCache : await loadHistory();
-      if(history[0]?.turno){
-        applySnapshotToTurn("t1", history[0].turno);
-      }
+    function getBancoRecaFromSnapshot(snapshot){
+      return (snapshot.entries || []).find((item) => item.name === "Banco Reca")?.value || 0;
     }
 
-    async function renderHistoryList(){
+    function closeHistoryModal(){
+      document.getElementById("historyModal").classList.add("hidden");
+    }
+
+    function renderHistoryListFromCache(){
       const list = document.getElementById("historyList");
-      const history = window._historyCache?.length ? window._historyCache : await loadHistory();
+      const history = historyCache || [];
 
       if(!history.length){
         list.innerHTML = `<div class="history-empty">Sem histórico ainda.</div>`;
@@ -2523,46 +2474,8 @@
       });
     }
 
-    async function renderHistoryListFromCache(){
-      await renderHistoryList();
-    }
-
-    function startHistoryRealtimeListener(){
-      if(historyRealtimeStarted) return;
-      historyRealtimeStarted = true;
-
-      const { collection, onSnapshot, query, orderBy, limit } = window.firebaseFns;
-      const db = window.firebaseDb;
-
-      const q = query(
-        collection(db, "history"),
-        orderBy("submittedAt", "desc"),
-        limit(100)
-      );
-
-      historyUnsubscribe = onSnapshot(q, async (snapshot) => {
-        const history = snapshot.docs.map(docItem => ({
-          id: docItem.id,
-          ...docItem.data()
-        }));
-
-        window._historyCache = history;
-
-        if(history[0]?.turno){
-          applySnapshotToTurn("t1", history[0].turno);
-        }else{
-          clearTurn("t1");
-        }
-
-        await renderHistoryListFromCache();
-      }, (error) => {
-        console.error("Erro no listener do Firestore:", error);
-      });
-    }
-
-    async function openHistoryModal(index){
-      const history = window._historyCache?.length ? window._historyCache : await loadHistory();
-      const item = history[index];
+    function openHistoryModal(index){
+      const item = historyCache[index];
       if(!item) return;
 
       document.getElementById("historyModalTitle").textContent = `Fechamento • ${item.submittedByName || "Sistema"}`;
@@ -2638,26 +2551,37 @@
       document.getElementById("historyModal").classList.remove("hidden");
     }
 
-    function closeHistoryModal(){
-      document.getElementById("historyModal").classList.add("hidden");
-    }
+    function startHistoryRealtimeListener(){
+      if(historyRealtimeStarted) return;
+      historyRealtimeStarted = true;
 
-    function getBancoRecaFromSnapshot(snapshot){
-      return (snapshot.entries || []).find((item) => item.name === "Banco Reca")?.value || 0;
-    }
+      const q = query(
+        collection(db, "history"),
+        orderBy("submittedAt", "desc"),
+        limit(100)
+      );
 
-    function isDateBetween(dateStr, startDate, endDate){
-      if(!dateStr) return false;
+      historyUnsubscribe = onSnapshot(q, (snapshot) => {
+        historyCache = snapshot.docs.map((docItem) => ({
+          id: docItem.id,
+          ...docItem.data()
+        }));
 
-      const current = new Date(dateStr + "T00:00:00");
-      const start = new Date(startDate + "T00:00:00");
-      const end = new Date(endDate + "T23:59:59");
+        if(historyCache[0]?.turno){
+          applySnapshotToTurn("t1", historyCache[0].turno);
+        }else{
+          clearTurn("t1");
+        }
 
-      return current >= start && current <= end;
-    }
+        renderHistoryListFromCache();
+        render();
+}, (error) => {
+  console.error("Erro no listener do Firestore:", error);
+  alert("Erro no listener do Firestore. Veja o console.");
+});    }
 
-    async function renderCashflowReport(days){
-      const history = window._historyCache?.length ? window._historyCache : await loadHistory();
+    function renderCashflowReport(days){
+      const history = historyCache || [];
 
       const filtered = history.filter((item) => {
         if(!item.fechamentoDate) return false;
@@ -2725,320 +2649,50 @@
       document.getElementById("reportScreen").classList.remove("hidden");
     }
 
-    async function renderCashflowReportByDateRange(startDate, endDate){
-      const history = window._historyCache?.length ? window._historyCache : await loadHistory();
+    function buildPremiumPdfHtml(){
+      const t1Entradas = getEntradasTotal("t1");
+      const t1Saidas = getDynamicTotal("t1");
+      const t1Pendentes = getPendingTotal("t1");
+      const t1Total = t1Entradas - t1Saidas - t1Pendentes;
 
-      const filtered = history.filter((item) => {
-        return isDateBetween(item.fechamentoDate, startDate, endDate);
-      });
-
-      const totalBancoReca = filtered.reduce((acc, item) => acc + getBancoRecaFromSnapshot(item.turno || {}), 0);
-      const totalPendentes = filtered.reduce((acc, item) => acc + Number(item.turno?.pendentesTotal || 0), 0);
-      const totalSaidas = filtered.reduce((acc, item) => acc + Number(item.turno?.saidasTotal || 0), 0);
-      const lucroReal = totalBancoReca - totalPendentes - totalSaidas;
-
-      document.getElementById("reportTitle").textContent = "Relatório personalizado";
-      document.getElementById("reportSubtitle").textContent =
-        `Período de ${formatDateBR(startDate)} até ${formatDateBR(endDate)}`;
-
-      document.getElementById("reportBancoReca").textContent = money(totalBancoReca);
-      document.getElementById("reportPendentes").textContent = negativeMoney(totalPendentes);
-      document.getElementById("reportSaidas").textContent = negativeMoney(totalSaidas);
-      document.getElementById("reportLucro").textContent = money(lucroReal);
-
-      const reportList = document.getElementById("reportList");
-
-      if(!filtered.length){
-        reportList.innerHTML = `
-          <div class="history-empty">
-            Nenhum fechamento encontrado nesse período.
-          </div>
-        `;
-      }else{
-        reportList.innerHTML = filtered.map((item) => {
-          const turno = item.turno || {};
-          const bancoReca = getBancoRecaFromSnapshot(turno);
-
-          return `
-            <div class="report-list-item">
-              <div class="report-list-top">
-                <div class="report-list-name">${escapeHtml(item.submittedByName || "Não identificado")}</div>
-                <div class="report-list-date">${escapeHtml(formatDateBR(item.fechamentoDate || ""))}</div>
-              </div>
-
-              <div class="report-list-lines">
-                <div class="report-line">
-                  <span>Banco Reca</span>
-                  <strong>${money(bancoReca)}</strong>
-                </div>
-
-                <div class="report-line">
-                  <span>Pagos Pendentes</span>
-                  <strong>${negativeMoney(turno.pendentesTotal || 0)}</strong>
-                </div>
-
-                <div class="report-line">
-                  <span>Saídas de Caixa</span>
-                  <strong>${negativeMoney(turno.saidasTotal || 0)}</strong>
-                </div>
-
-                <div class="report-line">
-                  <span>Lucro real</span>
-                  <strong>${money(
-                    getBancoRecaFromSnapshot(item.turno || {}) -
-                    (item.turno?.pendentesTotal || 0) -
-                    (item.turno?.saidasTotal || 0)
-                  )}</strong>
-                </div>
-              </div>
-            </div>
-          `;
-        }).join("");
-      }
-
-      document.getElementById("reportScreen").classList.remove("hidden");
-    }
-
-    async function buildBankReceiptPdfHtml(startDate = "", endDate = ""){
-      const history = window._historyCache?.length ? window._historyCache : await loadHistory();
-      let filtered = history;
-
-      if(startDate && endDate){
-        filtered = history.filter((item) => isDateBetween(item.fechamentoDate, startDate, endDate));
-      }
-
-      const totalBancoReca = filtered.reduce((acc, item) => acc + getBancoRecaFromSnapshot(item.turno || {}), 0);
-      const totalPendentes = filtered.reduce((acc, item) => acc + Number(item.turno?.pendentesTotal || 0), 0);
-      const totalSaidas = filtered.reduce((acc, item) => acc + Number(item.turno?.saidasTotal || 0), 0);
-      const lucroReal = totalBancoReca - totalPendentes - totalSaidas;
-
-      const now = new Date();
-      const nowText = `${now.toLocaleDateString("pt-BR")} às ${now.toLocaleTimeString("pt-BR")}`;
-
-      const periodoTexto = startDate && endDate
-        ? `${formatDateBR(startDate)} até ${formatDateBR(endDate)}`
-        : "Período geral";
-
-      const transacoesHtml = filtered.map((item, index) => {
-        const turno = item.turno || {};
-
-        return `
-          <div class="tx-item">
-            <div class="tx-top">
-              <span>Fechamento ${index + 1}</span>
-              <strong>${formatDateBR(item.fechamentoDate || "")}</strong>
-            </div>
-            <div class="tx-line">
-              <span>Responsável</span>
-              <strong>${escapeHtml(item.submittedByName || "Não identificado")}</strong>
-            </div>
-            <div class="tx-line">
-              <span>Banco Reca</span>
-              <strong>${money(getBancoRecaFromSnapshot(turno))}</strong>
-            </div>
-            <div class="tx-line">
-              <span>Pagos Pendentes</span>
-              <strong>${negativeMoney(turno.pendentesTotal || 0)}</strong>
-            </div>
-            <div class="tx-line">
-              <span>Saídas de Caixa</span>
-              <strong>${negativeMoney(turno.saidasTotal || 0)}</strong>
-            </div>
-          </div>
-        `;
-      }).join("");
+      const t2Entradas = getEntradasTotal("t2");
+      const t2Saidas = getDynamicTotal("t2");
+      const t2Pendentes = getPendingTotal("t2");
+      const t2Total = t2Entradas - t2Saidas - t2Pendentes;
 
       return `
         <!DOCTYPE html>
         <html lang="pt-BR">
         <head>
-          <meta charset="UTF-8" />
-          <title>Comprovante Bank King</title>
+          <meta charset="UTF-8">
+          <title>Bank King PDF</title>
           <style>
-            * { box-sizing: border-box; }
-            body {
-              margin: 0;
-              padding: 24px;
-              background: #eef2f7;
-              font-family: Arial, sans-serif;
-              color: #0f172a;
-            }
-            .receipt {
-              max-width: 520px;
-              margin: 0 auto;
-              background: #fff;
-              border-radius: 22px;
-              overflow: hidden;
-              border: 1px solid #dbe4f0;
-              box-shadow: 0 18px 40px rgba(15, 23, 42, 0.10);
-            }
-            .receipt-head {
-              background: linear-gradient(135deg, #0b1831 0%, #163867 55%, #0b1831 100%);
-              color: white;
-              padding: 22px;
-            }
-            .brand {
-              font-size: 24px;
-              font-weight: 900;
-              letter-spacing: -0.03em;
-              margin-bottom: 8px;
-            }
-            .subtitle {
-              font-size: 13px;
-              color: #dbeafe;
-            }
-            .main-amount {
-              margin-top: 18px;
-            }
-            .main-amount-label {
-              font-size: 12px;
-              text-transform: uppercase;
-              color: #bfdbfe;
-              margin-bottom: 6px;
-            }
-            .main-amount-value {
-              font-size: 34px;
-              font-weight: 900;
-              letter-spacing: -0.04em;
-            }
-            .receipt-body {
-              padding: 20px;
-            }
-            .section {
-              margin-bottom: 18px;
-            }
-            .section-title {
-              font-size: 12px;
-              text-transform: uppercase;
-              letter-spacing: 0.06em;
-              color: #64748b;
-              margin-bottom: 10px;
-              font-weight: 800;
-            }
-            .line {
-              display: flex;
-              justify-content: space-between;
-              gap: 12px;
-              padding: 10px 0;
-              border-bottom: 1px solid #edf2f7;
-              font-size: 14px;
-            }
-            .line:last-child {
-              border-bottom: 0;
-            }
-            .line strong {
-              text-align: right;
-            }
-            .negative {
-              color: #dc2626;
-            }
-            .positive {
-              color: #16a34a;
-            }
-            .tx-item {
-              border: 1px solid #e2e8f0;
-              border-radius: 14px;
-              padding: 12px;
-              margin-bottom: 12px;
-              background: #f8fbff;
-            }
-            .tx-top {
-              display: flex;
-              justify-content: space-between;
-              gap: 10px;
-              font-size: 13px;
-              font-weight: 800;
-              margin-bottom: 10px;
-            }
-            .tx-line {
-              display: flex;
-              justify-content: space-between;
-              gap: 10px;
-              padding: 6px 0;
-              font-size: 13px;
-            }
-            .footer {
-              padding: 18px 20px 24px;
-              font-size: 12px;
-              color: #64748b;
-              text-align: center;
-            }
-            @media print {
-              body {
-                background: white;
-                padding: 0;
-              }
-              .receipt {
-                box-shadow: none;
-                border: 1px solid #dbe4f0;
-              }
-            }
+            body{font-family:Arial,sans-serif;padding:24px;color:#0f172a;}
+            h1{margin-bottom:20px;}
+            .grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;}
+            .card{border:1px solid #cbd5e1;border-radius:12px;padding:16px;}
+            .label{font-size:12px;color:#64748b;}
+            .value{font-size:24px;font-weight:700;margin-top:6px;}
           </style>
         </head>
         <body>
-          <div class="receipt">
-            <div class="receipt-head">
-              <div class="brand">BANK KING</div>
-              <div class="subtitle">Comprovante financeiro</div>
-
-              <div class="main-amount">
-                <div class="main-amount-label">Lucro real do período</div>
-                <div class="main-amount-value">${money(lucroReal)}</div>
-              </div>
+          <h1>Bank King • Fechamento</h1>
+          <div class="grid">
+            <div class="card">
+              <div class="label">Turno 1</div>
+              <div class="value">${money(t1Total)}</div>
             </div>
-
-            <div class="receipt-body">
-              <div class="section">
-                <div class="section-title">Dados do comprovante</div>
-
-                <div class="line">
-                  <span>Emitido em</span>
-                  <strong>${nowText}</strong>
-                </div>
-
-                <div class="line">
-                  <span>Período</span>
-                  <strong>${periodoTexto}</strong>
-                </div>
-
-                <div class="line">
-                  <span>Total de fechamentos</span>
-                  <strong>${filtered.length}</strong>
-                </div>
-              </div>
-
-              <div class="section">
-                <div class="section-title">Resumo financeiro</div>
-
-                <div class="line">
-                  <span>Entrou em Banco Reca</span>
-                  <strong>${money(totalBancoReca)}</strong>
-                </div>
-
-                <div class="line">
-                  <span>Saiu em Pagos Pendentes</span>
-                  <strong class="negative">${negativeMoney(totalPendentes)}</strong>
-                </div>
-
-                <div class="line">
-                  <span>Saiu em Saídas de Caixa</span>
-                  <strong class="negative">${negativeMoney(totalSaidas)}</strong>
-                </div>
-
-                <div class="line">
-                  <span>Lucro real</span>
-                  <strong class="positive">${money(lucroReal)}</strong>
-                </div>
-              </div>
-
-              <div class="section">
-                <div class="section-title">Movimentações do período</div>
-                ${transacoesHtml || '<div class="tx-item">Nenhuma movimentação encontrada.</div>'}
-              </div>
+            <div class="card">
+              <div class="label">Turno 2</div>
+              <div class="value">${money(t2Total)}</div>
             </div>
-
-            <div class="footer">
-              Comprovante gerado automaticamente pelo sistema Bank King.
+            <div class="card">
+              <div class="label">Entradas Totais</div>
+              <div class="value">${money(t1Entradas + t2Entradas)}</div>
+            </div>
+            <div class="card">
+              <div class="label">Saídas Totais</div>
+              <div class="value">${money(t1Saidas + t2Saidas + t1Pendentes + t2Pendentes)}</div>
             </div>
           </div>
         </body>
@@ -3046,42 +2700,7 @@
       `;
     }
 
-    async function exportCustomPdfProtected(){
-      const code = prompt("Digite código interno:");
-      if(code === null) return;
-
-      if(code !== PDF_CODE){
-        alert("Código interno incorreto.");
-        return;
-      }
-
-      const startDate = document.getElementById("reportDateStart").value;
-      const endDate = document.getElementById("reportDateEnd").value;
-
-      if(!startDate || !endDate){
-        alert("Selecione a data inicial e a data final.");
-        return;
-      }
-
-      if(startDate > endDate){
-        alert("A data inicial não pode ser maior que a data final.");
-        return;
-      }
-
-      const printWindow = window.open("", "_blank", "width=800,height=900");
-      if(!printWindow){
-        alert("Não foi possível abrir a janela de impressão.");
-        return;
-      }
-
-      printWindow.document.open();
-      printWindow.document.write(await buildBankReceiptPdfHtml(startDate, endDate));
-      printWindow.document.close();
-      printWindow.focus();
-      printWindow.onload = () => printWindow.print();
-    }
-
-    async function exportToPdfProtected(){
+    function exportToPdfProtected(){
       const code = prompt("Digite código interno:");
       if(code === null) return;
 
@@ -3097,13 +2716,13 @@
       }
 
       printWindow.document.open();
-      printWindow.document.write(await buildBankReceiptPdfHtml());
+      printWindow.document.write(buildPremiumPdfHtml());
       printWindow.document.close();
       printWindow.focus();
       printWindow.onload = () => printWindow.print();
     }
 
-    async function render(){
+    function render(){
       ensureDates();
 
       const t1Entradas = getEntradasTotal("t1");
@@ -3121,6 +2740,7 @@
       document.getElementById("t1_entradas_total").textContent = money(t1Entradas);
       document.getElementById("t1_saidas_total").textContent = negativeMoney(t1Saidas);
       document.getElementById("t1_pendentes_total").textContent = negativeMoney(t1Pendentes);
+
       document.getElementById("t2_entradas_total").textContent = money(t2Entradas);
       document.getElementById("t2_saidas_total").textContent = negativeMoney(t2Saidas);
       document.getElementById("t2_pendentes_total").textContent = negativeMoney(t2Pendentes);
@@ -3135,7 +2755,6 @@
       document.getElementById("bankValue").textContent = balanceVisible ? money(diff) : "••••••";
       updateEyeIcon();
       updateStatusPill(diff);
-      await renderHistoryList();
     }
 
     function openAdminModal(){
@@ -3263,9 +2882,10 @@
       });
     }
 
-    document.addEventListener("DOMContentLoaded", async () => {
+    document.addEventListener("DOMContentLoaded", () => {
       ensureDemoUser();
       bindSessionEvents();
+      startHistoryRealtimeListener();
 
       [
         "t1_banco","t1_pppoker","t1_suprema","t1_buffalo","t1_ganamos","t1_cargas","t1_cargas_poker",
@@ -3276,11 +2896,17 @@
       });
 
       document.querySelectorAll("[data-add-row]").forEach((btn) => {
-        btn.addEventListener("click", () => createDynamicRow(btn.dataset.addRow));
+        btn.addEventListener("click", () => {
+          createDynamicRow(btn.dataset.addRow);
+          render();
+        });
       });
 
       document.querySelectorAll("[data-add-pending]").forEach((btn) => {
-        btn.addEventListener("click", () => createPendingRow(btn.dataset.addPending));
+        btn.addEventListener("click", () => {
+          createPendingRow(btn.dataset.addPending);
+          render();
+        });
       });
 
       document.getElementById("toggleBalance").addEventListener("click", () => {
@@ -3297,32 +2923,21 @@
       });
 
       document.getElementById("fecharTurno").addEventListener("click", async () => {
-        const item = serializeTurn("t2");
-        await saveHistoryItem(item);
-        clearTurn("t2");
-        await render();
-        alert("Turno fechado com sucesso.");
-      });
+try {
+const item = serializeTurn("t2");
+console.log("Item que vai salvar:", item);
+await saveHistoryItem(item);
+console.log("Histórico salvo com sucesso no Firestore.");
+clearTurn("t2");
+render();
+alert("Turno fechado com sucesso.");
+} catch (error) {
+console.error("Erro ao salvar histórico:", error);
+alert("Erro ao salvar histórico. Abra o console para ver o detalhe.");
+}
+});
 
       document.getElementById("exportarPdf").addEventListener("click", exportToPdfProtected);
-      document.getElementById("exportCustomPdf").addEventListener("click", exportCustomPdfProtected);
-
-      document.getElementById("applyCustomReportRange").addEventListener("click", async () => {
-        const startDate = document.getElementById("reportDateStart").value;
-        const endDate = document.getElementById("reportDateEnd").value;
-
-        if(!startDate || !endDate){
-          alert("Selecione a data inicial e a data final.");
-          return;
-        }
-
-        if(startDate > endDate){
-          alert("A data inicial não pode ser maior que a data final.");
-          return;
-        }
-
-        await renderCashflowReportByDateRange(startDate, endDate);
-      });
 
       document.getElementById("closeReportScreen").addEventListener("click", () => {
         document.getElementById("reportScreen").classList.add("hidden");
@@ -3333,7 +2948,7 @@
       });
 
       document.querySelectorAll("[data-report-range]").forEach((btn) => {
-        btn.addEventListener("click", async () => {
+        btn.addEventListener("click", () => {
           const senha = prompt("Digite código interno:");
           if(senha === null) return;
 
@@ -3342,7 +2957,7 @@
             return;
           }
 
-          await renderCashflowReport(Number(btn.dataset.reportRange));
+          renderCashflowReport(Number(btn.dataset.reportRange));
           document.getElementById("reportsMenu").classList.add("hidden");
         });
       });
@@ -3360,8 +2975,7 @@
 
         await deleteAllHistory();
         clearTurn("t1");
-        window._historyCache = [];
-        await render();
+        render();
       });
 
       document.getElementById("logoutBtn").addEventListener("click", logout);
@@ -3409,4 +3023,3 @@
   </script>
 </body>
 </html>
-
