@@ -1683,6 +1683,7 @@
 
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-app.js";
+
 import {
   getFirestore,
   collection,
@@ -1699,7 +1700,6 @@ import {
 } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-firestore.js";
 
 import {
-  import {
   getAuth,
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
@@ -1707,19 +1707,21 @@ import {
   onAuthStateChanged,
   sendPasswordResetEmail
 } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-auth.js";
-    const firebaseConfig = {
-      apiKey: "AIzaSyAuyfJNu2vwvVyH5gRsvg82m98teFCmPXw",
-      authDomain: "bank-king-c53cf.firebaseapp.com",
-      projectId: "bank-king-c53cf",
-      storageBucket: "bank-king-c53cf.firebasestorage.app",
-      messagingSenderId: "108865328748",
-      appId: "1:108865328748:web:65dbbcf146a67f95512a49",
-      measurementId: "G-S43L7WM4LH"
-    };
 
-    const app = initializeApp(firebaseConfig);
-    const db = getFirestore(app);
+const firebaseConfig = {
+  apiKey: "AIzaSyAuyfJNu2vwvVyH5gRsvg82m98teFCmPXw",
+  authDomain: "bank-king-c53cf.firebaseapp.com",
+  projectId: "bank-king-c53cf",
+  storageBucket: "bank-king-c53cf.firebasestorage.app",
+  messagingSenderId: "108865328748",
+  appId: "1:108865328748:web:65dbbcf146a67f95512a49",
+  measurementId: "G-S43L7WM4LH"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
 const auth = getAuth(app);
+
 onAuthStateChanged(auth, (user) => {
   if (user) {
     const userData = {
@@ -1734,7 +1736,6 @@ onAuthStateChanged(auth, (user) => {
     console.log("Usuário não logado");
   }
 });
-
     const PDF_CODE = "1520";
     const REPORT_CODE = "1520";
     const RESET_CODE = "4br1l#2o26";
