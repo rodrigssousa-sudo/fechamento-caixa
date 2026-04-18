@@ -1430,7 +1430,7 @@
 
           <div class="bank-card">
             <div class="bank-topline">
-              <span class="bank-label">BANCA TOTAL</span>
+              <span class="bank-label">SALDO DISPONÍVEL</span>
               <button id="toggleBalance" class="hide-balance-btn" type="button" aria-label="Mostrar ou ocultar banca">
                 <svg id="eyeIcon" width="20" height="20" viewBox="0 0 24 24" fill="none">
                   <path d="M2 12C4.5 7 8.5 5 12 5C15.5 5 19.5 7 22 12C19.5 17 15.5 19 12 19C8.5 19 4.5 17 2 12Z" stroke="currentColor" stroke-width="1.6"/>
@@ -2369,7 +2369,7 @@ loginForm.addEventListener("submit", async (e) => {
         submittedByEmail: activeUser?.email || "",
         submittedAt: serverTimestamp(),
         fechamentoDate: document.getElementById(f.dataFechamento)?.value || getTodayDateInput(),
-        total: saldoLiquido,
+        total: getValue(f.banco),
         turno: {
           dataFechamento: document.getElementById(f.dataFechamento)?.value || getTodayDateInput(),
           entries,
@@ -2407,7 +2407,7 @@ loginForm.addEventListener("submit", async (e) => {
   const snapshot = await getDocs(q);
   const previousTotal = snapshot.docs[0]?.data()?.total || 0;
 
-  item.diff = item.total - previousTotal;
+  item.diff = item.turno?.saldoLiquido || 0;
 
   await addDoc(collection(db, "history"), item);
 }
