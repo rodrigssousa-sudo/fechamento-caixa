@@ -2453,21 +2453,19 @@ registerForm.addEventListener("submit", async (e) => {
 
   const snapshot = await getDocs(q);
   const previousTotal = snapshot.docs[0]?.data()?.total || 0;
-async function saveHistoryItem(item){
-  const q = query(
-    collection(db, "history"),
-    orderBy("submittedAt", "desc"),
-    limit(1)
-  );
-
-  const snapshot = await getDocs(q);
-  const previousTotal = snapshot.docs[0]?.data()?.total || 0;
 
   item.bankVariation = item.total - previousTotal;
   item.turnProfit = item.turno?.saldoLiquido || 0;
 
   await addDoc(collection(db, "history"), item);
-}}
+}
+
+async function deleteAllHistory(){
+  const snapshot = await getDocs(collection(db, "history"));
+  for (const item of snapshot.docs) {
+    await deleteDoc(doc(db, "history", item.id));
+  }
+}
     async function deleteAllHistory(){
       const snapshot = await getDocs(collection(db, "history"));
       for (const item of snapshot.docs) {
