@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-  <title>Bank King PRO</title>
+  <title>Bank King BRS - PRO</title>
   <style>
     :root{
       --bg:#030712;
@@ -2406,11 +2406,21 @@ loginForm.addEventListener("submit", async (e) => {
 
   const snapshot = await getDocs(q);
   const previousTotal = snapshot.docs[0]?.data()?.total || 0;
+async function saveHistoryItem(item){
+  const q = query(
+    collection(db, "history"),
+    orderBy("submittedAt", "desc"),
+    limit(1)
+  );
 
-  item.diff = item.turno?.saldoLiquido || 0;
+  const snapshot = await getDocs(q);
+  const previousTotal = snapshot.docs[0]?.data()?.total || 0;
+
+  item.bankVariation = item.total - previousTotal;
+  item.turnProfit = item.turno?.saldoLiquido || 0;
 
   await addDoc(collection(db, "history"), item);
-}
+}}
     async function deleteAllHistory(){
       const snapshot = await getDocs(collection(db, "history"));
       for (const item of snapshot.docs) {
@@ -2471,24 +2481,35 @@ loginForm.addEventListener("submit", async (e) => {
         return;
       }
 
-      list.innerHTML = history.slice(0, 4).map((item, index) => `
-        <div class="history-item" data-history-index="${index}">
-          <div class="history-item-top">
-            <div class="history-user">${escapeHtml(item.submittedByName || "Sistema")}</div>
-            <div class="history-time">${escapeHtml(formatDateBR(item.fechamentoDate || ""))}</div>
-          </div>
-          <div class="history-item-grid">
-            <div class="history-mini-card">
-              <div class="history-mini-label">Total</div>
-              <div class="history-mini-value">${money(item.total || 0)}</div>
-            </div>
-            <div class="history-mini-card">
-              <div class="history-mini-label">Diferença</div>
-              <div class="history-mini-value ${(item.diff || 0) < 0 ? "red" : ""}">${money(item.diff || 0)}</div>
-            </div>
-          </div>
+list.innerHTML = history.slice(0, 4).map((item, index) => `
+  <div class="history-item" data-history-index="${index}">
+    <div class="history-item-top">
+      <div class="history-user">${escapeHtml(item.submittedByName || "Sistema")}</div>
+      <div class="history-time">${escapeHtml(formatDateBR(item.fechamentoDate || ""))}</div>
+    </div>
+
+    <div class="history-item-grid">
+      <div class="history-mini-card">
+        <div class="history-mini-label">Total</div>
+        <div class="history-mini-value">${money(item.total || 0)}</div>
+      </div>
+
+      <div class="history-mini-card">
+        <div class="history-mini-label">Lucro do turno</div>
+        <div class="history-mini-value ${(item.turnProfit || 0) < 0 ? "red" : ""}">
+          ${money(item.turnProfit || 0)}
         </div>
-      `).join("");
+      </div>
+
+      <div class="history-mini-card">
+        <div class="history-mini-label">Variação da banca</div>
+        <div class="history-mini-value ${(item.bankVariation || 0) < 0 ? "red" : ""}">
+          ${money(item.bankVariation || 0)}
+        </div>
+      </div>
+    </div>
+  </div>
+`).join("");
 
       document.getElementById("historyInfo").textContent =
         `Último fechamento: ${history[0]?.submittedByName || "Sistema"} • ${formatDateBR(history[0]?.fechamentoDate || "")}`;
@@ -2509,7 +2530,8 @@ loginForm.addEventListener("submit", async (e) => {
         `Data do fechamento: ${formatDateBR(item.fechamentoDate || "")} • Enviado em: ${formatDateTimeBR(item.submittedAt)}`;
 
       const turno = item.turno || {};
-      const diffValue = Number(item.diff || 0);
+      const turnProfitValue = Number(item.turnProfit || 0);
+const bankVariationValue = Number(item.bankVariation || 0);
 
       document.getElementById("historyModalBody").innerHTML = `
         <div class="modal-summary-grid">
@@ -2518,8 +2540,8 @@ loginForm.addEventListener("submit", async (e) => {
             <div class="modal-summary-value">${money(item.total || 0)}</div>
           </div>
           <div class="modal-summary-card">
-            <div class="modal-summary-label">Diferença</div>
-            <div class="modal-summary-value">${money(diffValue)}</div>
+            <div class="modal-summary-label">Lucro do turno</div>
+            <div class="history-mini-value ${(item.turnProfit || 0) < 0 ? "red" : ""}">${money(item.turnProfit || 0)}</div>
           </div>
           <div class="modal-summary-card">
             <div class="modal-summary-label">Responsável</div>
@@ -2989,22 +3011,52 @@ alert("Erro ao salvar histórico. Abra o console para ver o detalhe.");
         });
       });
 
-      document.getElementById("deleteHistoryBtn").addEventListener("click", async () => {
-        const senha = prompt("Digite código interno:");
-        if(senha === null) return;
+document.getElementById("deleteHistoryBtn").addEventListener("click", async () => {
+  const senha = prompt("Digite código interno:");
+  if (senha === null) return;
 
-        if(senha !== DELETE_HISTORY_CODE){
-          alert("Código interno incorreto.");
-          return;
-        }
+  if (senha !== DELETE_HISTORY_CODE) {
+    alert("Código interno incorreto.");
+    return;
+  }
 
-        if(!confirm("Deseja realmente apagar todo o histórico?")) return;
+  if (!historyCache.length) {
+    alert("Não há histórico para excluir.");
+    return;
+  }
 
-        await deleteAllHistory();
-        clearTurn("t1");
-        render();
-      });
+  const lista = historyCache
+    .map((item, index) => {
+      const nome = item.submittedByName || "Sistema";
+      const data = formatDateBR(item.fechamentoDate || "");
+      const total = money(item.total || 0);
+      return `${index + 1} - ${nome} - ${data} - ${total}`;
+    })
+    .join("\n");
 
+  const escolha = prompt(
+    `Digite o número do histórico que deseja excluir:\n\n${lista}`
+  );
+
+  if (escolha === null) return;
+
+  const indice = Number(escolha) - 1;
+
+  if (!Number.isInteger(indice) || indice < 0 || indice >= historyCache.length) {
+    alert("Número inválido.");
+    return;
+  }
+
+  const itemSelecionado = historyCache[indice];
+
+  if (!confirm(`Deseja excluir o histórico de ${itemSelecionado.submittedByName || "Sistema"} em ${formatDateBR(itemSelecionado.fechamentoDate || "")}?`)) {
+    return;
+  }
+
+  await deleteDoc(doc(db, "history", itemSelecionado.id));
+
+  alert("Histórico excluído com sucesso.");
+});
       document.getElementById("logoutBtn").addEventListener("click", logout);
 
       document.getElementById("closeHistoryModal").addEventListener("click", closeHistoryModal);
