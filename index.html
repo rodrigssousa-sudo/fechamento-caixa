@@ -2466,13 +2466,6 @@ async function deleteAllHistory(){
     await deleteDoc(doc(db, "history", item.id));
   }
 }
-    async function deleteAllHistory(){
-      const snapshot = await getDocs(collection(db, "history"));
-      for (const item of snapshot.docs) {
-        await deleteDoc(doc(db, "history", item.id));
-      }
-    }
-
     function applySnapshotToTurn(turno, snapshot){
       if(!snapshot) return;
 
