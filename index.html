@@ -2838,7 +2838,9 @@ const bankVariationValue = Number(item.bankVariation || 0);
       document.getElementById("totalEntradasT2").textContent = money(t2Entradas);
       document.getElementById("lucroTotal").textContent = money(diff);
 
-const bancaTotalAtual = historyCache[0]?.total || 0;
+const bancaTotalAtualBruta = historyCache[0]?.total || 0;
+const bancaTotalAtual = Math.max(0, Number(bancaTotalAtualBruta || 0));
+
 document.getElementById("bankValue").textContent =
   balanceVisible ? money(bancaTotalAtual) : "••••••";
       updateEyeIcon();
