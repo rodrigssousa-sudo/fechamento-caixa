@@ -2909,9 +2909,8 @@ loginForm.addEventListener("submit", async (e) => {
     }
 
     document.addEventListener("DOMContentLoaded", () => {
-      ensureDemoUser();
-      bindSessionEvents();
-      startHistoryRealtimeListener();
+  bindSessionEvents();
+  startHistoryRealtimeListener();
 
       [
         "t1_banco","t1_pppoker","t1_suprema","t1_buffalo","t1_ganamos","t1_cargas","t1_cargas_poker",
@@ -3031,9 +3030,8 @@ alert("Erro ao salvar histórico. Abra o console para ver o detalhe.");
         localStorage.removeItem(REMEMBERED_EMAIL_STORAGE_KEY);
         localStorage.removeItem(SESSION_LAST_ACTIVITY_KEY);
 
-        ensureDemoUser();
-        renderAdminUsers();
-        alert("Todos os usuários foram removidos. O usuário demo foi recriado.");
+renderAdminUsers();
+alert("Todos os usuários foram removidos.");
       });
 
       const rememberedUser = loadActiveUser();
