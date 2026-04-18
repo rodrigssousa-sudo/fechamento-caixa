@@ -2843,8 +2843,9 @@ const bancaTotalAtual = Math.max(0, Number(bancaTotalAtualBruta || 0));
 
 document.getElementById("bankValue").textContent =
   balanceVisible ? money(bancaTotalAtual) : "••••••";
-      updateEyeIcon();
-      updateStatusPill(ultimoLucroDoTurno);
+
+updateEyeIcon();
+updateStatusPill(ultimoLucroDoTurno);
     }
 
 async function openAdminModal(){
