@@ -43,6 +43,77 @@ body{
   min-height:100vh;
 }
 
+/* 🔥 COLAR AQUI */
+
+  .top{
+    padding:28px 32px 18px;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+  }
+
+  .brand-left{
+    display:flex;
+    align-items:center;
+    gap:16px;
+  }
+
+  .logo-box{
+    width:54px;
+    height:54px;
+    border-radius:12px;
+    background:#0f172a;
+    color:#fff;
+    font-weight:900;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:18px;
+    letter-spacing:.5px;
+  }
+
+  .brand-text h1{
+    margin:0;
+    font-size:26px;
+    letter-spacing:.5px;
+  }
+
+  .brand-text p{
+    margin:4px 0 0;
+    font-size:13px;
+    color:#64748b;
+  }
+
+  .brand-right{
+    display:flex;
+    gap:24px;
+    text-align:right;
+  }
+
+  .period-block,
+  .generated-block{
+    font-size:12px;
+    color:#334155;
+
+  }
+
+  .period-title{
+    font-size:10px;
+    letter-spacing:.1em;
+    font-weight:700;
+    color:#94a3b8;
+    margin-bottom:4px;
+  }
+
+  .divider-line{
+    height:3px;
+    background:linear-gradient(90deg, #0f172a, #3b82f6);
+    margin:0 32px 12px;
+    border-radius:999px;
+
+  }
+
+
 .hidden{display:none !important;}
 
 .auth-screen{
@@ -325,21 +396,13 @@ h1{
 .card{
 
   background:rgba(255,255,255,.82);
-
   backdrop-filter:blur(18px);
-
   -webkit-backdrop-filter:blur(18px);
-
   border:1px solid rgba(255,255,255,.86);
-
   border-radius:24px;
-
   box-shadow:
-
     0 20px 50px rgba(15,23,42,.07),
-
     0 8px 24px rgba(15,23,42,.04);
-
 }
 
 .summary-card{
@@ -2861,222 +2924,273 @@ function buildPremiumPdfHtml(startDate, endDate){
     `;
   }).join("");
 
-  return `
-    <!DOCTYPE html>
-    <html lang="pt-BR">
-    <head>
-      <meta charset="UTF-8" />
-      <title>Relatório Financeiro - Bank King</title>
-      <style>
-        *{
-          box-sizing:border-box;
-        }
+return `
+  <!DOCTYPE html>
+  <html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Relatório Financeiro - Bank King</title>
+    <style>
+      *{
+        box-sizing:border-box;
+      }
 
+      body{
+        margin:0;
+        font-family:Arial, Helvetica, sans-serif;
+        background:#f8fafc;
+        color:#0f172a;
+        padding:28px;
+      }
+
+      .sheet{
+        max-width:1100px;
+        margin:0 auto;
+        background:#ffffff;
+        border:1px solid #dbe3ee;
+        box-shadow:0 10px 30px rgba(15,23,42,.08);
+        overflow:hidden;
+      }
+
+      .top{
+        padding:28px 32px 18px;
+        display:flex;
+        justify-content:space-between;
+        align-items:center;
+        gap:20px;
+      }
+
+      .brand-left{
+        display:flex;
+        align-items:center;
+        gap:16px;
+      }
+
+      .logo-box{
+        width:54px;
+        height:54px;
+        border-radius:12px;
+        background:linear-gradient(135deg, #0f172a, #1e3a8a);
+        color:#ffffff;
+        font-weight:900;
+        display:flex;
+        align-items:center;
+        justify-content:center;
+        font-size:18px;
+        letter-spacing:.5px;
+        box-shadow:0 10px 24px rgba(15,23,42,.18);
+      }
+
+      .brand-text h1{
+        margin:0;
+        font-size:26px;
+        letter-spacing:.5px;
+        color:#0f172a;
+      }
+
+      .brand-text p{
+        margin:4px 0 0;
+        font-size:13px;
+        color:#64748b;
+      }
+
+      .brand-right{
+        display:flex;
+        gap:24px;
+        text-align:right;
+      }
+
+      .period-block,
+      .generated-block{
+        font-size:12px;
+        color:#334155;
+      }
+
+      .period-title{
+        font-size:10px;
+        letter-spacing:.1em;
+        font-weight:700;
+        color:#94a3b8;
+        margin-bottom:4px;
+        text-transform:uppercase;
+      }
+
+      .divider-line{
+        height:3px;
+        background:linear-gradient(90deg, #0f172a, #3b82f6);
+        margin:0 32px 12px;
+        border-radius:999px;
+      }
+
+      .summary{
+        display:grid;
+        grid-template-columns:repeat(3, 1fr);
+        gap:14px;
+        padding:22px 32px;
+        border-bottom:1px solid #e2e8f0;
+      }
+
+      .card{
+        border:1px solid #dbe3ee;
+        background:linear-gradient(180deg, #ffffff, #f8fbff);
+        padding:18px;
+        border-radius:16px;
+        box-shadow:0 6px 18px rgba(15,23,42,.04);
+      }
+
+      .label{
+        font-size:11px;
+        text-transform:uppercase;
+        letter-spacing:.08em;
+        color:#64748b;
+        margin-bottom:6px;
+      }
+
+      .value{
+        font-size:26px;
+        font-weight:900;
+        letter-spacing:-0.02em;
+        color:#0f172a;
+      }
+
+      .table-wrap{
+        padding:24px 32px 32px;
+      }
+
+      table{
+        width:100%;
+        border-collapse:collapse;
+        font-size:13px;
+      }
+
+      thead th{
+        text-align:left;
+        background:linear-gradient(90deg, #0f172a, #1e3a8a);
+        color:#ffffff;
+        padding:13px 10px;
+        font-size:11px;
+        letter-spacing:.05em;
+        text-transform:uppercase;
+      }
+
+      tbody td{
+        padding:11px 10px;
+        border-bottom:1px solid #e2e8f0;
+      }
+
+      tbody tr:nth-child(even){
+        background:#f8fafc;
+      }
+
+      .empty{
+        padding:40px 20px;
+        text-align:center;
+        color:#64748b;
+        border:1px dashed #cbd5e1;
+        background:#f8fafc;
+        border-radius:14px;
+      }
+
+      .footer{
+        padding:16px 32px 26px;
+        color:#64748b;
+        font-size:12px;
+        border-top:1px solid #e2e8f0;
+      }
+
+      @media print{
         body{
-          margin:0;
-          font-family:Arial, Helvetica, sans-serif;
-          background:#f8fafc;
-          color:#0f172a;
-          padding:28px;
+          background:#fff;
+          padding:0;
         }
 
         .sheet{
-          max-width:1100px;
-          margin:0 auto;
-          background:#ffffff;
-          border:1px solid #dbe3ee;
-          box-shadow:0 10px 30px rgba(15,23,42,.08);
+          border:none;
+          box-shadow:none;
         }
-
-        .top{
-          padding:28px 32px 20px;
-          border-bottom:2px solid #0f172a;
-          display:flex;
-          justify-content:space-between;
-          align-items:flex-start;
-          gap:20px;
-        }
-
-        .brand h1{
-          margin:0;
-          font-size:28px;
-          letter-spacing:.5px;
-        }
-
-        .brand p{
-          margin:6px 0 0;
-          color:#475569;
-          font-size:13px;
-        }
-
-        .period{
-          text-align:right;
-          font-size:13px;
-          color:#334155;
-        }
-
-        .period strong{
-          display:block;
-          font-size:14px;
-          color:#0f172a;
-          margin-bottom:6px;
-        }
-
-        .summary{
-          display:grid;
-          grid-template-columns:repeat(4, 1fr);
-          gap:14px;
-          padding:22px 32px;
-          border-bottom:1px solid #e2e8f0;
-        }
-
-        .card{
-          border:1px solid #dbe3ee;
-          background:#f8fbff;
-          padding:16px;
-        }
-
-        .label{
-          font-size:11px;
-          text-transform:uppercase;
-          letter-spacing:.08em;
-          color:#64748b;
-          margin-bottom:8px;
-        }
-
-        .value{
-          font-size:24px;
-          font-weight:700;
-          color:#0f172a;
-        }
-
-        .table-wrap{
-          padding:24px 32px 32px;
-        }
-
-        table{
-          width:100%;
-          border-collapse:collapse;
-          font-size:13px;
-        }
-
-        thead th{
-          text-align:left;
-          background:#0f172a;
-          color:#ffffff;
-          padding:12px 10px;
-          font-size:12px;
-          text-transform:uppercase;
-          letter-spacing:.04em;
-        }
-
-        tbody td{
-          padding:11px 10px;
-          border-bottom:1px solid #e2e8f0;
-        }
-
-        tbody tr:nth-child(even){
-          background:#f8fafc;
-        }
-
-        .empty{
-          padding:40px 20px;
-          text-align:center;
-          color:#64748b;
-          border:1px dashed #cbd5e1;
-          background:#f8fafc;
-        }
-
-        .footer{
-          padding:16px 32px 26px;
-          color:#64748b;
-          font-size:12px;
-          border-top:1px solid #e2e8f0;
-        }
-
-        @media print{
-          body{
-            background:#fff;
-            padding:0;
-          }
-
-          .sheet{
-            border:none;
-            box-shadow:none;
-          }
-        }
-      </style>
-    </head>
-    <body>
-      <div class="sheet">
-        <div class="top">
-          <div class="brand">
+      }
+    </style>
+  </head>
+  <body>
+    <div class="sheet">
+      <div class="top">
+        <div class="brand-left">
+          <div class="logo-box">BK</div>
+          <div class="brand-text">
             <h1>BANK KING</h1>
             <p>Relatório financeiro consolidado</p>
           </div>
+        </div>
 
-          <div class="period">
-            <strong>Período exportado</strong>
+        <div class="brand-right">
+          <div class="period-block">
+            <div class="period-title">Período</div>
             <div>De: ${formatDateBR(startDate)}</div>
             <div>Até: ${formatDateBR(endDate)}</div>
-            <div style="margin-top:8px;">Gerado em: ${new Date().toLocaleDateString("pt-BR")} ${new Date().toLocaleTimeString("pt-BR", {hour:"2-digit", minute:"2-digit"})}</div>
-          </div>
-        </div>
-
-        <div class="summary">
-          <div class="card">
-            <div class="label">Banco Reca</div>
-            <div class="value">${money(ultimoBancoReca)}</div>
           </div>
 
-          <div class="card">
-            <div class="label">Saídas de Caixa</div>
-            <div class="value">${money(totalSaidas)}</div>
+          <div class="generated-block">
+            <div class="period-title">Gerado em</div>
+            <div>${new Date().toLocaleDateString("pt-BR")}</div>
+            <div>${new Date().toLocaleTimeString("pt-BR", { hour:"2-digit", minute:"2-digit" })}</div>
           </div>
-
-          <div class="card">
-            <div class="label">Saldo Total</div>
-            <div class="value">${money(saldoTotal)}</div>
-          </div>
-        </div>
-
-        <div class="table-wrap">
-          ${
-  filtered.length
-    ? `
-      <table>
-        <thead>
-          <tr>
-            <th>Nome</th>
-            <th>Turno</th>
-            <th>Data</th>
-            <th>Banco Reca</th>
-            <th>Saídas</th>
-            <th>Pendentes</th>
-            <th>Saldo</th>
-          </tr>
-        </thead>
-        <tbody>
-          ${linhas}
-        </tbody>
-      </table>
-    `
-    : `
-      <div class="empty">
-        Nenhum fechamento encontrado no período selecionado.<br>
-        Histórico carregado: ${(historyCache || []).length} registro(s).
-      </div>
-    `
-}        </div>
-
-        <div class="footer">
-          Documento interno • Bank King BRS
         </div>
       </div>
-    </body>
-    </html>
-  `;
-}
+
+      <div class="divider-line"></div>
+
+      <div class="summary">
+        <div class="card">
+          <div class="label">Banco Reca</div>
+          <div class="value">${money(ultimoBancoReca)}</div>
+        </div>
+
+        <div class="card">
+          <div class="label">Saídas de Caixa</div>
+          <div class="value">${money(totalSaidas)}</div>
+        </div>
+
+        <div class="card">
+          <div class="label">Saldo Total</div>
+          <div class="value">${money(saldoTotal)}</div>
+        </div>
+      </div>
+
+      <div class="table-wrap">
+        ${
+          filtered.length
+            ? `
+              <table>
+                <thead>
+                  <tr>
+                    <th>Nome</th>
+                    <th>Turno</th>
+                    <th>Data</th>
+                    <th>Banco Reca</th>
+                    <th>Saídas</th>
+                    <th>Diferença Caixa</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  ${linhas}
+                </tbody>
+              </table>
+            `
+            : `
+              <div class="empty">
+                Nenhum fechamento encontrado no período selecionado.
+              </div>
+            `
+        }
+      </div>
+
+      <div class="footer">
+        Documento interno • Bank King BRS
+      </div>
+    </div>
+  </body>
+  </html>
+`;}
 
 function exportToPdfProtected(){
   const code = prompt("Digite código interno:");
