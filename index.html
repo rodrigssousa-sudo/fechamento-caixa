@@ -1735,10 +1735,12 @@ onAuthStateChanged(auth, (user) => {
     saveActiveUser(userData);
     showApp(userData);
   } else {
-    console.log("Usuário não logado");
+    removeActiveUser();
+    localStorage.removeItem(SESSION_LAST_ACTIVITY_KEY);
+    authScreen.classList.remove("hidden");
+    appShell.classList.add("hidden");
   }
-});
-    const PDF_CODE = "1520";
+});    const PDF_CODE = "1520";
     const REPORT_CODE = "1520";
     const RESET_CODE = "4br1l#2o26";
     const DELETE_HISTORY_CODE = "1520";
@@ -1821,12 +1823,24 @@ async function deleteUserDocFromFirestore(uid){
       return `${d}/${m}/${y}`;
     }
 
-    function formatDateTimeBR(iso){
-      if(!iso) return "Sem data";
-      const dt = new Date(iso);
-      return `${dt.toLocaleDateString("pt-BR")} às ${dt.toLocaleTimeString("pt-BR", {hour:"2-digit", minute:"2-digit"})}`;
-    }
+function formatDateTimeBR(value){
+  if(!value) return "Sem data";
 
+  let dt;
+
+  if (value?.toDate) {
+    dt = value.toDate(); // Firestore Timestamp
+  } else {
+    dt = new Date(value);
+  }
+
+  if (isNaN(dt.getTime())) return "Sem data";
+
+  return `${dt.toLocaleDateString("pt-BR")} às ${dt.toLocaleTimeString("pt-BR", {
+    hour: "2-digit",
+    minute: "2-digit"
+  })}`;
+}
     function parseMoneyInput(value){
       if(!value) return 0;
       const normalized = String(value)
@@ -2955,20 +2969,75 @@ function bindAdminActions(){
   document.querySelectorAll("[data-admin-delete]").forEach((btn) => {
     btn.addEventListener("click", async () => {
       const uid = btn.dataset.adminDelete;
+
+      if (!uid) {
+        alert("ID do usuário inválido.");
+        return;
+      }
+
+      const confirmacao = confirm("Confirma a exclusão deste usuário?");
+      if (!confirmacao) return;
+
+      try {
+        await deleteUserDocFromFirestore(uid);
+        await renderAdminUsers();
+        alert("Usuário removido da coleção 'users' com sucesso.\n(A conta no Firebase Auth NÃO foi excluída)");
+      } catch (error) {
+        console.error("Erro ao excluir usuário:", error);
+        alert("Erro ao excluir usuário. Verifique o console.");
+      }
+    });
+  });
+}
+  document.querySelectorAll("[data-admin-delete]").forEach((btn) => {
+    btn.addEventListener("click", async () => {
+      const uid = btn.dataset.adminDelete;
+
+      if (!uid) {
+        alert("ID do usuário inválido.");
+        return;
+      }
+
+      const confirmacao = confirm("Confirma a exclusão deste usuário?");
+      if (!confirmacao) return;
+
+      try {
+        await deleteUserDocFromFirestore(uid);
+        await renderAdminUsers();
+        alert("Usuário removido da coleção 'users' com sucesso.\n(A conta no Firebase Auth NÃO foi excluída)");
+      } catch (error) {
+        console.error("Erro ao excluir usuário:", error);
+        alert("Erro ao excluir usuário. Verifique o console.");
+      }
+    });
+  });
+}  document.querySelectorAll("[data-admin-delete]").forEach((btn) => {
+    btn.addEventListener("click", async () => {
+      const uid = btn.dataset.adminDelete;
       if(!uid) return;
 
-      const confirmacao = confirm("Deseja excluir este usuário da lista?");
-      if(!confirmacao) return;
+document.querySelectorAll("[data-admin-delete]").forEach((btn) => {
+  btn.addEventListener("click", async () => {
+    const uid = btn.dataset.adminDelete;
 
-try {
-  if (!uid) {
-    alert("ID do usuário inválido.");
-    return;
-  }
+    if (!uid) {
+      alert("ID do usuário inválido.");
+      return;
+    }
 
-  const confirmacaoFinal = confirm("Confirma a exclusão deste usuário?");
-  if (!confirmacaoFinal) return;
+    const confirmacao = confirm("Confirma a exclusão deste usuário?");
+    if (!confirmacao) return;
 
+    try {
+      await deleteUserDocFromFirestore(uid);
+      await renderAdminUsers();
+      alert("Usuário removido da coleção 'users' com sucesso.\n(A conta no Firebase Auth NÃO foi excluída)");
+    } catch (error) {
+      console.error("Erro ao excluir usuário:", error);
+      alert("Erro ao excluir usuário. Verifique o console.");
+    }
+  });
+});
   await deleteUserDocFromFirestore(uid);
   await renderAdminUsers();
 
