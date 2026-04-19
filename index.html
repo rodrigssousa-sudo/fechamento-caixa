@@ -3520,13 +3520,19 @@ async function saveEditedHistory(){
 
   const turno = item.turno || {};
 
-  const updatedEntries = (turno.entries || []).map((entry, i) => {
-    const input = document.querySelector(`[data-edit-entry="${i}"]`);
-    return {
-      ...entry,
-      value: parseMoneyInput(input?.value || 0)
-    };
-  });
+ const updatedEntries = (turno.entries || []).map((entry, i) => {
+  const input = document.querySelector(`[data-edit-entry="${i}"]`);
+  let value = parseMoneyInput(input?.value || 0);
+
+  if (entry.name === "PPPoker (x400)" || entry.name === "Suprema (x400)") {
+    value = value * 400;
+  }
+
+  return {
+    ...entry,
+    value
+  };
+});
 
   const updatedOutflows = (turno.outflows || []).map((entry, i) => {
     const nameInput = document.querySelector(`[data-edit-outflow-name="${i}"]`);
