@@ -1564,72 +1564,74 @@ button{
       </section>
 
       <section class="turnos">
-        <article class="turno card" data-turno="t1">
-<div class="turno-head">
-  <div style="width:100%;">
-    
-    <div style="display:flex; justify-content:space-between; align-items:center; gap:10px;">
-      <h3>Turno Anterior</h3>
+<article class="turno card" data-turno="t1">
+  <div class="turno-head">
+    <div style="width:100%;">
+      <div style="display:flex; justify-content:space-between; align-items:center; gap:10px;">
+        <h3>Turno Anterior</h3>
 
-      <button id="toggleTurno1Btn" class="danger-mini-btn" type="button">
-        Ocultar
-      </button>
+        <button id="toggleTurno1Btn" class="danger-mini-btn" type="button">
+          Ocultar
+        </button>
+      </div>
+
+      <small>Carregado automaticamente do último fechamento</small>
     </div>
 
-    <small>Carregado automaticamente do último fechamento</small>
+    <div class="turno-total">
+      <div class="label">Saldo líquido</div>
+      <div class="value" id="turno1InlineTotal">$ 0,00</div>
+    </div>
   </div>
 
-  <div class="turno-total">
-    <div class="label">Saldo líquido</div>
-    <div class="value" id="turno1InlineTotal">$ 0,00</div>
+  <div id="turno1Content">
+    <div class="turno-meta">
+      <div class="field">
+        <label for="t1_data_fechamento">Data do fechamento</label>
+        <input type="date" id="t1_data_fechamento" />
+      </div>
+    </div>
+
+    <div class="finance-block">
+      <div class="finance-head">
+        <h4>Entradas</h4>
+        <div class="finance-total blue" id="t1_entradas_total">$ 0,00</div>
+      </div>
+
+      <div class="fields two-col">
+        <div class="field"><label for="t1_banco">Banco Reca</label><input type="text" inputmode="numeric" id="t1_banco" placeholder="0,00" /></div>
+        <div class="field"><label for="t1_pppoker">PPPoker (x400)</label><input type="text" inputmode="numeric" id="t1_pppoker" placeholder="0,00" /></div>
+        <div class="field"><label for="t1_suprema">Suprema (x400)</label><input type="text" inputmode="numeric" id="t1_suprema" placeholder="0,00" /></div>
+        <div class="field"><label for="t1_buffalo">Buffalo</label><input type="text" inputmode="numeric" id="t1_buffalo" placeholder="0,00" /></div>
+        <div class="field"><label for="t1_ganamos">Ganamos</label><input type="text" inputmode="numeric" id="t1_ganamos" placeholder="0,00" /></div>
+        <div class="field"><label for="t1_cargas">Carga de Fichas</label><input type="text" inputmode="numeric" id="t1_cargas" placeholder="0,00" /></div>
+        <div class="field"><label for="t1_cargas_poker">Cargas F. Poker (x400)</label><input type="text" inputmode="numeric" id="t1_cargas_poker" placeholder="0,00" /></div>
+      </div>
+    </div>
+
+    <div class="finance-block">
+      <div class="finance-head">
+        <h4>Saídas de caixa</h4>
+        <div class="finance-total red" id="t1_saidas_total">- $ 0,00</div>
+      </div>
+      <div class="dynamic-list" id="t1_dynamic_list"></div>
+      <div class="inline-actions">
+        <button class="btn-add" type="button" data-add-row="t1">+ Adicionar saída</button>
+      </div>
+    </div>
+
+    <div class="finance-block">
+      <div class="finance-head">
+        <h4>Pagos pendentes</h4>
+        <div class="finance-total red" id="t1_pendentes_total">- $ 0,00</div>
+      </div>
+      <div class="dynamic-list" id="t1_pending_list"></div>
+      <div class="inline-actions">
+        <button class="btn-add" type="button" data-add-pending="t1">+ Adicionar pendente</button>
+      </div>
+    </div>
   </div>
-</div>
-          <div class="turno-meta">
-            <div class="field">
-              <label for="t1_data_fechamento">Data do fechamento</label>
-              <input type="date" id="t1_data_fechamento" />
-            </div>
-          </div>
-
-          <div class="finance-block">
-            <div class="finance-head">
-              <h4>Entradas</h4>
-              <div class="finance-total blue" id="t1_entradas_total">$ 0,00</div>
-            </div>
-
-            <div class="fields two-col">
-              <div class="field"><label for="t1_banco">Banco Reca</label><input type="text" inputmode="numeric" id="t1_banco" placeholder="0,00" /></div>
-              <div class="field"><label for="t1_pppoker">PPPoker (x400)</label><input type="text" inputmode="numeric" id="t1_pppoker" placeholder="0,00" /></div>
-              <div class="field"><label for="t1_suprema">Suprema (x400)</label><input type="text" inputmode="numeric" id="t1_suprema" placeholder="0,00" /></div>
-              <div class="field"><label for="t1_buffalo">Buffalo</label><input type="text" inputmode="numeric" id="t1_buffalo" placeholder="0,00" /></div>
-              <div class="field"><label for="t1_ganamos">Ganamos</label><input type="text" inputmode="numeric" id="t1_ganamos" placeholder="0,00" /></div>
-              <div class="field"><label for="t1_cargas">Carga de Fichas</label><input type="text" inputmode="numeric" id="t1_cargas" placeholder="0,00" /></div>
-              <div class="field"><label for="t1_cargas_poker">Cargas F. Poker (x400)</label><input type="text" inputmode="numeric" id="t1_cargas_poker" placeholder="0,00" /></div>
-            </div>
-          </div>
-
-          <div class="finance-block">
-            <div class="finance-head">
-              <h4>Saídas de caixa</h4>
-              <div class="finance-total red" id="t1_saidas_total">- $ 0,00</div>
-            </div>
-            <div class="dynamic-list" id="t1_dynamic_list"></div>
-            <div class="inline-actions">
-              <button class="btn-add" type="button" data-add-row="t1">+ Adicionar saída</button>
-            </div>
-          </div>
-
-          <div class="finance-block">
-            <div class="finance-head">
-              <h4>Pagos pendentes</h4>
-              <div class="finance-total red" id="t1_pendentes_total">- $ 0,00</div>
-            </div>
-            <div class="dynamic-list" id="t1_pending_list"></div>
-            <div class="inline-actions">
-              <button class="btn-add" type="button" data-add-pending="t1">+ Adicionar pendente</button>
-            </div>
-          </div>
-        </article>
+</article>
 
         <article class="turno card" data-turno="t2">
           <div class="turno-head">
@@ -2270,16 +2272,16 @@ function formatDateTimeBR(value){
     }
 
 function updateTurno1Visibility(){
-  const turno = document.querySelector('[data-turno="t1"]');
+  const content = document.getElementById("turno1Content");
   const btn = document.getElementById("toggleTurno1Btn");
 
-  if(!turno || !btn) return;
+  if(!content || !btn) return;
 
   if(turno1Visible){
-    turno.style.display = "";
+    content.style.display = "";
     btn.textContent = "Ocultar";
   }else{
-    turno.style.display = "none";
+    content.style.display = "none";
     btn.textContent = "Mostrar";
   }
 }
