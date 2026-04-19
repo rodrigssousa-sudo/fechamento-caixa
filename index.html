@@ -2898,330 +2898,410 @@ function buildPremiumPdfHtml(startDate, endDate){
     : 0;
 
   const totalSaidas = filtered.reduce((acc, item) => {
-    return acc + Number(item.turno?.saidasTotal || 0);
+    return acc + Number(item?.turno?.saidasTotal || 0);
   }, 0);
 
-  const saldoTotal = filtered.reduce((acc, item) => {
-    return acc + Number(item.diff || item.bankVariation || 0);
+  const totalDiferenca = filtered.reduce((acc, item, index) => {
+    const previousItem = filtered[index + 1] || {};
+
+    const previousSaldo = Number(previousItem?.turno?.saldoLiquido || 0);
+    const currentSaldo = Number(item?.turno?.saldoLiquido || 0);
+    const saidas = Number(item?.turno?.saidasTotal || 0);
+
+    const diff = (currentSaldo + saidas) - previousSaldo;
+
+    return acc + diff;
   }, 0);
 
-const totalDiferenca = filtered.reduce((acc, item, index) => {
-  const previousItem = filtered[index + 1] || {};
+  const rankingOperadores = {};
 
-  const previousSaldo = Number(previousItem?.turno?.saldoLiquido || 0);
-  const currentSaldo = Number(item?.turno?.saldoLiquido || 0);
-  const saidas = Number(item?.turno?.saidasTotal || 0);
+  filtered.forEach((item, index) => {
+    const nome = item.nomeOperador || "Sem nome";
 
-  const diff = (currentSaldo + saidas) - previousSaldo;
+    const previousItem = filtered[index + 1] || {};
+    const previousSaldo = Number(previousItem?.turno?.saldoLiquido || 0);
+    const currentSaldo = Number(item?.turno?.saldoLiquido || 0);
+    const saidas = Number(item?.turno?.saidasTotal || 0);
 
-  return acc + diff;
-}, 0);
+    const diff = (currentSaldo + saidas) - previousSaldo;
 
-const linhas = filtered.map((item, index) => {
+    if(!rankingOperadores[nome]){
+      rankingOperadores[nome] = {
+        nome,
+        totalErro: 0,
+        qtd: 0,
+        sobra: 0,
+        falta: 0
+      };
+    }
 
-  const nome = item.nomeOperador || "Sem nome";
-  const turno = item.turnoTrabalhado || "-";
-  const data = formatDateBR(item.fechamentoDate || "");
+    rankingOperadores[nome].totalErro += Math.abs(diff);
+    rankingOperadores[nome].qtd += 1;
 
-  const banco = money(getBancoRecaFromSnapshot(item.turno || {}));
-  const saidas = Number(item?.turno?.saidasTotal || 0);
+    if(diff > 0){
+      rankingOperadores[nome].sobra += diff;
+    }else if(diff < 0){
+      rankingOperadores[nome].falta += Math.abs(diff);
+    }
+  });
 
-  const previousItem = filtered[index + 1] || {};
+  const rankingHtml = Object.values(rankingOperadores)
+    .sort((a, b) => b.totalErro - a.totalErro)
+    .map((item, index) => {
+      return `
+        <tr>
+          <td>${index + 1}</td>
+          <td>${escapeHtml(item.nome)}</td>
+          <td>${item.qtd}</td>
+          <td>${money(item.sobra)}</td>
+          <td>${money(item.falta)}</td>
+          <td><strong>${money(item.totalErro)}</strong></td>
+        </tr>
+      `;
+    }).join("");
 
-  const previousSaldo = Number(previousItem?.turno?.saldoLiquido || 0);
-  const currentSaldo = Number(item?.turno?.saldoLiquido || 0);
+  const linhas = filtered.map((item, index) => {
+    const nome = item.nomeOperador || "Sem nome";
+    const turno = item.turnoTrabalhado || "-";
+    const data = formatDateBR(item.fechamentoDate || "");
 
-  const diffCaixa = (currentSaldo + saidas) - previousSaldo;
+    const banco = money(getBancoRecaFromSnapshot(item.turno || {}));
+    const saidas = Number(item?.turno?.saidasTotal || 0);
 
-  const diferenca = `
-    <span style="
-      font-weight:900;
-      color:${diffCaixa > 0 ? '#16a34a' : diffCaixa < 0 ? '#dc2626' : '#0f172a'};
-    ">
-      ${diffCaixa > 0 ? "+ " : diffCaixa < 0 ? "- " : ""}
-      ${money(Math.abs(diffCaixa))}
-    </span>
-  `;
+    const previousItem = filtered[index + 1] || {};
+    const previousSaldo = Number(previousItem?.turno?.saldoLiquido || 0);
+    const currentSaldo = Number(item?.turno?.saldoLiquido || 0);
+
+    const diffCaixa = (currentSaldo + saidas) - previousSaldo;
+
+    const diferenca = `
+      <span style="
+        font-weight:900;
+        color:${diffCaixa > 0 ? '#16a34a' : diffCaixa < 0 ? '#dc2626' : '#0f172a'};
+      ">
+        ${diffCaixa > 0 ? "+ " : diffCaixa < 0 ? "- " : ""}
+        ${money(Math.abs(diffCaixa))}
+      </span>
+    `;
+
+    return `
+      <tr>
+        <td>${escapeHtml(nome)}</td>
+        <td>${escapeHtml(turno)}</td>
+        <td>${escapeHtml(data)}</td>
+        <td>${banco}</td>
+        <td>${money(saidas)}</td>
+        <td>${diferenca}</td>
+      </tr>
+    `;
+  }).join("");
 
   return `
-    <tr>
-      <td>${escapeHtml(nome)}</td>
-      <td>${escapeHtml(turno)}</td>
-      <td>${escapeHtml(data)}</td>
-      <td>${banco}</td>
-      <td>${money(saidas)}</td>
-      <td>${diferenca}</td>
-    </tr>
-  `;
-}).join("");
-return `
-  <!DOCTYPE html>
-  <html lang="pt-BR">
-  <head>
-    <meta charset="UTF-8" />
-    <title>Relatório Financeiro - Bank King</title>
-    <style>
-      *{
-        box-sizing:border-box;
-      }
+    <!DOCTYPE html>
+    <html lang="pt-BR">
+    <head>
+      <meta charset="UTF-8" />
+      <title>Relatório Financeiro - Bank King</title>
+      <style>
+        *{
+          box-sizing:border-box;
+        }
 
-      body{
-        margin:0;
-        font-family:Arial, Helvetica, sans-serif;
-        background:#f8fafc;
-        color:#0f172a;
-        padding:28px;
-      }
-
-      .sheet{
-        max-width:1100px;
-        margin:0 auto;
-        background:#ffffff;
-        border:1px solid #dbe3ee;
-        box-shadow:0 10px 30px rgba(15,23,42,.08);
-        overflow:hidden;
-      }
-
-      .top{
-        padding:28px 32px 18px;
-        display:flex;
-        justify-content:space-between;
-        align-items:center;
-        gap:20px;
-      }
-
-      .brand-left{
-        display:flex;
-        align-items:center;
-        gap:16px;
-      }
-
-      .logo-box{
-        width:54px;
-        height:54px;
-        border-radius:12px;
-        background:linear-gradient(135deg, #0f172a, #1e3a8a);
-        color:#ffffff;
-        font-weight:900;
-        display:flex;
-        align-items:center;
-        justify-content:center;
-        font-size:18px;
-        letter-spacing:.5px;
-        box-shadow:0 10px 24px rgba(15,23,42,.18);
-      }
-
-      .brand-text h1{
-        margin:0;
-        font-size:26px;
-        letter-spacing:.5px;
-        color:#0f172a;
-      }
-
-      .brand-text p{
-        margin:4px 0 0;
-        font-size:13px;
-        color:#64748b;
-      }
-
-      .brand-right{
-        display:flex;
-        gap:24px;
-        text-align:right;
-      }
-
-      .period-block,
-      .generated-block{
-        font-size:12px;
-        color:#334155;
-      }
-
-      .period-title{
-        font-size:10px;
-        letter-spacing:.1em;
-        font-weight:700;
-        color:#94a3b8;
-        margin-bottom:4px;
-        text-transform:uppercase;
-      }
-
-      .divider-line{
-        height:3px;
-        background:linear-gradient(90deg, #0f172a, #3b82f6);
-        margin:0 32px 12px;
-        border-radius:999px;
-      }
-
-      .summary{
-        display:grid;
-        grid-template-columns:repeat(3, 1fr);
-        gap:14px;
-        padding:22px 32px;
-        border-bottom:1px solid #e2e8f0;
-      }
-
-      .card{
-        border:1px solid #dbe3ee;
-        background:linear-gradient(180deg, #ffffff, #f8fbff);
-        padding:18px;
-        border-radius:16px;
-        box-shadow:0 6px 18px rgba(15,23,42,.04);
-      }
-
-      .label{
-        font-size:11px;
-        text-transform:uppercase;
-        letter-spacing:.08em;
-        color:#64748b;
-        margin-bottom:6px;
-      }
-
-      .value{
-        font-size:26px;
-        font-weight:900;
-        letter-spacing:-0.02em;
-        color:#0f172a;
-      }
-
-      .table-wrap{
-        padding:24px 32px 32px;
-      }
-
-      table{
-        width:100%;
-        border-collapse:collapse;
-        font-size:13px;
-      }
-
-      thead th{
-        text-align:left;
-        background:linear-gradient(90deg, #0f172a, #1e3a8a);
-        color:#ffffff;
-        padding:13px 10px;
-        font-size:11px;
-        letter-spacing:.05em;
-        text-transform:uppercase;
-      }
-
-      tbody td{
-        padding:11px 10px;
-        border-bottom:1px solid #e2e8f0;
-      }
-
-      tbody tr:nth-child(even){
-        background:#f8fafc;
-      }
-
-      .empty{
-        padding:40px 20px;
-        text-align:center;
-        color:#64748b;
-        border:1px dashed #cbd5e1;
-        background:#f8fafc;
-        border-radius:14px;
-      }
-
-      .footer{
-        padding:16px 32px 26px;
-        color:#64748b;
-        font-size:12px;
-        border-top:1px solid #e2e8f0;
-      }
-
-      @media print{
         body{
-          background:#fff;
-          padding:0;
+          margin:0;
+          font-family:Arial, Helvetica, sans-serif;
+          background:#f3f7fb;
+          color:#0f172a;
+          padding:28px;
         }
 
         .sheet{
-          border:none;
-          box-shadow:none;
+          max-width:1100px;
+          margin:0 auto;
+          background:#ffffff;
+          border:1px solid #dbe3ee;
+          box-shadow:0 10px 30px rgba(15,23,42,.08);
+          border-radius:18px;
+          overflow:hidden;
         }
-      }
-    </style>
-  </head>
-  <body>
-    <div class="sheet">
-      <div class="top">
-        <div class="brand-left">
-          <div class="logo-box">BK</div>
-          <div class="brand-text">
-            <h1>BANK KING</h1>
-            <p>Relatório financeiro consolidado</p>
+
+        .top{
+          padding:28px 32px 18px;
+          display:flex;
+          justify-content:space-between;
+          align-items:center;
+          gap:20px;
+          background:linear-gradient(135deg, #ffffff 0%, #f8fbff 100%);
+        }
+
+        .brand-left{
+          display:flex;
+          align-items:center;
+          gap:16px;
+        }
+
+        .logo-box{
+          width:54px;
+          height:54px;
+          border-radius:14px;
+          background:linear-gradient(135deg, #0f172a, #1e3a8a);
+          color:#fff;
+          font-weight:900;
+          display:flex;
+          align-items:center;
+          justify-content:center;
+          font-size:18px;
+          letter-spacing:.5px;
+          box-shadow:0 10px 20px rgba(15,23,42,.18);
+        }
+
+        .brand-text h1{
+          margin:0;
+          font-size:26px;
+          letter-spacing:.5px;
+          color:#0f172a;
+        }
+
+        .brand-text p{
+          margin:4px 0 0;
+          font-size:13px;
+          color:#64748b;
+        }
+
+        .brand-right{
+          display:flex;
+          gap:24px;
+          text-align:right;
+          flex-wrap:wrap;
+        }
+
+        .period-block,
+        .generated-block{
+          font-size:12px;
+          color:#334155;
+        }
+
+        .period-title{
+          font-size:10px;
+          letter-spacing:.1em;
+          font-weight:700;
+          color:#94a3b8;
+          margin-bottom:4px;
+          text-transform:uppercase;
+        }
+
+        .divider-line{
+          height:3px;
+          background:linear-gradient(90deg, #0f172a, #3b82f6);
+          margin:0 32px 12px;
+          border-radius:999px;
+        }
+
+        .summary{
+          display:grid;
+          grid-template-columns:repeat(3, 1fr);
+          gap:14px;
+          padding:22px 32px;
+          border-bottom:1px solid #e2e8f0;
+        }
+
+        .card{
+          border:1px solid #dbe3ee;
+          background:#f8fbff;
+          padding:16px;
+          border-radius:14px;
+        }
+
+        .label{
+          font-size:11px;
+          text-transform:uppercase;
+          letter-spacing:.08em;
+          color:#64748b;
+          margin-bottom:6px;
+        }
+
+        .value{
+          font-size:26px;
+          font-weight:900;
+          letter-spacing:-0.02em;
+          color:#0f172a;
+        }
+
+        .section-title{
+          padding:24px 32px 10px;
+          font-size:15px;
+          font-weight:900;
+          color:#0f172a;
+          letter-spacing:.02em;
+        }
+
+        .table-wrap{
+          padding:8px 32px 32px;
+        }
+
+        table{
+          width:100%;
+          border-collapse:collapse;
+          font-size:13px;
+        }
+
+        thead th{
+          text-align:left;
+          background:linear-gradient(90deg, #0f172a, #1e3a8a);
+          color:#ffffff;
+          padding:13px 10px;
+          font-size:11px;
+          letter-spacing:.05em;
+          text-transform:uppercase;
+        }
+
+        tbody td{
+          padding:11px 10px;
+          border-bottom:1px solid #e2e8f0;
+        }
+
+        tbody tr:nth-child(even){
+          background:#f8fafc;
+        }
+
+        .empty{
+          padding:40px 20px;
+          text-align:center;
+          color:#64748b;
+          border:1px dashed #cbd5e1;
+          background:#f8fafc;
+          border-radius:14px;
+        }
+
+        .footer{
+          padding:16px 32px 26px;
+          color:#64748b;
+          font-size:12px;
+          border-top:1px solid #e2e8f0;
+        }
+
+        @media print{
+          body{
+            background:#fff;
+            padding:0;
+          }
+
+          .sheet{
+            border:none;
+            box-shadow:none;
+            border-radius:0;
+          }
+        }
+      </style>
+    </head>
+    <body>
+      <div class="sheet">
+        <div class="top">
+          <div class="brand-left">
+            <div class="logo-box">BK</div>
+            <div class="brand-text">
+              <h1>BANK KING</h1>
+              <p>Relatório financeiro consolidado</p>
+            </div>
+          </div>
+
+          <div class="brand-right">
+            <div class="period-block">
+              <div class="period-title">Período</div>
+              <div>De: ${formatDateBR(startDate)}</div>
+              <div>Até: ${formatDateBR(endDate)}</div>
+            </div>
+
+            <div class="generated-block">
+              <div class="period-title">Gerado em</div>
+              <div>${new Date().toLocaleDateString("pt-BR")}</div>
+              <div>${new Date().toLocaleTimeString("pt-BR", { hour: "2-digit", minute: "2-digit" })}</div>
+            </div>
           </div>
         </div>
 
-        <div class="brand-right">
-          <div class="period-block">
-            <div class="period-title">Período</div>
-            <div>De: ${formatDateBR(startDate)}</div>
-            <div>Até: ${formatDateBR(endDate)}</div>
+        <div class="divider-line"></div>
+
+        <div class="summary">
+          <div class="card">
+            <div class="label">Banco Reca</div>
+            <div class="value">${money(ultimoBancoReca)}</div>
           </div>
 
-          <div class="generated-block">
-            <div class="period-title">Gerado em</div>
-            <div>${new Date().toLocaleDateString("pt-BR")}</div>
-            <div>${new Date().toLocaleTimeString("pt-BR", { hour:"2-digit", minute:"2-digit" })}</div>
+          <div class="card">
+            <div class="label">Saídas de Caixa</div>
+            <div class="value">${money(totalSaidas)}</div>
+          </div>
+
+          <div class="card">
+            <div class="label">Saldo Total</div>
+            <div class="value">${money(totalDiferenca)}</div>
           </div>
         </div>
-      </div>
 
-      <div class="divider-line"></div>
+        <div class="section-title">Fechamentos do período</div>
 
-      <div class="summary">
-        <div class="card">
-          <div class="label">Banco Reca</div>
-          <div class="value">${money(ultimoBancoReca)}</div>
+        <div class="table-wrap">
+          ${
+            filtered.length
+              ? `
+                <table>
+                  <thead>
+                    <tr>
+                      <th>Nome</th>
+                      <th>Turno</th>
+                      <th>Data</th>
+                      <th>Banco Reca</th>
+                      <th>Saídas de Caixa</th>
+                      <th>Diferença de Caixa</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    ${linhas}
+                  </tbody>
+                </table>
+              `
+              : `
+                <div class="empty">
+                  Nenhum fechamento encontrado no período selecionado.
+                </div>
+              `
+          }
         </div>
 
-        <div class="card">
-          <div class="label">Saídas de Caixa</div>
-          <div class="value">${money(totalSaidas)}</div>
-        </div>
-
-        <div class="card">
-          <div class="label">Saldo Total</div>
-          <div class="value">${money(saldoTotal)}</div>
-        </div>
-      </div>
-
-      <div class="table-wrap">
         ${
-          filtered.length
+          Object.keys(rankingOperadores).length
             ? `
-              <table>
-                <thead>
-                  <tr>
-                    <th>Nome</th>
-                    <th>Turno</th>
-                    <th>Data</th>
-                    <th>Banco Reca</th>
-                    <th>Saídas</th>
-                    <th>Diferença Caixa</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  ${linhas}
-                </tbody>
-              </table>
-            `
-            : `
-              <div class="empty">
-                Nenhum fechamento encontrado no período selecionado.
+              <div class="section-title">Ranking por operador</div>
+              <div class="table-wrap" style="padding-top:8px;">
+                <table>
+                  <thead>
+                    <tr>
+                      <th>#</th>
+                      <th>Operador</th>
+                      <th>Fechamentos</th>
+                      <th>Sobra</th>
+                      <th>Falta</th>
+                      <th>Erro Total</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    ${rankingHtml}
+                  </tbody>
+                </table>
               </div>
             `
+            : ""
         }
-      </div>
 
-      <div class="footer">
-        Documento interno • Bank King BRS
+        <div class="footer">
+          Documento interno • Bank King BRS
+        </div>
       </div>
-    </div>
-  </body>
-  </html>
-`;}
-
+    </body>
+    </html>
+  `;
+}
 function exportToPdfProtected(){
   const code = prompt("Digite código interno:");
   if(code === null) return;
