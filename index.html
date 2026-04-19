@@ -2905,6 +2905,18 @@ function buildPremiumPdfHtml(startDate, endDate){
     return acc + Number(item.diff || item.bankVariation || 0);
   }, 0);
 
+const totalDiferenca = filtered.reduce((acc, item, index) => {
+  const previousItem = filtered[index + 1] || {};
+
+  const previousSaldo = Number(previousItem?.turno?.saldoLiquido || 0);
+  const currentSaldo = Number(item?.turno?.saldoLiquido || 0);
+  const saidas = Number(item?.turno?.saidasTotal || 0);
+
+  const diff = (currentSaldo + saidas) - previousSaldo;
+
+  return acc + diff;
+}, 0);
+
 const linhas = filtered.map((item, index) => {
 
   const nome = item.nomeOperador || "Sem nome";
@@ -2912,20 +2924,18 @@ const linhas = filtered.map((item, index) => {
   const data = formatDateBR(item.fechamentoDate || "");
 
   const banco = money(getBancoRecaFromSnapshot(item.turno || {}));
-  const saidas = Number(item.turno?.saidasTotal || 0);
+  const saidas = Number(item?.turno?.saidasTotal || 0);
 
-  // 👉 PEGAR O ANTERIOR
-  const previousItem = filtered[index + 1];
+  const previousItem = filtered[index + 1] || {};
 
   const previousSaldo = Number(previousItem?.turno?.saldoLiquido || 0);
   const currentSaldo = Number(item?.turno?.saldoLiquido || 0);
 
-  // ✅ NOVA LÓGICA CORRETA
   const diffCaixa = (currentSaldo + saidas) - previousSaldo;
 
   const diferenca = `
     <span style="
-      font-weight:800;
+      font-weight:900;
       color:${diffCaixa > 0 ? '#16a34a' : diffCaixa < 0 ? '#dc2626' : '#0f172a'};
     ">
       ${diffCaixa > 0 ? "+ " : diffCaixa < 0 ? "- " : ""}
