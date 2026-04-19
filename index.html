@@ -2381,7 +2381,7 @@ button{
       };
     }
 
-  async function saveHistoryItem(item){
+async function saveHistoryItem(item){
   const q = query(
     collection(db, "history"),
     orderBy("submittedAt", "desc"),
@@ -2389,13 +2389,16 @@ button{
   );
 
   const snapshot = await getDocs(q);
+  const previousItem = snapshot.docs[0]?.data() || null;
 
-  const previousTotal = Number(snapshot.docs[0]?.data()?.total || 0);
-  const currentTotal = Number(item.total || 0);
-  const currentLiquid = Number(item.turno?.saldoLiquido || 0);
+  const previousLiquid = Number(previousItem?.turno?.saldoLiquido || 0);
+  const currentLiquid = Number(item?.turno?.saldoLiquido || 0);
 
-  item.diff = currentTotal - previousTotal;
+  // Diferença de caixa = Turno 1 - Turno 2
+  item.diff = previousLiquid - currentLiquid;
   item.bankVariation = item.diff;
+
+  // Lucro real do turno atual
   item.turnProfit = currentLiquid;
 
   await addDoc(collection(db, "history"), item);
