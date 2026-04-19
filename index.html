@@ -1737,14 +1737,18 @@ button{
   <div id="historyModal" class="modal hidden">
     <div class="modal-backdrop" id="historyModalBackdrop"></div>
     <div class="modal-card">
-      <div class="modal-head">
-        <div>
-          <h3 id="historyModalTitle">Detalhes do fechamento</h3>
-          <small id="historyModalSub">Turno salvo</small>
-        </div>
-        <button id="closeHistoryModal" class="modal-close-btn" type="button">Fechar</button>
-      </div>
-      <div class="modal-body" id="historyModalBody"></div>
+<div class="modal-head">
+  <div>
+    <h3 id="historyModalTitle">Detalhes do fechamento</h3>
+    <small id="historyModalSub">Turno salvo</small>
+  </div>
+
+  <div style="display:flex; gap:8px; flex-wrap:wrap;">
+    <button id="editHistoryBtn" class="btn-add" type="button">Editar</button>
+    <button id="saveHistoryBtn" class="close-btn hidden" type="button">Salvar alterações</button>
+    <button id="closeHistoryModal" class="modal-close-btn" type="button">Fechar</button>
+  </div>
+</div>      <div class="modal-body" id="historyModalBody"></div>
     </div>
   </div>
 
@@ -1773,19 +1777,20 @@ button{
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-app.js";
     import {
-      getFirestore,
-      collection,
-      addDoc,
-      getDocs,
-      deleteDoc,
-      doc,
-      setDoc,
-      onSnapshot,
-      query,
-      orderBy,
-      limit,
-      serverTimestamp
-    } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-firestore.js";
+  getFirestore,
+  collection,
+  addDoc,
+  getDocs,
+  deleteDoc,
+  doc,
+  setDoc,
+  updateDoc,
+  onSnapshot,
+  query,
+  orderBy,
+  limit,
+  serverTimestamp
+} from "https://www.gstatic.com/firebasejs/12.0.0/firebase-firestore.js";
 
     import {
       getAuth,
@@ -1835,6 +1840,8 @@ button{
     let historyRealtimeStarted = false;
     let historyCache = [];
     let historyVisible = false;
+let editingHistoryIndex = null;
+let historyEditMode = false;
 
     function money(value){
       return `$ ${Number(value || 0).toLocaleString("pt-BR", {
@@ -2399,23 +2406,23 @@ function formatDateTimeBR(value){
 
       const activeUser = loadActiveUser();
 
-      return {
-        submittedByName: activeUser?.name || "Usuário",
-        submittedByEmail: activeUser?.email || "",
-        submittedAt: serverTimestamp(),
-        fechamentoDate: document.getElementById(f.dataFechamento)?.value || getTodayDateInput(),
-        total: saldoLiquido,
-        turno: {
-          dataFechamento: document.getElementById(f.dataFechamento)?.value || getTodayDateInput(),
-          entries,
-          outflows,
-          pendings,
-          entradasTotal,
-          saidasTotal,
-          pendentesTotal,
-          saldoLiquido
-        }
-      };
+return {
+  submittedByName: activeUser?.name || "Usuário",
+  submittedByEmail: activeUser?.email || "",
+  submittedAt: serverTimestamp(),
+  fechamentoDate: document.getElementById(f.dataFechamento)?.value || getTodayDateInput(),
+  total: getValue(f.banco),
+  turno: {
+    dataFechamento: document.getElementById(f.dataFechamento)?.value || getTodayDateInput(),
+    entries,
+    outflows,
+    pendings,
+    entradasTotal,
+    saidasTotal,
+    pendentesTotal,
+    saldoLiquido
+  }
+};
     }
 
     function applySnapshotToTurn(turno, snapshot){
@@ -2457,9 +2464,13 @@ function formatDateTimeBR(value){
       return (snapshot.entries || []).find((item) => item.name === "Banco Reca")?.value || 0;
     }
 
-    function closeHistoryModal(){
-      document.getElementById("historyModal").classList.add("hidden");
-    }
+function closeHistoryModal(){
+  document.getElementById("historyModal").classList.add("hidden");
+  editingHistoryIndex = null;
+  historyEditMode = false;
+  document.getElementById("editHistoryBtn").classList.remove("hidden");
+  document.getElementById("saveHistoryBtn").classList.add("hidden");
+}
 
     function renderHistoryListFromCache(){
   const list = document.getElementById("historyList");
@@ -2521,228 +2532,187 @@ function formatDateTimeBR(value){
   updateHistoryVisibility();
 }
 
-    function openHistoryModal(index){
-      const item = historyCache[index];
-      if(!item) return;
+function openHistoryModal(index){
+  const item = historyCache[index];
+  if(!item) return;
 
-      document.getElementById("historyModalTitle").textContent = `Fechamento • ${item.submittedByName || "Sistema"}`;
-      document.getElementById("historyModalSub").textContent =
-        `Data do fechamento: ${formatDateBR(item.fechamentoDate || "")} • Enviado em: ${formatDateTimeBR(item.submittedAt)}`;
+  window.editingHistoryIndex = index;
+  window.historyEditMode = false;
 
-      const turno = item.turno || {};
+  document.getElementById("historyModalTitle").textContent =
+    `Fechamento • ${item.submittedByName || "Sistema"}`;
 
-      document.getElementById("historyModalBody").innerHTML = `
-        <div class="modal-summary-grid">
-          <div class="modal-summary-card">
-            <div class="modal-summary-label">Total do fechamento</div>
-            <div class="modal-summary-value">${money(item.total || 0)}</div>
-          </div>
-          <div class="modal-summary-card">
-            <div class="modal-summary-label">Saldo Total</div>
-            <div class="history-mini-value ${(item.turnProfit || 0) < 0 ? "red" : ""}">${money(item.turnProfit || 0)}</div>
-          </div>
-          <div class="modal-summary-card">
-            <div class="modal-summary-label">Responsável</div>
-            <div class="modal-summary-value">${escapeHtml(item.submittedByName || "-")}</div>
-          </div>
-          <div class="modal-summary-card">
-            <div class="modal-summary-label">Data</div>
-            <div class="modal-summary-value">${escapeHtml(formatDateBR(item.fechamentoDate || ""))}</div>
-          </div>
+  document.getElementById("historyModalSub").textContent =
+    `Data do fechamento: ${formatDateBR(item.fechamentoDate || "")} • Enviado em: ${formatDateTimeBR(item.submittedAt)}`;
+
+  const turno = item.turno || {};
+
+  document.getElementById("historyModalBody").innerHTML = `
+    
+    <!-- BOTÕES -->
+    <div class="modal-summary-grid">
+      <div class="modal-summary-card">
+        <div class="modal-summary-label">Total do fechamento</div>
+        <div class="modal-summary-value">${money(item.total || 0)}</div>
+      </div>
+
+      <div class="modal-summary-card">
+        <div class="modal-summary-label">Saldo Total</div>
+        <div class="history-mini-value ${(item.turnProfit || 0) < 0 ? "red" : ""}">
+          ${money(item.turnProfit || 0)}
         </div>
+      </div>
 
-        <div class="modal-turnos-grid">
-          <div class="modal-panel">
-            <div class="modal-panel-head"><h4>Entradas</h4></div>
-            <div class="modal-panel-body">
-              <div>
-                <div class="modal-block-title">Detalhamento</div>
-                ${(turno.entries || []).map((entry) => `
-                  <div class="modal-line">
-                    <span>${escapeHtml(entry.name || "-")}</span>
-                    <strong>${money(entry.value || 0)}</strong>
-                  </div>
-                `).join("") || `<div class="modal-line"><span>Sem registros</span><strong>$ 0,00</strong></div>`}
-              </div>
+      <div class="modal-summary-card">
+        <div class="modal-summary-label">Responsável</div>
+        <div class="modal-summary-value">${escapeHtml(item.submittedByName || "-")}</div>
+      </div>
+
+      <div class="modal-summary-card">
+        <div class="modal-summary-label">Data</div>
+        <input id="editDate" type="date" value="${item.fechamentoDate || ""}" disabled />
+      </div>
+    </div>
+
+    <div class="modal-turnos-grid">
+
+      <!-- ENTRADAS -->
+      <div class="modal-panel">
+        <div class="modal-panel-head"><h4>Entradas</h4></div>
+        <div class="modal-panel-body">
+          ${(turno.entries || []).map((entry, i) => `
+            <div class="modal-line">
+              <span>${escapeHtml(entry.name || "-")}</span>
+              <input 
+                type="text" 
+                value="${Number(entry.value || 0).toFixed(2).replace(".", ",")}" 
+                data-entry="${i}"
+                disabled
+                style="max-width:120px;"
+              />
             </div>
-          </div>
-
-          <div class="modal-panel">
-            <div class="modal-panel-head"><h4>Saídas e Pendentes</h4></div>
-            <div class="modal-panel-body">
-              <div>
-                <div class="modal-block-title">Saídas</div>
-                ${(turno.outflows || []).map((entry) => `
-                  <div class="modal-line negative">
-                    <span>${escapeHtml(entry.name || "-")}</span>
-                    <strong>${negativeMoney(entry.value || 0)}</strong>
-                  </div>
-                `).join("") || `<div class="modal-line"><span>Sem registros</span><strong>$ 0,00</strong></div>`}
-              </div>
-
-              <div>
-                <div class="modal-block-title">Pendentes</div>
-                ${(turno.pendings || []).map((entry) => `
-                  <div class="modal-line negative">
-                    <span>${escapeHtml(entry.name || "-")}</span>
-                    <strong>${negativeMoney(entry.value || 0)}</strong>
-                  </div>
-                `).join("") || `<div class="modal-line"><span>Sem registros</span><strong>$ 0,00</strong></div>`}
-              </div>
-            </div>
-          </div>
+          `).join("")}
         </div>
-      `;
+      </div>
 
-      document.getElementById("historyModal").classList.remove("hidden");
-    }
+      <!-- SAÍDAS + PENDENTES -->
+      <div class="modal-panel">
+        <div class="modal-panel-head"><h4>Saídas e Pendentes</h4></div>
+        <div class="modal-panel-body">
 
-    function startHistoryRealtimeListener(){
-      if(historyRealtimeStarted) return;
-      historyRealtimeStarted = true;
+          ${(turno.outflows || []).map((entry, i) => `
+            <div class="modal-line negative">
+              <input type="text" value="${escapeHtml(entry.name || "")}" data-out-name="${i}" disabled />
+              <input type="text" value="${Number(entry.value || 0).toFixed(2).replace(".", ",")}" data-out-value="${i}" disabled />
+            </div>
+          `).join("")}
 
-      const q = query(collection(db, "history"), orderBy("submittedAt", "desc"), limit(100));
+          ${(turno.pendings || []).map((entry, i) => `
+            <div class="modal-line negative">
+              <input type="text" value="${escapeHtml(entry.name || "")}" data-pen-name="${i}" disabled />
+              <input type="text" value="${Number(entry.value || 0).toFixed(2).replace(".", ",")}" data-pen-value="${i}" disabled />
+            </div>
+          `).join("")}
 
-      historyUnsubscribe = onSnapshot(q, (snapshot) => {
-        historyCache = snapshot.docs.map((docItem) => ({
-          id: docItem.id,
-          ...docItem.data()
-        }));
+        </div>
+      </div>
+    </div>
+  `;
 
-        if(historyCache[0]?.turno){
-          applySnapshotToTurn("t1", historyCache[0].turno);
-        }else{
-          clearTurn("t1");
+  document.getElementById("historyModal").classList.remove("hidden");
+
+    // 🔥 BOTÃO EDITAR
+  document.getElementById("editHistoryBtn").onclick = () => {
+    window.historyEditMode = true;
+
+    document.querySelectorAll("#historyModal input").forEach((input) => {
+      input.disabled = false;
+    });
+
+    document.getElementById("editHistoryBtn").classList.add("hidden");
+    document.getElementById("saveHistoryBtn").classList.remove("hidden");
+  };
+
+  // 🔥 BOTÃO SALVAR
+  document.getElementById("saveHistoryBtn").onclick = async () => {
+    try {
+      const docRef = doc(db, "history", item.id);
+
+      const newEntries = (turno.entries || []).map((e, i) => ({
+        ...e,
+        value: parseMoneyInput(document.querySelector(`[data-entry="${i}"]`)?.value || "")
+      }));
+
+      const newOutflows = (turno.outflows || []).map((e, i) => ({
+        name: document.querySelector(`[data-out-name="${i}"]`)?.value || "",
+        value: parseMoneyInput(document.querySelector(`[data-out-value="${i}"]`)?.value || "")
+      }));
+
+      const newPendings = (turno.pendings || []).map((e, i) => ({
+        name: document.querySelector(`[data-pen-name="${i}"]`)?.value || "",
+        value: parseMoneyInput(document.querySelector(`[data-pen-value="${i}"]`)?.value || "")
+      }));
+
+      const entradasTotal = newEntries.reduce((a, b) => a + b.value, 0);
+      const saidasTotal = newOutflows.reduce((a, b) => a + b.value, 0);
+      const pendentesTotal = newPendings.reduce((a, b) => a + b.value, 0);
+      const saldoLiquido = entradasTotal - saidasTotal - pendentesTotal;
+
+      await updateDoc(docRef, {
+        fechamentoDate: document.getElementById("editDate")?.value || item.fechamentoDate || "",
+        total: newEntries.find((e) => e.name === "Banco Reca")?.value || 0,
+        turnProfit: saldoLiquido,
+        diff: item.diff || 0,
+        bankVariation: item.bankVariation || 0,
+        turno: {
+          ...turno,
+          dataFechamento: document.getElementById("editDate")?.value || item.fechamentoDate || "",
+          entries: newEntries,
+          outflows: newOutflows,
+          pendings: newPendings,
+          entradasTotal,
+          saidasTotal,
+          pendentesTotal,
+          saldoLiquido
         }
-
-        renderHistoryListFromCache();
-        render();
-      }, (error) => {
-        console.error("Erro no listener do Firestore:", error);
-        alert("Erro no listener do Firestore. Veja o console.");
-      });
-    }
-
-    function renderCashflowReport(days){
-      const history = historyCache || [];
-
-      const filtered = history.filter((item) => {
-        if(!item.fechamentoDate) return false;
-        const target = new Date(item.fechamentoDate + "T00:00:00");
-        const today = new Date();
-        today.setHours(23,59,59,999);
-        const diffDays = (today - target) / (1000 * 60 * 60 * 24);
-        return diffDays >= 0 && diffDays < days;
       });
 
-      const totalBancoReca = filtered.reduce((acc, item) => acc + getBancoRecaFromSnapshot(item.turno || {}), 0);
-      const totalPendentes = filtered.reduce((acc, item) => acc + Number(item.turno?.pendentesTotal || 0), 0);
-      const totalSaidas = filtered.reduce((acc, item) => acc + Number(item.turno?.saidasTotal || 0), 0);
-      const lucroReal = totalBancoReca - totalPendentes - totalSaidas;
+      alert("Histórico atualizado com sucesso");
+      document.getElementById("historyModal").classList.add("hidden");
+    } catch (e) {
+      console.error("Erro ao salvar histórico editado:", e);
+      alert("Erro ao salvar");
+    }
+  };
 
-      const titleMap = {
-        7: "Relatório semanal",
-        15: "Relatório quinzenal",
-        30: "Relatório mensal"
-      };
+  document.getElementById("historyModal").classList.remove("hidden");
+}
 
-      document.getElementById("reportTitle").textContent = titleMap[days] || "Relatório";
-      document.getElementById("reportSubtitle").textContent = `Fluxo de caixa dos últimos ${days} dias`;
-      document.getElementById("reportBancoReca").textContent = money(totalBancoReca);
-      document.getElementById("reportPendentes").textContent = negativeMoney(totalPendentes);
-      document.getElementById("reportSaidas").textContent = negativeMoney(totalSaidas);
-      document.getElementById("reportLucro").textContent = money(lucroReal);
+function startHistoryRealtimeListener(){
+  if(historyRealtimeStarted) return;
+  historyRealtimeStarted = true;
 
-      const reportList = document.getElementById("reportList");
+  const q = query(collection(db, "history"), orderBy("submittedAt", "desc"), limit(100));
 
-      if(!filtered.length){
-        reportList.innerHTML = `<div class="history-empty">Nenhum fechamento encontrado nesse período.</div>`;
-      }else{
-        reportList.innerHTML = filtered.map((item) => `
-          <div class="report-list-item">
-            <div class="report-list-top">
-              <div class="report-list-name">${escapeHtml(item.submittedByName || "Sistema")}</div>
-              <div class="report-list-date">${escapeHtml(formatDateBR(item.fechamentoDate || ""))}</div>
-            </div>
-            <div class="report-list-lines">
-              <div class="report-line">
-                <span>Banco Reca</span>
-                <strong>${money(getBancoRecaFromSnapshot(item.turno || {}))}</strong>
-              </div>
-              <div class="report-line">
-                <span>Pagos Pendentes</span>
-                <strong>${negativeMoney(item.turno?.pendentesTotal || 0)}</strong>
-              </div>
-              <div class="report-line">
-                <span>Saídas</span>
-                <strong>${negativeMoney(item.turno?.saidasTotal || 0)}</strong>
-              </div>
-              <div class="report-line">
-                <span>Lucro real</span>
-                <strong>${money(
-                  getBancoRecaFromSnapshot(item.turno || {}) -
-                  Number(item.turno?.pendentesTotal || 0) -
-                  Number(item.turno?.saidasTotal || 0)
-                )}</strong>
-              </div>
-            </div>
-          </div>
-        `).join("");
-      }
+  historyUnsubscribe = onSnapshot(q, (snapshot) => {
+    historyCache = snapshot.docs.map((docItem) => ({
+      id: docItem.id,
+      ...docItem.data()
+    }));
 
-      document.getElementById("reportScreen").classList.remove("hidden");
+    if(historyCache[0]?.turno){
+      applySnapshotToTurn("t1", historyCache[0].turno);
+    }else{
+      clearTurn("t1");
     }
 
-    function buildPremiumPdfHtml(){
-      const t1Entradas = getEntradasTotal("t1");
-      const t1Saidas = getDynamicTotal("t1");
-      const t1Pendentes = getPendingTotal("t1");
-      const t1Total = t1Entradas - t1Saidas - t1Pendentes;
-
-      const t2Entradas = getEntradasTotal("t2");
-      const t2Saidas = getDynamicTotal("t2");
-      const t2Pendentes = getPendingTotal("t2");
-      const t2Total = t2Entradas - t2Saidas - t2Pendentes;
-
-      return `
-        <!DOCTYPE html>
-        <html lang="pt-BR">
-        <head>
-          <meta charset="UTF-8">
-          <title>Bank King PDF</title>
-          <style>
-            body{font-family:Arial,sans-serif;padding:24px;color:#0f172a;}
-            h1{margin-bottom:20px;}
-            .grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;}
-            .card{border:1px solid #cbd5e1;border-radius:12px;padding:16px;}
-            .label{font-size:12px;color:#64748b;}
-            .value{font-size:24px;font-weight:700;margin-top:6px;}
-          </style>
-        </head>
-        <body>
-          <h1>Bank King • Fechamento</h1>
-          <div class="grid">
-            <div class="card">
-              <div class="label">Turno Anterior</div>
-              <div class="value">${money(t1Total)}</div>
-            </div>
-            <div class="card">
-              <div class="label">Turno 2</div>
-              <div class="value">${money(t2Total)}</div>
-            </div>
-            <div class="card">
-              <div class="label">Entradas Totais</div>
-              <div class="value">${money(t1Entradas + t2Entradas)}</div>
-            </div>
-            <div class="card">
-              <div class="label">Saídas Totais</div>
-              <div class="value">${money(t1Saidas + t2Saidas + t1Pendentes + t2Pendentes)}</div>
-            </div>
-          </div>
-        </body>
-        </html>
-      `;
-    }
+    renderHistoryListFromCache();
+    render();
+  }, (error) => {
+    console.error("Erro no listener do Firestore:", error);
+    alert("Erro no listener do Firestore. Veja o console.");
+  });
+}
 
     function exportToPdfProtected(){
       const code = prompt("Digite código interno:");
@@ -2805,6 +2775,216 @@ document.getElementById("bankValue").textContent =
       updateEyeIcon();
       updateStatusPill(ultimoLucroDoTurno);
     }
+
+function renderHistoryModalContent(item, editMode = false){
+  const turno = item.turno || {};
+
+  document.getElementById("historyModalTitle").textContent =
+    `Fechamento • ${item.submittedByName || "Sistema"}`;
+
+  document.getElementById("historyModalSub").textContent =
+    `Data do fechamento: ${formatDateBR(item.fechamentoDate || "")} • Enviado em: ${formatDateTimeBR(item.submittedAt)}`;
+
+  const entriesHtml = (turno.entries || []).map((entry, i) => {
+    if(editMode){
+      return `
+        <div class="modal-line">
+          <span>${escapeHtml(entry.name || "-")}</span>
+          <input
+            type="text"
+            data-edit-entry="${i}"
+            value="${Number(entry.value || 0).toFixed(2).replace(".", ",")}"
+            style="max-width:140px; min-height:38px; border-radius:10px; border:1px solid rgba(148,163,184,.2); padding:8px 10px;"
+          />
+        </div>
+      `;
+    }
+
+    return `
+      <div class="modal-line">
+        <span>${escapeHtml(entry.name || "-")}</span>
+        <strong>${money(entry.value || 0)}</strong>
+      </div>
+    `;
+  }).join("") || `<div class="modal-line"><span>Sem registros</span><strong>$ 0,00</strong></div>`;
+
+  const outflowsHtml = (turno.outflows || []).map((entry, i) => {
+    if(editMode){
+      return `
+        <div class="modal-line negative">
+          <input
+            type="text"
+            data-edit-outflow-name="${i}"
+            value="${escapeHtml(entry.name || "")}"
+            style="flex:1; min-height:38px; border-radius:10px; border:1px solid rgba(148,163,184,.2); padding:8px 10px;"
+          />
+          <input
+            type="text"
+            data-edit-outflow-value="${i}"
+            value="${Number(entry.value || 0).toFixed(2).replace(".", ",")}"
+            style="max-width:140px; min-height:38px; border-radius:10px; border:1px solid rgba(148,163,184,.2); padding:8px 10px;"
+          />
+        </div>
+      `;
+    }
+
+    return `
+      <div class="modal-line negative">
+        <span>${escapeHtml(entry.name || "-")}</span>
+        <strong>${negativeMoney(entry.value || 0)}</strong>
+      </div>
+    `;
+  }).join("") || `<div class="modal-line"><span>Sem registros</span><strong>$ 0,00</strong></div>`;
+
+  const pendingsHtml = (turno.pendings || []).map((entry, i) => {
+    if(editMode){
+      return `
+        <div class="modal-line negative">
+          <input
+            type="text"
+            data-edit-pending-name="${i}"
+            value="${escapeHtml(entry.name || "")}"
+            style="flex:1; min-height:38px; border-radius:10px; border:1px solid rgba(148,163,184,.2); padding:8px 10px;"
+          />
+          <input
+            type="text"
+            data-edit-pending-value="${i}"
+            value="${Number(entry.value || 0).toFixed(2).replace(".", ",")}"
+            style="max-width:140px; min-height:38px; border-radius:10px; border:1px solid rgba(148,163,184,.2); padding:8px 10px;"
+          />
+        </div>
+      `;
+    }
+
+    return `
+      <div class="modal-line negative">
+        <span>${escapeHtml(entry.name || "-")}</span>
+        <strong>${negativeMoney(entry.value || 0)}</strong>
+      </div>
+    `;
+  }).join("") || `<div class="modal-line"><span>Sem registros</span><strong>$ 0,00</strong></div>`;
+
+  document.getElementById("historyModalBody").innerHTML = `
+    <div class="modal-summary-grid">
+      <div class="modal-summary-card">
+        <div class="modal-summary-label">Total do fechamento</div>
+        <div class="modal-summary-value">${money(item.total || 0)}</div>
+      </div>
+      <div class="modal-summary-card">
+        <div class="modal-summary-label">Saldo Total</div>
+        <div class="history-mini-value ${(item.turnProfit || 0) < 0 ? "red" : ""}">${money(item.turnProfit || 0)}</div>
+      </div>
+      <div class="modal-summary-card">
+        <div class="modal-summary-label">Responsável</div>
+        <div class="modal-summary-value">${escapeHtml(item.submittedByName || "-")}</div>
+      </div>
+      <div class="modal-summary-card">
+        <div class="modal-summary-label">Data</div>
+        ${
+          editMode
+            ? `<input id="editFechamentoDate" type="date" value="${item.fechamentoDate || ""}" style="width:100%; min-height:38px; border-radius:10px; border:1px solid rgba(148,163,184,.2); padding:8px 10px;" />`
+            : `<div class="modal-summary-value">${escapeHtml(formatDateBR(item.fechamentoDate || ""))}</div>`
+        }
+      </div>
+    </div>
+
+    <div class="modal-turnos-grid">
+      <div class="modal-panel">
+        <div class="modal-panel-head"><h4>Entradas</h4></div>
+        <div class="modal-panel-body">
+          <div>
+            <div class="modal-block-title">Detalhamento</div>
+            ${entriesHtml}
+          </div>
+        </div>
+      </div>
+
+      <div class="modal-panel">
+        <div class="modal-panel-head"><h4>Saídas e Pendentes</h4></div>
+        <div class="modal-panel-body">
+          <div>
+            <div class="modal-block-title">Saídas</div>
+            ${outflowsHtml}
+          </div>
+
+          <div>
+            <div class="modal-block-title">Pendentes</div>
+            ${pendingsHtml}
+          </div>
+        </div>
+      </div>
+    </div>
+  `;
+}
+
+async function saveEditedHistory(){
+  if(editingHistoryIndex === null) return;
+
+  const item = historyCache[editingHistoryIndex];
+  if(!item) return;
+
+  const turno = item.turno || {};
+
+  const updatedEntries = (turno.entries || []).map((entry, i) => {
+    const input = document.querySelector(`[data-edit-entry="${i}"]`);
+    return {
+      ...entry,
+      value: parseMoneyInput(input?.value || 0)
+    };
+  });
+
+  const updatedOutflows = (turno.outflows || []).map((entry, i) => {
+    const nameInput = document.querySelector(`[data-edit-outflow-name="${i}"]`);
+    const valueInput = document.querySelector(`[data-edit-outflow-value="${i}"]`);
+
+    return {
+      name: nameInput?.value || "",
+      value: parseMoneyInput(valueInput?.value || 0)
+    };
+  });
+
+  const updatedPendings = (turno.pendings || []).map((entry, i) => {
+    const nameInput = document.querySelector(`[data-edit-pending-name="${i}"]`);
+    const valueInput = document.querySelector(`[data-edit-pending-value="${i}"]`);
+
+    return {
+      name: nameInput?.value || "",
+      value: parseMoneyInput(valueInput?.value || 0)
+    };
+  });
+
+  const entradasTotal = updatedEntries.reduce((acc, item) => acc + Number(item.value || 0), 0);
+  const saidasTotal = updatedOutflows.reduce((acc, item) => acc + Number(item.value || 0), 0);
+  const pendentesTotal = updatedPendings.reduce((acc, item) => acc + Number(item.value || 0), 0);
+  const saldoLiquido = entradasTotal - saidasTotal - pendentesTotal;
+
+  const fechamentoDate = document.getElementById("editFechamentoDate")?.value || item.fechamentoDate || getTodayDateInput();
+
+  await updateDoc(doc(db, "history", item.id), {
+    fechamentoDate,
+    total: updatedEntries.find(e => e.name === "Banco Reca")?.value || 0,
+    turnProfit: saldoLiquido,
+    turno: {
+      ...turno,
+      dataFechamento: fechamentoDate,
+      entries: updatedEntries,
+      outflows: updatedOutflows,
+      pendings: updatedPendings,
+      entradasTotal,
+      saidasTotal,
+      pendentesTotal,
+      saldoLiquido
+    }
+  });
+
+  historyEditMode = false;
+  editingHistoryIndex = null;
+
+  document.getElementById("editHistoryBtn").classList.remove("hidden");
+  document.getElementById("saveHistoryBtn").classList.add("hidden");
+
+  alert("Histórico atualizado com sucesso.");
+}
 
     async function openAdminModal(){
       const code = prompt("Digite código interno:");
@@ -3186,6 +3366,29 @@ document.getElementById("bankValue").textContent =
         await deleteDoc(doc(db, "history", itemSelecionado.id));
         alert("Histórico excluído com sucesso.");
       });
+
+
+document.getElementById("editHistoryBtn").addEventListener("click", () => {
+  if(editingHistoryIndex === null) return;
+
+  historyEditMode = true;
+
+  document.getElementById("editHistoryBtn").classList.add("hidden");
+  document.getElementById("saveHistoryBtn").classList.remove("hidden");
+
+  const item = historyCache[editingHistoryIndex];
+  renderHistoryModalContent(item, true);
+});
+
+document.getElementById("saveHistoryBtn").addEventListener("click", async () => {
+  try{
+    await saveEditedHistory();
+    closeHistoryModal();
+  }catch(error){
+    console.error("Erro ao editar histórico:", error);
+    alert("Não foi possível salvar as alterações.");
+  }
+});
 
       document.getElementById("logoutBtn").addEventListener("click", logout);
 
