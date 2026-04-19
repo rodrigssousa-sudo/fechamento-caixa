@@ -1843,14 +1843,15 @@ button{
         .replaceAll("'", "&#39;");
     }
 
-    function getTodayDateInput(){
-      const now = new Date();
-      const offset = now.getTimezoneOffset();
-      const local = new Date(now.getTime() - offset * 60000);
-      return local.toISOString().split("T")[0];
-    }
+function getTodayDateInput(){
+  const now = new Date();
+  const offset = now.getTimezoneOffset();
+  const local = new Date(now.getTime() - offset * 60000);
+  return local.toISOString().split("T")[0];
+}
+
 async function saveHistoryItem(item){
-const q = query(
+  const q = query(
     collection(db, "history"),
     orderBy("submittedAt", "desc"),
     limit(1)
@@ -1859,16 +1860,11 @@ const q = query(
   const snapshot = await getDocs(q);
   const previousItem = snapshot.docs[0]?.data() || {};
 
-  // 🔥 lucro do turno atual (turno 2)
   const currentProfit = Number(item.turno?.saldoLiquido || 0);
-
-  // 🔥 lucro do turno anterior (turno 1 salvo no histórico)
   const previousProfit = Number(previousItem.turnProfit || previousItem.turno?.saldoLiquido || 0);
 
-  // ✅ diferença entre turnos
   const diffTurnos = currentProfit - previousProfit;
 
-  // salvar valores corretos
   item.turnProfit = currentProfit;
   item.diff = diffTurnos;
   item.bankVariation = diffTurnos;
@@ -1876,13 +1872,12 @@ const q = query(
   await addDoc(collection(db, "history"), item);
 }
 
-    function formatDateBR(dateStr){
-      if(!dateStr) return "Sem data";
-      const [y,m,d] = dateStr.split("-");
-      if(!y || !m || !d) return dateStr;
-      return `${d}/${m}/${y}`;
-    }
-
+function formatDateBR(dateStr){
+  if(!dateStr) return "Sem data";
+  const [y,m,d] = dateStr.split("-");
+  if(!y || !m || !d) return dateStr;
+  return `${d}/${m}/${y}`;
+}
     function formatDateTimeBR(value){
       if(!value) return "Sem data";
 
@@ -2483,20 +2478,21 @@ async function saveHistoryItem(item){
             </div>
 
             <div class="history-mini-card">
-              <div class="history-mini-label">Saldo Total</div>
-              <div class="history-mini-value ${(item.turnProfit || 0) < 0 ? "red" : ""}">
-                ${money(item.turnProfit || 0)}
-              </div>
-            </div>
-
-            <div class="history-mini-card">
-             <div class="history-mini-label">Diferença Caixa</div>
-<div class="history-mini-value ${(Number(item.diff) || 0) < 0 ? "red" : "green"}">
-  ${(Number(item.diff) || 0) > 0 ? "+ " : (Number(item.diff) || 0) < 0 ? "- " : ""}
-  ${money(Math.abs(Number(item.diff) || 0))}
+  <div class="history-mini-label">Saldo Total</div>
+  <div class="history-mini-value ${(Number(item.turnProfit || 0)) < 0 ? "red" : ""}">
+    ${money(item.turnProfit || 0)}
+  </div>
 </div>
-            </div>
-          </div>
+
+<div class="history-mini-card">
+  <div class="history-mini-label">Diferença Caixa</div>
+  <div class="history-mini-value ${
+    Number(item.diff || 0) < 0 ? "red" : Number(item.diff || 0) > 0 ? "green" : ""
+  }">
+    ${Number(item.diff || 0) > 0 ? "+ " : Number(item.diff || 0) < 0 ? "- " : ""}
+    ${money(Math.abs(Number(item.diff || 0)))}
+  </div>
+</div>
         </div>
       `).join("");
 
