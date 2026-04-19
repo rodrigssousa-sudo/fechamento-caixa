@@ -2909,9 +2909,10 @@ const linhas = filtered.map((item) => {
   const banco = money(getBancoRecaFromSnapshot(item.turno || {}));
   const saidas = money(item.turno?.saidasTotal || 0);
 
-  const diferencaCaixaValor = Number(item.diff || item.bankVariation || 0);
-  const diferenca = `${diferencaCaixaValor > 0 ? "+ " : diferencaCaixaValor < 0 ? "- " : ""}${money(Math.abs(diferencaCaixaValor))}`;
+  const diferencaCaixaValorBruto = Number(item.diff || item.bankVariation || 0);
 
+const diferencaCaixaValor = diferencaCaixaValorBruto * -1;
+const diferenca = `${diferencaCaixaValor > 0 ? "+ " : diferencaCaixaValor < 0 ? "- " : ""}${money(Math.abs(diferencaCaixaValor))}`;
   return `
     <tr>
       <td>${escapeHtml(nome)}</td>
