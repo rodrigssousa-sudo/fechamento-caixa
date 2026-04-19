@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-  <title>Bank King BRS - PRO</title>
+  <title>Bank King PRO</title>
   <style>
     :root{
       --bg:#030712;
@@ -311,14 +311,12 @@
       box-shadow:var(--shadow);
     }
 
-    .summary-card{
-      padding:20px;
-      border-radius:22px;
-      background:
-        linear-gradient(180deg, rgba(255,255,255,.03), rgba(255,255,255,.015)),
-        linear-gradient(135deg, rgba(8,18,38,.96), rgba(7,15,30,.98));
-      border:1px solid rgba(148,163,184,.08);
-      box-shadow:0 20px 50px rgba(0,0,0,.35);
+    .summary-card{padding:16px;}
+
+    .summary-head h2{
+      margin:0;
+      font-size:17px;
+      letter-spacing:-.02em;
     }
 
     .pill{
@@ -340,16 +338,14 @@
     .bank-card{
       position:relative;
       overflow:hidden;
-      border-radius:24px;
-      padding:22px;
-      margin-bottom:16px;
+      border-radius:22px;
+      padding:18px;
+      margin-bottom:14px;
       background:
-        radial-gradient(circle at top right, rgba(96,165,250,.22), transparent 30%),
-        linear-gradient(135deg, #07152e 0%, #0c2a55 55%, #06101f 100%);
-      border:1px solid rgba(96,165,250,.18);
-      box-shadow:
-        0 25px 60px rgba(0,0,0,.45),
-        inset 0 1px 0 rgba(255,255,255,.03);
+        radial-gradient(circle at top right, rgba(96,165,250,.18), transparent 30%),
+        linear-gradient(135deg, rgba(9,20,42,1) 0%, rgba(13,32,67,1) 55%, rgba(8,16,30,1) 100%);
+      border:1px solid rgba(96,165,250,.14);
+      box-shadow:0 18px 40px rgba(0,0,0,.35);
     }
 
     .bank-label{
@@ -380,14 +376,12 @@
     }
 
     .bank-value{
-      font-size:clamp(42px, 8vw, 72px);
+      font-size:clamp(38px, 8vw, 68px);
+      line-height:1;
+      letter-spacing:-.05em;
       font-weight:900;
-      letter-spacing:-.06em;
-      color:#ffffff;
-      margin-top:10px;
-      text-shadow:
-        0 0 30px rgba(96,165,250,.25),
-        0 0 60px rgba(96,165,250,.10);
+      color:#fff;
+      text-shadow:0 0 26px rgba(96,165,250,.22);
     }
 
     .metrics{
@@ -398,11 +392,9 @@
 
     .metric{
       border-radius:18px;
-      padding:16px;
-      background:
-        linear-gradient(180deg, rgba(255,255,255,.035), rgba(255,255,255,.015));
-      border:1px solid rgba(148,163,184,.08);
-      box-shadow:inset 0 1px 0 rgba(255,255,255,.02);
+      padding:14px;
+      background:linear-gradient(180deg, rgba(255,255,255,.025), rgba(255,255,255,.01));
+      border:1px solid rgba(148,163,184,.10);
     }
 
     .metric-label{
@@ -424,11 +416,11 @@
     .metric-value.red{color:#ffb3b3;}
 
     .history-card{
-      padding:12px 14px;
+      padding:14px;
       border-radius:16px;
-      border:1px solid rgba(148,163,184,.06);
-      background:rgba(255,255,255,.015);
-      margin-top:10px;
+      border:1px solid rgba(96,165,250,.12);
+      background:rgba(255,255,255,.02);
+      margin-top:14px;
     }
 
     .history-card-top{
@@ -470,10 +462,6 @@
       margin-top:12px;
     }
 
-    .history-list.hidden{
-      display:none;
-    }
-
     .history-item{
       padding:14px;
       border-radius:16px;
@@ -504,7 +492,7 @@
 
     .history-item-grid{
       display:grid;
-      grid-template-columns:1fr 1fr 1fr;
+      grid-template-columns:1fr 1fr;
       gap:10px;
     }
 
@@ -1340,7 +1328,7 @@
       <div class="auth-toggle">
         <button id="tabLogin" class="auth-tab active" type="button">Entrar</button>
         <button id="tabRegister" class="auth-tab" type="button">Registrar</button>
-        <button id="tabForgot" class="auth-tab" type="button">Redefinir senha</button>
+        <button id="tabForgot" class="auth-tab" type="button">Senha</button>
       </div>
 
       <form id="loginForm" class="auth-form">
@@ -1382,19 +1370,30 @@
       </form>
 
       <form id="forgotPasswordForm" class="auth-form hidden">
-        <h3>Redefinir senha</h3>
-        <p class="auth-subtitle">Você receberá um link no email para criar uma nova senha.</p>
+        <div class="auth-note" style="margin-top:-2px; margin-bottom:4px;">
+          Use o código interno de redefinição. Nenhum código será enviado por email.
+        </div>
 
         <div class="field">
           <label for="resetEmail">Email</label>
-          <input id="resetEmail" type="email" placeholder="Digite seu email" />
+          <input id="resetEmail" type="email" placeholder="Digite o email cadastrado" />
         </div>
 
-        <button class="auth-submit" type="submit">Enviar link de redefinição</button>
+        <div class="field">
+          <label for="resetCode">Código de redefinição</label>
+          <input id="resetCode" type="password" placeholder="Digite código interno" />
+        </div>
+
+        <div class="field">
+          <label for="newPassword">Nova senha</label>
+          <input id="newPassword" type="password" placeholder="Digite a nova senha" />
+        </div>
+
+        <button class="auth-submit" type="submit">Redefinir senha</button>
       </form>
 
       <div class="auth-note">
-        Central King 24 horas
+        Login inicial demo: admin@bankking.com / casino12
       </div>
     </div>
   </section>
@@ -1410,7 +1409,7 @@
             <div class="logo-bk">BK</div>
             <h1>Bank King</h1>
           </div>
-          <div class="badge">BRS SYST</div>
+          <div class="badge">PRO</div>
         </div>
       </header>
 
@@ -1431,7 +1430,7 @@
 
           <div class="bank-card">
             <div class="bank-topline">
-              <span class="bank-label">SALDO DISPONÍVEL</span>
+              <span class="bank-label">BANCA TOTAL</span>
               <button id="toggleBalance" class="hide-balance-btn" type="button" aria-label="Mostrar ou ocultar banca">
                 <svg id="eyeIcon" width="20" height="20" viewBox="0 0 24 24" fill="none">
                   <path d="M2 12C4.5 7 8.5 5 12 5C15.5 5 19.5 7 22 12C19.5 17 15.5 19 12 19C8.5 19 4.5 17 2 12Z" stroke="currentColor" stroke-width="1.6"/>
@@ -1452,7 +1451,7 @@
               <div id="totalEntradasT2" class="metric-value green">$ 0,00</div>
             </div>
             <div class="metric">
-              <div class="metric-label">Lucro do turno</div>
+              <div class="metric-label">Diferença</div>
               <div id="lucroTotal" class="metric-value blue">$ 0,00</div>
             </div>
           </div>
@@ -1466,13 +1465,9 @@
                 Nenhum turno anterior salvo ainda.
               </div>
             </div>
-
-            <button id="toggleHistoryBtn" class="danger-mini-btn" type="button">
-              Ver
-            </button>
           </div>
 
-          <div id="historyList" class="history-list hidden"></div>
+          <div id="historyList" class="history-list"></div>
 
           <button id="deleteHistoryBtn" class="danger-mini-btn" type="button" style="margin-top:10px; width:100%;">
             🔴 Excluir Histórico
@@ -1574,9 +1569,8 @@
               <div class="field"><label for="t2_cargas">Carga de Fichas</label><input type="text" inputmode="numeric" id="t2_cargas" placeholder="0,00" /></div>
               <div class="field"><label for="t2_cargas_poker">Cargas F. Poker (x400)</label><input type="text" inputmode="numeric" id="t2_cargas_poker" placeholder="0,00" /></div>
             </div>
-          </div>
-
-          <div class="finance-block">
+          </div>          
+<div class="finance-block">
             <div class="finance-head">
               <h4>Saídas de caixa</h4>
               <div class="finance-total red" id="t2_saidas_total">- $ 0,00</div>
@@ -1689,30 +1683,19 @@
 
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-app.js";
-    import {
-      getFirestore,
-      collection,
-      addDoc,
-      getDocs,
-      deleteDoc,
-      doc,
-      setDoc,
-      onSnapshot,
-      query,
-      orderBy,
-      limit,
-      serverTimestamp
-    } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-firestore.js";
-
-    import {
-      getAuth,
-      createUserWithEmailAndPassword,
-      signInWithEmailAndPassword,
-      signOut,
-      onAuthStateChanged,
-      sendPasswordResetEmail
-    } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-auth.js";
-
+import {
+  getFirestore,
+  collection,
+  addDoc,
+  getDocs,
+  deleteDoc,
+  doc,
+  onSnapshot,
+  query,
+  orderBy,
+  limit,
+  serverTimestamp
+} from "https://www.gstatic.com/firebasejs/12.0.0/firebase-firestore.js";
     const firebaseConfig = {
       apiKey: "AIzaSyAuyfJNu2vwvVyH5gRsvg82m98teFCmPXw",
       authDomain: "bank-king-c53cf.firebaseapp.com",
@@ -1725,19 +1708,22 @@
 
     const app = initializeApp(firebaseConfig);
     const db = getFirestore(app);
-    const auth = getAuth(app);
 
     const PDF_CODE = "1520";
     const REPORT_CODE = "1520";
+    const RESET_CODE = "4br1l#2o26";
     const DELETE_HISTORY_CODE = "1520";
     const ADMIN_CODE = "9087";
 
+    const USERS_STORAGE_KEY = "bank-king-users-v1";
     const ACTIVE_USER_STORAGE_KEY = "bank-king-active-user-v1";
     const REMEMBER_LOGIN_STORAGE_KEY = "bank-king-remember-login-v1";
     const REMEMBERED_EMAIL_STORAGE_KEY = "bank-king-remembered-email-v1";
     const SESSION_LAST_ACTIVITY_KEY = "bank-king-session-last-activity-v1";
 
     const SESSION_TIMEOUT_MS = 30 * 60 * 1000;
+    const LOGIN_DEMO_EMAIL = "admin@bankking.com";
+    const LOGIN_DEMO_PASSWORD = "casino12";
 
     const authScreen = document.getElementById("authScreen");
     const appShell = document.getElementById("appShell");
@@ -1751,7 +1737,6 @@
     let historyUnsubscribe = null;
     let historyRealtimeStarted = false;
     let historyCache = [];
-    let historyVisible = false;
 
     function money(value){
       return `$ ${Number(value || 0).toLocaleString("pt-BR", {
@@ -1780,21 +1765,6 @@
       return local.toISOString().split("T")[0];
     }
 
-    async function getUsersFromFirestore(){
-      const q = query(collection(db, "users"), orderBy("createdAt", "desc"));
-      const snapshot = await getDocs(q);
-
-      return snapshot.docs.map((docItem) => ({
-        id: docItem.id,
-        ...docItem.data()
-      }));
-    }
-
-    async function deleteUserDocFromFirestore(uid){
-      if (!uid) return;
-      await deleteDoc(doc(db, "users", uid));
-    }
-
     function formatDateBR(dateStr){
       if(!dateStr) return "Sem data";
       const [y,m,d] = dateStr.split("-");
@@ -1802,22 +1772,10 @@
       return `${d}/${m}/${y}`;
     }
 
-    function formatDateTimeBR(value){
-      if(!value) return "Sem data";
-
-      let dt;
-      if (value?.toDate) {
-        dt = value.toDate();
-      } else {
-        dt = new Date(value);
-      }
-
-      if (isNaN(dt.getTime())) return "Sem data";
-
-      return `${dt.toLocaleDateString("pt-BR")} às ${dt.toLocaleTimeString("pt-BR", {
-        hour: "2-digit",
-        minute: "2-digit"
-      })}`;
+    function formatDateTimeBR(iso){
+      if(!iso) return "Sem data";
+      const dt = new Date(iso);
+      return `${dt.toLocaleDateString("pt-BR")} às ${dt.toLocaleTimeString("pt-BR", {hour:"2-digit", minute:"2-digit"})}`;
     }
 
     function parseMoneyInput(value){
@@ -1856,7 +1814,7 @@
         const len = input.value.length;
         try{ input.setSelectionRange(len, len); }catch(_){}
       });
-    }
+}
 
     function attachMoneyMask(input){
       if(!input || input.dataset.maskAttached === "true") return;
@@ -1915,6 +1873,34 @@
       });
 
       input.addEventListener("focus", () => moveCursorToEnd(input));
+    }
+
+    function getUsers(){
+      const raw = localStorage.getItem(USERS_STORAGE_KEY);
+      if(!raw) return [];
+      try{
+        const parsed = JSON.parse(raw);
+        return Array.isArray(parsed) ? parsed : [];
+      }catch{
+        return [];
+      }
+    }
+
+    function saveUsers(users){
+      localStorage.setItem(USERS_STORAGE_KEY, JSON.stringify(users));
+    }
+
+    function ensureDemoUser(){
+      const users = getUsers();
+      const exists = users.some(u => u.email === LOGIN_DEMO_EMAIL);
+      if(!exists){
+        users.push({
+          name: "Admin",
+          email: LOGIN_DEMO_EMAIL,
+          password: LOGIN_DEMO_PASSWORD
+        });
+        saveUsers(users);
+      }
     }
 
     function saveRememberedLogin(enabled, email = ""){
@@ -2024,23 +2010,16 @@
     }
 
     function showApp(user){
-      document.getElementById("activeUserName").textContent = user?.name || "Usuário";
-      document.getElementById("activeUserEmail").textContent = user?.email || "";
-      authScreen.classList.add("hidden");
-      appShell.classList.remove("hidden");
-      ensureDates();
-      setSessionActivity();
-      startSessionWatcher();
-      render();
-    }
-
-    async function logout(){
-      try{
-        await signOut(auth);
-      }catch(error){
-        console.error("Erro ao sair do Firebase:", error);
-      }
-
+  document.getElementById("activeUserName").textContent = user?.name || "Usuário";
+  document.getElementById("activeUserEmail").textContent = user?.email || "";
+  authScreen.classList.add("hidden");
+  appShell.classList.remove("hidden");
+  ensureDates();
+  setSessionActivity();
+  startSessionWatcher();
+  render();
+}
+    function logout(){
       removeActiveUser();
       localStorage.removeItem(SESSION_LAST_ACTIVITY_KEY);
       stopSessionWatcher();
@@ -2049,6 +2028,88 @@
       preloadLogin();
       switchTab("login");
     }
+
+    document.getElementById("tabLogin").addEventListener("click", () => switchTab("login"));
+    document.getElementById("tabRegister").addEventListener("click", () => switchTab("register"));
+    document.getElementById("tabForgot").addEventListener("click", () => switchTab("forgot"));  
+  loginForm.addEventListener("submit", (e) => {
+      e.preventDefault();
+
+      const email = document.getElementById("loginEmail").value.trim().toLowerCase();
+      const password = document.getElementById("loginPassword").value;
+      const remember = rememberLoginCheckbox.checked;
+
+      const users = getUsers();
+      const found = users.find((u) => u.email === email && u.password === password);
+
+      if(!found){
+        alert("Email ou senha incorretos.");
+        return;
+      }
+
+      saveRememberedLogin(remember, email);
+      const user = { name: found.name, email: found.email };
+      saveActiveUser(user);
+      showApp(user);
+    });
+
+    registerForm.addEventListener("submit", (e) => {
+      e.preventDefault();
+
+      const name = document.getElementById("registerName").value.trim();
+      const email = document.getElementById("registerEmail").value.trim().toLowerCase();
+      const password = document.getElementById("registerPassword").value;
+
+      if(!name || !email || !password){
+        alert("Preencha todos os campos.");
+        return;
+      }
+
+      const users = getUsers();
+      if(users.some((u) => u.email === email)){
+        alert("Esse email já está cadastrado.");
+        return;
+      }
+
+      users.push({ name, email, password });
+      saveUsers(users);
+      alert("Usuário registrado com sucesso.");
+      switchTab("login");
+      document.getElementById("loginEmail").value = email;
+      requestAnimationFrame(() => document.getElementById("loginPassword").focus());
+    });
+
+    forgotPasswordForm.addEventListener("submit", (e) => {
+      e.preventDefault();
+
+      const email = document.getElementById("resetEmail").value.trim().toLowerCase();
+      const code = document.getElementById("resetCode").value.trim();
+      const newPassword = document.getElementById("newPassword").value;
+
+      if(!email || !code || !newPassword){
+        alert("Preencha email, código e nova senha.");
+        return;
+      }
+
+      if(code !== RESET_CODE){
+        alert("Código interno incorreto.");
+        return;
+      }
+
+      const users = getUsers();
+      const index = users.findIndex((u) => u.email === email);
+      if(index === -1){
+        alert("Usuário não encontrado.");
+        return;
+      }
+
+      users[index].password = newPassword;
+      saveUsers(users);
+      alert("Senha redefinida com sucesso.");
+      switchTab("login");
+      document.getElementById("loginEmail").value = email;
+      requestAnimationFrame(() => document.getElementById("loginPassword").focus());
+    });
 
     function ensureDates(){
       const t1 = document.getElementById("t1_data_fechamento");
@@ -2129,20 +2190,6 @@
       }else{
         pill.textContent = "Sem diferença";
         pill.className = "pill neutral";
-      }
-    }
-
-    function updateHistoryVisibility(){
-      const list = document.getElementById("historyList");
-      const btn = document.getElementById("toggleHistoryBtn");
-      if(!list || !btn) return;
-
-      if(historyVisible){
-        list.classList.remove("hidden");
-        btn.textContent = "Ocultar";
-      } else {
-        list.classList.add("hidden");
-        btn.textContent = "Ver";
       }
     }
 
@@ -2251,7 +2298,6 @@
           input.dataset.raw = "";
         }
       });
-
       document.getElementById(`${turno}_dynamic_list`).innerHTML = "";
       document.getElementById(`${turno}_pending_list`).innerHTML = "";
     }
@@ -2297,7 +2343,7 @@
         submittedByEmail: activeUser?.email || "",
         submittedAt: serverTimestamp(),
         fechamentoDate: document.getElementById(f.dataFechamento)?.value || getTodayDateInput(),
-        total: getValue(f.banco),
+        total: saldoLiquido,
         turno: {
           dataFechamento: document.getElementById(f.dataFechamento)?.value || getTodayDateInput(),
           entries,
@@ -2311,15 +2357,39 @@
       };
     }
 
-    async function saveHistoryItem(item){
-      const q = query(collection(db, "history"), orderBy("submittedAt", "desc"), limit(1));
+    async function loadHistory(){
+      const q = query(
+        collection(db, "history"),
+        orderBy("submittedAt", "desc"),
+        limit(100)
+      );
+
       const snapshot = await getDocs(q);
-      const previousTotal = snapshot.docs[0]?.data()?.total || 0;
+      return snapshot.docs.map((docItem) => ({
+        id: docItem.id,
+        ...docItem.data()
+      }));
+    }
 
-      item.bankVariation = item.total - previousTotal;
-      item.turnProfit = item.turno?.saldoLiquido || 0;
+   async function saveHistoryItem(item){
+  const q = query(
+    collection(db, "history"),
+    orderBy("submittedAt", "desc"),
+    limit(1)
+  );
 
-      await addDoc(collection(db, "history"), item);
+  const snapshot = await getDocs(q);
+  const previousTotal = snapshot.docs[0]?.data()?.total || 0;
+
+  item.diff = item.total - previousTotal;
+
+  await addDoc(collection(db, "history"), item);
+}
+    async function deleteAllHistory(){
+      const snapshot = await getDocs(collection(db, "history"));
+      for (const item of snapshot.docs) {
+        await deleteDoc(doc(db, "history", item.id));
+      }
     }
 
     function applySnapshotToTurn(turno, snapshot){
@@ -2372,7 +2442,6 @@
       if(!history.length){
         list.innerHTML = `<div class="history-empty">Sem histórico ainda.</div>`;
         document.getElementById("historyInfo").textContent = "Nenhum turno anterior salvo ainda.";
-        updateHistoryVisibility();
         return;
       }
 
@@ -2382,25 +2451,14 @@
             <div class="history-user">${escapeHtml(item.submittedByName || "Sistema")}</div>
             <div class="history-time">${escapeHtml(formatDateBR(item.fechamentoDate || ""))}</div>
           </div>
-
           <div class="history-item-grid">
             <div class="history-mini-card">
               <div class="history-mini-label">Total</div>
               <div class="history-mini-value">${money(item.total || 0)}</div>
             </div>
-
             <div class="history-mini-card">
-              <div class="history-mini-label">Lucro do turno</div>
-              <div class="history-mini-value ${(item.turnProfit || 0) < 0 ? "red" : ""}">
-                ${money(item.turnProfit || 0)}
-              </div>
-            </div>
-
-            <div class="history-mini-card">
-              <div class="history-mini-label">Variação da banca</div>
-              <div class="history-mini-value ${(item.bankVariation || 0) < 0 ? "red" : ""}">
-                ${money(item.bankVariation || 0)}
-              </div>
+              <div class="history-mini-label">Diferença</div>
+              <div class="history-mini-value ${(item.diff || 0) < 0 ? "red" : ""}">${money(item.diff || 0)}</div>
             </div>
           </div>
         </div>
@@ -2414,8 +2472,6 @@
           openHistoryModal(Number(el.dataset.historyIndex));
         });
       });
-
-      updateHistoryVisibility();
     }
 
     function openHistoryModal(index){
@@ -2427,6 +2483,7 @@
         `Data do fechamento: ${formatDateBR(item.fechamentoDate || "")} • Enviado em: ${formatDateTimeBR(item.submittedAt)}`;
 
       const turno = item.turno || {};
+      const diffValue = Number(item.diff || 0);
 
       document.getElementById("historyModalBody").innerHTML = `
         <div class="modal-summary-grid">
@@ -2435,8 +2492,8 @@
             <div class="modal-summary-value">${money(item.total || 0)}</div>
           </div>
           <div class="modal-summary-card">
-            <div class="modal-summary-label">Lucro do turno</div>
-            <div class="history-mini-value ${(item.turnProfit || 0) < 0 ? "red" : ""}">${money(item.turnProfit || 0)}</div>
+            <div class="modal-summary-label">Diferença</div>
+            <div class="modal-summary-value">${money(diffValue)}</div>
           </div>
           <div class="modal-summary-card">
             <div class="modal-summary-label">Responsável</div>
@@ -2498,7 +2555,11 @@
       if(historyRealtimeStarted) return;
       historyRealtimeStarted = true;
 
-      const q = query(collection(db, "history"), orderBy("submittedAt", "desc"), limit(100));
+      const q = query(
+        collection(db, "history"),
+        orderBy("submittedAt", "desc"),
+        limit(100)
+      );
 
       historyUnsubscribe = onSnapshot(q, (snapshot) => {
         historyCache = snapshot.docs.map((docItem) => ({
@@ -2514,11 +2575,10 @@
 
         renderHistoryListFromCache();
         render();
-      }, (error) => {
-        console.error("Erro no listener do Firestore:", error);
-        alert("Erro no listener do Firestore. Veja o console.");
-      });
-    }
+}, (error) => {
+  console.error("Erro no listener do Firestore:", error);
+  alert("Erro no listener do Firestore. Veja o console.");
+});    }
 
     function renderCashflowReport(days){
       const history = historyCache || [];
@@ -2535,7 +2595,7 @@
       const totalBancoReca = filtered.reduce((acc, item) => acc + getBancoRecaFromSnapshot(item.turno || {}), 0);
       const totalPendentes = filtered.reduce((acc, item) => acc + Number(item.turno?.pendentesTotal || 0), 0);
       const totalSaidas = filtered.reduce((acc, item) => acc + Number(item.turno?.saidasTotal || 0), 0);
-      const totalSaidas;
+      const lucroReal = totalBancoReca - totalPendentes - totalSaidas;
 
       const titleMap = {
         7: "Relatório semanal",
@@ -2551,7 +2611,6 @@
       document.getElementById("reportLucro").textContent = money(lucroReal);
 
       const reportList = document.getElementById("reportList");
-
       if(!filtered.length){
         reportList.innerHTML = `<div class="history-empty">Nenhum fechamento encontrado nesse período.</div>`;
       }else{
@@ -2585,7 +2644,7 @@
             </div>
           </div>
         `).join("");
-      }
+     }
 
       document.getElementById("reportScreen").classList.remove("hidden");
     }
@@ -2676,7 +2735,7 @@
       const t2Pendentes = getPendingTotal("t2");
       const t2Total = t2Entradas - t2Saidas - t2Pendentes;
 
-      const ultimoLucroDoTurno = Number(historyCache[0]?.turnProfit || 0);
+      const diff = t2Total - t1Total;
 
       document.getElementById("t1_entradas_total").textContent = money(t1Entradas);
       document.getElementById("t1_saidas_total").textContent = negativeMoney(t1Saidas);
@@ -2691,19 +2750,14 @@
 
       document.getElementById("totalEntradasT1").textContent = money(t1Entradas);
       document.getElementById("totalEntradasT2").textContent = money(t2Entradas);
-      document.getElementById("lucroTotal").textContent = money(ultimoLucroDoTurno);
+      document.getElementById("lucroTotal").textContent = money(diff);
 
-      const bancaTotalAtualBruta = historyCache[0]?.total || 0;
-      const bancaTotalAtual = Math.max(0, Number(bancaTotalAtualBruta || 0));
-
-      document.getElementById("bankValue").textContent =
-        balanceVisible ? money(bancaTotalAtual) : "••••••";
-
+      document.getElementById("bankValue").textContent = balanceVisible ? money(diff) : "••••••";
       updateEyeIcon();
-      updateStatusPill(ultimoLucroDoTurno);
+      updateStatusPill(diff);
     }
 
-    async function openAdminModal(){
+    function openAdminModal(){
       const code = prompt("Digite código interno:");
       if(code === null) return;
 
@@ -2712,7 +2766,7 @@
         return;
       }
 
-      await renderAdminUsers();
+      renderAdminUsers();
       document.getElementById("adminModal").classList.remove("hidden");
       requestAnimationFrame(() => document.getElementById("adminSearchInput").focus());
     }
@@ -2722,8 +2776,8 @@
       document.getElementById("adminSearchInput").value = "";
     }
 
-    async function renderAdminUsers(){
-      const users = await getUsersFromFirestore();
+    function renderAdminUsers(){
+      const users = getUsers();
       const term = document.getElementById("adminSearchInput").value.trim().toLowerCase();
 
       const filtered = users.filter((user) => {
@@ -2739,7 +2793,9 @@
         return;
       }
 
-      adminUsersList.innerHTML = filtered.map((user) => {
+      adminUsersList.innerHTML = filtered.map((user, index) => {
+        const originalIndex = users.findIndex((u) => u.email === user.email && u.name === user.name);
+
         return `
           <div class="admin-user-card">
             <div class="admin-user-top">
@@ -2747,20 +2803,19 @@
                 <div class="admin-user-name">${escapeHtml(user.name || "Sem nome")}</div>
                 <div class="admin-user-email">${escapeHtml(user.email || "Sem email")}</div>
               </div>
-              <div class="admin-user-badge">${escapeHtml(user.role || "user")}</div>
+              <div class="admin-user-badge">Usuário ${index + 1}</div>
             </div>
 
             <div class="admin-actions">
-              <button class="admin-action-btn admin-view-btn" type="button" data-admin-view="${user.id}">👁 Ver</button>
-              <button class="admin-action-btn admin-reset-btn" type="button" data-admin-reset="${user.email}">🔒 Resetar senha</button>
-              <button class="admin-action-btn admin-delete-btn" type="button" data-admin-delete="${user.id}">🗑 Excluir</button>
+              <button class="admin-action-btn admin-view-btn" type="button" data-admin-view="${originalIndex}">👁 Ver</button>
+              <button class="admin-action-btn admin-reset-btn" type="button" data-admin-reset="${originalIndex}">🔒 Resetar senha</button>
+              <button class="admin-action-btn admin-delete-btn" type="button" data-admin-delete="${originalIndex}">🗑 Excluir</button>
             </div>
 
-            <div class="admin-inline-details" id="adminDetails_${user.id}">
+            <div class="admin-inline-details" id="adminDetails_${originalIndex}">
               <div class="admin-inline-line"><span>Nome</span><strong>${escapeHtml(user.name || "-")}</strong></div>
               <div class="admin-inline-line"><span>Email</span><strong>${escapeHtml(user.email || "-")}</strong></div>
-              <div class="admin-inline-line"><span>UID</span><strong>${escapeHtml(user.uid || "-")}</strong></div>
-              <div class="admin-inline-line"><span>Perfil</span><strong>${escapeHtml(user.role || "user")}</strong></div>
+              <div class="admin-inline-line"><span>Senha atual</span><strong>${escapeHtml(user.password || "-")}</strong></div>
             </div>
           </div>
         `;
@@ -2772,201 +2827,65 @@
     function bindAdminActions(){
       document.querySelectorAll("[data-admin-view]").forEach((btn) => {
         btn.addEventListener("click", () => {
-          const id = btn.dataset.adminView;
-          const box = document.getElementById(`adminDetails_${id}`);
+          const idx = btn.dataset.adminView;
+          const box = document.getElementById(`adminDetails_${idx}`);
           if(box) box.classList.toggle("show");
         });
       });
 
       document.querySelectorAll("[data-admin-reset]").forEach((btn) => {
-        btn.addEventListener("click", async () => {
-          const email = btn.dataset.adminReset;
-          if(!email) return;
+        btn.addEventListener("click", () => {
+          const idx = Number(btn.dataset.adminReset);
+          const users = getUsers();
+          const user = users[idx];
+          if(!user) return;
 
-          const confirmacao = confirm(`Enviar email de redefinição de senha para ${email}?`);
-          if(!confirmacao) return;
+          const newPassword = prompt(`Nova senha para ${user.name}:`);
+          if(newPassword === null) return;
 
-          try {
-            await sendPasswordResetEmail(auth, email);
-            alert("Email de redefinição enviado com sucesso.");
-          } catch (error) {
-            console.error("Erro ao enviar redefinição:", error);
-            alert("Não foi possível enviar o email de redefinição.");
+          const clean = newPassword.trim();
+          if(!clean){
+            alert("Senha inválida.");
+            return;
           }
+
+          users[idx].password = clean;
+          saveUsers(users);
+          renderAdminUsers();
+          alert("Senha atualizada com sucesso.");
         });
       });
 
       document.querySelectorAll("[data-admin-delete]").forEach((btn) => {
-        btn.addEventListener("click", async () => {
-          const uid = btn.dataset.adminDelete;
+        btn.addEventListener("click", () => {
+          const idx = Number(btn.dataset.adminDelete);
+          const users = getUsers();
+          const user = users[idx];
+          if(!user) return;
 
-          if (!uid) {
-            alert("ID do usuário inválido.");
-            return;
+          if(!confirm(`Excluir o usuário ${user.name}?`)) return;
+
+          if(loadActiveUser()?.email === user.email){
+            removeActiveUser();
+            localStorage.removeItem(SESSION_LAST_ACTIVITY_KEY);
           }
 
-          const confirmacao = confirm("Confirma a exclusão deste usuário?");
-          if (!confirmacao) return;
-
-          try {
-            await deleteUserDocFromFirestore(uid);
-            await renderAdminUsers();
-            alert("Usuário removido da coleção 'users' com sucesso.\n(A conta no Firebase Auth NÃO foi excluída)");
-          } catch (error) {
-            console.error("Erro ao excluir usuário:", error);
-            alert("Erro ao excluir usuário. Verifique o console.");
+          if(getRememberedEmail() === user.email){
+            saveRememberedLogin(false, "");
           }
+
+          users.splice(idx, 1);
+          saveUsers(users);
+          renderAdminUsers();
+          alert("Usuário excluído com sucesso.");
         });
       });
     }
 
-    onAuthStateChanged(auth, (user) => {
-      if (user) {
-        const userData = {
-          name: user.email?.split("@")[0] || "Usuário",
-          email: user.email,
-          uid: user.uid
-        };
-
-        saveActiveUser(userData);
-        showApp(userData);
-      } else {
-        removeActiveUser();
-        localStorage.removeItem(SESSION_LAST_ACTIVITY_KEY);
-        authScreen.classList.remove("hidden");
-        appShell.classList.add("hidden");
-      }
-    });
-
-    document.getElementById("tabLogin").addEventListener("click", () => switchTab("login"));
-    document.getElementById("tabRegister").addEventListener("click", () => switchTab("register"));
-    document.getElementById("tabForgot").addEventListener("click", () => switchTab("forgot"));
-
-    loginForm.addEventListener("submit", async (e) => {
-      e.preventDefault();
-      const email = document.getElementById("loginEmail").value.trim().toLowerCase();
-      const password = document.getElementById("loginPassword").value;
-      const remember = rememberLoginCheckbox.checked;
-
-      try {
-        const userCredential = await signInWithEmailAndPassword(auth, email, password);
-
-        saveRememberedLogin(remember, email);
-
-        const user = {
-          name: userCredential.user.email?.split("@")[0] || "Usuário",
-          email: userCredential.user.email,
-          uid: userCredential.user.uid
-        };
-
-        saveActiveUser(user);
-        showApp(user);
-      } catch (error) {
-        console.error("Erro ao fazer login:", error);
-
-        if (
-          error.code === "auth/invalid-credential" ||
-          error.code === "auth/user-not-found" ||
-          error.code === "auth/wrong-password" ||
-          error.code === "auth/invalid-login-credentials"
-        ) {
-          alert("Email ou senha incorretos.");
-        } else if (error.code === "auth/invalid-email") {
-          alert("Email inválido.");
-        } else {
-          alert("Erro ao fazer login.");
-        }
-      }
-    });
-
-    forgotPasswordForm.addEventListener("submit", async (e) => {
-      e.preventDefault();
-
-      const email = document.getElementById("resetEmail").value.trim().toLowerCase();
-
-      if (!email) {
-        alert("Informe seu email.");
-        return;
-      }
-
-      try {
-        await sendPasswordResetEmail(auth, email);
-        alert("Verifique seu email. Se não encontrar, confira a caixa de spam.");
-        document.getElementById("resetEmail").value = "";
-        document.getElementById("tabLogin").click();
-      } catch (error) {
-        console.error("Erro ao enviar redefinição:", error);
-
-        if (error.code === "auth/invalid-email") {
-          alert("Email inválido.");
-        } else if (error.code === "auth/user-not-found") {
-          alert("Usuário não encontrado.");
-        } else {
-          alert("Não foi possível enviar o email.");
-        }
-      }
-    });
-
-    registerForm.addEventListener("submit", async (e) => {
-      e.preventDefault();
-
-      const name = document.getElementById("registerName").value.trim();
-      const email = document.getElementById("registerEmail").value.trim().toLowerCase();
-      const password = document.getElementById("registerPassword").value;
-
-      if (!name || !email || !password) {
-        alert("Preencha todos os campos.");
-        return;
-      }
-
-      try {
-        const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-
-        await setDoc(doc(db, "users", userCredential.user.uid), {
-          uid: userCredential.user.uid,
-          name,
-          email,
-          role: "user",
-          createdAt: serverTimestamp()
-        });
-
-        saveActiveUser({
-          name,
-          email,
-          uid: userCredential.user.uid
-        });
-
-        alert("Usuário registrado com sucesso.");
-        showApp({
-          name,
-          email,
-          uid: userCredential.user.uid
-        });
-      } catch (error) {
-        console.error("Erro ao registrar usuário:", error);
-
-        if (error.code === "auth/email-already-in-use") {
-          alert("Esse email já está cadastrado.");
-        } else if (error.code === "auth/weak-password") {
-          alert("A senha precisa ter pelo menos 6 caracteres.");
-        } else if (error.code === "auth/invalid-email") {
-          alert("Email inválido.");
-        } else {
-          alert("Erro ao registrar usuário.");
-        }
-      }
-    });
-
     document.addEventListener("DOMContentLoaded", () => {
+      ensureDemoUser();
       bindSessionEvents();
       startHistoryRealtimeListener();
-
-      document.getElementById("toggleHistoryBtn").addEventListener("click", () => {
-        historyVisible = !historyVisible;
-        updateHistoryVisibility();
-      });
-
-      updateHistoryVisibility();
 
       [
         "t1_banco","t1_pppoker","t1_suprema","t1_buffalo","t1_ganamos","t1_cargas","t1_cargas_poker",
@@ -3004,17 +2923,19 @@
       });
 
       document.getElementById("fecharTurno").addEventListener("click", async () => {
-        try {
-          const item = serializeTurn("t2");
-          await saveHistoryItem(item);
-          clearTurn("t2");
-          render();
-          alert("Turno fechado com sucesso.");
-        } catch (error) {
-          console.error("Erro ao salvar histórico:", error);
-          alert("Erro ao salvar histórico. Abra o console para ver o detalhe.");
-        }
-      });
+try {
+const item = serializeTurn("t2");
+console.log("Item que vai salvar:", item);
+await saveHistoryItem(item);
+console.log("Histórico salvo com sucesso no Firestore.");
+clearTurn("t2");
+render();
+alert("Turno fechado com sucesso.");
+} catch (error) {
+console.error("Erro ao salvar histórico:", error);
+alert("Erro ao salvar histórico. Abra o console para ver o detalhe.");
+}
+});
 
       document.getElementById("exportarPdf").addEventListener("click", exportToPdfProtected);
 
@@ -3043,45 +2964,18 @@
 
       document.getElementById("deleteHistoryBtn").addEventListener("click", async () => {
         const senha = prompt("Digite código interno:");
-        if (senha === null) return;
+        if(senha === null) return;
 
-        if (senha !== DELETE_HISTORY_CODE) {
+        if(senha !== DELETE_HISTORY_CODE){
           alert("Código interno incorreto.");
           return;
         }
 
-        if (!historyCache.length) {
-          alert("Não há histórico para excluir.");
-          return;
-        }
+        if(!confirm("Deseja realmente apagar todo o histórico?")) return;
 
-        const lista = historyCache
-          .map((item, index) => {
-            const nome = item.submittedByName || "Sistema";
-            const data = formatDateBR(item.fechamentoDate || "");
-            const total = money(item.total || 0);
-            return `${index + 1} - ${nome} - ${data} - ${total}`;
-          })
-          .join("\n");
-
-        const escolha = prompt(`Digite o número do histórico que deseja excluir:\n\n${lista}`);
-        if (escolha === null) return;
-
-        const indice = Number(escolha) - 1;
-
-        if (!Number.isInteger(indice) || indice < 0 || indice >= historyCache.length) {
-          alert("Número inválido.");
-          return;
-        }
-
-        const itemSelecionado = historyCache[indice];
-
-        if (!confirm(`Deseja excluir o histórico de ${itemSelecionado.submittedByName || "Sistema"} em ${formatDateBR(itemSelecionado.fechamentoDate || "")}?`)) {
-          return;
-        }
-
-        await deleteDoc(doc(db, "history", itemSelecionado.id));
-        alert("Histórico excluído com sucesso.");
+        await deleteAllHistory();
+        clearTurn("t1");
+        render();
       });
 
       document.getElementById("logoutBtn").addEventListener("click", logout);
@@ -3103,16 +2997,17 @@
           return;
         }
 
-        if(!confirm("Tem certeza que deseja limpar os dados locais deste dispositivo?")) return;
+        if(!confirm("Tem certeza que deseja excluir TODOS os usuários?")) return;
 
+        localStorage.removeItem(USERS_STORAGE_KEY);
         localStorage.removeItem(ACTIVE_USER_STORAGE_KEY);
         localStorage.removeItem(REMEMBER_LOGIN_STORAGE_KEY);
         localStorage.removeItem(REMEMBERED_EMAIL_STORAGE_KEY);
         localStorage.removeItem(SESSION_LAST_ACTIVITY_KEY);
 
+        ensureDemoUser();
         renderAdminUsers();
-
-        alert("Dados locais removidos com sucesso.\n(Usuários no Firebase NÃO foram excluídos)");
+        alert("Todos os usuários foram removidos. O usuário demo foi recriado.");
       });
 
       const rememberedUser = loadActiveUser();
