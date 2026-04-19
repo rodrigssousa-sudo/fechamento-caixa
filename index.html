@@ -3128,18 +3128,13 @@ function applySnapshotToTurn(turno, snapshot){
           createdAt: serverTimestamp()
         });
 
-        saveActiveUser({
-          name,
-          email,
-          uid: userCredential.user.uid
-        });
+  saveActiveUser({
+  name,
+  email,
+  uid: userCredential.user.uid
+});
 
-        alert("Usuário registrado com sucesso.");
-        showApp({
-          name,
-          email,
-          uid: userCredential.user.uid
-        });
+alert("Usuário registrado com sucesso.");
       } catch (error) {
         console.error("Erro ao registrar usuário:", error);
 
