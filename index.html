@@ -2444,40 +2444,65 @@ button{
   await addDoc(collection(db, "history"), item);
 }
 
-    function applySnapshotToTurn(turno, snapshot){
-      if(!snapshot) return;
+function applySnapshotToTurn(turno, snapshot){
+  if(!snapshot) return;
 
-      clearTurn(turno);
+  clearTurn(turno);
 
-      const f = fieldsByTurn[turno];
-      document.getElementById(f.dataFechamento).value = snapshot.dataFechamento || getTodayDateInput();
+  const f = fieldsByTurn[turno];
 
-      const map = {
-        "Banco Reca": f.banco,
-        "PPPoker (x400)": f.pppoker,
-        "Suprema (x400)": f.suprema,
-        "Buffalo": f.buffalo,
-        "Ganamos": f.ganamos,
-        "Carga de Fichas": f.cargas,
-        "Cargas F. Poker (x400)": f.cargasPoker
-      };
+  document.getElementById(f.dataFechamento).value =
+    snapshot.dataFechamento || getTodayDateInput();
 
-      (snapshot.entries || []).forEach((entry) => {
-        const id = map[entry.name];
-        if(!id) return;
-        let rawValue = entry.value || 0;
-        if(entry.name.includes("(x400)")) rawValue = rawValue / 400;
-        setDigitsToInput(document.getElementById(id), Math.round(rawValue * 100).toString());
-      });
+  if (f.shiftLabel && document.getElementById(f.shiftLabel)) {
+    document.getElementById(f.shiftLabel).value =
+      snapshot.shiftLabel ||
+      snapshot.turno?.shiftLabel ||
+      "06:00 às 12:00";
+  }
 
-      (snapshot.outflows || []).forEach((item) => {
-        createDynamicRow(turno, item.name, Math.round((item.value || 0) * 100).toString());
-      });
+  const map = {
+    "Banco Reca": f.banco,
+    "PPPoker (x400)": f.pppoker,
+    "Suprema (x400)": f.suprema,
+    "Buffalo": f.buffalo,
+    "Ganamos": f.ganamos,
+    "Carga de Fichas": f.cargas,
+    "Cargas F. Poker (x400)": f.cargasPoker
+  };
 
-      (snapshot.pendings || []).forEach((item) => {
-        createPendingRow(turno, item.name, Math.round((item.value || 0) * 100).toString());
-      });
+  (snapshot.entries || []).forEach((entry) => {
+    const id = map[entry.name];
+    if(!id) return;
+
+    let rawValue = entry.value || 0;
+
+    if(entry.name.includes("(x400)")){
+      rawValue = rawValue / 400;
     }
+
+    setDigitsToInput(
+      document.getElementById(id),
+      Math.round(rawValue * 100).toString()
+    );
+  });
+
+  (snapshot.outflows || []).forEach((item) => {
+    createDynamicRow(
+      turno,
+      item.name,
+      Math.round((item.value || 0) * 100).toString()
+    );
+  });
+
+  (snapshot.pendings || []).forEach((item) => {
+    createPendingRow(
+      turno,
+      item.name,
+      Math.round((item.value || 0) * 100).toString()
+    );
+  });
+}
 
     function getBancoRecaFromSnapshot(snapshot){
       return (snapshot.entries || []).find((item) => item.name === "Banco Reca")?.value || 0;
