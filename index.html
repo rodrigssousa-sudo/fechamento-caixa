@@ -909,7 +909,7 @@ button{
   max-width:1180px;
   margin:0 auto;
   display:grid;
-  grid-template-columns:repeat(4, 1fr);
+  grid-template-columns:repeat(3, 1fr);
   gap:8px;
 }
 
@@ -2825,20 +2825,18 @@ function getHistoryByDateRange(startDate, endDate){
 function buildPremiumPdfHtml(startDate, endDate){
   const filtered = getHistoryByDateRange(startDate, endDate);
 
-  const totalBancoReca = filtered.reduce((acc, item) => {
-    return acc + Number(getBancoRecaFromSnapshot(item.turno || {}));
-  }, 0);
+  const ultimoRegistro = filtered.length ? filtered[0] : null;
+
+  const ultimoBancoReca = ultimoRegistro
+    ? Number(getBancoRecaFromSnapshot(ultimoRegistro.turno || {}))
+    : 0;
 
   const totalSaidas = filtered.reduce((acc, item) => {
     return acc + Number(item.turno?.saidasTotal || 0);
   }, 0);
 
-  const totalPendentes = filtered.reduce((acc, item) => {
-    return acc + Number(item.turno?.pendentesTotal || 0);
-  }, 0);
-
   const saldoTotal = filtered.reduce((acc, item) => {
-    return acc + Number(item.turno?.saldoLiquido || 0);
+    return acc + Number(item.diff || item.bankVariation || 0);
   }, 0);
 
   const linhas = filtered.map((item) => {
@@ -3028,17 +3026,12 @@ function buildPremiumPdfHtml(startDate, endDate){
         <div class="summary">
           <div class="card">
             <div class="label">Banco Reca</div>
-            <div class="value">${money(totalBancoReca)}</div>
+            <div class="value">${money(ultimoBancoReca)}</div>
           </div>
 
           <div class="card">
             <div class="label">Saídas de Caixa</div>
             <div class="value">${money(totalSaidas)}</div>
-          </div>
-
-          <div class="card">
-            <div class="label">Pagos Pendentes</div>
-            <div class="value">${money(totalPendentes)}</div>
           </div>
 
           <div class="card">
