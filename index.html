@@ -2905,25 +2905,41 @@ function buildPremiumPdfHtml(startDate, endDate){
     return acc + Number(item.diff || item.bankVariation || 0);
   }, 0);
 
-const linhas = filtered.map((item) => {
+const linhas = filtered.map((item, index) => {
+
   const nome = item.nomeOperador || "Sem nome";
   const turno = item.turnoTrabalhado || "-";
   const data = formatDateBR(item.fechamentoDate || "");
 
   const banco = money(getBancoRecaFromSnapshot(item.turno || {}));
-  const saidas = money(item.turno?.saidasTotal || 0);
+  const saidas = Number(item.turno?.saidasTotal || 0);
 
-  const diferencaCaixaValorBruto = Number(item.diff || item.bankVariation || 0);
+  // 👉 PEGAR O ANTERIOR
+  const previousItem = filtered[index + 1];
 
-const diferencaCaixaValor = diferencaCaixaValorBruto * -1;
-const diferenca = `${diferencaCaixaValor > 0 ? "+ " : diferencaCaixaValor < 0 ? "- " : ""}${money(Math.abs(diferencaCaixaValor))}`;
+  const previousSaldo = Number(previousItem?.turno?.saldoLiquido || 0);
+  const currentSaldo = Number(item?.turno?.saldoLiquido || 0);
+
+  // ✅ NOVA LÓGICA CORRETA
+  const diffCaixa = (currentSaldo + saidas) - previousSaldo;
+
+  const diferenca = `
+    <span style="
+      font-weight:800;
+      color:${diffCaixa > 0 ? '#16a34a' : diffCaixa < 0 ? '#dc2626' : '#0f172a'};
+    ">
+      ${diffCaixa > 0 ? "+ " : diffCaixa < 0 ? "- " : ""}
+      ${money(Math.abs(diffCaixa))}
+    </span>
+  `;
+
   return `
     <tr>
       <td>${escapeHtml(nome)}</td>
       <td>${escapeHtml(turno)}</td>
       <td>${escapeHtml(data)}</td>
       <td>${banco}</td>
-      <td>${saidas}</td>
+      <td>${money(saidas)}</td>
       <td>${diferenca}</td>
     </tr>
   `;
