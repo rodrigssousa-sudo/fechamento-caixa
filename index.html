@@ -2720,18 +2720,26 @@ document.getElementById("historyModalTitle").textContent =
       <div class="modal-panel">
         <div class="modal-panel-head"><h4>Entradas</h4></div>
         <div class="modal-panel-body">
-          ${(turno.entries || []).map((entry, i) => `
-            <div class="modal-line">
-              <span>${escapeHtml(entry.name || "-")}</span>
-              <input 
-                type="text" 
-                value="${Number(entry.value || 0).toFixed(2).replace(".", ",")}" 
-                data-entry="${i}"
-                disabled
-                style="max-width:120px;"
-              />
-            </div>
-          `).join("")}
+         ${(turno.entries || []).map((entry, i) => {
+  let displayValue = Number(entry.value || 0);
+
+  if (entry.name === "PPPoker (x400)" || entry.name === "Suprema (x400)") {
+    displayValue = displayValue / 400;
+  }
+
+  return `
+    <div class="modal-line">
+      <span>${escapeHtml(entry.name || "-")}</span>
+      <input 
+        type="text" 
+        value="${Number(displayValue).toFixed(2).replace(".", ",")}" 
+        data-entry="${i}"
+        disabled
+        style="max-width:120px;"
+      />
+    </div>
+  `;
+}).join("")}
         </div>
       </div>
 
