@@ -3400,7 +3400,7 @@ function exportToPdfProtected(){
   openPdfRangeModal();
 }
 
-    function render(){
+       function render(){
       ensureDates();
 
       const t1Entradas = getEntradasTotal("t1");
@@ -3431,14 +3431,87 @@ function exportToPdfProtected(){
       document.getElementById("lucroTotal").textContent = money(ultimoLucroDoTurno);
 
       const bancoRecaAtual = Number(
-  getBancoRecaFromSnapshot(historyCache[0]?.turno || {})
-);
+        getBancoRecaFromSnapshot(historyCache[0]?.turno || {})
+      );
 
-document.getElementById("bankValue").textContent =
-  balanceVisible ? money(bancoRecaAtual) : "••••••";
+      document.getElementById("bankValue").textContent =
+        balanceVisible ? money(bancoRecaAtual) : "••••••";
+
       updateEyeIcon();
       updateStatusPill(ultimoLucroDoTurno);
+
+      // 🔥 AQUI CHAMA O COMPARATIVO
+      renderSystemsCompare();
     }
+
+
+/* =======================================================
+   🔥 FUNÇÃO AUXILIAR (PEGAR VALOR PELO NOME)
+======================================================= */
+function getEntryValueByName(snapshot, entryName){
+  return Number(
+    (snapshot?.entries || []).find((item) => item.name === entryName)?.value || 0
+  );
+}
+
+
+/* =======================================================
+   🔥 COMPARATIVO ENTRE TURNOS
+======================================================= */
+function renderSystemsCompare(){
+  const bar = document.getElementById("systemsCompareBar");
+  const info = document.getElementById("systemsCompareInfo");
+
+  if(!bar || !info) return;
+
+  const current = historyCache[0]?.turno || null;
+  const previous = historyCache[1]?.turno || null;
+
+  if(!current || !previous){
+    info.textContent = "Ainda não há dois fechamentos para comparar.";
+    bar.innerHTML = `<div class="history-empty">Faça pelo menos dois fechamentos.</div>`;
+    return;
+  }
+
+  const systems = [
+    { label: "Banco Reca", key: "Banco Reca" },
+    { label: "PPPoker", key: "PPPoker (x400)" },
+    { label: "Suprema", key: "Suprema (x400)" },
+    { label: "Buffalo", key: "Buffalo" },
+    { label: "Ganamos", key: "Ganamos" },
+    { label: "Carga de Fichas", key: "Carga de Fichas" },
+    { label: "Cargas F. Poker", key: "Cargas F. Poker (x400)" }
+  ];
+
+  info.textContent = "Último fechamento vs anterior";
+
+  bar.innerHTML = systems.map((system) => {
+    const currentValue = getEntryValueByName(current, system.key);
+    const previousValue = getEntryValueByName(previous, system.key);
+    const diff = currentValue - previousValue;
+
+    let statusClass = "same";
+    let statusText = "Sem alteração";
+
+    if(diff > 0){
+      statusClass = "up";
+      statusText = `Subiu ${money(diff)}`;
+    }else if(diff < 0){
+      statusClass = "down";
+      statusText = `Caiu ${money(Math.abs(diff))}`;
+    }
+
+    return `
+      <div class="system-pill">
+        <span class="system-dot ${statusClass}"></span>
+        <div class="system-pill-text">
+          <div class="system-pill-name">${escapeHtml(system.label)}</div>
+          <div class="system-pill-value">${statusText}</div>
+        </div>
+      </div>
+    `;
+  }).join("");
+}
 
 function renderHistoryModalContent(item, editMode = false){
   const turno = item.turno || {};
