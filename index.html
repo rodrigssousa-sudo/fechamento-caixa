@@ -2389,21 +2389,20 @@ async function saveHistoryItem(item){
   );
 
   const snapshot = await getDocs(q);
-  const previousItem = snapshot.docs[0]?.data() || null;
+  const previousItem = snapshot.docs[0]?.data() || {};
 
-  const previousLiquid = Number(previousItem?.turno?.saldoLiquido || 0);
-  const currentLiquid = Number(item?.turno?.saldoLiquido || 0);
+  const currentProfit = Number(item.turno?.saldoLiquido || 0);
+  const previousProfit = Number(previousItem.turnProfit || 0);
 
-  // Diferença de caixa = Turno 1 - Turno 2
-  item.diff = previousLiquid - currentLiquid;
-  item.bankVariation = item.diff;
+  // diferença entre o lucro do turno atual e o lucro do turno anterior
+  const diffTurnos = currentProfit - previousProfit;
 
-  // Lucro real do turno atual
-  item.turnProfit = currentLiquid;
+  item.turnProfit = currentProfit;
+  item.diff = diffTurnos;
+  item.bankVariation = diffTurnos;
 
   await addDoc(collection(db, "history"), item);
 }
-
     function applySnapshotToTurn(turno, snapshot){
       if(!snapshot) return;
 
@@ -2458,152 +2457,42 @@ async function saveHistoryItem(item){
         return;
       }
 
-      list.innerHTML = history.slice(0, 4).map((item, index) => `
-        <div class="history-item" data-history-index="${index}">
-          <div class="history-item-top">
-            <div class="history-user">${escapeHtml(item.submittedByName || "Sistema")}</div>
-            <div class="history-time">${escapeHtml(formatDateBR(item.fechamentoDate || ""))}</div>
-          </div>
+list.innerHTML = history.slice(0, 4).map((item, index) => {
+  const totalFechamento = Number(item.total || 0);
+  const saldoTurno = Number(item.turnProfit || item.turno?.saldoLiquido || 0);
+  const diferencaCaixa = Number(item.diff ?? 0);
 
-          <div class="history-item-grid">
-            <div class="history-mini-card">
-              <div class="history-mini-label">Saldo Disponivel</div>
-              <div class="history-mini-value">${money(item.total || 0)}</div>
-            </div>
+  return `
+    <div class="history-item" data-history-index="${index}">
+      <div class="history-item-top">
+        <div class="history-user">${escapeHtml(item.submittedByName || "Sistema")}</div>
+        <div class="history-time">${escapeHtml(formatDateBR(item.fechamentoDate || ""))}</div>
+      </div>
 
-            <div class="history-mini-card">
-              <div class="history-mini-label">Saldo Total</div>
-              <div class="history-mini-value ${(item.turnProfit || 0) < 0 ? "red" : ""}">
-                ${money(item.turnProfit || 0)}
-              </div>
-            </div>
+      <div class="history-item-grid">
+        <div class="history-mini-card">
+          <div class="history-mini-label">Saldo Disponível</div>
+          <div class="history-mini-value">${money(totalFechamento)}</div>
+        </div>
 
-            <div class="history-mini-card">
-             <div class="history-mini-label">Diferença Caixa</div>
-<div class="history-mini-value ${(Number(item.diff) || 0) < 0 ? "red" : "green"}">
-  ${(Number(item.diff) || 0) > 0 ? "+ " : (Number(item.diff) || 0) < 0 ? "- " : ""}
-  ${money(Math.abs(Number(item.diff) || 0))}
+<div class="history-mini-card">
+  <div class="history-mini-label">Saldo Total</div>
+  <div class="history-mini-value ${(item.turnProfit || 0) < 0 ? "red" : ""}">
+    ${money(item.turnProfit || 0)}
+  </div>
 </div>
-            </div>
-          </div>
-        </div>
-      `).join("");
 
-      document.getElementById("historyInfo").textContent =
-        `Último fechamento: ${history[0]?.submittedByName || "Sistema"} • ${formatDateBR(history[0]?.fechamentoDate || "")}`;
+<div class="history-mini-card">
+  <div class="history-mini-label">Diferença Caixa</div>
+  <div class="history-mini-value ${(item.diff || 0) < 0 ? "red" : ""}">
+${item.diff > 0 ? "+ " : item.diff < 0 ? "- " : ""}${money(Math.abs(item.diff || 0))}  </div>
+</div>
+      </div>
+    </div>
+  `;
+}).join("");   
 
-      list.querySelectorAll("[data-history-index]").forEach((el) => {
-        el.addEventListener("click", () => {
-          openHistoryModal(Number(el.dataset.historyIndex));
-        });
-      });
-
-      updateHistoryVisibility();
-    }
-
-    function openHistoryModal(index){
-      const item = historyCache[index];
-      if(!item) return;
-
-      document.getElementById("historyModalTitle").textContent = `Fechamento • ${item.submittedByName || "Sistema"}`;
-      document.getElementById("historyModalSub").textContent =
-        `Data do fechamento: ${formatDateBR(item.fechamentoDate || "")} • Enviado em: ${formatDateTimeBR(item.submittedAt)}`;
-
-      const turno = item.turno || {};
-
-      document.getElementById("historyModalBody").innerHTML = `
-        <div class="modal-summary-grid">
-          <div class="modal-summary-card">
-            <div class="modal-summary-label">Total do fechamento</div>
-            <div class="modal-summary-value">${money(item.total || 0)}</div>
-          </div>
-          <div class="modal-summary-card">
-            <div class="modal-summary-label">Saldo Total</div>
-            <div class="history-mini-value ${(item.turnProfit || 0) < 0 ? "red" : ""}">${money(item.turnProfit || 0)}</div>
-          </div>
-          <div class="modal-summary-card">
-            <div class="modal-summary-label">Responsável</div>
-            <div class="modal-summary-value">${escapeHtml(item.submittedByName || "-")}</div>
-          </div>
-          <div class="modal-summary-card">
-            <div class="modal-summary-label">Data</div>
-            <div class="modal-summary-value">${escapeHtml(formatDateBR(item.fechamentoDate || ""))}</div>
-          </div>
-        </div>
-
-        <div class="modal-turnos-grid">
-          <div class="modal-panel">
-            <div class="modal-panel-head"><h4>Entradas</h4></div>
-            <div class="modal-panel-body">
-              <div>
-                <div class="modal-block-title">Detalhamento</div>
-                ${(turno.entries || []).map((entry) => `
-                  <div class="modal-line">
-                    <span>${escapeHtml(entry.name || "-")}</span>
-                    <strong>${money(entry.value || 0)}</strong>
-                  </div>
-                `).join("") || `<div class="modal-line"><span>Sem registros</span><strong>$ 0,00</strong></div>`}
-              </div>
-            </div>
-          </div>
-
-          <div class="modal-panel">
-            <div class="modal-panel-head"><h4>Saídas e Pendentes</h4></div>
-            <div class="modal-panel-body">
-              <div>
-                <div class="modal-block-title">Saídas</div>
-                ${(turno.outflows || []).map((entry) => `
-                  <div class="modal-line negative">
-                    <span>${escapeHtml(entry.name || "-")}</span>
-                    <strong>${negativeMoney(entry.value || 0)}</strong>
-                  </div>
-                `).join("") || `<div class="modal-line"><span>Sem registros</span><strong>$ 0,00</strong></div>`}
-              </div>
-
-              <div>
-                <div class="modal-block-title">Pendentes</div>
-                ${(turno.pendings || []).map((entry) => `
-                  <div class="modal-line negative">
-                    <span>${escapeHtml(entry.name || "-")}</span>
-                    <strong>${negativeMoney(entry.value || 0)}</strong>
-                  </div>
-                `).join("") || `<div class="modal-line"><span>Sem registros</span><strong>$ 0,00</strong></div>`}
-              </div>
-            </div>
-          </div>
-        </div>
-      `;
-
-      document.getElementById("historyModal").classList.remove("hidden");
-    }
-
-    function startHistoryRealtimeListener(){
-      if(historyRealtimeStarted) return;
-      historyRealtimeStarted = true;
-
-      const q = query(collection(db, "history"), orderBy("submittedAt", "desc"), limit(100));
-
-      historyUnsubscribe = onSnapshot(q, (snapshot) => {
-        historyCache = snapshot.docs.map((docItem) => ({
-          id: docItem.id,
-          ...docItem.data()
-        }));
-
-        if(historyCache[0]?.turno){
-          applySnapshotToTurn("t1", historyCache[0].turno);
-        }else{
-          clearTurn("t1");
-        }
-
-        renderHistoryListFromCache();
-        render();
-      }, (error) => {
-        console.error("Erro no listener do Firestore:", error);
-        alert("Erro no listener do Firestore. Veja o console.");
-      });
-    }
-
-    function renderCashflowReport(days){
+ function renderCashflowReport(days){
       const history = historyCache || [];
 
       const filtered = history.filter((item) => {
