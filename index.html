@@ -2,23 +2,37 @@
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-  <title>Bank King BRS - PRO</title>
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0, viewport-fit=cover"
+  />
+  <title>Bank King BRS - Enterprise</title>
+
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
   <style>
     :root{
-      --bg:#030712;
-      --bg-2:#081120;
-      --card:rgba(10,18,34,.96);
-      --border:rgba(148,163,184,.12);
+      --bg:#040816;
+      --bg-2:#091327;
+      --card:rgba(10,18,34,.94);
+      --card-2:rgba(13,24,46,.92);
+      --border:rgba(148,163,184,.10);
+      --border-strong:rgba(96,165,250,.18);
       --text:#f8fafc;
       --muted:#8fa2c0;
+      --muted-2:#6f84a8;
       --accent:#0f4cbd;
       --accent-2:#2563eb;
+      --accent-3:#60a5fa;
       --green:#22c55e;
+      --green-soft:#b8ffd1;
       --red:#ef4444;
+      --red-soft:#ffb3b3;
       --amber:#f59e0b;
-      --shadow:0 14px 34px rgba(0,0,0,.45);
-      --radius:20px;
+      --amber-soft:#ffe29c;
+      --shadow:0 18px 44px rgba(0,0,0,.42);
+      --shadow-soft:0 10px 24px rgba(0,0,0,.24);
+      --radius:22px;
       --radius-sm:14px;
       --safe-bottom:env(safe-area-inset-bottom, 0px);
     }
@@ -36,7 +50,7 @@
     body{
       font-family:Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
       background:
-        radial-gradient(circle at top, rgba(29,78,216,.18), transparent 28%),
+        radial-gradient(circle at top, rgba(37,99,235,.16), transparent 28%),
         linear-gradient(180deg, #020611 0%, #06101d 45%, #030712 100%);
       color:var(--text);
       min-height:100vh;
@@ -54,12 +68,27 @@
 
     .auth-card{
       width:100%;
-      max-width:420px;
-      background:linear-gradient(180deg, rgba(255,255,255,.03), rgba(255,255,255,.015)), var(--card);
+      max-width:430px;
+      background:
+        linear-gradient(180deg, rgba(255,255,255,.03), rgba(255,255,255,.015)),
+        linear-gradient(135deg, rgba(8,18,38,.98), rgba(7,15,30,.98));
       border:1px solid var(--border);
-      border-radius:24px;
-      box-shadow:var(--shadow);
-      padding:22px;
+      border-radius:28px;
+      box-shadow:0 30px 70px rgba(0,0,0,.45);
+      padding:24px;
+      position:relative;
+      overflow:hidden;
+    }
+
+    .auth-card::before{
+      content:"";
+      position:absolute;
+      inset:auto -40px -40px auto;
+      width:180px;
+      height:180px;
+      border-radius:50%;
+      background:radial-gradient(circle, rgba(96,165,250,.16), transparent 68%);
+      pointer-events:none;
     }
 
     .auth-logo,
@@ -69,22 +98,25 @@
       align-items:center;
       justify-content:center;
       font-weight:900;
-      color:#f59e0b;
-      border:2px solid #f59e0b;
-      box-shadow:0 0 0 2px rgba(245,158,11,.10);
+      color:#f8fafc;
+      background:linear-gradient(135deg, #0f4cbd, #2563eb);
+      border:1px solid rgba(96,165,250,.22);
+      box-shadow:
+        0 10px 28px rgba(15,76,189,.34),
+        inset 0 1px 0 rgba(255,255,255,.12);
       flex-shrink:0;
     }
 
     .auth-logo{
-      width:54px;
-      height:54px;
+      width:58px;
+      height:58px;
       font-size:18px;
       margin-bottom:14px;
     }
 
     .logo-bk{
-      width:42px;
-      height:42px;
+      width:44px;
+      height:44px;
       font-size:16px;
     }
 
@@ -98,7 +130,7 @@
     .auth-note{
       color:var(--muted);
       font-size:13px;
-      line-height:1.45;
+      line-height:1.5;
     }
 
     .auth-subtitle{margin:0 0 18px;}
@@ -125,11 +157,13 @@
       border:1px solid rgba(148,163,184,.10);
       background:rgba(255,255,255,.05);
       color:#dbeafe;
+      transition:.2s ease;
     }
 
     .auth-tab.active{
       background:linear-gradient(135deg, #0f4cbd, #2563eb);
       border-color:rgba(96,165,250,.18);
+      box-shadow:0 10px 24px rgba(15,76,189,.22);
     }
 
     .auth-form{
@@ -149,7 +183,8 @@
       color:var(--muted);
     }
 
-    .field input{
+    .field input,
+    .field select{
       width:100%;
       min-height:48px;
       border-radius:var(--radius-sm);
@@ -166,11 +201,12 @@
     }
 
     .field input::placeholder{
-      color:#6f84a8;
+      color:var(--muted-2);
       opacity:1;
     }
 
-    .field input:focus{
+    .field input:focus,
+    .field select:focus{
       border-color:rgba(96,165,250,.34);
       box-shadow:0 0 0 4px rgba(29,78,216,.12);
     }
@@ -183,6 +219,11 @@
       background:linear-gradient(135deg, #0f4cbd, #2563eb);
       box-shadow:0 10px 28px rgba(15,76,189,.34);
       margin-top:4px;
+      transition:.2s ease;
+    }
+
+    .auth-submit:hover{
+      transform:translateY(-1px);
     }
 
     .remember-row{
@@ -216,7 +257,7 @@
 
     .app{
       width:100%;
-      max-width:1180px;
+      max-width:1240px;
       margin:0 auto;
       padding:14px 14px calc(98px + var(--safe-bottom));
     }
@@ -243,7 +284,8 @@
     .turno-head,
     .finance-head,
     .modal-head,
-    .admin-head{
+    .admin-head,
+    .chart-head{
       display:flex;
       justify-content:space-between;
       align-items:center;
@@ -268,6 +310,11 @@
       gap:4px;
       padding:0;
       box-shadow:0 8px 20px rgba(0,0,0,.18);
+      transition:.2s ease;
+    }
+
+    .menu-toggle-btn:hover{
+      background:rgba(255,255,255,.08);
     }
 
     .menu-toggle-btn span{
@@ -283,6 +330,18 @@
       font-size:26px;
       line-height:1.05;
       letter-spacing:-.03em;
+    }
+
+    h2{
+      margin:0;
+      font-size:19px;
+      letter-spacing:-.03em;
+    }
+
+    h3{
+      margin:0;
+      font-size:18px;
+      letter-spacing:-.02em;
     }
 
     .badge{
@@ -305,7 +364,9 @@
     }
 
     .card{
-      background:linear-gradient(180deg, rgba(255,255,255,.02), rgba(255,255,255,.01)), var(--card);
+      background:
+        linear-gradient(180deg, rgba(255,255,255,.02), rgba(255,255,255,.01)),
+        var(--card);
       border:1px solid var(--border);
       border-radius:var(--radius);
       box-shadow:var(--shadow);
@@ -313,7 +374,7 @@
 
     .summary-card{
       padding:20px;
-      border-radius:22px;
+      border-radius:24px;
       background:
         linear-gradient(180deg, rgba(255,255,255,.03), rgba(255,255,255,.015)),
         linear-gradient(135deg, rgba(8,18,38,.96), rgba(7,15,30,.98));
@@ -333,9 +394,23 @@
       min-width:96px;
     }
 
-    .pill.positive{color:#b8ffd1; background:rgba(34,197,94,.12); border-color:rgba(34,197,94,.22);}
-    .pill.negative{color:#ffb3b3; background:rgba(239,68,68,.12); border-color:rgba(239,68,68,.22);}
-    .pill.neutral{color:#ffe29c; background:rgba(245,158,11,.12); border-color:rgba(245,158,11,.22);}
+    .pill.positive{
+      color:var(--green-soft);
+      background:rgba(34,197,94,.12);
+      border-color:rgba(34,197,94,.22);
+    }
+
+    .pill.negative{
+      color:var(--red-soft);
+      background:rgba(239,68,68,.12);
+      border-color:rgba(239,68,68,.22);
+    }
+
+    .pill.neutral{
+      color:var(--amber-soft);
+      background:rgba(245,158,11,.12);
+      border-color:rgba(245,158,11,.22);
+    }
 
     .bank-card{
       position:relative;
@@ -425,10 +500,11 @@
 
     .history-card{
       padding:12px 14px;
-      border-radius:16px;
+      border-radius:18px;
       border:1px solid rgba(148,163,184,.06);
       background:rgba(255,255,255,.015);
       margin-top:10px;
+      overflow:hidden;
     }
 
     .history-card-top{
@@ -452,26 +528,41 @@
       line-height:1.45;
     }
 
+    .history-toggle-btn,
     .danger-mini-btn{
       min-height:34px;
       padding:0 12px;
       border-radius:10px;
-      background:rgba(239,68,68,.12);
-      color:#ffb3b3;
-      border:1px solid rgba(239,68,68,.22);
       font-size:11px;
       font-weight:800;
       white-space:nowrap;
+    }
+
+    .history-toggle-btn{
+      background:rgba(37,99,235,.12);
+      color:#dbeafe;
+      border:1px solid rgba(96,165,250,.18);
+    }
+
+    .danger-mini-btn{
+      background:rgba(239,68,68,.12);
+      color:#ffb3b3;
+      border:1px solid rgba(239,68,68,.22);
     }
 
     .history-list{
       display:grid;
       gap:10px;
       margin-top:12px;
+      max-height:0;
+      opacity:0;
+      overflow:hidden;
+      transition:max-height .28s ease, opacity .28s ease;
     }
 
-    .history-list.hidden{
-      display:none;
+    .history-list.show{
+      max-height:700px;
+      opacity:1;
     }
 
     .history-item{
@@ -537,10 +628,64 @@
       font-size:13px;
     }
 
+    .top-user-bar{
+      margin-bottom:12px;
+      padding:12px 14px;
+      border-radius:16px;
+      border:1px solid rgba(148,163,184,.10);
+      background:rgba(255,255,255,.02);
+    }
+
+    .top-user-info{
+      display:flex;
+      flex-direction:column;
+      gap:3px;
+    }
+
+    .top-user-name{
+      font-size:13px;
+      font-weight:800;
+      color:#e2ebff;
+    }
+
+    .top-user-email{
+      font-size:12px;
+      color:#8fa2c0;
+    }
+
+    .logout-btn{
+      min-height:38px;
+      padding:0 14px;
+      border-radius:12px;
+      background:rgba(239,68,68,.12);
+      color:#ffb3b3;
+      border:1px solid rgba(239,68,68,.22);
+      font-size:12px;
+      font-weight:800;
+    }
+
+    .charts-grid{
+      display:grid;
+      gap:14px;
+      margin-bottom:14px;
+      grid-template-columns:1fr;
+    }
+
+    .chart-card{
+      padding:18px;
+      border-radius:22px;
+    }
+
+    .chart-sub{
+      color:var(--muted);
+      font-size:12px;
+    }
+
     .turnos{
       display:grid;
       gap:14px;
       margin-top:14px;
+      grid-template-columns:1fr;
     }
 
     .turno{
@@ -551,12 +696,6 @@
     .turno-head{
       align-items:flex-start;
       margin-bottom:14px;
-    }
-
-    .turno-head h3{
-      margin:0;
-      font-size:18px;
-      letter-spacing:-.02em;
     }
 
     .turno-head small{
@@ -613,6 +752,7 @@
 
     .finance-total.red{color:#ffb3b3;}
     .finance-total.blue{color:#b8d4ff;}
+    .finance-total.green{color:#b8ffd1;}
 
     .fields{
       display:grid;
@@ -628,7 +768,7 @@
 
     .dynamic-row{
       display:grid;
-      grid-template-columns:1.15fr .85fr auto auto;
+      grid-template-columns:1.2fr .9fr auto auto;
       gap:8px;
       align-items:end;
       padding:10px;
@@ -673,6 +813,12 @@
       border:1px solid rgba(239,68,68,.2);
       font-size:13px;
       font-weight:800;
+      transition:.2s;
+    }
+
+    .remove-btn:hover{
+      background:rgba(239,68,68,.2);
+      transform:scale(1.03);
     }
 
     .inline-actions{
@@ -697,42 +843,12 @@
       color:white;
       background:linear-gradient(135deg, #0f4cbd, #1d4ed8);
       box-shadow:0 8px 20px rgba(15,76,189,.28);
+      transition:.2s;
     }
 
-    .top-user-bar{
-      margin-bottom:12px;
-      padding:12px 14px;
-      border-radius:16px;
-      border:1px solid rgba(148,163,184,.10);
-      background:rgba(255,255,255,.02);
-    }
-
-    .top-user-info{
-      display:flex;
-      flex-direction:column;
-      gap:3px;
-    }
-
-    .top-user-name{
-      font-size:13px;
-      font-weight:800;
-      color:#e2ebff;
-    }
-
-    .top-user-email{
-      font-size:12px;
-      color:#8fa2c0;
-    }
-
-    .logout-btn{
-      min-height:38px;
-      padding:0 14px;
-      border-radius:12px;
-      background:rgba(239,68,68,.12);
-      color:#ffb3b3;
-      border:1px solid rgba(239,68,68,.22);
-      font-size:12px;
-      font-weight:800;
+    .btn-add:hover{
+      transform:translateY(-2px);
+      box-shadow:0 12px 30px rgba(15,76,189,.4);
     }
 
     .reports-menu{
@@ -767,19 +883,13 @@
 
     .report-screen{
       width:100%;
-      max-width:1180px;
+      max-width:1240px;
       margin:0 auto 14px;
       padding:16px;
       border-radius:20px;
       border:1px solid rgba(148,163,184,.12);
       background:linear-gradient(180deg, rgba(255,255,255,.025), rgba(255,255,255,.01));
       box-shadow:var(--shadow);
-    }
-
-    .report-head h3{
-      margin:0;
-      font-size:18px;
-      letter-spacing:-.03em;
     }
 
     .report-close-btn{
@@ -871,7 +981,7 @@
 
     .bottom-bar-inner{
       width:100%;
-      max-width:1180px;
+      max-width:1240px;
       margin:0 auto;
       display:grid;
       grid-template-columns:repeat(4, 1fr);
@@ -929,2202 +1039,1426 @@
     .modal-card{
       position:relative;
       width:100%;
-      max-width:860px;
+      max-width:940px;
       max-height:88vh;
       overflow:auto;
       margin:0;
       border-radius:24px 24px 0 0;
       background:linear-gradient(180deg, rgba(10,18,34,.98), rgba(10,18,34,.99));
       border:1px solid rgba(148,163,184,.12);
-      box-shadow:0 24px 60px rgba(0,0,0,.45);
-      padding:18px;
-    }
+      box-shadow:0 24
+  box-shadow:0 24px 60px rgba(0,0,0,.45);
+  padding:18px;
+}
 
-    .modal-head{
-      align-items:flex-start;
-      margin-bottom:14px;
-    }
+.modal-head{
+  display:flex;
+  justify-content:space-between;
+  align-items:flex-start;
+  margin-bottom:14px;
+}
 
-    .modal-head h3{
-      margin:0;
-      font-size:20px;
-      letter-spacing:-.03em;
-    }
+.modal-head h3{
+  margin:0;
+  font-size:20px;
+  letter-spacing:-.03em;
+}
 
-    .modal-head small{
-      display:block;
-      margin-top:4px;
-      color:var(--muted);
-      font-size:12px;
-    }
+.modal-head small{
+  display:block;
+  margin-top:4px;
+  color:var(--muted);
+  font-size:12px;
+}
 
-    .modal-close-btn{
-      min-height:40px;
-      padding:0 14px;
-      border-radius:12px;
-      background:rgba(239,68,68,.12);
-      color:#ffb3b3;
-      border:1px solid rgba(239,68,68,.2);
-      font-size:12px;
-      font-weight:800;
-    }
+.modal-close-btn{
+  min-height:40px;
+  padding:0 14px;
+  border-radius:12px;
+  background:rgba(239,68,68,.12);
+  color:#ffb3b3;
+  border:1px solid rgba(239,68,68,.2);
+  font-size:12px;
+  font-weight:800;
+}
 
-    .modal-body{
-      display:grid;
-      gap:14px;
-    }
+.modal-body{
+  display:grid;
+  gap:14px;
+}
 
-    .modal-summary-grid{
-      display:grid;
-      grid-template-columns:repeat(4, 1fr);
-      gap:10px;
-    }
+/* ===== GRÁFICO PREMIUM ===== */
 
-    .modal-summary-card{
-      padding:14px;
-      border-radius:16px;
-      background:rgba(255,255,255,.03);
-      border:1px solid rgba(148,163,184,.10);
-    }
+.chart-card{
+  padding:18px;
+  border-radius:20px;
+  border:1px solid rgba(148,163,184,.10);
+  background:linear-gradient(180deg, rgba(255,255,255,.03), rgba(255,255,255,.015));
+  box-shadow:0 10px 30px rgba(0,0,0,.3);
+}
 
-    .modal-summary-label{
-      font-size:11px;
-      color:var(--muted);
-      margin-bottom:8px;
-    }
+.chart-head{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  margin-bottom:10px;
+}
 
-    .modal-summary-value{
-      font-size:18px;
-      font-weight:900;
-      color:#fff;
-    }
+.chart-title{
+  font-size:16px;
+  font-weight:800;
+}
 
-    .modal-turnos-grid{
-      display:grid;
-      grid-template-columns:1fr 1fr;
-      gap:14px;
-    }
+.chart-sub{
+  font-size:12px;
+  color:var(--muted);
+}
 
-    .modal-panel{
-      border-radius:18px;
-      border:1px solid rgba(148,163,184,.10);
-      background:rgba(255,255,255,.02);
-      overflow:hidden;
-    }
+/* ===== UX SUAVE ===== */
 
-    .modal-panel-head{
-      padding:14px;
-      border-bottom:1px solid rgba(148,163,184,.08);
-      background:rgba(255,255,255,.03);
-    }
+.history-list{
+  overflow:hidden;
+  transition:.35s ease;
+}
 
-    .modal-panel-head h4{
-      margin:0;
-      font-size:16px;
-    }
+.history-list.hidden{
+  max-height:0;
+  opacity:0;
+}
 
-    .modal-panel-body{
-      padding:14px;
-      display:grid;
-      gap:14px;
-    }
+.history-list:not(.hidden){
+  max-height:500px;
+  opacity:1;
+}
 
-    .modal-block-title{
-      font-size:12px;
-      font-weight:900;
-      color:#dbeafe;
-      text-transform:uppercase;
-      letter-spacing:.06em;
-      margin-bottom:10px;
-    }
+/* ===== ANIMAÇÕES ===== */
 
-    .modal-line{
-      display:flex;
-      align-items:center;
-      justify-content:space-between;
-      gap:12px;
-      padding:8px 0;
-      border-bottom:1px solid rgba(148,163,184,.08);
-      font-size:13px;
-    }
+.card, .turno, .history-item{
+  transition:.25s ease;
+}
 
-    .modal-line:last-child{border-bottom:0;}
-    .modal-line strong{font-size:13px;}
-    .modal-line.negative strong{color:#ffb3b3;}
+.card:hover{
+  transform:translateY(-2px);
+  box-shadow:0 20px 50px rgba(0,0,0,.45);
+}
 
-    .admin-fab{
-      position:fixed;
-      right:20px;
-      bottom:calc(90px + var(--safe-bottom));
-      z-index:200;
-      min-height:50px;
-      padding:0 18px;
-      border-radius:999px;
-      border:1px solid rgba(148,163,184,.16);
-      background:linear-gradient(135deg, #0f4cbd, #2563eb);
-      color:#fff;
-      font-size:13px;
-      font-weight:900;
-      letter-spacing:-.01em;
-      box-shadow:0 14px 30px rgba(15,76,189,.35);
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      gap:8px;
-      cursor:pointer;
-    }
-
-    .admin-modal{
-      position:fixed;
-      inset:0;
-      z-index:220;
-      display:flex;
-      align-items:flex-end;
-      justify-content:center;
-    }
-
-    .admin-modal.hidden{display:none !important;}
-
-    .admin-modal-backdrop{
-      position:absolute;
-      inset:0;
-      background:rgba(2,6,23,.76);
-      backdrop-filter:blur(7px);
-    }
-
-    .admin-modal-card{
-      position:relative;
-      width:100%;
-      max-width:920px;
-      max-height:88vh;
-      overflow:auto;
-      border-radius:26px 26px 0 0;
-      background:linear-gradient(180deg, rgba(10,18,34,.98), rgba(10,18,34,.995));
-      border:1px solid rgba(148,163,184,.12);
-      box-shadow:0 24px 60px rgba(0,0,0,.45);
-      padding:18px;
-    }
-
-    .admin-head h3{
-      margin:0;
-      font-size:20px;
-      letter-spacing:-.03em;
-      color:#f8fafc;
-    }
-
-    .admin-head small{
-      display:block;
-      margin-top:4px;
-      color:#8fa2c0;
-      font-size:12px;
-    }
-
-    .admin-close-btn{
-      min-height:40px;
-      padding:0 14px;
-      border-radius:12px;
-      background:rgba(239,68,68,.12);
-      color:#ffb3b3;
-      border:1px solid rgba(239,68,68,.2);
-      font-size:12px;
-      font-weight:800;
-      cursor:pointer;
-    }
-
-    .admin-toolbar{
-      display:grid;
-      grid-template-columns:1fr auto;
-      gap:10px;
-      margin-bottom:14px;
-    }
-
-    .admin-search{
-      width:100%;
-      min-height:46px;
-      border-radius:14px;
-      border:1px solid rgba(148,163,184,.10);
-      background:linear-gradient(180deg, rgba(15,23,42,.96), rgba(13,26,48,.96));
-      color:#f8fafc;
-      padding:12px 14px;
-      font-size:14px;
-      outline:none;
-    }
-
-    .admin-danger-all-btn{
-      min-height:46px;
-      padding:0 14px;
-      border-radius:14px;
-      background:rgba(239,68,68,.12);
-      color:#ffb3b3;
-      border:1px solid rgba(239,68,68,.2);
-      font-size:13px;
-      font-weight:900;
-      cursor:pointer;
-      white-space:nowrap;
-    }
-
-    .admin-list{
-      display:grid;
-      gap:12px;
-    }
-
-    .admin-empty{
-      padding:16px;
-      border-radius:16px;
-      border:1px dashed rgba(148,163,184,.16);
-      color:#8fa2c0;
-      font-size:13px;
-    }
-
-    .admin-user-card{
-      padding:14px;
-      border-radius:18px;
-      border:1px solid rgba(148,163,184,.10);
-      background:linear-gradient(180deg, rgba(255,255,255,.03), rgba(255,255,255,.015));
-    }
-
-    .admin-user-top{
-      display:flex;
-      justify-content:space-between;
-      align-items:flex-start;
-      gap:12px;
-      margin-bottom:12px;
-    }
-
-    .admin-user-name{
-      font-size:15px;
-      font-weight:900;
-      color:#f8fafc;
-      margin-bottom:4px;
-    }
-
-    .admin-user-email{
-      font-size:12px;
-      color:#8fa2c0;
-      word-break:break-word;
-    }
-
-    .admin-user-badge{
-      padding:7px 10px;
-      border-radius:999px;
-      border:1px solid rgba(96,165,250,.16);
-      background:rgba(37,99,235,.10);
-      color:#dbeafe;
-      font-size:11px;
-      font-weight:800;
-      white-space:nowrap;
-    }
-
-    .admin-actions{
-      display:grid;
-      grid-template-columns:repeat(3, 1fr);
-      gap:8px;
-    }
-
-    .admin-action-btn{
-      min-height:42px;
-      border-radius:14px;
-      font-size:12px;
-      font-weight:900;
-      cursor:pointer;
-      border:1px solid rgba(148,163,184,.10);
-    }
-
-    .admin-view-btn{
-      background:rgba(37,99,235,.12);
-      color:#dbeafe;
-      border-color:rgba(96,165,250,.18);
-    }
-
-    .admin-reset-btn{
-      background:rgba(245,158,11,.12);
-      color:#ffe29c;
-      border-color:rgba(245,158,11,.18);
-    }
-
-    .admin-delete-btn{
-      background:rgba(239,68,68,.12);
-      color:#ffb3b3;
-      border-color:rgba(239,68,68,.18);
-    }
-
-    .admin-inline-details{
-      margin-top:12px;
-      padding:12px;
-      border-radius:14px;
-      border:1px solid rgba(148,163,184,.10);
-      background:rgba(255,255,255,.02);
-      display:none;
-    }
-
-    .admin-inline-details.show{display:block;}
-
-    .admin-inline-line{
-      display:flex;
-      justify-content:space-between;
-      gap:10px;
-      padding:7px 0;
-      border-bottom:1px solid rgba(148,163,184,.08);
-      font-size:12px;
-      color:#dbeafe;
-    }
-
-    .admin-inline-line:last-child{border-bottom:0;}
-
-    .admin-inline-line strong{
-      color:#fff;
-      text-align:right;
-      word-break:break-word;
-    }
-
-    @media (max-width:700px){
-      .history-item-grid,
-      .modal-summary-grid,
-      .modal-turnos-grid,
-      .dynamic-row,
-      .admin-actions{
-        grid-template-columns:1fr;
+      .modal-head{
+        display:flex;
+        justify-content:space-between;
+        align-items:flex-start;
+        gap:12px;
+        margin-bottom:14px;
       }
 
-      .bottom-bar-inner{
+      .modal-head h3{
+        margin:0;
+        font-size:20px;
+        letter-spacing:-.03em;
+      }
+
+      .modal-head small{
+        display:block;
+        margin-top:4px;
+        color:var(--muted);
+        font-size:12px;
+      }
+
+      .modal-close-btn{
+        min-height:40px;
+        padding:0 14px;
+        border-radius:12px;
+        background:rgba(239,68,68,.12);
+        color:#ffb3b3;
+        border:1px solid rgba(239,68,68,.2);
+        font-size:12px;
+        font-weight:800;
+      }
+
+      .modal-body{
+        display:grid;
+        gap:14px;
+      }
+
+      .modal-summary-grid{
+        display:grid;
         grid-template-columns:repeat(4, 1fr);
+        gap:10px;
       }
 
-      .bottom-bar button{
-        font-size:10px;
+      .modal-summary-card{
+        padding:14px;
+        border-radius:16px;
+        background:rgba(255,255,255,.03);
+        border:1px solid rgba(148,163,184,.10);
       }
 
-      .signed-preview{
-        justify-content:flex-start;
+      .modal-summary-label{
+        font-size:11px;
+        color:var(--muted);
+        margin-bottom:8px;
       }
 
-      .remove-btn{
-        width:100%;
+      .modal-summary-value{
+        font-size:18px;
+        font-weight:900;
+        color:#fff;
       }
 
-      .admin-toolbar{
-        grid-template-columns:1fr;
+      .modal-turnos-grid{
+        display:grid;
+        grid-template-columns:1fr 1fr;
+        gap:14px;
+      }
+
+      .modal-panel{
+        border-radius:18px;
+        border:1px solid rgba(148,163,184,.10);
+        background:rgba(255,255,255,.02);
+        overflow:hidden;
+      }
+
+      .modal-panel-head{
+        padding:14px;
+        border-bottom:1px solid rgba(148,163,184,.08);
+        background:rgba(255,255,255,.03);
+      }
+
+      .modal-panel-head h4{
+        margin:0;
+        font-size:16px;
+      }
+
+      .modal-panel-body{
+        padding:14px;
+        display:grid;
+        gap:14px;
+      }
+
+      .modal-block-title{
+        font-size:12px;
+        font-weight:900;
+        color:#dbeafe;
+        text-transform:uppercase;
+        letter-spacing:.06em;
+        margin-bottom:10px;
+      }
+
+      .modal-line{
+        display:flex;
+        align-items:center;
+        justify-content:space-between;
+        gap:12px;
+        padding:8px 0;
+        border-bottom:1px solid rgba(148,163,184,.08);
+        font-size:13px;
+      }
+
+      .modal-line:last-child{border-bottom:0;}
+      .modal-line strong{font-size:13px;}
+      .modal-line.negative strong{color:#ffb3b3;}
+
+      .chart-card{
+        padding:16px;
+        border-radius:20px;
+        border:1px solid rgba(148,163,184,.10);
+        background:linear-gradient(180deg, rgba(255,255,255,.03), rgba(255,255,255,.015));
+        box-shadow:0 10px 30px rgba(0,0,0,.28);
+      }
+
+      .chart-head{
+        display:flex;
+        justify-content:space-between;
+        align-items:center;
+        gap:10px;
+        margin-bottom:12px;
+      }
+
+      .chart-title{
+        font-size:16px;
+        font-weight:900;
+        letter-spacing:-.02em;
+      }
+
+      .chart-subtitle{
+        font-size:12px;
+        color:var(--muted);
+      }
+
+      .chart-filters{
+        display:flex;
+        gap:8px;
+        flex-wrap:wrap;
+        margin-bottom:10px;
+      }
+
+      .chart-filter-btn{
+        min-height:36px;
+        padding:0 12px;
+        border-radius:12px;
+        background:rgba(255,255,255,.04);
+        color:#dbeafe;
+        border:1px solid rgba(148,163,184,.10);
+        font-size:12px;
+        font-weight:800;
+      }
+
+      .chart-filter-btn.active{
+        background:linear-gradient(135deg, #0f4cbd, #2563eb);
+        color:#fff;
+        border-color:rgba(96,165,250,.20);
       }
 
       .admin-fab{
-        right:12px;
+        position:fixed;
+        right:20px;
+        bottom:calc(90px + var(--safe-bottom));
+        z-index:200;
+        min-height:50px;
+        padding:0 18px;
+        border-radius:999px;
+        border:1px solid rgba(148,163,184,.16);
+        background:linear-gradient(135deg, #0f4cbd, #2563eb);
+        color:#fff;
+        font-size:13px;
+        font-weight:900;
+        letter-spacing:-.01em;
+        box-shadow:0 14px 30px rgba(15,76,189,.35);
+        display:flex;
+        align-items:center;
+        justify-content:center;
+        gap:8px;
+        cursor:pointer;
       }
-    }
 
-    @media (min-width:768px){
-      .metrics{
+      .admin-modal{
+        position:fixed;
+        inset:0;
+        z-index:220;
+        display:flex;
+        align-items:flex-end;
+        justify-content:center;
+      }
+
+      .admin-modal.hidden{display:none !important;}
+
+      .admin-modal-backdrop{
+        position:absolute;
+        inset:0;
+        background:rgba(2,6,23,.76);
+        backdrop-filter:blur(7px);
+      }
+
+      .admin-modal-card{
+        position:relative;
+        width:100%;
+        max-width:920px;
+        max-height:88vh;
+        overflow:auto;
+        border-radius:26px 26px 0 0;
+        background:linear-gradient(180deg, rgba(10,18,34,.98), rgba(10,18,34,.995));
+        border:1px solid rgba(148,163,184,.12);
+        box-shadow:0 24px 60px rgba(0,0,0,.45);
+        padding:18px;
+      }
+
+      .admin-head{
+        display:flex;
+        justify-content:space-between;
+        align-items:flex-start;
+        gap:12px;
+      }
+
+      .admin-head h3{
+        margin:0;
+        font-size:20px;
+        letter-spacing:-.03em;
+        color:#f8fafc;
+      }
+
+      .admin-head small{
+        display:block;
+        margin-top:4px;
+        color:#8fa2c0;
+        font-size:12px;
+      }
+
+      .admin-close-btn{
+        min-height:40px;
+        padding:0 14px;
+        border-radius:12px;
+        background:rgba(239,68,68,.12);
+        color:#ffb3b3;
+        border:1px solid rgba(239,68,68,.2);
+        font-size:12px;
+        font-weight:800;
+        cursor:pointer;
+      }
+
+      .admin-toolbar{
+        display:grid;
+        grid-template-columns:1fr auto;
+        gap:10px;
+        margin:14px 0;
+      }
+
+      .admin-search{
+        width:100%;
+        min-height:46px;
+        border-radius:14px;
+        border:1px solid rgba(148,163,184,.10);
+        background:linear-gradient(180deg, rgba(15,23,42,.96), rgba(13,26,48,.96));
+        color:#f8fafc;
+        padding:12px 14px;
+        font-size:14px;
+        outline:none;
+      }
+
+      .admin-danger-all-btn{
+        min-height:46px;
+        padding:0 14px;
+        border-radius:14px;
+        background:rgba(239,68,68,.12);
+        color:#ffb3b3;
+        border:1px solid rgba(239,68,68,.2);
+        font-size:13px;
+        font-weight:900;
+        cursor:pointer;
+        white-space:nowrap;
+      }
+
+      .admin-list{
+        display:grid;
+        gap:12px;
+      }
+
+      .admin-empty{
+        padding:16px;
+        border-radius:16px;
+        border:1px dashed rgba(148,163,184,.16);
+        color:#8fa2c0;
+        font-size:13px;
+      }
+
+      .admin-user-card{
+        padding:14px;
+        border-radius:18px;
+        border:1px solid rgba(148,163,184,.10);
+        background:linear-gradient(180deg, rgba(255,255,255,.03), rgba(255,255,255,.015));
+      }
+
+      .admin-user-top{
+        display:flex;
+        justify-content:space-between;
+        align-items:flex-start;
+        gap:12px;
+        margin-bottom:12px;
+      }
+
+      .admin-user-name{
+        font-size:15px;
+        font-weight:900;
+        color:#f8fafc;
+        margin-bottom:4px;
+      }
+
+      .admin-user-email{
+        font-size:12px;
+        color:#8fa2c0;
+        word-break:break-word;
+      }
+
+      .admin-user-badge{
+        padding:7px 10px;
+        border-radius:999px;
+        border:1px solid rgba(96,165,250,.16);
+        background:rgba(37,99,235,.10);
+        color:#dbeafe;
+        font-size:11px;
+        font-weight:800;
+        white-space:nowrap;
+      }
+
+      .admin-actions{
+        display:grid;
         grid-template-columns:repeat(3, 1fr);
+        gap:8px;
       }
 
-      .report-grid{
-        grid-template-columns:repeat(4, 1fr);
+      .admin-action-btn{
+        min-height:42px;
+        border-radius:14px;
+        font-size:12px;
+        font-weight:900;
+        cursor:pointer;
+        border:1px solid rgba(148,163,184,.10);
       }
 
-      .turnos{
-        grid-template-columns:1fr 1fr;
+      .admin-view-btn{
+        background:rgba(37,99,235,.12);
+        color:#dbeafe;
+        border-color:rgba(96,165,250,.18);
       }
 
-      .fields.two-col{
-        grid-template-columns:repeat(2, 1fr);
+      .admin-reset-btn{
+        background:rgba(245,158,11,.12);
+        color:#ffe29c;
+        border-color:rgba(245,158,11,.18);
       }
-    }
-  </style>
-</head>
-<body>
-  <section id="authScreen" class="auth-screen">
-    <div class="auth-card">
-      <div class="auth-logo">BK</div>
-      <h1 class="auth-title">Bank King</h1>
-      <p class="auth-subtitle">Acesso interno Central King.</p>
 
-      <div class="auth-toggle">
-        <button id="tabLogin" class="auth-tab active" type="button">Entrar</button>
-        <button id="tabRegister" class="auth-tab" type="button">Registrar</button>
-        <button id="tabForgot" class="auth-tab" type="button">Redefinir senha</button>
-      </div>
+      .admin-delete-btn{
+        background:rgba(239,68,68,.12);
+        color:#ffb3b3;
+        border-color:rgba(239,68,68,.18);
+      }
 
-      <form id="loginForm" class="auth-form">
-        <div class="field">
-          <label for="loginEmail">Email</label>
-          <input id="loginEmail" type="email" placeholder="Digite seu email" required />
-        </div>
+      .admin-inline-details{
+        margin-top:12px;
+        padding:12px;
+        border-radius:14px;
+        border:1px solid rgba(148,163,184,.10);
+        background:rgba(255,255,255,.02);
+        display:none;
+      }
 
-        <div class="field">
-          <label for="loginPassword">Senha</label>
-          <input id="loginPassword" type="password" placeholder="Digite sua senha" required />
-        </div>
+      .admin-inline-details.show{display:block;}
 
-        <div class="remember-row">
-          <input id="rememberLogin" type="checkbox" />
-          <label for="rememberLogin">Manter login salvo neste aparelho</label>
-        </div>
+      .admin-inline-line{
+        display:flex;
+        justify-content:space-between;
+        gap:10px;
+        padding:7px 0;
+        border-bottom:1px solid rgba(148,163,184,.08);
+        font-size:12px;
+        color:#dbeafe;
+      }
 
-        <button class="auth-submit" type="submit">Entrar agora</button>
-      </form>
+      .admin-inline-line:last-child{border-bottom:0;}
 
-      <form id="registerForm" class="auth-form hidden">
-        <div class="field">
-          <label for="registerName">Nome</label>
-          <input id="registerName" type="text" placeholder="Digite seu nome" required />
-        </div>
+      .admin-inline-line strong{
+        color:#fff;
+        text-align:right;
+        word-break:break-word;
+      }
 
-        <div class="field">
-          <label for="registerEmail">Email</label>
-          <input id="registerEmail" type="email" placeholder="Digite seu email" required />
-        </div>
+      @media (max-width:700px){
+        .history-item-grid,
+        .modal-summary-grid,
+        .modal-turnos-grid,
+        .dynamic-row,
+        .admin-actions,
+        .admin-toolbar{
+          grid-template-columns:1fr;
+        }
 
-        <div class="field">
-          <label for="registerPassword">Senha</label>
-          <input id="registerPassword" type="password" placeholder="Crie sua senha" required />
-        </div>
+        .bottom-bar-inner{
+          grid-template-columns:repeat(4, 1fr);
+        }
 
-        <button class="auth-submit" type="submit">Registrar acesso</button>
-      </form>
+        .bottom-bar button{
+          font-size:10px;
+        }
 
-      <form id="forgotPasswordForm" class="auth-form hidden">
-        <h3>Redefinir senha</h3>
-        <p class="auth-subtitle">Você receberá um link no email para criar uma nova senha.</p>
+        .signed-preview{
+          justify-content:flex-start;
+        }
 
-        <div class="field">
-          <label for="resetEmail">Email</label>
-          <input id="resetEmail" type="email" placeholder="Digite seu email" />
-        </div>
+        .remove-btn{
+          width:100%;
+        }
 
-        <button class="auth-submit" type="submit">Enviar link de redefinição</button>
-      </form>
+        .admin-fab{
+          right:12px;
+        }
+      }
 
-      <div class="auth-note">
-        Central King 24 horas
-      </div>
-    </div>
-  </section>
+      @media (min-width:768px){
+        .metrics{
+          grid-template-columns:repeat(3, 1fr);
+        }
 
-  <div id="appShell" class="app-shell hidden">
-    <main class="app">
-      <header class="header">
-        <div class="title-row">
-          <div class="brand">
-            <button id="menuToggle" class="menu-toggle-btn" type="button" aria-label="Abrir menu">
-              <span></span><span></span><span></span>
-            </button>
-            <div class="logo-bk">BK</div>
-            <h1>Bank King</h1>
+        .report-grid{
+          grid-template-columns:repeat(4, 1fr);
+        }
+
+        .turnos{
+          grid-template-columns:1fr 1fr;
+        }
+
+        .fields.two-col{
+          grid-template-columns:repeat(2, 1fr);
+        }
+      }
+    </style>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  </head>
+  <body>
+    <section id="authScreen" class="auth-screen">
+      <div class="auth-card">
+        <div class="auth-logo-wrap">
+          <div class="auth-logo">BK</div>
+          <div>
+            <div class="auth-kicker">Sistema financeiro interno</div>
+            <h1 class="auth-title">Bank King</h1>
+            <p class="auth-subtitle">Controle premium de fechamento, histórico e relatórios em tempo real.</p>
           </div>
-          <div class="badge">BRS SYST</div>
         </div>
-      </header>
 
-      <div class="top-user-bar">
-        <div class="top-user-info">
-          <div class="top-user-name" id="activeUserName">Usuário</div>
-          <div class="top-user-email" id="activeUserEmail">email@exemplo.com</div>
+        <div class="auth-tabs">
+          <button id="tabLogin" class="auth-tab active" type="button">Entrar</button>
+          <button id="tabRegister" class="auth-tab" type="button">Registrar</button>
+          <button id="tabForgot" class="auth-tab" type="button">Redefinir</button>
         </div>
-        <button id="logoutBtn" class="logout-btn" type="button">Sair</button>
-      </div>
 
-      <section class="summary">
-        <article class="summary-card card">
-          <div class="summary-head">
-            <h2>Painel Financeiro</h2>
-            <div id="statusPill" class="pill neutral">Sem diferença</div>
+        <form id="loginForm" class="auth-form">
+          <div class="field">
+            <label for="loginEmail">Email</label>
+            <input id="loginEmail" type="email" placeholder="Digite seu email" required />
           </div>
 
-          <div class="bank-card">
-            <div class="bank-topline">
-              <span class="bank-label">SALDO DISPONÍVEL</span>
-              <button id="toggleBalance" class="hide-balance-btn" type="button" aria-label="Mostrar ou ocultar banca">
-                <svg id="eyeIcon" width="20" height="20" viewBox="0 0 24 24" fill="none">
-                  <path d="M2 12C4.5 7 8.5 5 12 5C15.5 5 19.5 7 22 12C19.5 17 15.5 19 12 19C8.5 19 4.5 17 2 12Z" stroke="currentColor" stroke-width="1.6"/>
-                  <circle cx="12" cy="12" r="3" stroke="currentColor" stroke-width="1.6"/>
-                </svg>
+          <div class="field">
+            <label for="loginPassword">Senha</label>
+            <input id="loginPassword" type="password" placeholder="Digite sua senha" required />
+          </div>
+
+          <div class="remember-row">
+            <input id="rememberLogin" type="checkbox" />
+            <label for="rememberLogin">Manter login salvo neste aparelho</label>
+          </div>
+
+          <button class="auth-submit" type="submit">Entrar agora</button>
+        </form>
+
+        <form id="registerForm" class="auth-form hidden">
+          <div class="field">
+            <label for="registerName">Nome</label>
+            <input id="registerName" type="text" placeholder="Digite seu nome" required />
+          </div>
+
+          <div class="field">
+            <label for="registerEmail">Email</label>
+            <input id="registerEmail" type="email" placeholder="Digite seu email" required />
+          </div>
+
+          <div class="field">
+            <label for="registerPassword">Senha</label>
+            <input id="registerPassword" type="password" placeholder="Crie sua senha" required />
+          </div>
+
+          <button class="auth-submit" type="submit">Registrar acesso</button>
+        </form>
+
+        <form id="forgotPasswordForm" class="auth-form hidden">
+          <div class="field">
+            <label for="resetEmail">Email</label>
+            <input id="resetEmail" type="email" placeholder="Digite seu email" />
+          </div>
+
+          <button class="auth-submit" type="submit">Enviar link</button>
+        </form>
+
+        <div class="auth-note">Central King • ambiente interno protegido</div>
+      </div>
+    </section>
+
+    <div id="appShell" class="app-shell hidden">
+      <main class="app">
+        <header class="header">
+          <div class="title-row">
+            <div class="brand">
+              <button id="menuToggle" class="menu-toggle-btn" type="button" aria-label="Abrir menu">
+                <span></span><span></span><span></span>
               </button>
+              <div class="logo-bk">BK</div>
+              <div>
+                <h1>Bank King</h1>
+                <div class="header-sub">Painel financeiro empresarial</div>
+              </div>
             </div>
-            <div id="bankValue" class="bank-value">$ 0,00</div>
+            <div class="badge">BRS SYST PRO</div>
           </div>
+        </header>
 
-          <div class="metrics">
-            <div class="metric">
-              <div class="metric-label">Entradas Turno 1</div>
-              <div id="totalEntradasT1" class="metric-value green">$ 0,00</div>
-            </div>
-            <div class="metric">
-              <div class="metric-label">Entradas Turno 2</div>
-              <div id="totalEntradasT2" class="metric-value green">$ 0,00</div>
-            </div>
-            <div class="metric">
-              <div class="metric-label">Lucro do turno</div>
-              <div id="lucroTotal" class="metric-value blue">$ 0,00</div>
-            </div>
+        <div class="top-user-bar">
+          <div class="top-user-info">
+            <div class="top-user-name" id="activeUserName">Usuário</div>
+            <div class="top-user-email" id="activeUserEmail">email@exemplo.com</div>
           </div>
-        </article>
+          <button id="logoutBtn" class="logout-btn" type="button">Sair</button>
+        </div>
 
-        <article class="history-card">
-          <div class="history-card-top">
-            <div>
-              <div class="history-card-title">Histórico automático</div>
-              <div id="historyInfo" class="history-card-text">
-                Nenhum turno anterior salvo ainda.
+        <section class="hero-grid">
+          <article class="summary-card card">
+            <div class="summary-head">
+              <div>
+                <div class="section-kicker">Visão geral</div>
+                <h2>Painel Financeiro</h2>
+              </div>
+              <div id="statusPill" class="pill neutral">Sem diferença</div>
+            </div>
+
+            <div class="bank-card">
+              <div class="bank-topline">
+                <span class="bank-label">Saldo disponível</span>
+                <button id="toggleBalance" class="hide-balance-btn" type="button" aria-label="Mostrar ou ocultar banca">
+                  <svg id="eyeIcon" width="20" height="20" viewBox="0 0 24 24" fill="none">
+                    <path d="M2 12C4.5 7 8.5 5 12 5C15.5 5 19.5 7 22 12C19.5 17 15.5 19 12 19C8.5 19 4.5 17 2 12Z" stroke="currentColor" stroke-width="1.6"/>
+                    <circle cx="12" cy="12" r="3" stroke="currentColor" stroke-width="1.6"/>
+                  </svg>
+                </button>
+              </div>
+
+              <div id="bankValue" class="bank-value">$ 0,00</div>
+
+              <div class="bank-mini-info">
+                <div>
+                  <span class="mini-label">Último lucro</span>
+                  <strong id="heroLastProfit">$ 0,00</strong>
+                </div>
+                <div>
+                  <span class="mini-label">Última variação</span>
+                  <strong id="heroBankVariation">$ 0,00</strong>
+                </div>
               </div>
             </div>
 
-            <button id="toggleHistoryBtn" class="danger-mini-btn" type="button">
-              Ver
+            <div class="metrics">
+              <div class="metric">
+                <div class="metric-label">Entradas Turno 1</div>
+                <div id="totalEntradasT1" class="metric-value green">$ 0,00</div>
+              </div>
+
+              <div class="metric">
+                <div class="metric-label">Entradas Turno 2</div>
+                <div id="totalEntradasT2" class="metric-value green">$ 0,00</div>
+              </div>
+
+              <div class="metric">
+                <div class="metric-label">Lucro do turno</div>
+                <div id="lucroTotal" class="metric-value blue">$ 0,00</div>
+              </div>
+            </div>
+          </article>
+
+          <article class="chart-card card">
+            <div class="summary-head">
+              <div>
+                <div class="section-kicker">Analytics</div>
+                <h2>Gráfico da banca</h2>
+              </div>
+              <div class="chart-actions">
+                <button id="chart7Btn" class="chart-filter-btn active" type="button">Semanal</button>
+                <button id="chart30Btn" class="chart-filter-btn" type="button">Mensal</button>
+              </div>
+            </div>
+
+            <div class="chart-wrap">
+              <canvas id="bankChart"></canvas>
+            </div>
+          </article>
+        </section>
+
+        <section class="history-section">
+          <article class="history-card">
+            <div class="history-card-top">
+              <div>
+                <div class="history-card-title">Histórico automático</div>
+                <div id="historyInfo" class="history-card-text">Nenhum turno anterior salvo ainda.</div>
+              </div>
+
+              <button id="toggleHistoryBtn" class="history-toggle-btn" type="button">Ver</button>
+            </div>
+
+            <div id="historyList" class="history-list hidden"></div>
+
+            <button id="deleteHistoryBtn" class="danger-mini-btn" type="button" style="margin-top:10px; width:100%;">
+              🔴 Excluir Histórico
             </button>
-          </div>
+          </article>
+        </section>
 
-          <div id="historyList" class="history-list hidden"></div>
+        <section class="turnos">
+          <article class="turno card" data-turno="t1">
+            <div class="turno-head">
+              <div>
+                <h3>Turno 1</h3>
+                <small>Carregado automaticamente do último fechamento</small>
+              </div>
+              <div class="turno-total">
+                <div class="label">Saldo líquido</div>
+                <div class="value" id="turno1InlineTotal">$ 0,00</div>
+              </div>
+            </div>
 
-          <button id="deleteHistoryBtn" class="danger-mini-btn" type="button" style="margin-top:10px; width:100%;">
-            🔴 Excluir Histórico
-          </button>
-        </article>
-      </section>
+            <div class="turno-meta">
+              <div class="field">
+                <label for="t1_data_fechamento">Data do fechamento</label>
+                <input type="date" id="t1_data_fechamento" />
+              </div>
+            </div>
 
-      <section class="turnos">
-        <article class="turno card" data-turno="t1">
-          <div class="turno-head">
+            <div class="finance-block">
+              <div class="finance-head">
+                <h4>Entradas</h4>
+                <div class="finance-total blue" id="t1_entradas_total">$ 0,00</div>
+              </div>
+
+              <div class="fields two-col">
+                <div class="field"><label for="t1_banco">Banco Reca</label><input type="text" inputmode="numeric" id="t1_banco" placeholder="0,00" /></div>
+                <div class="field"><label for="t1_pppoker">PPPoker (x400)</label><input type="text" inputmode="numeric" id="t1_pppoker" placeholder="0,00" /></div>
+                <div class="field"><label for="t1_suprema">Suprema (x400)</label><input type="text" inputmode="numeric" id="t1_suprema" placeholder="0,00" /></div>
+                <div class="field"><label for="t1_buffalo">Buffalo</label><input type="text" inputmode="numeric" id="t1_buffalo" placeholder="0,00" /></div>
+                <div class="field"><label for="t1_ganamos">Ganamos</label><input type="text" inputmode="numeric" id="t1_ganamos" placeholder="0,00" /></div>
+                <div class="field"><label for="t1_cargas">Carga de Fichas</label><input type="text" inputmode="numeric" id="t1_cargas" placeholder="0,00" /></div>
+                <div class="field"><label for="t1_cargas_poker">Cargas F. Poker (x400)</label><input type="text" inputmode="numeric" id="t1_cargas_poker" placeholder="0,00" /></div>
+              </div>
+            </div>
+
+            <div class="finance-block">
+              <div class="finance-head">
+                <h4>Saídas de caixa</h4>
+                <div class="finance-total red" id="t1_saidas_total">- $ 0,00</div>
+              </div>
+
+              <div class="dynamic-list" id="t1_dynamic_list"></div>
+
+              <div class="inline-actions">
+                <button class="btn-add" type="button" data-add-row="t1">+ Adicionar saída</button>
+              </div>
+            </div>
+
+            <div class="finance-block">
+              <div class="finance-head">
+                <h4>Pagos pendentes</h4>
+                <div class="finance-total red" id="t1_pendentes_total">- $ 0,00</div>
+              </div>
+
+              <div class="dynamic-list" id="t1_pending_list"></div>
+
+              <div class="inline-actions">
+                <button class="btn-add" type="button" data-add-pending="t1">+ Adicionar pendente</button>
+              </div>
+            </div>
+          </article>
+          <article class="turno card" data-turno="t2">
+            <div class="turno-head">
+              <div>
+                <h3>Turno 2</h3>
+                <small>Turno atual para preenchimento</small>
+              </div>
+              <div class="turno-total">
+                <div class="label">Saldo líquido</div>
+                <div class="value" id="turno2InlineTotal">$ 0,00</div>
+              </div>
+            </div>
+
+            <div class="turno-meta">
+              <div class="field">
+                <label for="t2_data_fechamento">Data do fechamento</label>
+                <input type="date" id="t2_data_fechamento" />
+              </div>
+            </div>
+
+            <div class="finance-block">
+              <div class="finance-head">
+                <h4>Entradas</h4>
+                <div class="finance-total blue" id="t2_entradas_total">$ 0,00</div>
+              </div>
+
+              <div class="fields two-col">
+                <div class="field"><label for="t2_banco">Banco Reca</label><input type="text" inputmode="numeric" id="t2_banco" placeholder="0,00" /></div>
+                <div class="field"><label for="t2_pppoker">PPPoker (x400)</label><input type="text" inputmode="numeric" id="t2_pppoker" placeholder="0,00" /></div>
+                <div class="field"><label for="t2_suprema">Suprema (x400)</label><input type="text" inputmode="numeric" id="t2_suprema" placeholder="0,00" /></div>
+                <div class="field"><label for="t2_buffalo">Buffalo</label><input type="text" inputmode="numeric" id="t2_buffalo" placeholder="0,00" /></div>
+                <div class="field"><label for="t2_ganamos">Ganamos</label><input type="text" inputmode="numeric" id="t2_ganamos" placeholder="0,00" /></div>
+                <div class="field"><label for="t2_cargas">Carga de Fichas</label><input type="text" inputmode="numeric" id="t2_cargas" placeholder="0,00" /></div>
+                <div class="field"><label for="t2_cargas_poker">Cargas F. Poker (x400)</label><input type="text" inputmode="numeric" id="t2_cargas_poker" placeholder="0,00" /></div>
+              </div>
+            </div>
+
+            <div class="finance-block">
+              <div class="finance-head">
+                <h4>Saídas de caixa</h4>
+                <div class="finance-total red" id="t2_saidas_total">- $ 0,00</div>
+              </div>
+
+              <div class="dynamic-list" id="t2_dynamic_list"></div>
+
+              <div class="inline-actions">
+                <button class="btn-add" type="button" data-add-row="t2">+ Adicionar saída</button>
+              </div>
+            </div>
+
+            <div class="finance-block">
+              <div class="finance-head">
+                <h4>Pagos pendentes</h4>
+                <div class="finance-total red" id="t2_pendentes_total">- $ 0,00</div>
+              </div>
+
+              <div class="dynamic-list" id="t2_pending_list"></div>
+
+              <div class="inline-actions">
+                <button class="btn-add" type="button" data-add-pending="t2">+ Adicionar pendente</button>
+              </div>
+            </div>
+          </article>
+        </section>
+
+        <section id="reportScreen" class="report-screen hidden">
+          <div class="report-head">
             <div>
-              <h3>Turno 1</h3>
-              <small>Carregado automaticamente do último fechamento</small>
+              <h3 id="reportTitle">Relatório</h3>
+              <small id="reportSubtitle" style="color: var(--muted);">Fluxo de caixa do período</small>
             </div>
-            <div class="turno-total">
-              <div class="label">Saldo líquido</div>
-              <div class="value" id="turno1InlineTotal">$ 0,00</div>
+            <button id="closeReportScreen" class="report-close-btn" type="button">Fechar</button>
+          </div>
+
+          <div class="report-grid">
+            <div class="report-card">
+              <div class="report-card-label">Entrou em Banco Reca</div>
+              <div class="report-card-value" id="reportBancoReca">$ 0,00</div>
+            </div>
+
+            <div class="report-card">
+              <div class="report-card-label">Saiu em Pagos Pendentes</div>
+              <div class="report-card-value red" id="reportPendentes">$ 0,00</div>
+            </div>
+
+            <div class="report-card">
+              <div class="report-card-label">Saiu em Saídas de Caixa</div>
+              <div class="report-card-value red" id="reportSaidas">$ 0,00</div>
+            </div>
+
+            <div class="report-card">
+              <div class="report-card-label">Lucro real</div>
+              <div class="report-card-value green" id="reportLucro">$ 0,00</div>
             </div>
           </div>
 
-          <div class="turno-meta">
-            <div class="field">
-              <label for="t1_data_fechamento">Data do fechamento</label>
-              <input type="date" id="t1_data_fechamento" />
-            </div>
-          </div>
+          <div id="reportList" class="report-list"></div>
+        </section>
+      </main>
 
-          <div class="finance-block">
-            <div class="finance-head">
-              <h4>Entradas</h4>
-              <div class="finance-total blue" id="t1_entradas_total">$ 0,00</div>
-            </div>
+      <div id="reportsMenu" class="reports-menu hidden">
+        <button class="reports-menu-item" type="button" data-report-range="7">Relatório semanal</button>
+        <button class="reports-menu-item" type="button" data-report-range="15">Relatório quinzenal</button>
+        <button class="reports-menu-item" type="button" data-report-range="30">Relatório mensal</button>
+      </div>
 
-            <div class="fields two-col">
-              <div class="field"><label for="t1_banco">Banco Reca</label><input type="text" inputmode="numeric" id="t1_banco" placeholder="0,00" /></div>
-              <div class="field"><label for="t1_pppoker">PPPoker (x400)</label><input type="text" inputmode="numeric" id="t1_pppoker" placeholder="0,00" /></div>
-              <div class="field"><label for="t1_suprema">Suprema (x400)</label><input type="text" inputmode="numeric" id="t1_suprema" placeholder="0,00" /></div>
-              <div class="field"><label for="t1_buffalo">Buffalo</label><input type="text" inputmode="numeric" id="t1_buffalo" placeholder="0,00" /></div>
-              <div class="field"><label for="t1_ganamos">Ganamos</label><input type="text" inputmode="numeric" id="t1_ganamos" placeholder="0,00" /></div>
-              <div class="field"><label for="t1_cargas">Carga de Fichas</label><input type="text" inputmode="numeric" id="t1_cargas" placeholder="0,00" /></div>
-              <div class="field"><label for="t1_cargas_poker">Cargas F. Poker (x400)</label><input type="text" inputmode="numeric" id="t1_cargas_poker" placeholder="0,00" /></div>
-            </div>
-          </div>
+      <div class="bottom-bar">
+        <div class="bottom-bar-inner">
+          <button class="secondary-btn" id="limpar" type="button">Limpar</button>
+          <button class="close-btn" id="fecharTurno" type="button">Fechar turno</button>
+          <button class="pdf-btn" id="exportarPdf" type="button">Exportar PDF</button>
+          <button class="main-btn" id="calcular" type="button">Calcular</button>
+        </div>
+      </div>
+    </div>
 
-          <div class="finance-block">
-            <div class="finance-head">
-              <h4>Saídas de caixa</h4>
-              <div class="finance-total red" id="t1_saidas_total">- $ 0,00</div>
-            </div>
-            <div class="dynamic-list" id="t1_dynamic_list"></div>
-            <div class="inline-actions">
-              <button class="btn-add" type="button" data-add-row="t1">+ Adicionar saída</button>
-            </div>
-          </div>
-
-          <div class="finance-block">
-            <div class="finance-head">
-              <h4>Pagos pendentes</h4>
-              <div class="finance-total red" id="t1_pendentes_total">- $ 0,00</div>
-            </div>
-            <div class="dynamic-list" id="t1_pending_list"></div>
-            <div class="inline-actions">
-              <button class="btn-add" type="button" data-add-pending="t1">+ Adicionar pendente</button>
-            </div>
-          </div>
-        </article>
-
-        <article class="turno card" data-turno="t2">
-          <div class="turno-head">
-            <div>
-              <h3>Turno 2</h3>
-              <small>Turno atual para preenchimento</small>
-            </div>
-            <div class="turno-total">
-              <div class="label">Saldo líquido</div>
-              <div class="value" id="turno2InlineTotal">$ 0,00</div>
-            </div>
-          </div>
-
-          <div class="turno-meta">
-            <div class="field">
-              <label for="t2_data_fechamento">Data do fechamento</label>
-              <input type="date" id="t2_data_fechamento" />
-            </div>
-          </div>
-
-          <div class="finance-block">
-            <div class="finance-head">
-              <h4>Entradas</h4>
-              <div class="finance-total blue" id="t2_entradas_total">$ 0,00</div>
-            </div>
-
-            <div class="fields two-col">
-              <div class="field"><label for="t2_banco">Banco Reca</label><input type="text" inputmode="numeric" id="t2_banco" placeholder="0,00" /></div>
-              <div class="field"><label for="t2_pppoker">PPPoker (x400)</label><input type="text" inputmode="numeric" id="t2_pppoker" placeholder="0,00" /></div>
-              <div class="field"><label for="t2_suprema">Suprema (x400)</label><input type="text" inputmode="numeric" id="t2_suprema" placeholder="0,00" /></div>
-              <div class="field"><label for="t2_buffalo">Buffalo</label><input type="text" inputmode="numeric" id="t2_buffalo" placeholder="0,00" /></div>
-              <div class="field"><label for="t2_ganamos">Ganamos</label><input type="text" inputmode="numeric" id="t2_ganamos" placeholder="0,00" /></div>
-              <div class="field"><label for="t2_cargas">Carga de Fichas</label><input type="text" inputmode="numeric" id="t2_cargas" placeholder="0,00" /></div>
-              <div class="field"><label for="t2_cargas_poker">Cargas F. Poker (x400)</label><input type="text" inputmode="numeric" id="t2_cargas_poker" placeholder="0,00" /></div>
-            </div>
-          </div>
-
-          <div class="finance-block">
-            <div class="finance-head">
-              <h4>Saídas de caixa</h4>
-              <div class="finance-total red" id="t2_saidas_total">- $ 0,00</div>
-            </div>
-            <div class="dynamic-list" id="t2_dynamic_list"></div>
-            <div class="inline-actions">
-              <button class="btn-add" type="button" data-add-row="t2">+ Adicionar saída</button>
-            </div>
-          </div>
-
-          <div class="finance-block">
-            <div class="finance-head">
-              <h4>Pagos pendentes</h4>
-              <div class="finance-total red" id="t2_pendentes_total">- $ 0,00</div>
-            </div>
-            <div class="dynamic-list" id="t2_pending_list"></div>
-            <div class="inline-actions">
-              <button class="btn-add" type="button" data-add-pending="t2">+ Adicionar pendente</button>
-            </div>
-          </div>
-        </article>
-      </section>
-
-      <section id="reportScreen" class="report-screen hidden">
-        <div class="report-head">
+    <div id="historyModal" class="modal hidden">
+      <div class="modal-backdrop" id="historyModalBackdrop"></div>
+      <div class="modal-card">
+        <div class="modal-head">
           <div>
-            <h3 id="reportTitle">Relatório</h3>
-            <small id="reportSubtitle" style="color: var(--muted);">Fluxo de caixa do período</small>
+            <h3 id="historyModalTitle">Detalhes do fechamento</h3>
+            <small id="historyModalSub">Turno salvo</small>
           </div>
-          <button id="closeReportScreen" class="report-close-btn" type="button">Fechar</button>
+          <button id="closeHistoryModal" class="modal-close-btn" type="button">Fechar</button>
         </div>
-
-        <div class="report-grid">
-          <div class="report-card">
-            <div class="report-card-label">Entrou em Banco Reca</div>
-            <div class="report-card-value" id="reportBancoReca">$ 0,00</div>
-          </div>
-
-          <div class="report-card">
-            <div class="report-card-label">Saiu em Pagos Pendentes</div>
-            <div class="report-card-value red" id="reportPendentes">$ 0,00</div>
-          </div>
-
-          <div class="report-card">
-            <div class="report-card-label">Saiu em Saídas de Caixa</div>
-            <div class="report-card-value red" id="reportSaidas">$ 0,00</div>
-          </div>
-
-          <div class="report-card">
-            <div class="report-card-label">Lucro real</div>
-            <div class="report-card-value green" id="reportLucro">$ 0,00</div>
-          </div>
-        </div>
-
-        <div id="reportList" class="report-list"></div>
-      </section>
-    </main>
-
-    <div id="reportsMenu" class="reports-menu hidden">
-      <button class="reports-menu-item" type="button" data-report-range="7">Relatório semanal</button>
-      <button class="reports-menu-item" type="button" data-report-range="15">Relatório quinzenal</button>
-      <button class="reports-menu-item" type="button" data-report-range="30">Relatório mensal</button>
-    </div>
-
-    <div class="bottom-bar">
-      <div class="bottom-bar-inner">
-        <button class="secondary-btn" id="limpar" type="button">Limpar</button>
-        <button class="close-btn" id="fecharTurno" type="button">Fechar turno</button>
-        <button class="pdf-btn" id="exportarPdf" type="button">Exportar PDF</button>
-        <button class="main-btn" id="calcular" type="button">Calcular</button>
+        <div class="modal-body" id="historyModalBody"></div>
       </div>
     </div>
-  </div>
 
-  <div id="historyModal" class="modal hidden">
-    <div class="modal-backdrop" id="historyModalBackdrop"></div>
-    <div class="modal-card">
-      <div class="modal-head">
-        <div>
-          <h3 id="historyModalTitle">Detalhes do fechamento</h3>
-          <small id="historyModalSub">Turno salvo</small>
+    <button id="adminOpenBtn" class="admin-fab" type="button">⚙️ ADMIN</button>
+
+    <div id="adminModal" class="admin-modal hidden">
+      <div class="admin-modal-backdrop" id="adminModalBackdrop"></div>
+      <div class="admin-modal-card">
+        <div class="admin-head">
+          <div>
+            <h3>Painel Administrativo</h3>
+            <small>Gerencie usuários cadastrados sem DevTools.</small>
+          </div>
+          <button id="adminCloseBtn" class="admin-close-btn" type="button">Fechar</button>
         </div>
-        <button id="closeHistoryModal" class="modal-close-btn" type="button">Fechar</button>
-      </div>
-      <div class="modal-body" id="historyModalBody"></div>
-    </div>
-  </div>
 
-  <button id="adminOpenBtn" class="admin-fab" type="button">⚙️ ADMIN</button>
-
-  <div id="adminModal" class="admin-modal hidden">
-    <div class="admin-modal-backdrop" id="adminModalBackdrop"></div>
-    <div class="admin-modal-card">
-      <div class="admin-head">
-        <div>
-          <h3>Painel Administrativo</h3>
-          <small>Gerencie usuários cadastrados sem DevTools.</small>
+        <div class="admin-toolbar">
+          <input id="adminSearchInput" class="admin-search" type="text" placeholder="Buscar por nome ou email" />
+          <button id="adminDeleteAllBtn" class="admin-danger-all-btn" type="button">🗑 Limpar dados locais</button>
         </div>
-        <button id="adminCloseBtn" class="admin-close-btn" type="button">Fechar</button>
-      </div>
 
-      <div class="admin-toolbar">
-        <input id="adminSearchInput" class="admin-search" type="text" placeholder="Buscar por nome ou email" />
-        <button id="adminDeleteAllBtn" class="admin-danger-all-btn" type="button">🗑 Excluir todos</button>
+        <div id="adminUsersList" class="admin-list"></div>
       </div>
-
-      <div id="adminUsersList" class="admin-list"></div>
     </div>
-  </div>
 
-  <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-app.js";
-    import {
-      getFirestore,
-      collection,
-      addDoc,
-      getDocs,
-      deleteDoc,
-      doc,
-      setDoc,
-      onSnapshot,
-      query,
-      orderBy,
-      limit,
-      serverTimestamp
-    } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-firestore.js";
+    <script type="module">
+      import { initializeApp } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-app.js";
+      import {
+        getFirestore,
+        collection,
+        addDoc,
+        getDocs,
+        deleteDoc,
+        doc,
+        setDoc,
+        onSnapshot,
+        query,
+        orderBy,
+        limit,
+        serverTimestamp
+      } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-firestore.js";
 
-    import {
-      getAuth,
-      createUserWithEmailAndPassword,
-      signInWithEmailAndPassword,
-      signOut,
-      onAuthStateChanged,
-      sendPasswordResetEmail
-    } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-auth.js";
+      import {
+        getAuth,
+        createUserWithEmailAndPassword,
+        signInWithEmailAndPassword,
+        signOut,
+        onAuthStateChanged,
+        sendPasswordResetEmail
+      } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-auth.js";
 
-    const firebaseConfig = {
-      apiKey: "AIzaSyAuyfJNu2vwvVyH5gRsvg82m98teFCmPXw",
-      authDomain: "bank-king-c53cf.firebaseapp.com",
-      projectId: "bank-king-c53cf",
-      storageBucket: "bank-king-c53cf.firebasestorage.app",
-      messagingSenderId: "108865328748",
-      appId: "1:108865328748:web:65dbbcf146a67f95512a49",
-      measurementId: "G-S43L7WM4LH"
+      const firebaseConfig = {
+        apiKey: "SUA_API_KEY",
+        authDomain: "SEU_AUTH_DOMAIN",
+        projectId: "SEU_PROJECT_ID",
+        storageBucket: "SEU_STORAGE_BUCKET",
+        messagingSenderId: "SEU_MESSAGING_SENDER_ID",
+        appId: "SEU_APP_ID",
+        measurementId: "SEU_MEASUREMENT_ID"
+      };
+
+      const app = initializeApp(firebaseConfig);
+      const db = getFirestore(app);
+      const auth = getAuth(app);
+
+      const PDF_CODE = "1520";
+      const REPORT_CODE = "1520";
+      const DELETE_HISTORY_CODE = "1520";
+      const ADMIN_CODE = "9087";
+
+      const ACTIVE_USER_STORAGE_KEY = "bank-king-active-user-v1";
+      const REMEMBER_LOGIN_STORAGE_KEY = "bank-king-remember-login-v1";
+      const REMEMBERED_EMAIL_STORAGE_KEY = "bank-king-remembered-email-v1";
+      const SESSION_LAST_ACTIVITY_KEY = "bank-king-session-last-activity-v1";
+      const SESSION_TIMEOUT_MS = 30 * 60 * 1000;
+
+      const authScreen = document.getElementById("authScreen");
+      const appShell = document.getElementById("appShell");
+      const loginForm = document.getElementById("loginForm");
+      const registerForm = document.getElementById("registerForm");
+      const forgotPasswordForm = document.getElementById("forgotPasswordForm");
+      const rememberLoginCheckbox = document.getElementById("rememberLogin");
+
+      let balanceVisible = true;
+      let sessionWatcher = null;
+      let historyUnsubscribe = null;
+      let historyRealtimeStarted = false;
+      let historyCache = [];
+      let historyVisible = false;
+      let bankChart = null;
+      let currentChartRange = 7;
+
+      const fieldsByTurn = {
+        t1: {
+          dataFechamento: "t1_data_fechamento",
+          banco: "t1_banco",
+          pppoker: "t1_pppoker",
+          suprema: "t1_suprema",
+          buffalo: "t1_buffalo",
+          ganamos: "t1_ganamos",
+          cargas: "t1_cargas",
+          cargasPoker: "t1_cargas_poker"
+        },
+        t2: {
+          dataFechamento: "t2_data_fechamento",
+          banco: "t2_banco",
+          pppoker: "t2_pppoker",
+          suprema: "t2_suprema",
+          buffalo: "t2_buffalo",
+          ganamos: "t2_ganamos",
+          cargas: "t2_cargas",
+          cargasPoker: "t2_cargas_poker"
+        }
+      };
+
+      function money(value){
+        return `$ ${Number(value || 0).toLocaleString("pt-BR", {
+          minimumFractionDigits: 2,
+          maximumFractionDigits: 2
+        })}`;
+      }
+
+      function negativeMoney(value){
+        return `- ${money(value)}`;
+      }
+
+      function escapeHtml(text){
+        return String(text ?? "")
+          .replaceAll("&", "&amp;")
+          .replaceAll("<", "&lt;")
+          .replaceAll(">", "&gt;")
+          .replaceAll('"', "&quot;")
+          .replaceAll("'", "&#39;");
+      }
+
+      function getTodayDateInput(){
+        const now = new Date();
+        const offset = now.getTimezoneOffset();
+        const local = new Date(now.getTime() - offset * 60000);
+        return local.toISOString().split("T")[0];
+      }
+
+      function formatDateBR(dateStr){
+        if(!dateStr) return "Sem data";
+        const [y,m,d] = dateStr.split("-");
+        if(!y || !m || !d) return dateStr;
+        return `${d}/${m}/${y}`;
+      }
+
+      function formatDateTimeBR(value){
+        if(!value) return "Sem data";
+
+        let dt;
+        if(value?.toDate){
+          dt = value.toDate();
+        }else{
+          dt = new Date(value);
+        }
+
+        if(isNaN(dt.getTime())) return "Sem data";
+
+        return `${dt.toLocaleDateString("pt-BR")} às ${dt.toLocaleTimeString("pt-BR", {
+          hour: "2-digit",
+          minute: "2-digit"
+        })}`;
+      }
+
+      function parseMoneyInput(value){
+        if(!value) return 0;
+        const normalized = String(value)
+          .replace(/\./g, "")
+          .replace(",", ".")
+          .replace(/[^\d.-]/g, "");
+        const number = parseFloat(normalized);
+        return Number.isFinite(number) ? number : 0;
+      }
+
+      function formatDigitsToMoneyString(digits){
+        const clean = String(digits || "").replace(/\D/g, "");
+        if(!clean) return "";
+        const number = Number(clean) / 100;
+        return number.toLocaleString("pt-BR", {
+          minimumFractionDigits: 2,
+          maximumFractionDigits: 2
+        });
+      }
+
+      function setDigitsToInput(input, digits){
+        if(!input) return;
+        const clean = String(digits || "").replace(/\D/g, "");
+        input.dataset.raw = clean
+id="bloco4_continuacao"
+
+;
+input.value = formatDigitsToMoneyString(clean);
+}
+
+function getDigitsFromInput(input){
+  return input?.dataset?.raw || "";
+}
+
+function moveCursorToEnd(input){
+  requestAnimationFrame(() => {
+    const len = input.value.length;
+    try{ input.setSelectionRange(len, len); }catch(_){}
+  });
+}
+
+function attachMoneyMask(input){
+  if(!input || input.dataset.maskAttached === "true") return;
+
+  input.dataset.maskAttached = "true";
+  input.dataset.raw = input.dataset.raw || "";
+
+  input.addEventListener("keydown", (e) => {
+
+    if((e.ctrlKey || e.metaKey)) return;
+
+    if(/^\d$/.test(e.key)){
+      e.preventDefault();
+      setDigitsToInput(input, getDigitsFromInput(input) + e.key);
+      moveCursorToEnd(input);
+      render();
+      return;
+    }
+
+    if(e.key === "Backspace"){
+      e.preventDefault();
+      setDigitsToInput(input, getDigitsFromInput(input).slice(0,-1));
+      moveCursorToEnd(input);
+      render();
+      return;
+    }
+
+    if(e.key === "Delete"){
+      e.preventDefault();
+      setDigitsToInput(input, "");
+      moveCursorToEnd(input);
+      render();
+      return;
+    }
+
+    e.preventDefault();
+  });
+}
+
+/* =========================
+   🔥 CALCULOS PRINCIPAIS
+========================= */
+
+function getEntradasTotal(turno){
+  const f = fieldsByTurn[turno];
+
+  return (
+    getValue(f.banco) +
+    (getValue(f.pppoker) * 400) +
+    (getValue(f.suprema) * 400) +
+    getValue(f.buffalo) +
+    getValue(f.ganamos) +
+    getValue(f.cargas) +
+    (getValue(f.cargasPoker) * 400)
+  );
+}
+
+function getDynamicTotal(turno){
+  let total = 0;
+  document.querySelectorAll(`#${turno}_dynamic_list input[data-dynamic-value]`)
+    .forEach(i => total += parseMoneyInput(i.value));
+  return total;
+}
+
+function getPendingTotal(turno){
+  let total = 0;
+  document.querySelectorAll(`#${turno}_pending_list input[data-pending-value]`)
+    .forEach(i => total += parseMoneyInput(i.value));
+  return total;
+}
+
+/* =========================
+   📊 GRÁFICO
+========================= */
+
+let chartInstance = null;
+
+function renderChart(){
+  const ctx = document.getElementById("profitChart");
+  if(!ctx) return;
+
+  const history = historyCache || [];
+
+  const last = history.slice(0,30).reverse();
+
+  const labels = last.map(h => formatDateBR(h.fechamentoDate));
+  const data = last.map(h => Number(h.turnProfit || 0));
+
+  if(chartInstance) chartInstance.destroy();
+
+  chartInstance = new Chart(ctx, {
+    type:"line",
+    data:{
+      labels,
+      datasets:[{
+        data,
+        borderWidth:2,
+        tension:.4,
+        fill:true
+      }]
+    },
+    options:{
+      plugins:{legend:{display:false}},
+      scales:{
+        x:{ticks:{color:"#8fa2c0"}},
+        y:{ticks:{color:"#8fa2c0"}}
+      }
+    }
+  });
+}
+
+/* =========================
+   🧠 RENDER PRINCIPAL
+========================= */
+
+function render(){
+
+  const t1Entradas = getEntradasTotal("t1");
+  const t1Saidas = getDynamicTotal("t1");
+  const t1Pend = getPendingTotal("t1");
+
+  const t2Entradas = getEntradasTotal("t2");
+  const t2Saidas = getDynamicTotal("t2");
+  const t2Pend = getPendingTotal("t2");
+
+  const lucro = Number(historyCache[0]?.turnProfit || 0);
+
+  document.getElementById("t1_entradas_total").textContent = money(t1Entradas);
+  document.getElementById("t2_entradas_total").textContent = money(t2Entradas);
+
+  document.getElementById("t1_saidas_total").textContent = negativeMoney(t1Saidas);
+  document.getElementById("t2_saidas_total").textContent = negativeMoney(t2Saidas);
+
+  document.getElementById("t1_pendentes_total").textContent = negativeMoney(t1Pend);
+  document.getElementById("t2_pendentes_total").textContent = negativeMoney(t2Pend);
+
+  document.getElementById("lucroTotal").textContent = money(lucro);
+
+  const banca = historyCache[0]?.total || 0;
+
+  document.getElementById("bankValue").textContent =
+    balanceVisible ? money(banca) : "••••••";
+
+  renderChart();
+}
+id="bloco5_final"
+
+document.addEventListener("DOMContentLoaded", () => {
+
+  // máscaras
+  document.querySelectorAll("input").forEach(attachMoneyMask);
+
+  // botões dinâmicos
+  document.querySelectorAll("[data-add-row]").forEach(btn => {
+    btn.onclick = () => {
+      createDynamicRow(btn.dataset.addRow);
+      render();
     };
+  });
 
-    const app = initializeApp(firebaseConfig);
-    const db = getFirestore(app);
-    const auth = getAuth(app);
+  document.querySelectorAll("[data-add-pending]").forEach(btn => {
+    btn.onclick = () => {
+      createPendingRow(btn.dataset.addPending);
+      render();
+    };
+  });
 
-    const PDF_CODE = "1520";
-    const REPORT_CODE = "1520";
-    const DELETE_HISTORY_CODE = "1520";
-    const ADMIN_CODE = "9087";
+  // toggle saldo
+  document.getElementById("toggleBalance").onclick = () => {
+    balanceVisible = !balanceVisible;
+    render();
+  };
 
-    const ACTIVE_USER_STORAGE_KEY = "bank-king-active-user-v1";
-    const REMEMBER_LOGIN_STORAGE_KEY = "bank-king-remember-login-v1";
-    const REMEMBERED_EMAIL_STORAGE_KEY = "bank-king-remembered-email-v1";
-    const SESSION_LAST_ACTIVITY_KEY = "bank-king-session-last-activity-v1";
+  // calcular
+  document.getElementById("calcular").onclick = render;
 
-    const SESSION_TIMEOUT_MS = 30 * 60 * 1000;
+  // limpar turno 2
+  document.getElementById("limpar").onclick = () => {
+    clearTurn("t2");
+    render();
+  };
 
-    const authScreen = document.getElementById("authScreen");
-    const appShell = document.getElementById("appShell");
-    const loginForm = document.getElementById("loginForm");
-    const registerForm = document.getElementById("registerForm");
-    const forgotPasswordForm = document.getElementById("forgotPasswordForm");
-    const rememberLoginCheckbox = document.getElementById("rememberLogin");
-
-    let balanceVisible = true;
-    let sessionWatcher = null;
-    let historyUnsubscribe = null;
-    let historyRealtimeStarted = false;
-    let historyCache = [];
-    let historyVisible = false;
-
-    function money(value){
-      return `$ ${Number(value || 0).toLocaleString("pt-BR", {
-        minimumFractionDigits: 2,
-        maximumFractionDigits: 2
-      })}`;
+  // fechar turno
+  document.getElementById("fecharTurno").onclick = async () => {
+    try{
+      const item = serializeTurn("t2");
+      await saveHistoryItem(item);
+      clearTurn("t2");
+      render();
+      alert("Turno fechado com sucesso");
+    }catch(e){
+      console.error(e);
+      alert("Erro ao salvar");
     }
+  };
 
-    function negativeMoney(value){
-      return `- ${money(value)}`;
-    }
+  // histórico toggle
+  document.getElementById("toggleHistoryBtn").onclick = () => {
+    historyVisible = !historyVisible;
+    updateHistoryVisibility();
+  };
 
-    function escapeHtml(text){
-      return String(text ?? "")
-        .replaceAll("&", "&amp;")
-        .replaceAll("<", "&lt;")
-        .replaceAll(">", "&gt;")
-        .replaceAll('"', "&quot;")
-        .replaceAll("'", "&#39;");
-    }
+  // logout
+  document.getElementById("logoutBtn").onclick = logout;
 
-    function getTodayDateInput(){
-      const now = new Date();
-      const offset = now.getTimezoneOffset();
-      const local = new Date(now.getTime() - offset * 60000);
-      return local.toISOString().split("T")[0];
-    }
+  // iniciar realtime
+  startHistoryRealtimeListener();
 
-    async function getUsersFromFirestore(){
-      const q = query(collection(db, "users"), orderBy("createdAt", "desc"));
-      const snapshot = await getDocs(q);
+  render();
+});
 
-      return snapshot.docs.map((docItem) => ({
-        id: docItem.id,
-        ...docItem.data()
-      }));
-    }
+<script type="module">
 
-    async function deleteUserDocFromFirestore(uid){
-      if (!uid) return;
-      await deleteDoc(doc(db, "users", uid));
-    }
+// ===== INICIALIZAÇÃO FINAL =====
 
-    function formatDateBR(dateStr){
-      if(!dateStr) return "Sem data";
-      const [y,m,d] = dateStr.split("-");
-      if(!y || !m || !d) return dateStr;
-      return `${d}/${m}/${y}`;
-    }
+document.addEventListener("DOMContentLoaded", () => {
 
-    function formatDateTimeBR(value){
-      if(!value) return "Sem data";
+  // aplicar máscara monetária
+  document.querySelectorAll("input").forEach((input) => {
+    attachMoneyMask(input);
+  });
 
-      let dt;
-      if (value?.toDate) {
-        dt = value.toDate();
-      } else {
-        dt = new Date(value);
-      }
+  // adicionar saída dinâmica
+  document.querySelectorAll("[data-add-row]").forEach(btn => {
+    btn.addEventListener("click", () => {
+      createDynamicRow(btn.dataset.addRow);
+      render();
+    });
+  });
 
-      if (isNaN(dt.getTime())) return "Sem data";
+  // adicionar pendente
+  document.querySelectorAll("[data-add-pending]").forEach(btn => {
+    btn.addEventListener("click", () => {
+      createPendingRow(btn.dataset.addPending);
+      render();
+    });
+  });
 
-      return `${dt.toLocaleDateString("pt-BR")} às ${dt.toLocaleTimeString("pt-BR", {
-        hour: "2-digit",
-        minute: "2-digit"
-      })}`;
-    }
+  // mostrar/ocultar saldo
+  document.getElementById("toggleBalance").addEventListener("click", () => {
+    balanceVisible = !balanceVisible;
+    render();
+  });
 
-    function parseMoneyInput(value){
-      if(!value) return 0;
-      const normalized = String(value)
-        .replace(/\./g, "")
-        .replace(",", ".")
-        .replace(/[^\d.-]/g, "");
-      const number = parseFloat(normalized);
-      return Number.isFinite(number) ? number : 0;
-    }
+  // calcular
+  document.getElementById("calcular").addEventListener("click", render);
 
-    function formatDigitsToMoneyString(digits){
-      const clean = String(digits || "").replace(/\D/g, "");
-      if(!clean) return "";
-      const number = Number(clean) / 100;
-      return number.toLocaleString("pt-BR", {
-        minimumFractionDigits: 2,
-        maximumFractionDigits: 2
-      });
-    }
-
-    function setDigitsToInput(input, digits){
-      if(!input) return;
-      const clean = String(digits || "").replace(/\D/g, "");
-      input.dataset.raw = clean;
-      input.value = formatDigitsToMoneyString(clean);
-    }
-
-    function getDigitsFromInput(input){
-      return input?.dataset?.raw || "";
-    }
-
-    function moveCursorToEnd(input){
-      requestAnimationFrame(() => {
-        const len = input.value.length;
-        try{ input.setSelectionRange(len, len); }catch(_){}
-      });
-    }
-
-    function attachMoneyMask(input){
-      if(!input || input.dataset.maskAttached === "true") return;
-
-      input.dataset.maskAttached = "true";
-      input.dataset.raw = input.dataset.raw || "";
-      input.placeholder = "0,00";
-      input.autocomplete = "off";
-      input.spellcheck = false;
-
-      input.addEventListener("keydown", (e) => {
-        const allowed = [
-          "Tab","Shift","Control","Meta","Alt",
-          "ArrowLeft","ArrowRight","ArrowUp","ArrowDown","Home","End"
-        ].includes(e.key);
-
-        if(allowed) return;
-
-        const shortcut = (e.ctrlKey || e.metaKey) && ["a","c","v","x"].includes(e.key.toLowerCase());
-        if(shortcut) return;
-
-        if(/^\d$/.test(e.key)){
-          e.preventDefault();
-          setDigitsToInput(input, getDigitsFromInput(input) + e.key);
-          moveCursorToEnd(input);
-          render();
-          return;
-        }
-
-        if(e.key === "Backspace"){
-          e.preventDefault();
-          setDigitsToInput(input, getDigitsFromInput(input).slice(0, -1));
-          moveCursorToEnd(input);
-          render();
-          return;
-        }
-
-        if(e.key === "Delete"){
-          e.preventDefault();
-          setDigitsToInput(input, "");
-          moveCursorToEnd(input);
-          render();
-          return;
-        }
-
-        e.preventDefault();
-      });
-
-      input.addEventListener("paste", (e) => {
-        e.preventDefault();
-        const pasted = (e.clipboardData || window.clipboardData).getData("text") || "";
-        const digits = pasted.replace(/\D/g, "");
-        setDigitsToInput(input, getDigitsFromInput(input) + digits);
-        moveCursorToEnd(input);
-        render();
-      });
-
-      input.addEventListener("focus", () => moveCursorToEnd(input));
-    }
-
-    function saveRememberedLogin(enabled, email = ""){
-      localStorage.setItem(REMEMBER_LOGIN_STORAGE_KEY, enabled ? "true" : "false");
-      if(enabled){
-        localStorage.setItem(REMEMBERED_EMAIL_STORAGE_KEY, email);
-      }else{
-        localStorage.removeItem(REMEMBERED_EMAIL_STORAGE_KEY);
-      }
-    }
-
-    function getRememberedLogin(){
-      return localStorage.getItem(REMEMBER_LOGIN_STORAGE_KEY) === "true";
-    }
-
-    function getRememberedEmail(){
-      return localStorage.getItem(REMEMBERED_EMAIL_STORAGE_KEY) || "";
-    }
-
-    function saveActiveUser(user){
-      localStorage.setItem(ACTIVE_USER_STORAGE_KEY, JSON.stringify(user));
-    }
-
-    function loadActiveUser(){
-      const raw = localStorage.getItem(ACTIVE_USER_STORAGE_KEY);
-      if(!raw) return null;
-      try{
-        return JSON.parse(raw);
-      }catch{
-        return null;
-      }
-    }
-
-    function removeActiveUser(){
-      localStorage.removeItem(ACTIVE_USER_STORAGE_KEY);
-    }
-
-    function setSessionActivity(){
-      if(loadActiveUser()){
-        localStorage.setItem(SESSION_LAST_ACTIVITY_KEY, String(Date.now()));
-      }
-    }
-
-    function getSessionLastActivity(){
-      return Number(localStorage.getItem(SESSION_LAST_ACTIVITY_KEY) || 0);
-    }
-
-    function isSessionExpired(){
-      const last = getSessionLastActivity();
-      if(!last) return true;
-      return (Date.now() - last) > SESSION_TIMEOUT_MS;
-    }
-
-    function stopSessionWatcher(){
-      if(sessionWatcher){
-        clearInterval(sessionWatcher);
-        sessionWatcher = null;
-      }
-    }
-
-    function startSessionWatcher(){
-      stopSessionWatcher();
-      sessionWatcher = setInterval(() => {
-        if(loadActiveUser() && isSessionExpired()){
-          alert("Sessão expirada por inatividade de 30 minutos.");
-          logout();
-        }
-      }, 15000);
-    }
-
-    function bindSessionEvents(){
-      ["click","touchstart","keydown","input","scroll"].forEach((eventName) => {
-        window.addEventListener(eventName, () => {
-          if(loadActiveUser()) setSessionActivity();
-        }, { passive:true });
-      });
-    }
-
-    function switchTab(mode){
-      document.getElementById("tabLogin").classList.toggle("active", mode === "login");
-      document.getElementById("tabRegister").classList.toggle("active", mode === "register");
-      document.getElementById("tabForgot").classList.toggle("active", mode === "forgot");
-
-      loginForm.classList.toggle("hidden", mode !== "login");
-      registerForm.classList.toggle("hidden", mode !== "register");
-      forgotPasswordForm.classList.toggle("hidden", mode !== "forgot");
-
-      if(mode === "login") preloadLogin();
-    }
-
-    function preloadLogin(){
-      const remember = getRememberedLogin();
-      const rememberedEmail = getRememberedEmail();
-
-      const emailInput = document.getElementById("loginEmail");
-      const passwordInput = document.getElementById("loginPassword");
-
-      rememberLoginCheckbox.checked = remember;
-
-      if(rememberedEmail){
-        emailInput.value = rememberedEmail;
-        requestAnimationFrame(() => passwordInput.focus());
-      }else{
-        emailInput.value = "";
-        requestAnimationFrame(() => emailInput.focus());
-      }
-    }
-
-    function showApp(user){
-      document.getElementById("activeUserName").textContent = user?.name || "Usuário";
-      document.getElementById("activeUserEmail").textContent = user?.email || "";
-      authScreen.classList.add("hidden");
-      appShell.classList.remove("hidden");
-      ensureDates();
-      setSessionActivity();
-      startSessionWatcher();
+  // limpar turno 2
+  document.getElementById("limpar").addEventListener("click", () => {
+    if(confirm("Deseja limpar o turno atual?")){
+      clearTurn("t2");
       render();
     }
+  });
 
-    async function logout(){
-      try{
-        await signOut(auth);
-      }catch(error){
-        console.error("Erro ao sair do Firebase:", error);
-      }
-
-      removeActiveUser();
-      localStorage.removeItem(SESSION_LAST_ACTIVITY_KEY);
-      stopSessionWatcher();
-      authScreen.classList.remove("hidden");
-      appShell.classList.add("hidden");
-      preloadLogin();
-      switchTab("login");
+  // fechar turno
+  document.getElementById("fecharTurno").addEventListener("click", async () => {
+    try{
+      const item = serializeTurn("t2");
+      await saveHistoryItem(item);
+      clearTurn("t2");
+      render();
+      alert("Turno fechado com sucesso");
+    }catch(e){
+      console.error(e);
+      alert("Erro ao salvar turno");
     }
+  });
 
-    function ensureDates(){
-      const t1 = document.getElementById("t1_data_fechamento");
-      const t2 = document.getElementById("t2_data_fechamento");
-      if(t1 && !t1.value) t1.value = getTodayDateInput();
-      if(t2 && !t2.value) t2.value = getTodayDateInput();
-    }
+  // histórico toggle
+  document.getElementById("toggleHistoryBtn").addEventListener("click", () => {
+    historyVisible = !historyVisible;
+    updateHistoryVisibility();
+  });
 
-    const fieldsByTurn = {
-      t1: {
-        dataFechamento: "t1_data_fechamento",
-        banco: "t1_banco",
-        pppoker: "t1_pppoker",
-        suprema: "t1_suprema",
-        buffalo: "t1_buffalo",
-        ganamos: "t1_ganamos",
-        cargas: "t1_cargas",
-        cargasPoker: "t1_cargas_poker"
-      },
-      t2: {
-        dataFechamento: "t2_data_fechamento",
-        banco: "t2_banco",
-        pppoker: "t2_pppoker",
-        suprema: "t2_suprema",
-        buffalo: "t2_buffalo",
-        ganamos: "t2_ganamos",
-        cargas: "t2_cargas",
-        cargasPoker: "t2_cargas_poker"
-      }
-    };
+  // logout
+  document.getElementById("logoutBtn").addEventListener("click", logout);
 
-    function getValue(id){
-      const el = document.getElementById(id);
-      return el ? parseMoneyInput(el.value) : 0;
-    }
+  // iniciar listener realtime
+  startHistoryRealtimeListener();
 
-    function getEntradasTotal(turno){
-      const f = fieldsByTurn[turno];
-      return (
-        getValue(f.banco) +
-        (getValue(f.pppoker) * 400) +
-        (getValue(f.suprema) * 400) +
-        getValue(f.buffalo) +
-        getValue(f.ganamos) +
-        getValue(f.cargas) +
-        (getValue(f.cargasPoker) * 400)
-      );
-    }
+  // render inicial
+  render();
+});
 
-    function getDynamicTotal(turno){
-      const list = document.getElementById(`${turno}_dynamic_list`);
-      if(!list) return 0;
-      let total = 0;
-      list.querySelectorAll('input[data-dynamic-value="true"]').forEach((input) => {
-        total += parseMoneyInput(input.value);
-      });
-      return total;
-    }
+</script>
 
-    function getPendingTotal(turno){
-      const list = document.getElementById(`${turno}_pending_list`);
-      if(!list) return 0;
-      let total = 0;
-      list.querySelectorAll('input[data-pending-value="true"]').forEach((input) => {
-        total += parseMoneyInput(input.value);
-      });
-      return total;
-    }
-
-    function updateStatusPill(value){
-      const pill = document.getElementById("statusPill");
-      if(value > 0){
-        pill.textContent = "Positivo";
-        pill.className = "pill positive";
-      }else if(value < 0){
-        pill.textContent = "Negativo";
-        pill.className = "pill negative";
-      }else{
-        pill.textContent = "Sem diferença";
-        pill.className = "pill neutral";
-      }
-    }
-
-    function updateHistoryVisibility(){
-      const list = document.getElementById("historyList");
-      const btn = document.getElementById("toggleHistoryBtn");
-      if(!list || !btn) return;
-
-      if(historyVisible){
-        list.classList.remove("hidden");
-        btn.textContent = "Ocultar";
-      } else {
-        list.classList.add("hidden");
-        btn.textContent = "Ver";
-      }
-    }
-
-    function updateEyeIcon(){
-      const eye = document.getElementById("eyeIcon");
-      if(balanceVisible){
-        eye.innerHTML = `
-          <path d="M2 12C4.5 7 8.5 5 12 5C15.5 5 19.5 7 22 12C19.5 17 15.5 19 12 19C8.5 19 4.5 17 2 12Z" stroke="currentColor" stroke-width="1.6"/>
-          <circle cx="12" cy="12" r="3" stroke="currentColor" stroke-width="1.6"/>
-        `;
-      }else{
-        eye.innerHTML = `
-          <path d="M3 3L21 21" stroke="currentColor" stroke-width="1.6"/>
-          <path d="M10.5 10.5C10.2 10.8 10 11.3 10 12C10 13.1 10.9 14 12 14C12.7 14 13.2 13.8 13.5 13.5" stroke="currentColor" stroke-width="1.6"/>
-          <path d="M6.5 6.5C5 7.7 3.7 9.5 2 12C4.5 17 8.5 19 12 19C13.5 19 15 18.5 16.5 17.5" stroke="currentColor" stroke-width="1.6"/>
-          <path d="M17.5 17.5C19 16.3 20.3 14.5 22 12C19.5 7 15.5 5 12 5C10.5 5 9 5.5 7.5 6.5" stroke="currentColor" stroke-width="1.6"/>
-        `;
-      }
-    }
-
-    function updatePreviewForRow(row, value, pending = false){
-      const preview = row.querySelector(".signed-preview");
-      if(!preview) return;
-      preview.textContent = negativeMoney(value);
-      preview.className = `signed-preview ${pending ? "amber" : "red"}`;
-    }
-
-    function bindDynamicRow(row, pending = false){
-      const valueInput = row.querySelector(pending ? '[data-pending-value="true"]' : '[data-dynamic-value="true"]');
-      const textInput = row.querySelector('input[type="text"]:not([data-dynamic-value="true"]):not([data-pending-value="true"])');
-
-      if(valueInput){
-        attachMoneyMask(valueInput);
-        valueInput.addEventListener("input", () => {
-          updatePreviewForRow(row, parseMoneyInput(valueInput.value), pending);
-          render();
-        });
-      }
-
-      if(textInput){
-        textInput.addEventListener("input", render);
-      }
-
-      const removeBtn = row.querySelector(".remove-btn");
-      if(removeBtn){
-        removeBtn.addEventListener("click", () => {
-          row.remove();
-          render();
-        });
-      }
-
-      updatePreviewForRow(row, parseMoneyInput(valueInput?.value || 0), pending);
-    }
-
-    function createDynamicRow(turno, name = "", digits = ""){
-      const row = document.createElement("div");
-      row.className = "dynamic-row outflow";
-      row.innerHTML = `
-        <div class="field">
-          <label>Saída</label>
-          <input type="text" placeholder="Ex.: salário, fornecedor, marketing" value="${escapeHtml(name)}" />
-        </div>
-        <div class="field">
-          <label>Valor</label>
-          <input type="text" inputmode="numeric" data-dynamic-value="true" placeholder="0,00" />
-        </div>
-        <div class="signed-preview red">- $ 0,00</div>
-        <button class="remove-btn" type="button">Remover</button>
-      `;
-      document.getElementById(`${turno}_dynamic_list`).appendChild(row);
-      const valueInput = row.querySelector('[data-dynamic-value="true"]');
-      if(digits) setDigitsToInput(valueInput, digits);
-      bindDynamicRow(row, false);
-    }
-
-    function createPendingRow(turno, name = "", digits = ""){
-      const row = document.createElement("div");
-      row.className = "dynamic-row pending";
-      row.innerHTML = `
-        <div class="field">
-          <label>Nome do cliente</label>
-          <input type="text" placeholder="Ex.: João, Carlos, Maria" value="${escapeHtml(name)}" />
-        </div>
-        <div class="field">
-          <label>Valor</label>
-          <input type="text" inputmode="numeric" data-pending-value="true" placeholder="0,00" />
-        </div>
-        <div class="signed-preview amber">- $ 0,00</div>
-        <button class="remove-btn" type="button">Remover</button>
-      `;
-      document.getElementById(`${turno}_pending_list`).appendChild(row);
-      const valueInput = row.querySelector('[data-pending-value="true"]');
-      if(digits) setDigitsToInput(valueInput, digits);
-      bindDynamicRow(row, true);
-    }
-
-    function clearTurn(turno){
-      const f = fieldsByTurn[turno];
-      Object.values(f).forEach((id) => {
-        const input = document.getElementById(id);
-        if(!input) return;
-        if(id === f.dataFechamento){
-          input.value = getTodayDateInput();
-        }else{
-          input.value = "";
-          input.dataset.raw = "";
-        }
-      });
-
-      document.getElementById(`${turno}_dynamic_list`).innerHTML = "";
-      document.getElementById(`${turno}_pending_list`).innerHTML = "";
-    }
-
-    function serializeTurn(turno){
-      const f = fieldsByTurn[turno];
-
-      const entries = [
-        { name: "Banco Reca", value: getValue(f.banco) },
-        { name: "PPPoker (x400)", value: getValue(f.pppoker) * 400 },
-        { name: "Suprema (x400)", value: getValue(f.suprema) * 400 },
-        { name: "Buffalo", value: getValue(f.buffalo) },
-        { name: "Ganamos", value: getValue(f.ganamos) },
-        { name: "Carga de Fichas", value: getValue(f.cargas) },
-        { name: "Cargas F. Poker (x400)", value: getValue(f.cargasPoker) * 400 }
-      ];
-
-      const outflows = [...document.querySelectorAll(`#${turno}_dynamic_list .dynamic-row`)].map((row) => {
-        const inputs = row.querySelectorAll("input");
-        return {
-          name: inputs[0]?.value || "",
-          value: parseMoneyInput(inputs[1]?.value || "")
-        };
-      });
-
-      const pendings = [...document.querySelectorAll(`#${turno}_pending_list .dynamic-row`)].map((row) => {
-        const inputs = row.querySelectorAll("input");
-        return {
-          name: inputs[0]?.value || "",
-          value: parseMoneyInput(inputs[1]?.value || "")
-        };
-      });
-
-      const entradasTotal = entries.reduce((acc, item) => acc + item.value, 0);
-      const saidasTotal = outflows.reduce((acc, item) => acc + item.value, 0);
-      const pendentesTotal = pendings.reduce((acc, item) => acc + item.value, 0);
-      const saldoLiquido = entradasTotal - saidasTotal - pendentesTotal;
-
-      const activeUser = loadActiveUser();
-
-      return {
-        submittedByName: activeUser?.name || "Usuário",
-        submittedByEmail: activeUser?.email || "",
-        submittedAt: serverTimestamp(),
-        fechamentoDate: document.getElementById(f.dataFechamento)?.value || getTodayDateInput(),
-        total: getValue(f.banco),
-        turno: {
-          dataFechamento: document.getElementById(f.dataFechamento)?.value || getTodayDateInput(),
-          entries,
-          outflows,
-          pendings,
-          entradasTotal,
-          saidasTotal,
-          pendentesTotal,
-          saldoLiquido
-        }
-      };
-    }
-
-    async function saveHistoryItem(item){
-      const q = query(collection(db, "history"), orderBy("submittedAt", "desc"), limit(1));
-      const snapshot = await getDocs(q);
-      const previousTotal = snapshot.docs[0]?.data()?.total || 0;
-
-      item.bankVariation = item.total - previousTotal;
-      item.turnProfit = item.turno?.saldoLiquido || 0;
-
-      await addDoc(collection(db, "history"), item);
-    }
-
-    function applySnapshotToTurn(turno, snapshot){
-      if(!snapshot) return;
-
-      clearTurn(turno);
-
-      const f = fieldsByTurn[turno];
-      document.getElementById(f.dataFechamento).value = snapshot.dataFechamento || getTodayDateInput();
-
-      const map = {
-        "Banco Reca": f.banco,
-        "PPPoker (x400)": f.pppoker,
-        "Suprema (x400)": f.suprema,
-        "Buffalo": f.buffalo,
-        "Ganamos": f.ganamos,
-        "Carga de Fichas": f.cargas,
-        "Cargas F. Poker (x400)": f.cargasPoker
-      };
-
-      (snapshot.entries || []).forEach((entry) => {
-        const id = map[entry.name];
-        if(!id) return;
-        let rawValue = entry.value || 0;
-        if(entry.name.includes("(x400)")) rawValue = rawValue / 400;
-        setDigitsToInput(document.getElementById(id), Math.round(rawValue * 100).toString());
-      });
-
-      (snapshot.outflows || []).forEach((item) => {
-        createDynamicRow(turno, item.name, Math.round((item.value || 0) * 100).toString());
-      });
-
-      (snapshot.pendings || []).forEach((item) => {
-        createPendingRow(turno, item.name, Math.round((item.value || 0) * 100).toString());
-      });
-    }
-
-    function getBancoRecaFromSnapshot(snapshot){
-      return (snapshot.entries || []).find((item) => item.name === "Banco Reca")?.value || 0;
-    }
-
-    function closeHistoryModal(){
-      document.getElementById("historyModal").classList.add("hidden");
-    }
-
-    function renderHistoryListFromCache(){
-      const list = document.getElementById("historyList");
-      const history = historyCache || [];
-
-      if(!history.length){
-        list.innerHTML = `<div class="history-empty">Sem histórico ainda.</div>`;
-        document.getElementById("historyInfo").textContent = "Nenhum turno anterior salvo ainda.";
-        updateHistoryVisibility();
-        return;
-      }
-
-      list.innerHTML = history.slice(0, 4).map((item, index) => `
-        <div class="history-item" data-history-index="${index}">
-          <div class="history-item-top">
-            <div class="history-user">${escapeHtml(item.submittedByName || "Sistema")}</div>
-            <div class="history-time">${escapeHtml(formatDateBR(item.fechamentoDate || ""))}</div>
-          </div>
-
-          <div class="history-item-grid">
-            <div class="history-mini-card">
-              <div class="history-mini-label">Total</div>
-              <div class="history-mini-value">${money(item.total || 0)}</div>
-            </div>
-
-            <div class="history-mini-card">
-              <div class="history-mini-label">Lucro do turno</div>
-              <div class="history-mini-value ${(item.turnProfit || 0) < 0 ? "red" : ""}">
-                ${money(item.turnProfit || 0)}
-              </div>
-            </div>
-
-            <div class="history-mini-card">
-              <div class="history-mini-label">Variação da banca</div>
-              <div class="history-mini-value ${(item.bankVariation || 0) < 0 ? "red" : ""}">
-                ${money(item.bankVariation || 0)}
-              </div>
-            </div>
-          </div>
-        </div>
-      `).join("");
-
-      document.getElementById("historyInfo").textContent =
-        `Último fechamento: ${history[0]?.submittedByName || "Sistema"} • ${formatDateBR(history[0]?.fechamentoDate || "")}`;
-
-      list.querySelectorAll("[data-history-index]").forEach((el) => {
-        el.addEventListener("click", () => {
-          openHistoryModal(Number(el.dataset.historyIndex));
-        });
-      });
-
-      updateHistoryVisibility();
-    }
-
-    function openHistoryModal(index){
-      const item = historyCache[index];
-      if(!item) return;
-
-      document.getElementById("historyModalTitle").textContent = `Fechamento • ${item.submittedByName || "Sistema"}`;
-      document.getElementById("historyModalSub").textContent =
-        `Data do fechamento: ${formatDateBR(item.fechamentoDate || "")} • Enviado em: ${formatDateTimeBR(item.submittedAt)}`;
-
-      const turno = item.turno || {};
-
-      document.getElementById("historyModalBody").innerHTML = `
-        <div class="modal-summary-grid">
-          <div class="modal-summary-card">
-            <div class="modal-summary-label">Total do fechamento</div>
-            <div class="modal-summary-value">${money(item.total || 0)}</div>
-          </div>
-          <div class="modal-summary-card">
-            <div class="modal-summary-label">Lucro do turno</div>
-            <div class="history-mini-value ${(item.turnProfit || 0) < 0 ? "red" : ""}">${money(item.turnProfit || 0)}</div>
-          </div>
-          <div class="modal-summary-card">
-            <div class="modal-summary-label">Responsável</div>
-            <div class="modal-summary-value">${escapeHtml(item.submittedByName || "-")}</div>
-          </div>
-          <div class="modal-summary-card">
-            <div class="modal-summary-label">Data</div>
-            <div class="modal-summary-value">${escapeHtml(formatDateBR(item.fechamentoDate || ""))}</div>
-          </div>
-        </div>
-
-        <div class="modal-turnos-grid">
-          <div class="modal-panel">
-            <div class="modal-panel-head"><h4>Entradas</h4></div>
-            <div class="modal-panel-body">
-              <div>
-                <div class="modal-block-title">Detalhamento</div>
-                ${(turno.entries || []).map((entry) => `
-                  <div class="modal-line">
-                    <span>${escapeHtml(entry.name || "-")}</span>
-                    <strong>${money(entry.value || 0)}</strong>
-                  </div>
-                `).join("") || `<div class="modal-line"><span>Sem registros</span><strong>$ 0,00</strong></div>`}
-              </div>
-            </div>
-          </div>
-
-          <div class="modal-panel">
-            <div class="modal-panel-head"><h4>Saídas e Pendentes</h4></div>
-            <div class="modal-panel-body">
-              <div>
-                <div class="modal-block-title">Saídas</div>
-                ${(turno.outflows || []).map((entry) => `
-                  <div class="modal-line negative">
-                    <span>${escapeHtml(entry.name || "-")}</span>
-                    <strong>${negativeMoney(entry.value || 0)}</strong>
-                  </div>
-                `).join("") || `<div class="modal-line"><span>Sem registros</span><strong>$ 0,00</strong></div>`}
-              </div>
-
-              <div>
-                <div class="modal-block-title">Pendentes</div>
-                ${(turno.pendings || []).map((entry) => `
-                  <div class="modal-line negative">
-                    <span>${escapeHtml(entry.name || "-")}</span>
-                    <strong>${negativeMoney(entry.value || 0)}</strong>
-                  </div>
-                `).join("") || `<div class="modal-line"><span>Sem registros</span><strong>$ 0,00</strong></div>`}
-              </div>
-            </div>
-          </div>
-        </div>
-      `;
-
-      document.getElementById("historyModal").classList.remove("hidden");
-    }
-
-    function startHistoryRealtimeListener(){
-      if(historyRealtimeStarted) return;
-      historyRealtimeStarted = true;
-
-      const q = query(collection(db, "history"), orderBy("submittedAt", "desc"), limit(100));
-
-      historyUnsubscribe = onSnapshot(q, (snapshot) => {
-        historyCache = snapshot.docs.map((docItem) => ({
-          id: docItem.id,
-          ...docItem.data()
-        }));
-
-        if(historyCache[0]?.turno){
-          applySnapshotToTurn("t1", historyCache[0].turno);
-        }else{
-          clearTurn("t1");
-        }
-
-        renderHistoryListFromCache();
-        render();
-      }, (error) => {
-        console.error("Erro no listener do Firestore:", error);
-        alert("Erro no listener do Firestore. Veja o console.");
-      });
-    }
-
-    function renderCashflowReport(days){
-      const history = historyCache || [];
-
-      const filtered = history.filter((item) => {
-        if(!item.fechamentoDate) return false;
-        const target = new Date(item.fechamentoDate + "T00:00:00");
-        const today = new Date();
-        today.setHours(23,59,59,999);
-        const diffDays = (today - target) / (1000 * 60 * 60 * 24);
-        return diffDays >= 0 && diffDays < days;
-      });
-
-      const totalBancoReca = filtered.reduce((acc, item) => acc + getBancoRecaFromSnapshot(item.turno || {}), 0);
-      const totalPendentes = filtered.reduce((acc, item) => acc + Number(item.turno?.pendentesTotal || 0), 0);
-      const totalSaidas = filtered.reduce((acc, item) => acc + Number(item.turno?.saidasTotal || 0), 0);
-      const lucroReal = totalBancoReca - totalPendentes - totalSaidas;
-
-      const titleMap = {
-        7: "Relatório semanal",
-        15: "Relatório quinzenal",
-        30: "Relatório mensal"
-      };
-
-      document.getElementById("reportTitle").textContent = titleMap[days] || "Relatório";
-      document.getElementById("reportSubtitle").textContent = `Fluxo de caixa dos últimos ${days} dias`;
-      document.getElementById("reportBancoReca").textContent = money(totalBancoReca);
-      document.getElementById("reportPendentes").textContent = negativeMoney(totalPendentes);
-      document.getElementById("reportSaidas").textContent = negativeMoney(totalSaidas);
-      document.getElementById("reportLucro").textContent = money(lucroReal);
-
-      const reportList = document.getElementById("reportList");
-
-      if(!filtered.length){
-        reportList.innerHTML = `<div class="history-empty">Nenhum fechamento encontrado nesse período.</div>`;
-      }else{
-        reportList.innerHTML = filtered.map((item) => `
-          <div class="report-list-item">
-            <div class="report-list-top">
-              <div class="report-list-name">${escapeHtml(item.submittedByName || "Sistema")}</div>
-              <div class="report-list-date">${escapeHtml(formatDateBR(item.fechamentoDate || ""))}</div>
-            </div>
-            <div class="report-list-lines">
-              <div class="report-line">
-                <span>Banco Reca</span>
-                <strong>${money(getBancoRecaFromSnapshot(item.turno || {}))}</strong>
-              </div>
-              <div class="report-line">
-                <span>Pagos Pendentes</span>
-                <strong>${negativeMoney(item.turno?.pendentesTotal || 0)}</strong>
-              </div>
-              <div class="report-line">
-                <span>Saídas</span>
-                <strong>${negativeMoney(item.turno?.saidasTotal || 0)}</strong>
-              </div>
-              <div class="report-line">
-                <span>Lucro real</span>
-                <strong>${money(
-                  getBancoRecaFromSnapshot(item.turno || {}) -
-                  Number(item.turno?.pendentesTotal || 0) -
-                  Number(item.turno?.saidasTotal || 0)
-                )}</strong>
-              </div>
-            </div>
-          </div>
-        `).join("");
-      }
-
-      document.getElementById("reportScreen").classList.remove("hidden");
-    }
-
-    function buildPremiumPdfHtml(){
-      const t1Entradas = getEntradasTotal("t1");
-      const t1Saidas = getDynamicTotal("t1");
-      const t1Pendentes = getPendingTotal("t1");
-      const t1Total = t1Entradas - t1Saidas - t1Pendentes;
-
-      const t2Entradas = getEntradasTotal("t2");
-      const t2Saidas = getDynamicTotal("t2");
-      const t2Pendentes = getPendingTotal("t2");
-      const t2Total = t2Entradas - t2Saidas - t2Pendentes;
-
-      return `
-        <!DOCTYPE html>
-        <html lang="pt-BR">
-        <head>
-          <meta charset="UTF-8">
-          <title>Bank King PDF</title>
-          <style>
-            body{font-family:Arial,sans-serif;padding:24px;color:#0f172a;}
-            h1{margin-bottom:20px;}
-            .grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;}
-            .card{border:1px solid #cbd5e1;border-radius:12px;padding:16px;}
-            .label{font-size:12px;color:#64748b;}
-            .value{font-size:24px;font-weight:700;margin-top:6px;}
-          </style>
-        </head>
-        <body>
-          <h1>Bank King • Fechamento</h1>
-          <div class="grid">
-            <div class="card">
-              <div class="label">Turno 1</div>
-              <div class="value">${money(t1Total)}</div>
-            </div>
-            <div class="card">
-              <div class="label">Turno 2</div>
-              <div class="value">${money(t2Total)}</div>
-            </div>
-            <div class="card">
-              <div class="label">Entradas Totais</div>
-              <div class="value">${money(t1Entradas + t2Entradas)}</div>
-            </div>
-            <div class="card">
-              <div class="label">Saídas Totais</div>
-              <div class="value">${money(t1Saidas + t2Saidas + t1Pendentes + t2Pendentes)}</div>
-            </div>
-          </div>
-        </body>
-        </html>
-      `;
-    }
-
-    function exportToPdfProtected(){
-      const code = prompt("Digite código interno:");
-      if(code === null) return;
-
-      if(code !== PDF_CODE){
-        alert("Código interno incorreto.");
-        return;
-      }
-
-      const printWindow = window.open("", "_blank", "width=1200,height=900");
-      if(!printWindow){
-        alert("Não foi possível abrir a janela de impressão.");
-        return;
-      }
-
-      printWindow.document.open();
-      printWindow.document.write(buildPremiumPdfHtml());
-      printWindow.document.close();
-      printWindow.focus();
-      printWindow.onload = () => printWindow.print();
-    }
-
-    function render(){
-      ensureDates();
-
-      const t1Entradas = getEntradasTotal("t1");
-      const t1Saidas = getDynamicTotal("t1");
-      const t1Pendentes = getPendingTotal("t1");
-      const t1Total = t1Entradas - t1Saidas - t1Pendentes;
-
-      const t2Entradas = getEntradasTotal("t2");
-      const t2Saidas = getDynamicTotal("t2");
-      const t2Pendentes = getPendingTotal("t2");
-      const t2Total = t2Entradas - t2Saidas - t2Pendentes;
-
-      const ultimoLucroDoTurno = Number(historyCache[0]?.turnProfit || 0);
-
-      document.getElementById("t1_entradas_total").textContent = money(t1Entradas);
-      document.getElementById("t1_saidas_total").textContent = negativeMoney(t1Saidas);
-      document.getElementById("t1_pendentes_total").textContent = negativeMoney(t1Pendentes);
-
-      document.getElementById("t2_entradas_total").textContent = money(t2Entradas);
-      document.getElementById("t2_saidas_total").textContent = negativeMoney(t2Saidas);
-      document.getElementById("t2_pendentes_total").textContent = negativeMoney(t2Pendentes);
-
-      document.getElementById("turno1InlineTotal").textContent = money(t1Total);
-      document.getElementById("turno2InlineTotal").textContent = money(t2Total);
-
-      document.getElementById("totalEntradasT1").textContent = money(t1Entradas);
-      document.getElementById("totalEntradasT2").textContent = money(t2Entradas);
-      document.getElementById("lucroTotal").textContent = money(ultimoLucroDoTurno);
-
-      const bancaTotalAtualBruta = historyCache[0]?.total || 0;
-      const bancaTotalAtual = Math.max(0, Number(bancaTotalAtualBruta || 0));
-
-      document.getElementById("bankValue").textContent =
-        balanceVisible ? money(bancaTotalAtual) : "••••••";
-
-      updateEyeIcon();
-      updateStatusPill(ultimoLucroDoTurno);
-    }
-
-    async function openAdminModal(){
-      const code = prompt("Digite código interno:");
-      if(code === null) return;
-
-      if(code !== ADMIN_CODE){
-        alert("Código interno incorreto.");
-        return;
-      }
-
-      await renderAdminUsers();
-      document.getElementById("adminModal").classList.remove("hidden");
-      requestAnimationFrame(() => document.getElementById("adminSearchInput").focus());
-    }
-
-    function closeAdminModal(){
-      document.getElementById("adminModal").classList.add("hidden");
-      document.getElementById("adminSearchInput").value = "";
-    }
-
-    async function renderAdminUsers(){
-      const users = await getUsersFromFirestore();
-      const term = document.getElementById("adminSearchInput").value.trim().toLowerCase();
-
-      const filtered = users.filter((user) => {
-        const name = String(user?.name || "").toLowerCase();
-        const email = String(user?.email || "").toLowerCase();
-        return !term || name.includes(term) || email.includes(term);
-      });
-
-      const adminUsersList = document.getElementById("adminUsersList");
-
-      if(!filtered.length){
-        adminUsersList.innerHTML = `<div class="admin-empty">Nenhum usuário encontrado.</div>`;
-        return;
-      }
-
-      adminUsersList.innerHTML = filtered.map((user) => {
-        return `
-          <div class="admin-user-card">
-            <div class="admin-user-top">
-              <div>
-                <div class="admin-user-name">${escapeHtml(user.name || "Sem nome")}</div>
-                <div class="admin-user-email">${escapeHtml(user.email || "Sem email")}</div>
-              </div>
-              <div class="admin-user-badge">${escapeHtml(user.role || "user")}</div>
-            </div>
-
-            <div class="admin-actions">
-              <button class="admin-action-btn admin-view-btn" type="button" data-admin-view="${user.id}">👁 Ver</button>
-              <button class="admin-action-btn admin-reset-btn" type="button" data-admin-reset="${user.email}">🔒 Resetar senha</button>
-              <button class="admin-action-btn admin-delete-btn" type="button" data-admin-delete="${user.id}">🗑 Excluir</button>
-            </div>
-
-            <div class="admin-inline-details" id="adminDetails_${user.id}">
-              <div class="admin-inline-line"><span>Nome</span><strong>${escapeHtml(user.name || "-")}</strong></div>
-              <div class="admin-inline-line"><span>Email</span><strong>${escapeHtml(user.email || "-")}</strong></div>
-              <div class="admin-inline-line"><span>UID</span><strong>${escapeHtml(user.uid || "-")}</strong></div>
-              <div class="admin-inline-line"><span>Perfil</span><strong>${escapeHtml(user.role || "user")}</strong></div>
-            </div>
-          </div>
-        `;
-      }).join("");
-
-      bindAdminActions();
-    }
-
-    function bindAdminActions(){
-      document.querySelectorAll("[data-admin-view]").forEach((btn) => {
-        btn.addEventListener("click", () => {
-          const id = btn.dataset.adminView;
-          const box = document.getElementById(`adminDetails_${id}`);
-          if(box) box.classList.toggle("show");
-        });
-      });
-
-      document.querySelectorAll("[data-admin-reset]").forEach((btn) => {
-        btn.addEventListener("click", async () => {
-          const email = btn.dataset.adminReset;
-          if(!email) return;
-
-          const confirmacao = confirm(`Enviar email de redefinição de senha para ${email}?`);
-          if(!confirmacao) return;
-
-          try {
-            await sendPasswordResetEmail(auth, email);
-            alert("Email de redefinição enviado com sucesso.");
-          } catch (error) {
-            console.error("Erro ao enviar redefinição:", error);
-            alert("Não foi possível enviar o email de redefinição.");
-          }
-        });
-      });
-
-      document.querySelectorAll("[data-admin-delete]").forEach((btn) => {
-        btn.addEventListener("click", async () => {
-          const uid = btn.dataset.adminDelete;
-
-          if (!uid) {
-            alert("ID do usuário inválido.");
-            return;
-          }
-
-          const confirmacao = confirm("Confirma a exclusão deste usuário?");
-          if (!confirmacao) return;
-
-          try {
-            await deleteUserDocFromFirestore(uid);
-            await renderAdminUsers();
-            alert("Usuário removido da coleção 'users' com sucesso.\n(A conta no Firebase Auth NÃO foi excluída)");
-          } catch (error) {
-            console.error("Erro ao excluir usuário:", error);
-            alert("Erro ao excluir usuário. Verifique o console.");
-          }
-        });
-      });
-    }
-
-    onAuthStateChanged(auth, (user) => {
-      if (user) {
-        const userData = {
-          name: user.email?.split("@")[0] || "Usuário",
-          email: user.email,
-          uid: user.uid
-        };
-
-        saveActiveUser(userData);
-        showApp(userData);
-      } else {
-        removeActiveUser();
-        localStorage.removeItem(SESSION_LAST_ACTIVITY_KEY);
-        authScreen.classList.remove("hidden");
-        appShell.classList.add("hidden");
-      }
-    });
-
-    document.getElementById("tabLogin").addEventListener("click", () => switchTab("login"));
-    document.getElementById("tabRegister").addEventListener("click", () => switchTab("register"));
-    document.getElementById("tabForgot").addEventListener("click", () => switchTab("forgot"));
-
-    loginForm.addEventListener("submit", async (e) => {
-      e.preventDefault();
-      const email = document.getElementById("loginEmail").value.trim().toLowerCase();
-      const password = document.getElementById("loginPassword").value;
-      const remember = rememberLoginCheckbox.checked;
-
-      try {
-        const userCredential = await signInWithEmailAndPassword(auth, email, password);
-
-        saveRememberedLogin(remember, email);
-
-        const user = {
-          name: userCredential.user.email?.split("@")[0] || "Usuário",
-          email: userCredential.user.email,
-          uid: userCredential.user.uid
-        };
-
-        saveActiveUser(user);
-        showApp(user);
-      } catch (error) {
-        console.error("Erro ao fazer login:", error);
-
-        if (
-          error.code === "auth/invalid-credential" ||
-          error.code === "auth/user-not-found" ||
-          error.code === "auth/wrong-password" ||
-          error.code === "auth/invalid-login-credentials"
-        ) {
-          alert("Email ou senha incorretos.");
-        } else if (error.code === "auth/invalid-email") {
-          alert("Email inválido.");
-        } else {
-          alert("Erro ao fazer login.");
-        }
-      }
-    });
-
-    forgotPasswordForm.addEventListener("submit", async (e) => {
-      e.preventDefault();
-
-      const email = document.getElementById("resetEmail").value.trim().toLowerCase();
-
-      if (!email) {
-        alert("Informe seu email.");
-        return;
-      }
-
-      try {
-        await sendPasswordResetEmail(auth, email);
-        alert("Verifique seu email. Se não encontrar, confira a caixa de spam.");
-        document.getElementById("resetEmail").value = "";
-        document.getElementById("tabLogin").click();
-      } catch (error) {
-        console.error("Erro ao enviar redefinição:", error);
-
-        if (error.code === "auth/invalid-email") {
-          alert("Email inválido.");
-        } else if (error.code === "auth/user-not-found") {
-          alert("Usuário não encontrado.");
-        } else {
-          alert("Não foi possível enviar o email.");
-        }
-      }
-    });
-
-    registerForm.addEventListener("submit", async (e) => {
-      e.preventDefault();
-
-      const name = document.getElementById("registerName").value.trim();
-      const email = document.getElementById("registerEmail").value.trim().toLowerCase();
-      const password = document.getElementById("registerPassword").value;
-
-      if (!name || !email || !password) {
-        alert("Preencha todos os campos.");
-        return;
-      }
-
-      try {
-        const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-
-        await setDoc(doc(db, "users", userCredential.user.uid), {
-          uid: userCredential.user.uid,
-          name,
-          email,
-          role: "user",
-          createdAt: serverTimestamp()
-        });
-
-        saveActiveUser({
-          name,
-          email,
-          uid: userCredential.user.uid
-        });
-
-        alert("Usuário registrado com sucesso.");
-        showApp({
-          name,
-          email,
-          uid: userCredential.user.uid
-        });
-      } catch (error) {
-        console.error("Erro ao registrar usuário:", error);
-
-        if (error.code === "auth/email-already-in-use") {
-          alert("Esse email já está cadastrado.");
-        } else if (error.code === "auth/weak-password") {
-          alert("A senha precisa ter pelo menos 6 caracteres.");
-        } else if (error.code === "auth/invalid-email") {
-          alert("Email inválido.");
-        } else {
-          alert("Erro ao registrar usuário.");
-        }
-      }
-    });
-
-    document.addEventListener("DOMContentLoaded", () => {
-      bindSessionEvents();
-      startHistoryRealtimeListener();
-
-      document.getElementById("toggleHistoryBtn").addEventListener("click", () => {
-        historyVisible = !historyVisible;
-        updateHistoryVisibility();
-      });
-
-      updateHistoryVisibility();
-
-      [
-        "t1_banco","t1_pppoker","t1_suprema","t1_buffalo","t1_ganamos","t1_cargas","t1_cargas_poker",
-        "t2_banco","t2_pppoker","t2_suprema","t2_buffalo","t2_ganamos","t2_cargas","t2_cargas_poker"
-      ].forEach((id) => {
-        const input = document.getElementById(id);
-        if(input) attachMoneyMask(input);
-      });
-
-      document.querySelectorAll("[data-add-row]").forEach((btn) => {
-        btn.addEventListener("click", () => {
-          createDynamicRow(btn.dataset.addRow);
-          render();
-        });
-      });
-
-      document.querySelectorAll("[data-add-pending]").forEach((btn) => {
-        btn.addEventListener("click", () => {
-          createPendingRow(btn.dataset.addPending);
-          render();
-        });
-      });
-
-      document.getElementById("toggleBalance").addEventListener("click", () => {
-        balanceVisible = !balanceVisible;
-        render();
-      });
-
-      document.getElementById("calcular").addEventListener("click", render);
-
-      document.getElementById("limpar").addEventListener("click", () => {
-        if(!confirm("Deseja limpar apenas o Turno 2 atual?")) return;
-        clearTurn("t2");
-        render();
-      });
-
-      document.getElementById("fecharTurno").addEventListener("click", async () => {
-        try {
-          const item = serializeTurn("t2");
-          await saveHistoryItem(item);
-          clearTurn("t2");
-          render();
-          alert("Turno fechado com sucesso.");
-        } catch (error) {
-          console.error("Erro ao salvar histórico:", error);
-          alert("Erro ao salvar histórico. Abra o console para ver o detalhe.");
-        }
-      });
-
-      document.getElementById("exportarPdf").addEventListener("click", exportToPdfProtected);
-
-      document.getElementById("closeReportScreen").addEventListener("click", () => {
-        document.getElementById("reportScreen").classList.add("hidden");
-      });
-
-      document.getElementById("menuToggle").addEventListener("click", () => {
-        document.getElementById("reportsMenu").classList.toggle("hidden");
-      });
-
-      document.querySelectorAll("[data-report-range]").forEach((btn) => {
-        btn.addEventListener("click", () => {
-          const senha = prompt("Digite código interno:");
-          if(senha === null) return;
-
-          if(senha !== REPORT_CODE){
-            alert("Código interno incorreto.");
-            return;
-          }
-
-          renderCashflowReport(Number(btn.dataset.reportRange));
-          document.getElementById("reportsMenu").classList.add("hidden");
-        });
-      });
-
-      document.getElementById("deleteHistoryBtn").addEventListener("click", async () => {
-        const senha = prompt("Digite código interno:");
-        if (senha === null) return;
-
-        if (senha !== DELETE_HISTORY_CODE) {
-          alert("Código interno incorreto.");
-          return;
-        }
-
-        if (!historyCache.length) {
-          alert("Não há histórico para excluir.");
-          return;
-        }
-
-        const lista = historyCache
-          .map((item, index) => {
-            const nome = item.submittedByName || "Sistema";
-            const data = formatDateBR(item.fechamentoDate || "");
-            const total = money(item.total || 0);
-            return `${index + 1} - ${nome} - ${data} - ${total}`;
-          })
-          .join("\n");
-
-        const escolha = prompt(`Digite o número do histórico que deseja excluir:\n\n${lista}`);
-        if (escolha === null) return;
-
-        const indice = Number(escolha) - 1;
-
-        if (!Number.isInteger(indice) || indice < 0 || indice >= historyCache.length) {
-          alert("Número inválido.");
-          return;
-        }
-
-        const itemSelecionado = historyCache[indice];
-
-        if (!confirm(`Deseja excluir o histórico de ${itemSelecionado.submittedByName || "Sistema"} em ${formatDateBR(itemSelecionado.fechamentoDate || "")}?`)) {
-          return;
-        }
-
-        await deleteDoc(doc(db, "history", itemSelecionado.id));
-        alert("Histórico excluído com sucesso.");
-      });
-
-      document.getElementById("logoutBtn").addEventListener("click", logout);
-
-      document.getElementById("closeHistoryModal").addEventListener("click", closeHistoryModal);
-      document.getElementById("historyModalBackdrop").addEventListener("click", closeHistoryModal);
-
-      document.getElementById("adminOpenBtn").addEventListener("click", openAdminModal);
-      document.getElementById("adminCloseBtn").addEventListener("click", closeAdminModal);
-      document.getElementById("adminModalBackdrop").addEventListener("click", closeAdminModal);
-      document.getElementById("adminSearchInput").addEventListener("input", renderAdminUsers);
-
-      document.getElementById("adminDeleteAllBtn").addEventListener("click", () => {
-        const code = prompt("Digite código interno:");
-        if(code === null) return;
-
-        if(code !== ADMIN_CODE){
-          alert("Código interno incorreto.");
-          return;
-        }
-
-        if(!confirm("Tem certeza que deseja limpar os dados locais deste dispositivo?")) return;
-
-        localStorage.removeItem(ACTIVE_USER_STORAGE_KEY);
-        localStorage.removeItem(REMEMBER_LOGIN_STORAGE_KEY);
-        localStorage.removeItem(REMEMBERED_EMAIL_STORAGE_KEY);
-        localStorage.removeItem(SESSION_LAST_ACTIVITY_KEY);
-
-        renderAdminUsers();
-
-        alert("Dados locais removidos com sucesso.\n(Usuários no Firebase NÃO foram excluídos)");
-      });
-
-      const rememberedUser = loadActiveUser();
-      if(rememberedUser && getRememberedLogin() && !isSessionExpired()){
-        showApp(rememberedUser);
-      }else{
-        authScreen.classList.remove("hidden");
-        appShell.classList.add("hidden");
-        preloadLogin();
-        switchTab("login");
-      }
-    });
-  </script>
 </body>
 </html>
