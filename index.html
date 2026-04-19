@@ -3091,18 +3091,6 @@ function exportToPdfProtected(){
 
   openPdfRangeModal();
 }
-      const printWindow = window.open("", "_blank", "width=1200,height=900");
-      if(!printWindow){
-        alert("Não foi possível abrir a janela de impressão.");
-        return;
-      }
-
-      printWindow.document.open();
-      printWindow.document.write(buildPremiumPdfHtml());
-      printWindow.document.close();
-      printWindow.focus();
-      printWindow.onload = () => printWindow.print();
-    }
 
     function render(){
       ensureDates();
@@ -3640,7 +3628,6 @@ document.addEventListener("DOMContentLoaded", () => {
       alert("A data inicial não pode ser maior que a data final.");
       return;
     }
-    };
 
     closePdfRangeModal();
   });
