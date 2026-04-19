@@ -3678,9 +3678,13 @@ async function saveEditedHistory(){
   const input = document.querySelector(`[data-edit-entry="${i}"]`);
   let value = parseMoneyInput(input?.value || 0);
 
-  if (entry.name === "PPPoker (x400)" || entry.name === "Suprema (x400)") {
-    value = value * 400;
-  }
+if (
+  entry.name === "PPPoker (x400)" ||
+  entry.name === "Suprema (x400)" ||
+  entry.name === "Cargas F. Poker (x400)"
+) {
+  value = value * 400;
+}
 
   return {
     ...entry,
