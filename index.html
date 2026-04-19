@@ -2668,6 +2668,12 @@ function serializeTurn(turno){
       return (snapshot.entries || []).find((item) => item.name === "Banco Reca")?.value || 0;
     }
 
+    function getEntryValueByName(snapshot, entryName){
+  return Number(
+    (snapshot?.entries || []).find((item) => item.name === entryName)?.value || 0
+  );
+}
+
 function closeHistoryModal(){
   document.getElementById("historyModal").classList.add("hidden");
   editingHistoryIndex = null;
