@@ -2016,7 +2016,7 @@ async function saveHistoryItem(item){
   const currentSaldoTotal = Number(item?.turno?.saldoLiquido || 0);
 
   // DIFERENÇA DE CAIXA = SALDO TOTAL ANTERIOR - SALDO TOTAL ATUAL
-  const diffCaixa = previousSaldoTotal - currentSaldoTotal;
+  const diffCaixa = currentSaldoTotal - previousSaldoTotal;
 
   item.turnProfit = currentSaldoTotal;   // saldo total do fechamento atual
   item.diff = diffCaixa;                 // diferença entre saldos totais
