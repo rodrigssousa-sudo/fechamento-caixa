@@ -2535,7 +2535,7 @@
       const totalBancoReca = filtered.reduce((acc, item) => acc + getBancoRecaFromSnapshot(item.turno || {}), 0);
       const totalPendentes = filtered.reduce((acc, item) => acc + Number(item.turno?.pendentesTotal || 0), 0);
       const totalSaidas = filtered.reduce((acc, item) => acc + Number(item.turno?.saidasTotal || 0), 0);
-      const lucroReal = totalBancoReca - totalPendentes - totalSaidas;
+      const totalSaidas;
 
       const titleMap = {
         7: "Relatório semanal",
