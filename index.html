@@ -1565,17 +1565,25 @@ button{
 
       <section class="turnos">
         <article class="turno card" data-turno="t1">
-          <div class="turno-head">
-            <div>
-              <h3>Turno Anterior</h3>
-              <small>Carregado automaticamente do último fechamento</small>
-            </div>
-            <div class="turno-total">
-              <div class="label">Saldo líquido</div>
-              <div class="value" id="turno1InlineTotal">$ 0,00</div>
-            </div>
-          </div>
+<div class="turno-head">
+  <div style="width:100%;">
+    
+    <div style="display:flex; justify-content:space-between; align-items:center; gap:10px;">
+      <h3>Turno Anterior</h3>
 
+      <button id="toggleTurno1Btn" class="danger-mini-btn" type="button">
+        Ocultar
+      </button>
+    </div>
+
+    <small>Carregado automaticamente do último fechamento</small>
+  </div>
+
+  <div class="turno-total">
+    <div class="label">Saldo líquido</div>
+    <div class="value" id="turno1InlineTotal">$ 0,00</div>
+  </div>
+</div>
           <div class="turno-meta">
             <div class="field">
               <label for="t1_data_fechamento">Data do fechamento</label>
@@ -1840,6 +1848,7 @@ button{
     let historyRealtimeStarted = false;
     let historyCache = [];
     let historyVisible = false;
+let turno1Visible = true;
 let editingHistoryIndex = null;
 let historyEditMode = false;
 
@@ -2259,6 +2268,21 @@ function formatDateTimeBR(value){
         btn.textContent = "Ver";
       }
     }
+
+function updateTurno1Visibility(){
+  const turno = document.querySelector('[data-turno="t1"]');
+  const btn = document.getElementById("toggleTurno1Btn");
+
+  if(!turno || !btn) return;
+
+  if(turno1Visible){
+    turno.style.display = "";
+    btn.textContent = "Ocultar";
+  }else{
+    turno.style.display = "none";
+    btn.textContent = "Mostrar";
+  }
+}
 
     function updateEyeIcon(){
       const eye = document.getElementById("eyeIcon");
@@ -3249,8 +3273,12 @@ async function saveEditedHistory(){
         updateHistoryVisibility();
       });
 
-      updateHistoryVisibility();
-
+document.getElementById("toggleTurno1Btn").addEventListener("click", () => {
+    turno1Visible = !turno1Visible;
+    updateTurno1Visibility();
+  });
+ updateHistoryVisibility();
+  updateTurno1Visibility();
       [
         "t1_banco","t1_pppoker","t1_suprema","t1_buffalo","t1_ganamos","t1_cargas","t1_cargas_poker",
         "t2_banco","t2_pppoker","t2_suprema","t2_buffalo","t2_ganamos","t2_cargas","t2_cargas_poker"
