@@ -2800,9 +2800,13 @@ document.getElementById("historyModalTitle").textContent =
          ${(turno.entries || []).map((entry, i) => {
   let displayValue = Number(entry.value || 0);
 
-  if (entry.name === "PPPoker (x400)" || entry.name === "Suprema (x400)") {
-    displayValue = displayValue / 400;
-  }
+  if (
+  entry.name === "PPPoker (x400)" ||
+  entry.name === "Suprema (x400)" ||
+  entry.name === "Cargas F. Poker (x400)"
+) {
+  displayValue = displayValue / 400;
+}
 
   return `
     <div class="modal-line">
