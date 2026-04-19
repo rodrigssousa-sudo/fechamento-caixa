@@ -2316,26 +2316,17 @@ async function saveHistoryItem(item){
     collection(db, "history"),
     orderBy("submittedAt", "desc"),
     limit(1)
-  );
-
+);
   const snapshot = await getDocs(q);
-
   const previousItem = snapshot.docs[0]?.data() || {};
-
-  // 🔥 lucro do turno atual (turno 2)
   const currentProfit = Number(item.turno?.saldoLiquido || 0);
-
-  // 🔥 lucro do turno anterior (turno 1 salvo no histórico)
-  const previousProfit = Number(previousItem.turnProfit || previousItem.turno?.saldoLiquido || 0);
-
-  // ✅ diferença entre turnos
+  const previousProfit = Number(previousItem.turnProfit || 0);
+  // 🔥 DIFERENÇA ENTRE TURNOS (100% correto)
   const diffTurnos = currentProfit - previousProfit;
-
-  // salvar valores corretos
   item.turnProfit = currentProfit;
   item.diff = diffTurnos;
+  // ⚠️ IMPORTANTE: NÃO usar mais total aqui
   item.bankVariation = diffTurnos;
-
   await addDoc(collection(db, "history"), item);
 }
     function applySnapshotToTurn(turno, snapshot){
