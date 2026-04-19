@@ -1797,6 +1797,35 @@ button{
     </div>
   </div>
 
+<div id="pdfRangeModal" class="modal hidden">
+  <div class="modal-backdrop" id="pdfRangeBackdrop"></div>
+  <div class="modal-card" style="max-width:520px;">
+    <div class="modal-head">
+      <div>
+        <h3>Exportar relatório PDF</h3>
+        <small>Escolha o período que deseja exportar</small>
+      </div>
+      <button id="closePdfRangeModal" class="modal-close-btn" type="button">Fechar</button>
+    </div>
+
+    <div class="modal-body">
+      <div class="field">
+        <label for="pdfDateStart">Data inicial</label>
+        <input type="date" id="pdfDateStart" />
+      </div>
+
+      <div class="field">
+        <label for="pdfDateEnd">Data final</label>
+        <input type="date" id="pdfDateEnd" />
+      </div>
+
+      <button id="confirmExportPdf" class="auth-submit" type="button">
+        Gerar PDF
+      </button>
+    </div>
+  </div>
+</div>
+
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-app.js";
     import {
@@ -2751,14 +2780,309 @@ function startHistoryRealtimeListener(){
   });
 }
 
-    function exportToPdfProtected(){
-      const code = prompt("Digite código interno:");
-      if(code === null) return;
+function openPdfRangeModal(){
+  const today = getTodayDateInput();
 
-      if(code !== PDF_CODE){
-        alert("Código interno incorreto.");
-        return;
-      }
+  document.getElementById("pdfDateEnd").value = today;
+
+  const start = new Date();
+  start.setDate(start.getDate() - 7);
+  const startOffset = start.getTimezoneOffset();
+  const startLocal = new Date(start.getTime() - startOffset * 60000);
+  document.getElementById("pdfDateStart").value = startLocal.toISOString().split("T")[0];
+
+  document.getElementById("pdfRangeModal").classList.remove("hidden");
+}
+
+function closePdfRangeModal(){
+  document.getElementById("pdfRangeModal").classList.add("hidden");
+}
+
+function getHistoryByDateRange(startDate, endDate){
+  const start = new Date(startDate + "T00:00:00");
+  const end = new Date(endDate + "T23:59:59");
+
+  return (historyCache || []).filter((item) => {
+    if(!item.fechamentoDate) return false;
+    const current = new Date(item.fechamentoDate + "T12:00:00");
+    return current >= start && current <= end;
+  });
+}
+
+function buildPremiumPdfHtml(startDate, endDate){
+  const filtered = getHistoryByDateRange(startDate, endDate);
+
+  const totalBancoReca = filtered.reduce((acc, item) => {
+    return acc + Number(getBancoRecaFromSnapshot(item.turno || {}));
+  }, 0);
+
+  const totalSaidas = filtered.reduce((acc, item) => {
+    return acc + Number(item.turno?.saidasTotal || 0);
+  }, 0);
+
+  const totalPendentes = filtered.reduce((acc, item) => {
+    return acc + Number(item.turno?.pendentesTotal || 0);
+  }, 0);
+
+  const saldoTotal = filtered.reduce((acc, item) => {
+    return acc + Number(item.turno?.saldoLiquido || 0);
+  }, 0);
+
+  const linhas = filtered.map((item) => {
+    const nome = item.nomeOperador || "Sem nome";
+    const turno = item.turnoTrabalhado || "-";
+    const data = formatDateBR(item.fechamentoDate || "");
+    const banco = money(getBancoRecaFromSnapshot(item.turno || {}));
+    const saidas = money(item.turno?.saidasTotal || 0);
+    const pendentes = money(item.turno?.pendentesTotal || 0);
+    const saldo = money(item.turno?.saldoLiquido || 0);
+
+    return `
+      <tr>
+        <td>${escapeHtml(nome)}</td>
+        <td>${escapeHtml(turno)}</td>
+        <td>${escapeHtml(data)}</td>
+        <td>${banco}</td>
+        <td>${saidas}</td>
+        <td>${pendentes}</td>
+        <td>${saldo}</td>
+      </tr>
+    `;
+  }).join("");
+
+  return `
+    <!DOCTYPE html>
+    <html lang="pt-BR">
+    <head>
+      <meta charset="UTF-8" />
+      <title>Relatório Financeiro - Bank King</title>
+      <style>
+        *{
+          box-sizing:border-box;
+        }
+
+        body{
+          margin:0;
+          font-family:Arial, Helvetica, sans-serif;
+          background:#f8fafc;
+          color:#0f172a;
+          padding:28px;
+        }
+
+        .sheet{
+          max-width:1100px;
+          margin:0 auto;
+          background:#ffffff;
+          border:1px solid #dbe3ee;
+          box-shadow:0 10px 30px rgba(15,23,42,.08);
+        }
+
+        .top{
+          padding:28px 32px 20px;
+          border-bottom:2px solid #0f172a;
+          display:flex;
+          justify-content:space-between;
+          align-items:flex-start;
+          gap:20px;
+        }
+
+        .brand h1{
+          margin:0;
+          font-size:28px;
+          letter-spacing:.5px;
+        }
+
+        .brand p{
+          margin:6px 0 0;
+          color:#475569;
+          font-size:13px;
+        }
+
+        .period{
+          text-align:right;
+          font-size:13px;
+          color:#334155;
+        }
+
+        .period strong{
+          display:block;
+          font-size:14px;
+          color:#0f172a;
+          margin-bottom:6px;
+        }
+
+        .summary{
+          display:grid;
+          grid-template-columns:repeat(4, 1fr);
+          gap:14px;
+          padding:22px 32px;
+          border-bottom:1px solid #e2e8f0;
+        }
+
+        .card{
+          border:1px solid #dbe3ee;
+          background:#f8fbff;
+          padding:16px;
+        }
+
+        .label{
+          font-size:11px;
+          text-transform:uppercase;
+          letter-spacing:.08em;
+          color:#64748b;
+          margin-bottom:8px;
+        }
+
+        .value{
+          font-size:24px;
+          font-weight:700;
+          color:#0f172a;
+        }
+
+        .table-wrap{
+          padding:24px 32px 32px;
+        }
+
+        table{
+          width:100%;
+          border-collapse:collapse;
+          font-size:13px;
+        }
+
+        thead th{
+          text-align:left;
+          background:#0f172a;
+          color:#ffffff;
+          padding:12px 10px;
+          font-size:12px;
+          text-transform:uppercase;
+          letter-spacing:.04em;
+        }
+
+        tbody td{
+          padding:11px 10px;
+          border-bottom:1px solid #e2e8f0;
+        }
+
+        tbody tr:nth-child(even){
+          background:#f8fafc;
+        }
+
+        .empty{
+          padding:40px 20px;
+          text-align:center;
+          color:#64748b;
+          border:1px dashed #cbd5e1;
+          background:#f8fafc;
+        }
+
+        .footer{
+          padding:16px 32px 26px;
+          color:#64748b;
+          font-size:12px;
+          border-top:1px solid #e2e8f0;
+        }
+
+        @media print{
+          body{
+            background:#fff;
+            padding:0;
+          }
+
+          .sheet{
+            border:none;
+            box-shadow:none;
+          }
+        }
+      </style>
+    </head>
+    <body>
+      <div class="sheet">
+        <div class="top">
+          <div class="brand">
+            <h1>BANK KING</h1>
+            <p>Relatório financeiro consolidado</p>
+          </div>
+
+          <div class="period">
+            <strong>Período exportado</strong>
+            <div>De: ${formatDateBR(startDate)}</div>
+            <div>Até: ${formatDateBR(endDate)}</div>
+            <div style="margin-top:8px;">Gerado em: ${new Date().toLocaleDateString("pt-BR")} ${new Date().toLocaleTimeString("pt-BR", {hour:"2-digit", minute:"2-digit"})}</div>
+          </div>
+        </div>
+
+        <div class="summary">
+          <div class="card">
+            <div class="label">Banco Reca</div>
+            <div class="value">${money(totalBancoReca)}</div>
+          </div>
+
+          <div class="card">
+            <div class="label">Saídas de Caixa</div>
+            <div class="value">${money(totalSaidas)}</div>
+          </div>
+
+          <div class="card">
+            <div class="label">Pagos Pendentes</div>
+            <div class="value">${money(totalPendentes)}</div>
+          </div>
+
+          <div class="card">
+            <div class="label">Saldo Total</div>
+            <div class="value">${money(saldoTotal)}</div>
+          </div>
+        </div>
+
+        <div class="table-wrap">
+          ${
+            filtered.length
+              ? `
+                <table>
+                  <thead>
+                    <tr>
+                      <th>Nome</th>
+                      <th>Turno</th>
+                      <th>Data</th>
+                      <th>Banco Reca</th>
+                      <th>Saídas</th>
+                      <th>Pendentes</th>
+                      <th>Saldo</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    ${linhas}
+                  </tbody>
+                </table>
+              `
+              : `
+                <div class="empty">
+                  Nenhum fechamento encontrado no período selecionado.
+                </div>
+              `
+          }
+        </div>
+
+        <div class="footer">
+          Documento interno • Bank King BRS
+        </div>
+      </div>
+    </body>
+    </html>
+  `;
+}
+
+    function exportToPdfProtected(){
+  const code = prompt("Digite código interno:");
+  if(code === null) return;
+
+  if(code !== PDF_CODE){
+    alert("Código interno incorreto.");
+    return;
+  }
+
+  openPdfRangeModal();
+}
 
       const printWindow = window.open("", "_blank", "width=1200,height=900");
       if(!printWindow){
@@ -3277,23 +3601,59 @@ async function saveEditedHistory(){
       }
     });
 
-    document.addEventListener("DOMContentLoaded", () => {
-      bindSessionEvents();
-      startHistoryRealtimeListener();
+document.addEventListener("DOMContentLoaded", () => {
+  bindSessionEvents();
+  startHistoryRealtimeListener();
 
-      document.getElementById("toggleHistoryBtn").addEventListener("click", () => {
-        historyVisible = !historyVisible;
-        updateHistoryVisibility();
-      });
+  document.getElementById("toggleHistoryBtn").addEventListener("click", () => {
+    historyVisible = !historyVisible;
+    updateHistoryVisibility();
+  });
 
-document.getElementById("toggleTurno1Btn").addEventListener("click", () => {
+  document.getElementById("toggleTurno1Btn").addEventListener("click", () => {
     turno1Visible = !turno1Visible;
     updateTurno1Visibility();
   });
- updateHistoryVisibility();
+
+  // 🔥 AQUI ENTRA O EVENTO DO PDF
+  document.getElementById("closePdfRangeModal").addEventListener("click", closePdfRangeModal);
+  document.getElementById("pdfRangeBackdrop").addEventListener("click", closePdfRangeModal);
+
+  document.getElementById("confirmExportPdf").addEventListener("click", () => {
+    const startDate = document.getElementById("pdfDateStart").value;
+    const endDate = document.getElementById("pdfDateEnd").value;
+
+    if(!startDate || !endDate){
+      alert("Selecione a data inicial e a data final.");
+      return;
+    }
+
+    if(startDate > endDate){
+      alert("A data inicial não pode ser maior que a data final.");
+      return;
+    }
+
+    const printWindow = window.open("", "_blank", "width=1280,height=900");
+    if(!printWindow){
+      alert("Não foi possível abrir a janela de impressão.");
+      return;
+    }
+
+    printWindow.document.open();
+    printWindow.document.write(buildPremiumPdfHtml(startDate, endDate));
+    printWindow.document.close();
+    printWindow.focus();
+    printWindow.onload = () => {
+      printWindow.print();
+    };
+
+    closePdfRangeModal();
+  });
+
+  updateHistoryVisibility();
   updateTurno1Visibility();
-      [
-        "t1_banco","t1_pppoker","t1_suprema","t1_buffalo","t1_ganamos","t1_cargas","t1_cargas_poker",
+
+  [        "t1_banco","t1_pppoker","t1_suprema","t1_buffalo","t1_ganamos","t1_cargas","t1_cargas_poker",
         "t2_banco","t2_pppoker","t2_suprema","t2_buffalo","t2_ganamos","t2_cargas","t2_cargas_poker"
       ].forEach((id) => {
         const input = document.getElementById(id);
