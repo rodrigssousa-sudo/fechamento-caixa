@@ -1622,12 +1622,24 @@ button{
             </div>
           </div>
 
-          <div class="turno-meta">
-            <div class="field">
-              <label for="t2_data_fechamento">Data do fechamento</label>
-              <input type="date" id="t2_data_fechamento" />
-            </div>
-          </div>
+         <div class="turno-meta">
+  <div class="fields two-col">
+    <div class="field">
+      <label for="t1_data_fechamento">Data do fechamento</label>
+      <input type="date" id="t1_data_fechamento" />
+    </div>
+
+    <div class="field">
+      <label for="t1_shift_label">Horário do turno</label>
+      <select id="t1_shift_label" class="select-field">
+        <option value="06:00 às 12:00">06:00 às 12:00</option>
+        <option value="12:00 às 18:00">12:00 às 18:00</option>
+        <option value="18:00 às 00:00">18:00 às 00:00</option>
+        <option value="00:00 às 06:00">00:00 às 06:00</option>
+      </select>
+    </div>
+  </div>
+</div>
 
           <div class="finance-block">
             <div class="finance-head">
