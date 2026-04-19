@@ -2508,7 +2508,7 @@ function closeHistoryModal(){
     return;
   }
 
-  list.innerHTML = history.slice(0, 4).map((item, index) => {
+  list.innerHTML = history.slice(0, 40).map((item, index) => {
     const saldoDisponivel = Number(item.total || 0);
     const saldoTotal = Number(item.turnProfit || item.turno?.saldoLiquido || 0);
     const diferencaCaixa = Number(item.diff || item.bankVariation || 0);
