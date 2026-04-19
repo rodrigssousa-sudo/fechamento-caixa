@@ -3145,16 +3145,18 @@ localStorage.removeItem(SESSION_LAST_ACTIVITY_KEY);
 renderAdminUsers();
 
 alert("Dados locais removidos com sucesso.\n(Usuários no Firebase NÃO foram excluídos)");
-      const rememberedUser = loadActiveUser();
-      if(rememberedUser && getRememberedLogin() && !isSessionExpired()){
-        showApp(rememberedUser);
-      }else{
-        authScreen.classList.remove("hidden");
-        appShell.classList.add("hidden");
-        preloadLogin();
-        switchTab("login");
-      }
-    });
-  </script>
+});
+
+const rememberedUser = loadActiveUser();
+if(rememberedUser && getRememberedLogin() && !isSessionExpired()){
+  showApp(rememberedUser);
+}else{
+  authScreen.classList.remove("hidden");
+  appShell.classList.add("hidden");
+  preloadLogin();
+  switchTab("login");
+}
+});
+</script>
 </body>
 </html>
