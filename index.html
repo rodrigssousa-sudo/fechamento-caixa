@@ -1838,18 +1838,17 @@ button{
     </div>
   </div>
 
-  <button id="adminOpenBtn" class="admin-fab" type="button">⚙️ ADMIN</button>
-
-  <div id="adminModal" class="admin-modal hidden">
-    <div class="admin-modal-backdrop" id="adminModalBackdrop"></div>
-    <div class="admin-modal-card">
-      <div class="admin-head">
-        <div>
-          <h3>Painel Administrativo</h3>
-          <small>Gerencie usuários cadastrados sem DevTools.</small>
-        </div>
-        <button id="adminCloseBtn" class="admin-close-btn" type="button">Fechar</button>
+<!-- ADMIN (botão removido, modal mantido oculto) -->
+<div id="adminModal" class="admin-modal hidden">
+  <div class="admin-modal-backdrop" id="adminModalBackdrop"></div>
+  <div class="admin-modal-card">
+    <div class="admin-head">
+      <div>
+        <h3>Painel Administrativo</h3>
+        <small>Gerencie usuários cadastrados sem DevTools.</small>
       </div>
+      <button id="adminCloseBtn" class="admin-close-btn" type="button">Fechar</button>
+    </div>
 
       <div class="admin-toolbar">
         <input id="adminSearchInput" class="admin-search" type="text" placeholder="Buscar por nome ou email" />
@@ -3933,7 +3932,10 @@ document.getElementById("saveHistoryBtn").addEventListener("click", async () => 
       document.getElementById("closeHistoryModal").addEventListener("click", closeHistoryModal);
       document.getElementById("historyModalBackdrop").addEventListener("click", closeHistoryModal);
 
-      document.getElementById("adminOpenBtn").addEventListener("click", openAdminModal);
+      const adminBtn = document.getElementById("adminOpenBtn");
+if(adminBtn){
+  adminBtn.addEventListener("click", openAdminModal);
+}
       document.getElementById("adminCloseBtn").addEventListener("click", closeAdminModal);
       document.getElementById("adminModalBackdrop").addEventListener("click", closeAdminModal);
       document.getElementById("adminSearchInput").addEventListener("input", renderAdminUsers);
