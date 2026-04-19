@@ -2786,10 +2786,18 @@ document.getElementById("historyModalTitle").textContent =
     try {
       const docRef = doc(db, "history", item.id);
 
-      const newEntries = (turno.entries || []).map((e, i) => ({
-        ...e,
-        value: parseMoneyInput(document.querySelector(`[data-entry="${i}"]`)?.value || "")
-      }));
+      const newEntries = (turno.entries || []).map((e, i) => {
+  let inputValue = parseMoneyInput(document.querySelector(`[data-entry="${i}"]`)?.value || "");
+
+  if (e.name === "PPPoker (x400)" || e.name === "Suprema (x400)") {
+    inputValue = inputValue * 400;
+  }
+
+  return {
+    ...e,
+    value: inputValue
+  };
+});
 
       const newOutflows = (turno.outflows || []).map((e, i) => ({
         name: document.querySelector(`[data-out-name="${i}"]`)?.value || "",
