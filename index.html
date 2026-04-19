@@ -5,36 +5,23 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
   <title>Bank King BRS - PRO</title>
   <style>
-:root{
-  --bg:#02040a;
-  --bg-2:#050b16;
-
-  --card:rgba(8,15,28,.96);
-  --border:rgba(255,255,255,.06);
-
-  --text:#f1f5f9;
-  --muted:#94a3b8;
-
-  /* 🔥 Azul premium (menos “neon”, mais elegante) */
-  --accent:#1e3a8a;
-  --accent-2:#16a34a;
-
-  /* 💰 Verde mais sofisticado */
-  --green:#16a34a;
-
-  /* 🔻 Vermelho menos agressivo */
-  --red:#dc2626;
-
-  /* 🟡 Dourado premium (NOVA IDENTIDADE) */
-  --amber:#d4af37;
-
-  /* sombras mais profundas (luxo) */
-  --shadow:0 18px 50px rgba(0,0,0,.65);
-
-  --radius:20px;
-  --radius-sm:14px;
-  --safe-bottom:env(safe-area-inset-bottom, 0px);
-}
+    :root{
+      --bg:#030712;
+      --bg-2:#081120;
+      --card:rgba(10,18,34,.96);
+      --border:rgba(148,163,184,.12);
+      --text:#f8fafc;
+      --muted:#8fa2c0;
+      --accent:#0f4cbd;
+      --accent-2:#2563eb;
+      --green:#22c55e;
+      --red:#ef4444;
+      --amber:#f59e0b;
+      --shadow:0 14px 34px rgba(0,0,0,.45);
+      --radius:20px;
+      --radius-sm:14px;
+      --safe-bottom:env(safe-area-inset-bottom, 0px);
+    }
 
     *{
       box-sizing:border-box;
@@ -141,8 +128,7 @@
     }
 
     .auth-tab.active{
-   background:linear-gradient(135deg, #1e3a8a, #16a34a);
-box-shadow:0 10px 30px rgba(59,130,246,.25);
+      background:linear-gradient(135deg, #0f4cbd, #2563eb);
       border-color:rgba(96,165,250,.18);
     }
 
@@ -325,15 +311,16 @@ box-shadow:0 10px 30px rgba(59,130,246,.25);
       box-shadow:var(--shadow);
     }
 
-.summary-card{
-  padding:20px;
-  border-radius:22px;
-  background:
-    linear-gradient(180deg, rgba(255,255,255,.03), rgba(255,255,255,.015)),
-    linear-gradient(135deg, rgba(8,18,38,.96), rgba(7,15,30,.98));
-  border:1px solid rgba(148,163,184,.08);
-  box-shadow:0 20px 50px rgba(0,0,0,.35);
-}
+    .summary-card{
+      padding:20px;
+      border-radius:22px;
+      background:
+        linear-gradient(180deg, rgba(255,255,255,.03), rgba(255,255,255,.015)),
+        linear-gradient(135deg, rgba(8,18,38,.96), rgba(7,15,30,.98));
+      border:1px solid rgba(148,163,184,.08);
+      box-shadow:0 20px 50px rgba(0,0,0,.35);
+    }
+
     .pill{
       display:inline-flex;
       align-items:center;
@@ -350,20 +337,21 @@ box-shadow:0 10px 30px rgba(59,130,246,.25);
     .pill.negative{color:#ffb3b3; background:rgba(239,68,68,.12); border-color:rgba(239,68,68,.22);}
     .pill.neutral{color:#ffe29c; background:rgba(245,158,11,.12); border-color:rgba(245,158,11,.22);}
 
-  .bank-card{
-  position:relative;
-  overflow:hidden;
-  border-radius:24px;
-  padding:22px;
-  margin-bottom:16px;
-  background:
-  radial-gradient(circle at top right, rgba(212,175,55,.25), transparent 30%),
-  linear-gradient(135deg, #020617 0%, #0f172a 50%, #02040a 100%);
-border:1px solid rgba(212,175,55,.25);
-  box-shadow:
-    0 25px 60px rgba(0,0,0,.45),
-    inset 0 1px 0 rgba(255,255,255,.03);
-}
+    .bank-card{
+      position:relative;
+      overflow:hidden;
+      border-radius:24px;
+      padding:22px;
+      margin-bottom:16px;
+      background:
+        radial-gradient(circle at top right, rgba(96,165,250,.22), transparent 30%),
+        linear-gradient(135deg, #07152e 0%, #0c2a55 55%, #06101f 100%);
+      border:1px solid rgba(96,165,250,.18);
+      box-shadow:
+        0 25px 60px rgba(0,0,0,.45),
+        inset 0 1px 0 rgba(255,255,255,.03);
+    }
+
     .bank-label{
       font-size:12px;
       font-weight:800;
@@ -391,30 +379,32 @@ border:1px solid rgba(212,175,55,.25);
       transform:scale(1.05);
     }
 
- .bank-value{
-  font-size:clamp(42px, 8vw, 72px);
-  font-weight:900;
-  letter-spacing:-.06em;
-  color:#ffffff;
-  margin-top:10px;
-  text-shadow:
-    0 0 30px rgba(96,165,250,.25),
-    0 0 60px rgba(96,165,250,.10);
-}
+    .bank-value{
+      font-size:clamp(42px, 8vw, 72px);
+      font-weight:900;
+      letter-spacing:-.06em;
+      color:#ffffff;
+      margin-top:10px;
+      text-shadow:
+        0 0 30px rgba(96,165,250,.25),
+        0 0 60px rgba(96,165,250,.10);
+    }
+
     .metrics{
       display:grid;
       gap:10px;
       grid-template-columns:1fr;
     }
 
-.metric{
-  border-radius:18px;
-  padding:16px;
-  background:
-    linear-gradient(180deg, rgba(255,255,255,.035), rgba(255,255,255,.015));
-  border:1px solid rgba(148,163,184,.08);
-  box-shadow:inset 0 1px 0 rgba(255,255,255,.02);
-}
+    .metric{
+      border-radius:18px;
+      padding:16px;
+      background:
+        linear-gradient(180deg, rgba(255,255,255,.035), rgba(255,255,255,.015));
+      border:1px solid rgba(148,163,184,.08);
+      box-shadow:inset 0 1px 0 rgba(255,255,255,.02);
+    }
+
     .metric-label{
       color:var(--muted);
       font-size:12px;
@@ -433,13 +423,14 @@ border:1px solid rgba(212,175,55,.25);
     .metric-value.green{color:#b8ffd1;}
     .metric-value.red{color:#ffb3b3;}
 
-.history-card{
-  padding:12px 14px;
-  border-radius:16px;
-  border:1px solid rgba(148,163,184,.06);
-  background:rgba(255,255,255,.015);
-  margin-top:10px;
-}
+    .history-card{
+      padding:12px 14px;
+      border-radius:16px;
+      border:1px solid rgba(148,163,184,.06);
+      background:rgba(255,255,255,.015);
+      margin-top:10px;
+    }
+
     .history-card-top{
       display:flex;
       justify-content:space-between;
@@ -473,15 +464,16 @@ border:1px solid rgba(212,175,55,.25);
       white-space:nowrap;
     }
 
-   .history-list{
-  display:grid;
-  gap:10px;
-  margin-top:12px;
-}
+    .history-list{
+      display:grid;
+      gap:10px;
+      margin-top:12px;
+    }
 
-.history-list.hidden{
-  display:none;
-}
+    .history-list.hidden{
+      display:none;
+    }
+
     .history-item{
       padding:14px;
       border-radius:16px;
@@ -512,7 +504,7 @@ border:1px solid rgba(212,175,55,.25);
 
     .history-item-grid{
       display:grid;
-      grid-template-columns:1fr 1fr;
+      grid-template-columns:1fr 1fr 1fr;
       gap:10px;
     }
 
@@ -1466,29 +1458,26 @@ border:1px solid rgba(212,175,55,.25);
           </div>
         </article>
 
-<article class="history-card">
+        <article class="history-card">
+          <div class="history-card-top">
+            <div>
+              <div class="history-card-title">Histórico automático</div>
+              <div id="historyInfo" class="history-card-text">
+                Nenhum turno anterior salvo ainda.
+              </div>
+            </div>
 
-  <div class="history-card-top">
-    <div>
-      <div class="history-card-title">Histórico automático</div>
-      <div id="historyInfo" class="history-card-text">
-        Nenhum turno anterior salvo ainda.
-      </div>
-    </div>
+            <button id="toggleHistoryBtn" class="danger-mini-btn" type="button">
+              Ver
+            </button>
+          </div>
 
-    <button id="toggleHistoryBtn" class="history-toggle-btn" type="button">
-      Ver
-    </button>
-  </div>
+          <div id="historyList" class="history-list hidden"></div>
 
-  <!-- 🔥 AQUI ESTÁ O MAIS IMPORTANTE -->
-  <div id="historyList" class="history-list hidden"></div>
-
-  <button id="deleteHistoryBtn" class="danger-mini-btn" type="button" style="margin-top:10px; width:100%;">
-    🔴 Excluir Histórico
-  </button>
-
-</article>
+          <button id="deleteHistoryBtn" class="danger-mini-btn" type="button" style="margin-top:10px; width:100%;">
+            🔴 Excluir Histórico
+          </button>
+        </article>
       </section>
 
       <section class="turnos">
@@ -1585,8 +1574,9 @@ border:1px solid rgba(212,175,55,.25);
               <div class="field"><label for="t2_cargas">Carga de Fichas</label><input type="text" inputmode="numeric" id="t2_cargas" placeholder="0,00" /></div>
               <div class="field"><label for="t2_cargas_poker">Cargas F. Poker (x400)</label><input type="text" inputmode="numeric" id="t2_cargas_poker" placeholder="0,00" /></div>
             </div>
-          </div>          
-<div class="finance-block">
+          </div>
+
+          <div class="finance-block">
             <div class="finance-head">
               <h4>Saídas de caixa</h4>
               <div class="finance-total red" id="t2_saidas_total">- $ 0,00</div>
@@ -1699,93 +1689,72 @@ border:1px solid rgba(212,175,55,.25);
 
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-app.js";
+    import {
+      getFirestore,
+      collection,
+      addDoc,
+      getDocs,
+      deleteDoc,
+      doc,
+      setDoc,
+      onSnapshot,
+      query,
+      orderBy,
+      limit,
+      serverTimestamp
+    } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-firestore.js";
 
-import {
-  getFirestore,
-  collection,
-  addDoc,
-  getDocs,
-  deleteDoc,
-  doc,
-  setDoc,
-  onSnapshot,
-  query,
-  orderBy,
-  limit,
-  serverTimestamp
-} from "https://www.gstatic.com/firebasejs/12.0.0/firebase-firestore.js";
+    import {
+      getAuth,
+      createUserWithEmailAndPassword,
+      signInWithEmailAndPassword,
+      signOut,
+      onAuthStateChanged,
+      sendPasswordResetEmail
+    } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-auth.js";
 
-import {
-  getAuth,
-  createUserWithEmailAndPassword,
-  signInWithEmailAndPassword,
-  signOut,
-  onAuthStateChanged,
-  sendPasswordResetEmail
-} from "https://www.gstatic.com/firebasejs/12.0.0/firebase-auth.js";
-
-const firebaseConfig = {
-  apiKey: "AIzaSyAuyfJNu2vwvVyH5gRsvg82m98teFCmPXw",
-  authDomain: "bank-king-c53cf.firebaseapp.com",
-  projectId: "bank-king-c53cf",
-  storageBucket: "bank-king-c53cf.firebasestorage.app",
-  messagingSenderId: "108865328748",
-  appId: "1:108865328748:web:65dbbcf146a67f95512a49",
-  measurementId: "G-S43L7WM4LH"
-};
-
-const app = initializeApp(firebaseConfig);
-const db = getFirestore(app);
-const auth = getAuth(app);
-
-onAuthStateChanged(auth, (user) => {
-  if (user) {
-    const userData = {
-      name: user.email?.split("@")[0] || "Usuário",
-      email: user.email,
-      uid: user.uid
+    const firebaseConfig = {
+      apiKey: "AIzaSyAuyfJNu2vwvVyH5gRsvg82m98teFCmPXw",
+      authDomain: "bank-king-c53cf.firebaseapp.com",
+      projectId: "bank-king-c53cf",
+      storageBucket: "bank-king-c53cf.firebasestorage.app",
+      messagingSenderId: "108865328748",
+      appId: "1:108865328748:web:65dbbcf146a67f95512a49",
+      measurementId: "G-S43L7WM4LH"
     };
 
-    saveActiveUser(userData);
-    showApp(userData);
-  } else {
-    removeActiveUser();
-    localStorage.removeItem(SESSION_LAST_ACTIVITY_KEY);
-    authScreen.classList.remove("hidden");
-    appShell.classList.add("hidden");
-  }
-});    const PDF_CODE = "1520";
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+    const auth = getAuth(app);
+
+    const PDF_CODE = "1520";
     const REPORT_CODE = "1520";
-    const RESET_CODE = "4br1l#2o26";
     const DELETE_HISTORY_CODE = "1520";
     const ADMIN_CODE = "9087";
 
-  
     const ACTIVE_USER_STORAGE_KEY = "bank-king-active-user-v1";
     const REMEMBER_LOGIN_STORAGE_KEY = "bank-king-remember-login-v1";
     const REMEMBERED_EMAIL_STORAGE_KEY = "bank-king-remembered-email-v1";
     const SESSION_LAST_ACTIVITY_KEY = "bank-king-session-last-activity-v1";
 
     const SESSION_TIMEOUT_MS = 30 * 60 * 1000;
-    const LOGIN_DEMO_EMAIL = "admin@bankking.com";
-    const LOGIN_DEMO_PASSWORD = "casino12";
 
     const authScreen = document.getElementById("authScreen");
     const appShell = document.getElementById("appShell");
     const loginForm = document.getElementById("loginForm");
     const registerForm = document.getElementById("registerForm");
     const forgotPasswordForm = document.getElementById("forgotPasswordForm");
-const rememberLoginCheckbox = document.getElementById("rememberLogin");
+    const rememberLoginCheckbox = document.getElementById("rememberLogin");
 
-let balanceVisible = true;
-let sessionWatcher = null;
-let historyUnsubscribe = null;
-let historyRealtimeStarted = false;
-let historyCache = [];
-let activeHistoryIndex = null;
-let historyVisible = false; // 👈 CONTROLE DO HISTÓRICO (NOVO)
+    let balanceVisible = true;
+    let sessionWatcher = null;
+    let historyUnsubscribe = null;
+    let historyRealtimeStarted = false;
+    let historyCache = [];
+    let historyVisible = false;
 
-function money(value){      return `$ ${Number(value || 0).toLocaleString("pt-BR", {
+    function money(value){
+      return `$ ${Number(value || 0).toLocaleString("pt-BR", {
         minimumFractionDigits: 2,
         maximumFractionDigits: 2
       })}`;
@@ -1811,24 +1780,20 @@ function money(value){      return `$ ${Number(value || 0).toLocaleString("pt-BR
       return local.toISOString().split("T")[0];
     }
 
-async function getUsersFromFirestore(){
-  const q = query(
-    collection(db, "users"),
-    orderBy("createdAt", "desc")
-  );
+    async function getUsersFromFirestore(){
+      const q = query(collection(db, "users"), orderBy("createdAt", "desc"));
+      const snapshot = await getDocs(q);
 
-  const snapshot = await getDocs(q);
+      return snapshot.docs.map((docItem) => ({
+        id: docItem.id,
+        ...docItem.data()
+      }));
+    }
 
-  return snapshot.docs.map((docItem) => ({
-    id: docItem.id,
-    ...docItem.data()
-  }));
-}
-
-async function deleteUserDocFromFirestore(uid){
-  if (!uid) return;
-  await deleteDoc(doc(db, "users", uid));
-}
+    async function deleteUserDocFromFirestore(uid){
+      if (!uid) return;
+      await deleteDoc(doc(db, "users", uid));
+    }
 
     function formatDateBR(dateStr){
       if(!dateStr) return "Sem data";
@@ -1837,24 +1802,24 @@ async function deleteUserDocFromFirestore(uid){
       return `${d}/${m}/${y}`;
     }
 
-function formatDateTimeBR(value){
-  if(!value) return "Sem data";
+    function formatDateTimeBR(value){
+      if(!value) return "Sem data";
 
-  let dt;
+      let dt;
+      if (value?.toDate) {
+        dt = value.toDate();
+      } else {
+        dt = new Date(value);
+      }
 
-  if (value?.toDate) {
-    dt = value.toDate(); // Firestore Timestamp
-  } else {
-    dt = new Date(value);
-  }
+      if (isNaN(dt.getTime())) return "Sem data";
 
-  if (isNaN(dt.getTime())) return "Sem data";
+      return `${dt.toLocaleDateString("pt-BR")} às ${dt.toLocaleTimeString("pt-BR", {
+        hour: "2-digit",
+        minute: "2-digit"
+      })}`;
+    }
 
-  return `${dt.toLocaleDateString("pt-BR")} às ${dt.toLocaleTimeString("pt-BR", {
-    hour: "2-digit",
-    minute: "2-digit"
-  })}`;
-}
     function parseMoneyInput(value){
       if(!value) return 0;
       const normalized = String(value)
@@ -2058,154 +2023,32 @@ function formatDateTimeBR(value){
       }
     }
 
-function showApp(user){
-  document.getElementById("activeUserName").textContent = user?.name || "Usuário";
-  document.getElementById("activeUserEmail").textContent = user?.email || "";
-  authScreen.classList.add("hidden");
-  appShell.classList.remove("hidden");
-  ensureDates();
-  setSessionActivity();
-  startSessionWatcher();
-  render();
-}
-
-async function logout(){
-  try{
-    await signOut(auth);
-  }catch(error){
-    console.error("Erro ao sair do Firebase:", error);
-  }
-
-  removeActiveUser();
-  localStorage.removeItem(SESSION_LAST_ACTIVITY_KEY);
-  stopSessionWatcher();
-  authScreen.classList.remove("hidden");
-  appShell.classList.add("hidden");
-  preloadLogin();
-  switchTab("login");
-}
-
-document.getElementById("tabLogin").addEventListener("click", () => switchTab("login"));
-document.getElementById("tabRegister").addEventListener("click", () => switchTab("register"));
-document.getElementById("tabForgot").addEventListener("click", () => switchTab("forgot"));
-
-loginForm.addEventListener("submit", async (e) => {
-  e.preventDefault();
-  const email = document.getElementById("loginEmail").value.trim().toLowerCase();
-  const password = document.getElementById("loginPassword").value;
-  const remember = rememberLoginCheckbox.checked;
-  try {
-    const userCredential = await signInWithEmailAndPassword(auth, email, password);
-
-    saveRememberedLogin(remember, email);
-
-    const user = {
-      name: userCredential.user.email?.split("@")[0] || "Usuário",
-      email: userCredential.user.email,
-      uid: userCredential.user.uid
-    };
-
-    saveActiveUser(user);
-    showApp(user);
-  } catch (error) {
-    console.error("Erro ao fazer login:", error);
-
-    if (
-      error.code === "auth/invalid-credential" ||
-      error.code === "auth/user-not-found" ||
-      error.code === "auth/wrong-password" ||
-      error.code === "auth/invalid-login-credentials"
-    ) {
-      alert("Email ou senha incorretos.");
-    } else if (error.code === "auth/invalid-email") {
-      alert("Email inválido.");
-    } else {
-      alert("Erro ao fazer login.");
+    function showApp(user){
+      document.getElementById("activeUserName").textContent = user?.name || "Usuário";
+      document.getElementById("activeUserEmail").textContent = user?.email || "";
+      authScreen.classList.add("hidden");
+      appShell.classList.remove("hidden");
+      ensureDates();
+      setSessionActivity();
+      startSessionWatcher();
+      render();
     }
-  }
-});
 
-document.getElementById("forgotPasswordForm").addEventListener("submit", async (e) => {
-  e.preventDefault();
+    async function logout(){
+      try{
+        await signOut(auth);
+      }catch(error){
+        console.error("Erro ao sair do Firebase:", error);
+      }
 
-  const email = document.getElementById("resetEmail").value.trim().toLowerCase();
-
-  if (!email) {
-    alert("Informe seu email.");
-    return;
-  }
-
-  try {
-    await sendPasswordResetEmail(auth, email);
-
-    alert("Verifique seu email. Se não encontrar, confira a caixa de spam.");
-
-    document.getElementById("resetEmail").value = "";
-
-    // volta pro login
-    document.getElementById("tabLogin").click();
-
-  } catch (error) {
-    console.error("Erro ao enviar redefinição:", error);
-
-    if (error.code === "auth/invalid-email") {
-      alert("Email inválido.");
-    } else if (error.code === "auth/user-not-found") {
-      alert("Usuário não encontrado.");
-    } else {
-      alert("Não foi possível enviar o email.");
+      removeActiveUser();
+      localStorage.removeItem(SESSION_LAST_ACTIVITY_KEY);
+      stopSessionWatcher();
+      authScreen.classList.remove("hidden");
+      appShell.classList.add("hidden");
+      preloadLogin();
+      switchTab("login");
     }
-  }
-});
-registerForm.addEventListener("submit", async (e) => {
-  e.preventDefault();
-
-  const name = document.getElementById("registerName").value.trim();
-  const email = document.getElementById("registerEmail").value.trim().toLowerCase();
-  const password = document.getElementById("registerPassword").value;
-
-  if (!name || !email || !password) {
-    alert("Preencha todos os campos.");
-    return;
-  }
-
-  try {
-    const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-
-    await setDoc(doc(db, "users", userCredential.user.uid), {
-      uid: userCredential.user.uid,
-      name,
-      email,
-      role: "user",
-      createdAt: serverTimestamp()
-    });
-
-    saveActiveUser({
-      name,
-      email,
-      uid: userCredential.user.uid
-    });
-
-    alert("Usuário registrado com sucesso.");
-    showApp({
-      name,
-      email,
-      uid: userCredential.user.uid
-    });
-  } catch (error) {
-    console.error("Erro ao registrar usuário:", error);
-
-    if (error.code === "auth/email-already-in-use") {
-      alert("Esse email já está cadastrado.");
-    } else if (error.code === "auth/weak-password") {
-      alert("A senha precisa ter pelo menos 6 caracteres.");
-    } else if (error.code === "auth/invalid-email") {
-      alert("Email inválido.");
-    } else {
-      alert("Erro ao registrar usuário.");
-    }
-  }
-});
 
     function ensureDates(){
       const t1 = document.getElementById("t1_data_fechamento");
@@ -2275,34 +2118,34 @@ registerForm.addEventListener("submit", async (e) => {
       return total;
     }
 
-function updateStatusPill(value){
-  const pill = document.getElementById("statusPill");
-  if(value > 0){
-    pill.textContent = "Positivo";
-    pill.className = "pill positive";
-  }else if(value < 0){
-    pill.textContent = "Negativo";
-    pill.className = "pill negative";
-  }else{
-    pill.textContent = "Sem diferença";
-    pill.className = "pill neutral";
-  }
-}
+    function updateStatusPill(value){
+      const pill = document.getElementById("statusPill");
+      if(value > 0){
+        pill.textContent = "Positivo";
+        pill.className = "pill positive";
+      }else if(value < 0){
+        pill.textContent = "Negativo";
+        pill.className = "pill negative";
+      }else{
+        pill.textContent = "Sem diferença";
+        pill.className = "pill neutral";
+      }
+    }
 
-function updateHistoryVisibility(){
-  const list = document.getElementById("historyList");
-  const btn = document.getElementById("toggleHistoryBtn");
+    function updateHistoryVisibility(){
+      const list = document.getElementById("historyList");
+      const btn = document.getElementById("toggleHistoryBtn");
+      if(!list || !btn) return;
 
-  if(!list || !btn) return;
+      if(historyVisible){
+        list.classList.remove("hidden");
+        btn.textContent = "Ocultar";
+      } else {
+        list.classList.add("hidden");
+        btn.textContent = "Ver";
+      }
+    }
 
-  if(historyVisible){
-    list.classList.remove("hidden");
-    btn.textContent = "Ocultar";
-  } else {
-    list.classList.add("hidden");
-    btn.textContent = "Ver";
-  }
-}
     function updateEyeIcon(){
       const eye = document.getElementById("eyeIcon");
       if(balanceVisible){
@@ -2408,6 +2251,7 @@ function updateHistoryVisibility(){
           input.dataset.raw = "";
         }
       });
+
       document.getElementById(`${turno}_dynamic_list`).innerHTML = "";
       document.getElementById(`${turno}_pending_list`).innerHTML = "";
     }
@@ -2467,42 +2311,17 @@ function updateHistoryVisibility(){
       };
     }
 
-    async function loadHistory(){
-      const q = query(
-        collection(db, "history"),
-        orderBy("submittedAt", "desc"),
-        limit(100)
-      );
-
+    async function saveHistoryItem(item){
+      const q = query(collection(db, "history"), orderBy("submittedAt", "desc"), limit(1));
       const snapshot = await getDocs(q);
-      return snapshot.docs.map((docItem) => ({
-        id: docItem.id,
-        ...docItem.data()
-      }));
+      const previousTotal = snapshot.docs[0]?.data()?.total || 0;
+
+      item.bankVariation = item.total - previousTotal;
+      item.turnProfit = item.turno?.saldoLiquido || 0;
+
+      await addDoc(collection(db, "history"), item);
     }
 
-   async function saveHistoryItem(item){
-  const q = query(
-    collection(db, "history"),
-    orderBy("submittedAt", "desc"),
-    limit(1)
-  );
-
-  const snapshot = await getDocs(q);
-  const previousTotal = snapshot.docs[0]?.data()?.total || 0;
-
-  item.bankVariation = item.total - previousTotal;
-  item.turnProfit = item.turno?.saldoLiquido || 0;
-
-  await addDoc(collection(db, "history"), item);
-}
-
-async function deleteAllHistory(){
-  const snapshot = await getDocs(collection(db, "history"));
-  for (const item of snapshot.docs) {
-    await deleteDoc(doc(db, "history", item.id));
-  }
-}
     function applySnapshotToTurn(turno, snapshot){
       if(!snapshot) return;
 
@@ -2546,58 +2365,59 @@ async function deleteAllHistory(){
       document.getElementById("historyModal").classList.add("hidden");
     }
 
-function renderHistoryListFromCache(){
-  const list = document.getElementById("historyList");
-  const history = historyCache || [];
+    function renderHistoryListFromCache(){
+      const list = document.getElementById("historyList");
+      const history = historyCache || [];
 
-  if(!history.length){
-    list.innerHTML = `<div class="history-empty">Sem histórico ainda.</div>`;
-    document.getElementById("historyInfo").textContent = "Nenhum turno anterior salvo ainda.";
-    updateHistoryVisibility(); // 👈 ADICIONADO
-    return;
-  }
+      if(!history.length){
+        list.innerHTML = `<div class="history-empty">Sem histórico ainda.</div>`;
+        document.getElementById("historyInfo").textContent = "Nenhum turno anterior salvo ainda.";
+        updateHistoryVisibility();
+        return;
+      }
 
-  list.innerHTML = history.slice(0, 4).map((item, index) => `
-    <div class="history-item" data-history-index="${index}">
-      <div class="history-item-top">
-        <div class="history-user">${escapeHtml(item.submittedByName || "Sistema")}</div>
-        <div class="history-time">${escapeHtml(formatDateBR(item.fechamentoDate || ""))}</div>
-      </div>
+      list.innerHTML = history.slice(0, 4).map((item, index) => `
+        <div class="history-item" data-history-index="${index}">
+          <div class="history-item-top">
+            <div class="history-user">${escapeHtml(item.submittedByName || "Sistema")}</div>
+            <div class="history-time">${escapeHtml(formatDateBR(item.fechamentoDate || ""))}</div>
+          </div>
 
-      <div class="history-item-grid">
-        <div class="history-mini-card">
-          <div class="history-mini-label">Total</div>
-          <div class="history-mini-value">${money(item.total || 0)}</div>
-        </div>
+          <div class="history-item-grid">
+            <div class="history-mini-card">
+              <div class="history-mini-label">Total</div>
+              <div class="history-mini-value">${money(item.total || 0)}</div>
+            </div>
 
-        <div class="history-mini-card">
-          <div class="history-mini-label">Lucro do turno</div>
-          <div class="history-mini-value ${(item.turnProfit || 0) < 0 ? "red" : ""}">
-            ${money(item.turnProfit || 0)}
+            <div class="history-mini-card">
+              <div class="history-mini-label">Lucro do turno</div>
+              <div class="history-mini-value ${(item.turnProfit || 0) < 0 ? "red" : ""}">
+                ${money(item.turnProfit || 0)}
+              </div>
+            </div>
+
+            <div class="history-mini-card">
+              <div class="history-mini-label">Variação da banca</div>
+              <div class="history-mini-value ${(item.bankVariation || 0) < 0 ? "red" : ""}">
+                ${money(item.bankVariation || 0)}
+              </div>
+            </div>
           </div>
         </div>
+      `).join("");
 
-        <div class="history-mini-card">
-          <div class="history-mini-label">Variação da banca</div>
-          <div class="history-mini-value ${(item.bankVariation || 0) < 0 ? "red" : ""}">
-            ${money(item.bankVariation || 0)}
-          </div>
-        </div>
-      </div>
-    </div>
-  `).join("");
+      document.getElementById("historyInfo").textContent =
+        `Último fechamento: ${history[0]?.submittedByName || "Sistema"} • ${formatDateBR(history[0]?.fechamentoDate || "")}`;
 
-  document.getElementById("historyInfo").textContent =
-    `Último fechamento: ${history[0]?.submittedByName || "Sistema"} • ${formatDateBR(history[0]?.fechamentoDate || "")}`;
+      list.querySelectorAll("[data-history-index]").forEach((el) => {
+        el.addEventListener("click", () => {
+          openHistoryModal(Number(el.dataset.historyIndex));
+        });
+      });
 
-  list.querySelectorAll("[data-history-index]").forEach((el) => {
-    el.addEventListener("click", () => {
-      openHistoryModal(Number(el.dataset.historyIndex));
-    });
-  });
+      updateHistoryVisibility();
+    }
 
-  updateHistoryVisibility(); // 👈 ESSENCIAL
-}
     function openHistoryModal(index){
       const item = historyCache[index];
       if(!item) return;
@@ -2607,8 +2427,6 @@ function renderHistoryListFromCache(){
         `Data do fechamento: ${formatDateBR(item.fechamentoDate || "")} • Enviado em: ${formatDateTimeBR(item.submittedAt)}`;
 
       const turno = item.turno || {};
-      const turnProfitValue = Number(item.turnProfit || 0);
-const bankVariationValue = Number(item.bankVariation || 0);
 
       document.getElementById("historyModalBody").innerHTML = `
         <div class="modal-summary-grid">
@@ -2680,11 +2498,7 @@ const bankVariationValue = Number(item.bankVariation || 0);
       if(historyRealtimeStarted) return;
       historyRealtimeStarted = true;
 
-      const q = query(
-        collection(db, "history"),
-        orderBy("submittedAt", "desc"),
-        limit(100)
-      );
+      const q = query(collection(db, "history"), orderBy("submittedAt", "desc"), limit(100));
 
       historyUnsubscribe = onSnapshot(q, (snapshot) => {
         historyCache = snapshot.docs.map((docItem) => ({
@@ -2700,10 +2514,11 @@ const bankVariationValue = Number(item.bankVariation || 0);
 
         renderHistoryListFromCache();
         render();
-}, (error) => {
-  console.error("Erro no listener do Firestore:", error);
-  alert("Erro no listener do Firestore. Veja o console.");
-});    }
+      }, (error) => {
+        console.error("Erro no listener do Firestore:", error);
+        alert("Erro no listener do Firestore. Veja o console.");
+      });
+    }
 
     function renderCashflowReport(days){
       const history = historyCache || [];
@@ -2736,6 +2551,7 @@ const bankVariationValue = Number(item.bankVariation || 0);
       document.getElementById("reportLucro").textContent = money(lucroReal);
 
       const reportList = document.getElementById("reportList");
+
       if(!filtered.length){
         reportList.innerHTML = `<div class="history-empty">Nenhum fechamento encontrado nesse período.</div>`;
       }else{
@@ -2877,213 +2693,289 @@ const bankVariationValue = Number(item.bankVariation || 0);
       document.getElementById("totalEntradasT2").textContent = money(t2Entradas);
       document.getElementById("lucroTotal").textContent = money(ultimoLucroDoTurno);
 
-const bancaTotalAtualBruta = historyCache[0]?.total || 0;
-const bancaTotalAtual = Math.max(0, Number(bancaTotalAtualBruta || 0));
+      const bancaTotalAtualBruta = historyCache[0]?.total || 0;
+      const bancaTotalAtual = Math.max(0, Number(bancaTotalAtualBruta || 0));
 
-document.getElementById("bankValue").textContent =
-  balanceVisible ? money(bancaTotalAtual) : "••••••";
+      document.getElementById("bankValue").textContent =
+        balanceVisible ? money(bancaTotalAtual) : "••••••";
 
-updateEyeIcon();
-updateStatusPill(ultimoLucroDoTurno);
+      updateEyeIcon();
+      updateStatusPill(ultimoLucroDoTurno);
     }
 
-async function openAdminModal(){
-  const code = prompt("Digite código interno:");
-  if(code === null) return;
+    async function openAdminModal(){
+      const code = prompt("Digite código interno:");
+      if(code === null) return;
 
-  if(code !== ADMIN_CODE){
-    alert("Código interno incorreto.");
-    return;
-  }
+      if(code !== ADMIN_CODE){
+        alert("Código interno incorreto.");
+        return;
+      }
 
-  await renderAdminUsers();
-  document.getElementById("adminModal").classList.remove("hidden");
-  requestAnimationFrame(() => document.getElementById("adminSearchInput").focus());
-}
+      await renderAdminUsers();
+      document.getElementById("adminModal").classList.remove("hidden");
+      requestAnimationFrame(() => document.getElementById("adminSearchInput").focus());
+    }
 
     function closeAdminModal(){
       document.getElementById("adminModal").classList.add("hidden");
       document.getElementById("adminSearchInput").value = "";
     }
 
-async function renderAdminUsers(){
-  const users = await getUsersFromFirestore();
-  const term = document.getElementById("adminSearchInput").value.trim().toLowerCase();
+    async function renderAdminUsers(){
+      const users = await getUsersFromFirestore();
+      const term = document.getElementById("adminSearchInput").value.trim().toLowerCase();
 
-  const filtered = users.filter((user) => {
-    const name = String(user?.name || "").toLowerCase();
-    const email = String(user?.email || "").toLowerCase();
-    return !term || name.includes(term) || email.includes(term);
-  });
+      const filtered = users.filter((user) => {
+        const name = String(user?.name || "").toLowerCase();
+        const email = String(user?.email || "").toLowerCase();
+        return !term || name.includes(term) || email.includes(term);
+      });
 
-  const adminUsersList = document.getElementById("adminUsersList");
+      const adminUsersList = document.getElementById("adminUsersList");
 
-  if(!filtered.length){
-    adminUsersList.innerHTML = `<div class="admin-empty">Nenhum usuário encontrado.</div>`;
-    return;
-  }
+      if(!filtered.length){
+        adminUsersList.innerHTML = `<div class="admin-empty">Nenhum usuário encontrado.</div>`;
+        return;
+      }
 
-  adminUsersList.innerHTML = filtered.map((user) => {
-    return `
-      <div class="admin-user-card">
-        <div class="admin-user-top">
-          <div>
-            <div class="admin-user-name">${escapeHtml(user.name || "Sem nome")}</div>
-            <div class="admin-user-email">${escapeHtml(user.email || "Sem email")}</div>
+      adminUsersList.innerHTML = filtered.map((user) => {
+        return `
+          <div class="admin-user-card">
+            <div class="admin-user-top">
+              <div>
+                <div class="admin-user-name">${escapeHtml(user.name || "Sem nome")}</div>
+                <div class="admin-user-email">${escapeHtml(user.email || "Sem email")}</div>
+              </div>
+              <div class="admin-user-badge">${escapeHtml(user.role || "user")}</div>
+            </div>
+
+            <div class="admin-actions">
+              <button class="admin-action-btn admin-view-btn" type="button" data-admin-view="${user.id}">👁 Ver</button>
+              <button class="admin-action-btn admin-reset-btn" type="button" data-admin-reset="${user.email}">🔒 Resetar senha</button>
+              <button class="admin-action-btn admin-delete-btn" type="button" data-admin-delete="${user.id}">🗑 Excluir</button>
+            </div>
+
+            <div class="admin-inline-details" id="adminDetails_${user.id}">
+              <div class="admin-inline-line"><span>Nome</span><strong>${escapeHtml(user.name || "-")}</strong></div>
+              <div class="admin-inline-line"><span>Email</span><strong>${escapeHtml(user.email || "-")}</strong></div>
+              <div class="admin-inline-line"><span>UID</span><strong>${escapeHtml(user.uid || "-")}</strong></div>
+              <div class="admin-inline-line"><span>Perfil</span><strong>${escapeHtml(user.role || "user")}</strong></div>
+            </div>
           </div>
-          <div class="admin-user-badge">${escapeHtml(user.role || "user")}</div>
-        </div>
+        `;
+      }).join("");
 
-        <div class="admin-actions">
-          <button class="admin-action-btn admin-view-btn" type="button" data-admin-view="${user.id}">👁 Ver</button>
-          <button class="admin-action-btn admin-reset-btn" type="button" data-admin-reset="${user.email}">🔒 Resetar senha</button>
-          <button class="admin-action-btn admin-delete-btn" type="button" data-admin-delete="${user.id}">🗑 Excluir</button>
-        </div>
+      bindAdminActions();
+    }
 
-        <div class="admin-inline-details" id="adminDetails_${user.id}">
-          <div class="admin-inline-line"><span>Nome</span><strong>${escapeHtml(user.name || "-")}</strong></div>
-          <div class="admin-inline-line"><span>Email</span><strong>${escapeHtml(user.email || "-")}</strong></div>
-          <div class="admin-inline-line"><span>UID</span><strong>${escapeHtml(user.uid || "-")}</strong></div>
-          <div class="admin-inline-line"><span>Perfil</span><strong>${escapeHtml(user.role || "user")}</strong></div>
-        </div>
-      </div>
-    `;
-  }).join("");
+    function bindAdminActions(){
+      document.querySelectorAll("[data-admin-view]").forEach((btn) => {
+        btn.addEventListener("click", () => {
+          const id = btn.dataset.adminView;
+          const box = document.getElementById(`adminDetails_${id}`);
+          if(box) box.classList.toggle("show");
+        });
+      });
 
-  bindAdminActions();
-}
+      document.querySelectorAll("[data-admin-reset]").forEach((btn) => {
+        btn.addEventListener("click", async () => {
+          const email = btn.dataset.adminReset;
+          if(!email) return;
 
-function bindAdminActions(){
-  document.querySelectorAll("[data-admin-view]").forEach((btn) => {
-    btn.addEventListener("click", () => {
-      const id = btn.dataset.adminView;
-      const box = document.getElementById(`adminDetails_${id}`);
-      if(box) box.classList.toggle("show");
+          const confirmacao = confirm(`Enviar email de redefinição de senha para ${email}?`);
+          if(!confirmacao) return;
+
+          try {
+            await sendPasswordResetEmail(auth, email);
+            alert("Email de redefinição enviado com sucesso.");
+          } catch (error) {
+            console.error("Erro ao enviar redefinição:", error);
+            alert("Não foi possível enviar o email de redefinição.");
+          }
+        });
+      });
+
+      document.querySelectorAll("[data-admin-delete]").forEach((btn) => {
+        btn.addEventListener("click", async () => {
+          const uid = btn.dataset.adminDelete;
+
+          if (!uid) {
+            alert("ID do usuário inválido.");
+            return;
+          }
+
+          const confirmacao = confirm("Confirma a exclusão deste usuário?");
+          if (!confirmacao) return;
+
+          try {
+            await deleteUserDocFromFirestore(uid);
+            await renderAdminUsers();
+            alert("Usuário removido da coleção 'users' com sucesso.\n(A conta no Firebase Auth NÃO foi excluída)");
+          } catch (error) {
+            console.error("Erro ao excluir usuário:", error);
+            alert("Erro ao excluir usuário. Verifique o console.");
+          }
+        });
+      });
+    }
+
+    onAuthStateChanged(auth, (user) => {
+      if (user) {
+        const userData = {
+          name: user.email?.split("@")[0] || "Usuário",
+          email: user.email,
+          uid: user.uid
+        };
+
+        saveActiveUser(userData);
+        showApp(userData);
+      } else {
+        removeActiveUser();
+        localStorage.removeItem(SESSION_LAST_ACTIVITY_KEY);
+        authScreen.classList.remove("hidden");
+        appShell.classList.add("hidden");
+      }
     });
-  });
 
-  document.querySelectorAll("[data-admin-reset]").forEach((btn) => {
-    btn.addEventListener("click", async () => {
-      const email = btn.dataset.adminReset;
-      if(!email) return;
+    document.getElementById("tabLogin").addEventListener("click", () => switchTab("login"));
+    document.getElementById("tabRegister").addEventListener("click", () => switchTab("register"));
+    document.getElementById("tabForgot").addEventListener("click", () => switchTab("forgot"));
 
-      const confirmacao = confirm(`Enviar email de redefinição de senha para ${email}?`);
-      if(!confirmacao) return;
+    loginForm.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const email = document.getElementById("loginEmail").value.trim().toLowerCase();
+      const password = document.getElementById("loginPassword").value;
+      const remember = rememberLoginCheckbox.checked;
+
+      try {
+        const userCredential = await signInWithEmailAndPassword(auth, email, password);
+
+        saveRememberedLogin(remember, email);
+
+        const user = {
+          name: userCredential.user.email?.split("@")[0] || "Usuário",
+          email: userCredential.user.email,
+          uid: userCredential.user.uid
+        };
+
+        saveActiveUser(user);
+        showApp(user);
+      } catch (error) {
+        console.error("Erro ao fazer login:", error);
+
+        if (
+          error.code === "auth/invalid-credential" ||
+          error.code === "auth/user-not-found" ||
+          error.code === "auth/wrong-password" ||
+          error.code === "auth/invalid-login-credentials"
+        ) {
+          alert("Email ou senha incorretos.");
+        } else if (error.code === "auth/invalid-email") {
+          alert("Email inválido.");
+        } else {
+          alert("Erro ao fazer login.");
+        }
+      }
+    });
+
+    forgotPasswordForm.addEventListener("submit", async (e) => {
+      e.preventDefault();
+
+      const email = document.getElementById("resetEmail").value.trim().toLowerCase();
+
+      if (!email) {
+        alert("Informe seu email.");
+        return;
+      }
 
       try {
         await sendPasswordResetEmail(auth, email);
-        alert("Email de redefinição enviado com sucesso.");
+        alert("Verifique seu email. Se não encontrar, confira a caixa de spam.");
+        document.getElementById("resetEmail").value = "";
+        document.getElementById("tabLogin").click();
       } catch (error) {
         console.error("Erro ao enviar redefinição:", error);
-        alert("Não foi possível enviar o email de redefinição.");
+
+        if (error.code === "auth/invalid-email") {
+          alert("Email inválido.");
+        } else if (error.code === "auth/user-not-found") {
+          alert("Usuário não encontrado.");
+        } else {
+          alert("Não foi possível enviar o email.");
+        }
       }
     });
-  });
 
-  document.querySelectorAll("[data-admin-delete]").forEach((btn) => {
-    btn.addEventListener("click", async () => {
-      const uid = btn.dataset.adminDelete;
+    registerForm.addEventListener("submit", async (e) => {
+      e.preventDefault();
 
-      if (!uid) {
-        alert("ID do usuário inválido.");
+      const name = document.getElementById("registerName").value.trim();
+      const email = document.getElementById("registerEmail").value.trim().toLowerCase();
+      const password = document.getElementById("registerPassword").value;
+
+      if (!name || !email || !password) {
+        alert("Preencha todos os campos.");
         return;
       }
 
-      const confirmacao = confirm("Confirma a exclusão deste usuário?");
-      if (!confirmacao) return;
-
       try {
-        await deleteUserDocFromFirestore(uid);
-        await renderAdminUsers();
-        alert("Usuário removido da coleção 'users' com sucesso.\n(A conta no Firebase Auth NÃO foi excluída)");
+        const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+
+        await setDoc(doc(db, "users", userCredential.user.uid), {
+          uid: userCredential.user.uid,
+          name,
+          email,
+          role: "user",
+          createdAt: serverTimestamp()
+        });
+
+        saveActiveUser({
+          name,
+          email,
+          uid: userCredential.user.uid
+        });
+
+        alert("Usuário registrado com sucesso.");
+        showApp({
+          name,
+          email,
+          uid: userCredential.user.uid
+        });
       } catch (error) {
-        console.error("Erro ao excluir usuário:", error);
-        alert("Erro ao excluir usuário. Verifique o console.");
+        console.error("Erro ao registrar usuário:", error);
+
+        if (error.code === "auth/email-already-in-use") {
+          alert("Esse email já está cadastrado.");
+        } else if (error.code === "auth/weak-password") {
+          alert("A senha precisa ter pelo menos 6 caracteres.");
+        } else if (error.code === "auth/invalid-email") {
+          alert("Email inválido.");
+        } else {
+          alert("Erro ao registrar usuário.");
+        }
       }
     });
-  });
-}
-  document.querySelectorAll("[data-admin-delete]").forEach((btn) => {
-    btn.addEventListener("click", async () => {
-      const uid = btn.dataset.adminDelete;
 
-      if (!uid) {
-        alert("ID do usuário inválido.");
-        return;
-      }
+    document.addEventListener("DOMContentLoaded", () => {
+      bindSessionEvents();
+      startHistoryRealtimeListener();
 
-      const confirmacao = confirm("Confirma a exclusão deste usuário?");
-      if (!confirmacao) return;
+      document.getElementById("toggleHistoryBtn").addEventListener("click", () => {
+        historyVisible = !historyVisible;
+        updateHistoryVisibility();
+      });
 
-      try {
-        await deleteUserDocFromFirestore(uid);
-        await renderAdminUsers();
-        alert("Usuário removido da coleção 'users' com sucesso.\n(A conta no Firebase Auth NÃO foi excluída)");
-      } catch (error) {
-        console.error("Erro ao excluir usuário:", error);
-        alert("Erro ao excluir usuário. Verifique o console.");
-      }
-    });
-  });
-}  document.querySelectorAll("[data-admin-delete]").forEach((btn) => {
-    btn.addEventListener("click", async () => {
-      const uid = btn.dataset.adminDelete;
-      if(!uid) return;
+      updateHistoryVisibility();
 
-document.querySelectorAll("[data-admin-delete]").forEach((btn) => {
-  btn.addEventListener("click", async () => {
-    const uid = btn.dataset.adminDelete;
+      [
+        "t1_banco","t1_pppoker","t1_suprema","t1_buffalo","t1_ganamos","t1_cargas","t1_cargas_poker",
+        "t2_banco","t2_pppoker","t2_suprema","t2_buffalo","t2_ganamos","t2_cargas","t2_cargas_poker"
+      ].forEach((id) => {
+        const input = document.getElementById(id);
+        if(input) attachMoneyMask(input);
+      });
 
-    if (!uid) {
-      alert("ID do usuário inválido.");
-      return;
-    }
-
-    const confirmacao = confirm("Confirma a exclusão deste usuário?");
-    if (!confirmacao) return;
-
-    try {
-      await deleteUserDocFromFirestore(uid);
-      await renderAdminUsers();
-      alert("Usuário removido da coleção 'users' com sucesso.\n(A conta no Firebase Auth NÃO foi excluída)");
-    } catch (error) {
-      console.error("Erro ao excluir usuário:", error);
-      alert("Erro ao excluir usuário. Verifique o console.");
-    }
-  });
-});
-  await deleteUserDocFromFirestore(uid);
-  await renderAdminUsers();
-
-  alert("Usuário removido da coleção 'users' com sucesso.\n(A conta no Firebase Auth NÃO foi excluída)");
-
-} catch (error) {
-  console.error("Erro ao excluir usuário:", error);
-  alert("Erro ao excluir usuário. Verifique o console.");
-}    });
-  });
-}
-
-document.addEventListener("DOMContentLoaded", () => {
-bindSessionEvents();
-startHistoryRealtimeListener();
-
-// botão mostrar/ocultar histórico
-document.getElementById("toggleHistoryBtn").addEventListener("click", () => {
-historyVisible = !historyVisible;
-updateHistoryVisibility();
-});
-
-// estado inicial do histórico
-updateHistoryVisibility();
-
-[
-"t1_banco","t1_pppoker","t1_suprema","t1_buffalo","t1_ganamos","t1_cargas","t1_cargas_poker",
-"t2_banco","t2_pppoker","t2_suprema","t2_buffalo","t2_ganamos","t2_cargas","t2_cargas_poker"
-].forEach((id) => {
-const input = document.getElementById(id);
-if(input) attachMoneyMask(input);
-});
       document.querySelectorAll("[data-add-row]").forEach((btn) => {
         btn.addEventListener("click", () => {
           createDynamicRow(btn.dataset.addRow);
@@ -3112,19 +3004,17 @@ if(input) attachMoneyMask(input);
       });
 
       document.getElementById("fecharTurno").addEventListener("click", async () => {
-try {
-const item = serializeTurn("t2");
-console.log("Item que vai salvar:", item);
-await saveHistoryItem(item);
-console.log("Histórico salvo com sucesso no Firestore.");
-clearTurn("t2");
-render();
-alert("Turno fechado com sucesso.");
-} catch (error) {
-console.error("Erro ao salvar histórico:", error);
-alert("Erro ao salvar histórico. Abra o console para ver o detalhe.");
-}
-});
+        try {
+          const item = serializeTurn("t2");
+          await saveHistoryItem(item);
+          clearTurn("t2");
+          render();
+          alert("Turno fechado com sucesso.");
+        } catch (error) {
+          console.error("Erro ao salvar histórico:", error);
+          alert("Erro ao salvar histórico. Abra o console para ver o detalhe.");
+        }
+      });
 
       document.getElementById("exportarPdf").addEventListener("click", exportToPdfProtected);
 
@@ -3151,52 +3041,49 @@ alert("Erro ao salvar histórico. Abra o console para ver o detalhe.");
         });
       });
 
-document.getElementById("deleteHistoryBtn").addEventListener("click", async () => {
-  const senha = prompt("Digite código interno:");
-  if (senha === null) return;
+      document.getElementById("deleteHistoryBtn").addEventListener("click", async () => {
+        const senha = prompt("Digite código interno:");
+        if (senha === null) return;
 
-  if (senha !== DELETE_HISTORY_CODE) {
-    alert("Código interno incorreto.");
-    return;
-  }
+        if (senha !== DELETE_HISTORY_CODE) {
+          alert("Código interno incorreto.");
+          return;
+        }
 
-  if (!historyCache.length) {
-    alert("Não há histórico para excluir.");
-    return;
-  }
+        if (!historyCache.length) {
+          alert("Não há histórico para excluir.");
+          return;
+        }
 
-  const lista = historyCache
-    .map((item, index) => {
-      const nome = item.submittedByName || "Sistema";
-      const data = formatDateBR(item.fechamentoDate || "");
-      const total = money(item.total || 0);
-      return `${index + 1} - ${nome} - ${data} - ${total}`;
-    })
-    .join("\n");
+        const lista = historyCache
+          .map((item, index) => {
+            const nome = item.submittedByName || "Sistema";
+            const data = formatDateBR(item.fechamentoDate || "");
+            const total = money(item.total || 0);
+            return `${index + 1} - ${nome} - ${data} - ${total}`;
+          })
+          .join("\n");
 
-  const escolha = prompt(
-    `Digite o número do histórico que deseja excluir:\n\n${lista}`
-  );
+        const escolha = prompt(`Digite o número do histórico que deseja excluir:\n\n${lista}`);
+        if (escolha === null) return;
 
-  if (escolha === null) return;
+        const indice = Number(escolha) - 1;
 
-  const indice = Number(escolha) - 1;
+        if (!Number.isInteger(indice) || indice < 0 || indice >= historyCache.length) {
+          alert("Número inválido.");
+          return;
+        }
 
-  if (!Number.isInteger(indice) || indice < 0 || indice >= historyCache.length) {
-    alert("Número inválido.");
-    return;
-  }
+        const itemSelecionado = historyCache[indice];
 
-  const itemSelecionado = historyCache[indice];
+        if (!confirm(`Deseja excluir o histórico de ${itemSelecionado.submittedByName || "Sistema"} em ${formatDateBR(itemSelecionado.fechamentoDate || "")}?`)) {
+          return;
+        }
 
-  if (!confirm(`Deseja excluir o histórico de ${itemSelecionado.submittedByName || "Sistema"} em ${formatDateBR(itemSelecionado.fechamentoDate || "")}?`)) {
-    return;
-  }
+        await deleteDoc(doc(db, "history", itemSelecionado.id));
+        alert("Histórico excluído com sucesso.");
+      });
 
-  await deleteDoc(doc(db, "history", itemSelecionado.id));
-
-  alert("Histórico excluído com sucesso.");
-});
       document.getElementById("logoutBtn").addEventListener("click", logout);
 
       document.getElementById("closeHistoryModal").addEventListener("click", closeHistoryModal);
@@ -3216,30 +3103,28 @@ document.getElementById("deleteHistoryBtn").addEventListener("click", async () =
           return;
         }
 
-if(!confirm("Tem certeza que deseja limpar os dados locais deste dispositivo?")) return;
+        if(!confirm("Tem certeza que deseja limpar os dados locais deste dispositivo?")) return;
 
-// 🔴 NÃO existe USERS_STORAGE_KEY → removido
+        localStorage.removeItem(ACTIVE_USER_STORAGE_KEY);
+        localStorage.removeItem(REMEMBER_LOGIN_STORAGE_KEY);
+        localStorage.removeItem(REMEMBERED_EMAIL_STORAGE_KEY);
+        localStorage.removeItem(SESSION_LAST_ACTIVITY_KEY);
 
-localStorage.removeItem(ACTIVE_USER_STORAGE_KEY);
-localStorage.removeItem(REMEMBER_LOGIN_STORAGE_KEY);
-localStorage.removeItem(REMEMBERED_EMAIL_STORAGE_KEY);
-localStorage.removeItem(SESSION_LAST_ACTIVITY_KEY);
+        renderAdminUsers();
 
-renderAdminUsers();
+        alert("Dados locais removidos com sucesso.\n(Usuários no Firebase NÃO foram excluídos)");
+      });
 
-alert("Dados locais removidos com sucesso.\n(Usuários no Firebase NÃO foram excluídos)");
-});
-
-const rememberedUser = loadActiveUser();
-if(rememberedUser && getRememberedLogin() && !isSessionExpired()){
-  showApp(rememberedUser);
-}else{
-  authScreen.classList.remove("hidden");
-  appShell.classList.add("hidden");
-  preloadLogin();
-  switchTab("login");
-}
-});
-</script>
+      const rememberedUser = loadActiveUser();
+      if(rememberedUser && getRememberedLogin() && !isSessionExpired()){
+        showApp(rememberedUser);
+      }else{
+        authScreen.classList.remove("hidden");
+        appShell.classList.add("hidden");
+        preloadLogin();
+        switchTab("login");
+      }
+    });
+  </script>
 </body>
 </html>
