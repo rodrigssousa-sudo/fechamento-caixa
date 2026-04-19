@@ -2311,17 +2311,33 @@
       };
     }
 
-    async function saveHistoryItem(item){
-      const q = query(collection(db, "history"), orderBy("submittedAt", "desc"), limit(1));
-      const snapshot = await getDocs(q);
-      const previousTotal = snapshot.docs[0]?.data()?.total || 0;
+async function saveHistoryItem(item){
+  const q = query(
+    collection(db, "history"),
+    orderBy("submittedAt", "desc"),
+    limit(1)
+  );
 
-      item.bankVariation = item.total - previousTotal;
-      item.turnProfit = item.turno?.saldoLiquido || 0;
+  const snapshot = await getDocs(q);
 
-      await addDoc(collection(db, "history"), item);
-    }
+  const previousItem = snapshot.docs[0]?.data() || {};
 
+  // 🔥 lucro do turno atual (turno 2)
+  const currentProfit = Number(item.turno?.saldoLiquido || 0);
+
+  // 🔥 lucro do turno anterior (turno 1 salvo no histórico)
+  const previousProfit = Number(previousItem.turnProfit || previousItem.turno?.saldoLiquido || 0);
+
+  // ✅ diferença entre turnos
+  const diffTurnos = currentProfit - previousProfit;
+
+  // salvar valores corretos
+  item.turnProfit = currentProfit;
+  item.diff = diffTurnos;
+  item.bankVariation = diffTurnos;
+
+  await addDoc(collection(db, "history"), item);
+}
     function applySnapshotToTurn(turno, snapshot){
       if(!snapshot) return;
 
