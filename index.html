@@ -2502,8 +2502,9 @@ button{
         <div class="history-item" data-history-index="${index}">
           <div class="history-item-top">
             <div class="history-user">${escapeHtml(item.submittedByName || "Sistema")}</div>
-            <div class="history-time">${escapeHtml(formatDateBR(item.fechamentoDate || ""))}</div>
-          </div>
+           <div class="history-time">
+  ${escapeHtml(`Turno ${index + 1} • ${item.shiftLabel || item.turno?.shiftLabel || "Sem horário"}`)}
+</div>
 
           <div class="history-item-grid">
             <div class="history-mini-card">
