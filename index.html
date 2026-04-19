@@ -2404,7 +2404,7 @@ function formatDateTimeBR(value){
         submittedByEmail: activeUser?.email || "",
         submittedAt: serverTimestamp(),
         fechamentoDate: document.getElementById(f.dataFechamento)?.value || getTodayDateInput(),
-        total: getValue(f.banco),
+        total: saldoLiquido,
         turno: {
           dataFechamento: document.getElementById(f.dataFechamento)?.value || getTodayDateInput(),
           entries,
