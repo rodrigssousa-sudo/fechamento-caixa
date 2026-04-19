@@ -1584,8 +1584,7 @@ button{
     </div>
   </div>
 
-  <div id="turno1Content">
-    <div class="turno-meta">
+<div id="turno1Content" style="display: none;">    <div class="turno-meta">
       <div class="field">
         <label for="t1_data_fechamento">Data do fechamento</label>
         <input type="date" id="t1_data_fechamento" />
@@ -1850,7 +1849,7 @@ button{
     let historyRealtimeStarted = false;
     let historyCache = [];
     let historyVisible = false;
-let turno1Visible = true;
+let turno1Visible = false;
 let editingHistoryIndex = null;
 let historyEditMode = false;
 
