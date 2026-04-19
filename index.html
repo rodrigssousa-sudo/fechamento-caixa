@@ -2406,22 +2406,24 @@ button{
       const activeUser = loadActiveUser();
 
       return {
-        submittedByName: activeUser?.name || "Usuário",
-        submittedByEmail: activeUser?.email || "",
-        submittedAt: serverTimestamp(),
-        fechamentoDate: document.getElementById(f.dataFechamento)?.value || getTodayDateInput(),
-        total: getValue(f.banco),
-        turno: {
-          dataFechamento: document.getElementById(f.dataFechamento)?.value || getTodayDateInput(),
-          entries,
-          outflows,
-          pendings,
-          entradasTotal,
-          saidasTotal,
-          pendentesTotal,
-          saldoLiquido
-        }
-      };
+  submittedByName: activeUser?.name || "Usuário",
+  submittedByEmail: activeUser?.email || "",
+  submittedAt: new Date().toISOString(),
+  fechamentoDate: document.getElementById(f.dataFechamento)?.value || getTodayDateInput(),
+  shiftLabel: document.getElementById(f.shiftLabel)?.value || "06:00 às 12:00",
+  total: saldoLiquido,
+  turno: {
+    dataFechamento: document.getElementById(f.dataFechamento)?.value || getTodayDateInput(),
+    shiftLabel: document.getElementById(f.shiftLabel)?.value || "06:00 às 12:00",
+    entries,
+    outflows,
+    pendings,
+    entradasTotal,
+    saidasTotal,
+    pendentesTotal,
+    saldoLiquido
+  }
+};
     }
 
   async function saveHistoryItem(item){
