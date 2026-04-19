@@ -2441,58 +2441,58 @@ function updateTurno1Visibility(){
       document.getElementById(`${turno}_pending_list`).innerHTML = "";
     }
 
-    function serializeTurn(turno){
-      const f = fieldsByTurn[turno];
+function serializeTurn(turno){
+  const f = fieldsByTurn[turno];
 
-      const entries = [
-        { name: "Banco Reca", value: getValue(f.banco) },
-        { name: "PPPoker (x400)", value: getValue(f.pppoker) * 400 },
-        { name: "Suprema (x400)", value: getValue(f.suprema) * 400 },
-        { name: "Buffalo", value: getValue(f.buffalo) },
-        { name: "Ganamos", value: getValue(f.ganamos) },
-        { name: "Carga de Fichas", value: getValue(f.cargas) },
-        { name: "Cargas F. Poker (x400)", value: getValue(f.cargasPoker) * 400 }
-      ];
+  const entries = [
+    { name: "Banco Reca", value: getValue(f.banco) },
+    { name: "PPPoker (x400)", value: getValue(f.pppoker) * 400 },
+    { name: "Suprema (x400)", value: getValue(f.suprema) * 400 },
+    { name: "Buffalo", value: getValue(f.buffalo) },
+    { name: "Ganamos", value: getValue(f.ganamos) },
+    { name: "Carga de Fichas", value: getValue(f.cargas) },
+    { name: "Cargas F. Poker (x400)", value: getValue(f.cargasPoker) * 400 }
+  ];
 
-      const outflows = [...document.querySelectorAll(`#${turno}_dynamic_list .dynamic-row`)].map((row) => {
-        const inputs = row.querySelectorAll("input");
-        return {
-          name: inputs[0]?.value || "",
-          value: parseMoneyInput(inputs[1]?.value || "")
-        };
-      });
+  const outflows = [...document.querySelectorAll(`#${turno}_dynamic_list .dynamic-row`)].map((row) => {
+    const inputs = row.querySelectorAll("input");
+    return {
+      name: inputs[0]?.value || "",
+      value: parseMoneyInput(inputs[1]?.value || "")
+    };
+  });
 
-      const pendings = [...document.querySelectorAll(`#${turno}_pending_list .dynamic-row`)].map((row) => {
-        const inputs = row.querySelectorAll("input");
-        return {
-          name: inputs[0]?.value || "",
-          value: parseMoneyInput(inputs[1]?.value || "")
-        };
-      });
+  const pendings = [...document.querySelectorAll(`#${turno}_pending_list .dynamic-row`)].map((row) => {
+    const inputs = row.querySelectorAll("input");
+    return {
+      name: inputs[0]?.value || "",
+      value: parseMoneyInput(inputs[1]?.value || "")
+    };
+  });
 
-      const entradasTotal = entries.reduce((acc, item) => acc + item.value, 0);
-      const saidasTotal = outflows.reduce((acc, item) => acc + item.value, 0);
-      const pendentesTotal = pendings.reduce((acc, item) => acc + item.value, 0);
-      const saldoLiquido = entradasTotal - saidasTotal - pendentesTotal;
+  const entradasTotal = entries.reduce((acc, item) => acc + item.value, 0);
+  const saidasTotal = outflows.reduce((acc, item) => acc + item.value, 0);
+  const pendentesTotal = pendings.reduce((acc, item) => acc + item.value, 0);
+  const saldoLiquido = entradasTotal - saidasTotal - pendentesTotal;
 
-return {
-  nomeOperador: document.getElementById(f.nomeOperador)?.value?.trim() || "Sem nome",
-  turnoTrabalhado: document.getElementById(f.turnoTrabalhado)?.value?.trim() || "Não informado",
-  fechamentoDate: document.getElementById(f.dataFechamento)?.value || getTodayDateInput(),
-  total: getValue(f.banco),
-  turno: {
-    dataFechamento: document.getElementById(f.dataFechamento)?.value || getTodayDateInput(),
-    entries,
-    outflows,
-    pendings,
-    entradasTotal,
-    saidasTotal,
-    pendentesTotal,
-    saldoLiquido
-  }
-};
+  return {
+    nomeOperador: document.getElementById(f.nomeOperador)?.value?.trim() || "Sem nome",
+    turnoTrabalhado: document.getElementById(f.turnoTrabalhado)?.value?.trim() || "Não informado",
+    submittedAt: serverTimestamp(),
+    fechamentoDate: document.getElementById(f.dataFechamento)?.value || getTodayDateInput(),
+    total: getValue(f.banco),
+    turno: {
+      dataFechamento: document.getElementById(f.dataFechamento)?.value || getTodayDateInput(),
+      entries,
+      outflows,
+      pendings,
+      entradasTotal,
+      saidasTotal,
+      pendentesTotal,
+      saldoLiquido
+    }
+  };
 }
-
     function applySnapshotToTurn(turno, snapshot){
       if(!snapshot) return;
 
@@ -2540,7 +2540,7 @@ function closeHistoryModal(){
   document.getElementById("saveHistoryBtn").classList.add("hidden");
 }
 
-    function renderHistoryListFromCache(){
+function renderHistoryListFromCache(){
   const list = document.getElementById("historyList");
   const history = historyCache || [];
 
@@ -2551,43 +2551,53 @@ function closeHistoryModal(){
     return;
   }
 
-  list.innerHTML = history.slice(0, 40).map((item, index) => {
+  list.innerHTML = history.slice(0, 30).map((item, index) => {
     const saldoDisponivel = Number(item.total || 0);
     const saldoTotal = Number(item.turnProfit || item.turno?.saldoLiquido || 0);
     const diferencaCaixa = Number(item.diff || item.bankVariation || 0);
 
-return `
-  <div class="history-item" data-history-index="${index}">
-    <div class="history-item-top">
-      <div class="history-user">${escapeHtml(linhaTopo)}</div>
-    </div>
+    const nome = item.nomeOperador || "Sem nome";
+    const turno = item.turnoTrabalhado || "-";
+    const data = formatDateBR(item.fechamentoDate || "");
+    const linhaTopo = `${nome} • Turno ${turno} • ${data}`;
 
-    <div class="history-item-grid">
-      <div class="history-mini-card">
-        <div class="history-mini-label">Saldo Disponível</div>
-        <div class="history-mini-value">${money(saldoDisponivel)}</div>
-      </div>
+    return `
+      <div class="history-item" data-history-index="${index}">
+        <div class="history-item-top">
+          <div class="history-user">${escapeHtml(linhaTopo)}</div>
+        </div>
 
-      <div class="history-mini-card">
-        <div class="history-mini-label">Saldo Total</div>
-        <div class="history-mini-value ${saldoTotal < 0 ? "red" : ""}">
-          ${money(saldoTotal)}
+        <div class="history-item-grid">
+          <div class="history-mini-card">
+            <div class="history-mini-label">Saldo Disponível</div>
+            <div class="history-mini-value">${money(saldoDisponivel)}</div>
+          </div>
+
+          <div class="history-mini-card">
+            <div class="history-mini-label">Saldo Total</div>
+            <div class="history-mini-value ${saldoTotal < 0 ? "red" : ""}">
+              ${money(saldoTotal)}
+            </div>
+          </div>
+
+          <div class="history-mini-card">
+            <div class="history-mini-label">Diferença Caixa</div>
+            <div class="history-mini-value ${diferencaCaixa < 0 ? "red" : diferencaCaixa > 0 ? "green" : ""}">
+              ${diferencaCaixa > 0 ? "+ " : diferencaCaixa < 0 ? "- " : ""}
+              ${money(Math.abs(diferencaCaixa))}
+            </div>
+          </div>
         </div>
       </div>
+    `;
+  }).join("");
 
-      <div class="history-mini-card">
-        <div class="history-mini-label">Diferença Caixa</div>
-        <div class="history-mini-value ${diferencaCaixa < 0 ? "red" : diferencaCaixa > 0 ? "green" : ""}">
-          ${diferencaCaixa > 0 ? "+ " : diferencaCaixa < 0 ? "- " : ""}
-          ${money(Math.abs(diferencaCaixa))}
-        </div>
-      </div>
-    </div>
-  </div>
-`;  }).join("");
+  const ultimoNome = history[0]?.nomeOperador || "Sem nome";
+  const ultimoTurno = history[0]?.turnoTrabalhado || "-";
+  const ultimaData = formatDateBR(history[0]?.fechamentoDate || "");
 
   document.getElementById("historyInfo").textContent =
-    `Último fechamento: ${history[0]?.submittedByName || "Sistema"} • ${formatDateBR(history[0]?.fechamentoDate || "")}`;
+    `Último fechamento: ${ultimoNome} • Turno ${ultimoTurno} • ${ultimaData}`;
 
   list.querySelectorAll("[data-history-index]").forEach((el) => {
     el.addEventListener("click", () => {
@@ -2597,7 +2607,6 @@ return `
 
   updateHistoryVisibility();
 }
-
 function openHistoryModal(index){
   const item = historyCache[index];
   if(!item) return;
@@ -2605,9 +2614,8 @@ function openHistoryModal(index){
   window.editingHistoryIndex = index;
   window.historyEditMode = false;
 
-  document.getElementById("historyModalTitle").textContent =
-    `Fechamento • ${item.submittedByName || "Sistema"}`;
-
+document.getElementById("historyModalTitle").textContent =
+  `Fechamento • ${item.nomeOperador || "Sem nome"} • Turno ${item.turnoTrabalhado || "-"}`;
   document.getElementById("historyModalSub").textContent =
     `Data do fechamento: ${formatDateBR(item.fechamentoDate || "")} • Enviado em: ${formatDateTimeBR(item.submittedAt)}`;
 
@@ -2631,7 +2639,7 @@ function openHistoryModal(index){
 
       <div class="modal-summary-card">
         <div class="modal-summary-label">Responsável</div>
-        <div class="modal-summary-value">${escapeHtml(item.submittedByName || "-")}</div>
+        <div class="modal-summary-value">${escapeHtml(item.nomeOperador || "-")}</div>
       </div>
 
       <div class="modal-summary-card">
@@ -3141,7 +3149,7 @@ function renderHistoryModalContent(item, editMode = false){
   const turno = item.turno || {};
 
   document.getElementById("historyModalTitle").textContent =
-    `Fechamento • ${item.submittedByName || "Sistema"}`;
+    `Fechamento • ${item.nomeOperador || "Sem nome"} • Turno ${item.turnoTrabalhado || "-"}`;
 
   document.getElementById("historyModalSub").textContent =
     `Data do fechamento: ${formatDateBR(item.fechamentoDate || "")} • Enviado em: ${formatDateTimeBR(item.submittedAt)}`;
@@ -3237,7 +3245,8 @@ function renderHistoryModalContent(item, editMode = false){
       </div>
       <div class="modal-summary-card">
         <div class="modal-summary-label">Responsável</div>
-        <div class="modal-summary-value">${escapeHtml(item.submittedByName || "-")}</div>
+ <div class="modal-summary-value">${escapeHtml(item.nomeOperador || "-")}
+</div>
       </div>
       <div class="modal-summary-card">
         <div class="modal-summary-label">Data</div>
@@ -3653,9 +3662,9 @@ document.addEventListener("DOMContentLoaded", () => {
   updateHistoryVisibility();
   updateTurno1Visibility();
 
-  [        "t1_banco","t1_pppoker","t1_suprema","t1_buffalo","t1_ganamos","t1_cargas","t1_cargas_poker",
-        "t2_banco","t2_pppoker","t2_suprema","t2_buffalo","t2_ganamos","t2_cargas","t2_cargas_poker"
-      ].forEach((id) => {
+  [
+    "t1_banco","t1_pppoker","t1_suprema","t1_buffalo","t1_ganamos","t1_cargas","t1_cargas_poker",
+    "t2_banco","t2_pppoker","t2_suprema","t2_buffalo","t2_ganamos","t2_cargas","t2_cargas_poker"      ].forEach((id) => {
         const input = document.getElementById(id);
         if(input) attachMoneyMask(input);
       });
@@ -3761,7 +3770,7 @@ const lista = historyCache
 
         const itemSelecionado = historyCache[indice];
 
-        if (!confirm(`Deseja excluir o histórico de ${itemSelecionado.submittedByName || "Sistema"} em ${formatDateBR(itemSelecionado.fechamentoDate || "")}?`)) {
+        if (!confirm(`Deseja excluir o histórico de ${itemSelecionado.nomeOperador || "Sem nome"} em ${formatDateBR(itemSelecionado.fechamentoDate || "")}?`)) {
           return;
         }
 
