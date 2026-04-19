@@ -3615,23 +3615,36 @@ document.addEventListener("DOMContentLoaded", () => {
   document.getElementById("closePdfRangeModal").addEventListener("click", closePdfRangeModal);
   document.getElementById("pdfRangeBackdrop").addEventListener("click", closePdfRangeModal);
 
-  document.getElementById("confirmExportPdf").addEventListener("click", () => {
-    const startDate = document.getElementById("pdfDateStart").value;
-    const endDate = document.getElementById("pdfDateEnd").value;
+document.getElementById("confirmExportPdf").addEventListener("click", () => {
+  const startDate = document.getElementById("pdfDateStart").value;
+  const endDate = document.getElementById("pdfDateEnd").value;
 
-    if(!startDate || !endDate){
-      alert("Selecione a data inicial e a data final.");
-      return;
-    }
+  if(!startDate || !endDate){
+    alert("Selecione a data inicial e a data final.");
+    return;
+  }
 
-    if(startDate > endDate){
-      alert("A data inicial não pode ser maior que a data final.");
-      return;
-    }
+  if(startDate > endDate){
+    alert("A data inicial não pode ser maior que a data final.");
+    return;
+  }
 
-    closePdfRangeModal();
-  });
+  const printWindow = window.open("", "_blank", "width=1280,height=900");
+  if(!printWindow){
+    alert("Não foi possível abrir a janela de impressão.");
+    return;
+  }
 
+  printWindow.document.open();
+  printWindow.document.write(buildPremiumPdfHtml(startDate, endDate));
+  printWindow.document.close();
+  printWindow.focus();
+  printWindow.onload = () => {
+    printWindow.print();
+  };
+
+  closePdfRangeModal();
+});
   updateHistoryVisibility();
   updateTurno1Visibility();
 
