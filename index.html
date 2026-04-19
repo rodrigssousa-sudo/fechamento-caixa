@@ -468,11 +468,18 @@ h1{
   box-shadow:0 8px 24px rgba(15,23,42,.04);
 }
 
+.history-card-top{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:12px;
+}
+
 .history-card-title{
   font-size:13px;
   font-weight:800;
   color:#0f172a;
-  margin-bottom:6px;
+  margin-bottom:4px;
 }
 
 .history-card-text{
@@ -556,7 +563,13 @@ h1{
   color:#0f172a;
 }
 
-.history-mini-value.red{color:#dc2626;}
+.history-mini-value.red{
+  color:#dc2626;
+}
+
+.history-mini-value.green{
+  color:#16a34a;
+}
 
 .history-empty{
   padding:14px;
@@ -1850,6 +1863,20 @@ function getTodayDateInput(){
   return local.toISOString().split("T")[0];
 }
 
+async function getUsersFromFirestore(){
+  const q = query(collection(db, "users"), orderBy("createdAt", "desc"));
+  const snapshot = await getDocs(q);
+  return snapshot.docs.map((docItem) => ({
+    id: docItem.id,
+    ...docItem.data()
+  }));
+}
+
+async function deleteUserDocFromFirestore(uid){
+  if(!uid) return;
+await deleteDoc(doc(db, "users", uid));
+}
+
 async function saveHistoryItem(item){
   const q = query(
     collection(db, "history"),
@@ -1858,14 +1885,15 @@ async function saveHistoryItem(item){
   );
 
   const snapshot = await getDocs(q);
-  const previousItem = snapshot.docs[0]?.data() || {};
+  const previousItem = snapshot.docs[0]?.data() || null;
 
-  const currentProfit = Number(item.turno?.saldoLiquido || 0);
-  const previousProfit = Number(previousItem.turnProfit || previousItem.turno?.saldoLiquido || 0);
+  const previousLiquid = Number(previousItem?.turno?.saldoLiquido || 0);
+  const currentLiquid = Number(item?.turno?.saldoLiquido || 0);
 
-  const diffTurnos = currentProfit - previousProfit;
+  // Diferença de caixa = Turno Anterior - Turno Atual
+  const diffTurnos = previousLiquid - currentLiquid;
 
-  item.turnProfit = currentProfit;
+  item.turnProfit = currentLiquid;
   item.diff = diffTurnos;
   item.bankVariation = diffTurnos;
 
@@ -1878,24 +1906,24 @@ function formatDateBR(dateStr){
   if(!y || !m || !d) return dateStr;
   return `${d}/${m}/${y}`;
 }
-    function formatDateTimeBR(value){
-      if(!value) return "Sem data";
 
-      let dt;
-      if (value?.toDate) {
-        dt = value.toDate();
-      } else {
-        dt = new Date(value);
-      }
+function formatDateTimeBR(value){
+  if(!value) return "Sem data";
 
-      if (isNaN(dt.getTime())) return "Sem data";
+  let dt;
+  if (value?.toDate) {
+    dt = value.toDate();
+  } else {
+    dt = new Date(value);
+  }
 
-      return `${dt.toLocaleDateString("pt-BR")} às ${dt.toLocaleTimeString("pt-BR", {
-        hour: "2-digit",
-        minute: "2-digit"
-      })}`;
-    }
+  if (isNaN(dt.getTime())) return "Sem data";
 
+  return `${dt.toLocaleDateString("pt-BR")} às ${dt.toLocaleTimeString("pt-BR", {
+    hour: "2-digit",
+    minute: "2-digit"
+  })}`;
+}
     function parseMoneyInput(value){
       if(!value) return 0;
       const normalized = String(value)
@@ -2387,29 +2415,6 @@ function formatDateBR(dateStr){
       };
     }
 
-async function saveHistoryItem(item){
-  const q = query(
-    collection(db, "history"),
-    orderBy("submittedAt", "desc"),
-    limit(1)
-  );
-
-  const snapshot = await getDocs(q);
-  const previousItem = snapshot.docs[0]?.data() || null;
-
-  const previousLiquid = Number(previousItem?.turno?.saldoLiquido || 0);
-  const currentLiquid = Number(item?.turno?.saldoLiquido || 0);
-
-  // Diferença de caixa = Turno 1 - Turno 2
-  item.diff = previousLiquid - currentLiquid;
-  item.bankVariation = item.diff;
-
-  // Lucro real do turno atual
-  item.turnProfit = currentLiquid;
-
-  await addDoc(collection(db, "history"), item);
-}
-
     function applySnapshotToTurn(turno, snapshot){
       if(!snapshot) return;
 
@@ -2454,59 +2459,64 @@ async function saveHistoryItem(item){
     }
 
     function renderHistoryListFromCache(){
-      const list = document.getElementById("historyList");
-      const history = historyCache || [];
+  const list = document.getElementById("historyList");
+  const history = historyCache || [];
 
-      if(!history.length){
-        list.innerHTML = `<div class="history-empty">Sem histórico ainda.</div>`;
-        document.getElementById("historyInfo").textContent = "Nenhum turno anterior salvo ainda.";
-        updateHistoryVisibility();
-        return;
-      }
+  if(!history.length){
+    list.innerHTML = `<div class="history-empty">Sem histórico ainda.</div>`;
+    document.getElementById("historyInfo").textContent = "Nenhum turno anterior salvo ainda.";
+    updateHistoryVisibility();
+    return;
+  }
 
-      list.innerHTML = history.slice(0, 4).map((item, index) => `
-        <div class="history-item" data-history-index="${index}">
-          <div class="history-item-top">
-            <div class="history-user">${escapeHtml(item.submittedByName || "Sistema")}</div>
-            <div class="history-time">${escapeHtml(formatDateBR(item.fechamentoDate || ""))}</div>
+  list.innerHTML = history.slice(0, 4).map((item, index) => {
+    const saldoDisponivel = Number(item.total || 0);
+    const saldoTotal = Number(item.turnProfit || item.turno?.saldoLiquido || 0);
+    const diferencaCaixa = Number(item.diff || item.bankVariation || 0);
+
+    return `
+      <div class="history-item" data-history-index="${index}">
+        <div class="history-item-top">
+          <div class="history-user">${escapeHtml(item.submittedByName || "Sistema")}</div>
+          <div class="history-time">${escapeHtml(formatDateBR(item.fechamentoDate || ""))}</div>
+        </div>
+
+        <div class="history-item-grid">
+          <div class="history-mini-card">
+            <div class="history-mini-label">Saldo Disponível</div>
+            <div class="history-mini-value">${money(saldoDisponivel)}</div>
           </div>
 
-          <div class="history-item-grid">
-            <div class="history-mini-card">
-              <div class="history-mini-label">Saldo Disponivel</div>
-              <div class="history-mini-value">${money(item.total || 0)}</div>
+          <div class="history-mini-card">
+            <div class="history-mini-label">Saldo Total</div>
+            <div class="history-mini-value ${saldoTotal < 0 ? "red" : ""}">
+              ${money(saldoTotal)}
             </div>
+          </div>
 
-            <div class="history-mini-card">
-  <div class="history-mini-label">Saldo Total</div>
-  <div class="history-mini-value ${(Number(item.turnProfit || 0)) < 0 ? "red" : ""}">
-    ${money(item.turnProfit || 0)}
-  </div>
-</div>
-
-<div class="history-mini-card">
-  <div class="history-mini-label">Diferença Caixa</div>
-  <div class="history-mini-value ${
-    Number(item.diff || 0) < 0 ? "red" : Number(item.diff || 0) > 0 ? "green" : ""
-  }">
-    ${Number(item.diff || 0) > 0 ? "+ " : Number(item.diff || 0) < 0 ? "- " : ""}
-    ${money(Math.abs(Number(item.diff || 0)))}
-  </div>
-</div>
+          <div class="history-mini-card">
+            <div class="history-mini-label">Diferença Caixa</div>
+            <div class="history-mini-value ${diferencaCaixa < 0 ? "red" : diferencaCaixa > 0 ? "green" : ""}">
+              ${diferencaCaixa > 0 ? "+ " : diferencaCaixa < 0 ? "- " : ""}
+              ${money(Math.abs(diferencaCaixa))}
+            </div>
+          </div>
         </div>
-      `).join("");
+      </div>
+    `;
+  }).join("");
 
-      document.getElementById("historyInfo").textContent =
-        `Último fechamento: ${history[0]?.submittedByName || "Sistema"} • ${formatDateBR(history[0]?.fechamentoDate || "")}`;
+  document.getElementById("historyInfo").textContent =
+    `Último fechamento: ${history[0]?.submittedByName || "Sistema"} • ${formatDateBR(history[0]?.fechamentoDate || "")}`;
 
-      list.querySelectorAll("[data-history-index]").forEach((el) => {
-        el.addEventListener("click", () => {
-          openHistoryModal(Number(el.dataset.historyIndex));
-        });
-      });
+  list.querySelectorAll("[data-history-index]").forEach((el) => {
+    el.addEventListener("click", () => {
+      openHistoryModal(Number(el.dataset.historyIndex));
+    });
+  });
 
-      updateHistoryVisibility();
-    }
+  updateHistoryVisibility();
+}
 
     function openHistoryModal(index){
       const item = historyCache[index];
