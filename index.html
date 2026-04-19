@@ -551,6 +551,63 @@ h1{
   line-height:1.45;
 }
 
+    .systems-compare-bar{
+  display:grid;
+  grid-template-columns:repeat(auto-fit, minmax(180px, 1fr));
+  gap:10px;
+  margin-top:12px;
+}
+
+.system-pill{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  padding:12px 14px;
+  border-radius:16px;
+  border:1px solid rgba(148,163,184,.10);
+  background:rgba(255,255,255,.82);
+}
+
+.system-dot{
+  width:12px;
+  height:12px;
+  border-radius:50%;
+  flex-shrink:0;
+}
+
+.system-dot.up{
+  background:#16a34a;
+  box-shadow:0 0 0 4px rgba(22,163,74,.12);
+}
+
+.system-dot.down{
+  background:#dc2626;
+  box-shadow:0 0 0 4px rgba(220,38,38,.12);
+}
+
+.system-dot.same{
+  background:#d97706;
+  box-shadow:0 0 0 4px rgba(217,119,6,.12);
+}
+
+.system-pill-text{
+  display:flex;
+  flex-direction:column;
+  gap:2px;
+}
+
+.system-pill-name{
+  font-size:13px;
+  font-weight:900;
+  color:#0f172a;
+}
+
+.system-pill-value{
+  font-size:12px;
+  color:#64748b;
+  font-weight:700;
+}
+
 .danger-mini-btn{
   min-height:36px;
   padding:0 12px;
