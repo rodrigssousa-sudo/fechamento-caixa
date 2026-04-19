@@ -1644,14 +1644,28 @@ button{
             </div>
           </div>
 
-          <div class="turno-meta">
-            <div class="field">
-              <label for="t2_data_fechamento">Data do fechamento</label>
-              <input type="date" id="t2_data_fechamento" />
-            </div>
-          </div>
+<div class="turno-meta">
 
-          <div class="finance-block">
+  <div class="fields two-col">
+
+    <div class="field">
+      <label for="t2_nome_operador">Nome do operador</label>
+      <input type="text" id="t2_nome_operador" placeholder="Ex.: Lucas" />
+    </div>
+
+    <div class="field">
+      <label for="t2_turno_trabalhado">Turno</label>
+      <input type="text" id="t2_turno_trabalhado" placeholder="Ex.: Manhã / Noite / T2" />
+    </div>
+
+    <div class="field">
+      <label for="t2_data_fechamento">Data do fechamento</label>
+      <input type="date" id="t2_data_fechamento" />
+    </div>
+
+  </div>
+
+</div>          <div class="finance-block">
             <div class="finance-head">
               <h4>Entradas</h4>
               <div class="finance-total blue" id="t2_entradas_total">$ 0,00</div>
@@ -2181,29 +2195,32 @@ function formatDateTimeBR(value){
       if(t2 && !t2.value) t2.value = getTodayDateInput();
     }
 
-    const fieldsByTurn = {
-      t1: {
-        dataFechamento: "t1_data_fechamento",
-        banco: "t1_banco",
-        pppoker: "t1_pppoker",
-        suprema: "t1_suprema",
-        buffalo: "t1_buffalo",
-        ganamos: "t1_ganamos",
-        cargas: "t1_cargas",
-        cargasPoker: "t1_cargas_poker"
-      },
-      t2: {
-        dataFechamento: "t2_data_fechamento",
-        banco: "t2_banco",
-        pppoker: "t2_pppoker",
-        suprema: "t2_suprema",
-        buffalo: "t2_buffalo",
-        ganamos: "t2_ganamos",
-        cargas: "t2_cargas",
-        cargasPoker: "t2_cargas_poker"
-      }
-    };
-
+const fieldsByTurn = {
+  t1: {
+    dataFechamento: "t1_data_fechamento",
+    nomeOperador: "t1_nome_operador",
+    turnoTrabalhado: "t1_turno_trabalhado",
+    banco: "t1_banco",
+    pppoker: "t1_pppoker",
+    suprema: "t1_suprema",
+    buffalo: "t1_buffalo",
+    ganamos: "t1_ganamos",
+    cargas: "t1_cargas",
+    cargasPoker: "t1_cargas_poker"
+  },
+  t2: {
+    dataFechamento: "t2_data_fechamento",
+    nomeOperador: "t2_nome_operador",
+    turnoTrabalhado: "t2_turno_trabalhado",
+    banco: "t2_banco",
+    pppoker: "t2_pppoker",
+    suprema: "t2_suprema",
+    buffalo: "t2_buffalo",
+    ganamos: "t2_ganamos",
+    cargas: "t2_cargas",
+    cargasPoker: "t2_cargas_poker"
+  }
+};
     function getValue(id){
       const el = document.getElementById(id);
       return el ? parseMoneyInput(el.value) : 0;
@@ -2429,12 +2446,9 @@ function updateTurno1Visibility(){
       const pendentesTotal = pendings.reduce((acc, item) => acc + item.value, 0);
       const saldoLiquido = entradasTotal - saidasTotal - pendentesTotal;
 
-      const activeUser = loadActiveUser();
-
 return {
-  submittedByName: activeUser?.name || "Usuário",
-  submittedByEmail: activeUser?.email || "",
-  submittedAt: serverTimestamp(),
+  nomeOperador: document.getElementById(f.nomeOperador)?.value?.trim() || "Sem nome",
+  turnoTrabalhado: document.getElementById(f.turnoTrabalhado)?.value?.trim() || "Não informado",
   fechamentoDate: document.getElementById(f.dataFechamento)?.value || getTodayDateInput(),
   total: getValue(f.banco),
   turno: {
@@ -2448,7 +2462,7 @@ return {
     saldoLiquido
   }
 };
-    }
+}
 
     function applySnapshotToTurn(turno, snapshot){
       if(!snapshot) return;
@@ -2513,37 +2527,35 @@ function closeHistoryModal(){
     const saldoTotal = Number(item.turnProfit || item.turno?.saldoLiquido || 0);
     const diferencaCaixa = Number(item.diff || item.bankVariation || 0);
 
-    return `
-      <div class="history-item" data-history-index="${index}">
-        <div class="history-item-top">
-          <div class="history-user">${escapeHtml(item.submittedByName || "Sistema")}</div>
-          <div class="history-time">${escapeHtml(formatDateBR(item.fechamentoDate || ""))}</div>
-        </div>
+return `
+  <div class="history-item" data-history-index="${index}">
+    <div class="history-item-top">
+      <div class="history-user">${escapeHtml(linhaTopo)}</div>
+    </div>
 
-        <div class="history-item-grid">
-          <div class="history-mini-card">
-            <div class="history-mini-label">Saldo Disponível</div>
-            <div class="history-mini-value">${money(saldoDisponivel)}</div>
-          </div>
+    <div class="history-item-grid">
+      <div class="history-mini-card">
+        <div class="history-mini-label">Saldo Disponível</div>
+        <div class="history-mini-value">${money(saldoDisponivel)}</div>
+      </div>
 
-          <div class="history-mini-card">
-            <div class="history-mini-label">Saldo Total</div>
-            <div class="history-mini-value ${saldoTotal < 0 ? "red" : ""}">
-              ${money(saldoTotal)}
-            </div>
-          </div>
-
-          <div class="history-mini-card">
-            <div class="history-mini-label">Diferença Caixa</div>
-            <div class="history-mini-value ${diferencaCaixa < 0 ? "red" : diferencaCaixa > 0 ? "green" : ""}">
-              ${diferencaCaixa > 0 ? "+ " : diferencaCaixa < 0 ? "- " : ""}
-              ${money(Math.abs(diferencaCaixa))}
-            </div>
-          </div>
+      <div class="history-mini-card">
+        <div class="history-mini-label">Saldo Total</div>
+        <div class="history-mini-value ${saldoTotal < 0 ? "red" : ""}">
+          ${money(saldoTotal)}
         </div>
       </div>
-    `;
-  }).join("");
+
+      <div class="history-mini-card">
+        <div class="history-mini-label">Diferença Caixa</div>
+        <div class="history-mini-value ${diferencaCaixa < 0 ? "red" : diferencaCaixa > 0 ? "green" : ""}">
+          ${diferencaCaixa > 0 ? "+ " : diferencaCaixa < 0 ? "- " : ""}
+          ${money(Math.abs(diferencaCaixa))}
+        </div>
+      </div>
+    </div>
+  </div>
+`;  }).join("");
 
   document.getElementById("historyInfo").textContent =
     `Último fechamento: ${history[0]?.submittedByName || "Sistema"} • ${formatDateBR(history[0]?.fechamentoDate || "")}`;
@@ -3367,15 +3379,16 @@ document.getElementById("toggleTurno1Btn").addEventListener("click", () => {
           return;
         }
 
-        const lista = historyCache
-          .map((item, index) => {
-            const nome = item.submittedByName || "Sistema";
-            const data = formatDateBR(item.fechamentoDate || "");
-            const total = money(item.total || 0);
-            return `${index + 1} - ${nome} - ${data} - ${total}`;
-          })
-          .join("\n");
+const lista = historyCache
+  .map((item, index) => {
+    const nome = item.nomeOperador || "Sem nome";
+    const turno = item.turnoTrabalhado || "-";
+    const data = formatDateBR(item.fechamentoDate || "");
+    const total = money(item.total || 0);
 
+    return `${index + 1} - ${nome} - Turno ${turno} - ${data} - ${total}`;
+  })
+  .join("\n");
         const escolha = prompt(`Digite o número do histórico que deseja excluir:\n\n${lista}`);
         if (escolha === null) return;
 
