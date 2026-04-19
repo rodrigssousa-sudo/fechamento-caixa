@@ -3080,7 +3080,7 @@ function buildPremiumPdfHtml(startDate, endDate){
   `;
 }
 
-    function exportToPdfProtected(){
+function exportToPdfProtected(){
   const code = prompt("Digite código interno:");
   if(code === null) return;
 
@@ -3091,7 +3091,6 @@ function buildPremiumPdfHtml(startDate, endDate){
 
   openPdfRangeModal();
 }
-
       const printWindow = window.open("", "_blank", "width=1200,height=900");
       if(!printWindow){
         alert("Não foi possível abrir a janela de impressão.");
@@ -3641,19 +3640,6 @@ document.addEventListener("DOMContentLoaded", () => {
       alert("A data inicial não pode ser maior que a data final.");
       return;
     }
-
-    const printWindow = window.open("", "_blank", "width=1280,height=900");
-    if(!printWindow){
-      alert("Não foi possível abrir a janela de impressão.");
-      return;
-    }
-
-    printWindow.document.open();
-    printWindow.document.write(buildPremiumPdfHtml(startDate, endDate));
-    printWindow.document.close();
-    printWindow.focus();
-    printWindow.onload = () => {
-      printWindow.print();
     };
 
     closePdfRangeModal();
@@ -3719,34 +3705,34 @@ document.addEventListener("DOMContentLoaded", () => {
         document.getElementById("reportsMenu").classList.toggle("hidden");
       });
 
-      document.querySelectorAll("[data-report-range]").forEach((btn) => {
-        btn.addEventListener("click", () => {
-          const senha = prompt("Digite código interno:");
-          if(senha === null) return;
+document.querySelectorAll("[data-report-range]").forEach((btn) => {
+  btn.addEventListener("click", () => {
+    const senha = prompt("Digite código interno:");
+    if (senha === null) return;
 
-          if(senha !== REPORT_CODE){
-            alert("Código interno incorreto.");
-            return;
-          }
+    if (senha !== REPORT_CODE) {
+      alert("Código interno incorreto.");
+      return;
+    }
 
-          renderCashflowReport(Number(btn.dataset.reportRange));
-          document.getElementById("reportsMenu").classList.add("hidden");
-        });
-      });
+    alert("Relatório ainda não configurado.");
+    document.getElementById("reportsMenu").classList.add("hidden");
+  });
+});
 
-      document.getElementById("deleteHistoryBtn").addEventListener("click", async () => {
-        const senha = prompt("Digite código interno:");
-        if (senha === null) return;
+document.getElementById("deleteHistoryBtn").addEventListener("click", async () => {
+  const senha = prompt("Digite código interno:");
+  if (senha === null) return;
 
-        if (senha !== DELETE_HISTORY_CODE) {
-          alert("Código interno incorreto.");
-          return;
-        }
+  if (senha !== DELETE_HISTORY_CODE) {
+    alert("Código interno incorreto.");
+    return;
+  }
 
-        if (!historyCache.length) {
-          alert("Não há histórico para excluir.");
-          return;
-        }
+  if (!historyCache.length) {
+    alert("Não há histórico para excluir.");
+    return;
+  }
 
 const lista = historyCache
   .map((item, index) => {
