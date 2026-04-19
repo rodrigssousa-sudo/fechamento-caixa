@@ -2006,17 +2006,21 @@ async function saveHistoryItem(item){
     limit(1)
   );
 
-  const snapshot = await getDocs(q);
-  const previousItem = snapshot.docs[0]?.data() || null;
+const snapshot = await getDocs(q);
+const previousItem = snapshot.docs[0]?.data() || null;
 
-  // SALDO TOTAL DO FECHAMENTO ANTERIOR
-  const previousSaldoTotal = Number(previousItem?.turno?.saldoLiquido || 0);
+// SALDO TOTAL DO FECHAMENTO ANTERIOR
+const previousSaldoTotal = Number(previousItem?.turno?.saldoLiquido || 0);
 
-  // SALDO TOTAL DO FECHAMENTO ATUAL
-  const currentSaldoTotal = Number(item?.turno?.saldoLiquido || 0);
+// SALDO TOTAL DO FECHAMENTO ATUAL
+const currentSaldoTotal = Number(item?.turno?.saldoLiquido || 0);
 
-  // DIFERENÇA DE CAIXA = SALDO TOTAL ANTERIOR - SALDO TOTAL ATUAL
-  const diffCaixa = currentSaldoTotal - previousSaldoTotal;
+// SAÍDAS DO TURNO ATUAL
+const saidasTurnoAtual = Number(item?.turno?.saidasTotal || 0);
+
+// DIFERENÇA DE CAIXA CORRETA
+// fórmula: (saldo atual + saídas do turno atual) - saldo anterior
+const diffCaixa = (currentSaldoTotal + saidasTurnoAtual) - previousSaldoTotal;
 
   item.turnProfit = currentSaldoTotal;   // saldo total do fechamento atual
   item.diff = diffCaixa;                 // diferença entre saldos totais
