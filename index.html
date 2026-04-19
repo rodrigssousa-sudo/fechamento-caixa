@@ -1849,21 +1849,32 @@ button{
       const local = new Date(now.getTime() - offset * 60000);
       return local.toISOString().split("T")[0];
     }
+async function saveHistoryItem(item){
+const q = query(
+    collection(db, "history"),
+    orderBy("submittedAt", "desc"),
+    limit(1)
+  );
 
-    async function getUsersFromFirestore(){
-      const q = query(collection(db, "users"), orderBy("createdAt", "desc"));
-      const snapshot = await getDocs(q);
+  const snapshot = await getDocs(q);
+  const previousItem = snapshot.docs[0]?.data() || {};
 
-      return snapshot.docs.map((docItem) => ({
-        id: docItem.id,
-        ...docItem.data()
-      }));
-    }
+  // 🔥 lucro do turno atual (turno 2)
+  const currentProfit = Number(item.turno?.saldoLiquido || 0);
 
-    async function deleteUserDocFromFirestore(uid){
-      if (!uid) return;
-      await deleteDoc(doc(db, "users", uid));
-    }
+  // 🔥 lucro do turno anterior (turno 1 salvo no histórico)
+  const previousProfit = Number(previousItem.turnProfit || previousItem.turno?.saldoLiquido || 0);
+
+  // ✅ diferença entre turnos
+  const diffTurnos = currentProfit - previousProfit;
+
+  // salvar valores corretos
+  item.turnProfit = currentProfit;
+  item.diff = diffTurnos;
+  item.bankVariation = diffTurnos;
+
+  await addDoc(collection(db, "history"), item);
+}
 
     function formatDateBR(dateStr){
       if(!dateStr) return "Sem data";
@@ -3211,3 +3222,4 @@ async function saveHistoryItem(item){
   </script>
 </body>
 </html>
+
