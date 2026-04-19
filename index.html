@@ -2901,28 +2901,28 @@ function buildPremiumPdfHtml(startDate, endDate){
     return acc + Number(item.diff || item.bankVariation || 0);
   }, 0);
 
-  const linhas = filtered.map((item) => {
-    const nome = item.nomeOperador || "Sem nome";
-    const turno = item.turnoTrabalhado || "-";
-    const data = formatDateBR(item.fechamentoDate || "");
-    const banco = money(getBancoRecaFromSnapshot(item.turno || {}));
-    const saidas = money(item.turno?.saidasTotal || 0);
-    const pendentes = money(item.turno?.pendentesTotal || 0);
-    const saldo = money(item.turno?.saldoLiquido || 0);
+const linhas = filtered.map((item) => {
+  const nome = item.nomeOperador || "Sem nome";
+  const turno = item.turnoTrabalhado || "-";
+  const data = formatDateBR(item.fechamentoDate || "");
 
-    return `
-      <tr>
-        <td>${escapeHtml(nome)}</td>
-        <td>${escapeHtml(turno)}</td>
-        <td>${escapeHtml(data)}</td>
-        <td>${banco}</td>
-        <td>${saidas}</td>
-        <td>${pendentes}</td>
-        <td>${saldo}</td>
-      </tr>
-    `;
-  }).join("");
+  const banco = money(getBancoRecaFromSnapshot(item.turno || {}));
+  const saidas = money(item.turno?.saidasTotal || 0);
 
+  const diferencaCaixaValor = Number(item.diff || item.bankVariation || 0);
+  const diferenca = `${diferencaCaixaValor > 0 ? "+ " : diferencaCaixaValor < 0 ? "- " : ""}${money(Math.abs(diferencaCaixaValor))}`;
+
+  return `
+    <tr>
+      <td>${escapeHtml(nome)}</td>
+      <td>${escapeHtml(turno)}</td>
+      <td>${escapeHtml(data)}</td>
+      <td>${banco}</td>
+      <td>${saidas}</td>
+      <td>${diferenca}</td>
+    </tr>
+  `;
+}).join("");
 return `
   <!DOCTYPE html>
   <html lang="pt-BR">
