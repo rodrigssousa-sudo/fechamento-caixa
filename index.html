@@ -2574,8 +2574,7 @@ button{
 
       document.getElementById("historyModalTitle").textContent = `Fechamento • ${item.submittedByName || "Sistema"}`;
       document.getElementById("historyModalSub").textContent =
-        `Data do fechamento: ${formatDateBR(item.fechamentoDate || "")} • Enviado em: ${formatDateTimeBR(item.submittedAt)}`;
-
+  `Data: ${formatDateBR(item.fechamentoDate || "")} • Horário: ${item.turno?.shiftLabel || item.shiftLabel || "Sem horário"} • Enviado em: ${formatDateTimeBR(item.submittedAt)}`;
       const turno = item.turno || {};
 
       document.getElementById("historyModalBody").innerHTML = `
