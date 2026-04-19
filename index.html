@@ -2382,15 +2382,28 @@ button{
     }
 
     async function saveHistoryItem(item){
-      const q = query(collection(db, "history"), orderBy("submittedAt", "desc"), limit(1));
-      const snapshot = await getDocs(q);
-      const previousTotal = snapshot.docs[0]?.data()?.total || 0;
+  const q = query(
+    collection(db, "history"),
+    orderBy("submittedAt", "desc"),
+    limit(1)
+  );
 
-      item.bankVariation = item.total - previousTotal;
-      item.turnProfit = item.turno?.saldoLiquido || 0;
+  const snapshot = await getDocs(q);
 
-      await addDoc(collection(db, "history"), item);
-    }
+  const previousTotal = Number(snapshot.docs[0]?.data()?.total || 0);
+  const currentTotal = Number(item.total || 0);
+  const currentLiquid = Number(item.turno?.saldoLiquido || 0);
+  const currentPendentes = Number(item.turno?.pendentesTotal || 0);
+  const currentSaidas = Number(item.turno?.saidasTotal || 0);
+
+  item.diff = currentTotal - previousTotal;
+  item.bankVariation = item.diff;
+  item.turnProfit = currentLiquid;
+  item.turnSaidas = currentSaidas;
+  item.turnPendentes = currentPendentes;
+
+  await addDoc(collection(db, "history"), item);
+}
 
     function applySnapshotToTurn(turno, snapshot){
       if(!snapshot) return;
