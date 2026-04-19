@@ -2807,16 +2807,21 @@ function closePdfRangeModal(){
 }
 
 function getHistoryByDateRange(startDate, endDate){
-  const start = new Date(startDate + "T00:00:00");
-  const end = new Date(endDate + "T23:59:59");
+  if(!startDate || !endDate) return historyCache || [];
+
+  const start = new Date(`${startDate}T00:00:00`);
+  const end = new Date(`${endDate}T23:59:59`);
 
   return (historyCache || []).filter((item) => {
-    if(!item.fechamentoDate) return false;
-    const current = new Date(item.fechamentoDate + "T12:00:00");
+    const baseDate = item?.fechamentoDate || item?.turno?.dataFechamento;
+    if(!baseDate) return false;
+
+    const current = new Date(`${baseDate}T12:00:00`);
+    if(isNaN(current.getTime())) return false;
+
     return current >= start && current <= end;
   });
 }
-
 function buildPremiumPdfHtml(startDate, endDate){
   const filtered = getHistoryByDateRange(startDate, endDate);
 
@@ -3044,32 +3049,32 @@ function buildPremiumPdfHtml(startDate, endDate){
 
         <div class="table-wrap">
           ${
-            filtered.length
-              ? `
-                <table>
-                  <thead>
-                    <tr>
-                      <th>Nome</th>
-                      <th>Turno</th>
-                      <th>Data</th>
-                      <th>Banco Reca</th>
-                      <th>Saídas</th>
-                      <th>Pendentes</th>
-                      <th>Saldo</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    ${linhas}
-                  </tbody>
-                </table>
-              `
-              : `
-                <div class="empty">
-                  Nenhum fechamento encontrado no período selecionado.
-                </div>
-              `
-          }
-        </div>
+  filtered.length
+    ? `
+      <table>
+        <thead>
+          <tr>
+            <th>Nome</th>
+            <th>Turno</th>
+            <th>Data</th>
+            <th>Banco Reca</th>
+            <th>Saídas</th>
+            <th>Pendentes</th>
+            <th>Saldo</th>
+          </tr>
+        </thead>
+        <tbody>
+          ${linhas}
+        </tbody>
+      </table>
+    `
+    : `
+      <div class="empty">
+        Nenhum fechamento encontrado no período selecionado.<br>
+        Histórico carregado: ${(historyCache || []).length} registro(s).
+      </div>
+    `
+}        </div>
 
         <div class="footer">
           Documento interno • Bank King BRS
