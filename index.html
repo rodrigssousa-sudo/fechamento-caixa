@@ -322,22 +322,105 @@ h1{
   margin-bottom:14px;
 }
 
+/* 🔥 TAMANHO DO GRÁFICO */
+.chart-wrap{
+  width:100%;
+  height:200px;
+border-radius:16px;
+ overflow:hidden;
+}
+
+/* 🔥 DASHBOARD PROFISSIONAL */
+.pro-dashboard{
+  padding:18px;
+  border-radius:20px;
+  margin-top:10px;
+  background:linear-gradient(135deg,#0f172a,#1e293b);
+  color:#fff;
+
+ box-shadow:0 20px 40px rgba(0,0,0,0.35);
+
+}
+
+.pro-dashboard h3{
+  margin:0 0 12px;
+  font-size:16px;
+  font-weight:800;
+  color:#38bdf8;
+}
+
+.pro-chart{
+  width:100%;
+  height:180px;
+  border-radius:16px;
+  padding:12px;
+
+  /* fundo mais sofisticado */
+  background:
+    linear-gradient(
+      180deg,
+      rgba(56,189,248,0.12),
+      rgba(0,0,0,0)
+    ),
+    rgba(255,255,255,0.04);
+
+  /* efeito glass */
+  backdrop-filter:blur(10px);
+
+  /* borda suave */
+  border:1px solid rgba(255,255,255,0.08);
+
+  /* sombra interna estilo gráfico */
+  box-shadow:
+    inset 0 0 30px rgba(56,189,248,0.05),
+    0 10px 25px rgba(0,0,0,0.25);
+}
+
+
+/* STATS MAIS PROFISSIONAL */
+.pro-stats{
+  display:flex;
+  justify-content:space-between;
+  margin-top:14px;
+  gap:10px;
+}
+
+.pro-stat{
+  flex:1;
+  padding:10px;
+  border-radius:12px;
+
+  background:rgba(255,255,255,0.05);
+  border:1px solid rgba(255,255,255,0.08);
+
+  text-align:center;
+  backdrop-filter:blur(6px);
+}
+
+/* animação leve quando aparece */
+.pro-stat-value{
+  font-size:18px;
+  font-weight:900;
+  transition:0.3s;
+}
+
+.pro-stat-value.green{
+  color:#10b981;
+}
+
+.pro-stat-value.red{
+  color:#fb7185;
+}
+
 .card{
 
   background:rgba(255,255,255,.82);
-
   backdrop-filter:blur(18px);
-
   -webkit-backdrop-filter:blur(18px);
-
   border:1px solid rgba(255,255,255,.86);
-
   border-radius:24px;
-
   box-shadow:
-
     0 20px 50px rgba(15,23,42,.07),
-
     0 8px 24px rgba(15,23,42,.04);
 
 }
@@ -1541,6 +1624,50 @@ button{
           </div>
         </article>
 
+<section class="pro-dashboard card">
+  <div class="pro-dashboard-head">
+    <div>
+      <h2>Dashboard Profissional</h2>
+      <p class="pro-dashboard-sub">Visão diária da operação e evolução do saldo</p>
+    </div>
+  </div>
+
+  <div class="pro-stats-grid">
+    <div class="pro-stat-card">
+      <div class="pro-stat-label">Saldo disponível atual</div>
+      <div class="pro-stat-value" id="dashSaldoDisponivel">$ 0,00</div>
+    </div>
+
+    <div class="pro-stat-card">
+      <div class="pro-stat-label">Saldo total atual</div>
+      <div class="pro-stat-value" id="dashSaldoTotal">$ 0,00</div>
+    </div>
+
+    <div class="pro-stat-card">
+      <div class="pro-stat-label">Média diária</div>
+      <div class="pro-stat-value" id="dashMediaDiaria">$ 0,00</div>
+    </div>
+
+    <div class="pro-stat-card">
+      <div class="pro-stat-label">Melhor dia</div>
+      <div class="pro-stat-value" id="dashMelhorDia">$ 0,00</div>
+    </div>
+  </div>
+
+  <div class="chart-card">
+    <div class="chart-card-head">
+      <div>
+        <h3>Evolução diária do saldo</h3>
+        <small>Baseado no saldo total dos fechamentos</small>
+      </div>
+    </div>
+
+    <div class="chart-wrap">
+      <canvas id="saldoChart"></canvas>
+    </div>
+  </div>
+</section>
+
         <article class="history-card">
           <div class="history-card-top">
             <div>
@@ -1769,7 +1896,8 @@ button{
       <div id="adminUsersList" class="admin-list"></div>
     </div>
   </div>
-
+<!-- 🔥 BIBLIOTECA DO GRÁFICO -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-app.js";
     import {
@@ -2799,9 +2927,60 @@ function formatDateTimeBR(value){
       document.getElementById("bankValue").textContent =
         balanceVisible ? money(bancaTotalAtual) : "••••••";
 
-      updateEyeIcon();
-      updateStatusPill(ultimoLucroDoTurno);
+updateEyeIcon();
+updateStatusPill(ultimoLucroDoTurno);
+renderSaldoChart(); // 🔥 AQUI
     }
+
+function renderSaldoChart(){
+  const ctx = document.getElementById("saldoChart");
+  if(!ctx) return;
+
+  const history = historyCache || [];
+  const ultimos = history.slice(0, 10).reverse();
+
+  const labels = ultimos.map(item =>
+    formatDateBR(item.fechamentoDate || "")
+  );
+
+  const valores = ultimos.map(item =>
+    Number(item.turnProfit || 0)
+  );
+
+  if(window.saldoChartInstance){
+    window.saldoChartInstance.destroy();
+  }
+
+  window.saldoChartInstance = new Chart(ctx, {
+    type: "line",
+    data: {
+      labels,
+      datasets: [{
+        data: valores,
+        tension: 0.4,
+        fill: true,
+        borderColor: "#38bdf8",
+        backgroundColor: "rgba(56,189,248,0.15)",
+        pointRadius: 3
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: { legend: { display: false } },
+      scales: {
+        x: {
+          ticks: { color: "#94a3b8" },
+          grid: { display: false }
+        },
+        y: {
+          ticks: { color: "#94a3b8" },
+          grid: { color: "rgba(255,255,255,0.05)" }
+        }
+      }
+    }
+  });
+}
 
     async function openAdminModal(){
       const code = prompt("Digite código interno:");
