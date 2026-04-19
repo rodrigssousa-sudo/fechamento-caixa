@@ -1887,15 +1887,18 @@ async function saveHistoryItem(item){
   const snapshot = await getDocs(q);
   const previousItem = snapshot.docs[0]?.data() || null;
 
-  const previousLiquid = Number(previousItem?.turno?.saldoLiquido || 0);
-  const currentLiquid = Number(item?.turno?.saldoLiquido || 0);
+  // SALDO TOTAL DO FECHAMENTO ANTERIOR
+  const previousSaldoTotal = Number(previousItem?.turno?.saldoLiquido || 0);
 
-  // Diferença de caixa = Turno Anterior - Turno Atual
-  const diffTurnos = previousLiquid - currentLiquid;
+  // SALDO TOTAL DO FECHAMENTO ATUAL
+  const currentSaldoTotal = Number(item?.turno?.saldoLiquido || 0);
 
-  item.turnProfit = currentLiquid;
-  item.diff = diffTurnos;
-  item.bankVariation = diffTurnos;
+  // DIFERENÇA DE CAIXA = SALDO TOTAL ANTERIOR - SALDO TOTAL ATUAL
+  const diffCaixa = previousSaldoTotal - currentSaldoTotal;
+
+  item.turnProfit = currentSaldoTotal;   // saldo total do fechamento atual
+  item.diff = diffCaixa;                 // diferença entre saldos totais
+  item.bankVariation = diffCaixa;
 
   await addDoc(collection(db, "history"), item);
 }
