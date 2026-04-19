@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-  <title>Bank King PRO</title>
+  <title>Bank King BRS - PRO</title>
   <style>
     :root{
       --bg:#030712;
@@ -311,14 +311,15 @@
       box-shadow:var(--shadow);
     }
 
-    .summary-card{padding:16px;}
-
-    .summary-head h2{
-      margin:0;
-      font-size:17px;
-      letter-spacing:-.02em;
-    }
-
+.summary-card{
+  padding:20px;
+  border-radius:22px;
+  background:
+    linear-gradient(180deg, rgba(255,255,255,.03), rgba(255,255,255,.015)),
+    linear-gradient(135deg, rgba(8,18,38,.96), rgba(7,15,30,.98));
+  border:1px solid rgba(148,163,184,.08);
+  box-shadow:0 20px 50px rgba(0,0,0,.35);
+}
     .pill{
       display:inline-flex;
       align-items:center;
@@ -335,19 +336,20 @@
     .pill.negative{color:#ffb3b3; background:rgba(239,68,68,.12); border-color:rgba(239,68,68,.22);}
     .pill.neutral{color:#ffe29c; background:rgba(245,158,11,.12); border-color:rgba(245,158,11,.22);}
 
-    .bank-card{
-      position:relative;
-      overflow:hidden;
-      border-radius:22px;
-      padding:18px;
-      margin-bottom:14px;
-      background:
-        radial-gradient(circle at top right, rgba(96,165,250,.18), transparent 30%),
-        linear-gradient(135deg, rgba(9,20,42,1) 0%, rgba(13,32,67,1) 55%, rgba(8,16,30,1) 100%);
-      border:1px solid rgba(96,165,250,.14);
-      box-shadow:0 18px 40px rgba(0,0,0,.35);
-    }
-
+  .bank-card{
+  position:relative;
+  overflow:hidden;
+  border-radius:24px;
+  padding:22px;
+  margin-bottom:16px;
+  background:
+    radial-gradient(circle at top right, rgba(96,165,250,.22), transparent 30%),
+    linear-gradient(135deg, #07152e 0%, #0c2a55 55%, #06101f 100%);
+  border:1px solid rgba(96,165,250,.18);
+  box-shadow:
+    0 25px 60px rgba(0,0,0,.45),
+    inset 0 1px 0 rgba(255,255,255,.03);
+}
     .bank-label{
       font-size:12px;
       font-weight:800;
@@ -375,28 +377,30 @@
       transform:scale(1.05);
     }
 
-    .bank-value{
-      font-size:clamp(38px, 8vw, 68px);
-      line-height:1;
-      letter-spacing:-.05em;
-      font-weight:900;
-      color:#fff;
-      text-shadow:0 0 26px rgba(96,165,250,.22);
-    }
-
+ .bank-value{
+  font-size:clamp(42px, 8vw, 72px);
+  font-weight:900;
+  letter-spacing:-.06em;
+  color:#ffffff;
+  margin-top:10px;
+  text-shadow:
+    0 0 30px rgba(96,165,250,.25),
+    0 0 60px rgba(96,165,250,.10);
+}
     .metrics{
       display:grid;
       gap:10px;
       grid-template-columns:1fr;
     }
 
-    .metric{
-      border-radius:18px;
-      padding:14px;
-      background:linear-gradient(180deg, rgba(255,255,255,.025), rgba(255,255,255,.01));
-      border:1px solid rgba(148,163,184,.10);
-    }
-
+.metric{
+  border-radius:18px;
+  padding:16px;
+  background:
+    linear-gradient(180deg, rgba(255,255,255,.035), rgba(255,255,255,.015));
+  border:1px solid rgba(148,163,184,.08);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.02);
+}
     .metric-label{
       color:var(--muted);
       font-size:12px;
@@ -415,14 +419,13 @@
     .metric-value.green{color:#b8ffd1;}
     .metric-value.red{color:#ffb3b3;}
 
-    .history-card{
-      padding:14px;
-      border-radius:16px;
-      border:1px solid rgba(96,165,250,.12);
-      background:rgba(255,255,255,.02);
-      margin-top:14px;
-    }
-
+.history-card{
+  padding:12px 14px;
+  border-radius:16px;
+  border:1px solid rgba(148,163,184,.06);
+  background:rgba(255,255,255,.015);
+  margin-top:10px;
+}
     .history-card-top{
       display:flex;
       justify-content:space-between;
@@ -456,12 +459,15 @@
       white-space:nowrap;
     }
 
-    .history-list{
-      display:grid;
-      gap:10px;
-      margin-top:12px;
-    }
+   .history-list{
+  display:grid;
+  gap:10px;
+  margin-top:12px;
+}
 
+.history-list.hidden{
+  display:none;
+}
     .history-item{
       padding:14px;
       border-radius:16px;
@@ -1328,7 +1334,7 @@
       <div class="auth-toggle">
         <button id="tabLogin" class="auth-tab active" type="button">Entrar</button>
         <button id="tabRegister" class="auth-tab" type="button">Registrar</button>
-        <button id="tabForgot" class="auth-tab" type="button">Senha</button>
+        <button id="tabForgot" class="auth-tab" type="button">Redefinir senha</button>
       </div>
 
       <form id="loginForm" class="auth-form">
@@ -1370,30 +1376,19 @@
       </form>
 
       <form id="forgotPasswordForm" class="auth-form hidden">
-        <div class="auth-note" style="margin-top:-2px; margin-bottom:4px;">
-          Use o código interno de redefinição. Nenhum código será enviado por email.
-        </div>
+        <h3>Redefinir senha</h3>
+        <p class="auth-subtitle">Você receberá um link no email para criar uma nova senha.</p>
 
         <div class="field">
           <label for="resetEmail">Email</label>
-          <input id="resetEmail" type="email" placeholder="Digite o email cadastrado" />
+          <input id="resetEmail" type="email" placeholder="Digite seu email" />
         </div>
 
-        <div class="field">
-          <label for="resetCode">Código de redefinição</label>
-          <input id="resetCode" type="password" placeholder="Digite código interno" />
-        </div>
-
-        <div class="field">
-          <label for="newPassword">Nova senha</label>
-          <input id="newPassword" type="password" placeholder="Digite a nova senha" />
-        </div>
-
-        <button class="auth-submit" type="submit">Redefinir senha</button>
+        <button class="auth-submit" type="submit">Enviar link de redefinição</button>
       </form>
 
       <div class="auth-note">
-        Login inicial demo: admin@bankking.com / casino12
+        Central King 24 horas
       </div>
     </div>
   </section>
@@ -1409,7 +1404,7 @@
             <div class="logo-bk">BK</div>
             <h1>Bank King</h1>
           </div>
-          <div class="badge">PRO</div>
+          <div class="badge">BRS SYST</div>
         </div>
       </header>
 
@@ -1430,7 +1425,7 @@
 
           <div class="bank-card">
             <div class="bank-topline">
-              <span class="bank-label">BANCA TOTAL</span>
+              <span class="bank-label">SALDO DISPONÍVEL</span>
               <button id="toggleBalance" class="hide-balance-btn" type="button" aria-label="Mostrar ou ocultar banca">
                 <svg id="eyeIcon" width="20" height="20" viewBox="0 0 24 24" fill="none">
                   <path d="M2 12C4.5 7 8.5 5 12 5C15.5 5 19.5 7 22 12C19.5 17 15.5 19 12 19C8.5 19 4.5 17 2 12Z" stroke="currentColor" stroke-width="1.6"/>
@@ -1451,28 +1446,35 @@
               <div id="totalEntradasT2" class="metric-value green">$ 0,00</div>
             </div>
             <div class="metric">
-              <div class="metric-label">Diferença</div>
+              <div class="metric-label">Lucro do turno</div>
               <div id="lucroTotal" class="metric-value blue">$ 0,00</div>
             </div>
           </div>
         </article>
 
-        <article class="history-card">
-          <div class="history-card-top">
-            <div>
-              <div class="history-card-title">Histórico automático</div>
-              <div id="historyInfo" class="history-card-text">
-                Nenhum turno anterior salvo ainda.
-              </div>
-            </div>
-          </div>
+<article class="history-card">
 
-          <div id="historyList" class="history-list"></div>
+  <div class="history-card-top">
+    <div>
+      <div class="history-card-title">Histórico automático</div>
+      <div id="historyInfo" class="history-card-text">
+        Nenhum turno anterior salvo ainda.
+      </div>
+    </div>
 
-          <button id="deleteHistoryBtn" class="danger-mini-btn" type="button" style="margin-top:10px; width:100%;">
-            🔴 Excluir Histórico
-          </button>
-        </article>
+    <button id="toggleHistoryBtn" class="history-toggle-btn" type="button">
+      Ver
+    </button>
+  </div>
+
+  <!-- 🔥 AQUI ESTÁ O MAIS IMPORTANTE -->
+  <div id="historyList" class="history-list hidden"></div>
+
+  <button id="deleteHistoryBtn" class="danger-mini-btn" type="button" style="margin-top:10px; width:100%;">
+    🔴 Excluir Histórico
+  </button>
+
+</article>
       </section>
 
       <section class="turnos">
@@ -1683,6 +1685,7 @@
 
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-app.js";
+
 import {
   getFirestore,
   collection,
@@ -1690,32 +1693,58 @@ import {
   getDocs,
   deleteDoc,
   doc,
+  setDoc,
   onSnapshot,
   query,
   orderBy,
   limit,
   serverTimestamp
 } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-firestore.js";
-    const firebaseConfig = {
-      apiKey: "AIzaSyAuyfJNu2vwvVyH5gRsvg82m98teFCmPXw",
-      authDomain: "bank-king-c53cf.firebaseapp.com",
-      projectId: "bank-king-c53cf",
-      storageBucket: "bank-king-c53cf.firebasestorage.app",
-      messagingSenderId: "108865328748",
-      appId: "1:108865328748:web:65dbbcf146a67f95512a49",
-      measurementId: "G-S43L7WM4LH"
+
+import {
+  getAuth,
+  createUserWithEmailAndPassword,
+  signInWithEmailAndPassword,
+  signOut,
+  onAuthStateChanged,
+  sendPasswordResetEmail
+} from "https://www.gstatic.com/firebasejs/12.0.0/firebase-auth.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyAuyfJNu2vwvVyH5gRsvg82m98teFCmPXw",
+  authDomain: "bank-king-c53cf.firebaseapp.com",
+  projectId: "bank-king-c53cf",
+  storageBucket: "bank-king-c53cf.firebasestorage.app",
+  messagingSenderId: "108865328748",
+  appId: "1:108865328748:web:65dbbcf146a67f95512a49",
+  measurementId: "G-S43L7WM4LH"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+const auth = getAuth(app);
+
+onAuthStateChanged(auth, (user) => {
+  if (user) {
+    const userData = {
+      name: user.email?.split("@")[0] || "Usuário",
+      email: user.email,
+      uid: user.uid
     };
 
-    const app = initializeApp(firebaseConfig);
-    const db = getFirestore(app);
-
+    saveActiveUser(userData);
+    showApp(userData);
+  } else {
+    console.log("Usuário não logado");
+  }
+});
     const PDF_CODE = "1520";
     const REPORT_CODE = "1520";
     const RESET_CODE = "4br1l#2o26";
     const DELETE_HISTORY_CODE = "1520";
     const ADMIN_CODE = "9087";
 
-    const USERS_STORAGE_KEY = "bank-king-users-v1";
+  
     const ACTIVE_USER_STORAGE_KEY = "bank-king-active-user-v1";
     const REMEMBER_LOGIN_STORAGE_KEY = "bank-king-remember-login-v1";
     const REMEMBERED_EMAIL_STORAGE_KEY = "bank-king-remembered-email-v1";
@@ -1730,16 +1759,17 @@ import {
     const loginForm = document.getElementById("loginForm");
     const registerForm = document.getElementById("registerForm");
     const forgotPasswordForm = document.getElementById("forgotPasswordForm");
-    const rememberLoginCheckbox = document.getElementById("rememberLogin");
+const rememberLoginCheckbox = document.getElementById("rememberLogin");
 
-    let balanceVisible = true;
-    let sessionWatcher = null;
-    let historyUnsubscribe = null;
-    let historyRealtimeStarted = false;
-    let historyCache = [];
+let balanceVisible = true;
+let sessionWatcher = null;
+let historyUnsubscribe = null;
+let historyRealtimeStarted = false;
+let historyCache = [];
+let activeHistoryIndex = null;
+let historyVisible = false; // 👈 CONTROLE DO HISTÓRICO (NOVO)
 
-    function money(value){
-      return `$ ${Number(value || 0).toLocaleString("pt-BR", {
+function money(value){      return `$ ${Number(value || 0).toLocaleString("pt-BR", {
         minimumFractionDigits: 2,
         maximumFractionDigits: 2
       })}`;
@@ -1764,6 +1794,25 @@ import {
       const local = new Date(now.getTime() - offset * 60000);
       return local.toISOString().split("T")[0];
     }
+
+async function getUsersFromFirestore(){
+  const q = query(
+    collection(db, "users"),
+    orderBy("createdAt", "desc")
+  );
+
+  const snapshot = await getDocs(q);
+
+  return snapshot.docs.map((docItem) => ({
+    id: docItem.id,
+    ...docItem.data()
+  }));
+}
+
+async function deleteUserDocFromFirestore(uid){
+  if (!uid) return;
+  await deleteDoc(doc(db, "users", uid));
+}
 
     function formatDateBR(dateStr){
       if(!dateStr) return "Sem data";
@@ -1814,7 +1863,7 @@ import {
         const len = input.value.length;
         try{ input.setSelectionRange(len, len); }catch(_){}
       });
-}
+    }
 
     function attachMoneyMask(input){
       if(!input || input.dataset.maskAttached === "true") return;
@@ -1873,34 +1922,6 @@ import {
       });
 
       input.addEventListener("focus", () => moveCursorToEnd(input));
-    }
-
-    function getUsers(){
-      const raw = localStorage.getItem(USERS_STORAGE_KEY);
-      if(!raw) return [];
-      try{
-        const parsed = JSON.parse(raw);
-        return Array.isArray(parsed) ? parsed : [];
-      }catch{
-        return [];
-      }
-    }
-
-    function saveUsers(users){
-      localStorage.setItem(USERS_STORAGE_KEY, JSON.stringify(users));
-    }
-
-    function ensureDemoUser(){
-      const users = getUsers();
-      const exists = users.some(u => u.email === LOGIN_DEMO_EMAIL);
-      if(!exists){
-        users.push({
-          name: "Admin",
-          email: LOGIN_DEMO_EMAIL,
-          password: LOGIN_DEMO_PASSWORD
-        });
-        saveUsers(users);
-      }
     }
 
     function saveRememberedLogin(enabled, email = ""){
@@ -2009,7 +2030,7 @@ import {
       }
     }
 
-    function showApp(user){
+function showApp(user){
   document.getElementById("activeUserName").textContent = user?.name || "Usuário";
   document.getElementById("activeUserEmail").textContent = user?.email || "";
   authScreen.classList.add("hidden");
@@ -2019,97 +2040,144 @@ import {
   startSessionWatcher();
   render();
 }
-    function logout(){
-      removeActiveUser();
-      localStorage.removeItem(SESSION_LAST_ACTIVITY_KEY);
-      stopSessionWatcher();
-      authScreen.classList.remove("hidden");
-      appShell.classList.add("hidden");
-      preloadLogin();
-      switchTab("login");
+
+async function logout(){
+  try{
+    await signOut(auth);
+  }catch(error){
+    console.error("Erro ao sair do Firebase:", error);
+  }
+
+  removeActiveUser();
+  localStorage.removeItem(SESSION_LAST_ACTIVITY_KEY);
+  stopSessionWatcher();
+  authScreen.classList.remove("hidden");
+  appShell.classList.add("hidden");
+  preloadLogin();
+  switchTab("login");
+}
+
+document.getElementById("tabLogin").addEventListener("click", () => switchTab("login"));
+document.getElementById("tabRegister").addEventListener("click", () => switchTab("register"));
+document.getElementById("tabForgot").addEventListener("click", () => switchTab("forgot"));
+
+loginForm.addEventListener("submit", async (e) => {
+  e.preventDefault();
+  const email = document.getElementById("loginEmail").value.trim().toLowerCase();
+  const password = document.getElementById("loginPassword").value;
+  const remember = rememberLoginCheckbox.checked;
+  try {
+    const userCredential = await signInWithEmailAndPassword(auth, email, password);
+
+    saveRememberedLogin(remember, email);
+
+    const user = {
+      name: userCredential.user.email?.split("@")[0] || "Usuário",
+      email: userCredential.user.email,
+      uid: userCredential.user.uid
+    };
+
+    saveActiveUser(user);
+    showApp(user);
+  } catch (error) {
+    console.error("Erro ao fazer login:", error);
+
+    if (
+      error.code === "auth/invalid-credential" ||
+      error.code === "auth/user-not-found" ||
+      error.code === "auth/wrong-password" ||
+      error.code === "auth/invalid-login-credentials"
+    ) {
+      alert("Email ou senha incorretos.");
+    } else if (error.code === "auth/invalid-email") {
+      alert("Email inválido.");
+    } else {
+      alert("Erro ao fazer login.");
     }
+  }
+});
 
-    document.getElementById("tabLogin").addEventListener("click", () => switchTab("login"));
-    document.getElementById("tabRegister").addEventListener("click", () => switchTab("register"));
-    document.getElementById("tabForgot").addEventListener("click", () => switchTab("forgot"));  
-  loginForm.addEventListener("submit", (e) => {
-      e.preventDefault();
+document.getElementById("forgotPasswordForm").addEventListener("submit", async (e) => {
+  e.preventDefault();
 
-      const email = document.getElementById("loginEmail").value.trim().toLowerCase();
-      const password = document.getElementById("loginPassword").value;
-      const remember = rememberLoginCheckbox.checked;
+  const email = document.getElementById("resetEmail").value.trim().toLowerCase();
 
-      const users = getUsers();
-      const found = users.find((u) => u.email === email && u.password === password);
+  if (!email) {
+    alert("Informe seu email.");
+    return;
+  }
 
-      if(!found){
-        alert("Email ou senha incorretos.");
-        return;
-      }
+  try {
+    await sendPasswordResetEmail(auth, email);
 
-      saveRememberedLogin(remember, email);
-      const user = { name: found.name, email: found.email };
-      saveActiveUser(user);
-      showApp(user);
+    alert("Verifique seu email. Se não encontrar, confira a caixa de spam.");
+
+    document.getElementById("resetEmail").value = "";
+
+    // volta pro login
+    document.getElementById("tabLogin").click();
+
+  } catch (error) {
+    console.error("Erro ao enviar redefinição:", error);
+
+    if (error.code === "auth/invalid-email") {
+      alert("Email inválido.");
+    } else if (error.code === "auth/user-not-found") {
+      alert("Usuário não encontrado.");
+    } else {
+      alert("Não foi possível enviar o email.");
+    }
+  }
+});
+registerForm.addEventListener("submit", async (e) => {
+  e.preventDefault();
+
+  const name = document.getElementById("registerName").value.trim();
+  const email = document.getElementById("registerEmail").value.trim().toLowerCase();
+  const password = document.getElementById("registerPassword").value;
+
+  if (!name || !email || !password) {
+    alert("Preencha todos os campos.");
+    return;
+  }
+
+  try {
+    const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+
+    await setDoc(doc(db, "users", userCredential.user.uid), {
+      uid: userCredential.user.uid,
+      name,
+      email,
+      role: "user",
+      createdAt: serverTimestamp()
     });
 
-    registerForm.addEventListener("submit", (e) => {
-      e.preventDefault();
-
-      const name = document.getElementById("registerName").value.trim();
-      const email = document.getElementById("registerEmail").value.trim().toLowerCase();
-      const password = document.getElementById("registerPassword").value;
-
-      if(!name || !email || !password){
-        alert("Preencha todos os campos.");
-        return;
-      }
-
-      const users = getUsers();
-      if(users.some((u) => u.email === email)){
-        alert("Esse email já está cadastrado.");
-        return;
-      }
-
-      users.push({ name, email, password });
-      saveUsers(users);
-      alert("Usuário registrado com sucesso.");
-      switchTab("login");
-      document.getElementById("loginEmail").value = email;
-      requestAnimationFrame(() => document.getElementById("loginPassword").focus());
+    saveActiveUser({
+      name,
+      email,
+      uid: userCredential.user.uid
     });
 
-    forgotPasswordForm.addEventListener("submit", (e) => {
-      e.preventDefault();
-
-      const email = document.getElementById("resetEmail").value.trim().toLowerCase();
-      const code = document.getElementById("resetCode").value.trim();
-      const newPassword = document.getElementById("newPassword").value;
-
-      if(!email || !code || !newPassword){
-        alert("Preencha email, código e nova senha.");
-        return;
-      }
-
-      if(code !== RESET_CODE){
-        alert("Código interno incorreto.");
-        return;
-      }
-
-      const users = getUsers();
-      const index = users.findIndex((u) => u.email === email);
-      if(index === -1){
-        alert("Usuário não encontrado.");
-        return;
-      }
-
-      users[index].password = newPassword;
-      saveUsers(users);
-      alert("Senha redefinida com sucesso.");
-      switchTab("login");
-      document.getElementById("loginEmail").value = email;
-      requestAnimationFrame(() => document.getElementById("loginPassword").focus());
+    alert("Usuário registrado com sucesso.");
+    showApp({
+      name,
+      email,
+      uid: userCredential.user.uid
     });
+  } catch (error) {
+    console.error("Erro ao registrar usuário:", error);
+
+    if (error.code === "auth/email-already-in-use") {
+      alert("Esse email já está cadastrado.");
+    } else if (error.code === "auth/weak-password") {
+      alert("A senha precisa ter pelo menos 6 caracteres.");
+    } else if (error.code === "auth/invalid-email") {
+      alert("Email inválido.");
+    } else {
+      alert("Erro ao registrar usuário.");
+    }
+  }
+});
 
     function ensureDates(){
       const t1 = document.getElementById("t1_data_fechamento");
@@ -2179,20 +2247,34 @@ import {
       return total;
     }
 
-    function updateStatusPill(value){
-      const pill = document.getElementById("statusPill");
-      if(value > 0){
-        pill.textContent = "Positivo";
-        pill.className = "pill positive";
-      }else if(value < 0){
-        pill.textContent = "Negativo";
-        pill.className = "pill negative";
-      }else{
-        pill.textContent = "Sem diferença";
-        pill.className = "pill neutral";
-      }
-    }
+function updateStatusPill(value){
+  const pill = document.getElementById("statusPill");
+  if(value > 0){
+    pill.textContent = "Positivo";
+    pill.className = "pill positive";
+  }else if(value < 0){
+    pill.textContent = "Negativo";
+    pill.className = "pill negative";
+  }else{
+    pill.textContent = "Sem diferença";
+    pill.className = "pill neutral";
+  }
+}
 
+function updateHistoryVisibility(){
+  const list = document.getElementById("historyList");
+  const btn = document.getElementById("toggleHistoryBtn");
+
+  if(!list || !btn) return;
+
+  if(historyVisible){
+    list.classList.remove("hidden");
+    btn.textContent = "Ocultar";
+  } else {
+    list.classList.add("hidden");
+    btn.textContent = "Ver";
+  }
+}
     function updateEyeIcon(){
       const eye = document.getElementById("eyeIcon");
       if(balanceVisible){
@@ -2343,7 +2425,7 @@ import {
         submittedByEmail: activeUser?.email || "",
         submittedAt: serverTimestamp(),
         fechamentoDate: document.getElementById(f.dataFechamento)?.value || getTodayDateInput(),
-        total: saldoLiquido,
+        total: getValue(f.banco),
         turno: {
           dataFechamento: document.getElementById(f.dataFechamento)?.value || getTodayDateInput(),
           entries,
@@ -2381,17 +2463,18 @@ import {
   const snapshot = await getDocs(q);
   const previousTotal = snapshot.docs[0]?.data()?.total || 0;
 
-  item.diff = item.total - previousTotal;
+  item.bankVariation = item.total - previousTotal;
+  item.turnProfit = item.turno?.saldoLiquido || 0;
 
   await addDoc(collection(db, "history"), item);
 }
-    async function deleteAllHistory(){
-      const snapshot = await getDocs(collection(db, "history"));
-      for (const item of snapshot.docs) {
-        await deleteDoc(doc(db, "history", item.id));
-      }
-    }
 
+async function deleteAllHistory(){
+  const snapshot = await getDocs(collection(db, "history"));
+  for (const item of snapshot.docs) {
+    await deleteDoc(doc(db, "history", item.id));
+  }
+}
     function applySnapshotToTurn(turno, snapshot){
       if(!snapshot) return;
 
@@ -2435,45 +2518,58 @@ import {
       document.getElementById("historyModal").classList.add("hidden");
     }
 
-    function renderHistoryListFromCache(){
-      const list = document.getElementById("historyList");
-      const history = historyCache || [];
+function renderHistoryListFromCache(){
+  const list = document.getElementById("historyList");
+  const history = historyCache || [];
 
-      if(!history.length){
-        list.innerHTML = `<div class="history-empty">Sem histórico ainda.</div>`;
-        document.getElementById("historyInfo").textContent = "Nenhum turno anterior salvo ainda.";
-        return;
-      }
+  if(!history.length){
+    list.innerHTML = `<div class="history-empty">Sem histórico ainda.</div>`;
+    document.getElementById("historyInfo").textContent = "Nenhum turno anterior salvo ainda.";
+    updateHistoryVisibility(); // 👈 ADICIONADO
+    return;
+  }
 
-      list.innerHTML = history.slice(0, 4).map((item, index) => `
-        <div class="history-item" data-history-index="${index}">
-          <div class="history-item-top">
-            <div class="history-user">${escapeHtml(item.submittedByName || "Sistema")}</div>
-            <div class="history-time">${escapeHtml(formatDateBR(item.fechamentoDate || ""))}</div>
-          </div>
-          <div class="history-item-grid">
-            <div class="history-mini-card">
-              <div class="history-mini-label">Total</div>
-              <div class="history-mini-value">${money(item.total || 0)}</div>
-            </div>
-            <div class="history-mini-card">
-              <div class="history-mini-label">Diferença</div>
-              <div class="history-mini-value ${(item.diff || 0) < 0 ? "red" : ""}">${money(item.diff || 0)}</div>
-            </div>
+  list.innerHTML = history.slice(0, 4).map((item, index) => `
+    <div class="history-item" data-history-index="${index}">
+      <div class="history-item-top">
+        <div class="history-user">${escapeHtml(item.submittedByName || "Sistema")}</div>
+        <div class="history-time">${escapeHtml(formatDateBR(item.fechamentoDate || ""))}</div>
+      </div>
+
+      <div class="history-item-grid">
+        <div class="history-mini-card">
+          <div class="history-mini-label">Total</div>
+          <div class="history-mini-value">${money(item.total || 0)}</div>
+        </div>
+
+        <div class="history-mini-card">
+          <div class="history-mini-label">Lucro do turno</div>
+          <div class="history-mini-value ${(item.turnProfit || 0) < 0 ? "red" : ""}">
+            ${money(item.turnProfit || 0)}
           </div>
         </div>
-      `).join("");
 
-      document.getElementById("historyInfo").textContent =
-        `Último fechamento: ${history[0]?.submittedByName || "Sistema"} • ${formatDateBR(history[0]?.fechamentoDate || "")}`;
+        <div class="history-mini-card">
+          <div class="history-mini-label">Variação da banca</div>
+          <div class="history-mini-value ${(item.bankVariation || 0) < 0 ? "red" : ""}">
+            ${money(item.bankVariation || 0)}
+          </div>
+        </div>
+      </div>
+    </div>
+  `).join("");
 
-      list.querySelectorAll("[data-history-index]").forEach((el) => {
-        el.addEventListener("click", () => {
-          openHistoryModal(Number(el.dataset.historyIndex));
-        });
-      });
-    }
+  document.getElementById("historyInfo").textContent =
+    `Último fechamento: ${history[0]?.submittedByName || "Sistema"} • ${formatDateBR(history[0]?.fechamentoDate || "")}`;
 
+  list.querySelectorAll("[data-history-index]").forEach((el) => {
+    el.addEventListener("click", () => {
+      openHistoryModal(Number(el.dataset.historyIndex));
+    });
+  });
+
+  updateHistoryVisibility(); // 👈 ESSENCIAL
+}
     function openHistoryModal(index){
       const item = historyCache[index];
       if(!item) return;
@@ -2483,7 +2579,8 @@ import {
         `Data do fechamento: ${formatDateBR(item.fechamentoDate || "")} • Enviado em: ${formatDateTimeBR(item.submittedAt)}`;
 
       const turno = item.turno || {};
-      const diffValue = Number(item.diff || 0);
+      const turnProfitValue = Number(item.turnProfit || 0);
+const bankVariationValue = Number(item.bankVariation || 0);
 
       document.getElementById("historyModalBody").innerHTML = `
         <div class="modal-summary-grid">
@@ -2492,8 +2589,8 @@ import {
             <div class="modal-summary-value">${money(item.total || 0)}</div>
           </div>
           <div class="modal-summary-card">
-            <div class="modal-summary-label">Diferença</div>
-            <div class="modal-summary-value">${money(diffValue)}</div>
+            <div class="modal-summary-label">Lucro do turno</div>
+            <div class="history-mini-value ${(item.turnProfit || 0) < 0 ? "red" : ""}">${money(item.turnProfit || 0)}</div>
           </div>
           <div class="modal-summary-card">
             <div class="modal-summary-label">Responsável</div>
@@ -2644,7 +2741,7 @@ import {
             </div>
           </div>
         `).join("");
-     }
+      }
 
       document.getElementById("reportScreen").classList.remove("hidden");
     }
@@ -2735,7 +2832,7 @@ import {
       const t2Pendentes = getPendingTotal("t2");
       const t2Total = t2Entradas - t2Saidas - t2Pendentes;
 
-      const diff = t2Total - t1Total;
+      const ultimoLucroDoTurno = Number(historyCache[0]?.turnProfit || 0);
 
       document.getElementById("t1_entradas_total").textContent = money(t1Entradas);
       document.getElementById("t1_saidas_total").textContent = negativeMoney(t1Saidas);
@@ -2750,151 +2847,160 @@ import {
 
       document.getElementById("totalEntradasT1").textContent = money(t1Entradas);
       document.getElementById("totalEntradasT2").textContent = money(t2Entradas);
-      document.getElementById("lucroTotal").textContent = money(diff);
+      document.getElementById("lucroTotal").textContent = money(ultimoLucroDoTurno);
 
-      document.getElementById("bankValue").textContent = balanceVisible ? money(diff) : "••••••";
-      updateEyeIcon();
-      updateStatusPill(diff);
+const bancaTotalAtualBruta = historyCache[0]?.total || 0;
+const bancaTotalAtual = Math.max(0, Number(bancaTotalAtualBruta || 0));
+
+document.getElementById("bankValue").textContent =
+  balanceVisible ? money(bancaTotalAtual) : "••••••";
+
+updateEyeIcon();
+updateStatusPill(ultimoLucroDoTurno);
     }
 
-    function openAdminModal(){
-      const code = prompt("Digite código interno:");
-      if(code === null) return;
+async function openAdminModal(){
+  const code = prompt("Digite código interno:");
+  if(code === null) return;
 
-      if(code !== ADMIN_CODE){
-        alert("Código interno incorreto.");
-        return;
-      }
+  if(code !== ADMIN_CODE){
+    alert("Código interno incorreto.");
+    return;
+  }
 
-      renderAdminUsers();
-      document.getElementById("adminModal").classList.remove("hidden");
-      requestAnimationFrame(() => document.getElementById("adminSearchInput").focus());
-    }
+  await renderAdminUsers();
+  document.getElementById("adminModal").classList.remove("hidden");
+  requestAnimationFrame(() => document.getElementById("adminSearchInput").focus());
+}
 
     function closeAdminModal(){
       document.getElementById("adminModal").classList.add("hidden");
       document.getElementById("adminSearchInput").value = "";
     }
 
-    function renderAdminUsers(){
-      const users = getUsers();
-      const term = document.getElementById("adminSearchInput").value.trim().toLowerCase();
+async function renderAdminUsers(){
+  const users = await getUsersFromFirestore();
+  const term = document.getElementById("adminSearchInput").value.trim().toLowerCase();
 
-      const filtered = users.filter((user) => {
-        const name = String(user?.name || "").toLowerCase();
-        const email = String(user?.email || "").toLowerCase();
-        return !term || name.includes(term) || email.includes(term);
-      });
+  const filtered = users.filter((user) => {
+    const name = String(user?.name || "").toLowerCase();
+    const email = String(user?.email || "").toLowerCase();
+    return !term || name.includes(term) || email.includes(term);
+  });
 
-      const adminUsersList = document.getElementById("adminUsersList");
+  const adminUsersList = document.getElementById("adminUsersList");
 
-      if(!filtered.length){
-        adminUsersList.innerHTML = `<div class="admin-empty">Nenhum usuário encontrado.</div>`;
-        return;
-      }
+  if(!filtered.length){
+    adminUsersList.innerHTML = `<div class="admin-empty">Nenhum usuário encontrado.</div>`;
+    return;
+  }
 
-      adminUsersList.innerHTML = filtered.map((user, index) => {
-        const originalIndex = users.findIndex((u) => u.email === user.email && u.name === user.name);
-
-        return `
-          <div class="admin-user-card">
-            <div class="admin-user-top">
-              <div>
-                <div class="admin-user-name">${escapeHtml(user.name || "Sem nome")}</div>
-                <div class="admin-user-email">${escapeHtml(user.email || "Sem email")}</div>
-              </div>
-              <div class="admin-user-badge">Usuário ${index + 1}</div>
-            </div>
-
-            <div class="admin-actions">
-              <button class="admin-action-btn admin-view-btn" type="button" data-admin-view="${originalIndex}">👁 Ver</button>
-              <button class="admin-action-btn admin-reset-btn" type="button" data-admin-reset="${originalIndex}">🔒 Resetar senha</button>
-              <button class="admin-action-btn admin-delete-btn" type="button" data-admin-delete="${originalIndex}">🗑 Excluir</button>
-            </div>
-
-            <div class="admin-inline-details" id="adminDetails_${originalIndex}">
-              <div class="admin-inline-line"><span>Nome</span><strong>${escapeHtml(user.name || "-")}</strong></div>
-              <div class="admin-inline-line"><span>Email</span><strong>${escapeHtml(user.email || "-")}</strong></div>
-              <div class="admin-inline-line"><span>Senha atual</span><strong>${escapeHtml(user.password || "-")}</strong></div>
-            </div>
+  adminUsersList.innerHTML = filtered.map((user) => {
+    return `
+      <div class="admin-user-card">
+        <div class="admin-user-top">
+          <div>
+            <div class="admin-user-name">${escapeHtml(user.name || "Sem nome")}</div>
+            <div class="admin-user-email">${escapeHtml(user.email || "Sem email")}</div>
           </div>
-        `;
-      }).join("");
+          <div class="admin-user-badge">${escapeHtml(user.role || "user")}</div>
+        </div>
 
-      bindAdminActions();
-    }
+        <div class="admin-actions">
+          <button class="admin-action-btn admin-view-btn" type="button" data-admin-view="${user.id}">👁 Ver</button>
+          <button class="admin-action-btn admin-reset-btn" type="button" data-admin-reset="${user.email}">🔒 Resetar senha</button>
+          <button class="admin-action-btn admin-delete-btn" type="button" data-admin-delete="${user.id}">🗑 Excluir</button>
+        </div>
 
-    function bindAdminActions(){
-      document.querySelectorAll("[data-admin-view]").forEach((btn) => {
-        btn.addEventListener("click", () => {
-          const idx = btn.dataset.adminView;
-          const box = document.getElementById(`adminDetails_${idx}`);
-          if(box) box.classList.toggle("show");
-        });
-      });
+        <div class="admin-inline-details" id="adminDetails_${user.id}">
+          <div class="admin-inline-line"><span>Nome</span><strong>${escapeHtml(user.name || "-")}</strong></div>
+          <div class="admin-inline-line"><span>Email</span><strong>${escapeHtml(user.email || "-")}</strong></div>
+          <div class="admin-inline-line"><span>UID</span><strong>${escapeHtml(user.uid || "-")}</strong></div>
+          <div class="admin-inline-line"><span>Perfil</span><strong>${escapeHtml(user.role || "user")}</strong></div>
+        </div>
+      </div>
+    `;
+  }).join("");
 
-      document.querySelectorAll("[data-admin-reset]").forEach((btn) => {
-        btn.addEventListener("click", () => {
-          const idx = Number(btn.dataset.adminReset);
-          const users = getUsers();
-          const user = users[idx];
-          if(!user) return;
+  bindAdminActions();
+}
 
-          const newPassword = prompt(`Nova senha para ${user.name}:`);
-          if(newPassword === null) return;
+function bindAdminActions(){
+  document.querySelectorAll("[data-admin-view]").forEach((btn) => {
+    btn.addEventListener("click", () => {
+      const id = btn.dataset.adminView;
+      const box = document.getElementById(`adminDetails_${id}`);
+      if(box) box.classList.toggle("show");
+    });
+  });
 
-          const clean = newPassword.trim();
-          if(!clean){
-            alert("Senha inválida.");
-            return;
-          }
+  document.querySelectorAll("[data-admin-reset]").forEach((btn) => {
+    btn.addEventListener("click", async () => {
+      const email = btn.dataset.adminReset;
+      if(!email) return;
 
-          users[idx].password = clean;
-          saveUsers(users);
-          renderAdminUsers();
-          alert("Senha atualizada com sucesso.");
-        });
-      });
+      const confirmacao = confirm(`Enviar email de redefinição de senha para ${email}?`);
+      if(!confirmacao) return;
 
-      document.querySelectorAll("[data-admin-delete]").forEach((btn) => {
-        btn.addEventListener("click", () => {
-          const idx = Number(btn.dataset.adminDelete);
-          const users = getUsers();
-          const user = users[idx];
-          if(!user) return;
+      try {
+        await sendPasswordResetEmail(auth, email);
+        alert("Email de redefinição enviado com sucesso.");
+      } catch (error) {
+        console.error("Erro ao enviar redefinição:", error);
+        alert("Não foi possível enviar o email de redefinição.");
+      }
+    });
+  });
 
-          if(!confirm(`Excluir o usuário ${user.name}?`)) return;
+  document.querySelectorAll("[data-admin-delete]").forEach((btn) => {
+    btn.addEventListener("click", async () => {
+      const uid = btn.dataset.adminDelete;
+      if(!uid) return;
 
-          if(loadActiveUser()?.email === user.email){
-            removeActiveUser();
-            localStorage.removeItem(SESSION_LAST_ACTIVITY_KEY);
-          }
+      const confirmacao = confirm("Deseja excluir este usuário da lista?");
+      if(!confirmacao) return;
 
-          if(getRememberedEmail() === user.email){
-            saveRememberedLogin(false, "");
-          }
+try {
+  if (!uid) {
+    alert("ID do usuário inválido.");
+    return;
+  }
 
-          users.splice(idx, 1);
-          saveUsers(users);
-          renderAdminUsers();
-          alert("Usuário excluído com sucesso.");
-        });
-      });
-    }
+  const confirmacaoFinal = confirm("Confirma a exclusão deste usuário?");
+  if (!confirmacaoFinal) return;
 
-    document.addEventListener("DOMContentLoaded", () => {
-      ensureDemoUser();
-      bindSessionEvents();
-      startHistoryRealtimeListener();
+  await deleteUserDocFromFirestore(uid);
+  await renderAdminUsers();
 
-      [
-        "t1_banco","t1_pppoker","t1_suprema","t1_buffalo","t1_ganamos","t1_cargas","t1_cargas_poker",
-        "t2_banco","t2_pppoker","t2_suprema","t2_buffalo","t2_ganamos","t2_cargas","t2_cargas_poker"
-      ].forEach((id) => {
-        const input = document.getElementById(id);
-        if(input) attachMoneyMask(input);
-      });
+  alert("Usuário removido da coleção 'users' com sucesso.\n(A conta no Firebase Auth NÃO foi excluída)");
 
+} catch (error) {
+  console.error("Erro ao excluir usuário:", error);
+  alert("Erro ao excluir usuário. Verifique o console.");
+}    });
+  });
+}
+
+document.addEventListener("DOMContentLoaded", () => {
+bindSessionEvents();
+startHistoryRealtimeListener();
+
+// botão mostrar/ocultar histórico
+document.getElementById("toggleHistoryBtn").addEventListener("click", () => {
+historyVisible = !historyVisible;
+updateHistoryVisibility();
+});
+
+// estado inicial do histórico
+updateHistoryVisibility();
+
+[
+"t1_banco","t1_pppoker","t1_suprema","t1_buffalo","t1_ganamos","t1_cargas","t1_cargas_poker",
+"t2_banco","t2_pppoker","t2_suprema","t2_buffalo","t2_ganamos","t2_cargas","t2_cargas_poker"
+].forEach((id) => {
+const input = document.getElementById(id);
+if(input) attachMoneyMask(input);
+});
       document.querySelectorAll("[data-add-row]").forEach((btn) => {
         btn.addEventListener("click", () => {
           createDynamicRow(btn.dataset.addRow);
@@ -2962,22 +3068,52 @@ alert("Erro ao salvar histórico. Abra o console para ver o detalhe.");
         });
       });
 
-      document.getElementById("deleteHistoryBtn").addEventListener("click", async () => {
-        const senha = prompt("Digite código interno:");
-        if(senha === null) return;
+document.getElementById("deleteHistoryBtn").addEventListener("click", async () => {
+  const senha = prompt("Digite código interno:");
+  if (senha === null) return;
 
-        if(senha !== DELETE_HISTORY_CODE){
-          alert("Código interno incorreto.");
-          return;
-        }
+  if (senha !== DELETE_HISTORY_CODE) {
+    alert("Código interno incorreto.");
+    return;
+  }
 
-        if(!confirm("Deseja realmente apagar todo o histórico?")) return;
+  if (!historyCache.length) {
+    alert("Não há histórico para excluir.");
+    return;
+  }
 
-        await deleteAllHistory();
-        clearTurn("t1");
-        render();
-      });
+  const lista = historyCache
+    .map((item, index) => {
+      const nome = item.submittedByName || "Sistema";
+      const data = formatDateBR(item.fechamentoDate || "");
+      const total = money(item.total || 0);
+      return `${index + 1} - ${nome} - ${data} - ${total}`;
+    })
+    .join("\n");
 
+  const escolha = prompt(
+    `Digite o número do histórico que deseja excluir:\n\n${lista}`
+  );
+
+  if (escolha === null) return;
+
+  const indice = Number(escolha) - 1;
+
+  if (!Number.isInteger(indice) || indice < 0 || indice >= historyCache.length) {
+    alert("Número inválido.");
+    return;
+  }
+
+  const itemSelecionado = historyCache[indice];
+
+  if (!confirm(`Deseja excluir o histórico de ${itemSelecionado.submittedByName || "Sistema"} em ${formatDateBR(itemSelecionado.fechamentoDate || "")}?`)) {
+    return;
+  }
+
+  await deleteDoc(doc(db, "history", itemSelecionado.id));
+
+  alert("Histórico excluído com sucesso.");
+});
       document.getElementById("logoutBtn").addEventListener("click", logout);
 
       document.getElementById("closeHistoryModal").addEventListener("click", closeHistoryModal);
@@ -2997,19 +3133,18 @@ alert("Erro ao salvar histórico. Abra o console para ver o detalhe.");
           return;
         }
 
-        if(!confirm("Tem certeza que deseja excluir TODOS os usuários?")) return;
+if(!confirm("Tem certeza que deseja limpar os dados locais deste dispositivo?")) return;
 
-        localStorage.removeItem(USERS_STORAGE_KEY);
-        localStorage.removeItem(ACTIVE_USER_STORAGE_KEY);
-        localStorage.removeItem(REMEMBER_LOGIN_STORAGE_KEY);
-        localStorage.removeItem(REMEMBERED_EMAIL_STORAGE_KEY);
-        localStorage.removeItem(SESSION_LAST_ACTIVITY_KEY);
+// 🔴 NÃO existe USERS_STORAGE_KEY → removido
 
-        ensureDemoUser();
-        renderAdminUsers();
-        alert("Todos os usuários foram removidos. O usuário demo foi recriado.");
-      });
+localStorage.removeItem(ACTIVE_USER_STORAGE_KEY);
+localStorage.removeItem(REMEMBER_LOGIN_STORAGE_KEY);
+localStorage.removeItem(REMEMBERED_EMAIL_STORAGE_KEY);
+localStorage.removeItem(SESSION_LAST_ACTIVITY_KEY);
 
+renderAdminUsers();
+
+alert("Dados locais removidos com sucesso.\n(Usuários no Firebase NÃO foram excluídos)");
       const rememberedUser = loadActiveUser();
       if(rememberedUser && getRememberedLogin() && !isSessionExpired()){
         showApp(rememberedUser);
