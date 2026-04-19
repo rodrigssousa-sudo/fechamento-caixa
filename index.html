@@ -3827,11 +3827,40 @@ document.querySelectorAll("[data-report-range]").forEach((btn) => {
       return;
     }
 
-    alert("Relatório ainda não configurado.");
+    const range = Number(btn.dataset.reportRange);
+
+    // DATA FINAL = HOJE
+    const end = new Date();
+    const endOffset = end.getTimezoneOffset();
+    const endLocal = new Date(end.getTime() - endOffset * 60000);
+    const endDate = endLocal.toISOString().split("T")[0];
+
+    // DATA INICIAL = HOJE - RANGE
+    const start = new Date();
+    start.setDate(start.getDate() - range);
+    const startOffset = start.getTimezoneOffset();
+    const startLocal = new Date(start.getTime() - startOffset * 60000);
+    const startDate = startLocal.toISOString().split("T")[0];
+
+    // ABRE PDF DIRETO
+    const printWindow = window.open("", "_blank", "width=1280,height=900");
+    if(!printWindow){
+      alert("Não foi possível abrir a janela.");
+      return;
+    }
+
+    printWindow.document.open();
+    printWindow.document.write(buildPremiumPdfHtml(startDate, endDate));
+    printWindow.document.close();
+    printWindow.focus();
+
+    printWindow.onload = () => {
+      printWindow.print();
+    };
+
     document.getElementById("reportsMenu").classList.add("hidden");
   });
 });
-
 document.getElementById("deleteHistoryBtn").addEventListener("click", async () => {
   const senha = prompt("Digite código interno:");
   if (senha === null) return;
