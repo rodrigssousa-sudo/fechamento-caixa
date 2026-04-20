@@ -4517,7 +4517,20 @@ if (
         }
       }
     });
+function exportToPdfProtected(){
+  const code = prompt("Digite código interno:");
+  if(code === null) return;
+  
+  if(code !== PDF_CODE){
+    alert("Código interno incorreto.");
+    return;
 
+  }
+
+  openPdfRangeModal();
+
+}
+    
 document.addEventListener("DOMContentLoaded", () => {
   bindSessionEvents();
   startHistoryRealtimeListener();
