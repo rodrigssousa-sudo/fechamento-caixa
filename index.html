@@ -3030,939 +3030,400 @@ function getHistoryByDateRange(startDate, endDate){
   });
 }
 function buildPremiumPdfHtml(startDate, endDate){
-
   const filtered = getHistoryByDateRange(startDate, endDate);
 
   const ultimoRegistro = filtered.length ? filtered[0] : null;
 
   const ultimoBancoReca = ultimoRegistro
-
     ? Number(getBancoRecaFromSnapshot(ultimoRegistro.turno || {}))
-
     : 0;
 
   const totalSaidas = filtered.reduce((acc, item) => {
-
     return acc + Number(item?.turno?.saidasTotal || 0);
-
   }, 0);
 
   const totalDiferenca = filtered.reduce((acc, item, index) => {
-
     const previousItem = filtered[index + 1] || {};
-
     const previousSaldo = Number(previousItem?.turno?.saldoLiquido || 0);
-
     const currentSaldo = Number(item?.turno?.saldoLiquido || 0);
-
     const saidas = Number(item?.turno?.saidasTotal || 0);
-
     const diff = (currentSaldo + saidas) - previousSaldo;
-
     return acc + diff;
-
   }, 0);
 
   const rankingOperadores = {};
 
   filtered.forEach((item, index) => {
-
     const nome = item.nomeOperador || "Sem nome";
-
     const previousItem = filtered[index + 1] || {};
-
     const previousSaldo = Number(previousItem?.turno?.saldoLiquido || 0);
-
     const currentSaldo = Number(item?.turno?.saldoLiquido || 0);
-
     const saidas = Number(item?.turno?.saidasTotal || 0);
-
     const diff = (currentSaldo + saidas) - previousSaldo;
 
     if(!rankingOperadores[nome]){
-
       rankingOperadores[nome] = {
-
         nome,
-
         totalErro: 0,
-
         qtd: 0,
-
         sobra: 0,
-
         falta: 0
-
       };
-
     }
 
     rankingOperadores[nome].totalErro += Math.abs(diff);
-
     rankingOperadores[nome].qtd += 1;
 
     if(diff > 0){
-
       rankingOperadores[nome].sobra += diff;
-
     }else if(diff < 0){
-
       rankingOperadores[nome].falta += Math.abs(diff);
-
     }
-
   });
 
   const rankingHtml = Object.values(rankingOperadores)
-
     .sort((a, b) => b.totalErro - a.totalErro)
-
     .map((item, index) => `
-
       <tr>
-
         <td>${index + 1}</td>
-
         <td>${escapeHtml(item.nome)}</td>
-
         <td>${item.qtd}</td>
-
         <td>${money(item.sobra)}</td>
-
         <td>${money(item.falta)}</td>
-
         <td><strong>${money(item.totalErro)}</strong></td>
-
       </tr>
-
     `).join("");
 
   const linhas = filtered.map((item, index) => {
-
     const nome = item.nomeOperador || "Sem nome";
-
     const turno = item.turnoTrabalhado || "-";
-
     const data = formatDateBR(item.fechamentoDate || "");
-
     const banco = money(getBancoRecaFromSnapshot(item.turno || {}));
-
     const saidas = Number(item?.turno?.saidasTotal || 0);
 
     const previousItem = filtered[index + 1] || {};
-
     const previousSaldo = Number(previousItem?.turno?.saldoLiquido || 0);
-
     const currentSaldo = Number(item?.turno?.saldoLiquido || 0);
-
     const diffCaixa = (currentSaldo + saidas) - previousSaldo;
 
     return `
-
       <tr>
-
         <td>${escapeHtml(nome)}</td>
-
         <td>${escapeHtml(turno)}</td>
-
         <td>${escapeHtml(data)}</td>
-
         <td>${banco}</td>
-
         <td>${money(saidas)}</td>
-
         <td style="font-weight:900; color:${diffCaixa > 0 ? "#16a34a" : diffCaixa < 0 ? "#dc2626" : "#0f172a"};">
-
           ${diffCaixa > 0 ? "+ " : diffCaixa < 0 ? "- " : ""}${money(Math.abs(diffCaixa))}
         </td>
       </tr>
     `;
-
   }).join("");
 
   return `
-
-  return `
-    <!DOCTYPE html>
-    <html lang="pt-BR">
-    <head>
-      <meta charset="UTF-8" />
-     <title>Relatório Financeiro - Bank King</title>
-<style>
-  *{
-    box-sizing:border-box;
-  }
-
-  /* ===== TOPO LIMPO ===== */
-
-  .app-top{
-    margin-bottom:12px;
-  }
-
-  .bank-dashboard-card{
-    padding:14px;
-    border-radius:24px;
-    background:rgba(255,255,255,.72);
-    border:1px solid rgba(255,255,255,.86);
-    box-shadow:0 12px 30px rgba(15,23,42,.05);
-  }
-
-  .summary-head.clean{
-    display:flex;
-    justify-content:space-between;
-    align-items:flex-start;
-    gap:12px;
-    margin-bottom:12px;
-  }
-
-  .summary-left{
-    display:flex;
-    flex-direction:column;
-    gap:2px;
-  }
-
-  .summary-label{
-    font-size:11px;
-    color:#94a3b8;
-    font-weight:700;
-    text-transform:uppercase;
-    letter-spacing:.08em;
-  }
-
-  .summary-head h2{
-    font-size:20px;
-    font-weight:800;
-    color:#0f172a;
-    margin:0;
-    letter-spacing:-.02em;
-  }
-
-  .pill{
-    display:inline-flex;
-    align-items:center;
-    gap:6px;
-    font-size:11px;
-    padding:7px 10px;
-    border-radius:999px;
-    font-weight:800;
-    white-space:nowrap;
-  }
-
-  .pill.neutral{
-    background:#f8fafc;
-    color:#64748b;
-    border:1px solid rgba(148,163,184,.14);
-  }
-
-  .pill .dot{
-    width:6px;
-    height:6px;
-    border-radius:50%;
-    background:#94a3b8;
-  }
-
-  /* ===== SALDO PRINCIPAL ===== */
-
-  .bank-card.compact{
-    padding:16px 18px;
-    margin-top:0;
-    margin-bottom:12px;
-    border-radius:20px;
-    background:linear-gradient(135deg, #ffffff 0%, #f8fbff 100%);
-    border:1px solid rgba(59,130,246,.08);
-    box-shadow:none;
-  }
-
-  .bank-topline{
-    display:flex;
-    justify-content:space-between;
-    align-items:center;
-    margin-bottom:6px;
-  }
-
-  .bank-label{
-    font-size:11px;
-    color:#94a3b8;
-    font-weight:800;
-    text-transform:uppercase;
-    letter-spacing:.08em;
-  }
-
-  .bank-value{
-    font-size:34px;
-    font-weight:900;
-    letter-spacing:-.05em;
-    color:#0f172a;
-    line-height:1;
-  }
-
-  /* ===== MÉTRICAS MAIS LIMPAS ===== */
-
-  .compact-metrics{
-    display:grid;
-    grid-template-columns:repeat(3, 1fr);
-    gap:10px;
-  }
-
-  .metric{
-    padding:14px 16px;
-    border-radius:18px;
-    background:rgba(248,250,252,.85);
-    border:1px solid rgba(148,163,184,.10);
-    box-shadow:none;
-    min-height:82px;
-    display:flex;
-    flex-direction:column;
-    justify-content:center;
-  }
-
-  .metric-label{
-    font-size:11px;
-    color:#94a3b8;
-    font-weight:700;
-    margin-bottom:6px;
-    text-transform:uppercase;
-    letter-spacing:.05em;
-  }
-
-  .metric-value{
-    font-size:18px;
-    font-weight:900;
-    letter-spacing:-.03em;
-    line-height:1.1;
-  }
-
-  .metric.highlight{
-    background:linear-gradient(135deg, rgba(37,99,235,.08), rgba(56,189,248,.10));
-    border:1px solid rgba(59,130,246,.14);
-  }
-
-  .green{ color:#16a34a; }
-  .blue{ color:#2563eb; }
-  .red{ color:#dc2626; }
-
-  /* ===== ÁREA PRINCIPAL DO TURNO ===== */
-
-  .main-entry{
-    margin-top:12px;
-  }
-
-  .turno-main{
-    padding:16px;
-    border-radius:24px;
-    border:1px solid rgba(255,255,255,.88);
-    box-shadow:0 14px 36px rgba(15,23,42,.05);
-    background:rgba(255,255,255,.76);
-  }
-
-  .turno-head-main{
-    display:flex;
-    justify-content:space-between;
-    align-items:flex-start;
-    gap:12px;
-    margin-bottom:12px;
-  }
-
-  .turno-head-main h3{
-    margin:2px 0 4px;
-    font-size:18px;
-    letter-spacing:-.02em;
-    color:#0f172a;
-  }
-
-  .turno-head-main small{
-    display:block;
-    color:#64748b;
-    font-size:12px;
-    line-height:1.4;
-  }
-
-  .main-total{
-    min-width:120px;
-    padding:0;
-    background:transparent;
-    border:none;
-  }
-
-  .main-total .label{
-    color:#94a3b8;
-    font-size:11px;
-    font-weight:700;
-    text-transform:uppercase;
-    letter-spacing:.06em;
-    margin-bottom:4px;
-  }
-
-  .main-total .value{
-    font-size:18px;
-    font-weight:900;
-    color:#0f172a;
-    letter-spacing:-.03em;
-  }
-
-  /* ===== META DO TURNO ===== */
-
-  .turno-meta-main{
-    padding:0;
-    border-radius:0;
-    background:transparent;
-    border:none;
-    margin-bottom:10px;
-  }
-
-  /* ===== CAMPOS MAIS ELEGANTES ===== */
-
-  .fields{
-    display:grid;
-    gap:12px;
-  }
-
-  .fields.two-col{
-    grid-template-columns:repeat(2, 1fr);
-  }
-
-  .field{
-    display:flex;
-    flex-direction:column;
-    gap:6px;
-  }
-
-  .field label{
-    font-size:12px;
-    color:#475569;
-    font-weight:800;
-  }
-
-  .field input{
-    width:100%;
-    min-height:52px;
-    padding:14px 16px;
-    border-radius:18px;
-    border:1px solid rgba(148,163,184,.14);
-    background:rgba(255,255,255,.92);
-    font-size:16px;
-    color:#0f172a;
-    box-shadow:inset 0 1px 0 rgba(255,255,255,.9);
-  }
-
-  .field input::placeholder{
-    color:#94a3b8;
-  }
-
-  /* ===== BLOCOS FINANCEIROS MAIS CHATOS MENOS ===== */
-
-  .finance-block{
-    margin-top:14px;
-    padding:14px 0 0;
-    border:none;
-    background:transparent;
-    border-radius:0;
-  }
-
-  .finance-head{
-    display:flex;
-    justify-content:space-between;
-    align-items:center;
-    margin-bottom:10px;
-    padding:0 2px;
-  }
-
-  .finance-head h4{
-    font-size:14px;
-    margin:0;
-    color:#0f172a;
-    letter-spacing:-.01em;
-  }
-
-  .finance-total{
-    font-size:13px;
-    font-weight:900;
-  }
-
-  /* ===== LISTAS DINÂMICAS ===== */
-
-  .dynamic-list{
-    display:flex;
-    flex-direction:column;
-    gap:10px;
-  }
-
-  .dynamic-row{
-    display:grid;
-    grid-template-columns:1.15fr .85fr auto auto;
-    gap:8px;
-    align-items:end;
-    padding:10px;
-    border:1px solid rgba(148,163,184,.10);
-    border-radius:16px;
-    background:rgba(255,255,255,.82);
-  }
-
-  .inline-actions{
-    margin-top:10px;
-  }
-
-  .btn-add{
-    width:100%;
-    min-height:44px;
-    padding:10px 14px;
-    border:none;
-    border-radius:14px;
-    background:#eef2ff;
-    color:#1d4ed8;
-    font-size:13px;
-    font-weight:800;
-    box-shadow:none;
-  }
-
-  /* ===== BLOCO SECUNDÁRIO DISCRETO ===== */
-
-  .secondary-info{
-    display:grid;
-    gap:12px;
-    margin-top:14px;
-  }
-
-  .history-card{
-    padding:14px;
-    border-radius:20px;
-    border:1px solid rgba(255,255,255,.86);
-    background:rgba(255,255,255,.64);
-    box-shadow:0 10px 28px rgba(15,23,42,.04);
-  }
-
-  /* ===== ESCONDER DUPLICIDADE VISUAL NO TOPO ===== */
-  /* deixa os cards mais “resumo”, sem competir com o Turno 2 */
-
-  .compact-metrics .metric:nth-child(1) .metric-label{
-    content:"";
-  }
-
-  /* ===== MOBILE ===== */
-
-  @media (max-width:700px){
-    .bank-dashboard-card{
-      padding:14px;
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <title>Relatório Financeiro - Bank King</title>
+  <style>
+    *{
+      box-sizing:border-box;
     }
 
-    .summary-head.clean{
-      flex-direction:column;
-      align-items:flex-start;
+    body{
+      margin:0;
+      font-family:Arial, Helvetica, sans-serif;
+      background:#f3f7fb;
+      color:#0f172a;
+      padding:28px;
     }
 
-    .bank-value{
-      font-size:30px;
+    .sheet{
+      max-width:1100px;
+      margin:0 auto;
+      background:#ffffff;
+      border:1px solid #dbe3ee;
+      box-shadow:0 10px 30px rgba(15,23,42,.08);
+      border-radius:18px;
+      overflow:hidden;
     }
 
-    .compact-metrics{
-      grid-template-columns:1fr;
+    .top{
+      padding:28px 32px 18px;
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      gap:20px;
+      background:linear-gradient(135deg, #ffffff 0%, #f8fbff 100%);
     }
 
-    .turno-head-main{
-      flex-direction:row;
-      align-items:flex-start;
-      gap:10px;
+    .brand-left{
+      display:flex;
+      align-items:center;
+      gap:16px;
     }
 
-    .turno-head-main > div:first-child{
-      flex:1;
+    .logo-box{
+      width:54px;
+      height:54px;
+      border-radius:14px;
+      background:linear-gradient(135deg, #0f172a, #1e3a8a);
+      color:#fff;
+      font-weight:900;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      font-size:18px;
+      letter-spacing:.5px;
+      box-shadow:0 10px 20px rgba(15,23,42,.18);
     }
 
-    .main-total{
-      min-width:96px;
+    .brand-text h1{
+      margin:0;
+      font-size:26px;
+      letter-spacing:.5px;
+      color:#0f172a;
     }
 
-    .main-total .value{
-      font-size:16px;
+    .brand-text p{
+      margin:4px 0 0;
+      font-size:13px;
+      color:#64748b;
     }
 
-    .fields.two-col{
-      grid-template-columns:1fr;
+    .brand-right{
+      display:flex;
+      gap:24px;
+      text-align:right;
+      flex-wrap:wrap;
     }
 
-    .dynamic-row{
-      grid-template-columns:1fr;
+    .period-block,
+    .generated-block{
+      font-size:12px;
+      color:#334155;
     }
-  }
-</style>
 
-        body{
-          margin:0;
-          font-family:Arial, Helvetica, sans-serif;
-          background:#f3f7fb;
-          color:#0f172a;
-          padding:28px;
-        }
+    .period-title{
+      font-size:10px;
+      letter-spacing:.1em;
+      font-weight:700;
+      color:#94a3b8;
+      margin-bottom:4px;
+      text-transform:uppercase;
+    }
 
-        .sheet{
-          max-width:1100px;
-          margin:0 auto;
-          background:#ffffff;
-          border:1px solid #dbe3ee;
-          box-shadow:0 10px 30px rgba(15,23,42,.08);
-          border-radius:18px;
-          overflow:hidden;
-        }
+    .divider-line{
+      height:3px;
+      background:linear-gradient(90deg, #0f172a, #3b82f6);
+      margin:0 32px 12px;
+      border-radius:999px;
+    }
 
-        .top{
-          padding:28px 32px 18px;
-          display:flex;
-          justify-content:space-between;
-          align-items:center;
-          gap:20px;
-          background:linear-gradient(135deg, #ffffff 0%, #f8fbff 100%);
-        }
+    .summary{
+      display:grid;
+      grid-template-columns:repeat(3, 1fr);
+      gap:14px;
+      padding:22px 32px;
+      border-bottom:1px solid #e2e8f0;
+    }
 
-        .brand-left{
-          display:flex;
-          align-items:center;
-          gap:16px;
-        }
+    .card{
+      border:1px solid #dbe3ee;
+      background:#f8fbff;
+      padding:16px;
+      border-radius:14px;
+    }
 
-        .logo-box{
-          width:54px;
-          height:54px;
-          border-radius:14px;
-          background:linear-gradient(135deg, #0f172a, #1e3a8a);
-          color:#fff;
-          font-weight:900;
-          display:flex;
-          align-items:center;
-          justify-content:center;
-          font-size:18px;
-          letter-spacing:.5px;
-          box-shadow:0 10px 20px rgba(15,23,42,.18);
-        }
+    .label{
+      font-size:11px;
+      text-transform:uppercase;
+      letter-spacing:.08em;
+      color:#64748b;
+      margin-bottom:6px;
+    }
 
-        .brand-text h1{
-          margin:0;
-          font-size:26px;
-          letter-spacing:.5px;
-          color:#0f172a;
-        }
+    .value{
+      font-size:26px;
+      font-weight:900;
+      letter-spacing:-0.02em;
+      color:#0f172a;
+    }
 
-        .brand-text p{
-          margin:4px 0 0;
-          font-size:13px;
-          color:#64748b;
-        }
+    .section-title{
+      padding:24px 32px 10px;
+      font-size:15px;
+      font-weight:900;
+      color:#0f172a;
+      letter-spacing:.02em;
+    }
 
-        .brand-right{
-          display:flex;
-          gap:24px;
-          text-align:right;
-          flex-wrap:wrap;
-        }
+    .table-wrap{
+      padding:8px 32px 32px;
+    }
 
-        .period-block,
-        .generated-block{
-          font-size:12px;
-          color:#334155;
-        }
+    table{
+      width:100%;
+      border-collapse:collapse;
+      font-size:13px;
+    }
 
-        .period-title{
-          font-size:10px;
-          letter-spacing:.1em;
-          font-weight:700;
-          color:#94a3b8;
-          margin-bottom:4px;
-          text-transform:uppercase;
-        }
+    thead th{
+      text-align:left;
+      background:linear-gradient(90deg, #0f172a, #1e3a8a);
+      color:#ffffff;
+      padding:13px 10px;
+      font-size:11px;
+      letter-spacing:.05em;
+      text-transform:uppercase;
+    }
 
-        .divider-line{
-          height:3px;
-          background:linear-gradient(90deg, #0f172a, #3b82f6);
-          margin:0 32px 12px;
-          border-radius:999px;
-        }
+    tbody td{
+      padding:11px 10px;
+      border-bottom:1px solid #e2e8f0;
+    }
 
-        .summary{
-          display:grid;
-          grid-template-columns:repeat(3, 1fr);
-          gap:14px;
-          padding:22px 32px;
-          border-bottom:1px solid #e2e8f0;
-        }
+    tbody tr:nth-child(even){
+      background:#f8fafc;
+    }
 
-        .card{
-          border:1px solid #dbe3ee;
-          background:#f8fbff;
-          padding:16px;
-          border-radius:14px;
-        }
+    .empty{
+      padding:40px 20px;
+      text-align:center;
+      color:#64748b;
+      border:1px dashed #cbd5e1;
+      background:#f8fafc;
+      border-radius:14px;
+    }
 
-        .label{
-          font-size:11px;
-          text-transform:uppercase;
-          letter-spacing:.08em;
-          color:#64748b;
-          margin-bottom:6px;
-        }
+    .footer{
+      padding:16px 32px 26px;
+      color:#64748b;
+      font-size:12px;
+      border-top:1px solid #e2e8f0;
+    }
 
-        .value{
-          font-size:26px;
-          font-weight:900;
-          letter-spacing:-0.02em;
-          color:#0f172a;
-        }
+    @media print{
+      body{
+        background:#fff;
+        padding:0;
+      }
 
-        .section-title{
-          padding:24px 32px 10px;
-          font-size:15px;
-          font-weight:900;
-          color:#0f172a;
-          letter-spacing:.02em;
-        }
-
-        .table-wrap{
-          padding:8px 32px 32px;
-        }
-
-        table{
-          width:100%;
-          border-collapse:collapse;
-          font-size:13px;
-        }
-
-        thead th{
-          text-align:left;
-          background:linear-gradient(90deg, #0f172a, #1e3a8a);
-          color:#ffffff;
-          padding:13px 10px;
-          font-size:11px;
-          letter-spacing:.05em;
-          text-transform:uppercase;
-        }
-
-        tbody td{
-          padding:11px 10px;
-          border-bottom:1px solid #e2e8f0;
-        }
-
-        tbody tr:nth-child(even){
-          background:#f8fafc;
-        }
-
-        .empty{
-          padding:40px 20px;
-          text-align:center;
-          color:#64748b;
-          border:1px dashed #cbd5e1;
-          background:#f8fafc;
-          border-radius:14px;
-        }
-
-        .footer{
-          padding:16px 32px 26px;
-          color:#64748b;
-          font-size:12px;
-          border-top:1px solid #e2e8f0;
-        }
-
-        @media print{
-          body{
-            background:#fff;
-            padding:0;
-          }
-
-          .sheet{
-            border:none;
-            box-shadow:none;
-            border-radius:0;
-          }
-          /* ===== LAYOUT FINAL CLEAN ===== */
-
-.app-shell-clean{
-  display:grid;
-  gap:14px;
-}
-
-.summary-flat-card,
-.turno-flat,
-.slim-card{
-  background:rgba(255,255,255,.76);
-  border:1px solid rgba(255,255,255,.88);
-  border-radius:24px;
-  box-shadow:0 12px 28px rgba(15,23,42,.04);
-}
-
-.summary-flat-card{
-  padding:16px;
-}
-
-.summary-head.clean{
-  display:flex;
-  justify-content:space-between;
-  align-items:flex-start;
-  gap:12px;
-  margin-bottom:12px;
-}
-
-.summary-left{
-  display:flex;
-  flex-direction:column;
-  gap:2px;
-}
-
-.summary-label{
-  font-size:11px;
-  color:#94a3b8;
-  font-weight:800;
-  text-transform:uppercase;
-  letter-spacing:.08em;
-}
-
-.summary-head h2{
-  margin:0;
-  font-size:20px;
-  font-weight:900;
-  letter-spacing:-.03em;
-  color:#0f172a;
-}
-
-.pill{
-  display:inline-flex;
-  align-items:center;
-  gap:6px;
-  font-size:11px;
-  padding:8px 10px;
-  border-radius:999px;
-  font-weight:800;
-  white-space:nowrap;
-}
-
-.pill.neutral{
-  background:#fff7ed;
-  color:#b45309;
-  border:1px solid rgba(245,158,11,.18);
-}
-
-.pill .dot{
-  width:6px;
-  height:6px;
-  border-radius:50%;
-  background:currentColor;
-}
-
-.balance-strip{
-  display:flex;
-  justify-content:space-between;
-  align-items:flex-start;
-  gap:12px;
-  padding:18px;
-  border-radius:22px;
-  background:linear-gradient(135deg, #ffffff 0%, #f5f9ff 100%);
-  border:1px solid rgba(59,130,246,.10);
-  }
-        }
-      </style>
-    </head>
-    <body>
-      <div class="sheet">
-        <div class="top">
-          <div class="brand-left">
-            <div class="logo-box">BK</div>
-            <div class="brand-text">
-              <h1>BANK KING</h1>
-              <p>Relatório financeiro consolidado</p>
-            </div>
-          </div>
-
-          <div class="brand-right">
-            <div class="period-block">
-              <div class="period-title">Período</div>
-              <div>De: ${formatDateBR(startDate)}</div>
-              <div>Até: ${formatDateBR(endDate)}</div>
-            </div>
-
-            <div class="generated-block">
-              <div class="period-title">Gerado em</div>
-              <div>${new Date().toLocaleDateString("pt-BR")}</div>
-              <div>${new Date().toLocaleTimeString("pt-BR", { hour: "2-digit", minute: "2-digit" })}</div>
-            </div>
-          </div>
-        </div>
-
-        <div class="divider-line"></div>
-
-        <div class="summary">
-          <div class="card">
-            <div class="label">Banco Reca</div>
-            <div class="value">${money(ultimoBancoReca)}</div>
-          </div>
-
-          <div class="card">
-            <div class="label">Saídas de Caixa</div>
-            <div class="value">${money(totalSaidas)}</div>
-          </div>
-
-          <div class="card">
-            <div class="label">Saldo Total</div>
-            <div class="value">${money(totalDiferenca)}</div>
-          </div>
-        </div>
-
-        <div class="section-title">Fechamentos do período</div>
-
-        <div class="table-wrap">
-          ${
-            filtered.length
-              ? `
-                <table>
-                  <thead>
-                    <tr>
-                      <th>Nome</th>
-                      <th>Turno</th>
-                      <th>Data</th>
-                      <th>Banco Reca</th>
-                      <th>Saídas de Caixa</th>
-                      <th>Diferença de Caixa</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    ${linhas}
-                  </tbody>
-                </table>
-              `
-              : `
-                <div class="empty">
-                  Nenhum fechamento encontrado no período selecionado.
-                </div>
-              `
-          }
-        </div>
-
-        ${
-          Object.keys(rankingOperadores).length
-            ? `
-              <div class="section-title">Ranking por operador</div>
-              <div class="table-wrap" style="padding-top:8px;">
-                <table>
-                  <thead>
-                    <tr>
-                      <th>#</th>
-                      <th>Operador</th>
-                      <th>Fechamentos</th>
-                      <th>Sobra</th>
-                      <th>Falta</th>
-                      <th>Erro Total</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    ${rankingHtml}
-                  </tbody>
-                </table>
-              </div>
-            `
-            : ""
-        }
-
-        <div class="footer">
-          Documento interno • Bank King BRS
+      .sheet{
+        border:none;
+        box-shadow:none;
+        border-radius:0;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="sheet">
+    <div class="top">
+      <div class="brand-left">
+        <div class="logo-box">BK</div>
+        <div class="brand-text">
+          <h1>BANK KING</h1>
+          <p>Relatório financeiro consolidado</p>
         </div>
       </div>
-    </body>
-    </html>
+
+      <div class="brand-right">
+        <div class="period-block">
+          <div class="period-title">Período</div>
+          <div>De: ${formatDateBR(startDate)}</div>
+          <div>Até: ${formatDateBR(endDate)}</div>
+        </div>
+
+        <div class="generated-block">
+          <div class="period-title">Gerado em</div>
+          <div>${new Date().toLocaleDateString("pt-BR")}</div>
+          <div>${new Date().toLocaleTimeString("pt-BR", { hour: "2-digit", minute: "2-digit" })}</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="divider-line"></div>
+
+    <div class="summary">
+      <div class="card">
+        <div class="label">Banco Reca</div>
+        <div class="value">${money(ultimoBancoReca)}</div>
+      </div>
+
+      <div class="card">
+        <div class="label">Saídas de Caixa</div>
+        <div class="value">${money(totalSaidas)}</div>
+      </div>
+
+      <div class="card">
+        <div class="label">Saldo Total</div>
+        <div class="value">${money(totalDiferenca)}</div>
+      </div>
+    </div>
+
+    <div class="section-title">Fechamentos do período</div>
+
+    <div class="table-wrap">
+      ${
+        filtered.length
+          ? `
+            <table>
+              <thead>
+                <tr>
+                  <th>Nome</th>
+                  <th>Turno</th>
+                  <th>Data</th>
+                  <th>Banco Reca</th>
+                  <th>Saídas de Caixa</th>
+                  <th>Diferença de Caixa</th>
+                </tr>
+              </thead>
+              <tbody>
+                ${linhas}
+              </tbody>
+            </table>
+          `
+          : `
+            <div class="empty">
+              Nenhum fechamento encontrado no período selecionado.
+            </div>
+          `
+      }
+    </div>
+
+    ${
+      Object.keys(rankingOperadores).length
+        ? `
+          <div class="section-title">Ranking por operador</div>
+          <div class="table-wrap" style="padding-top:8px;">
+            <table>
+              <thead>
+                <tr>
+                  <th>#</th>
+                  <th>Operador</th>
+                  <th>Fechamentos</th>
+                  <th>Sobra</th>
+                  <th>Falta</th>
+                  <th>Erro Total</th>
+                </tr>
+              </thead>
+              <tbody>
+                ${rankingHtml}
+              </tbody>
+            </table>
+          </div>
+        `
+        : ""
+    }
+
+    <div class="footer">
+      Documento interno • Bank King BRS
+    </div>
+  </div>
+</body>
+</html>
   `;
 }
 function render(){
