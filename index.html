@@ -4139,18 +4139,28 @@ document.addEventListener("DOMContentLoaded", () => {
     render();
   });
 
-  on("fecharTurno", "click", async () => {
+  on("fecharTurno", "click", async (e) => {
+    const btn = e.currentTarget;
+    if (btn.disabled) return; // Evita cliques simultâneos
+
     try {
-      const item = serializeTurn("t2");
-      await saveHistoryItem(item);
-      clearTurn("t2");
-      render();
-      alert("Turno fechado com sucesso.");
+        btn.disabled = true;
+        btn.textContent = "PROCESSANDO...";
+        
+        const item = serializeTurn("t2");
+        await saveHistoryItem(item);
+        
+        clearTurn("t2");
+        render();
+        alert("Turno fechado com sucesso.");
     } catch (error) {
-      console.error("Erro ao salvar histórico:", error);
-      alert("Erro ao salvar histórico. Abra o console para ver o detalhe.");
+        console.error(error);
+        alert("Erro ao salvar.");
+    } finally {
+        btn.disabled = false;
+        btn.textContent = "FINALIZAR TURNO";
     }
-  });
+});
 
   on("exportarPdf", "click", exportToPdfProtected);
 
