@@ -2579,7 +2579,7 @@ function updateTurno1Visibility(){
         </div>
         <div class="field">
           <label>Valor</label>
-          <input type="text" inputmode="numeric" data-dynamic-value="true" placeholder="0,00" />
+       <input type="text" inputmode="numeric" pattern="[0-9]*" id="t2_banco" placeholder="0,00" />
         </div>
         <div class="signed-preview red">- $ 0,00</div>
         <button class="remove-btn" type="button">Remover</button>
@@ -2600,7 +2600,7 @@ function updateTurno1Visibility(){
         </div>
         <div class="field">
           <label>Valor</label>
-          <input type="text" inputmode="numeric" data-pending-value="true" placeholder="0,00" />
+          <input type="text" inputmode="numeric" pattern="[0-9]*" data-dynamic-value="true" placeholder="0,00" />
         </div>
         <div class="signed-preview amber">- $ 0,00</div>
         <button class="remove-btn" type="button">Remover</button>
