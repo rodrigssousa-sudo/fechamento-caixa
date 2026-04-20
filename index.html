@@ -3104,14 +3104,13 @@ function buildPremiumPdfHtml(startDate, endDate){
     return acc + Number(item?.turno?.saidasTotal || 0);
   }, 0);
 
-  const totalDiferenca = filtered.reduce((acc, item, index) => {
-    const previousItem = filtered[index + 1] || {};
-    const previousSaldo = Number(previousItem?.turno?.saldoLiquido || 0);
-    const currentSaldo = Number(item?.turno?.saldoLiquido || 0);
-    const saidas = Number(item?.turno?.saidasTotal || 0);
-    const diff = (currentSaldo + saidas) - previousSaldo;
-    return acc + diff;
-  }, 0);
+ const totalDiferenca = filtered.reduce((acc, item, index) => {
+  const previousItem = filtered[index + 1] || {};
+  const previousSaldo = Number(previousItem?.turno?.saldoLiquido || 0);
+  const currentSaldo = Number(item?.turno?.saldoLiquido || 0);
+  const diff = currentSaldo - previousSaldo;
+  return acc + diff;
+}, 0);
 
   const rankingOperadores = {};
 
