@@ -3298,10 +3298,10 @@ function updateTurno1Visibility(){
   if(!content || !btn) return;
 
   if(turno1Visible){
-    content.style.display = "";
+    content.classList.remove("hidden");
     btn.textContent = "Ocultar";
   }else{
-    content.style.display = "none";
+    content.classList.add("hidden");
     btn.textContent = "Mostrar";
   }
 }
