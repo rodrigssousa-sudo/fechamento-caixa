@@ -2697,8 +2697,10 @@ function serializeTurn(turno){
   { name: "Suprema (x400)", value: getValue(f.suprema) * 400 },
   { name: "Buffalo", value: getValue(f.buffalo) },
   { name: "Ganamos", value: getValue(f.ganamos) },
-  { name: "Carga de Fichas", value: getValue(f.cargas) },
-  { name: "Cargas F. Poker (x400)", value: getValue(f.cargasPoker) * 400 }
+
+  // 👇 AGORA COMO SAÍDA (NEGATIVO)
+  { name: "Carga de Fichas (-)", value: -getValue(f.cargas) },
+  { name: "Cargas F. Poker (- x400)", value: -(getValue(f.cargasPoker) * 400) }
 ];
 
   const outflows = [...document.querySelectorAll(`#${turno}_dynamic_list .dynamic-row`)].map((row) => {
