@@ -4522,139 +4522,47 @@ document.addEventListener("DOMContentLoaded", () => {
   bindSessionEvents();
   startHistoryRealtimeListener();
 
-  document.getElementById("toggleHistoryBtn").addEventListener("click", () => {
+  const byId = (id) => document.getElementById(id);
+
+  const on = (id, event, handler) => {
+    const el = byId(id);
+    if (!el) {
+      console.error(`Elemento não encontrado: #${id}`);
+      return;
+    }
+    el.addEventListener(event, handler);
+  };
+
+  on("toggleHistoryBtn", "click", () => {
     historyVisible = !historyVisible;
     updateHistoryVisibility();
   });
 
-  document.getElementById("toggleTurno1Btn").addEventListener("click", () => {
+  on("toggleTurno1Btn", "click", () => {
     turno1Visible = !turno1Visible;
     updateTurno1Visibility();
   });
 
-  // 🔥 AQUI ENTRA O EVENTO DO PDF
-  document.getElementById("closePdfRangeModal").addEventListener("click", closePdfRangeModal);
-  document.getElementById("pdfRangeBackdrop").addEventListener("click", closePdfRangeModal);
+  on("closePdfRangeModal", "click", closePdfRangeModal);
+  on("pdfRangeBackdrop", "click", closePdfRangeModal);
 
-document.getElementById("confirmExportPdf").addEventListener("click", () => {
-  const startDate = document.getElementById("pdfDateStart").value;
-  const endDate = document.getElementById("pdfDateEnd").value;
+  on("confirmExportPdf", "click", () => {
+    const startDate = byId("pdfDateStart")?.value;
+    const endDate = byId("pdfDateEnd")?.value;
 
-  if(!startDate || !endDate){
-    alert("Selecione a data inicial e a data final.");
-    return;
-  }
-
-  if(startDate > endDate){
-    alert("A data inicial não pode ser maior que a data final.");
-    return;
-  }
-
-  const printWindow = window.open("", "_blank", "width=1280,height=900");
-  if(!printWindow){
-    alert("Não foi possível abrir a janela de impressão.");
-    return;
-  }
-
-  printWindow.document.open();
-  printWindow.document.write(buildPremiumPdfHtml(startDate, endDate));
-  printWindow.document.close();
-  printWindow.focus();
-  printWindow.onload = () => {
-    printWindow.print();
-  };
-
-  closePdfRangeModal();
-});
-  updateHistoryVisibility();
-  updateTurno1Visibility();
-
-  [
-    "t1_banco","t1_pppoker","t1_suprema","t1_buffalo","t1_ganamos","t1_cargas","t1_cargas_poker",
-    "t2_banco","t2_pppoker","t2_suprema","t2_buffalo","t2_ganamos","t2_cargas","t2_cargas_poker"      ].forEach((id) => {
-        const input = document.getElementById(id);
-        if(input) attachMoneyMask(input);
-      });
-
-      document.querySelectorAll("[data-add-row]").forEach((btn) => {
-        btn.addEventListener("click", () => {
-          createDynamicRow(btn.dataset.addRow);
-          render();
-        });
-      });
-
-      document.querySelectorAll("[data-add-pending]").forEach((btn) => {
-        btn.addEventListener("click", () => {
-          createPendingRow(btn.dataset.addPending);
-          render();
-        });
-      });
-
-      document.getElementById("toggleBalance").addEventListener("click", () => {
-        balanceVisible = !balanceVisible;
-        render();
-      });
-
-      document.getElementById("calcular").addEventListener("click", render);
-
-      document.getElementById("limpar").addEventListener("click", () => {
-        if(!confirm("Deseja limpar apenas o Turno 2 atual?")) return;
-        clearTurn("t2");
-        render();
-      });
-
-      document.getElementById("fecharTurno").addEventListener("click", async () => {
-        try {
-          const item = serializeTurn("t2");
-          await saveHistoryItem(item);
-          clearTurn("t2");
-          render();
-          alert("Turno fechado com sucesso.");
-        } catch (error) {
-          console.error("Erro ao salvar histórico:", error);
-          alert("Erro ao salvar histórico. Abra o console para ver o detalhe.");
-        }
-      });
-
-      document.getElementById("exportarPdf").addEventListener("click", exportToPdfProtected);
-
-      document.getElementById("closeReportScreen").addEventListener("click", () => {
-        document.getElementById("reportScreen").classList.add("hidden");
-      });
-
-      document.getElementById("menuToggle").addEventListener("click", () => {
-        document.getElementById("reportsMenu").classList.toggle("hidden");
-      });
-
-document.querySelectorAll("[data-report-range]").forEach((btn) => {
-  btn.addEventListener("click", () => {
-    const senha = prompt("Digite código interno:");
-    if (senha === null) return;
-
-    if (senha !== REPORT_CODE) {
-      alert("Código interno incorreto.");
+    if (!startDate || !endDate) {
+      alert("Selecione a data inicial e a data final.");
       return;
     }
 
-    const range = Number(btn.dataset.reportRange);
+    if (startDate > endDate) {
+      alert("A data inicial não pode ser maior que a data final.");
+      return;
+    }
 
-    // DATA FINAL = HOJE
-    const end = new Date();
-    const endOffset = end.getTimezoneOffset();
-    const endLocal = new Date(end.getTime() - endOffset * 60000);
-    const endDate = endLocal.toISOString().split("T")[0];
-
-    // DATA INICIAL = HOJE - RANGE
-    const start = new Date();
-    start.setDate(start.getDate() - range);
-    const startOffset = start.getTimezoneOffset();
-    const startLocal = new Date(start.getTime() - startOffset * 60000);
-    const startDate = startLocal.toISOString().split("T")[0];
-
-    // ABRE PDF DIRETO
     const printWindow = window.open("", "_blank", "width=1280,height=900");
-    if(!printWindow){
-      alert("Não foi possível abrir a janela.");
+    if (!printWindow) {
+      alert("Não foi possível abrir a janela de impressão.");
       return;
     }
 
@@ -4667,120 +4575,221 @@ document.querySelectorAll("[data-report-range]").forEach((btn) => {
       printWindow.print();
     };
 
-    document.getElementById("reportsMenu").classList.add("hidden");
+    closePdfRangeModal();
   });
-});
-document.getElementById("deleteHistoryBtn").addEventListener("click", async () => {
-  const senha = prompt("Digite código interno:");
-  if (senha === null) return;
 
-  if (senha !== DELETE_HISTORY_CODE) {
-    alert("Código interno incorreto.");
-    return;
-  }
+  updateHistoryVisibility();
+  updateTurno1Visibility();
 
-  if (!historyCache.length) {
-    alert("Não há histórico para excluir.");
-    return;
-  }
+  [
+    "t1_banco","t1_pppoker","t1_suprema","t1_buffalo","t1_ganamos","t1_cargas","t1_cargas_poker",
+    "t2_banco","t2_pppoker","t2_suprema","t2_buffalo","t2_ganamos","t2_cargas","t2_cargas_poker"
+  ].forEach((id) => {
+    const input = byId(id);
+    if (input) attachMoneyMask(input);
+  });
 
-const lista = historyCache
-  .map((item, index) => {
-    const nome = item.nomeOperador || "Sem nome";
-    const turno = item.turnoTrabalhado || "-";
-    const data = formatDateBR(item.fechamentoDate || "");
-    const total = money(item.total || 0);
-
-    return `${index + 1} - ${nome} - Turno ${turno} - ${data} - ${total}`;
-  })
-  .join("\n");
-        const escolha = prompt(`Digite o número do histórico que deseja excluir:\n\n${lista}`);
-        if (escolha === null) return;
-
-        const indice = Number(escolha) - 1;
-
-        if (!Number.isInteger(indice) || indice < 0 || indice >= historyCache.length) {
-          alert("Número inválido.");
-          return;
-        }
-
-        const itemSelecionado = historyCache[indice];
-
-        if (!confirm(`Deseja excluir o histórico de ${itemSelecionado.nomeOperador || "Sem nome"} em ${formatDateBR(itemSelecionado.fechamentoDate || "")}?`)) {
-          return;
-        }
-
-        await deleteDoc(doc(db, "history", itemSelecionado.id));
-        alert("Histórico excluído com sucesso.");
-      });
-
-
-document.getElementById("editHistoryBtn").addEventListener("click", () => {
-  if(editingHistoryIndex === null) return;
-
-  historyEditMode = true;
-
-  document.getElementById("editHistoryBtn").classList.add("hidden");
-  document.getElementById("saveHistoryBtn").classList.remove("hidden");
-
-  const item = historyCache[editingHistoryIndex];
-  renderHistoryModalContent(item, true);
-});
-
-document.getElementById("saveHistoryBtn").addEventListener("click", async () => {
-  try{
-    await saveEditedHistory();
-    closeHistoryModal();
-  }catch(error){
-    console.error("Erro ao editar histórico:", error);
-    alert("Não foi possível salvar as alterações.");
-  }
-});
-
-      document.getElementById("logoutBtn").addEventListener("click", logout);
-
-      document.getElementById("closeHistoryModal").addEventListener("click", closeHistoryModal);
-      document.getElementById("historyModalBackdrop").addEventListener("click", closeHistoryModal);
-
-      const adminBtn = document.getElementById("adminOpenBtn");
-if(adminBtn){
-  adminBtn.addEventListener("click", openAdminModal);
-}
-      document.getElementById("adminCloseBtn").addEventListener("click", closeAdminModal);
-      document.getElementById("adminModalBackdrop").addEventListener("click", closeAdminModal);
-      document.getElementById("adminSearchInput").addEventListener("input", renderAdminUsers);
-
-      document.getElementById("adminDeleteAllBtn").addEventListener("click", () => {
-        const code = prompt("Digite código interno:");
-        if(code === null) return;
-
-        if(code !== ADMIN_CODE){
-          alert("Código interno incorreto.");
-          return;
-        }
-
-        if(!confirm("Tem certeza que deseja limpar os dados locais deste dispositivo?")) return;
-
-        localStorage.removeItem(ACTIVE_USER_STORAGE_KEY);
-        localStorage.removeItem(REMEMBER_LOGIN_STORAGE_KEY);
-        localStorage.removeItem(REMEMBERED_EMAIL_STORAGE_KEY);
-        localStorage.removeItem(SESSION_LAST_ACTIVITY_KEY);
-
-        renderAdminUsers();
-
-        alert("Dados locais removidos com sucesso.\n(Usuários no Firebase NÃO foram excluídos)");
-      });
-
-      const rememberedUser = loadActiveUser();
-      if(rememberedUser && getRememberedLogin() && !isSessionExpired()){
-        showApp(rememberedUser);
-      }else{
-        authScreen.classList.remove("hidden");
-        appShell.classList.add("hidden");
-        preloadLogin();
-        switchTab("login");
-      }
+  document.querySelectorAll("[data-add-row]").forEach((btn) => {
+    btn.addEventListener("click", () => {
+      createDynamicRow(btn.dataset.addRow);
+      render();
     });
+  });
+
+  document.querySelectorAll("[data-add-pending]").forEach((btn) => {
+    btn.addEventListener("click", () => {
+      createPendingRow(btn.dataset.addPending);
+      render();
+    });
+  });
+
+  on("toggleBalance", "click", () => {
+    balanceVisible = !balanceVisible;
+    render();
+  });
+
+  on("calcular", "click", render);
+
+  on("limpar", "click", () => {
+    if (!confirm("Deseja limpar apenas o Turno 2 atual?")) return;
+    clearTurn("t2");
+    render();
+  });
+
+  on("fecharTurno", "click", async () => {
+    try {
+      const item = serializeTurn("t2");
+      await saveHistoryItem(item);
+      clearTurn("t2");
+      render();
+      alert("Turno fechado com sucesso.");
+    } catch (error) {
+      console.error("Erro ao salvar histórico:", error);
+      alert("Erro ao salvar histórico. Abra o console para ver o detalhe.");
+    }
+  });
+
+  on("exportarPdf", "click", exportToPdfProtected);
+
+  on("closeReportScreen", "click", () => {
+    byId("reportScreen")?.classList.add("hidden");
+  });
+
+  on("menuToggle", "click", () => {
+    byId("reportsMenu")?.classList.toggle("hidden");
+  });
+
+  document.querySelectorAll("[data-report-range]").forEach((btn) => {
+    btn.addEventListener("click", () => {
+      const senha = prompt("Digite código interno:");
+      if (senha === null) return;
+
+      if (senha !== REPORT_CODE) {
+        alert("Código interno incorreto.");
+        return;
+      }
+
+      const range = Number(btn.dataset.reportRange);
+
+      const end = new Date();
+      const endOffset = end.getTimezoneOffset();
+      const endLocal = new Date(end.getTime() - endOffset * 60000);
+      const endDate = endLocal.toISOString().split("T")[0];
+
+      const start = new Date();
+      start.setDate(start.getDate() - range);
+      const startOffset = start.getTimezoneOffset();
+      const startLocal = new Date(start.getTime() - startOffset * 60000);
+      const startDate = startLocal.toISOString().split("T")[0];
+
+      const printWindow = window.open("", "_blank", "width=1280,height=900");
+      if (!printWindow) {
+        alert("Não foi possível abrir a janela.");
+        return;
+      }
+
+      printWindow.document.open();
+      printWindow.document.write(buildPremiumPdfHtml(startDate, endDate));
+      printWindow.document.close();
+      printWindow.focus();
+
+      printWindow.onload = () => {
+        printWindow.print();
+      };
+
+      byId("reportsMenu")?.classList.add("hidden");
+    });
+  });
+
+  on("deleteHistoryBtn", "click", async () => {
+    const senha = prompt("Digite código interno:");
+    if (senha === null) return;
+
+    if (senha !== DELETE_HISTORY_CODE) {
+      alert("Código interno incorreto.");
+      return;
+    }
+
+    if (!historyCache.length) {
+      alert("Não há histórico para excluir.");
+      return;
+    }
+
+    const lista = historyCache
+      .map((item, index) => {
+        const nome = item.nomeOperador || "Sem nome";
+        const turno = item.turnoTrabalhado || "-";
+        const data = formatDateBR(item.fechamentoDate || "");
+        const total = money(item.total || 0);
+
+        return `${index + 1} - ${nome} - Turno ${turno} - ${data} - ${total}`;
+      })
+      .join("\n");
+
+    const escolha = prompt(`Digite o número do histórico que deseja excluir:\n\n${lista}`);
+    if (escolha === null) return;
+
+    const indice = Number(escolha) - 1;
+
+    if (!Number.isInteger(indice) || indice < 0 || indice >= historyCache.length) {
+      alert("Número inválido.");
+      return;
+    }
+
+    const itemSelecionado = historyCache[indice];
+
+    if (!confirm(`Deseja excluir o histórico de ${itemSelecionado.nomeOperador || "Sem nome"} em ${formatDateBR(itemSelecionado.fechamentoDate || "")}?`)) {
+      return;
+    }
+
+    await deleteDoc(doc(db, "history", itemSelecionado.id));
+    alert("Histórico excluído com sucesso.");
+  });
+
+  on("editHistoryBtn", "click", () => {
+    if (editingHistoryIndex === null) return;
+
+    historyEditMode = true;
+    byId("editHistoryBtn")?.classList.add("hidden");
+    byId("saveHistoryBtn")?.classList.remove("hidden");
+
+    const item = historyCache[editingHistoryIndex];
+    renderHistoryModalContent(item, true);
+  });
+
+  on("saveHistoryBtn", "click", async () => {
+    try {
+      await saveEditedHistory();
+      closeHistoryModal();
+    } catch (error) {
+      console.error("Erro ao editar histórico:", error);
+      alert("Não foi possível salvar as alterações.");
+    }
+  });
+
+  on("logoutBtn", "click", logout);
+  on("closeHistoryModal", "click", closeHistoryModal);
+  on("historyModalBackdrop", "click", closeHistoryModal);
+
+  const adminBtn = byId("adminOpenBtn");
+  if (adminBtn) {
+    adminBtn.addEventListener("click", openAdminModal);
+  }
+
+  on("adminCloseBtn", "click", closeAdminModal);
+  on("adminModalBackdrop", "click", closeAdminModal);
+  on("adminSearchInput", "input", renderAdminUsers);
+
+  on("adminDeleteAllBtn", "click", () => {
+    const code = prompt("Digite código interno:");
+    if (code === null) return;
+
+    if (code !== ADMIN_CODE) {
+      alert("Código interno incorreto.");
+      return;
+    }
+
+    if (!confirm("Tem certeza que deseja limpar os dados locais deste dispositivo?")) return;
+
+    localStorage.removeItem(ACTIVE_USER_STORAGE_KEY);
+    localStorage.removeItem(REMEMBER_LOGIN_STORAGE_KEY);
+    localStorage.removeItem(REMEMBERED_EMAIL_STORAGE_KEY);
+    localStorage.removeItem(SESSION_LAST_ACTIVITY_KEY);
+
+    renderAdminUsers();
+    alert("Dados locais removidos com sucesso.\n(Usuários no Firebase NÃO foram excluídos)");
+  });
+
+  const rememberedUser = loadActiveUser();
+  if (rememberedUser && getRememberedLogin() && !isSessionExpired()) {
+    showApp(rememberedUser);
+  } else {
+    authScreen.classList.remove("hidden");
+    appShell.classList.add("hidden");
+    preloadLogin();
+    switchTab("login");
+  }
+});
   </script>
 </body>
 </html>
