@@ -46,31 +46,16 @@
   --safe-bottom:env(safe-area-inset-bottom, 0px);
 }
     
-  .finance-total,
-input {
-  color: #ffffff !important;
-  font-weight: 600;
-  -webkit-text-fill-color: #ffffff !important;
+  .finance-total{
+  color:var(--text);
+  font-weight:800;
 }
 
-  input {
-    color: #ffffff !important;
-    font-weight: 600;
-    -webkit-text-fill-color: #ffffff !important;
-
-    background: rgba(255,255,255,0.18) !important;
-    border: 1px solid rgba(255,255,255,0.12);
-    border-radius: 10px;
-
-    box-shadow: 
-      inset 0 1px 2px rgba(0,0,0,0.25),
-      0 2px 8px rgba(0,0,0,0.15);
-
-    backdrop-filter: blur(6px);
-    -webkit-backdrop-filter: blur(6px);
-
-    transition: all 0.2s ease;
-  }
+input{
+  color:var(--text) !important;
+  font-weight:600;
+  -webkit-text-fill-color:var(--text) !important;
+}
 
   input:focus {
     outline: none;
