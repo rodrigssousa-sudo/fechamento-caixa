@@ -1685,36 +1685,34 @@ button{
     box-sizing:border-box;
   }
 
-  .app-top,
-  .main-entry,
-  .secondary-info{
+  .app-shell-clean{
+    display:grid;
+    gap:14px;
     margin-top:14px;
   }
 
+  .app-top,
+  .main-entry,
+  .secondary-info{
+    margin:0;
+  }
 
-  /* ===== BLOCOS PLANOS ===== */
+  /* ===== CARTÕES PRINCIPAIS ===== */
 
-  .summary,
+  .summary.app-top,
   .turno-flat,
-  .history-card,
-  .turno.card{
-    background:rgba(255,255,255,.72);
-    border:1px solid rgba(255,255,255,.86);
+  .history-card.slim-card,
+  .turno-flat-secondary{
+    background:rgba(255,255,255,.78);
+    border:1px solid rgba(255,255,255,.88);
     border-radius:24px;
-    box-shadow:0 12px 28px rgba(15,23,42,.04);
+    box-shadow:0 12px 28px rgba(15,23,42,.05);
     padding:16px;
   }
 
-  /* remove aparência de caixa dupla antiga */
-  .summary-card.card,
-  .turno-main,
-  .bank-dashboard-card{
-    background:transparent !important;
-    border:none !important;
-    box-shadow:none !important;
-    padding:0 !important;
-  }
+  /* ===== CABEÇALHOS ===== */
 
+  .summary-head.clean,
   .section-flat-header{
     display:flex;
     justify-content:space-between;
@@ -1737,14 +1735,24 @@ button{
     letter-spacing:.08em;
   }
 
-  .section-flat-header h2,
-  .turno-flat-head h3{
+  .summary-head h2,
+  .section-flat-header h3{
     margin:0;
     font-size:20px;
     font-weight:900;
     color:#0f172a;
     letter-spacing:-.02em;
   }
+
+  .section-flat-header small{
+    display:block;
+    margin-top:4px;
+    color:#64748b;
+    font-size:12px;
+    line-height:1.4;
+  }
+
+  /* ===== STATUS ===== */
 
   .pill{
     display:inline-flex;
@@ -1754,10 +1762,13 @@ button{
     padding:8px 12px;
     border-radius:999px;
     font-weight:800;
+    white-space:nowrap;
+  }
+
+  .pill.neutral{
     background:#fff7ed;
     color:#b45309;
     border:1px solid rgba(245,158,11,.18);
-    white-space:nowrap;
   }
 
   .pill .dot{
@@ -1775,21 +1786,19 @@ button{
     background:linear-gradient(135deg, #ffffff 0%, #f8fbff 100%);
     border:1px solid rgba(59,130,246,.10);
     margin-bottom:12px;
-  }
-
-  .balance-strip-top{
     display:flex;
     justify-content:space-between;
-    align-items:center;
-    margin-bottom:8px;
+    align-items:flex-start;
+    gap:12px;
   }
 
-  .bank-label{
+  .balance-strip-label{
     font-size:11px;
     color:#94a3b8;
     font-weight:800;
     text-transform:uppercase;
     letter-spacing:.08em;
+    margin-bottom:8px;
   }
 
   .balance-strip-value{
@@ -1800,22 +1809,35 @@ button{
     line-height:1;
   }
 
-  /* ===== MÉTRICAS ===== */
+  .hide-balance-btn{
+    width:42px;
+    height:42px;
+    border-radius:50%;
+    border:1px solid rgba(148,163,184,.14);
+    background:rgba(255,255,255,.90);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    color:#334155;
+    flex-shrink:0;
+  }
 
-  .metrics-flat{
+  /* ===== MÉTRICAS DO TOPO ===== */
+
+  .top-metrics{
     display:grid;
-    grid-template-columns:repeat(3, 1fr);
+    grid-template-columns:repeat(2, 1fr);
     gap:10px;
   }
 
-  .metric-flat{
+  .top-metric{
     padding:14px 16px;
     border-radius:18px;
-    background:rgba(248,250,252,.8);
+    background:rgba(248,250,252,.82);
     border:1px solid rgba(148,163,184,.10);
   }
 
-  .metric-flat-label{
+  .top-metric-label{
     font-size:11px;
     color:#94a3b8;
     font-weight:800;
@@ -1824,40 +1846,32 @@ button{
     margin-bottom:6px;
   }
 
-  .metric-flat-value{
+  .top-metric-value{
     font-size:18px;
     font-weight:900;
     letter-spacing:-.03em;
-  }
-
-  .metric-flat-highlight{
-    background:linear-gradient(135deg, rgba(37,99,235,.08), rgba(56,189,248,.10));
-    border:1px solid rgba(59,130,246,.14);
   }
 
   .green{ color:#16a34a; }
   .blue{ color:#2563eb; }
   .red{ color:#dc2626; }
 
-  /* ===== TURNO 2 LIMPO ===== */
+  /* ===== TURNO ===== */
 
-  .turno-flat-head{
-    display:flex;
-    justify-content:space-between;
-    align-items:flex-start;
-    gap:12px;
-    margin-bottom:14px;
+  .flat-total-box{
+    min-width:120px;
+    padding:10px 12px;
+    border-radius:16px;
+    background:rgba(248,250,252,.82);
+    border:1px solid rgba(148,163,184,.10);
   }
 
-  .turno-flat-head small{
-    display:block;
-    margin-top:4px;
-    color:#64748b;
-    font-size:12px;
-    line-height:1.4;
+  .flat-total-box-sm{
+    min-width:110px;
+    padding:8px 10px;
   }
 
-  .turno-flat-total .label{
+  .flat-total-label{
     font-size:11px;
     color:#94a3b8;
     font-weight:800;
@@ -1866,20 +1880,22 @@ button{
     margin-bottom:4px;
   }
 
-  .turno-flat-total .value{
+  .flat-total-value{
     font-size:18px;
     font-weight:900;
     color:#0f172a;
     letter-spacing:-.03em;
   }
 
-  .turno-flat-body{
+  .flat-form-grid{
     display:grid;
-    gap:14px;
+    grid-template-columns:repeat(2, 1fr);
+    gap:12px;
+    margin-bottom:14px;
   }
 
-  .flat-block{
-    padding-top:2px;
+  .field-full{
+    grid-column:1 / -1;
   }
 
   .fields{
@@ -1907,34 +1923,51 @@ button{
     width:100%;
     min-height:52px;
     padding:14px 16px;
-    border-radius:18px;
-    border:1px solid rgba(148,163,184,.14);
+    border-radius:16px;
+    border:1px solid rgba(148,163,184,.12);
     background:#ffffff;
     font-size:16px;
     color:#0f172a;
+    outline:none;
   }
 
   .field input::placeholder{
     color:#94a3b8;
   }
 
+  .flat-section{
+    margin-top:16px;
+    padding-top:14px;
+    border-top:1px solid rgba(148,163,184,.14);
+  }
+
+  .flat-section:first-of-type{
+    margin-top:0;
+  }
+
+  .flat-section-head,
   .finance-head{
     display:flex;
     justify-content:space-between;
     align-items:center;
+    gap:10px;
     margin-bottom:10px;
   }
 
+  .flat-section-head h4,
   .finance-head h4{
     margin:0;
     font-size:14px;
     color:#0f172a;
+    font-weight:800;
   }
 
   .finance-total{
     font-size:13px;
     font-weight:900;
   }
+
+  /* ===== LINHAS DINÂMICAS ===== */
 
   .dynamic-list{
     display:flex;
@@ -1948,32 +1981,35 @@ button{
     gap:8px;
     align-items:end;
     padding:10px;
-    border:1px solid rgba(148,163,184,.10);
-    border-radius:16px;
-    background:rgba(255,255,255,.82);
+    border:none;
+    border-radius:14px;
+    background:#f8fafc;
   }
 
   .inline-actions{
     margin-top:10px;
   }
 
+  .btn-add.soft-btn,
   .btn-add{
     width:100%;
     min-height:44px;
+    padding:10px 14px;
     border:none;
     border-radius:14px;
     background:#eef2ff;
     color:#1d4ed8;
     font-size:13px;
     font-weight:800;
-    padding:10px 14px;
+    box-shadow:none;
   }
 
   /* ===== ÁREA SECUNDÁRIA ===== */
 
   .secondary-info{
-    display:grid;
-    gap:12px;
+    display:flex;
+    flex-direction:column;
+    gap:14px;
   }
 
   .history-card-top{
@@ -1981,21 +2017,66 @@ button{
     justify-content:space-between;
     align-items:center;
     gap:10px;
+    margin-bottom:10px;
+  }
+
+  .history-card-title{
+    font-size:14px;
+    font-weight:900;
+    color:#0f172a;
+    margin-bottom:4px;
+  }
+
+  .history-card-text{
+    font-size:12px;
+    color:#64748b;
+    line-height:1.45;
+  }
+
+  .systems-compare-bar{
+    display:grid;
+    grid-template-columns:repeat(auto-fit, minmax(180px, 1fr));
+    gap:10px;
+    margin-top:10px;
+  }
+
+  .danger-mini-btn{
+    min-height:36px;
+    padding:0 12px;
+    border-radius:12px;
+    background:rgba(239,68,68,.08);
+    color:#dc2626;
+    border:1px solid rgba(239,68,68,.14);
+    font-size:11px;
+    font-weight:800;
+    white-space:nowrap;
+  }
+
+  /* ===== ESCONDIDO ===== */
+
+  .hidden{
+    display:none !important;
   }
 
   /* ===== MOBILE ===== */
 
   @media (max-width:700px){
+    .summary-head.clean,
     .section-flat-header,
-    .turno-flat-head{
+    .balance-strip{
       flex-direction:column;
       align-items:flex-start;
     }
 
-    .metrics-flat{
+    .balance-strip-value{
+      font-size:30px;
+    }
+
+    .top-metrics{
       grid-template-columns:1fr;
     }
 
+    .flat-form-grid,
     .fields.two-col{
       grid-template-columns:1fr;
     }
@@ -2004,72 +2085,11 @@ button{
       grid-template-columns:1fr;
     }
 
-  .balance-strip-value{
-  font-size:30px;
-}
-}
-
-/* ===== LIMPEZA FINAL UI ===== */
-
-.finance-block,
-.turno-meta-main,
-.history-card,
-.metric{
-  background:transparent !important;
-  border:none !important;
-  box-shadow:none !important;
-  padding:0 !important;
-}
-
-.finance-block{
-  margin-top:18px;
-  padding-top:14px;
-  border-top:1px solid rgba(148,163,184,.15);
-}
-
-.finance-head{
-  margin-bottom:10px;
-}
-
-.finance-head h4{
-  font-size:13px;
-  font-weight:800;
-  color:#0f172a;
-}
-
-.field input{
-  background:#ffffff;
-  border:1px solid rgba(148,163,184,.12);
-  border-radius:14px;
-}
-
-.dynamic-row{
-  border:none;
-  background:#f8fafc;
-  border-radius:12px;
-  padding:10px;
-}
-
-#systemsCompareCard{
-  background:transparent !important;
-  border:none !important;
-  box-shadow:none !important;
-}
-
-.turno{
-  background:transparent !important;
-  border:none !important;
-  box-shadow:none !important;
-  padding:0 !important;
-}
-
-.secondary-info{
-  display:flex;
-  flex-direction:column;
-  gap:22px;
-  margin-top:20px;
-}
-
+    .flat-total-box,
+    .flat-total-box-sm{
+      width:100%;
+    }
+  }
 </style>
 
       <section id="reportScreen" class="report-screen hidden">
