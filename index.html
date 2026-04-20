@@ -1632,155 +1632,376 @@ button{
   <article class="summary-card card">
 
 <section class="summary app-top">
-  <article class="summary-card card bank-dashboard-card">
-    <div class="summary-head clean">
-      <div class="summary-left">
-        <span class="summary-label">Painel</span>
-        <h2>Financeiro</h2>
-      </div>
-
-      <div id="statusPill" class="pill neutral">
-        <span class="dot"></span> Sem diferença
-      </div>
+  <div class="section-flat-header">
+    <div class="summary-left">
+      <span class="summary-label">Painel</span>
+      <h2>Financeiro</h2>
     </div>
 
-    <div class="bank-card compact">
-      <div class="bank-topline">
-        <span class="bank-label">Saldo disponível</span>
-        <button id="toggleBalance" class="hide-balance-btn" type="button" aria-label="Mostrar ou ocultar banca">
-          <svg id="eyeIcon" width="20" height="20" viewBox="0 0 24 24" fill="none">
-            <path d="M2 12C4.5 7 8.5 5 12 5C15.5 5 19.5 7 22 12C19.5 17 15.5 19 12 19C8.5 19 4.5 17 2 12Z" stroke="currentColor" stroke-width="1.6"/>
-            <circle cx="12" cy="12" r="3" stroke="currentColor" stroke-width="1.6"/>
-          </svg>
-        </button>
-      </div>
-      <div id="bankValue" class="bank-value">$ 0,00</div>
+    <div id="statusPill" class="pill neutral">
+      <span class="dot"></span> Sem diferença
+    </div>
+  </div>
+
+  <div class="balance-strip">
+    <div class="balance-strip-top">
+      <span class="bank-label">Saldo disponível</span>
+      <button id="toggleBalance" class="hide-balance-btn" type="button" aria-label="Mostrar ou ocultar banca">
+        <svg id="eyeIcon" width="20" height="20" viewBox="0 0 24 24" fill="none">
+          <path d="M2 12C4.5 7 8.5 5 12 5C15.5 5 19.5 7 22 12C19.5 17 15.5 19 12 19C8.5 19 4.5 17 2 12Z" stroke="currentColor" stroke-width="1.6"/>
+          <circle cx="12" cy="12" r="3" stroke="currentColor" stroke-width="1.6"/>
+        </svg>
+      </button>
+    </div>
+    <div id="bankValue" class="balance-strip-value">$ 0,00</div>
+  </div>
+
+  <div class="metrics-flat">
+    <div class="metric-flat">
+      <div class="metric-flat-label">Turno anterior</div>
+      <div id="totalEntradasT1" class="metric-flat-value green">$ 0,00</div>
     </div>
 
-    <div class="metrics compact-metrics">
-      <div class="metric primary">
-        <div class="metric-label">Turno anterior</div>
-        <div id="totalEntradasT1" class="metric-value green">$ 0,00</div>
-      </div>
-
-      <div class="metric primary">
-        <div class="metric-label">Turno atual</div>
-        <div id="totalEntradasT2" class="metric-value green">$ 0,00</div>
-      </div>
-
-      <div class="metric highlight">
-        <div class="metric-label">Saldo total</div>
-        <div id="lucroTotal" class="metric-value blue">$ 0,00</div>
-      </div>
+    <div class="metric-flat">
+      <div class="metric-flat-label">Turno atual</div>
+      <div id="totalEntradasT2" class="metric-flat-value green">$ 0,00</div>
     </div>
-  </article>
+
+    <div class="metric-flat metric-flat-highlight">
+      <div class="metric-flat-label">Saldo total</div>
+      <div id="lucroTotal" class="metric-flat-value blue">$ 0,00</div>
+    </div>
+  </div>
 </section>
 
-<section class="main-entry">
-  <article class="turno card turno-main" data-turno="t2">
-    <div class="turno-head turno-head-main">
-      <div>
-        <span class="summary-label">Preenchimento rápido</span>
-        <h3>Turno 2</h3>
-        <small>Turno atual para preenchimento</small>
-      </div>
+<style>
+  *{
+    box-sizing:border-box;
+  }
 
-      <div class="turno-total main-total">
-        <div class="label">Saldo líquido</div>
-        <div class="value" id="turno2InlineTotal">$ 0,00</div>
-      </div>
-    </div>
+  .app-top,
+  .main-entry,
+  .secondary-info{
+    margin-top:14px;
+  }
 
-    <div class="turno-meta turno-meta-main">
-      <div class="fields two-col">
-        <div class="field">
-          <label for="t2_nome_operador">Nome do operador</label>
-          <input type="text" id="t2_nome_operador" placeholder="Ex.: Lucas" />
-        </div>
+  /* ===== BLOCOS PLANOS ===== */
 
-        <div class="field">
-          <label for="t2_turno_trabalhado">Turno</label>
-          <input type="text" id="t2_turno_trabalhado" placeholder="Ex.: Manhã / Noite / T2" />
-        </div>
+  .summary,
+  .turno-flat,
+  .history-card,
+  .turno.card{
+    background:rgba(255,255,255,.72);
+    border:1px solid rgba(255,255,255,.86);
+    border-radius:24px;
+    box-shadow:0 12px 28px rgba(15,23,42,.04);
+    padding:16px;
+  }
 
-        <div class="field">
-          <label for="t2_data_fechamento">Data do fechamento</label>
-          <input type="date" id="t2_data_fechamento" />
-        </div>
-      </div>
-    </div>
+  /* remove aparência de caixa dupla antiga */
+  .summary-card.card,
+  .turno-main,
+  .bank-dashboard-card{
+    background:transparent !important;
+    border:none !important;
+    box-shadow:none !important;
+    padding:0 !important;
+  }
 
-    <div class="finance-block">
-      <div class="finance-head">
-        <h4>Entradas</h4>
-        <div class="finance-total blue" id="t2_entradas_total">$ 0,00</div>
-      </div>
+  .section-flat-header{
+    display:flex;
+    justify-content:space-between;
+    align-items:flex-start;
+    gap:12px;
+    margin-bottom:14px;
+  }
 
-      <div class="fields two-col">
-        <div class="field">
-          <label for="t2_banco">Banco Reca</label>
-          <input type="text" inputmode="numeric" id="t2_banco" placeholder="0,00" />
-        </div>
+  .summary-left{
+    display:flex;
+    flex-direction:column;
+    gap:2px;
+  }
 
-        <div class="field">
-          <label for="t2_pppoker">PPPoker (x400)</label>
-          <input type="text" inputmode="numeric" id="t2_pppoker" placeholder="0,00" />
-        </div>
+  .summary-label{
+    font-size:11px;
+    color:#94a3b8;
+    font-weight:800;
+    text-transform:uppercase;
+    letter-spacing:.08em;
+  }
 
-        <div class="field">
-          <label for="t2_suprema">Suprema (x400)</label>
-          <input type="text" inputmode="numeric" id="t2_suprema" placeholder="0,00" />
-        </div>
+  .section-flat-header h2,
+  .turno-flat-head h3{
+    margin:0;
+    font-size:20px;
+    font-weight:900;
+    color:#0f172a;
+    letter-spacing:-.02em;
+  }
 
-        <div class="field">
-          <label for="t2_buffalo">Buffalo</label>
-          <input type="text" inputmode="numeric" id="t2_buffalo" placeholder="0,00" />
-        </div>
+  .pill{
+    display:inline-flex;
+    align-items:center;
+    gap:6px;
+    font-size:11px;
+    padding:8px 12px;
+    border-radius:999px;
+    font-weight:800;
+    background:#fff7ed;
+    color:#b45309;
+    border:1px solid rgba(245,158,11,.18);
+    white-space:nowrap;
+  }
 
-        <div class="field">
-          <label for="t2_ganamos">Ganamos</label>
-          <input type="text" inputmode="numeric" id="t2_ganamos" placeholder="0,00" />
-        </div>
+  .pill .dot{
+    width:6px;
+    height:6px;
+    border-radius:50%;
+    background:#f59e0b;
+  }
 
-        <div class="field">
-          <label for="t2_cargas">Carga de Fichas</label>
-          <input type="text" inputmode="numeric" id="t2_cargas" placeholder="0,00" />
-        </div>
+  /* ===== SALDO ===== */
 
-        <div class="field">
-          <label for="t2_cargas_poker">Cargas F. Poker (x400)</label>
-          <input type="text" inputmode="numeric" id="t2_cargas_poker" placeholder="0,00" />
-        </div>
-      </div>
-    </div>
+  .balance-strip{
+    padding:16px 18px;
+    border-radius:20px;
+    background:linear-gradient(135deg, #ffffff 0%, #f8fbff 100%);
+    border:1px solid rgba(59,130,246,.10);
+    margin-bottom:12px;
+  }
 
-    <div class="finance-block">
-      <div class="finance-head">
-        <h4>Saídas de caixa</h4>
-        <div class="finance-total red" id="t2_saidas_total">- $ 0,00</div>
-      </div>
+  .balance-strip-top{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    margin-bottom:8px;
+  }
 
-      <div class="dynamic-list" id="t2_dynamic_list"></div>
+  .bank-label{
+    font-size:11px;
+    color:#94a3b8;
+    font-weight:800;
+    text-transform:uppercase;
+    letter-spacing:.08em;
+  }
 
-      <div class="inline-actions">
-        <button class="btn-add" type="button" data-add-row="t2">+ Adicionar saída</button>
-      </div>
-    </div>
+  .balance-strip-value{
+    font-size:34px;
+    font-weight:900;
+    color:#0f172a;
+    letter-spacing:-.05em;
+    line-height:1;
+  }
 
-    <div class="finance-block">
-      <div class="finance-head">
-        <h4>Pagos pendentes</h4>
-        <div class="finance-total red" id="t2_pendentes_total">- $ 0,00</div>
-      </div>
+  /* ===== MÉTRICAS ===== */
 
-      <div class="dynamic-list" id="t2_pending_list"></div>
+  .metrics-flat{
+    display:grid;
+    grid-template-columns:repeat(3, 1fr);
+    gap:10px;
+  }
 
-      <div class="inline-actions">
-        <button class="btn-add" type="button" data-add-pending="t2">+ Adicionar pendente</button>
-      </div>
-    </div>
-  </article>
-</section>
+  .metric-flat{
+    padding:14px 16px;
+    border-radius:18px;
+    background:rgba(248,250,252,.8);
+    border:1px solid rgba(148,163,184,.10);
+  }
+
+  .metric-flat-label{
+    font-size:11px;
+    color:#94a3b8;
+    font-weight:800;
+    text-transform:uppercase;
+    letter-spacing:.06em;
+    margin-bottom:6px;
+  }
+
+  .metric-flat-value{
+    font-size:18px;
+    font-weight:900;
+    letter-spacing:-.03em;
+  }
+
+  .metric-flat-highlight{
+    background:linear-gradient(135deg, rgba(37,99,235,.08), rgba(56,189,248,.10));
+    border:1px solid rgba(59,130,246,.14);
+  }
+
+  .green{ color:#16a34a; }
+  .blue{ color:#2563eb; }
+  .red{ color:#dc2626; }
+
+  /* ===== TURNO 2 LIMPO ===== */
+
+  .turno-flat-head{
+    display:flex;
+    justify-content:space-between;
+    align-items:flex-start;
+    gap:12px;
+    margin-bottom:14px;
+  }
+
+  .turno-flat-head small{
+    display:block;
+    margin-top:4px;
+    color:#64748b;
+    font-size:12px;
+    line-height:1.4;
+  }
+
+  .turno-flat-total .label{
+    font-size:11px;
+    color:#94a3b8;
+    font-weight:800;
+    text-transform:uppercase;
+    letter-spacing:.06em;
+    margin-bottom:4px;
+  }
+
+  .turno-flat-total .value{
+    font-size:18px;
+    font-weight:900;
+    color:#0f172a;
+    letter-spacing:-.03em;
+  }
+
+  .turno-flat-body{
+    display:grid;
+    gap:14px;
+  }
+
+  .flat-block{
+    padding-top:2px;
+  }
+
+  .fields{
+    display:grid;
+    gap:12px;
+  }
+
+  .fields.two-col{
+    grid-template-columns:repeat(2, 1fr);
+  }
+
+  .field{
+    display:flex;
+    flex-direction:column;
+    gap:6px;
+  }
+
+  .field label{
+    font-size:12px;
+    color:#475569;
+    font-weight:800;
+  }
+
+  .field input{
+    width:100%;
+    min-height:52px;
+    padding:14px 16px;
+    border-radius:18px;
+    border:1px solid rgba(148,163,184,.14);
+    background:#ffffff;
+    font-size:16px;
+    color:#0f172a;
+  }
+
+  .field input::placeholder{
+    color:#94a3b8;
+  }
+
+  .finance-head{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    margin-bottom:10px;
+  }
+
+  .finance-head h4{
+    margin:0;
+    font-size:14px;
+    color:#0f172a;
+  }
+
+  .finance-total{
+    font-size:13px;
+    font-weight:900;
+  }
+
+  .dynamic-list{
+    display:flex;
+    flex-direction:column;
+    gap:10px;
+  }
+
+  .dynamic-row{
+    display:grid;
+    grid-template-columns:1.15fr .85fr auto auto;
+    gap:8px;
+    align-items:end;
+    padding:10px;
+    border:1px solid rgba(148,163,184,.10);
+    border-radius:16px;
+    background:rgba(255,255,255,.82);
+  }
+
+  .inline-actions{
+    margin-top:10px;
+  }
+
+  .btn-add{
+    width:100%;
+    min-height:44px;
+    border:none;
+    border-radius:14px;
+    background:#eef2ff;
+    color:#1d4ed8;
+    font-size:13px;
+    font-weight:800;
+    padding:10px 14px;
+  }
+
+  /* ===== ÁREA SECUNDÁRIA ===== */
+
+  .secondary-info{
+    display:grid;
+    gap:12px;
+  }
+
+  .history-card-top{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    gap:10px;
+  }
+
+  /* ===== MOBILE ===== */
+
+  @media (max-width:700px){
+    .section-flat-header,
+    .turno-flat-head{
+      flex-direction:column;
+      align-items:flex-start;
+    }
+
+    .metrics-flat{
+      grid-template-columns:1fr;
+    }
+
+    .fields.two-col{
+      grid-template-columns:1fr;
+    }
+
+    .dynamic-row{
+      grid-template-columns:1fr;
+    }
+
+    .balance-strip-value{
+      font-size:30px;
+    }
+  }
+</style>
 
 <section class="secondary-info">
   <article class="history-card" id="systemsCompareCard">
