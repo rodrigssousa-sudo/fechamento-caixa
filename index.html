@@ -3230,9 +3230,8 @@ function buildPremiumPdfHtml(startDate, endDate){
 .logo-box{
   width:54px;
   height:54px;
-  border-radius:14px;
+  border-radius:16px;
 
-  /* 🔵 AZUL LUXO (sem gradiente) */
   background:#0F2A6B;
 
   color:#ffffff;
@@ -3243,10 +3242,13 @@ function buildPremiumPdfHtml(startDate, endDate){
   font-size:18px;
   letter-spacing:.5px;
 
-  /* sombra mais elegante (sem verde) */
+  /* borda mais elegante */
+  border: 1px solid rgba(0,0,0,0.05);
+
+  /* sombra premium */
   box-shadow:
-    0 10px 24px rgba(15,42,107,0.25),
-    0 6px 18px rgba(15,42,107,0.15);
+    0 12px 30px rgba(15,42,107,0.25),
+    inset 0 1px 0 rgba(255,255,255,0.08);
 }
 
 .brand-text h1{
