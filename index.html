@@ -2501,18 +2501,19 @@ const fieldsByTurn = {
       return el ? parseMoneyInput(el.value) : 0;
     }
 
-    function getEntradasTotal(turno){
-      const f = fieldsByTurn[turno];
-      return (
-        getValue(f.banco) +
-        (getValue(f.pppoker) * 400) +
-        (getValue(f.suprema) * 400) +
-        getValue(f.buffalo) +
-        getValue(f.ganamos) +
-        getValue(f.cargas) +
-        (getValue(f.cargasPoker) * 400)
-      );
-    }
+   function getEntradasTotal(turno){
+  const f = fieldsByTurn[turno];
+
+  return (
+    getValue(f.banco) +
+    (getValue(f.pppoker) * 400) +
+    (getValue(f.suprema) * 400) +
+    getValue(f.buffalo) +
+    getValue(f.ganamos) -
+    getValue(f.cargas) -
+    (getValue(f.cargasPoker) * 400)
+  );
+}
 
     function getDynamicTotal(turno){
       const list = document.getElementById(`${turno}_dynamic_list`);
