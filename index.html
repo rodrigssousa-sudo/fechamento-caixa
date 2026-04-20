@@ -3370,12 +3370,224 @@ function buildPremiumPdfHtml(startDate, endDate){
     color:#64748b;
   }
 
-  /* bolinha do status (opcional mas fica premium) */
   .pill .dot{
     width:6px;
     height:6px;
     border-radius:50%;
     background:#94a3b8;
+  }
+
+  /* ===== DASHBOARD (ESTILO APP DE BANCO) ===== */
+
+  .app-top{
+    margin-bottom:14px;
+  }
+
+  .bank-dashboard-card{
+    padding:18px;
+  }
+
+  .bank-card.compact{
+    padding:18px 20px;
+    margin-top:14px;
+    margin-bottom:14px;
+    border-radius:16px;
+    background:#ffffff;
+    box-shadow:0 10px 25px rgba(0,0,0,0.04);
+  }
+
+  .bank-topline{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    margin-bottom:6px;
+  }
+
+  .bank-label{
+    font-size:12px;
+    color:#94a3b8;
+  }
+
+  .bank-value{
+    font-size:28px;
+    font-weight:700;
+    letter-spacing:-0.5px;
+    color:#0f172a;
+  }
+
+  /* ===== MÉTRICAS ===== */
+
+  .compact-metrics{
+    display:grid;
+    grid-template-columns:repeat(3, 1fr);
+    gap:10px;
+  }
+
+  .metric{
+    padding:12px;
+    border-radius:12px;
+    background:#f8fafc;
+  }
+
+  .metric-label{
+    font-size:11px;
+    color:#94a3b8;
+    margin-bottom:4px;
+  }
+
+  .metric-value{
+    font-size:16px;
+    font-weight:600;
+  }
+
+  .metric.highlight{
+    background:linear-gradient(135deg, rgba(37,99,235,.10), rgba(56,189,248,.10));
+    border:1px solid rgba(59,130,246,.18);
+  }
+
+  .green{ color:#16a34a; }
+  .blue{ color:#2563eb; }
+  .red{ color:#dc2626; }
+
+  /* ===== TURNO PRINCIPAL ===== */
+
+  .main-entry{
+    margin-top:14px;
+  }
+
+  .turno-main{
+    padding:18px;
+    border-radius:16px;
+    border:1px solid rgba(59,130,246,.12);
+    box-shadow:0 18px 40px rgba(15,23,42,.06);
+    background:#ffffff;
+  }
+
+  .turno-head-main{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    margin-bottom:10px;
+  }
+
+  .turno-meta-main{
+    padding:12px;
+    border-radius:12px;
+    background:#f8fafc;
+    border:1px solid rgba(148,163,184,.10);
+    margin-bottom:12px;
+  }
+
+  .main-total .value{
+    font-size:22px;
+    font-weight:700;
+  }
+
+  /* ===== CAMPOS ===== */
+
+  .fields{
+    display:grid;
+    gap:10px;
+  }
+
+  .fields.two-col{
+    grid-template-columns:repeat(2, 1fr);
+  }
+
+  .field{
+    display:flex;
+    flex-direction:column;
+    gap:4px;
+  }
+
+  .field label{
+    font-size:11px;
+    color:#64748b;
+  }
+
+  .field input{
+    padding:10px;
+    border-radius:10px;
+    border:1px solid #e2e8f0;
+    background:#fff;
+    font-size:14px;
+  }
+
+  /* ===== BLOCOS FINANCEIROS ===== */
+
+  .finance-block{
+    margin-top:16px;
+  }
+
+  .finance-head{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    margin-bottom:8px;
+  }
+
+  .finance-head h4{
+    font-size:14px;
+    margin:0;
+  }
+
+  .finance-total{
+    font-size:13px;
+    font-weight:600;
+  }
+
+  /* ===== LISTAS DINÂMICAS ===== */
+
+  .dynamic-list{
+    display:flex;
+    flex-direction:column;
+    gap:8px;
+  }
+
+  .inline-actions{
+    margin-top:8px;
+  }
+
+  .btn-add{
+    width:100%;
+    padding:10px;
+    border:none;
+    border-radius:10px;
+    background:#0f172a;
+    color:#fff;
+    font-size:13px;
+    font-weight:600;
+  }
+
+  /* ===== ÁREA SECUNDÁRIA ===== */
+
+  .secondary-info{
+    display:grid;
+    gap:14px;
+    margin-top:14px;
+  }
+
+  /* ===== RESPONSIVO ===== */
+
+  @media (max-width:700px){
+
+    .compact-metrics{
+      grid-template-columns:1fr;
+    }
+
+    .turno-head-main{
+      flex-direction:column;
+      align-items:flex-start;
+    }
+
+    .main-total{
+      width:100%;
+      margin-top:8px;
+    }
+
+    .fields.two-col{
+      grid-template-columns:1fr;
+    }
   }
 
 </style>
