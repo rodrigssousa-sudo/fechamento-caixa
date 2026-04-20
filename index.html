@@ -3115,12 +3115,11 @@ function buildPremiumPdfHtml(startDate, endDate){
   const rankingOperadores = {};
 
   filtered.forEach((item, index) => {
-    const nome = item.nomeOperador || "Sem nome";
-    const previousItem = filtered[index + 1] || {};
-    const previousSaldo = Number(previousItem?.turno?.saldoLiquido || 0);
-    const currentSaldo = Number(item?.turno?.saldoLiquido || 0);
-    const saidas = Number(item?.turno?.saidasTotal || 0);
-    const diff = (currentSaldo + saidas) - previousSaldo;
+  const nome = item.nomeOperador || "Sem nome";
+  const previousItem = filtered[index + 1] || {};
+  const previousSaldo = Number(previousItem?.turno?.saldoLiquido || 0);
+  const currentSaldo = Number(item?.turno?.saldoLiquido || 0);
+  const diff = currentSaldo - previousSaldo;
 
     if(!rankingOperadores[nome]){
       rankingOperadores[nome] = {
