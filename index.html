@@ -1631,9 +1631,8 @@ button{
   <section class="summary">
   <article class="summary-card card">
 
-  <section class="summary">
-  <article class="summary-card card">
-
+<section class="summary app-top">
+  <article class="summary-card card bank-dashboard-card">
     <div class="summary-head clean">
       <div class="summary-left">
         <span class="summary-label">Painel</span>
@@ -1645,37 +1644,252 @@ button{
       </div>
     </div>
 
+    <div class="bank-card compact">
+      <div class="bank-topline">
+        <span class="bank-label">Saldo disponível</span>
+        <button id="toggleBalance" class="hide-balance-btn" type="button" aria-label="Mostrar ou ocultar banca">
+          <svg id="eyeIcon" width="20" height="20" viewBox="0 0 24 24" fill="none">
+            <path d="M2 12C4.5 7 8.5 5 12 5C15.5 5 19.5 7 22 12C19.5 17 15.5 19 12 19C8.5 19 4.5 17 2 12Z" stroke="currentColor" stroke-width="1.6"/>
+            <circle cx="12" cy="12" r="3" stroke="currentColor" stroke-width="1.6"/>
+          </svg>
+        </button>
+      </div>
+      <div id="bankValue" class="bank-value">$ 0,00</div>
+    </div>
+
+    <div class="metrics compact-metrics">
+      <div class="metric primary">
+        <div class="metric-label">Turno anterior</div>
+        <div id="totalEntradasT1" class="metric-value green">$ 0,00</div>
+      </div>
+
+      <div class="metric primary">
+        <div class="metric-label">Turno atual</div>
+        <div id="totalEntradasT2" class="metric-value green">$ 0,00</div>
+      </div>
+
+      <div class="metric highlight">
+        <div class="metric-label">Saldo total</div>
+        <div id="lucroTotal" class="metric-value blue">$ 0,00</div>
+      </div>
+    </div>
   </article>
 </section>
 
-          <div class="bank-card">
-            <div class="bank-topline">
-              <span class="bank-label">SALDO DISPONÍVEL</span>
-              <button id="toggleBalance" class="hide-balance-btn" type="button" aria-label="Mostrar ou ocultar banca">
-                <svg id="eyeIcon" width="20" height="20" viewBox="0 0 24 24" fill="none">
-                  <path d="M2 12C4.5 7 8.5 5 12 5C15.5 5 19.5 7 22 12C19.5 17 15.5 19 12 19C8.5 19 4.5 17 2 12Z" stroke="currentColor" stroke-width="1.6"/>
-                  <circle cx="12" cy="12" r="3" stroke="currentColor" stroke-width="1.6"/>
-                </svg>
-              </button>
-            </div>
-            <div id="bankValue" class="bank-value">$ 0,00</div>
-          </div>
-          
- <div class="metric">
-              <div class="metric-label">Turno Atual</div>
-              <div id="totalEntradasT2" class="metric-value green">$ 0,00</div>
-            </div>
-          <div class="metrics">
-            <div class="metric">
-              <div class="metric-label">Turno Anterior</div>
-              <div id="totalEntradasT1" class="metric-value green">$ 0,00</div>
-            </div>
-            <div class="metric">
-              <div class="metric-label">Saldo Total</div>
-              <div id="lucroTotal" class="metric-value blue">$ 0,00</div>
-            </div>
-          </div>
-        </article>
+<section class="main-entry">
+  <article class="turno card turno-main" data-turno="t2">
+    <div class="turno-head turno-head-main">
+      <div>
+        <span class="summary-label">Preenchimento rápido</span>
+        <h3>Turno 2</h3>
+        <small>Turno atual para preenchimento</small>
+      </div>
+
+      <div class="turno-total main-total">
+        <div class="label">Saldo líquido</div>
+        <div class="value" id="turno2InlineTotal">$ 0,00</div>
+      </div>
+    </div>
+
+    <div class="turno-meta turno-meta-main">
+      <div class="fields two-col">
+        <div class="field">
+          <label for="t2_nome_operador">Nome do operador</label>
+          <input type="text" id="t2_nome_operador" placeholder="Ex.: Lucas" />
+        </div>
+
+        <div class="field">
+          <label for="t2_turno_trabalhado">Turno</label>
+          <input type="text" id="t2_turno_trabalhado" placeholder="Ex.: Manhã / Noite / T2" />
+        </div>
+
+        <div class="field">
+          <label for="t2_data_fechamento">Data do fechamento</label>
+          <input type="date" id="t2_data_fechamento" />
+        </div>
+      </div>
+    </div>
+
+    <div class="finance-block">
+      <div class="finance-head">
+        <h4>Entradas</h4>
+        <div class="finance-total blue" id="t2_entradas_total">$ 0,00</div>
+      </div>
+
+      <div class="fields two-col">
+        <div class="field">
+          <label for="t2_banco">Banco Reca</label>
+          <input type="text" inputmode="numeric" id="t2_banco" placeholder="0,00" />
+        </div>
+
+        <div class="field">
+          <label for="t2_pppoker">PPPoker (x400)</label>
+          <input type="text" inputmode="numeric" id="t2_pppoker" placeholder="0,00" />
+        </div>
+
+        <div class="field">
+          <label for="t2_suprema">Suprema (x400)</label>
+          <input type="text" inputmode="numeric" id="t2_suprema" placeholder="0,00" />
+        </div>
+
+        <div class="field">
+          <label for="t2_buffalo">Buffalo</label>
+          <input type="text" inputmode="numeric" id="t2_buffalo" placeholder="0,00" />
+        </div>
+
+        <div class="field">
+          <label for="t2_ganamos">Ganamos</label>
+          <input type="text" inputmode="numeric" id="t2_ganamos" placeholder="0,00" />
+        </div>
+
+        <div class="field">
+          <label for="t2_cargas">Carga de Fichas</label>
+          <input type="text" inputmode="numeric" id="t2_cargas" placeholder="0,00" />
+        </div>
+
+        <div class="field">
+          <label for="t2_cargas_poker">Cargas F. Poker (x400)</label>
+          <input type="text" inputmode="numeric" id="t2_cargas_poker" placeholder="0,00" />
+        </div>
+      </div>
+    </div>
+
+    <div class="finance-block">
+      <div class="finance-head">
+        <h4>Saídas de caixa</h4>
+        <div class="finance-total red" id="t2_saidas_total">- $ 0,00</div>
+      </div>
+
+      <div class="dynamic-list" id="t2_dynamic_list"></div>
+
+      <div class="inline-actions">
+        <button class="btn-add" type="button" data-add-row="t2">+ Adicionar saída</button>
+      </div>
+    </div>
+
+    <div class="finance-block">
+      <div class="finance-head">
+        <h4>Pagos pendentes</h4>
+        <div class="finance-total red" id="t2_pendentes_total">- $ 0,00</div>
+      </div>
+
+      <div class="dynamic-list" id="t2_pending_list"></div>
+
+      <div class="inline-actions">
+        <button class="btn-add" type="button" data-add-pending="t2">+ Adicionar pendente</button>
+      </div>
+    </div>
+  </article>
+</section>
+
+<section class="secondary-info">
+  <article class="history-card" id="systemsCompareCard">
+    <div class="history-card-top">
+      <div>
+        <div class="history-card-title">Comparativo dos sistemas</div>
+        <div class="history-card-text" id="systemsCompareInfo">
+          Último fechamento comparado com o anterior.
+        </div>
+      </div>
+    </div>
+
+    <div id="systemsCompareBar" class="systems-compare-bar"></div>
+  </article>
+
+  <article class="history-card">
+    <div class="history-card-top">
+      <div>
+        <div class="history-card-title">Histórico automático</div>
+        <div id="historyInfo" class="history-card-text">
+          Nenhum turno anterior salvo ainda.
+        </div>
+      </div>
+
+      <button id="toggleHistoryBtn" class="danger-mini-btn" type="button">
+        Ver
+      </button>
+    </div>
+
+    <div id="historyList" class="history-list hidden"></div>
+
+    <button id="deleteHistoryBtn" class="danger-mini-btn" type="button" style="margin-top:10px; width:100%;">
+      🔴 Excluir Histórico
+    </button>
+  </article>
+
+  <article class="turno card" data-turno="t1">
+    <div class="turno-head">
+      <div style="width:100%;">
+        <div style="display:flex; justify-content:space-between; align-items:center; gap:10px;">
+          <h3>Turno Anterior</h3>
+
+          <button id="toggleTurno1Btn" class="danger-mini-btn" type="button">
+            Ocultar
+          </button>
+        </div>
+
+        <small>Carregado automaticamente do último fechamento</small>
+      </div>
+
+      <div class="turno-total">
+        <div class="label">Saldo líquido</div>
+        <div class="value" id="turno1InlineTotal">$ 0,00</div>
+      </div>
+    </div>
+
+    <div id="turno1Content" style="display:none;">
+      <div class="turno-meta">
+        <div class="field">
+          <label for="t1_data_fechamento">Data do fechamento</label>
+          <input type="date" id="t1_data_fechamento" />
+        </div>
+      </div>
+
+      <div class="finance-block">
+        <div class="finance-head">
+          <h4>Entradas</h4>
+          <div class="finance-total blue" id="t1_entradas_total">$ 0,00</div>
+        </div>
+
+        <div class="fields two-col">
+          <div class="field"><label for="t1_banco">Banco Reca</label><input type="text" inputmode="numeric" id="t1_banco" placeholder="0,00" /></div>
+          <div class="field"><label for="t1_pppoker">PPPoker (x400)</label><input type="text" inputmode="numeric" id="t1_pppoker" placeholder="0,00" /></div>
+          <div class="field"><label for="t1_suprema">Suprema (x400)</label><input type="text" inputmode="numeric" id="t1_suprema" placeholder="0,00" /></div>
+          <div class="field"><label for="t1_buffalo">Buffalo</label><input type="text" inputmode="numeric" id="t1_buffalo" placeholder="0,00" /></div>
+          <div class="field"><label for="t1_ganamos">Ganamos</label><input type="text" inputmode="numeric" id="t1_ganamos" placeholder="0,00" /></div>
+          <div class="field"><label for="t1_cargas">Carga de Fichas</label><input type="text" inputmode="numeric" id="t1_cargas" placeholder="0,00" /></div>
+          <div class="field"><label for="t1_cargas_poker">Cargas F. Poker (x400)</label><input type="text" inputmode="numeric" id="t1_cargas_poker" placeholder="0,00" /></div>
+        </div>
+      </div>
+
+      <div class="finance-block">
+        <div class="finance-head">
+          <h4>Saídas de caixa</h4>
+          <div class="finance-total red" id="t1_saidas_total">- $ 0,00</div>
+        </div>
+
+        <div class="dynamic-list" id="t1_dynamic_list"></div>
+
+        <div class="inline-actions">
+          <button class="btn-add" type="button" data-add-row="t1">+ Adicionar saída</button>
+        </div>
+      </div>
+
+      <div class="finance-block">
+        <div class="finance-head">
+          <h4>Pagos pendentes</h4>
+          <div class="finance-total red" id="t1_pendentes_total">- $ 0,00</div>
+        </div>
+
+        <div class="dynamic-list" id="t1_pending_list"></div>
+
+        <div class="inline-actions">
+          <button class="btn-add" type="button" data-add-pending="t1">+ Adicionar pendente</button>
+        </div>
+      </div>
+    </div>
+  </article>
+</section>
 
 <article class="history-card" id="systemsCompareCard">
   <div class="history-card-top">
