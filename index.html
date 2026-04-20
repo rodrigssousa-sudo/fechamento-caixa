@@ -3328,12 +3328,26 @@ function buildPremiumPdfHtml(startDate, endDate){
     box-sizing:border-box;
   }
 
-  /* ===== PAINEL FINANCEIRO CLEAN ===== */
+  /* ===== TOPO LIMPO ===== */
+
+  .app-top{
+    margin-bottom:12px;
+  }
+
+  .bank-dashboard-card{
+    padding:14px;
+    border-radius:24px;
+    background:rgba(255,255,255,.72);
+    border:1px solid rgba(255,255,255,.86);
+    box-shadow:0 12px 30px rgba(15,23,42,.05);
+  }
 
   .summary-head.clean{
     display:flex;
     justify-content:space-between;
-    align-items:center;
+    align-items:flex-start;
+    gap:12px;
+    margin-bottom:12px;
   }
 
   .summary-left{
@@ -3343,31 +3357,36 @@ function buildPremiumPdfHtml(startDate, endDate){
   }
 
   .summary-label{
-    font-size:12px;
+    font-size:11px;
     color:#94a3b8;
-    font-weight:500;
+    font-weight:700;
+    text-transform:uppercase;
+    letter-spacing:.08em;
   }
 
   .summary-head h2{
-    font-size:18px;
-    font-weight:600;
+    font-size:20px;
+    font-weight:800;
     color:#0f172a;
     margin:0;
+    letter-spacing:-.02em;
   }
 
   .pill{
-    display:flex;
+    display:inline-flex;
     align-items:center;
     gap:6px;
-    font-size:12px;
-    padding:6px 10px;
+    font-size:11px;
+    padding:7px 10px;
     border-radius:999px;
-    font-weight:600;
+    font-weight:800;
+    white-space:nowrap;
   }
 
   .pill.neutral{
-    background:#f1f5f9;
+    background:#f8fafc;
     color:#64748b;
+    border:1px solid rgba(148,163,184,.14);
   }
 
   .pill .dot{
@@ -3377,23 +3396,16 @@ function buildPremiumPdfHtml(startDate, endDate){
     background:#94a3b8;
   }
 
-  /* ===== DASHBOARD (ESTILO APP DE BANCO) ===== */
-
-  .app-top{
-    margin-bottom:14px;
-  }
-
-  .bank-dashboard-card{
-    padding:18px;
-  }
+  /* ===== SALDO PRINCIPAL ===== */
 
   .bank-card.compact{
-    padding:18px 20px;
-    margin-top:14px;
-    margin-bottom:14px;
-    border-radius:16px;
-    background:#ffffff;
-    box-shadow:0 10px 25px rgba(0,0,0,0.04);
+    padding:16px 18px;
+    margin-top:0;
+    margin-bottom:12px;
+    border-radius:20px;
+    background:linear-gradient(135deg, #ffffff 0%, #f8fbff 100%);
+    border:1px solid rgba(59,130,246,.08);
+    box-shadow:none;
   }
 
   .bank-topline{
@@ -3404,18 +3416,22 @@ function buildPremiumPdfHtml(startDate, endDate){
   }
 
   .bank-label{
-    font-size:12px;
+    font-size:11px;
     color:#94a3b8;
+    font-weight:800;
+    text-transform:uppercase;
+    letter-spacing:.08em;
   }
 
   .bank-value{
-    font-size:28px;
-    font-weight:700;
-    letter-spacing:-0.5px;
+    font-size:34px;
+    font-weight:900;
+    letter-spacing:-.05em;
     color:#0f172a;
+    line-height:1;
   }
 
-  /* ===== MÉTRICAS ===== */
+  /* ===== MÉTRICAS MAIS LIMPAS ===== */
 
   .compact-metrics{
     display:grid;
@@ -3424,70 +3440,116 @@ function buildPremiumPdfHtml(startDate, endDate){
   }
 
   .metric{
-    padding:12px;
-    border-radius:12px;
-    background:#f8fafc;
+    padding:14px 16px;
+    border-radius:18px;
+    background:rgba(248,250,252,.85);
+    border:1px solid rgba(148,163,184,.10);
+    box-shadow:none;
+    min-height:82px;
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
   }
 
   .metric-label{
     font-size:11px;
     color:#94a3b8;
-    margin-bottom:4px;
+    font-weight:700;
+    margin-bottom:6px;
+    text-transform:uppercase;
+    letter-spacing:.05em;
   }
 
   .metric-value{
-    font-size:16px;
-    font-weight:600;
+    font-size:18px;
+    font-weight:900;
+    letter-spacing:-.03em;
+    line-height:1.1;
   }
 
   .metric.highlight{
-    background:linear-gradient(135deg, rgba(37,99,235,.10), rgba(56,189,248,.10));
-    border:1px solid rgba(59,130,246,.18);
+    background:linear-gradient(135deg, rgba(37,99,235,.08), rgba(56,189,248,.10));
+    border:1px solid rgba(59,130,246,.14);
   }
 
   .green{ color:#16a34a; }
   .blue{ color:#2563eb; }
   .red{ color:#dc2626; }
 
-  /* ===== TURNO PRINCIPAL ===== */
+  /* ===== ÁREA PRINCIPAL DO TURNO ===== */
 
   .main-entry{
-    margin-top:14px;
+    margin-top:12px;
   }
 
   .turno-main{
-    padding:18px;
-    border-radius:16px;
-    border:1px solid rgba(59,130,246,.12);
-    box-shadow:0 18px 40px rgba(15,23,42,.06);
-    background:#ffffff;
+    padding:16px;
+    border-radius:24px;
+    border:1px solid rgba(255,255,255,.88);
+    box-shadow:0 14px 36px rgba(15,23,42,.05);
+    background:rgba(255,255,255,.76);
   }
 
   .turno-head-main{
     display:flex;
     justify-content:space-between;
-    align-items:center;
-    margin-bottom:10px;
-  }
-
-  .turno-meta-main{
-    padding:12px;
-    border-radius:12px;
-    background:#f8fafc;
-    border:1px solid rgba(148,163,184,.10);
+    align-items:flex-start;
+    gap:12px;
     margin-bottom:12px;
   }
 
-  .main-total .value{
-    font-size:22px;
-    font-weight:700;
+  .turno-head-main h3{
+    margin:2px 0 4px;
+    font-size:18px;
+    letter-spacing:-.02em;
+    color:#0f172a;
   }
 
-  /* ===== CAMPOS ===== */
+  .turno-head-main small{
+    display:block;
+    color:#64748b;
+    font-size:12px;
+    line-height:1.4;
+  }
+
+  .main-total{
+    min-width:120px;
+    padding:0;
+    background:transparent;
+    border:none;
+  }
+
+  .main-total .label{
+    color:#94a3b8;
+    font-size:11px;
+    font-weight:700;
+    text-transform:uppercase;
+    letter-spacing:.06em;
+    margin-bottom:4px;
+  }
+
+  .main-total .value{
+    font-size:18px;
+    font-weight:900;
+    color:#0f172a;
+    letter-spacing:-.03em;
+  }
+
+  /* ===== META DO TURNO ===== */
+
+  .turno-meta-main{
+    padding:0;
+    border-radius:0;
+    background:transparent;
+    border:none;
+    margin-bottom:10px;
+  }
+
+  /* ===== CAMPOS MAIS ELEGANTES ===== */
 
   .fields{
     display:grid;
-    gap:10px;
+    gap:12px;
   }
 
   .fields.two-col{
@@ -3497,43 +3559,59 @@ function buildPremiumPdfHtml(startDate, endDate){
   .field{
     display:flex;
     flex-direction:column;
-    gap:4px;
+    gap:6px;
   }
 
   .field label{
-    font-size:11px;
-    color:#64748b;
+    font-size:12px;
+    color:#475569;
+    font-weight:800;
   }
 
   .field input{
-    padding:10px;
-    border-radius:10px;
-    border:1px solid #e2e8f0;
-    background:#fff;
-    font-size:14px;
+    width:100%;
+    min-height:52px;
+    padding:14px 16px;
+    border-radius:18px;
+    border:1px solid rgba(148,163,184,.14);
+    background:rgba(255,255,255,.92);
+    font-size:16px;
+    color:#0f172a;
+    box-shadow:inset 0 1px 0 rgba(255,255,255,.9);
   }
 
-  /* ===== BLOCOS FINANCEIROS ===== */
+  .field input::placeholder{
+    color:#94a3b8;
+  }
+
+  /* ===== BLOCOS FINANCEIROS MAIS CHATOS MENOS ===== */
 
   .finance-block{
-    margin-top:16px;
+    margin-top:14px;
+    padding:14px 0 0;
+    border:none;
+    background:transparent;
+    border-radius:0;
   }
 
   .finance-head{
     display:flex;
     justify-content:space-between;
     align-items:center;
-    margin-bottom:8px;
+    margin-bottom:10px;
+    padding:0 2px;
   }
 
   .finance-head h4{
     font-size:14px;
     margin:0;
+    color:#0f172a;
+    letter-spacing:-.01em;
   }
 
   .finance-total{
     font-size:13px;
-    font-weight:600;
+    font-weight:900;
   }
 
   /* ===== LISTAS DINÂMICAS ===== */
@@ -3541,55 +3619,106 @@ function buildPremiumPdfHtml(startDate, endDate){
   .dynamic-list{
     display:flex;
     flex-direction:column;
+    gap:10px;
+  }
+
+  .dynamic-row{
+    display:grid;
+    grid-template-columns:1.15fr .85fr auto auto;
     gap:8px;
+    align-items:end;
+    padding:10px;
+    border:1px solid rgba(148,163,184,.10);
+    border-radius:16px;
+    background:rgba(255,255,255,.82);
   }
 
   .inline-actions{
-    margin-top:8px;
+    margin-top:10px;
   }
 
   .btn-add{
     width:100%;
-    padding:10px;
+    min-height:44px;
+    padding:10px 14px;
     border:none;
-    border-radius:10px;
-    background:#0f172a;
-    color:#fff;
+    border-radius:14px;
+    background:#eef2ff;
+    color:#1d4ed8;
     font-size:13px;
-    font-weight:600;
+    font-weight:800;
+    box-shadow:none;
   }
 
-  /* ===== ÁREA SECUNDÁRIA ===== */
+  /* ===== BLOCO SECUNDÁRIO DISCRETO ===== */
 
   .secondary-info{
     display:grid;
-    gap:14px;
+    gap:12px;
     margin-top:14px;
   }
 
-  /* ===== RESPONSIVO ===== */
+  .history-card{
+    padding:14px;
+    border-radius:20px;
+    border:1px solid rgba(255,255,255,.86);
+    background:rgba(255,255,255,.64);
+    box-shadow:0 10px 28px rgba(15,23,42,.04);
+  }
+
+  /* ===== ESCONDER DUPLICIDADE VISUAL NO TOPO ===== */
+  /* deixa os cards mais “resumo”, sem competir com o Turno 2 */
+
+  .compact-metrics .metric:nth-child(1) .metric-label{
+    content:"";
+  }
+
+  /* ===== MOBILE ===== */
 
   @media (max-width:700px){
+    .bank-dashboard-card{
+      padding:14px;
+    }
+
+    .summary-head.clean{
+      flex-direction:column;
+      align-items:flex-start;
+    }
+
+    .bank-value{
+      font-size:30px;
+    }
 
     .compact-metrics{
       grid-template-columns:1fr;
     }
 
     .turno-head-main{
-      flex-direction:column;
+      flex-direction:row;
       align-items:flex-start;
+      gap:10px;
+    }
+
+    .turno-head-main > div:first-child{
+      flex:1;
     }
 
     .main-total{
-      width:100%;
-      margin-top:8px;
+      min-width:96px;
+    }
+
+    .main-total .value{
+      font-size:16px;
     }
 
     .fields.two-col{
       grid-template-columns:1fr;
     }
-  }
 
+    .dynamic-row{
+      grid-template-columns:1fr;
+    }
+  }
 </style>
 
         body{
