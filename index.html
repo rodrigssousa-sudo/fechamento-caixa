@@ -4195,6 +4195,90 @@ function buildPremiumPdfHtml(startDate, endDate){
             box-shadow:none;
             border-radius:0;
           }
+          /* ===== LAYOUT FINAL CLEAN ===== */
+
+.app-shell-clean{
+  display:grid;
+  gap:14px;
+}
+
+.summary-flat-card,
+.turno-flat,
+.slim-card{
+  background:rgba(255,255,255,.76);
+  border:1px solid rgba(255,255,255,.88);
+  border-radius:24px;
+  box-shadow:0 12px 28px rgba(15,23,42,.04);
+}
+
+.summary-flat-card{
+  padding:16px;
+}
+
+.summary-head.clean{
+  display:flex;
+  justify-content:space-between;
+  align-items:flex-start;
+  gap:12px;
+  margin-bottom:12px;
+}
+
+.summary-left{
+  display:flex;
+  flex-direction:column;
+  gap:2px;
+}
+
+.summary-label{
+  font-size:11px;
+  color:#94a3b8;
+  font-weight:800;
+  text-transform:uppercase;
+  letter-spacing:.08em;
+}
+
+.summary-head h2{
+  margin:0;
+  font-size:20px;
+  font-weight:900;
+  letter-spacing:-.03em;
+  color:#0f172a;
+}
+
+.pill{
+  display:inline-flex;
+  align-items:center;
+  gap:6px;
+  font-size:11px;
+  padding:8px 10px;
+  border-radius:999px;
+  font-weight:800;
+  white-space:nowrap;
+}
+
+.pill.neutral{
+  background:#fff7ed;
+  color:#b45309;
+  border:1px solid rgba(245,158,11,.18);
+}
+
+.pill .dot{
+  width:6px;
+  height:6px;
+  border-radius:50%;
+  background:currentColor;
+}
+
+.balance-strip{
+  display:flex;
+  justify-content:space-between;
+  align-items:flex-start;
+  gap:12px;
+  padding:18px;
+  border-radius:22px;
+  background:linear-gradient(135deg, #ffffff 0%, #f5f9ff 100%);
+  border:1px solid rgba(59,130,246,.10);
+  }
         }
       </style>
     </head>
