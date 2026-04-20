@@ -4,1575 +4,1565 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
   <title>Bank King BRS - PRO</title>
+
   <style>
-:root{
+    :root{
+      --bg:#020617;
+      --bg-2:#0f172a;
 
-  /* ===== BASE ===== */
+      --card:rgba(15,23,42,.72);
+      --card-soft:rgba(15,23,42,.55);
+      --card-strong:rgba(15,23,42,.88);
+      --border:rgba(148,163,184,.14);
+      --border-strong:rgba(148,163,184,.22);
 
-  --bg:#020617;
-  --bg-2:#0f172a;
+      --text:#f8fafc;
+      --muted:#94a3b8;
+      --muted-2:#64748b;
 
-  /* ===== CARDS / VIDRO ===== */
+      --primary:#10b981;
+      --primary-strong:#059669;
+      --primary-hover:#34d399;
+      --primary-soft:rgba(16,185,129,.12);
+      --primary-glow:rgba(16,185,129,.25);
 
-  --card:rgba(15,23,42,.72);
-  --card-soft:rgba(15,23,42,.55);
-  --card-strong:rgba(15,23,42,.88);
-  --border:rgba(148,163,184,.14);
-  --border-strong:rgba(148,163,184,.22);
+      --accent:#38bdf8;
+      --accent-2:#3b82f6;
+      --accent-soft:rgba(56,189,248,.12);
+      --accent-glow:rgba(56,189,248,.20);
 
-  /* ===== TEXTO ===== */
+      --green:#22c55e;
+      --red:#ef4444;
+      --amber:#f59e0b;
 
-  --text:#f8fafc;
-  --muted:#94a3b8;
-  --muted-2:#64748b;
+      --shadow:0 10px 30px rgba(0,0,0,.45);
+      --shadow-soft:0 6px 18px rgba(0,0,0,.25);
+      --shadow-green:0 12px 40px rgba(16,185,129,.22);
+      --shadow-blue:0 10px 30px rgba(56,189,248,.16);
 
-  /* ===== BRAND (VERDE MONEY PREMIUM) ===== */
-
-  --primary:#10b981;
-  --primary-strong:#059669;
-  --primary-hover:#34d399;
-  --primary-soft:rgba(16,185,129,.12);
-  --primary-glow:rgba(16,185,129,.25);
-
-  /* ===== ACCENT SECONDARY (AZUL CLEAN) ===== */
-
-  --accent:#38bdf8;
-  --accent-2:#3b82f6;
-  --accent-soft:rgba(56,189,248,.12);
-  --accent-glow:rgba(56,189,248,.20);
-
-  /* ===== STATUS ===== */
-
-  --green:#22c55e;
-  --red:#ef4444;
-  --amber:#f59e0b;
-
-  /* ===== SOMBRAS ===== */
-
-  --shadow:0 10px 30px rgba(0,0,0,.45);
-  --shadow-soft:0 6px 18px rgba(0,0,0,.25);
-  --shadow-green:0 12px 40px rgba(16,185,129,.22);
-  --shadow-blue:0 10px 30px rgba(56,189,248,.16);
-
-  /* ===== RADIUS ===== */
-
-  --radius:22px;
-  --radius-sm:14px;
-
-  /* ===== SAFE ===== */
-
-  --safe-bottom:env(safe-area-inset-bottom, 0px);
-
-}
+      --radius:22px;
+      --radius-sm:14px;
+      --safe-bottom:env(safe-area-inset-bottom, 0px);
+    }
 
     *{
-  box-sizing:border-box;
-  -webkit-tap-highlight-color:transparent;
-}
-
-html,body{
-  margin:0;
-  padding:0;
-}
-
-body{
-  font-family:Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-  background:
-    radial-gradient(circle at top left, rgba(59,130,246,.10), transparent 24%),
-    radial-gradient(circle at top right, rgba(168,85,247,.08), transparent 22%),
-    linear-gradient(180deg, #f6f9fc 0%, #eef4fb 48%, #eaf1f8 100%);
-  color:#0f172a;
-  min-height:100vh;
-}
-
-/* 🔥 COLAR AQUI */
-
-  .top{
-    padding:28px 32px 18px;
-    display:flex;
-    justify-content:space-between;
-    align-items:center;
-  }
-
-  .brand-left{
-    display:flex;
-    align-items:center;
-    gap:16px;
-  }
-
-  .logo-box{
-    width:54px;
-    height:54px;
-    border-radius:12px;
-    background:#0f172a;
-    color:#fff;
-    font-weight:900;
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    font-size:18px;
-    letter-spacing:.5px;
-  }
-
-  .brand-text h1{
-    margin:0;
-    font-size:26px;
-    letter-spacing:.5px;
-  }
-
-  .brand-text p{
-    margin:4px 0 0;
-    font-size:13px;
-    color:#64748b;
-  }
-
-  .brand-right{
-    display:flex;
-    gap:24px;
-    text-align:right;
-  }
-
-  .period-block,
-  .generated-block{
-    font-size:12px;
-    color:#334155;
-
-  }
-
-  .period-title{
-    font-size:10px;
-    letter-spacing:.1em;
-    font-weight:700;
-    color:#94a3b8;
-    margin-bottom:4px;
-  }
-
-  .divider-line{
-    height:3px;
-    background:linear-gradient(90deg, #0f172a, #3b82f6);
-    margin:0 32px 12px;
-    border-radius:999px;
-
-  }
-
-
-.hidden{display:none !important;}
-
-.auth-screen{
-  min-height:100vh;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  padding:24px;
-}
-
-.auth-card{
-  width:100%;
-  max-width:440px;
-  background:rgba(255,255,255,.72);
-  backdrop-filter:blur(24px) saturate(160%);
-  -webkit-backdrop-filter:blur(24px) saturate(160%);
-  border:1px solid rgba(255,255,255,.85);
-  border-radius:32px;
-  box-shadow:
-    0 32px 90px rgba(15,23,42,.12),
-    0 12px 32px rgba(59,130,246,.08),
-    inset 0 1px 0 rgba(255,255,255,.95);
-  padding:28px;
-}
-
-.auth-logo,
-.logo-bk{
-  border-radius:50%;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  font-weight:900;
-  color:#2563eb;
-  border:1.5px solid rgba(37,99,235,.18);
-  background:linear-gradient(135deg, rgba(255,255,255,.95), rgba(239,246,255,.92));
-  box-shadow:
-    0 10px 28px rgba(37,99,235,.12),
-    inset 0 1px 0 rgba(255,255,255,.9);
-  flex-shrink:0;
-}
-
-.auth-logo{
-  width:58px;
-  height:58px;
-  font-size:18px;
-  margin-bottom:16px;
-}
-
-.logo-bk{
-  width:44px;
-  height:44px;
-  font-size:15px;
-}
-
-.auth-title{
-  margin:0 0 6px;
-  font-size:32px;
-  letter-spacing:-.04em;
-  color:#0f172a;
-}
-
-.auth-subtitle,
-.auth-note{
-  color:#64748b;
-  font-size:13px;
-  line-height:1.5;
-}
-
-.auth-subtitle{margin:0 0 18px;}
-.auth-note{margin-top:12px; font-size:12px;}
-
-.auth-toggle{
-  display:grid;
-  grid-template-columns:1fr 1fr 1fr;
-  gap:8px;
-  margin-bottom:16px;
-}
-
-.auth-tab,
-.auth-submit,
-button{
-  border:0;
-  cursor:pointer;
-  font-weight:800;
-}
-
-.auth-tab{
-  min-height:44px;
-  border-radius:14px;
-  border:1px solid rgba(148,163,184,.18);
-  background:rgba(255,255,255,.72);
-  color:#334155;
-  box-shadow:inset 0 1px 0 rgba(255,255,255,.75);
-}
-
-.auth-tab.active{
-  background:linear-gradient(135deg, #2563eb, #38bdf8);
-  color:#fff;
-  border-color:transparent;
-  box-shadow:0 10px 24px rgba(37,99,235,.25);
-}
-
-.auth-form{
-  display:grid;
-  gap:12px;
-}
-
-.field{
-  display:flex;
-  flex-direction:column;
-  gap:7px;
-}
-
-.field label{
-  font-size:12px;
-  font-weight:700;
-  color:#475569;
-}
-
-.field input{
-  width:100%;
-  min-height:50px;
-  border-radius:16px;
-  border:1px solid rgba(148,163,184,.18);
-  background:rgba(255,255,255,.86);
-  color:#0f172a;
-  padding:13px 14px;
-  font-size:16px;
-  outline:none;
-  box-shadow:inset 0 1px 0 rgba(255,255,255,.85);
-}
-
-.field input[type="date"]{
-  color-scheme:light;
-}
-
-.field input::placeholder{
-  color:#94a3b8;
-  opacity:1;
-}
-
-.field input:focus{
-  border-color:rgba(59,130,246,.45);
-  box-shadow:
-    0 0 0 4px rgba(59,130,246,.10),
-    0 8px 22px rgba(59,130,246,.08);
-}
-
-.auth-submit{
-  min-height:52px;
-  border-radius:16px;
-  color:white;
-  font-size:15px;
-  background:linear-gradient(135deg, #2563eb, #38bdf8);
-  box-shadow:0 12px 28px rgba(37,99,235,.24);
-  margin-top:4px;
-}
-
-.remember-row{
-  display:flex;
-  align-items:center;
-  gap:10px;
-  padding:12px 14px;
-  border-radius:16px;
-  border:1px solid rgba(148,163,184,.14);
-  background:rgba(255,255,255,.62);
-}
-
-.remember-row input[type="checkbox"]{
-  width:18px;
-  height:18px;
-  min-height:unset;
-  margin:0;
-  accent-color:#2563eb;
-  cursor:pointer;
-}
-
-.remember-row label{
-  margin:0;
-  font-size:13px;
-  font-weight:700;
-  color:#334155;
-  cursor:pointer;
-}
-
-.app-shell{width:100%;}
-
-.app{
-  width:100%;
-  max-width:1220px;
-  margin:0 auto;
-  padding:16px 16px calc(100px + var(--safe-bottom));
-}
-
-.header{
-  position:sticky;
-  top:0;
-  z-index:40;
-  margin:-16px -16px 16px;
-  padding:16px 16px 14px;
-  background:rgba(246,249,252,.72);
-  backdrop-filter:blur(18px);
-  -webkit-backdrop-filter:blur(18px);
-  border-bottom:1px solid rgba(148,163,184,.10);
-}
-
-.title-row,
-.brand,
-.summary-head,
-.bank-topline,
-.top-user-bar,
-.history-item-top,
-.report-head,
-.report-list-top,
-.turno-head,
-.finance-head,
-.modal-head,
-.admin-head{
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  gap:10px;
-}
-
-.brand{
-  justify-content:flex-start;
-  gap:12px;
-}
-
-.menu-toggle-btn{
-  width:44px;
-  height:44px;
-  border-radius:14px;
-  border:1px solid rgba(148,163,184,.16);
-  background:rgba(255,255,255,.78);
-  display:inline-flex;
-  flex-direction:column;
-  align-items:center;
-  justify-content:center;
-  gap:4px;
-  padding:0;
-  box-shadow:0 8px 20px rgba(15,23,42,.06);
-}
-
-.menu-toggle-btn span{
-  display:block;
-  width:18px;
-  height:2px;
-  border-radius:999px;
-  background:#1e293b;
-}
-
-h1{
-  margin:0;
-  font-size:28px;
-  line-height:1.05;
-  letter-spacing:-.03em;
-  color:#0f172a;
-}
-
-.badge{
-  flex-shrink:0;
-  font-size:11px;
-  font-weight:700;
-  padding:8px 12px;
-  border-radius:999px;
-  color:#1d4ed8;
-  background:rgba(255,255,255,.72);
-  border:1px solid rgba(59,130,246,.14);
-  white-space:nowrap;
-  box-shadow:0 6px 16px rgba(37,99,235,.08);
-}
-
-.summary{
-  display:grid;
-  gap:12px;
-  margin-bottom:14px;
-}
-
-.card{
-
-  background:rgba(255,255,255,.82);
-  backdrop-filter:blur(18px);
-  -webkit-backdrop-filter:blur(18px);
-  border:1px solid rgba(255,255,255,.86);
-  border-radius:24px;
-  box-shadow:
-    0 20px 50px rgba(15,23,42,.07),
-    0 8px 24px rgba(15,23,42,.04);
-}
-
-.summary-card{
-  padding:22px;
-  border-radius:24px;
-}
-
-.summary-head h2{
-  margin:0;
-  font-size:18px;
-  letter-spacing:-.02em;
-  color:#0f172a;
-}
-
-.pill{
-  display:inline-flex;
-  align-items:center;
-  justify-content:center;
-  border-radius:999px;
-  padding:8px 12px;
-  font-size:12px;
-  font-weight:800;
-  border:1px solid transparent;
-  min-width:96px;
-}
-
-.pill.positive{color:#15803d; background:rgba(34,197,94,.10); border-color:rgba(34,197,94,.18);}
-.pill.negative{color:#dc2626; background:rgba(239,68,68,.10); border-color:rgba(239,68,68,.18);}
-.pill.neutral{color:#b45309; background:rgba(245,158,11,.10); border-color:rgba(245,158,11,.18);}
-
-.bank-card{
-  position:relative;
-  overflow:hidden;
-  border-radius:26px;
-  padding:24px;
-  margin-bottom:16px;
-   background:
-
-    radial-gradient(circle at top right, rgba(59,130,246,.16), transparent 28%),
-
-    linear-gradient(135deg, #ffffff 0%, #f7fbff 52%, #edf6ff 100%);
-
-  border:1px solid rgba(59,130,246,.08);
-
-  box-shadow:
-
-    0 24px 50px rgba(59,130,246,.08),
-
-    inset 0 1px 0 rgba(255,255,255,.96);
-}
-
-.bank-label{
-  font-size:12px;
-  font-weight:800;
-  text-transform:uppercase;
-  letter-spacing:.08em;
-  color:#64748b;
-}
-
-.hide-balance-btn{
-  width:42px;
-  height:42px;
-  border-radius:50%;
-  background:rgba(255,255,255,.85);
-  border:1px solid rgba(148,163,184,.14);
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  color:#334155;
-  cursor:pointer;
-  transition:all .2s ease;
-}
-
-.hide-balance-btn:hover{
-  background:#fff;
-  transform:scale(1.05);
-}
-
-.bank-value{
-  font-size:clamp(42px, 8vw, 72px);
-  font-weight:900;
-  letter-spacing:-.06em;
-  color:#0f172a;
-  margin-top:10px;
-  text-shadow:none;
-}
-
-.metrics{
-  display:grid;
-  gap:12px;
-  grid-template-columns:1fr;
-}
-
-.metric{
-  border-radius:20px;
-  padding:16px;
-  background:rgba(255,255,255,.72);
-  border:1px solid rgba(148,163,184,.12);
-  box-shadow:0 8px 22px rgba(15,23,42,.04);
-}
-
-.metric-label{
-  color:#64748b;
-  font-size:12px;
-  font-weight:600;
-  margin-bottom:8px;
-}
-
-.metric-value{
-  font-size:27px;
-  font-weight:900;
-  letter-spacing:-.04em;
-  line-height:1;
-}
-
-.metric-value.blue{color:#2563eb;}
-.metric-value.green{color:#16a34a;}
-.metric-value.red{color:#dc2626;}
-
-.history-card{
-  padding:14px;
-  border-radius:20px;
-  border:1px solid rgba(148,163,184,.10);
-  background:rgba(255,255,255,.68);
-  margin-top:10px;
-  box-shadow:0 8px 24px rgba(15,23,42,.04);
-}
-
-.history-card-top{
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  gap:12px;
-}
-
-.history-card-title{
-  font-size:13px;
-  font-weight:800;
-  color:#0f172a;
-  margin-bottom:4px;
-}
-
-.history-card-text{
-  font-size:12px;
-  color:#64748b;
-  line-height:1.45;
-}
+      box-sizing:border-box;
+      -webkit-tap-highlight-color:transparent;
+    }
+
+    html,body{
+      margin:0;
+      padding:0;
+    }
+
+    body{
+      font-family:Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background:
+        radial-gradient(circle at top left, rgba(16,185,129,.08), transparent 24%),
+        radial-gradient(circle at top right, rgba(56,189,248,.08), transparent 22%),
+        linear-gradient(180deg, var(--bg) 0%, var(--bg-2) 100%);
+      color:var(--text);
+      min-height:100vh;
+    }
+
+    .hidden{display:none !important;}
+
+    /* =========================
+       AUTH
+    ========================= */
+
+    .auth-screen{
+      min-height:100vh;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      padding:24px;
+    }
+
+    .auth-card{
+      width:100%;
+      max-width:440px;
+      background:rgba(255,255,255,.08);
+      backdrop-filter:blur(24px) saturate(160%);
+      -webkit-backdrop-filter:blur(24px) saturate(160%);
+      border:1px solid rgba(255,255,255,.10);
+      border-radius:32px;
+      box-shadow:
+        0 32px 90px rgba(0,0,0,.28),
+        inset 0 1px 0 rgba(255,255,255,.08);
+      padding:28px;
+    }
+
+    .auth-logo,
+    .logo-bk{
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      flex-shrink:0;
+    }
+
+    .auth-logo{
+      width:58px;
+      height:58px;
+      border-radius:18px;
+      font-weight:900;
+      font-size:18px;
+      margin-bottom:16px;
+      color:#fff;
+      background:linear-gradient(135deg, var(--primary), var(--primary-strong));
+      box-shadow:0 10px 28px rgba(16,185,129,.22);
+    }
+
+    .auth-title{
+      margin:0 0 6px;
+      font-size:32px;
+      letter-spacing:-.04em;
+      color:var(--text);
+    }
+
+    .auth-subtitle,
+    .auth-note{
+      color:var(--muted);
+      font-size:13px;
+      line-height:1.5;
+    }
+
+    .auth-subtitle{margin:0 0 18px;}
+    .auth-note{margin-top:12px; font-size:12px;}
+
+    .auth-toggle{
+      display:grid;
+      grid-template-columns:1fr 1fr 1fr;
+      gap:8px;
+      margin-bottom:16px;
+    }
+
+    .auth-tab,
+    .auth-submit,
+    button{
+      border:0;
+      cursor:pointer;
+      font-weight:800;
+    }
+
+    .auth-tab{
+      min-height:44px;
+      border-radius:14px;
+      border:1px solid rgba(148,163,184,.18);
+      background:rgba(255,255,255,.06);
+      color:var(--text);
+      box-shadow:inset 0 1px 0 rgba(255,255,255,.05);
+    }
+
+    .auth-tab.active{
+      background:linear-gradient(135deg, var(--primary), var(--primary-strong));
+      color:#fff;
+      border-color:transparent;
+      box-shadow:0 10px 24px rgba(16,185,129,.25);
+    }
+
+    .auth-form{
+      display:grid;
+      gap:12px;
+    }
+
+    .field{
+      display:flex;
+      flex-direction:column;
+      gap:7px;
+    }
+
+    .field label{
+      font-size:12px;
+      font-weight:700;
+      color:var(--muted);
+    }
+
+    .field input{
+      width:100%;
+      min-height:50px;
+      border-radius:16px;
+      border:1px solid var(--border);
+      background:rgba(2,6,23,.55);
+      color:var(--text);
+      padding:13px 14px;
+      font-size:16px;
+      outline:none;
+      box-shadow:inset 0 1px 0 rgba(255,255,255,.03);
+    }
+
+    .field input[type="date"]{
+      color-scheme:dark;
+    }
+
+    .field input::placeholder{
+      color:var(--muted);
+      opacity:1;
+    }
+
+    .field input:focus{
+      border-color:var(--accent);
+      box-shadow:
+        0 0 0 4px rgba(56,189,248,.10),
+        0 8px 22px rgba(56,189,248,.08);
+    }
+
+    .auth-submit{
+      min-height:52px;
+      border-radius:16px;
+      color:white;
+      font-size:15px;
+      background:linear-gradient(135deg, var(--primary), var(--primary-strong));
+      box-shadow:0 12px 28px rgba(16,185,129,.24);
+      margin-top:4px;
+    }
+
+    .remember-row{
+      display:flex;
+      align-items:center;
+      gap:10px;
+      padding:12px 14px;
+      border-radius:16px;
+      border:1px solid var(--border);
+      background:rgba(255,255,255,.04);
+    }
+
+    .remember-row input[type="checkbox"]{
+      width:18px;
+      height:18px;
+      min-height:unset;
+      margin:0;
+      accent-color:var(--primary);
+      cursor:pointer;
+    }
+
+    .remember-row label{
+      margin:0;
+      font-size:13px;
+      font-weight:700;
+      color:var(--text);
+      cursor:pointer;
+    }
+
+    /* =========================
+       APP BASE
+    ========================= */
+
+    .app-shell{width:100%;}
+
+    .app{
+      width:100%;
+      max-width:1220px;
+      margin:0 auto;
+      padding:16px 16px calc(100px + var(--safe-bottom));
+    }
+
+    .header{
+      position:sticky;
+      top:0;
+      z-index:40;
+      margin:-16px -16px 16px;
+      padding:16px 16px 14px;
+      background:rgba(2,6,23,.72);
+      backdrop-filter:blur(18px);
+      -webkit-backdrop-filter:blur(18px);
+      border-bottom:1px solid var(--border);
+    }
+
+    .title-row,
+    .brand,
+    .summary-head,
+    .bank-topline,
+    .top-user-bar,
+    .history-item-top,
+    .report-head,
+    .turno-head,
+    .finance-head,
+    .modal-head,
+    .admin-head{
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      gap:10px;
+    }
+
+    .brand{
+      justify-content:flex-start;
+      gap:12px;
+    }
+
+    .menu-toggle-btn{
+      width:44px;
+      height:44px;
+      border-radius:14px;
+      border:1px solid var(--border);
+      background:rgba(255,255,255,.06);
+      display:inline-flex;
+      flex-direction:column;
+      align-items:center;
+      justify-content:center;
+      gap:4px;
+      padding:0;
+      box-shadow:0 8px 20px rgba(0,0,0,.12);
+    }
+
+    .menu-toggle-btn span{
+      display:block;
+      width:18px;
+      height:2px;
+      border-radius:999px;
+      background:#e2e8f0;
+    }
+
+    /* =========================
+       LOGO PREMIUM
+    ========================= */
+
+    .logo-bk.premium-logo{
+      width:42px;
+      height:42px;
+      border-radius:14px;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      gap:1px;
+      font-weight:900;
+      font-size:16px;
+      letter-spacing:-1px;
+      color:#ffffff;
+      background:linear-gradient(135deg, var(--primary), var(--primary-strong));
+      box-shadow:
+        0 6px 18px rgba(16,185,129,.35),
+        inset 0 1px 0 rgba(255,255,255,.15);
+      position:relative;
+      overflow:hidden;
+    }
+
+    .logo-bk.premium-logo::after{
+      content:"";
+      position:absolute;
+      inset:0;
+      border-radius:14px;
+      background:linear-gradient(
+        120deg,
+        transparent 30%,
+        rgba(255,255,255,.25),
+        transparent 70%
+      );
+      opacity:.25;
+      pointer-events:none;
+    }
+
+    .logo-bk.premium-logo span:first-child{
+      opacity:.85;
+    }
+
+    .brand-title{
+      margin:0;
+      font-size:18px;
+      font-weight:800;
+      letter-spacing:-0.02em;
+      background:linear-gradient(90deg, #ffffff, #cbd5e1);
+      -webkit-background-clip:text;
+      -webkit-text-fill-color:transparent;
+    }
+
+    .badge{
+      flex-shrink:0;
+      font-size:11px;
+      font-weight:700;
+      padding:8px 12px;
+      border-radius:999px;
+      color:var(--accent);
+      background:rgba(255,255,255,.06);
+      border:1px solid rgba(56,189,248,.16);
+      white-space:nowrap;
+      box-shadow:0 6px 16px rgba(56,189,248,.08);
+    }
+
+    .top-user-bar{
+      margin-bottom:12px;
+      padding:12px 14px;
+      border-radius:18px;
+      border:1px solid var(--border);
+      background:rgba(255,255,255,.05);
+      box-shadow:0 8px 24px rgba(0,0,0,.08);
+    }
+
+    .top-user-name{
+      font-size:13px;
+      font-weight:800;
+      color:var(--text);
+    }
+
+    .top-user-email{
+      font-size:12px;
+      color:var(--muted);
+    }
+
+    .logout-btn{
+      min-height:38px;
+      padding:0 14px;
+      border-radius:12px;
+      background:rgba(239,68,68,.08);
+      color:var(--red);
+      border:1px solid rgba(239,68,68,.14);
+      font-size:12px;
+      font-weight:800;
+    }
+
+    /* =========================
+       APP CLEAN LAYOUT
+    ========================= */
+
+    .app-shell-clean{
+      display:grid;
+      gap:14px;
+      margin-top:14px;
+    }
+
+    .app-top,
+    .main-entry,
+    .secondary-info{
+      margin:0;
+    }
+
+    .summary-flat-card,
+    .turno-flat,
+    .history-card.slim-card{
+      background:var(--card);
+      border:1px solid var(--border);
+      border-radius:24px;
+      box-shadow:var(--shadow-soft);
+      backdrop-filter:blur(12px);
+      -webkit-backdrop-filter:blur(12px);
+    }
+
+    .summary-flat-card{
+      padding:16px;
+    }
+
+    .summary-head.clean,
+    .section-flat-header{
+      display:flex;
+      justify-content:space-between;
+      align-items:flex-start;
+      gap:12px;
+      margin-bottom:14px;
+    }
+
+    .summary-left{
+      display:flex;
+      flex-direction:column;
+      gap:2px;
+    }
+
+    .summary-label{
+      font-size:11px;
+      color:var(--muted);
+      font-weight:800;
+      text-transform:uppercase;
+      letter-spacing:.08em;
+    }
+
+    .summary-head h2,
+    .section-flat-header h3{
+      margin:0;
+      font-size:20px;
+      font-weight:900;
+      color:var(--text);
+      letter-spacing:-.02em;
+    }
+
+    .section-flat-header small{
+      display:block;
+      margin-top:4px;
+      color:var(--muted);
+      font-size:12px;
+      line-height:1.4;
+    }
+
+    .pill{
+      display:inline-flex;
+      align-items:center;
+      gap:6px;
+      font-size:11px;
+      padding:8px 12px;
+      border-radius:999px;
+      font-weight:800;
+      white-space:nowrap;
+    }
+
+    .pill.positive{
+      background:rgba(34,197,94,.12);
+      color:var(--green);
+      border:1px solid rgba(34,197,94,.22);
+    }
+
+    .pill.negative{
+      background:rgba(239,68,68,.12);
+      color:var(--red);
+      border:1px solid rgba(239,68,68,.22);
+    }
+
+    .pill.neutral{
+      background:var(--accent-soft);
+      color:var(--accent);
+      border:1px solid rgba(56,189,248,.22);
+    }
+
+    .pill .dot{
+      width:6px;
+      height:6px;
+      border-radius:50%;
+      background:currentColor;
+    }
+
+    .balance-strip{
+      display:flex;
+      justify-content:space-between;
+      align-items:flex-start;
+      gap:12px;
+      padding:18px;
+      border-radius:22px;
+      background:linear-gradient(135deg, var(--primary-strong), var(--primary));
+      box-shadow:var(--shadow-green);
+      margin-bottom:12px;
+    }
+
+    .balance-strip-label{
+      font-size:11px;
+      color:rgba(255,255,255,.78);
+      font-weight:800;
+      text-transform:uppercase;
+      letter-spacing:.08em;
+      margin-bottom:8px;
+    }
+
+    .balance-strip-value{
+      font-size:34px;
+      font-weight:900;
+      color:#ffffff;
+      letter-spacing:-.05em;
+      line-height:1;
+      display:block;
+    }
+
+    .hide-balance-btn{
+      width:42px;
+      height:42px;
+      border-radius:50%;
+      border:1px solid rgba(255,255,255,.14);
+      background:rgba(255,255,255,.14);
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      color:#ffffff;
+      flex-shrink:0;
+      transition:.2s;
+    }
+
+    .hide-balance-btn:hover{
+      transform:scale(1.04);
+      background:rgba(255,255,255,.18);
+    }
+
+    .top-metrics{
+      display:grid;
+      grid-template-columns:repeat(2, 1fr);
+      gap:10px;
+    }
+
+    .top-metric{
+      padding:14px 16px;
+      border-radius:18px;
+      background:rgba(2,6,23,.32);
+      border:1px solid var(--border);
+    }
+
+    .top-metric-label{
+      font-size:11px;
+      color:var(--muted);
+      font-weight:800;
+      text-transform:uppercase;
+      letter-spacing:.06em;
+      margin-bottom:6px;
+    }
+
+    .top-metric-value{
+      font-size:18px;
+      font-weight:900;
+      letter-spacing:-.03em;
+    }
+
+    .green{ color:var(--green); }
+    .blue{ color:var(--accent); }
+    .red{ color:var(--red); }
+
+    .turno-flat{
+      padding:16px;
+    }
+
+    .flat-total-box{
+      min-width:120px;
+      padding:10px 12px;
+      border-radius:16px;
+      background:rgba(2,6,23,.32);
+      border:1px solid var(--border);
+    }
+
+    .flat-total-box-sm{
+      min-width:110px;
+      padding:8px 10px;
+    }
+
+    .flat-total-label{
+      font-size:11px;
+      color:var(--muted);
+      font-weight:800;
+      text-transform:uppercase;
+      letter-spacing:.06em;
+      margin-bottom:4px;
+    }
+
+    .flat-total-value{
+      font-size:18px;
+      font-weight:900;
+      color:var(--text);
+      letter-spacing:-.03em;
+    }
+
+    .flat-form-grid{
+      display:grid;
+      grid-template-columns:repeat(2, 1fr);
+      gap:12px;
+      margin-bottom:14px;
+    }
+
+    .field-full{
+      grid-column:1 / -1;
+    }
+
+    .fields{
+      display:grid;
+      gap:12px;
+    }
+
+    .fields.two-col{
+      grid-template-columns:repeat(2, 1fr);
+    }
+
+    .field label{
+      font-size:12px;
+      color:var(--muted);
+      font-weight:800;
+    }
+
+    .field input{
+      width:100%;
+      min-height:52px;
+      padding:14px 16px;
+      border-radius:16px;
+      border:1px solid var(--border);
+      background:rgba(2,6,23,.55);
+      font-size:16px;
+      color:var(--text);
+      outline:none;
+    }
+
+    .field input::placeholder{
+      color:var(--muted);
+    }
+
+    .field input:focus{
+      border-color:var(--accent);
+      box-shadow:0 0 0 3px rgba(56,189,248,.15);
+    }
+
+    .flat-section{
+      margin-top:16px;
+      padding-top:14px;
+      border-top:1px solid rgba(148,163,184,.14);
+    }
+
+    .flat-section:first-of-type{
+      margin-top:0;
+    }
+
+    .flat-section-head,
+    .finance-head{
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      gap:10px;
+      margin-bottom:10px;
+    }
+
+    .flat-section-head h4,
+    .finance-head h4{
+      margin:0;
+      font-size:14px;
+      color:var(--text);
+      font-weight:800;
+    }
+
+    .finance-total{
+      font-size:13px;
+      font-weight:900;
+      white-space:nowrap;
+    }
+
+    .dynamic-list{
+      display:flex;
+      flex-direction:column;
+      gap:10px;
+      margin-top:2px;
+    }
+
+    .dynamic-row{
+      display:grid;
+      grid-template-columns:1.15fr .85fr auto auto;
+      gap:8px;
+      align-items:end;
+      padding:10px;
+      border:none;
+      border-radius:14px;
+      background:rgba(2,6,23,.38);
+    }
+
+    .dynamic-row.outflow{
+      background:rgba(239,68,68,.08);
+    }
+
+    .dynamic-row.pending{
+      background:rgba(245,158,11,.08);
+    }
+
+    .signed-preview{
+      min-height:48px;
+      display:flex;
+      align-items:center;
+      justify-content:flex-end;
+      padding:0 14px;
+      border-radius:14px;
+      font-size:15px;
+      font-weight:900;
+      white-space:nowrap;
+      border:1px solid var(--border);
+      background:rgba(255,255,255,.04);
+    }
+
+    .signed-preview.red{color:var(--red);}
+    .signed-preview.amber{color:var(--amber);}
+
+    .remove-btn{
+      min-height:48px;
+      padding:0 14px;
+      border-radius:14px;
+      background:rgba(239,68,68,.08);
+      color:var(--red);
+      border:1px solid rgba(239,68,68,.14);
+      font-size:13px;
+      font-weight:800;
+    }
+
+    .inline-actions{
+      margin-top:10px;
+      display:flex;
+      gap:8px;
+      flex-wrap:wrap;
+    }
+
+    button{
+      border-radius:14px;
+      padding:13px 16px;
+      font-size:14px;
+    }
+
+    .btn-add.soft-btn,
+    .btn-add{
+      width:100%;
+      min-height:44px;
+      padding:10px 14px;
+      border:none;
+      border-radius:14px;
+      background:var(--primary-soft);
+      color:#34d399;
+      font-size:13px;
+      font-weight:800;
+      box-shadow:none;
+    }
+
+    .secondary-info{
+      display:flex;
+      flex-direction:column;
+      gap:14px;
+    }
+
+    .history-card{
+      padding:14px;
+      border-radius:20px;
+      border:1px solid var(--border);
+      background:var(--card);
+      box-shadow:var(--shadow-soft);
+    }
+
+    .history-card-top{
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      gap:12px;
+      margin-bottom:10px;
+    }
+
+    .history-card-title{
+      font-size:14px;
+      font-weight:900;
+      color:var(--text);
+      margin-bottom:4px;
+    }
+
+    .history-card-text{
+      font-size:12px;
+      color:var(--muted);
+      line-height:1.45;
+    }
 
     .systems-compare-bar{
-  display:grid;
-  grid-template-columns:repeat(auto-fit, minmax(180px, 1fr));
-  gap:10px;
-  margin-top:12px;
-}
-
-.system-pill{
-  display:flex;
-  align-items:center;
-  gap:10px;
-  padding:12px 14px;
-  border-radius:16px;
-  border:1px solid rgba(148,163,184,.10);
-  background:rgba(255,255,255,.82);
-}
-
-.system-dot{
-  width:12px;
-  height:12px;
-  border-radius:50%;
-  flex-shrink:0;
-}
-
-.system-dot.up{
-  background:#16a34a;
-  box-shadow:0 0 0 4px rgba(22,163,74,.12);
-}
-
-.system-dot.down{
-  background:#dc2626;
-  box-shadow:0 0 0 4px rgba(220,38,38,.12);
-}
-
-.system-dot.same{
-  background:#d97706;
-  box-shadow:0 0 0 4px rgba(217,119,6,.12);
-}
-
-.system-pill-text{
-  display:flex;
-  flex-direction:column;
-  gap:2px;
-}
-
-.system-pill-name{
-  font-size:13px;
-  font-weight:900;
-  color:#0f172a;
-}
-
-.system-pill-value{
-  font-size:12px;
-  color:#64748b;
-  font-weight:700;
-}
-
-.danger-mini-btn{
-  min-height:36px;
-  padding:0 12px;
-  border-radius:12px;
-  background:rgba(239,68,68,.08);
-  color:#dc2626;
-  border:1px solid rgba(239,68,68,.14);
-  font-size:11px;
-  font-weight:800;
-  white-space:nowrap;
-}
-
-.history-list{
-  display:grid;
-  gap:10px;
-  margin-top:12px;
-}
-
-.history-list.hidden{
-  display:none;
-}
-
-.history-item{
-  padding:14px;
-  border-radius:16px;
-  border:1px solid rgba(148,163,184,.10);
-  background:rgba(255,255,255,.82);
-  cursor:pointer;
-  transition:transform .16s ease, border-color .16s ease, background .16s ease;
-}
-
-.history-item:hover{
-  transform:translateY(-1px);
-  border-color:rgba(59,130,246,.18);
-  background:#ffffff;
-}
-
-.history-user{
-  font-size:14px;
-  font-weight:900;
-  color:#0f172a;
-}
-
-.history-time{
-  font-size:12px;
-  color:#64748b;
-  white-space:nowrap;
-  text-align:right;
-}
-
-.history-item-grid{
-  display:grid;
-  grid-template-columns:1fr 1fr 1fr;
-  gap:10px;
-}
-
-.history-mini-card{
-  padding:10px 12px;
-  border-radius:14px;
-  background:#f8fbff;
-  border:1px solid rgba(148,163,184,.10);
-}
-
-.history-mini-label{
-  font-size:11px;
-  color:#64748b;
-  margin-bottom:6px;
-}
-
-.history-mini-value{
-  font-size:15px;
-  font-weight:900;
-  color:#0f172a;
-}
-
-.history-mini-value.red{
-  color:#dc2626;
-}
-
-.history-mini-value.green{
-  color:#16a34a;
-}
-
-.history-empty{
-  padding:14px;
-  border-radius:16px;
-  border:1px dashed rgba(148,163,184,.18);
-  color:#64748b;
-  font-size:13px;
-  background:rgba(255,255,255,.55);
-}
-
-.turnos{
-  display:grid;
-  gap:14px;
-  margin-top:14px;
-}
-
-.turno{
-  padding:16px;
-  overflow:hidden;
-}
-
-.turno-head h3{
-  margin:0;
-  font-size:18px;
-  letter-spacing:-.02em;
-  color:#0f172a;
-}
-
-.turno-head small{
-  display:block;
-  color:#64748b;
-  margin-top:4px;
-  font-size:12px;
-}
-
-.turno-total .label{
-  color:#64748b;
-  font-size:11px;
-  margin-bottom:4px;
-}
-
-.turno-total .value{
-  font-size:18px;
-  font-weight:800;
-  color:#0f172a;
-}
-
-.turno-meta{
-  margin-top:12px;
-  padding:12px;
-  border-radius:18px;
-  border:1px solid rgba(148,163,184,.10);
-  background:rgba(255,255,255,.60);
-}
-
-.finance-block{
-  margin-top:14px;
-  padding:14px;
-  border-radius:20px;
-  border:1px solid rgba(148,163,184,.10);
-  background:rgba(255,255,255,.58);
-}
-
-.finance-head h4{
-  margin:0;
-  font-size:14px;
-  letter-spacing:-.02em;
-  color:#0f172a;
-}
-
-.finance-total{
-  font-size:14px;
-  font-weight:900;
-  white-space:nowrap;
-}
-
-.finance-total.red{color:#dc2626;}
-.finance-total.blue{color:#2563eb;}
-
-.fields{
-  display:grid;
-  grid-template-columns:1fr;
-  gap:10px;
-}
-
-.dynamic-list{
-  display:grid;
-  gap:10px;
-  margin-top:2px;
-}
-
-.dynamic-row{
-  display:grid;
-  grid-template-columns:1.15fr .85fr auto auto;
-  gap:8px;
-  align-items:end;
-  padding:10px;
-  border:1px solid rgba(148,163,184,.10);
-  border-radius:16px;
-  background:rgba(255,255,255,.72);
-}
-
-.dynamic-row.outflow{
-  background:rgba(255,245,245,.90);
-  border-color:rgba(239,68,68,.10);
-}
-
-.dynamic-row.pending{
-  background:rgba(255,250,235,.92);
-  border-color:rgba(245,158,11,.12);
-}
-
-.signed-preview{
-  min-height:48px;
-  display:flex;
-  align-items:center;
-  justify-content:flex-end;
-  padding:0 14px;
-  border-radius:14px;
-  font-size:15px;
-  font-weight:900;
-  white-space:nowrap;
-  border:1px solid rgba(148,163,184,.10);
-  background:#ffffff;
-}
-
-.signed-preview.red{color:#dc2626;}
-.signed-preview.amber{color:#b45309;}
-
-.remove-btn{
-  min-height:48px;
-  padding:0 14px;
-  border-radius:14px;
-  background:rgba(239,68,68,.08);
-  color:#dc2626;
-  border:1px solid rgba(239,68,68,.14);
-  font-size:13px;
-  font-weight:800;
-}
-
-.inline-actions{
-  display:flex;
-  gap:8px;
-  flex-wrap:wrap;
-  margin-top:10px;
-  margin-bottom:6px;
-}
-
-button{
-  border-radius:14px;
-  padding:13px 16px;
-  font-size:14px;
-}
-
-.btn-add{
-  display:inline-flex;
-  align-items:center;
-  justify-content:center;
-  min-height:42px;
-  color:white;
-  background:linear-gradient(135deg, #2563eb, #38bdf8);
-  box-shadow:0 10px 24px rgba(37,99,235,.18);
-}
-
-.top-user-bar{
-  margin-bottom:12px;
-  padding:12px 14px;
-  border-radius:18px;
-  border:1px solid rgba(148,163,184,.10);
-  background:rgba(255,255,255,.70);
-  box-shadow:0 8px 24px rgba(15,23,42,.04);
-}
-
-.top-user-name{
-  font-size:13px;
-  font-weight:800;
-  color:#0f172a;
-}
-
-.top-user-email{
-  font-size:12px;
-  color:#64748b;
-}
-
-.logout-btn{
-  min-height:38px;
-  padding:0 14px;
-  border-radius:12px;
-  background:rgba(239,68,68,.08);
-  color:#dc2626;
-  border:1px solid rgba(239,68,68,.14);
-  font-size:12px;
-  font-weight:800;
-}
-
-.reports-menu{
-  position:fixed;
-  top:76px;
-  left:14px;
-  z-index:130;
-  width:calc(100% - 28px);
-  max-width:320px;
-  border-radius:20px;
-  border:1px solid rgba(148,163,184,.10);
-  background:rgba(255,255,255,.82);
-  backdrop-filter:blur(18px);
-  box-shadow:0 24px 60px rgba(15,23,42,.10);
-  padding:10px;
-}
-
-.reports-menu-item{
-  width:100%;
-  min-height:46px;
-  border-radius:14px;
-  border:1px solid rgba(148,163,184,.10);
-  background:rgba(255,255,255,.75);
-  color:#0f172a;
-  text-align:left;
-  font-size:14px;
-  font-weight:800;
-  padding:0 14px;
-  margin-bottom:8px;
-}
-
-.reports-menu-item:last-child{margin-bottom:0;}
-
-.report-screen{
-  width:100%;
-  max-width:1180px;
-  margin:0 auto 14px;
-  padding:18px;
-  border-radius:24px;
-  border:1px solid rgba(148,163,184,.10);
-  background:rgba(255,255,255,.76);
-  backdrop-filter:blur(18px);
-  box-shadow:0 20px 50px rgba(15,23,42,.08);
-}
-
-.report-head h3{
-  margin:0;
-  font-size:18px;
-  letter-spacing:-.03em;
-  color:#0f172a;
-}
-
-.report-close-btn{
-  min-height:38px;
-  padding:0 14px;
-  border-radius:12px;
-  background:rgba(239,68,68,.08);
-  color:#dc2626;
-  border:1px solid rgba(239,68,68,.14);
-  font-size:12px;
-  font-weight:800;
-}
-
-.report-grid{
-  display:grid;
-  gap:10px;
-  grid-template-columns:1fr;
-}
-
-.report-card{
-  padding:14px;
-  border-radius:18px;
-  border:1px solid rgba(148,163,184,.10);
-  background:#ffffff;
-  box-shadow:0 8px 24px rgba(15,23,42,.04);
-}
-
-.report-card-label{
-  font-size:12px;
-  color:#64748b;
-  margin-bottom:8px;
-}
-
-.report-card-value{
-  font-size:24px;
-  font-weight:900;
-  letter-spacing:-.03em;
-  color:#0f172a;
-}
-
-.report-card-value.red{color:#dc2626;}
-.report-card-value.green{color:#16a34a;}
-
-.report-list{
-  margin-top:14px;
-  display:grid;
-  gap:10px;
-}
-
-.report-list-item{
-  padding:12px;
-  border-radius:16px;
-  border:1px solid rgba(148,163,184,.10);
-  background:#ffffff;
-}
-
-.report-list-name{
-  font-size:13px;
-  font-weight:800;
-  color:#0f172a;
-}
-
-.report-list-date{
-  font-size:12px;
-  color:#64748b;
-}
-
-.report-list-lines{
-  display:grid;
-  gap:6px;
-}
-
-.report-line{
-  display:flex;
-  justify-content:space-between;
-  gap:10px;
-  font-size:12px;
-  color:#334155;
-}
-
-.bottom-bar{
-  position:fixed;
-  left:0;
-  right:0;
-  bottom:0;
-  z-index:50;
-  padding:10px 12px calc(10px + var(--safe-bottom));
-  background:linear-gradient(180deg, rgba(246,249,252,0), rgba(246,249,252,.82) 18%, rgba(246,249,252,.94) 100%);
-  backdrop-filter:blur(16px);
-}
-
-.bottom-bar-inner{
-  width:100%;
-  max-width:1180px;
-  margin:0 auto;
-  display:grid;
-  grid-template-columns:repeat(3, 1fr);
-  gap:8px;
-}
-
-.bottom-bar button{
-  min-height:44px;
-  padding:10px 8px;
-  font-size:11px;
-  border-radius:14px;
-  letter-spacing:-.01em;
-}
-
-.main-btn{
-  background:linear-gradient(135deg, #2563eb, #38bdf8);
-  color:white;
-  box-shadow:0 12px 28px rgba(37,99,235,.22);
-}
-
-.secondary-btn{
-  background:#ffffff;
-  color:#0f172a;
-  border:1px solid rgba(148,163,184,.14);
-}
-
-.pdf-btn{
-  background:linear-gradient(135deg, #f59e0b, #fbbf24);
-  color:white;
-  box-shadow:0 10px 24px rgba(245,158,11,.20);
-}
-
-.close-btn{
-  background:linear-gradient(135deg, #10b981, #34d399);
-  color:white;
-  box-shadow:0 10px 24px rgba(16,185,129,.18);
-}
-
-.modal{
-  position:fixed;
-  inset:0;
-  z-index:120;
-  display:flex;
-  align-items:flex-end;
-  justify-content:center;
-}
-
-.modal-backdrop{
-  position:absolute;
-  inset:0;
-  background:rgba(15,23,42,.22);
-  backdrop-filter:blur(10px);
-}
-
-.modal-card{
-  position:relative;
-  width:100%;
-  max-width:860px;
-  max-height:88vh;
-  overflow:auto;
-  margin:0;
-  border-radius:28px 28px 0 0;
-  background:rgba(255,255,255,.92);
-  backdrop-filter:blur(20px);
-  border:1px solid rgba(255,255,255,.78);
-  box-shadow:0 24px 60px rgba(15,23,42,.14);
-  padding:20px;
-}
-
-.modal-head h3{
-  margin:0;
-  font-size:20px;
-  letter-spacing:-.03em;
-  color:#0f172a;
-}
-
-.modal-head small{
-  display:block;
-  margin-top:4px;
-  color:#64748b;
-  font-size:12px;
-}
-
-.modal-close-btn{
-  min-height:40px;
-  padding:0 14px;
-  border-radius:12px;
-  background:rgba(239,68,68,.08);
-  color:#dc2626;
-  border:1px solid rgba(239,68,68,.14);
-  font-size:12px;
-  font-weight:800;
-}
-
-.modal-body{
-  display:grid;
-  gap:14px;
-}
-
-.modal-summary-grid{
-  display:grid;
-  grid-template-columns:repeat(4, 1fr);
-  gap:10px;
-}
-
-.modal-summary-card{
-  padding:14px;
-  border-radius:16px;
-  background:#ffffff;
-  border:1px solid rgba(148,163,184,.10);
-}
-
-.modal-summary-label{
-  font-size:11px;
-  color:#64748b;
-  margin-bottom:8px;
-}
-
-.modal-summary-value{
-  font-size:18px;
-  font-weight:900;
-  color:#0f172a;
-}
-
-.modal-turnos-grid{
-  display:grid;
-  grid-template-columns:1fr 1fr;
-  gap:14px;
-}
-
-.modal-panel{
-  border-radius:18px;
-  border:1px solid rgba(148,163,184,.10);
-  background:#ffffff;
-  overflow:hidden;
-}
-
-.modal-panel-head{
-  padding:14px;
-  border-bottom:1px solid rgba(148,163,184,.08);
-  background:#f8fbff;
-}
-
-.modal-panel-head h4{
-  margin:0;
-  font-size:16px;
-  color:#0f172a;
-}
-
-.modal-panel-body{
-  padding:14px;
-  display:grid;
-  gap:14px;
-}
-
-.modal-block-title{
-  font-size:12px;
-  font-weight:900;
-  color:#334155;
-  text-transform:uppercase;
-  letter-spacing:.06em;
-  margin-bottom:10px;
-}
-
-.modal-line{
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  gap:12px;
-  padding:8px 0;
-  border-bottom:1px solid rgba(148,163,184,.08);
-  font-size:13px;
-  color:#334155;
-}
-
-.modal-line:last-child{border-bottom:0;}
-.modal-line strong{font-size:13px; color:#0f172a;}
-.modal-line.negative strong{color:#dc2626;}
-
-.admin-fab{
-  position:fixed;
-  right:20px;
-  bottom:calc(92px + var(--safe-bottom));
-  z-index:200;
-  min-height:52px;
-  padding:0 18px;
-  border-radius:999px;
-  border:1px solid rgba(59,130,246,.14);
-  background:linear-gradient(135deg, #2563eb, #38bdf8);
-  color:#fff;
-  font-size:13px;
-  font-weight:900;
-  letter-spacing:-.01em;
-  box-shadow:
-    0 16px 32px rgba(37,99,235,.22),
-    0 6px 16px rgba(37,99,235,.12);
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  gap:8px;
-  cursor:pointer;
-  transition:transform .2s ease, box-shadow .2s ease, opacity .2s ease;
-}
-
-.admin-fab:hover{
-  transform:translateY(-2px);
-  box-shadow:
-    0 22px 38px rgba(37,99,235,.26),
-    0 8px 18px rgba(37,99,235,.14);
-}
-
-.admin-modal{
-  position:fixed;
-  inset:0;
-  z-index:220;
-  display:flex;
-  align-items:flex-end;
-  justify-content:center;
-}
-
-.admin-modal.hidden{
-  display:none !important;
-}
-
-.admin-modal-backdrop{
-  position:absolute;
-  inset:0;
-  background:rgba(15,23,42,.22);
-  backdrop-filter:blur(10px);
-  -webkit-backdrop-filter:blur(10px);
-}
-
-.admin-modal-card{
-  position:relative;
-  width:100%;
-  max-width:920px;
-  max-height:88vh;
-  overflow:auto;
-  border-radius:28px 28px 0 0;
-  background:rgba(255,255,255,.94);
-  backdrop-filter:blur(18px);
-  -webkit-backdrop-filter:blur(18px);
-  border:1px solid rgba(255,255,255,.78);
-  box-shadow:
-    0 26px 60px rgba(15,23,42,.14),
-    0 10px 24px rgba(15,23,42,.08);
-  padding:20px;
-}
-
-.admin-head h3{
-  margin:0;
-  font-size:20px;
-  letter-spacing:-.03em;
-  color:#0f172a;
-}
-
-.admin-head small{
-  display:block;
-  margin-top:4px;
-  color:#64748b;
-  font-size:12px;
-}
-
-.admin-close-btn{
-  min-height:40px;
-  padding:0 14px;
-  border-radius:12px;
-  background:rgba(239,68,68,.08);
-  color:#dc2626;
-  border:1px solid rgba(239,68,68,.14);
-  font-size:12px;
-  font-weight:800;
-  cursor:pointer;
-}
-
-.admin-toolbar{
-  display:grid;
-  grid-template-columns:1fr auto;
-  gap:10px;
-  margin:14px 0;
-}
-
-.admin-search{
-  width:100%;
-  min-height:46px;
-  border-radius:14px;
-  border:1px solid rgba(148,163,184,.14);
-  background:rgba(255,255,255,.88);
-  color:#0f172a;
-  padding:12px 14px;
-  font-size:14px;
-  outline:none;
-  box-shadow:inset 0 1px 0 rgba(255,255,255,.85);
-}
-
-.admin-search::placeholder{
-  color:#94a3b8;
-}
-
-.admin-search:focus{
-  border-color:rgba(59,130,246,.45);
-  box-shadow:
-    0 0 0 4px rgba(59,130,246,.10),
-    0 8px 22px rgba(59,130,246,.08);
-}
-
-.admin-danger-all-btn{
-  min-height:46px;
-  padding:0 14px;
-  border-radius:14px;
-  background:rgba(239,68,68,.08);
-  color:#dc2626;
-  border:1px solid rgba(239,68,68,.14);
-  font-size:13px;
-  font-weight:900;
-  cursor:pointer;
-  white-space:nowrap;
-}
-
-.admin-list{
-  display:grid;
-  gap:12px;
-}
-
-.admin-empty{
-  padding:16px;
-  border-radius:16px;
-  border:1px dashed rgba(148,163,184,.18);
-  color:#64748b;
-  font-size:13px;
-  background:rgba(255,255,255,.55);
-}
-
-.admin-user-card{
-  padding:14px;
-  border-radius:18px;
-  border:1px solid rgba(148,163,184,.10);
-  background:#ffffff;
-  box-shadow:0 8px 22px rgba(15,23,42,.04);
-}
-
-.admin-user-top{
-  display:flex;
-  justify-content:space-between;
-  align-items:flex-start;
-  gap:12px;
-  margin-bottom:12px;
-}
-
-.admin-user-name{
-  font-size:15px;
-  font-weight:900;
-  color:#0f172a;
-  margin-bottom:4px;
-}
-
-.admin-user-email{
-  font-size:12px;
-  color:#64748b;
-  word-break:break-word;
-}
-
-.admin-user-badge{
-  padding:7px 10px;
-  border-radius:999px;
-  border:1px solid rgba(59,130,246,.14);
-  background:rgba(59,130,246,.08);
-  color:#1d4ed8;
-  font-size:11px;
-  font-weight:800;
-  white-space:nowrap;
-}
-
-.admin-actions{
-  display:grid;
-  grid-template-columns:repeat(3, 1fr);
-  gap:8px;
-}
-
-.admin-action-btn{
-  min-height:42px;
-  border-radius:14px;
-  font-size:12px;
-  font-weight:900;
-  cursor:pointer;
-  border:1px solid rgba(148,163,184,.10);
-  transition:.2s;
-}
-
-.admin-action-btn:hover{
-  transform:translateY(-1px);
-}
-
-.admin-view-btn{
-  background:#eef2ff;
-  color:#4338ca;
-  border-color:rgba(99,102,241,.14);
-}
-
-.admin-reset-btn{
-  background:#fef3c7;
-  color:#b45309;
-  border-color:rgba(245,158,11,.16);
-}
-
-.admin-delete-btn{
-  background:#fee2e2;
-  color:#dc2626;
-  border-color:rgba(239,68,68,.16);
-}
-
-.admin-inline-details{
-  margin-top:12px;
-  padding:12px;
-  border-radius:14px;
-  border:1px solid rgba(148,163,184,.10);
-  background:#f8fbff;
-  display:none;
-}
-
-.admin-inline-details.show{
-  display:block;
-}
-
-.admin-inline-line{
-  display:flex;
-  justify-content:space-between;
-  gap:10px;
-  padding:7px 0;
-  border-bottom:1px solid rgba(148,163,184,.08);
-  font-size:12px;
-  color:#334155;
-}
-
-.admin-inline-line:last-child{
-  border-bottom:0;
-}
-
-.admin-inline-line strong{
-  color:#0f172a;
-  text-align:right;
-  word-break:break-word;
-}
-
-@media (max-width:700px){
-  .history-item-grid,
-  .modal-summary-grid,
-  .modal-turnos-grid,
-  .dynamic-row,
-  .admin-actions{
-    grid-template-columns:1fr;
-  }
-
-  .bottom-bar-inner{
-    grid-template-columns:repeat(4, 1fr);
-  }
-
-  .bottom-bar button{
-    font-size:10px;
-  }
-
-  .signed-preview{
-    justify-content:flex-start;
-  }
-
-  .remove-btn{
-    width:100%;
-  }
-
-  .admin-toolbar{
-    grid-template-columns:1fr;
-  }
-
-  .admin-fab{
-    right:12px;
-    bottom:calc(88px + var(--safe-bottom));
-  }
-
-  .bank-card{
-    padding:20px;
-  }
-
-  .bank-value{
-    font-size:clamp(34px, 9vw, 52px);
-  }
-}
-
-@media (min-width:768px){
-  .metrics{
-    grid-template-columns:repeat(3, 1fr);
-  }
-
-  .report-grid{
-    grid-template-columns:repeat(4, 1fr);
-  }
-
-  .turnos{
-    grid-template-columns:1fr 1fr;
-  }
-
-  .fields.two-col{
-    grid-template-columns:repeat(2, 1fr);
-  }
-}
+      display:grid;
+      grid-template-columns:repeat(auto-fit, minmax(180px, 1fr));
+      gap:10px;
+      margin-top:10px;
+    }
+
+    .system-pill{
+      display:flex;
+      align-items:center;
+      gap:10px;
+      padding:12px 14px;
+      border-radius:16px;
+      border:1px solid var(--border);
+      background:rgba(255,255,255,.04);
+    }
+
+    .system-dot{
+      width:12px;
+      height:12px;
+      border-radius:50%;
+      flex-shrink:0;
+    }
+
+    .system-dot.up{
+      background:var(--green);
+      box-shadow:0 0 0 4px rgba(34,197,94,.12);
+    }
+
+    .system-dot.down{
+      background:var(--red);
+      box-shadow:0 0 0 4px rgba(239,68,68,.12);
+    }
+
+    .system-dot.same{
+      background:var(--amber);
+      box-shadow:0 0 0 4px rgba(245,158,11,.12);
+    }
+
+    .system-pill-text{
+      display:flex;
+      flex-direction:column;
+      gap:2px;
+    }
+
+    .system-pill-name{
+      font-size:13px;
+      font-weight:900;
+      color:var(--text);
+    }
+
+    .system-pill-value{
+      font-size:12px;
+      color:var(--muted);
+      font-weight:700;
+    }
+
+    .danger-mini-btn{
+      min-height:36px;
+      padding:0 12px;
+      border-radius:12px;
+      background:rgba(239,68,68,.08);
+      color:var(--red);
+      border:1px solid rgba(239,68,68,.14);
+      font-size:11px;
+      font-weight:800;
+      white-space:nowrap;
+    }
+
+    .history-list{
+      display:grid;
+      gap:10px;
+      margin-top:12px;
+    }
+
+    .history-item{
+      padding:14px;
+      border-radius:16px;
+      border:1px solid var(--border);
+      background:rgba(255,255,255,.04);
+      cursor:pointer;
+      transition:transform .16s ease, border-color .16s ease, background .16s ease;
+    }
+
+    .history-item:hover{
+      transform:translateY(-1px);
+      border-color:rgba(56,189,248,.22);
+      background:rgba(255,255,255,.06);
+    }
+
+    .history-user{
+      font-size:14px;
+      font-weight:900;
+      color:var(--text);
+    }
+
+    .history-item-grid{
+      display:grid;
+      grid-template-columns:1fr 1fr 1fr;
+      gap:10px;
+      margin-top:10px;
+    }
+
+    .history-mini-card{
+      padding:10px 12px;
+      border-radius:14px;
+      background:rgba(255,255,255,.04);
+      border:1px solid var(--border);
+    }
+
+    .history-mini-label{
+      font-size:11px;
+      color:var(--muted);
+      margin-bottom:6px;
+    }
+
+    .history-mini-value{
+      font-size:15px;
+      font-weight:900;
+      color:var(--text);
+    }
+
+    .history-mini-value.red{color:var(--red);}
+    .history-mini-value.green{color:var(--green);}
+
+    .history-empty{
+      padding:14px;
+      border-radius:16px;
+      border:1px dashed var(--border-strong);
+      color:var(--muted);
+      font-size:13px;
+      background:rgba(255,255,255,.03);
+    }
+
+    .reports-menu{
+      position:fixed;
+      top:76px;
+      left:14px;
+      z-index:130;
+      width:calc(100% - 28px);
+      max-width:320px;
+      border-radius:20px;
+      border:1px solid var(--border);
+      background:var(--card-strong);
+      backdrop-filter:blur(18px);
+      box-shadow:0 24px 60px rgba(0,0,0,.28);
+      padding:10px;
+    }
+
+    .reports-menu-item{
+      width:100%;
+      min-height:46px;
+      border-radius:14px;
+      border:1px solid var(--border);
+      background:rgba(255,255,255,.05);
+      color:var(--text);
+      text-align:left;
+      font-size:14px;
+      font-weight:800;
+      padding:0 14px;
+      margin-bottom:8px;
+    }
+
+    .reports-menu-item:last-child{margin-bottom:0;}
+
+    .report-screen{
+      width:100%;
+      max-width:1180px;
+      margin:0 auto 14px;
+      padding:18px;
+      border-radius:24px;
+      border:1px solid var(--border);
+      background:var(--card);
+      backdrop-filter:blur(18px);
+      box-shadow:0 20px 50px rgba(0,0,0,.18);
+    }
+
+    .report-head h3{
+      margin:0;
+      font-size:18px;
+      letter-spacing:-.03em;
+      color:var(--text);
+    }
+
+    .report-close-btn{
+      min-height:38px;
+      padding:0 14px;
+      border-radius:12px;
+      background:rgba(239,68,68,.08);
+      color:var(--red);
+      border:1px solid rgba(239,68,68,.14);
+      font-size:12px;
+      font-weight:800;
+    }
+
+    .report-grid{
+      display:grid;
+      gap:10px;
+      grid-template-columns:1fr;
+    }
+
+    .report-card{
+      padding:14px;
+      border-radius:18px;
+      border:1px solid var(--border);
+      background:rgba(255,255,255,.04);
+      box-shadow:0 8px 24px rgba(0,0,0,.08);
+    }
+
+    .report-card-label{
+      font-size:12px;
+      color:var(--muted);
+      margin-bottom:8px;
+    }
+
+    .report-card-value{
+      font-size:24px;
+      font-weight:900;
+      letter-spacing:-.03em;
+      color:var(--text);
+    }
+
+    .report-card-value.red{color:var(--red);}
+    .report-card-value.green{color:var(--green);}
+
+    .report-list{
+      margin-top:14px;
+      display:grid;
+      gap:10px;
+    }
+
+    .report-list-item{
+      padding:12px;
+      border-radius:16px;
+      border:1px solid var(--border);
+      background:rgba(255,255,255,.04);
+    }
+
+    .report-list-name{
+      font-size:13px;
+      font-weight:800;
+      color:var(--text);
+    }
+
+    .report-list-date{
+      font-size:12px;
+      color:var(--muted);
+    }
+
+    .report-list-lines{
+      display:grid;
+      gap:6px;
+    }
+
+    .report-line{
+      display:flex;
+      justify-content:space-between;
+      gap:10px;
+      font-size:12px;
+      color:var(--muted);
+    }
+
+    .bottom-bar{
+      position:fixed;
+      left:0;
+      right:0;
+      bottom:0;
+      z-index:50;
+      padding:10px 12px calc(10px + var(--safe-bottom));
+      background:linear-gradient(180deg, rgba(2,6,23,0), rgba(2,6,23,.82) 18%, rgba(2,6,23,.94) 100%);
+      backdrop-filter:blur(16px);
+    }
+
+    .bottom-bar-inner{
+      width:100%;
+      max-width:1180px;
+      margin:0 auto;
+      display:grid;
+      grid-template-columns:repeat(4, 1fr);
+      gap:8px;
+    }
+
+    .bottom-bar button{
+      min-height:44px;
+      padding:10px 8px;
+      font-size:11px;
+      border-radius:14px;
+      letter-spacing:-.01em;
+    }
+
+    .main-btn{
+      background:linear-gradient(135deg, var(--accent-2), var(--accent));
+      color:white;
+      box-shadow:0 12px 28px rgba(56,189,248,.22);
+    }
+
+    .secondary-btn{
+      background:rgba(255,255,255,.06);
+      color:var(--text);
+      border:1px solid var(--border);
+    }
+
+    .pdf-btn{
+      background:linear-gradient(135deg, #f59e0b, #fbbf24);
+      color:white;
+      box-shadow:0 10px 24px rgba(245,158,11,.20);
+    }
+
+    .close-btn{
+      background:linear-gradient(135deg, var(--primary), #34d399);
+      color:white;
+      box-shadow:0 10px 24px rgba(16,185,129,.18);
+    }
+
+    .modal{
+      position:fixed;
+      inset:0;
+      z-index:120;
+      display:flex;
+      align-items:flex-end;
+      justify-content:center;
+    }
+
+    .modal-backdrop{
+      position:absolute;
+      inset:0;
+      background:rgba(2,6,23,.48);
+      backdrop-filter:blur(10px);
+    }
+
+    .modal-card{
+      position:relative;
+      width:100%;
+      max-width:860px;
+      max-height:88vh;
+      overflow:auto;
+      margin:0;
+      border-radius:28px 28px 0 0;
+      background:var(--card-strong);
+      backdrop-filter:blur(20px);
+      border:1px solid var(--border);
+      box-shadow:0 24px 60px rgba(0,0,0,.24);
+      padding:20px;
+    }
+
+    .modal-head h3{
+      margin:0;
+      font-size:20px;
+      letter-spacing:-.03em;
+      color:var(--text);
+    }
+
+    .modal-head small{
+      display:block;
+      margin-top:4px;
+      color:var(--muted);
+      font-size:12px;
+    }
+
+    .modal-close-btn{
+      min-height:40px;
+      padding:0 14px;
+      border-radius:12px;
+      background:rgba(239,68,68,.08);
+      color:var(--red);
+      border:1px solid rgba(239,68,68,.14);
+      font-size:12px;
+      font-weight:800;
+    }
+
+    .modal-body{
+      display:grid;
+      gap:14px;
+    }
+
+    .modal-summary-grid{
+      display:grid;
+      grid-template-columns:repeat(4, 1fr);
+      gap:10px;
+    }
+
+    .modal-summary-card{
+      padding:14px;
+      border-radius:16px;
+      background:rgba(255,255,255,.04);
+      border:1px solid var(--border);
+    }
+
+    .modal-summary-label{
+      font-size:11px;
+      color:var(--muted);
+      margin-bottom:8px;
+    }
+
+    .modal-summary-value{
+      font-size:18px;
+      font-weight:900;
+      color:var(--text);
+    }
+
+    .modal-turnos-grid{
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:14px;
+    }
+
+    .modal-panel{
+      border-radius:18px;
+      border:1px solid var(--border);
+      background:rgba(255,255,255,.04);
+      overflow:hidden;
+    }
+
+    .modal-panel-head{
+      padding:14px;
+      border-bottom:1px solid var(--border);
+      background:rgba(255,255,255,.03);
+    }
+
+    .modal-panel-head h4{
+      margin:0;
+      font-size:16px;
+      color:var(--text);
+    }
+
+    .modal-panel-body{
+      padding:14px;
+      display:grid;
+      gap:14px;
+    }
+
+    .modal-block-title{
+      font-size:12px;
+      font-weight:900;
+      color:var(--muted);
+      text-transform:uppercase;
+      letter-spacing:.06em;
+      margin-bottom:10px;
+    }
+
+    .modal-line{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:12px;
+      padding:8px 0;
+      border-bottom:1px solid rgba(148,163,184,.08);
+      font-size:13px;
+      color:var(--muted);
+    }
+
+    .modal-line:last-child{border-bottom:0;}
+    .modal-line strong{font-size:13px; color:var(--text);}
+    .modal-line.negative strong{color:var(--red);}
+
+    .admin-modal{
+      position:fixed;
+      inset:0;
+      z-index:220;
+      display:flex;
+      align-items:flex-end;
+      justify-content:center;
+    }
+
+    .admin-modal.hidden{
+      display:none !important;
+    }
+
+    .admin-modal-backdrop{
+      position:absolute;
+      inset:0;
+      background:rgba(2,6,23,.48);
+      backdrop-filter:blur(10px);
+      -webkit-backdrop-filter:blur(10px);
+    }
+
+    .admin-modal-card{
+      position:relative;
+      width:100%;
+      max-width:920px;
+      max-height:88vh;
+      overflow:auto;
+      border-radius:28px 28px 0 0;
+      background:var(--card-strong);
+      backdrop-filter:blur(18px);
+      -webkit-backdrop-filter:blur(18px);
+      border:1px solid var(--border);
+      box-shadow:0 26px 60px rgba(0,0,0,.24);
+      padding:20px;
+    }
+
+    .admin-head h3{
+      margin:0;
+      font-size:20px;
+      letter-spacing:-.03em;
+      color:var(--text);
+    }
+
+    .admin-head small{
+      display:block;
+      margin-top:4px;
+      color:var(--muted);
+      font-size:12px;
+    }
+
+    .admin-close-btn{
+      min-height:40px;
+      padding:0 14px;
+      border-radius:12px;
+      background:rgba(239,68,68,.08);
+      color:var(--red);
+      border:1px solid rgba(239,68,68,.14);
+      font-size:12px;
+      font-weight:800;
+      cursor:pointer;
+    }
+
+    .admin-toolbar{
+      display:grid;
+      grid-template-columns:1fr auto;
+      gap:10px;
+      margin:14px 0;
+    }
+
+    .admin-search{
+      width:100%;
+      min-height:46px;
+      border-radius:14px;
+      border:1px solid var(--border);
+      background:rgba(255,255,255,.06);
+      color:var(--text);
+      padding:12px 14px;
+      font-size:14px;
+      outline:none;
+      box-shadow:inset 0 1px 0 rgba(255,255,255,.03);
+    }
+
+    .admin-search::placeholder{
+      color:var(--muted);
+    }
+
+    .admin-search:focus{
+      border-color:var(--accent);
+      box-shadow:
+        0 0 0 4px rgba(56,189,248,.10),
+        0 8px 22px rgba(56,189,248,.08);
+    }
+
+    .admin-danger-all-btn{
+      min-height:46px;
+      padding:0 14px;
+      border-radius:14px;
+      background:rgba(239,68,68,.08);
+      color:var(--red);
+      border:1px solid rgba(239,68,68,.14);
+      font-size:13px;
+      font-weight:900;
+      cursor:pointer;
+      white-space:nowrap;
+    }
+
+    .admin-list{
+      display:grid;
+      gap:12px;
+    }
+
+    .admin-empty{
+      padding:16px;
+      border-radius:16px;
+      border:1px dashed var(--border-strong);
+      color:var(--muted);
+      font-size:13px;
+      background:rgba(255,255,255,.03);
+    }
+
+    .admin-user-card{
+      padding:14px;
+      border-radius:18px;
+      border:1px solid var(--border);
+      background:rgba(255,255,255,.04);
+      box-shadow:0 8px 22px rgba(0,0,0,.08);
+    }
+
+    .admin-user-top{
+      display:flex;
+      justify-content:space-between;
+      align-items:flex-start;
+      gap:12px;
+      margin-bottom:12px;
+    }
+
+    .admin-user-name{
+      font-size:15px;
+      font-weight:900;
+      color:var(--text);
+      margin-bottom:4px;
+    }
+
+    .admin-user-email{
+      font-size:12px;
+      color:var(--muted);
+      word-break:break-word;
+    }
+
+    .admin-user-badge{
+      padding:7px 10px;
+      border-radius:999px;
+      border:1px solid rgba(56,189,248,.16);
+      background:rgba(56,189,248,.08);
+      color:var(--accent);
+      font-size:11px;
+      font-weight:800;
+      white-space:nowrap;
+    }
+
+    .admin-actions{
+      display:grid;
+      grid-template-columns:repeat(3, 1fr);
+      gap:8px;
+    }
+
+    .admin-action-btn{
+      min-height:42px;
+      border-radius:14px;
+      font-size:12px;
+      font-weight:900;
+      cursor:pointer;
+      border:1px solid var(--border);
+      transition:.2s;
+    }
+
+    .admin-action-btn:hover{
+      transform:translateY(-1px);
+    }
+
+    .admin-view-btn{
+      background:#1e293b;
+      color:#c4b5fd;
+      border-color:rgba(196,181,253,.18);
+    }
+
+    .admin-reset-btn{
+      background:#3f2f13;
+      color:#fbbf24;
+      border-color:rgba(251,191,36,.18);
+    }
+
+    .admin-delete-btn{
+      background:#3b1010;
+      color:#f87171;
+      border-color:rgba(248,113,113,.18);
+    }
+
+    .admin-inline-details{
+      margin-top:12px;
+      padding:12px;
+      border-radius:14px;
+      border:1px solid var(--border);
+      background:rgba(255,255,255,.03);
+      display:none;
+    }
+
+    .admin-inline-details.show{
+      display:block;
+    }
+
+    .admin-inline-line{
+      display:flex;
+      justify-content:space-between;
+      gap:10px;
+      padding:7px 0;
+      border-bottom:1px solid rgba(148,163,184,.08);
+      font-size:12px;
+      color:var(--muted);
+    }
+
+    .admin-inline-line:last-child{
+      border-bottom:0;
+    }
+
+    .admin-inline-line strong{
+      color:var(--text);
+      text-align:right;
+      word-break:break-word;
+    }
+
+    @media (max-width:700px){
+      .summary-head.clean,
+      .section-flat-header,
+      .balance-strip{
+        flex-direction:column;
+        align-items:flex-start;
+      }
+
+      .balance-strip-value{
+        font-size:30px;
+      }
+
+      .top-metrics{
+        grid-template-columns:1fr;
+      }
+
+      .flat-form-grid,
+      .fields.two-col,
+      .history-item-grid,
+      .modal-summary-grid,
+      .modal-turnos-grid,
+      .dynamic-row,
+      .admin-actions,
+      .admin-toolbar,
+      .report-grid{
+        grid-template-columns:1fr;
+      }
+
+      .signed-preview{
+        justify-content:flex-start;
+      }
+
+      .remove-btn{
+        width:100%;
+      }
+
+      .flat-total-box,
+      .flat-total-box-sm{
+        width:100%;
+      }
+
+      .bottom-bar-inner{
+        grid-template-columns:repeat(4, 1fr);
+      }
+
+      .bottom-bar button{
+        font-size:10px;
+      }
+    }
   </style>
 </head>
 <body>
@@ -1627,7 +1617,7 @@ button{
       </form>
 
       <form id="forgotPasswordForm" class="auth-form hidden">
-        <h3>Redefinir senha</h3>
+        <h3 style="margin:0;color:var(--text);">Redefinir senha</h3>
         <p class="auth-subtitle">Você receberá um link no email para criar uma nova senha.</p>
 
         <div class="field">
@@ -1644,1080 +1634,294 @@ button{
     </div>
   </section>
 
-<div id="appShell" class="app-shell hidden">
-  <main class="app">
-    <header class="header">
-      <div class="title-row">
-        <div class="brand">
-         <div class="title-row">
-  <div class="brand">
+  <div id="appShell" class="app-shell hidden">
+    <main class="app">
+      <header class="header">
+        <div class="title-row">
+          <div class="brand">
+            <button id="menuToggle" class="menu-toggle-btn" type="button" aria-label="Abrir menu">
+              <span></span><span></span><span></span>
+            </button>
 
-    <button id="menuToggle" class="menu-toggle-btn" type="button" aria-label="Abrir menu">
-      <span></span><span></span><span></span>
-    </button>
+            <div class="logo-bk premium-logo">
+              <span>B</span><span>K</span>
+            </div>
 
-    <div class="logo-bk premium-logo">
-      <span>B</span><span>K</span>
-    </div>
+            <h1 class="brand-title">Bank King</h1>
+          </div>
 
-    <h1 class="brand-title">Bank King</h1>
+          <div class="badge">BRS SYST</div>
+        </div>
+      </header>
 
-  </div>
-
-  <div class="badge">BRS SYST</div>
-</div>
-
-    <div class="top-user-bar">
-      <div class="top-user-info">
-        <div class="top-user-name" id="activeUserName">Usuário</div>
-        <div class="top-user-email" id="activeUserEmail">email@exemplo.com</div>
+      <div class="top-user-bar">
+        <div class="top-user-info">
+          <div class="top-user-name" id="activeUserName">Usuário</div>
+          <div class="top-user-email" id="activeUserEmail">email@exemplo.com</div>
+        </div>
+        <button id="logoutBtn" class="logout-btn" type="button">Sair</button>
       </div>
-      <button id="logoutBtn" class="logout-btn" type="button">Sair</button>
-    </div>
 
-    <section class="app-shell-clean">
-
-      <section class="summary app-top">
-        <article class="summary-flat-card">
-          <div class="summary-head clean">
-            <div class="summary-left">
-              <span class="summary-label">Painel</span>
-              <h2>Financeiro</h2>
-            </div>
-
-            <div id="statusPill" class="pill neutral">
-              <span class="dot"></span> Sem diferença
-            </div>
-          </div>
-
-          <div class="balance-strip">
-            <div>
-              <div class="balance-strip-label">Saldo disponível</div>
-              <div id="bankValue" class="balance-strip-value">$ 0,00</div>
-            </div>
-
-            <button id="toggleBalance" class="hide-balance-btn" type="button" aria-label="Mostrar ou ocultar banca">
-              <svg id="eyeIcon" width="20" height="20" viewBox="0 0 24 24" fill="none">
-                <path d="M2 12C4.5 7 8.5 5 12 5C15.5 5 19.5 7 22 12C19.5 17 15.5 19 12 19C8.5 19 4.5 17 2 12Z" stroke="currentColor" stroke-width="1.6"/>
-                <circle cx="12" cy="12" r="3" stroke="currentColor" stroke-width="1.6"/>
-              </svg>
-            </button>
-          </div>
-
-          <div class="top-metrics">
-            <div class="top-metric">
-              <div class="top-metric-label">Turno anterior</div>
-              <div id="totalEntradasT1" class="top-metric-value green">$ 0,00</div>
-            </div>
-
-            <div class="top-metric">
-              <div class="top-metric-label">Saldo total</div>
-              <div id="lucroTotal" class="top-metric-value blue">$ 0,00</div>
-            </div>
-          </div>
-        </article>
-      </section>
-
-      <section class="main-entry">
-        <article class="turno-flat" data-turno="t2">
-          <div class="section-flat-header">
-            <div>
-              <span class="summary-label">Preenchimento rápido</span>
-              <h3>Turno 2</h3>
-              <small>Preencha e feche o turno atual</small>
-            </div>
-
-            <div class="flat-total-box">
-              <div class="flat-total-label">Saldo líquido</div>
-              <div class="flat-total-value" id="turno2InlineTotal">$ 0,00</div>
-            </div>
-          </div>
-
-          <div class="flat-form-grid">
-            <div class="field">
-              <label for="t2_nome_operador">Nome do operador</label>
-              <input type="text" id="t2_nome_operador" placeholder="Ex.: Lucas" />
-            </div>
-
-            <div class="field">
-              <label for="t2_turno_trabalhado">Turno</label>
-              <input type="text" id="t2_turno_trabalhado" placeholder="Ex.: Manhã / Noite / T2" />
-            </div>
-
-            <div class="field field-full">
-              <label for="t2_data_fechamento">Data do fechamento</label>
-              <input type="date" id="t2_data_fechamento" />
-            </div>
-          </div>
-
-          <div class="flat-section">
-            <div class="flat-section-head">
-              <h4>Entradas</h4>
-              <div class="finance-total blue" id="t2_entradas_total">$ 0,00</div>
-            </div>
-
-            <div class="fields two-col">
-              <div class="field"><label for="t2_banco">Banco Reca</label><input type="text" inputmode="numeric" id="t2_banco" placeholder="0,00" /></div>
-              <div class="field"><label for="t2_pppoker">PPPoker (x400)</label><input type="text" inputmode="numeric" id="t2_pppoker" placeholder="0,00" /></div>
-              <div class="field"><label for="t2_suprema">Suprema (x400)</label><input type="text" inputmode="numeric" id="t2_suprema" placeholder="0,00" /></div>
-              <div class="field"><label for="t2_buffalo">Buffalo</label><input type="text" inputmode="numeric" id="t2_buffalo" placeholder="0,00" /></div>
-              <div class="field"><label for="t2_ganamos">Ganamos</label><input type="text" inputmode="numeric" id="t2_ganamos" placeholder="0,00" /></div>
-              <div class="field"><label for="t2_cargas">Carga de Fichas</label><input type="text" inputmode="numeric" id="t2_cargas" placeholder="0,00" /></div>
-              <div class="field"><label for="t2_cargas_poker">Cargas F. Poker (x400)</label><input type="text" inputmode="numeric" id="t2_cargas_poker" placeholder="0,00" /></div>
-            </div>
-          </div>
-
-          <div class="flat-section">
-            <div class="flat-section-head">
-              <h4>Saídas de caixa</h4>
-              <div class="finance-total red" id="t2_saidas_total">- $ 0,00</div>
-            </div>
-
-            <div class="dynamic-list" id="t2_dynamic_list"></div>
-
-            <div class="inline-actions">
-              <button class="btn-add soft-btn" type="button" data-add-row="t2">+ Adicionar saída</button>
-            </div>
-          </div>
-
-          <div class="flat-section">
-            <div class="flat-section-head">
-              <h4>Pagos pendentes</h4>
-              <div class="finance-total red" id="t2_pendentes_total">- $ 0,00</div>
-            </div>
-
-            <div class="dynamic-list" id="t2_pending_list"></div>
-
-            <div class="inline-actions">
-              <button class="btn-add soft-btn" type="button" data-add-pending="t2">+ Adicionar pendente</button>
-            </div>
-          </div>
-        </article>
-      </section>
-
-      <section class="secondary-info">
-        <article class="history-card slim-card" id="systemsCompareCard">
-          <div class="history-card-top">
-            <div>
-              <div class="history-card-title">Comparativo dos sistemas</div>
-              <div class="history-card-text" id="systemsCompareInfo">
-                Último fechamento comparado com o anterior.
+      <section class="app-shell-clean">
+        <section class="summary app-top">
+          <article class="summary-flat-card">
+            <div class="summary-head clean">
+              <div class="summary-left">
+                <span class="summary-label">Painel</span>
+                <h2>Financeiro</h2>
               </div>
-            </div>
-          </div>
-          <div id="systemsCompareBar" class="systems-compare-bar"></div>
-        </article>
 
-        <article class="history-card slim-card">
-          <div class="history-card-top">
-            <div>
-              <div class="history-card-title">Histórico automático</div>
-              <div id="historyInfo" class="history-card-text">
-                Nenhum turno anterior salvo ainda.
+              <div id="statusPill" class="pill neutral">
+                <span class="dot"></span> Sem diferença
               </div>
             </div>
 
-            <button id="toggleHistoryBtn" class="danger-mini-btn" type="button">
-              Ver
-            </button>
-          </div>
-
-          <div id="historyList" class="history-list hidden"></div>
-
-          <button id="deleteHistoryBtn" class="danger-mini-btn" type="button" style="margin-top:10px; width:100%;">
-            🔴 Excluir Histórico
-          </button>
-        </article>
-
-        <article class="turno-flat turno-flat-secondary" data-turno="t1">
-          <div class="section-flat-header">
-            <div>
-              <h3>Turno anterior</h3>
-              <small>Carregado automaticamente do último fechamento</small>
-            </div>
-
-            <div style="display:flex; align-items:center; gap:10px;">
-              <div class="flat-total-box flat-total-box-sm">
-                <div class="flat-total-label">Saldo líquido</div>
-                <div class="flat-total-value" id="turno1InlineTotal">$ 0,00</div>
+            <div class="balance-strip">
+              <div>
+                <div class="balance-strip-label">Saldo disponível</div>
+                <div id="bankValue" class="balance-strip-value">$ 0,00</div>
               </div>
 
-              <button id="toggleTurno1Btn" class="danger-mini-btn" type="button">
-                Mostrar
+              <button id="toggleBalance" class="hide-balance-btn" type="button" aria-label="Mostrar ou ocultar banca">
+                <svg id="eyeIcon" width="20" height="20" viewBox="0 0 24 24" fill="none">
+                  <path d="M2 12C4.5 7 8.5 5 12 5C15.5 5 19.5 7 22 12C19.5 17 15.5 19 12 19C8.5 19 4.5 17 2 12Z" stroke="currentColor" stroke-width="1.6"/>
+                  <circle cx="12" cy="12" r="3" stroke="currentColor" stroke-width="1.6"/>
+                </svg>
               </button>
             </div>
-          </div>
 
-          <div id="turno1Content" class="hidden">
+            <div class="top-metrics">
+              <div class="top-metric">
+                <div class="top-metric-label">Turno anterior</div>
+                <div id="totalEntradasT1" class="top-metric-value green">$ 0,00</div>
+              </div>
+
+              <div class="top-metric">
+                <div class="top-metric-label">Saldo total</div>
+                <div id="lucroTotal" class="top-metric-value blue">$ 0,00</div>
+              </div>
+            </div>
+          </article>
+        </section>
+
+        <section class="main-entry">
+          <article class="turno-flat" data-turno="t2">
+            <div class="section-flat-header">
+              <div>
+                <span class="summary-label">Preenchimento rápido</span>
+                <h3>Turno 2</h3>
+                <small>Preencha e feche o turno atual</small>
+              </div>
+
+              <div class="flat-total-box">
+                <div class="flat-total-label">Saldo líquido</div>
+                <div class="flat-total-value" id="turno2InlineTotal">$ 0,00</div>
+              </div>
+            </div>
+
             <div class="flat-form-grid">
+              <div class="field">
+                <label for="t2_nome_operador">Nome do operador</label>
+                <input type="text" id="t2_nome_operador" placeholder="Ex.: Lucas" />
+              </div>
+
+              <div class="field">
+                <label for="t2_turno_trabalhado">Turno</label>
+                <input type="text" id="t2_turno_trabalhado" placeholder="Ex.: Manhã / Noite / T2" />
+              </div>
+
               <div class="field field-full">
-                <label for="t1_data_fechamento">Data do fechamento</label>
-                <input type="date" id="t1_data_fechamento" />
+                <label for="t2_data_fechamento">Data do fechamento</label>
+                <input type="date" id="t2_data_fechamento" />
               </div>
             </div>
 
             <div class="flat-section">
               <div class="flat-section-head">
                 <h4>Entradas</h4>
-                <div class="finance-total blue" id="t1_entradas_total">$ 0,00</div>
+                <div class="finance-total blue" id="t2_entradas_total">$ 0,00</div>
               </div>
 
               <div class="fields two-col">
-                <div class="field"><label for="t1_banco">Banco Reca</label><input type="text" inputmode="numeric" id="t1_banco" placeholder="0,00" /></div>
-                <div class="field"><label for="t1_pppoker">PPPoker (x400)</label><input type="text" inputmode="numeric" id="t1_pppoker" placeholder="0,00" /></div>
-                <div class="field"><label for="t1_suprema">Suprema (x400)</label><input type="text" inputmode="numeric" id="t1_suprema" placeholder="0,00" /></div>
-                <div class="field"><label for="t1_buffalo">Buffalo</label><input type="text" inputmode="numeric" id="t1_buffalo" placeholder="0,00" /></div>
-                <div class="field"><label for="t1_ganamos">Ganamos</label><input type="text" inputmode="numeric" id="t1_ganamos" placeholder="0,00" /></div>
-                <div class="field"><label for="t1_cargas">Carga de Fichas</label><input type="text" inputmode="numeric" id="t1_cargas" placeholder="0,00" /></div>
-                <div class="field"><label for="t1_cargas_poker">Cargas F. Poker (x400)</label><input type="text" inputmode="numeric" id="t1_cargas_poker" placeholder="0,00" /></div>
+                <div class="field"><label for="t2_banco">Banco Reca</label><input type="text" inputmode="numeric" id="t2_banco" placeholder="0,00" /></div>
+                <div class="field"><label for="t2_pppoker">PPPoker (x400)</label><input type="text" inputmode="numeric" id="t2_pppoker" placeholder="0,00" /></div>
+                <div class="field"><label for="t2_suprema">Suprema (x400)</label><input type="text" inputmode="numeric" id="t2_suprema" placeholder="0,00" /></div>
+                <div class="field"><label for="t2_buffalo">Buffalo</label><input type="text" inputmode="numeric" id="t2_buffalo" placeholder="0,00" /></div>
+                <div class="field"><label for="t2_ganamos">Ganamos</label><input type="text" inputmode="numeric" id="t2_ganamos" placeholder="0,00" /></div>
+                <div class="field"><label for="t2_cargas">Carga de Fichas</label><input type="text" inputmode="numeric" id="t2_cargas" placeholder="0,00" /></div>
+                <div class="field"><label for="t2_cargas_poker">Cargas F. Poker (x400)</label><input type="text" inputmode="numeric" id="t2_cargas_poker" placeholder="0,00" /></div>
               </div>
             </div>
 
             <div class="flat-section">
               <div class="flat-section-head">
                 <h4>Saídas de caixa</h4>
-                <div class="finance-total red" id="t1_saidas_total">- $ 0,00</div>
+                <div class="finance-total red" id="t2_saidas_total">- $ 0,00</div>
               </div>
-              <div class="dynamic-list" id="t1_dynamic_list"></div>
+
+              <div class="dynamic-list" id="t2_dynamic_list"></div>
+
               <div class="inline-actions">
-                <button class="btn-add soft-btn" type="button" data-add-row="t1">+ Adicionar saída</button>
+                <button class="btn-add soft-btn" type="button" data-add-row="t2">+ Adicionar saída</button>
               </div>
             </div>
 
             <div class="flat-section">
               <div class="flat-section-head">
                 <h4>Pagos pendentes</h4>
-                <div class="finance-total red" id="t1_pendentes_total">- $ 0,00</div>
+                <div class="finance-total red" id="t2_pendentes_total">- $ 0,00</div>
               </div>
-              <div class="dynamic-list" id="t1_pending_list"></div>
+
+              <div class="dynamic-list" id="t2_pending_list"></div>
+
               <div class="inline-actions">
-                <button class="btn-add soft-btn" type="button" data-add-pending="t1">+ Adicionar pendente</button>
+                <button class="btn-add soft-btn" type="button" data-add-pending="t2">+ Adicionar pendente</button>
               </div>
             </div>
-          </div>
-        </article>
-      </section>
-
-    </section>
-
-<style>
-
-  *{
-
-    box-sizing:border-box;
-
-  }
-
-  :root{
-
-    /* ===== BASE ===== */
-
-    --bg:#020617;
-
-    --bg-2:#0f172a;
-
-    /* ===== CARDS / VIDRO ===== */
-
-    --card:rgba(15,23,42,.72);
-
-    --card-soft:rgba(15,23,42,.55);
-
-    --border:rgba(148,163,184,.14);
-
-    /* ===== TEXTO ===== */
-
-    --text:#f8fafc;
-
-    --muted:#94a3b8;
-
-    --muted-2:#64748b;
-
-    /* ===== VERDE MONEY ===== */
-
-    --primary:#10b981;
-
-    --primary-strong:#059669;
-
-    --primary-soft:rgba(16,185,129,.12);
-
-    /* ===== AZUL DETALHE ===== */
-
-    --accent:#38bdf8;
-
-    --accent-2:#3b82f6;
-
-    --accent-soft:rgba(56,189,248,.12);
-
-    /* ===== STATUS ===== */
-
-    --green:#22c55e;
-
-    --red:#ef4444;
-
-    --amber:#f59e0b;
-
-    /* ===== SOMBRAS ===== */
-
-    --shadow:0 10px 30px rgba(0,0,0,.45);
-
-    --shadow-soft:0 6px 18px rgba(0,0,0,.25);
-
-    --shadow-green:0 12px 40px rgba(16,185,129,.22);
-
-    /* ===== RADIUS ===== */
-
-    --radius:22px;
-
-    --radius-sm:14px;
-
-    /* ===== SAFE ===== */
-
-    --safe-bottom:env(safe-area-inset-bottom, 0px);
-
-  }
-
-  body{
-
-    background:
-
-      radial-gradient(circle at top left, rgba(16,185,129,.08), transparent 24%),
-
-      radial-gradient(circle at top right, rgba(56,189,248,.08), transparent 22%),
-
-      linear-gradient(180deg, var(--bg) 0%, var(--bg-2) 100%);
-
-    color:var(--text);
-
-  }
-
-  .app-shell-clean{
-
-    display:grid;
-
-    gap:14px;
-
-    margin-top:14px;
-
-  }
-
-  .app-top,
-
-  .main-entry,
-
-  .secondary-info{
-
-    margin:0;
-
-  }
-
-  /* ===== CARTÕES PRINCIPAIS ===== */
-
-  .summary.app-top,
-
-  .turno-flat,
-
-  .history-card.slim-card,
-
-  .turno-flat-secondary{
-
-    background:var(--card);
-
-    border:1px solid var(--border);
-
-    border-radius:24px;
-
-    box-shadow:var(--shadow-soft);
-
-    backdrop-filter:blur(12px);
-
-    -webkit-backdrop-filter:blur(12px);
-
-    padding:16px;
-
-  }
-
-  /* ===== CABEÇALHOS ===== */
-
-  .summary-head.clean,
-
-  .section-flat-header{
-
-    display:flex;
-
-    justify-content:space-between;
-
-    align-items:flex-start;
-
-    gap:12px;
-
-    margin-bottom:14px;
-
-  }
-
-  .summary-left{
-
-    display:flex;
-
-    flex-direction:column;
-
-    gap:2px;
-
-  }
-
-  .summary-label{
-
-    font-size:11px;
-
-    color:var(--muted);
-
-    font-weight:800;
-
-    text-transform:uppercase;
-
-    letter-spacing:.08em;
-
-  }
-
-  .summary-head h2,
-
-  .section-flat-header h3{
-
-    margin:0;
-
-    font-size:20px;
-
-    font-weight:900;
-
-    color:var(--text);
-
-    letter-spacing:-.02em;
-
-  }
-
-  .section-flat-header small{
-
-    display:block;
-
-    margin-top:4px;
-
-    color:var(--muted);
-
-    font-size:12px;
-
-    line-height:1.4;
-
-  }
-
-  /* ===== STATUS ===== */
-
-  .pill{
-
-    display:inline-flex;
-
-    align-items:center;
-
-    gap:6px;
-
-    font-size:11px;
-
-    padding:8px 12px;
-
-    border-radius:999px;
-
-    font-weight:800;
-
-    white-space:nowrap;
-
-  }
-
-  .pill.neutral{
-
-    background:var(--accent-soft);
-
-    color:var(--accent);
-
-    border:1px solid rgba(56,189,248,.22);
-
-  }
-
-  .pill .dot{
-
-    width:6px;
-
-    height:6px;
-
-    border-radius:50%;
-
-    background:var(--accent);
-
-  }
-
-  /* ===== SALDO ===== */
-
-  .balance-strip{
-
-    padding:16px 18px;
-
-    border-radius:20px;
-
-    background:linear-gradient(135deg, var(--primary-strong), var(--primary));
-
-    border:none;
-
-    box-shadow:var(--shadow-green);
-
-    margin-bottom:12px;
-
-    display:flex;
-
-    justify-content:space-between;
-
-    align-items:flex-start;
-
-    gap:12px;
-
-  }
-
-  .balance-strip-label{
-
-    font-size:11px;
-
-    color:rgba(255,255,255,.78);
-
-    font-weight:800;
-
-    text-transform:uppercase;
-
-    letter-spacing:.08em;
-
-    margin-bottom:8px;
-
-  }
-
-  .balance-strip-value{
-
-    font-size:34px;
-    font-weight:900;
-    color:#ffffff;
-    letter-spacing:-.05em;
-    line-height:1;
-    display:block;
-
-  }
-
-  .hide-balance-btn{
-
-    width:42px;
-
-    height:42px;
-
-    border-radius:50%;
-
-    border:1px solid rgba(255,255,255,.14);
-
-    background:rgba(255,255,255,.14);
-
-    display:flex;
-
-    align-items:center;
-
-    justify-content:center;
-
-    color:#ffffff;
-
-    flex-shrink:0;
-
-  }
-
-  /* ===== MÉTRICAS DO TOPO ===== */
-
-  .top-metrics{
-
-    display:grid;
-
-    grid-template-columns:repeat(2, 1fr);
-
-    gap:10px;
-
-  }
-
-  .top-metric{
-
-    padding:14px 16px;
-
-    border-radius:18px;
-
-    background:rgba(2,6,23,.32);
-
-    border:1px solid var(--border);
-
-  }
-
-  .top-metric-label{
-
-    font-size:11px;
-
-    color:var(--muted);
-
-    font-weight:800;
-
-    text-transform:uppercase;
-
-    letter-spacing:.06em;
-
-    margin-bottom:6px;
-
-  }
-
-  .top-metric-value{
-
-    font-size:18px;
-
-    font-weight:900;
-
-    letter-spacing:-.03em;
-
-  }
-
-  .green{ color:var(--green); }
-
-  .blue{ color:var(--accent); }
-
-  .red{ color:var(--red); }
-
-  /* ===== TURNO ===== */
-
-  .flat-total-box{
-
-    min-width:120px;
-
-    padding:10px 12px;
-
-    border-radius:16px;
-
-    background:rgba(2,6,23,.32);
-
-    border:1px solid var(--border);
-
-  }
-
-  .flat-total-box-sm{
-
-    min-width:110px;
-
-    padding:8px 10px;
-
-  }
-
-  .flat-total-label{
-
-    font-size:11px;
-
-    color:var(--muted);
-
-    font-weight:800;
-
-    text-transform:uppercase;
-
-    letter-spacing:.06em;
-
-    margin-bottom:4px;
-
-  }
-
-  .flat-total-value{
-
-    font-size:18px;
-
-    font-weight:900;
-
-    color:var(--text);
-
-    letter-spacing:-.03em;
-
-  }
-
-  .flat-form-grid{
-
-    display:grid;
-
-    grid-template-columns:repeat(2, 1fr);
-
-    gap:12px;
-
-    margin-bottom:14px;
-
-  }
-
-  .field-full{
-
-    grid-column:1 / -1;
-
-  }
-
-  .fields{
-
-    display:grid;
-
-    gap:12px;
-
-  }
-
-  .fields.two-col{
-
-    grid-template-columns:repeat(2, 1fr);
-
-  }
-
-  .field{
-
-    display:flex;
-
-    flex-direction:column;
-
-    gap:6px;
-
-  }
-
-  .field label{
-
-    font-size:12px;
-
-    color:var(--muted);
-
-    font-weight:800;
-
-  }
-
-  .field input{
-
-    width:100%;
-
-    min-height:52px;
-
-    padding:14px 16px;
-
-    border-radius:16px;
-
-    border:1px solid var(--border);
-
-    background:rgba(2,6,23,.55);
-
-    font-size:16px;
-
-    color:var(--text);
-
-    outline:none;
-
-  }
-
-  .field input::placeholder{
-
-    color:var(--muted);
-
-  }
-
-  .field input:focus{
-
-    border-color:var(--accent);
-
-    box-shadow:0 0 0 3px rgba(56,189,248,.15);
-
-  }
-
-  .flat-section{
-
-    margin-top:16px;
-
-    padding-top:14px;
-
-    border-top:1px solid rgba(148,163,184,.14);
-
-  }
-
-  .flat-section:first-of-type{
-
-    margin-top:0;
-
-  }
-
-  .flat-section-head,
-
-  .finance-head{
-
-    display:flex;
-
-    justify-content:space-between;
-
-    align-items:center;
-
-    gap:10px;
-
-    margin-bottom:10px;
-
-  }
-
-  .flat-section-head h4,
-
-  .finance-head h4{
-
-    margin:0;
-
-    font-size:14px;
-
-    color:var(--text);
-
-    font-weight:800;
-
-  }
-
-  .finance-total{
-
-    font-size:13px;
-
-    font-weight:900;
-
-  }
-
-  /* ===== LINHAS DINÂMICAS ===== */
-
-  .dynamic-list{
-
-    display:flex;
-
-    flex-direction:column;
-
-    gap:10px;
-
-  }
-
-  .dynamic-row{
-
-    display:grid;
-
-    grid-template-columns:1.15fr .85fr auto auto;
-
-    gap:8px;
-
-    align-items:end;
-
-    padding:10px;
-
-    border:none;
-
-    border-radius:14px;
-
-    background:rgba(2,6,23,.38);
-
-  }
-
-  .inline-actions{
-
-    margin-top:10px;
-
-  }
-
-  .btn-add.soft-btn,
-
-  .btn-add{
-
-    width:100%;
-
-    min-height:44px;
-
-    padding:10px 14px;
-
-    border:none;
-
-    border-radius:14px;
-
-    background:var(--primary-soft);
-
-    color:#34d399;
-
-    font-size:13px;
-
-    font-weight:800;
-
-    box-shadow:none;
-
-  }
-
-  /* ===== ÁREA SECUNDÁRIA ===== */
-
-  .secondary-info{
-
-    display:flex;
-
-    flex-direction:column;
-
-    gap:14px;
-
-  }
-
-  .history-card-top{
-
-    display:flex;
-
-    justify-content:space-between;
-
-    align-items:center;
-
-    gap:10px;
-
-    margin-bottom:10px;
-
-  }
-
-  .history-card-title{
-
-    font-size:14px;
-
-    font-weight:900;
-
-    color:var(--text);
-
-    margin-bottom:4px;
-
-  }
-
-  .history-card-text{
-
-    font-size:12px;
-
-    color:var(--muted);
-
-    line-height:1.45;
-
-  }
-
-  .systems-compare-bar{
-
-    display:grid;
-
-    grid-template-columns:repeat(auto-fit, minmax(180px, 1fr));
-
-    gap:10px;
-
-    margin-top:10px;
-
-  }
-
-  .danger-mini-btn{
-
-    min-height:36px;
-
-    padding:0 12px;
-
-    border-radius:12px;
-
-    background:rgba(239,68,68,.08);
-
-    color:var(--red);
-
-    border:1px solid rgba(239,68,68,.14);
-
-    font-size:11px;
-
-    font-weight:800;
-
-    white-space:nowrap;
-
-  }
-
-  /* ===== ESCONDIDO ===== */
-
-  .hidden{
-
-    display:none !important;
-
-  }
-
-  /* ===== MOBILE ===== */
-
-  @media (max-width:700px){
-
-    .summary-head.clean,
-
-    .section-flat-header,
-
-    .balance-strip{
-
-      flex-direction:column;
-
-      align-items:flex-start;
-
-    }
-
-    .balance-strip-value{
-
-      font-size:30px;
-
-    }
-
-    .top-metrics{
-
-      grid-template-columns:1fr;
-
-    }
-
-    .flat-form-grid,
-
-    .fields.two-col{
-
-      grid-template-columns:1fr;
-
-    }
-
-    .dynamic-row{
-
-      grid-template-columns:1fr;
-
-    }
-
-    .flat-total-box,
-
-    .flat-total-box-sm{
-
-      width:100%;
-
-    }
-
-  }
-
-</style>
-      <section id="reportScreen" class="report-screen hidden">
-        <div class="report-head">
-          <div>
-            <h3 id="reportTitle">Relatório</h3>
-            <small id="reportSubtitle" style="color: var(--muted);">Fluxo de caixa do período</small>
-          </div>
-          <button id="closeReportScreen" class="report-close-btn" type="button">Fechar</button>
-        </div>
-
-        <div class="report-grid">
-          <div class="report-card">
-            <div class="report-card-label">Entrou em Banco Reca</div>
-            <div class="report-card-value" id="reportBancoReca">$ 0,00</div>
+          </article>
+        </section>
+
+        <section class="secondary-info">
+          <article class="history-card slim-card" id="systemsCompareCard">
+            <div class="history-card-top">
+              <div>
+                <div class="history-card-title">Comparativo dos sistemas</div>
+                <div class="history-card-text" id="systemsCompareInfo">
+                  Último fechamento comparado com o anterior.
+                </div>
+              </div>
+            </div>
+
+            <div id="systemsCompareBar" class="systems-compare-bar"></div>
+          </article>
+
+          <article class="history-card slim-card">
+            <div class="history-card-top">
+              <div>
+                <div class="history-card-title">Histórico automático</div>
+                <div id="historyInfo" class="history-card-text">
+                  Nenhum turno anterior salvo ainda.
+                </div>
+              </div>
+
+              <button id="toggleHistoryBtn" class="danger-mini-btn" type="button">
+                Ver
+              </button>
+            </div>
+
+            <div id="historyList" class="history-list hidden"></div>
+
+            <button id="deleteHistoryBtn" class="danger-mini-btn" type="button" style="margin-top:10px; width:100%;">
+              🔴 Excluir Histórico
+            </button>
+          </article>
+
+          <article class="turno-flat turno-flat-secondary" data-turno="t1">
+            <div class="section-flat-header">
+              <div>
+                <h3>Turno anterior</h3>
+                <small>Carregado automaticamente do último fechamento</small>
+              </div>
+
+              <div style="display:flex; align-items:center; gap:10px;">
+                <div class="flat-total-box flat-total-box-sm">
+                  <div class="flat-total-label">Saldo líquido</div>
+                  <div class="flat-total-value" id="turno1InlineTotal">$ 0,00</div>
+                </div>
+
+                <button id="toggleTurno1Btn" class="danger-mini-btn" type="button">
+                  Mostrar
+                </button>
+              </div>
+            </div>
+
+            <div id="turno1Content" class="hidden">
+              <div class="flat-form-grid">
+                <div class="field field-full">
+                  <label for="t1_data_fechamento">Data do fechamento</label>
+                  <input type="date" id="t1_data_fechamento" />
+                </div>
+              </div>
+
+              <div class="flat-section">
+                <div class="flat-section-head">
+                  <h4>Entradas</h4>
+                  <div class="finance-total blue" id="t1_entradas_total">$ 0,00</div>
+                </div>
+
+                <div class="fields two-col">
+                  <div class="field"><label for="t1_banco">Banco Reca</label><input type="text" inputmode="numeric" id="t1_banco" placeholder="0,00" /></div>
+                  <div class="field"><label for="t1_pppoker">PPPoker (x400)</label><input type="text" inputmode="numeric" id="t1_pppoker" placeholder="0,00" /></div>
+                  <div class="field"><label for="t1_suprema">Suprema (x400)</label><input type="text" inputmode="numeric" id="t1_suprema" placeholder="0,00" /></div>
+                  <div class="field"><label for="t1_buffalo">Buffalo</label><input type="text" inputmode="numeric" id="t1_buffalo" placeholder="0,00" /></div>
+                  <div class="field"><label for="t1_ganamos">Ganamos</label><input type="text" inputmode="numeric" id="t1_ganamos" placeholder="0,00" /></div>
+                  <div class="field"><label for="t1_cargas">Carga de Fichas</label><input type="text" inputmode="numeric" id="t1_cargas" placeholder="0,00" /></div>
+                  <div class="field"><label for="t1_cargas_poker">Cargas F. Poker (x400)</label><input type="text" inputmode="numeric" id="t1_cargas_poker" placeholder="0,00" /></div>
+                </div>
+              </div>
+
+              <div class="flat-section">
+                <div class="flat-section-head">
+                  <h4>Saídas de caixa</h4>
+                  <div class="finance-total red" id="t1_saidas_total">- $ 0,00</div>
+                </div>
+
+                <div class="dynamic-list" id="t1_dynamic_list"></div>
+
+                <div class="inline-actions">
+                  <button class="btn-add soft-btn" type="button" data-add-row="t1">+ Adicionar saída</button>
+                </div>
+              </div>
+
+              <div class="flat-section">
+                <div class="flat-section-head">
+                  <h4>Pagos pendentes</h4>
+                  <div class="finance-total red" id="t1_pendentes_total">- $ 0,00</div>
+                </div>
+
+                <div class="dynamic-list" id="t1_pending_list"></div>
+
+                <div class="inline-actions">
+                  <button class="btn-add soft-btn" type="button" data-add-pending="t1">+ Adicionar pendente</button>
+                </div>
+              </div>
+            </div>
+          </article>
+        </section>
+
+        <section id="reportScreen" class="report-screen hidden">
+          <div class="report-head">
+            <div>
+              <h3 id="reportTitle">Relatório</h3>
+              <small id="reportSubtitle" style="color: var(--muted);">Fluxo de caixa do período</small>
+            </div>
+            <button id="closeReportScreen" class="report-close-btn" type="button">Fechar</button>
           </div>
 
-          <div class="report-card">
-            <div class="report-card-label">Saiu em Pagos Pendentes</div>
-            <div class="report-card-value red" id="reportPendentes">$ 0,00</div>
+          <div class="report-grid">
+            <div class="report-card">
+              <div class="report-card-label">Entrou em Banco Reca</div>
+              <div class="report-card-value" id="reportBancoReca">$ 0,00</div>
+            </div>
+
+            <div class="report-card">
+              <div class="report-card-label">Saiu em Pagos Pendentes</div>
+              <div class="report-card-value red" id="reportPendentes">$ 0,00</div>
+            </div>
+
+            <div class="report-card">
+              <div class="report-card-label">Saiu em Saídas de Caixa</div>
+              <div class="report-card-value red" id="reportSaidas">$ 0,00</div>
+            </div>
+
+            <div class="report-card">
+              <div class="report-card-label">Lucro real</div>
+              <div class="report-card-value green" id="reportLucro">$ 0,00</div>
+            </div>
           </div>
 
-          <div class="report-card">
-            <div class="report-card-label">Saiu em Saídas de Caixa</div>
-            <div class="report-card-value red" id="reportSaidas">$ 0,00</div>
-          </div>
-
-          <div class="report-card">
-            <div class="report-card-label">Lucro real</div>
-            <div class="report-card-value green" id="reportLucro">$ 0,00</div>
-          </div>
-        </div>
-
-        <div id="reportList" class="report-list"></div>
+          <div id="reportList" class="report-list"></div>
+        </section>
       </section>
     </main>
 
@@ -2740,32 +1944,33 @@ button{
   <div id="historyModal" class="modal hidden">
     <div class="modal-backdrop" id="historyModalBackdrop"></div>
     <div class="modal-card">
-<div class="modal-head">
-  <div>
-    <h3 id="historyModalTitle">Detalhes do fechamento</h3>
-    <small id="historyModalSub">Turno salvo</small>
-  </div>
+      <div class="modal-head">
+        <div>
+          <h3 id="historyModalTitle">Detalhes do fechamento</h3>
+          <small id="historyModalSub">Turno salvo</small>
+        </div>
 
-  <div style="display:flex; gap:8px; flex-wrap:wrap;">
-    <button id="editHistoryBtn" class="btn-add" type="button">Editar</button>
-    <button id="saveHistoryBtn" class="close-btn hidden" type="button">Salvar alterações</button>
-    <button id="closeHistoryModal" class="modal-close-btn" type="button">Fechar</button>
-  </div>
-</div>      <div class="modal-body" id="historyModalBody"></div>
-    </div>
-  </div>
-
-<!-- ADMIN (botão removido, modal mantido oculto) -->
-<div id="adminModal" class="admin-modal hidden">
-  <div class="admin-modal-backdrop" id="adminModalBackdrop"></div>
-  <div class="admin-modal-card">
-    <div class="admin-head">
-      <div>
-        <h3>Painel Administrativo</h3>
-        <small>Gerencie usuários cadastrados sem DevTools.</small>
+        <div style="display:flex; gap:8px; flex-wrap:wrap;">
+          <button id="editHistoryBtn" class="btn-add" type="button">Editar</button>
+          <button id="saveHistoryBtn" class="close-btn hidden" type="button">Salvar alterações</button>
+          <button id="closeHistoryModal" class="modal-close-btn" type="button">Fechar</button>
+        </div>
       </div>
-      <button id="adminCloseBtn" class="admin-close-btn" type="button">Fechar</button>
+
+      <div class="modal-body" id="historyModalBody"></div>
     </div>
+  </div>
+
+  <div id="adminModal" class="admin-modal hidden">
+    <div class="admin-modal-backdrop" id="adminModalBackdrop"></div>
+    <div class="admin-modal-card">
+      <div class="admin-head">
+        <div>
+          <h3>Painel Administrativo</h3>
+          <small>Gerencie usuários cadastrados sem DevTools.</small>
+        </div>
+        <button id="adminCloseBtn" class="admin-close-btn" type="button">Fechar</button>
+      </div>
 
       <div class="admin-toolbar">
         <input id="adminSearchInput" class="admin-search" type="text" placeholder="Buscar por nome ou email" />
@@ -2776,34 +1981,34 @@ button{
     </div>
   </div>
 
-<div id="pdfRangeModal" class="modal hidden">
-  <div class="modal-backdrop" id="pdfRangeBackdrop"></div>
-  <div class="modal-card" style="max-width:520px;">
-    <div class="modal-head">
-      <div>
-        <h3>Exportar relatório PDF</h3>
-        <small>Escolha o período que deseja exportar</small>
-      </div>
-      <button id="closePdfRangeModal" class="modal-close-btn" type="button">Fechar</button>
-    </div>
-
-    <div class="modal-body">
-      <div class="field">
-        <label for="pdfDateStart">Data inicial</label>
-        <input type="date" id="pdfDateStart" />
+  <div id="pdfRangeModal" class="modal hidden">
+    <div class="modal-backdrop" id="pdfRangeBackdrop"></div>
+    <div class="modal-card" style="max-width:520px;">
+      <div class="modal-head">
+        <div>
+          <h3>Exportar relatório PDF</h3>
+          <small>Escolha o período que deseja exportar</small>
+        </div>
+        <button id="closePdfRangeModal" class="modal-close-btn" type="button">Fechar</button>
       </div>
 
-      <div class="field">
-        <label for="pdfDateEnd">Data final</label>
-        <input type="date" id="pdfDateEnd" />
-      </div>
+      <div class="modal-body">
+        <div class="field">
+          <label for="pdfDateStart">Data inicial</label>
+          <input type="date" id="pdfDateStart" />
+        </div>
 
-      <button id="confirmExportPdf" class="auth-submit" type="button">
-        Gerar PDF
-      </button>
+        <div class="field">
+          <label for="pdfDateEnd">Data final</label>
+          <input type="date" id="pdfDateEnd" />
+        </div>
+
+        <button id="confirmExportPdf" class="auth-submit" type="button">
+          Gerar PDF
+        </button>
+      </div>
     </div>
   </div>
-</div>
 
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-app.js";
