@@ -2638,33 +2638,46 @@ await deleteDoc(doc(db, "users", uid));
 }
 
 async function saveHistoryItem(item){
-  const q = query(
-    collection(db, "history"),
-    orderBy("submittedAt", "desc"),
-    limit(1)
-  );
+  try {
+    const q = query(
+      collection(db, "history"),
+      orderBy("submittedAt", "desc"),
+      limit(1)
+    );
 
-const snapshot = await getDocs(q);
-const previousItem = snapshot.docs[0]?.data() || null;
+    const snapshot = await getDocs(q);
+    const previousItem = snapshot.docs[0]?.data() || null;
 
-// SALDO TOTAL DO FECHAMENTO ANTERIOR
-const previousSaldoTotal = Number(previousItem?.turno?.saldoLiquido || 0);
+    // SALDO TOTAL DO FECHAMENTO ANTERIOR
+    const previousSaldoTotal = Number(previousItem?.turno?.saldoLiquido || 0);
 
-// SALDO TOTAL DO FECHAMENTO ATUAL
-const currentSaldoTotal = Number(item?.turno?.saldoLiquido || 0);
+    // SALDO TOTAL DO FECHAMENTO ATUAL
+    const currentSaldoTotal = Number(item?.turno?.saldoLiquido || 0);
 
-// SAÍDAS DO TURNO ATUAL
-const saidasTurnoAtual = Number(item?.turno?.saidasTotal || 0);
+    // SAÍDAS DO TURNO ATUAL
+    const saidasTurnoAtual = Number(item?.turno?.saidasTotal || 0);
 
-// DIFERENÇA DE CAIXA IGUAL AO PDF
-// fórmula: (saldo atual + retiradas/saídas do turno atual) - saldo anterior
+    // DIFERENÇA DE CAIXA IGUAL AO PDF
+    // fórmula: (saldo atual + retiradas/saídas do turno atual) - saldo anterior
+    const diffCaixa = (currentSaldoTotal + saidasTurnoAtual) - previousSaldoTotal;
 
-const diffCaixa = (currentSaldoTotal + saidasTurnoAtual) - previousSaldoTotal;
+    // salva os valores no item
+    item.turnProfit = diffCaixa;
+    item.diff = diffCaixa;
+    item.bankVariation = diffCaixa;
 
-// salva os valores no item
-item.turnProfit = diffCaixa;      // lucro/diferença real do turno
-item.diff = diffCaixa;            // diferença ajustada igual ao PDF
-item.bankVariation = diffCaixa;   // mesma variação para exibição
+    // garante data de envio
+    item.submittedAt = serverTimestamp();
+
+    // SALVA NO FIRESTORE
+    await addDoc(collection(db, "history"), item);
+
+    console.log("Histórico salvo com sucesso.");
+    return true;
+  } catch (error) {
+    console.error("Erro ao salvar histórico:", error);
+    throw error;
+  }
 }
 
 function formatDateBR(dateStr){
