@@ -2754,7 +2754,7 @@ async function saveHistoryItem(item){
     const saidasTurnoAtual = Number(item?.turno?.saidasTotal || 0);
 
     // DIFERENÇA DE CAIXA IGUAL AO PDF
-    const diffCaixa = (currentSaldoTotal + saidasTurnoAtual) - previousSaldoTotal;
+    const diffCaixa = (currentSaldoTotal - saidasTurnoAtual) - previousSaldoTotal;
 
     // salva os valores no item
     item.currentSaldoTotal = currentSaldoTotal;
