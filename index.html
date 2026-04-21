@@ -3664,13 +3664,7 @@ function openHistoryModal(index){
           inputValue = inputValue * 400;
         }
 
-        return {
-          ...e,
-          value: inputValue
-        };
-      });
-
-      const newOutflows = (turno.outflows || []).map((e, i) => ({
+              const newOutflows = (turno.outflows || []).map((e, i) => ({
         name: document.querySelector(`[data-out-name="${i}"]`)?.value || "",
         value: parseMoneyInput(document.querySelector(`[data-out-value="${i}"]`)?.value || "")
       }));
@@ -3688,7 +3682,7 @@ function openHistoryModal(index){
       const retiradaLucroEditada = saidasTotal;
       const diffCaixaEditada = index === history.length - 1
         ? 0
-        : (saldoLiquido + retiradaLucroEditada) - previousSaldoTotal;
+        : saldoLiquido - previousSaldoTotal;
 
       await updateDoc(docRef, {
         fechamentoDate: document.getElementById("editDate")?.value || item.fechamentoDate || "",
@@ -3719,8 +3713,6 @@ function openHistoryModal(index){
     }
   };
 }
-
-document.getElementById("historyModal").classList.remove("hidden");
 
 // 🔥 BOTÃO EDITAR
 document.getElementById("editHistoryBtn").onclick = () => {
