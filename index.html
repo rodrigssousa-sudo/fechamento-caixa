@@ -3612,39 +3612,47 @@ function buildPremiumPdfHtml(startDate, endDate){
       </tr>
     `).join("");
 
-  const linhas = filtered.map((item) => {
-  const nome = item?.nome || item?.submittedByName || "-";
-  const turno = item?.turno || item?.shiftLabel || "-";
-  const data = item?.fechamentoDate ? formatDateBR(item.fechamentoDate) : "-";
+  const linhas = filtered.map((item, index) => {
+  const nome = item.nomeOperador || "Sem nome";
+  const turno = item.turnoTrabalhado || "-";
+  const data = formatDateBR(item.fechamentoDate || "");
+  const banco = money(getBancoRecaFromSnapshot(item.turno || {}));
+  const saidas = Number(item?.turno?.saidasTotal || 0);
 
-  const bancoValor = Number(item?.bancoReca ?? item?.t1_banco ?? 0);
-  const saidasValor = Number(item?.saidasCaixa ?? item?.saidas ?? 0);
-  const diffCaixa = bancoValor - saidasValor;
+  const previousItem = filtered[index + 1] || {};
+  const previousSaldo = Number(previousItem?.turno?.saldoLiquido || 0);
+  const currentSaldo = Number(item?.turno?.saldoLiquido || 0);
+  const diffCaixa = (currentSaldo + saidas) - previousSaldo;
 
   return `
     <tr style="background:#ffffff !important;">
       <td style="color:#0f172a !important; border-bottom:1px solid rgba(15,23,42,0.06) !important;">
-        ${escapeHtml(String(nome))}
+        ${escapeHtml(nome)}
       </td>
+
       <td style="color:#0f172a !important; border-bottom:1px solid rgba(15,23,42,0.06) !important;">
-        ${escapeHtml(String(turno))}
+        ${escapeHtml(turno)}
       </td>
+
       <td style="color:#0f172a !important; border-bottom:1px solid rgba(15,23,42,0.06) !important;">
-        ${escapeHtml(String(data))}
+        ${escapeHtml(data)}
       </td>
+
       <td style="color:#0f172a !important; border-bottom:1px solid rgba(15,23,42,0.06) !important;">
-        ${money(bancoValor)}
+        ${banco}
       </td>
+
       <td style="color:#0f172a !important; border-bottom:1px solid rgba(15,23,42,0.06) !important;">
-        ${money(saidasValor)}
+        ${money(saidas)}
       </td>
+
       <td style="
         font-weight:900;
         color:${diffCaixa > 0 ? "#16a34a" : diffCaixa < 0 ? "#dc2626" : "#0f172a"};
         border-bottom:1px solid rgba(15,23,42,0.06) !important;
         background:#ffffff !important;
       ">
-        ${diffCaixa > 0 ? "+" : diffCaixa < 0 ? "-" : ""} ${money(Math.abs(diffCaixa))}
+        ${diffCaixa > 0 ? "+ " : diffCaixa < 0 ? "- " : ""}${money(Math.abs(diffCaixa))}
       </td>
     </tr>
   `;
@@ -3663,136 +3671,167 @@ return `
 
     body{
       margin:0;
-      padding:24px;
+      font-family:Arial, Helvetica, sans-serif;
       background:#ffffff;
       color:#0f172a;
-      font-family:Inter, Arial, sans-serif;
+      padding:28px;
     }
 
     .sheet{
       max-width:1100px;
       margin:0 auto;
       background:#ffffff;
-      color:#0f172a;
+      border:1px solid rgba(15,23,42,.08);
+      box-shadow:none;
+      border-radius:20px;
+      overflow:hidden;
     }
 
     .top{
+      padding:28px 32px 18px;
       display:flex;
       justify-content:space-between;
-      align-items:flex-start;
+      align-items:center;
       gap:20px;
-      padding-bottom:18px;
-      border-bottom:1px solid rgba(15,23,42,0.08);
+      background:#ffffff;
+      border-bottom:1px solid rgba(148,163,184,.14);
     }
 
-    .brand-left,
-    .brand-right{
+    .brand-left{
       display:flex;
-      gap:14px;
-      align-items:flex-start;
-    }
-
-    .brand-right{
-      flex-direction:column;
-      gap:10px;
-      text-align:right;
+      align-items:center;
+      gap:16px;
     }
 
     .logo-box{
-      width:48px;
-      height:48px;
+      width:46px;
+      height:46px;
       border-radius:14px;
       display:flex;
       align-items:center;
       justify-content:center;
-      background:#ffffff;
-      color:#1d4ed8;
-      border:1px solid rgba(15,23,42,0.08);
+      font-size:16px;
       font-weight:900;
+      letter-spacing:.4px;
+      color:#1d4ed8;
+      background:#ffffff;
+      border:1px solid rgba(15,23,42,0.08);
+      box-shadow:none;
     }
 
     .brand-text h1{
       margin:0;
+      font-size:26px;
+      letter-spacing:.5px;
       color:#0f172a;
-      font-size:24px;
     }
 
     .brand-text p{
-      margin:4px 0 0 0;
-      color:#475569;
+      margin:4px 0 0;
+      font-size:13px;
+      color:#64748b;
+    }
+
+    .brand-right{
+      display:flex;
+      gap:24px;
+      text-align:right;
+      flex-wrap:wrap;
+      color:#0f172a;
+    }
+
+    .period-block,
+    .generated-block{
+      font-size:12px;
+      color:#0f172a;
     }
 
     .period-title{
+      font-size:10px;
+      letter-spacing:.1em;
+      font-weight:700;
       color:#1d4ed8;
-      font-weight:800;
       margin-bottom:4px;
+      text-transform:uppercase;
     }
 
     .divider-line{
       height:1px;
-      background:rgba(15,23,42,0.08);
-      margin:18px 0;
+      background:rgba(15,23,42,.08);
+      margin:0 32px 12px;
+      border-radius:999px;
     }
 
     .summary{
       display:grid;
       grid-template-columns:repeat(3, 1fr);
       gap:14px;
-      margin-bottom:24px;
+      padding:22px 32px;
+      border-bottom:1px solid rgba(148,163,184,.12);
     }
 
     .card{
+      border:1px solid rgba(148,163,184,.14);
       background:#ffffff;
-      border:1px solid rgba(15,23,42,0.08);
-      border-radius:16px;
       padding:16px;
+      border-radius:16px;
+      box-shadow:none;
     }
 
     .label{
-      color:#1d4ed8;
-      font-size:12px;
-      font-weight:700;
+      font-size:11px;
       text-transform:uppercase;
-      letter-spacing:.04em;
+      letter-spacing:.08em;
+      color:#1d4ed8;
+      margin-bottom:6px;
     }
 
     .value{
-      margin-top:8px;
+      font-size:26px;
+      font-weight:900;
+      letter-spacing:-0.02em;
       color:#0f172a;
-      font-size:22px;
-      font-weight:800;
     }
 
     .section-title{
+      padding:24px 32px 10px;
+      font-size:15px;
+      font-weight:900;
       color:#0f172a;
-      font-size:18px;
-      font-weight:800;
-      margin:22px 0 14px;
+      letter-spacing:.02em;
     }
 
     .table-wrap{
+      padding:8px 32px 32px;
       background:#ffffff;
     }
 
     table{
       width:100%;
       border-collapse:collapse;
+      font-size:13px;
       background:#ffffff;
     }
 
     thead th{
+      text-align:left;
       background:#eff6ff;
       color:#1d4ed8;
-      padding:14px 12px;
-      text-align:left;
-      border-bottom:1px solid rgba(15,23,42,0.08);
+      padding:13px 10px;
+      font-size:11px;
+      letter-spacing:.05em;
+      text-transform:uppercase;
     }
 
     tbody td{
-      padding:14px 12px;
+      padding:11px 10px;
+      border-bottom:1px solid rgba(148,163,184,.14);
       color:#0f172a;
-      border-bottom:1px solid rgba(15,23,42,0.06);
       background:#ffffff;
+    }
+
+    tbody tr:nth-child(even){
+      background:#f8fafc;
     }
 
     tbody tr:nth-child(even) td{
@@ -3800,22 +3839,31 @@ return `
     }
 
     .empty{
-      padding:18px;
-      border:1px dashed rgba(15,23,42,0.12);
+      padding:40px 20px;
+      text-align:center;
+      color:#64748b;
+      border:1px dashed #cbd5e1;
+      background:#f8fafc;
       border-radius:14px;
-      color:#475569;
-      background:#ffffff;
+    }
+
+    .footer{
+      padding:16px 32px 26px;
+      color:#64748b;
+      font-size:12px;
+      border-top:1px solid #e2e8f0;
     }
 
     @media print{
       body{
-        background:#ffffff;
+        background:#fff;
         padding:0;
       }
 
       .sheet{
         border:none;
         box-shadow:none;
+        border-radius:0;
       }
     }
   </style>
@@ -3893,6 +3941,35 @@ return `
             </div>
           `
       }
+    </div>
+
+    ${
+      Object.keys(rankingOperadores).length
+        ? `
+          <div class="section-title">Ranking por operador</div>
+          <div class="table-wrap" style="padding-top:8px;">
+            <table>
+              <thead>
+                <tr>
+                  <th>#</th>
+                  <th>Operador</th>
+                  <th>Fechamentos</th>
+                  <th>Sobra</th>
+                  <th>Falta</th>
+                  <th>Erro Total</th>
+                </tr>
+              </thead>
+              <tbody>
+                ${rankingHtml}
+              </tbody>
+            </table>
+          </div>
+        `
+        : ""
+    }
+
+    <div class="footer">
+      Documento interno • Bank King BRS
     </div>
   </div>
 </body>
