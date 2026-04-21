@@ -66,7 +66,103 @@ input{
   }
 
   /* 👇 COLE AQUI (no final do CSS) */
-  
+
+/* =========================
+   HISTÓRICO PREMIUM
+========================= */
+
+.history-card{
+  position:relative;
+  background:#ffffff !important;
+  border-radius:22px !important;
+  padding:18px !important;
+  margin-bottom:14px !important;
+  border:1px solid rgba(15,23,42,0.06) !important;
+  box-shadow:
+    0 10px 24px rgba(15,23,42,0.06) !important,
+    inset 0 1px 0 rgba(255,255,255,0.9) !important;
+  overflow:hidden;
+}
+
+.history-card-accent{
+  position:absolute;
+  left:0;
+  top:0;
+  bottom:0;
+  width:6px;
+  background:#cbd5e1;
+}
+
+.history-card.is-positive .history-card-accent{
+  background:#16a34a;
+}
+
+.history-card.is-negative .history-card-accent{
+  background:#dc2626;
+}
+
+.history-card.is-neutral .history-card-accent{
+  background:#94a3b8;
+}
+
+.history-title{
+  font-weight:800 !important;
+  font-size:16px !important;
+  line-height:1.3;
+  margin-bottom:14px !important;
+  color:#0f172a !important;
+  padding-left:6px;
+}
+
+.history-grid{
+  display:grid !important;
+  grid-template-columns:repeat(3, 1fr);
+  gap:12px !important;
+}
+
+.history-box{
+  padding:14px !important;
+  border-radius:16px !important;
+  background:#f8fafc !important;
+  border:1px solid rgba(15,23,42,0.05) !important;
+}
+
+.history-label{
+  font-size:12px !important;
+  color:#64748b !important;
+  margin-bottom:6px !important;
+  line-height:1.2;
+}
+
+.history-value{
+  font-size:18px !important;
+  font-weight:800 !important;
+  color:#0f172a !important;
+  line-height:1.2;
+}
+
+.history-value.positive{
+  color:#16a34a !important;
+}
+
+.history-value.negative{
+  color:#dc2626 !important;
+}
+
+@media (max-width: 768px){
+  .history-grid{
+    grid-template-columns:1fr !important;
+  }
+
+  .history-title{
+    font-size:15px !important;
+  }
+
+  .history-value{
+    font-size:17px !important;
+  }
+}
+    
   /* =========================
    PDF LIGHT
 ========================= */
@@ -3284,7 +3380,9 @@ list.innerHTML = history.slice(0, 30).map((item, index) => {
   const linhaTopo = `${nome} • Turno ${turno} • ${data}`;
 
 return `
-  <div class="history-card" data-history-index="${index}">
+  <div class="history-card ${diferencaCaixa > 0 ? "is-positive" : diferencaCaixa < 0 ? "is-negative" : "is-neutral"}" data-history-index="${index}">
+    <div class="history-card-accent"></div>
+
     <div class="history-title">${linhaTopo}</div>
 
     <div class="history-grid">
