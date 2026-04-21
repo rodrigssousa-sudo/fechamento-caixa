@@ -2745,25 +2745,19 @@ async function saveHistoryItem(item){
     const previousItem = snapshot.docs[0]?.data() || null;
 
     const previousSaldo = Number(previousItem?.turno?.saldoLiquido || 0);
-    const previousSaidas = Number(previousItem?.turno?.saidasTotal || 0);
-
     const currentSaldo = Number(item?.turno?.saldoLiquido || 0);
     const currentSaidas = Number(item?.turno?.saidasTotal || 0);
 
-    // DIFERENÇA DE CAIXA CORRETA
-    const diffCaixa = (currentSaldo + currentSaidas) - (previousSaldo + previousSaidas);
+    // DIFERENÇA REAL
+    const diffCaixa = currentSaldo - previousSaldo;
 
-    // salva os valores no item
     item.currentSaldoTotal = currentSaldo;
     item.retiradaLucro = currentSaidas;
     item.turnProfit = currentSaidas;
     item.diff = diffCaixa;
     item.bankVariation = diffCaixa;
-
-    // data
     item.submittedAt = serverTimestamp();
 
-    // salva
     await addDoc(collection(db, "history"), item);
 
     console.log("Histórico salvo com sucesso.");
