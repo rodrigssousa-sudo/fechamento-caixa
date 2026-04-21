@@ -2308,6 +2308,117 @@ input{
     const forgotPasswordForm = document.getElementById("forgotPasswordForm");
     const rememberLoginCheckbox = document.getElementById("rememberLogin");
 
+/* ================= HISTÓRICO GLOBAL ================= */
+
+let history = [];
+let unsubscribeHistory = null;
+
+/* ================= INICIAR LISTENER ================= */
+
+function startHistoryRealtimeListener() {
+  if (unsubscribeHistory) unsubscribeHistory();
+
+  const historyRef = collection(db, "history");
+  const historyQuery = query(historyRef, orderBy("createdAt", "desc"));
+
+  unsubscribeHistory = onSnapshot(
+    historyQuery,
+    (snapshot) => {
+      history = snapshot.docs.map(docSnap => ({
+        id: docSnap.id,
+        ...docSnap.data()
+      }));
+
+      renderAllHistoryViews();
+    },
+    (error) => {
+      console.error("Erro no listener do histórico:", error);
+    }
+  );
+}
+
+/* ================= RENDER GLOBAL ================= */
+
+function renderAllHistoryViews() {
+  // 👉 LISTA PRINCIPAL
+  if (typeof renderHistory === "function") {
+    renderHistory();
+  }
+
+  // 👉 VISIBILIDADE
+  if (typeof updateHistoryVisibility === "function") {
+    updateHistoryVisibility();
+  }
+
+  // 👉 CARDS / COMPARAÇÃO
+  if (typeof updateComparisonCards === "function") {
+    updateComparisonCards();
+  }
+
+  // 👉 ÚLTIMO REGISTRO
+  if (typeof renderLastHistoryCard === "function") {
+    renderLastHistoryCard();
+  }
+
+  // 👉 DASHBOARD
+  if (typeof updateDashboardFromHistory === "function") {
+    updateDashboardFromHistory();
+  }
+}
+
+/* ================= SALVAR EDIÇÃO ================= */
+
+async function saveHistoryEdit(historyId) {
+  try {
+    const updatedData = {
+      fechamentoDate: document.getElementById("editFechamentoDate")?.value || "",
+      shiftLabel: document.getElementById("editShiftLabel")?.value || "",
+      submittedByName: document.getElementById("editSubmittedByName")?.value || "",
+
+      t1_banco: Number(document.getElementById("edit_t1_banco")?.value || 0),
+      t1_pppoker: Number(document.getElementById("edit_t1_pppoker")?.value || 0),
+      t1_suprema: Number(document.getElementById("edit_t1_suprema")?.value || 0),
+      t1_buffalo: Number(document.getElementById("edit_t1_buffalo")?.value || 0),
+      t1_ganamos: Number(document.getElementById("edit_t1_ganamos")?.value || 0),
+
+      t2_banco: Number(document.getElementById("edit_t2_banco")?.value || 0),
+      t2_pppoker: Number(document.getElementById("edit_t2_pppoker")?.value || 0),
+      t2_suprema: Number(document.getElementById("edit_t2_suprema")?.value || 0),
+      t2_buffalo: Number(document.getElementById("edit_t2_buffalo")?.value || 0),
+      t2_ganamos: Number(document.getElementById("edit_t2_ganamos")?.value || 0),
+
+      updatedAt: serverTimestamp()
+    };
+
+    await updateDoc(doc(db, "history", historyId), updatedData);
+
+    closeEditHistoryModal();
+
+    alert("Histórico atualizado com sucesso.");
+  } catch (error) {
+    console.error("Erro ao salvar edição:", error);
+    alert("Erro ao salvar edição do histórico.");
+  }
+}
+
+/* ================= EXEMPLO DASHBOARD ================= */
+
+function updateDashboardFromHistory() {
+  const latest = history[0];
+  if (!latest) return;
+
+  const elBanco = document.getElementById("lastBankValue");
+  const elUser = document.getElementById("lastUserName");
+
+  if (elBanco) {
+    elBanco.textContent = formatCurrency(latest.t1_banco || 0);
+  }
+
+  if (elUser) {
+    elUser.textContent = latest.submittedByName || "Sistema";
+  }
+}
+
     let balanceVisible = true;
     let sessionWatcher = null;
     let historyUnsubscribe = null;
