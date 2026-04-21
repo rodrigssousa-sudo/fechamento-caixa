@@ -409,20 +409,22 @@ input{
   position: relative; /* garante que o ::after funcione */
 }
 
-    .logo-bk.premium-logo::after{
-      content:"";
-      position:absolute;
-      inset:0;
-      border-radius:14px;
-      background:linear-gradient(
-        120deg,
-        transparent 30%,
-        rgba(255,255,255,.25),
-        transparent 70%
-      );
-      opacity:.25;
-      pointer-events:none;
-    }
+   .logo-bk.premium-logo::after{
+  content:"";
+  position:absolute;
+  inset:0;
+  border-radius:14px;
+
+  background:linear-gradient(
+    120deg,
+    transparent 30%,
+    rgba(255,255,255,.15), /* ↓ menos forte */
+    transparent 70%
+  );
+
+  opacity:.4; /* ↑ um pouco mais visível */
+  pointer-events:none;
+}
 
     .logo-bk.premium-logo span:first-child{
       opacity:.85;
