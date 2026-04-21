@@ -318,107 +318,62 @@ input{
       padding:16px 16px calc(100px + var(--safe-bottom));
     }
 
-/* ================= HEADER PREMIUM ================= */
-
-.header{
-  position: sticky;
-  top: 0;
-  z-index: 50;
-
-  margin: -16px -16px 18px;
-  padding: 18px 16px 14px;
-
-  background: rgba(255,255,255,0.65);
-  backdrop-filter: blur(22px);
-  -webkit-backdrop-filter: blur(22px);
-
-  border-bottom: 1px solid rgba(15,23,42,0.06);
-
-  box-shadow:
-    0 10px 30px rgba(15,23,42,0.06),
-    inset 0 -1px 0 rgba(255,255,255,0.6);
+   .header{
+  position:sticky;
+  top:0;
+  z-index:40;
+  margin:-16px -16px 16px;
+  padding:16px 16px 14px;
+  background:rgba(255,255,255,.78);
+  backdrop-filter:blur(18px);
+  -webkit-backdrop-filter:blur(18px);
+  border-bottom:1px solid var(--border);
+  box-shadow:0 6px 20px rgba(15,23,42,.04);
 }
+    .title-row,
+    .brand,
+    .summary-head,
+    .bank-topline,
+    .top-user-bar,
+    .history-item-top,
+    .report-head,
+    .turno-head,
+    .finance-head,
+    .modal-head,
+    .admin-head{
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      gap:10px;
+    }
 
-/* ================= LAYOUT HEADER ================= */
+    .brand{
+      justify-content:flex-start;
+      gap:12px;
+    }
 
-.title-row,
-.brand,
-.summary-head,
-.bank-topline,
-.top-user-bar,
-.history-item-top,
-.report-head,
-.turno-head,
-.finance-head,
-.modal-head,
-.admin-head{
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 10px;
-}
+    .menu-toggle-btn{
+      width:44px;
+      height:44px;
+      border-radius:14px;
+      border:1px solid var(--border);
+      background:rgba(255,255,255,.06);
+      display:inline-flex;
+      flex-direction:column;
+      align-items:center;
+      justify-content:center;
+      gap:4px;
+      padding:0;
+      box-shadow:0 8px 20px rgba(0,0,0,.12);
+    }
 
-/* ================= BRAND ================= */
-
-.brand{
-  justify-content: flex-start;
-  gap: 14px;
-}
-
-.brand-name{
-  font-size: 20px;
-  font-weight: 800;
-  color: #0f172a;
-  letter-spacing: -0.03em;
-}
-
-/* ================= MENU BUTTON ================= */
-
-.menu-toggle-btn{
-  width: 44px;
-  height: 44px;
-  border-radius: 14px;
-
-  border: 1px solid rgba(15,23,42,0.06);
-
-  background: rgba(255,255,255,0.7);
-
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
-
-  display: inline-flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 4px;
-
-  box-shadow:
-    0 6px 18px rgba(15,23,42,0.08),
-    inset 0 1px 0 rgba(255,255,255,0.8);
-
-  transition: all 0.2s ease;
-}
-
-.menu-toggle-btn:active{
-  transform: scale(0.95);
-}
-
-/* ================= MENU ICON ================= */
-
-.menu-toggle-btn span{
-  display: block;
-  width: 18px;
-  height: 2px;
-  border-radius: 999px;
-
-  background: #334155;
-}
-
-/* ================= EXTRA SMOOTH ================= */
-
-.header *{
-  -webkit-font-smoothing: antialiased;
-}
+    .menu-toggle-btn span{
+      display:block;
+      width:18px;
+      height:2px;
+      border-radius:999px;
+      background:#e2e8f0;
+    }
 
     /* =========================
        LOGO PREMIUM
@@ -444,65 +399,24 @@ input{
   overflow:hidden;
 }
 
-.logo-bk.premium-logo{
-  position: relative;
-  overflow: hidden;
-  border-radius: 16px;
+    .logo-bk.premium-logo::after{
+      content:"";
+      position:absolute;
+      inset:0;
+      border-radius:14px;
+      background:linear-gradient(
+        120deg,
+        transparent 30%,
+        rgba(255,255,255,.25),
+        transparent 70%
+      );
+      opacity:.25;
+      pointer-events:none;
+    }
 
-  background: linear-gradient(
-    145deg,
-    rgba(219,234,254,0.95) 0%,
-    rgba(191,219,254,0.88) 45%,
-    rgba(147,197,253,0.78) 100%
-  ) !important;
-
-  border: 1px solid rgba(255,255,255,0.55);
-
-  box-shadow:
-    0 10px 30px rgba(37,99,235,0.14),
-    inset 0 1px 0 rgba(255,255,255,0.78),
-    inset 0 -10px 20px rgba(59,130,246,0.10);
-
-  backdrop-filter: blur(14px);
-  -webkit-backdrop-filter: blur(14px);
-}
-
-.logo-bk.premium-logo::before{
-  content:"";
-  position:absolute;
-  inset:0;
-  border-radius:16px;
-  background: radial-gradient(
-    circle at top left,
-    rgba(255,255,255,0.82) 0%,
-    rgba(255,255,255,0.18) 38%,
-    transparent 68%
-  );
-  pointer-events:none;
-}
-
-.logo-bk.premium-logo::after{
-  content:"";
-  position:absolute;
-  inset:0;
-  border-radius:16px;
-  background: linear-gradient(
-    120deg,
-    transparent 20%,
-    rgba(255,255,255,0.24) 45%,
-    transparent 75%
-  );
-  opacity:.55;
-  pointer-events:none;
-}
-
-.logo-bk.premium-logo span{
-  position: relative;
-  z-index: 2;
-  color: #0f172a !important;
-  font-weight: 800;
-  letter-spacing: -0.02em;
-}
+    .logo-bk.premium-logo span:first-child{
+      opacity:.85;
+    }
 
    .brand-title{
   margin:0;
@@ -1237,100 +1151,33 @@ input{
       color:var(--muted);
     }
 
-/* ================= BARRA INFERIOR PREMIUM ================= */
+    .bottom-bar{
+      position:fixed;
+      left:0;
+      right:0;
+      bottom:0;
+      z-index:50;
+      padding:10px 12px calc(10px + var(--safe-bottom));
+      background:linear-gradient(180deg, rgba(2,6,23,0), rgba(2,6,23,.82) 18%, rgba(2,6,23,.94) 100%);
+      backdrop-filter:blur(16px);
+    }
 
-.bottom-bar{
-  position: fixed;
-  left: 10px;
-  right: 10px;
-  bottom: 0;
-  z-index: 50;
+    .bottom-bar-inner{
+      width:100%;
+      max-width:1180px;
+      margin:0 auto;
+      display:grid;
+      grid-template-columns:repeat(4, 1fr);
+      gap:8px;
+    }
 
-  padding: 10px 12px calc(10px + env(safe-area-inset-bottom));
-
-  background: rgba(255,255,255,0.65);
-  backdrop-filter: blur(22px);
-  -webkit-backdrop-filter: blur(22px);
-
-  border-top: 1px solid rgba(15,23,42,0.06);
-  border-radius: 22px 22px 0 0;
-
-  box-shadow:
-    0 -10px 30px rgba(15,23,42,0.08),
-    inset 0 1px 0 rgba(255,255,255,0.6);
-}
-
-/* ================= CONTAINER ================= */
-
-.bottom-bar-inner{
-  width: 100%;
-  max-width: 1180px;
-  margin: 0 auto;
-
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 10px;
-}
-
-/* ================= BOTÕES ================= */
-
-.bottom-bar button{
-  min-height: 48px;
-  padding: 10px 8px;
-
-  font-size: 12px;
-  font-weight: 700;
-  letter-spacing: -0.02em;
-
-  border-radius: 16px;
-  border: 1px solid rgba(15,23,42,0.05);
-
-  background: rgba(255,255,255,0.75);
-  color: #0f172a !important;
-
-  box-shadow:
-    0 6px 16px rgba(15,23,42,0.08),
-    inset 0 1px 0 rgba(255,255,255,0.8);
-
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
-
-  transition: all 0.18s ease;
-}
-
-/* ================= CLIQUE ================= */
-
-.bottom-bar button:active{
-  transform: scale(0.96);
-  box-shadow:
-    0 4px 10px rgba(15,23,42,0.10),
-    inset 0 1px 0 rgba(255,255,255,0.6);
-}
-
-/* ================= BOTÃO ATIVO (se tiver) ================= */
-
-.bottom-bar button.active{
-  background: linear-gradient(
-    135deg,
-    #3b82f6,
-    #1d4ed8
-  ) !important;
-
-  color: #ffffff !important;
-  border: 1px solid rgba(37,99,235,0.25);
-
-  box-shadow:
-    0 8px 20px rgba(37,99,235,0.25),
-    inset 0 1px 0 rgba(255,255,255,0.2);
-}
-
-/* ================= GARANTIR TEXTO/ÍCONE ================= */
-
-.bottom-bar button *,
-.bottom-bar button span,
-.bottom-bar button i{
-  color: inherit !important;
-}
+    .bottom-bar button{
+      min-height:44px;
+      padding:10px 8px;
+      font-size:11px;
+      border-radius:14px;
+      letter-spacing:-.01em;
+    }
 
    .main-btn{
   background:linear-gradient(135deg, var(--primary), var(--primary-strong));
@@ -2223,194 +2070,65 @@ input{
     </div>
   </div>
 
-<script type="module">
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-app.js";
-  import {
-    getFirestore,
-    collection,
-    addDoc,
-    getDocs,
-    deleteDoc,
-    doc,
-    setDoc,
-    updateDoc,
-    onSnapshot,
-    query,
-    orderBy,
-    limit,
-    serverTimestamp
-  } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-firestore.js";
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-app.js";
+    import {
+  getFirestore,
+  collection,
+  addDoc,
+  getDocs,
+  deleteDoc,
+  doc,
+  setDoc,
+  updateDoc,
+  onSnapshot,
+  query,
+  orderBy,
+  limit,
+  serverTimestamp
+} from "https://www.gstatic.com/firebasejs/12.0.0/firebase-firestore.js";
 
-  import {
-    getAuth,
-    createUserWithEmailAndPassword,
-    signInWithEmailAndPassword,
-    signOut,
-    onAuthStateChanged,
-    sendPasswordResetEmail
-  } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-auth.js";
+    import {
+      getAuth,
+      createUserWithEmailAndPassword,
+      signInWithEmailAndPassword,
+      signOut,
+      onAuthStateChanged,
+      sendPasswordResetEmail
+    } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-auth.js";
 
-  const firebaseConfig = {
-    apiKey: "AIzaSyAuyfJNu2vwvVyH5gRsvg82m98teFCmPXw",
-    authDomain: "bank-king-c53cf.firebaseapp.com",
-    projectId: "bank-king-c53cf",
-    storageBucket: "bank-king-c53cf.firebasestorage.app",
-    messagingSenderId: "108865328748",
-    appId: "1:108865328748:web:65dbbcf146a67f95512a49",
-    measurementId: "G-S43L7WM4LH"
-  };
+    const firebaseConfig = {
+      apiKey: "AIzaSyAuyfJNu2vwvVyH5gRsvg82m98teFCmPXw",
+      authDomain: "bank-king-c53cf.firebaseapp.com",
+      projectId: "bank-king-c53cf",
+      storageBucket: "bank-king-c53cf.firebasestorage.app",
+      messagingSenderId: "108865328748",
+      appId: "1:108865328748:web:65dbbcf146a67f95512a49",
+      measurementId: "G-S43L7WM4LH"
+    };
 
-  const app = initializeApp(firebaseConfig);
-  const db = getFirestore(app);
-  const auth = getAuth(app);
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+    const auth = getAuth(app);
 
-  const PDF_CODE = "9507";
-  const REPORT_CODE = "9507";
-  const DELETE_HISTORY_CODE = "9507";
-  const ADMIN_CODE = "9507";
+    const PDF_CODE = "9507";
+    const REPORT_CODE = "9507";
+    const DELETE_HISTORY_CODE = "9507";
+    const ADMIN_CODE = "9507";
 
-  const ACTIVE_USER_STORAGE_KEY = "bank-king-active-user-v1";
-  const REMEMBER_LOGIN_STORAGE_KEY = "bank-king-remember-login-v1";
-  const REMEMBERED_EMAIL_STORAGE_KEY = "bank-king-remembered-email-v1";
-  const SESSION_LAST_ACTIVITY_KEY = "bank-king-session-last-activity-v1";
+    const ACTIVE_USER_STORAGE_KEY = "bank-king-active-user-v1";
+    const REMEMBER_LOGIN_STORAGE_KEY = "bank-king-remember-login-v1";
+    const REMEMBERED_EMAIL_STORAGE_KEY = "bank-king-remembered-email-v1";
+    const SESSION_LAST_ACTIVITY_KEY = "bank-king-session-last-activity-v1";
 
-  const SESSION_TIMEOUT_MS = 30 * 60 * 1000;
+    const SESSION_TIMEOUT_MS = 30 * 60 * 1000;
 
-  const authScreen = document.getElementById("authScreen");
-  const appShell = document.getElementById("appShell");
-  const loginForm = document.getElementById("loginForm");
-  const registerForm = document.getElementById("registerForm");
-  const forgotPasswordForm = document.getElementById("forgotPasswordForm");
-  const rememberLoginCheckbox = document.getElementById("rememberLogin");
-
-  /* ================= HISTÓRICO GLOBAL ================= */
-
-  let history = [];
-  let unsubscribeHistory = null;
-
-  /* ================= INICIAR LISTENER ================= */
-
-  function startHistoryRealtimeListener() {
-    try {
-      if (unsubscribeHistory) {
-        unsubscribeHistory();
-        unsubscribeHistory = null;
-      }
-
-      const historyRef = collection(db, "history");
-      const historyQuery = query(historyRef, orderBy("createdAt", "desc"));
-
-      unsubscribeHistory = onSnapshot(
-        historyQuery,
-        (snapshot) => {
-          history = snapshot.docs.map((docSnap) => ({
-            id: docSnap.id,
-            ...docSnap.data()
-          }));
-
-          renderAllHistoryViews();
-        },
-        (error) => {
-          console.error("Erro no listener do histórico:", error);
-        }
-      );
-    } catch (error) {
-      console.error("Erro ao iniciar listener do histórico:", error);
-    }
-  }
-
-  /* ================= RENDER GLOBAL ================= */
-
-  function renderAllHistoryViews() {
-    try {
-      if (typeof renderHistory === "function") {
-        renderHistory();
-      }
-
-      if (typeof updateHistoryVisibility === "function") {
-        updateHistoryVisibility();
-      }
-
-      if (typeof updateComparisonCards === "function") {
-        updateComparisonCards();
-      }
-
-      if (typeof renderLastHistoryCard === "function") {
-        renderLastHistoryCard();
-      }
-
-      if (typeof updateDashboardFromHistory === "function") {
-        updateDashboardFromHistory();
-      }
-    } catch (error) {
-      console.error("Erro ao renderizar histórico:", error);
-    }
-  }
-
-  /* ================= SALVAR EDIÇÃO ================= */
-
-  async function saveHistoryEdit(historyId) {
-    try {
-      if (!historyId) {
-        alert("ID do histórico não encontrado.");
-        return;
-      }
-
-      const updatedData = {
-        fechamentoDate: document.getElementById("editFechamentoDate")?.value || "",
-        shiftLabel: document.getElementById("editShiftLabel")?.value || "",
-        submittedByName: document.getElementById("editSubmittedByName")?.value || "",
-
-        t1_banco: Number(document.getElementById("edit_t1_banco")?.value || 0),
-        t1_pppoker: Number(document.getElementById("edit_t1_pppoker")?.value || 0),
-        t1_suprema: Number(document.getElementById("edit_t1_suprema")?.value || 0),
-        t1_buffalo: Number(document.getElementById("edit_t1_buffalo")?.value || 0),
-        t1_ganamos: Number(document.getElementById("edit_t1_ganamos")?.value || 0),
-        t1_cargas: Number(document.getElementById("edit_t1_cargas")?.value || 0),
-        t1_cargas_poker: Number(document.getElementById("edit_t1_cargas_poker")?.value || 0),
-
-        t2_banco: Number(document.getElementById("edit_t2_banco")?.value || 0),
-        t2_pppoker: Number(document.getElementById("edit_t2_pppoker")?.value || 0),
-        t2_suprema: Number(document.getElementById("edit_t2_suprema")?.value || 0),
-        t2_buffalo: Number(document.getElementById("edit_t2_buffalo")?.value || 0),
-        t2_ganamos: Number(document.getElementById("edit_t2_ganamos")?.value || 0),
-        t2_cargas: Number(document.getElementById("edit_t2_cargas")?.value || 0),
-        t2_cargas_poker: Number(document.getElementById("edit_t2_cargas_poker")?.value || 0),
-
-        updatedAt: serverTimestamp()
-      };
-
-      await updateDoc(doc(db, "history", historyId), updatedData);
-
-      if (typeof closeEditHistoryModal === "function") {
-        closeEditHistoryModal();
-      }
-
-      alert("Histórico atualizado com sucesso.");
-    } catch (error) {
-      console.error("Erro ao salvar edição:", error);
-      alert("Erro ao salvar edição do histórico.");
-    }
-  }
-</script>
-
-/* ================= EXEMPLO DASHBOARD ================= */
-
-function updateDashboardFromHistory() {
-  const latest = history[0];
-  if (!latest) return;
-
-  const elBanco = document.getElementById("lastBankValue");
-  const elUser = document.getElementById("lastUserName");
-
-  if (elBanco) {
-    elBanco.textContent = formatCurrency(latest.t1_banco || 0);
-  }
-
-  if (elUser) {
-    elUser.textContent = latest.submittedByName || "Sistema";
-  }
-}
+    const authScreen = document.getElementById("authScreen");
+    const appShell = document.getElementById("appShell");
+    const loginForm = document.getElementById("loginForm");
+    const registerForm = document.getElementById("registerForm");
+    const forgotPasswordForm = document.getElementById("forgotPasswordForm");
+    const rememberLoginCheckbox = document.getElementById("rememberLogin");
 
     let balanceVisible = true;
     let sessionWatcher = null;
