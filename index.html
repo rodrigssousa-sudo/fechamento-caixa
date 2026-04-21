@@ -3221,78 +3221,90 @@ function updateTurno1Visibility(){
     }
 
     function createDynamicRow(turno, name = "", digits = ""){
-      const row = document.createElement("div");
-      row.className = "dynamic-row outflow";
-      row.innerHTML = `
-        <div class="field">
-          <label>Saída</label>
-          <input type="text" placeholder="Ex.: salário, fornecedor, marketing" value="${escapeHtml(name)}" />
-        </div>
-        <div class="field">
-          <label>Valor</label>
-       <input type="text" inputmode="numeric" pattern="[0-9]*" id="t2_banco" placeholder="0,00" />
-        </div>
-        <div class="signed-preview red">- $ 0,00</div>
-        <button class="remove-btn" type="button">Remover</button>
-      `;
-      document.getElementById(`${turno}_dynamic_list`).appendChild(row);
-      const valueInput = row.querySelector('[data-dynamic-value="true"]');
-      if(digits) setDigitsToInput(valueInput, digits);
-      bindDynamicRow(row, false);
-    }
+  const row = document.createElement("div");
+  row.className = "dynamic-row outflow";
+  row.innerHTML = `
+    <div class="field">
+      <label>Saída</label>
+      <input type="text" placeholder="Ex.: salário, fornecedor, marketing" value="${escapeHtml(name)}" />
+    </div>
+    <div class="field">
+      <label>Valor</label>
+      <input type="text" inputmode="numeric" pattern="[0-9]*" data-dynamic-value="true" placeholder="0,00" />
+    </div>
+    <div class="signed-preview red">- $ 0,00</div>
+    <button class="remove-btn" type="button">Remover</button>
+  `;
+  document.getElementById(`${turno}_dynamic_list`).appendChild(row);
 
-    function createPendingRow(turno, name = "", digits = ""){
-      const row = document.createElement("div");
-      row.className = "dynamic-row pending";
-      row.innerHTML = `
-        <div class="field">
-          <label>Nome do cliente</label>
-          <input type="text" placeholder="Ex.: João, Carlos, Maria" value="${escapeHtml(name)}" />
-        </div>
-        <div class="field">
-          <label>Valor</label>
-          <input type="text" inputmode="numeric" pattern="[0-9]*" data-dynamic-value="true" placeholder="0,00" />
-        </div>
-        <div class="signed-preview amber">- $ 0,00</div>
-        <button class="remove-btn" type="button">Remover</button>
-      `;
-      document.getElementById(`${turno}_pending_list`).appendChild(row);
-      const valueInput = row.querySelector('[data-pending-value="true"]');
-      if(digits) setDigitsToInput(valueInput, digits);
-      bindDynamicRow(row, true);
-    }
+  const valueInput = row.querySelector('[data-dynamic-value="true"]');
+  if (digits) setDigitsToInput(valueInput, digits);
 
-    function clearTurn(turno){
-      const f = fieldsByTurn[turno];
-      Object.values(f).forEach((id) => {
-        const input = document.getElementById(id);
-        if(!input) return;
-        if(id === f.dataFechamento){
-          input.value = getTodayDateInput();
-        }else{
-          input.value = "";
-          input.dataset.raw = "";
-        }
-      });
+  bindDynamicRow(row, false);
+}
 
-      document.getElementById(`${turno}_dynamic_list`).innerHTML = "";
-      document.getElementById(`${turno}_pending_list`).innerHTML = "";
+function createPendingRow(turno, name = "", digits = ""){
+  const row = document.createElement("div");
+  row.className = "dynamic-row pending";
+  row.innerHTML = `
+    <div class="field">
+      <label>Nome do cliente</label>
+      <input type="text" placeholder="Ex.: João, Carlos, Maria" value="${escapeHtml(name)}" />
+    </div>
+    <div class="field">
+      <label>Valor</label>
+      <input type="text" inputmode="numeric" pattern="[0-9]*" data-pending-value="true" placeholder="0,00" />
+    </div>
+    <div class="signed-preview amber">- $ 0,00</div>
+    <button class="remove-btn" type="button">Remover</button>
+  `;
+  document.getElementById(`${turno}_pending_list`).appendChild(row);
+
+  const valueInput = row.querySelector('[data-pending-value="true"]');
+  if (digits) setDigitsToInput(valueInput, digits);
+
+  bindDynamicRow(row, true);
+}
+
+function clearTurn(turno){
+  const f = fieldsByTurn[turno];
+  Object.values(f).forEach((id) => {
+    const input = document.getElementById(id);
+    if(!input) return;
+
+    if(id === f.dataFechamento){
+      input.value = getTodayDateInput();
+    }else{
+      input.value = "";
+      input.dataset.raw = "";
     }
+  });
+
+  document.getElementById(`${turno}_dynamic_list`).innerHTML = "";
+  document.getElementById(`${turno}_pending_list`).innerHTML = "";
+}
 
 function serializeTurn(turno){
   const f = fieldsByTurn[turno];
 
-  const entries = [
-  { name: "Banco Reca", value: getValue(f.banco) },
-  { name: "PPPoker (x400)", value: getValue(f.pppoker) * 400 },
-  { name: "Suprema (x400)", value: getValue(f.suprema) * 400 },
-  { name: "Buffalo", value: getValue(f.buffalo) },
-  { name: "Ganamos", value: getValue(f.ganamos) },
+  const bancoReca = getValue(f.banco);
+  const pppoker = getValue(f.pppoker) * 400;
+  const suprema = getValue(f.suprema) * 400;
+  const buffalo = getValue(f.buffalo);
+  const ganamos = getValue(f.ganamos);
 
-  // 👇 AGORA COMO SAÍDA (NEGATIVO)
-  { name: "Carga de Fichas (-)", value: -getValue(f.cargas) },
-  { name: "Cargas F. Poker (- x400)", value: -(getValue(f.cargasPoker) * 400) }
-];
+  const cargaFichas = getValue(f.cargas);
+  const cargaPoker = getValue(f.cargasPoker) * 400;
+
+  const entries = [
+    { name: "Banco Reca", value: bancoReca },
+    { name: "PPPoker (x400)", value: pppoker },
+    { name: "Suprema (x400)", value: suprema },
+    { name: "Buffalo", value: buffalo },
+    { name: "Ganamos", value: ganamos },
+    { name: "Carga de Fichas", value: cargaFichas },
+    { name: "Cargas F. Poker (x400)", value: cargaPoker }
+  ];
 
   const outflows = [...document.querySelectorAll(`#${turno}_dynamic_list .dynamic-row`)].map((row) => {
     const inputs = row.querySelectorAll("input");
@@ -3310,9 +3322,20 @@ function serializeTurn(turno){
     };
   });
 
-  const entradasTotal = entries.reduce((acc, item) => acc + item.value, 0);
-  const saidasTotal = outflows.reduce((acc, item) => acc + item.value, 0);
+  const entradasBase = entries.reduce((acc, item) => {
+    if (
+      item.name === "Carga de Fichas" ||
+      item.name === "Cargas F. Poker (x400)"
+    ) {
+      return acc;
+    }
+    return acc + item.value;
+  }, 0);
+
+  const saidasCarga = cargaFichas + cargaPoker;
+  const saidasTotal = outflows.reduce((acc, item) => acc + item.value, 0) + saidasCarga;
   const pendentesTotal = pendings.reduce((acc, item) => acc + item.value, 0);
+  const entradasTotal = entradasBase;
   const saldoLiquido = entradasTotal - saidasTotal - pendentesTotal;
 
   return {
@@ -3320,7 +3343,7 @@ function serializeTurn(turno){
     turnoTrabalhado: document.getElementById(f.turnoTrabalhado)?.value?.trim() || "Não informado",
     submittedAt: serverTimestamp(),
     fechamentoDate: document.getElementById(f.dataFechamento)?.value || getTodayDateInput(),
-    total: getValue(f.banco),
+    total: bancoReca,
     turno: {
       dataFechamento: document.getElementById(f.dataFechamento)?.value || getTodayDateInput(),
       entries,
@@ -3333,44 +3356,50 @@ function serializeTurn(turno){
     }
   };
 }
-    function applySnapshotToTurn(turno, snapshot){
-      if(!snapshot) return;
 
-      clearTurn(turno);
+function applySnapshotToTurn(turno, snapshot){
+  if(!snapshot) return;
 
-      const f = fieldsByTurn[turno];
-      document.getElementById(f.dataFechamento).value = snapshot.dataFechamento || getTodayDateInput();
+  clearTurn(turno);
 
-      const map = {
-        "Banco Reca": f.banco,
-        "PPPoker (x400)": f.pppoker,
-        "Suprema (x400)": f.suprema,
-        "Buffalo": f.buffalo,
-        "Ganamos": f.ganamos,
-        "Carga de Fichas": f.cargas,
-        "Cargas F. Poker (x400)": f.cargasPoker
-      };
+  const f = fieldsByTurn[turno];
+  document.getElementById(f.dataFechamento).value = snapshot.dataFechamento || getTodayDateInput();
 
-      (snapshot.entries || []).forEach((entry) => {
-        const id = map[entry.name];
-        if(!id) return;
-        let rawValue = entry.value || 0;
-        if(entry.name.includes("(x400)")) rawValue = rawValue / 400;
-        setDigitsToInput(document.getElementById(id), Math.round(rawValue * 100).toString());
-      });
+  const map = {
+    "Banco Reca": f.banco,
+    "PPPoker (x400)": f.pppoker,
+    "Suprema (x400)": f.suprema,
+    "Buffalo": f.buffalo,
+    "Ganamos": f.ganamos,
+    "Carga de Fichas": f.cargas,
+    "Cargas F. Poker (x400)": f.cargasPoker
+  };
 
-      (snapshot.outflows || []).forEach((item) => {
-        createDynamicRow(turno, item.name, Math.round((item.value || 0) * 100).toString());
-      });
+  (snapshot.entries || []).forEach((entry) => {
+    const id = map[entry.name];
+    if(!id) return;
 
-      (snapshot.pendings || []).forEach((item) => {
-        createPendingRow(turno, item.name, Math.round((item.value || 0) * 100).toString());
-      });
-    }
+    let rawValue = entry.value || 0;
+    if(entry.name.includes("(x400)")) rawValue = rawValue / 400;
 
-    function getBancoRecaFromSnapshot(snapshot){
-      return (snapshot.entries || []).find((item) => item.name === "Banco Reca")?.value || 0;
-    }
+    setDigitsToInput(
+      document.getElementById(id),
+      Math.round(rawValue * 100).toString()
+    );
+  });
+
+  (snapshot.outflows || []).forEach((item) => {
+    createDynamicRow(turno, item.name, Math.round((item.value || 0) * 100).toString());
+  });
+
+  (snapshot.pendings || []).forEach((item) => {
+    createPendingRow(turno, item.name, Math.round((item.value || 0) * 100).toString());
+  });
+}
+
+function getBancoRecaFromSnapshot(snapshot){
+  return (snapshot.entries || []).find((item) => item.name === "Banco Reca")?.value || 0;
+}
 
 function closeHistoryModal(){
   document.getElementById("historyModal").classList.add("hidden");
@@ -3389,54 +3418,56 @@ function renderHistoryListFromCache(){
     document.getElementById("historyInfo").textContent = "Nenhum turno anterior salvo ainda.";
     updateHistoryVisibility();
     return;
-}
+  }
 
-list.innerHTML = history.slice(0, 40).map((item, index) => {
-  const saldoDisponivel = Number(item.total || 0);
-  const saldoTotal = Number(item.currentSaldoTotal || item.turno?.saldoLiquido || 0);
+  list.innerHTML = history.slice(0, 40).map((item, index) => {
+    const saldoDisponivel = Number(item.total || 0);
+    const saldoTotal = Number(item.currentSaldoTotal || item.turno?.saldoLiquido || 0);
 
-  const previousItem = history[index + 1] || {};
-  const previousSaldoTotal = Number(
-    previousItem.currentSaldoTotal || previousItem?.turno?.saldoLiquido || 0
-  );
+    const previousItem = history[index + 1] || {};
+    const previousSaldoTotal = Number(
+      previousItem.currentSaldoTotal || previousItem?.turno?.saldoLiquido || 0
+    );
 
-  const retiradaLucro = Number(item.retiradaLucro || item.turno?.saidasTotal || 0);
+    const retiradaLucro = Number(item.retiradaLucro || item.turno?.saidasTotal || 0);
 
-  // diferença real de caixa
-  const diferencaCaixa = (saldoTotal + retiradaLucro) - previousSaldoTotal;
+    const diferencaCaixa = index === history.length - 1
+      ? 0
+      : (saldoTotal + retiradaLucro) - previousSaldoTotal;
 
-  const nome = item.nomeOperador || "Sem nome";
-  const turno = item.turnoTrabalhado || "-";
-  const data = formatDateBR(item.fechamentoDate || "");
-  const linhaTopo = `${nome} • Turno ${turno} • ${data}`;
+    const nome = item.nomeOperador || "Sem nome";
+    const turno = item.turnoTrabalhado || "-";
+    const data = formatDateBR(item.fechamentoDate || "");
+    const linhaTopo = `${nome} • Turno ${turno} • ${data}`;
 
-  return `
-    <div class="history-card ${diferencaCaixa > 0 ? "is-positive" : diferencaCaixa < 0 ? "is-negative" : "is-neutral"}" data-history-index="${index}">
-      <div class="history-card-accent"></div>
+    return `
+      <div class="history-card ${diferencaCaixa > 0 ? "is-positive" : diferencaCaixa < 0 ? "is-negative" : "is-neutral"}" data-history-index="${index}">
+        <div class="history-card-accent"></div>
 
-      <div class="history-title">${linhaTopo}</div>
+        <div class="history-title">${linhaTopo}</div>
 
-      <div class="history-grid">
-        <div class="history-box">
-          <div class="history-label">Saldo Disponível(RECA)</div>
-          <div class="history-value">${money(saldoDisponivel)}</div>
-        </div>
+        <div class="history-grid">
+          <div class="history-box">
+            <div class="history-label">Saldo Disponível(RECA)</div>
+            <div class="history-value">${money(saldoDisponivel)}</div>
+          </div>
 
-        <div class="history-box">
-          <div class="history-label">Saldo Total</div>
-          <div class="history-value">${money(saldoTotal)}</div>
-        </div>
+          <div class="history-box">
+            <div class="history-label">Saldo Total</div>
+            <div class="history-value">${money(saldoTotal)}</div>
+          </div>
 
-        <div class="history-box">
-          <div class="history-label">Diferença Caixa</div>
-          <div class="history-value ${diferencaCaixa > 0 ? "positive" : diferencaCaixa < 0 ? "negative" : ""}">
-            ${diferencaCaixa > 0 ? "+ " : diferencaCaixa < 0 ? "- " : ""}${money(Math.abs(diferencaCaixa))}
+          <div class="history-box">
+            <div class="history-label">Diferença Caixa</div>
+            <div class="history-value ${diferencaCaixa > 0 ? "positive" : diferencaCaixa < 0 ? "negative" : ""}">
+              ${diferencaCaixa > 0 ? "+ " : diferencaCaixa < 0 ? "- " : ""}${money(Math.abs(diferencaCaixa))}
+            </div>
           </div>
         </div>
       </div>
-    </div>
-  `;
-}).join("");
+    `;
+  }).join("");
+}
 
 const ultimoNome = history[0]?.nomeOperador || "Sem nome";
 const ultimoTurno = history[0]?.turnoTrabalhado || "-";
