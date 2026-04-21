@@ -2658,25 +2658,30 @@ async function saveHistoryItem(item){
     const saidasTurnoAtual = Number(item?.turno?.saidasTotal || 0);
 
     // DIFERENÇA DE CAIXA IGUAL AO PDF
-    // fórmula: (saldo atual + retiradas/saídas do turno atual) - saldo anterior
     const diffCaixa = (currentSaldoTotal + saidasTurnoAtual) - previousSaldoTotal;
 
     // salva os valores no item
-item.currentSaldoTotal = currentSaldoTotal; // saldo total real do fechamento
-item.turnProfit = diffCaixa;               // lucro/diferença real do turno
-item.diff = diffCaixa;                     // diferença de caixa igual ao PDF
-item.bankVariation = diffCaixa;
+    item.currentSaldoTotal = currentSaldoTotal;
+    item.turnProfit = diffCaixa;
+    item.diff = diffCaixa;
+    item.bankVariation = diffCaixa;
 
-// garante data de envio
-item.submittedAt = serverTimestamp();
+    // data
+    item.submittedAt = serverTimestamp();
 
-// SALVA NO FIRESTORE
-await addDoc(collection(db, "history"), item);
+    // salva
+    await addDoc(collection(db, "history"), item);
 
-console.log("Histórico salvo com sucesso.");
-return true;
+    console.log("Histórico salvo com sucesso.");
+    return true;
+
+  } catch (error) {
+    console.error("Erro ao salvar histórico:", error);
+    alert("Erro ao salvar histórico");
+    return false;
+  }
 }
-
+    
 function formatDateBR(dateStr){
   if(!dateStr) return "Sem data";
   const [y,m,d] = dateStr.split("-");
