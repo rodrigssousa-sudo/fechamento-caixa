@@ -3348,12 +3348,19 @@ document.getElementById("historyModalTitle").textContent =
         <div class="modal-summary-value">${money(item.total || 0)}</div>
       </div>
 
-      <div class="modal-summary-card">
-        <div class="modal-summary-label">Saldo Total</div>
-        <div class="history-mini-value ${(item.turnProfit || 0) < 0 ? "red" : ""}">
-          ${money(item.turnProfit || 0)}
-        </div>
-      </div>
+     <div class="modal-summary-card">
+  <div class="modal-summary-label">Saldo Total</div>
+  <div class="modal-summary-value">
+    ${money(item.currentSaldoTotal || item.turno?.saldoLiquido || 0)}
+  </div>
+</div>
+
+<div class="modal-summary-card">
+  <div class="modal-summary-label">Diferença Caixa</div>
+  <div class="history-mini-value ${(item.diff || 0) < 0 ? "red" : (item.diff || 0) > 0 ? "green" : ""}">
+    ${(item.diff || 0) > 0 ? "+ " : (item.diff || 0) < 0 ? "- " : ""}${money(Math.abs(item.diff || 0))}
+  </div>
+</div>
 
       <div class="modal-summary-card">
         <div class="modal-summary-label">Responsável</div>
