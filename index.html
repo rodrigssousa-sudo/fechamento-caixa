@@ -2753,15 +2753,15 @@ async function saveHistoryItem(item){
     // SAÍDAS DO TURNO ATUAL
     const saidasTurnoAtual = Number(item?.turno?.saidasTotal || 0);
 
-    // DIFERENÇA DE CAIXA IGUAL AO PDF
-    const diffCaixa = currentSaldoTotal - previousSaldoTotal;
+    // diferença real (erro)
+const diffReal = (currentSaldoTotal + saidasTurnoAtual) - previousSaldoTotal;
 
-    // salva os valores no item
-    item.currentSaldoTotal = currentSaldoTotal;
-    item.turnProfit = diffCaixa;
-    item.diff = diffCaixa;
-    item.bankVariation = diffCaixa;
+// lucro retirado
+const retirada = saidasTurnoAtual;
 
+item.diff = diffReal;           // mostra no sistema
+item.retirada = retirada;       // opcional mostrar separado
+item.turnProfit = retirada;     // lucro do turno
     // data
     item.submittedAt = serverTimestamp();
 
