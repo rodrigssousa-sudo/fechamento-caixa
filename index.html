@@ -3467,24 +3467,23 @@ function renderHistoryListFromCache(){
       </div>
     `;
   }).join("");
-}
 
-const ultimoNome = history[0]?.nomeOperador || "Sem nome";
-const ultimoTurno = history[0]?.turnoTrabalhado || "-";
-const ultimaData = formatDateBR(history[0]?.fechamentoDate || "");
+  const ultimoNome = history[0]?.nomeOperador || "Sem nome";
+  const ultimoTurno = history[0]?.turnoTrabalhado || "-";
+  const ultimaData = formatDateBR(history[0]?.fechamentoDate || "");
 
-document.getElementById("historyInfo").textContent =
-  `Último fechamento: ${ultimoNome} • Turno ${ultimoTurno} • ${ultimaData}`;
+  document.getElementById("historyInfo").textContent =
+    `Último fechamento: ${ultimoNome} • Turno ${ultimoTurno} • ${ultimaData}`;
 
-list.querySelectorAll("[data-history-index]").forEach((el) => {
-  el.addEventListener("click", () => {
-    openHistoryModal(Number(el.dataset.historyIndex));
+  list.querySelectorAll("[data-history-index]").forEach((el) => {
+    el.addEventListener("click", () => {
+      openHistoryModal(Number(el.dataset.historyIndex));
+    });
   });
-});
 
-updateHistoryVisibility();
+  updateHistoryVisibility();
 }
-
+    
 function openHistoryModal(index){
   const history = historyCache || [];
   const item = history[index];
