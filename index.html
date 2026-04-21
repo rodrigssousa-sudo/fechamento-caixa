@@ -3680,43 +3680,52 @@ function buildPremiumPdfHtml(startDate, endDate){
 const totalDiferenca = filtered.reduce((acc, item, index) => {
   const previousItem = filtered[index + 1] || {};
   const previousSaldo = Number(previousItem?.turno?.saldoLiquido || 0);
-  const currentSaldo = Number(item?.turno?.saldoLiquido || 0);
-  const saidas = Number(item?.turno?.saidasTotal || 0);
+  const previousSaidas = Number(previousItem?.turno?.saidasTotal || 0);
 
-  // 🔥 CORREÇÃO
-  const diff = (currentSaldo - saidas) - previousSaldo;
+  const currentSaldo = Number(item?.turno?.saldoLiquido || 0);
+  const currentSaidas = Number(item?.turno?.saidasTotal || 0);
+
+  const diff = index === filtered.length - 1
+    ? 0
+    : (currentSaldo + currentSaidas) - (previousSaldo + previousSaidas);
 
   return acc + diff;
 }, 0);
 
   const rankingOperadores = {};
 
-  filtered.forEach((item, index) => {
+filtered.forEach((item, index) => {
   const nome = item.nomeOperador || "Sem nome";
   const previousItem = filtered[index + 1] || {};
   const previousSaldo = Number(previousItem?.turno?.saldoLiquido || 0);
+  const previousSaidas = Number(previousItem?.turno?.saidasTotal || 0);
+
   const currentSaldo = Number(item?.turno?.saldoLiquido || 0);
-  const diff = currentSaldo - previousSaldo;
+  const currentSaidas = Number(item?.turno?.saidasTotal || 0);
 
-    if(!rankingOperadores[nome]){
-      rankingOperadores[nome] = {
-        nome,
-        totalErro: 0,
-        qtd: 0,
-        sobra: 0,
-        falta: 0
-      };
-    }
+  const diff = index === filtered.length - 1
+    ? 0
+    : (currentSaldo + currentSaidas) - (previousSaldo + previousSaidas);
 
-    rankingOperadores[nome].totalErro += Math.abs(diff);
-    rankingOperadores[nome].qtd += 1;
+  if(!rankingOperadores[nome]){
+    rankingOperadores[nome] = {
+      nome,
+      totalErro: 0,
+      qtd: 0,
+      sobra: 0,
+      falta: 0
+    };
+  }
 
-    if(diff > 0){
-      rankingOperadores[nome].sobra += diff;
-    }else if(diff < 0){
-      rankingOperadores[nome].falta += Math.abs(diff);
-    }
-  });
+  rankingOperadores[nome].totalErro += Math.abs(diff);
+  rankingOperadores[nome].qtd += 1;
+
+  if(diff > 0){
+    rankingOperadores[nome].sobra += diff;
+  }else if(diff < 0){
+    rankingOperadores[nome].falta += Math.abs(diff);
+  }
+});
 
   const rankingHtml = Object.values(rankingOperadores)
     .sort((a, b) => b.totalErro - a.totalErro)
@@ -3739,11 +3748,17 @@ const totalDiferenca = filtered.reduce((acc, item, index) => {
   const saidas = Number(item?.turno?.saidasTotal || 0);
 
   const previousItem = filtered[index + 1] || {};
-  const previousSaldo = Number(previousItem?.turno?.saldoLiquido || 0);
-  const currentSaldo = Number(item?.turno?.saldoLiquido || 0);
-  const diffCaixa = (currentSaldo - saidas) - previousSaldo;
+const previousSaldo = Number(previousItem?.turno?.saldoLiquido || 0);
+const previousSaidas = Number(previousItem?.turno?.saidasTotal || 0);
 
-  return `
+const currentSaldo = Number(item?.turno?.saldoLiquido || 0);
+const currentSaidas = Number(item?.turno?.saidasTotal || 0);
+
+const diffCaixa = index === filtered.length - 1
+  ? 0
+  : (currentSaldo + currentSaidas) - (previousSaldo + previousSaidas);
+
+return `
     <tr style="background:#ffffff !important;">
       <td style="color:#0f172a !important; border-bottom:1px solid rgba(15,23,42,0.06) !important;">
         ${escapeHtml(nome)}
