@@ -3625,6 +3625,15 @@ function buildPremiumPdfHtml(startDate, endDate){
     const diffCaixa = (currentSaldo + saidas) - previousSaldo;
 
   const linhas = filtered.map(item => {
+  const nome = item.nome || "-";
+  const turno = item.turno || "-";
+  const data = item.data ? formatDateBR(item.data) : "-";
+
+  const banco = money(item.bancoReca || 0);
+  const saidas = item.saidasCaixa || 0;
+
+  const diffCaixa = (item.bancoReca || 0) - (item.saidasCaixa || 0);
+
   return `
     <tr style="background:#ffffff !important;">
       <td style="color:#0f172a !important; border-bottom:1px solid rgba(15,23,42,0.06) !important;">
@@ -3653,12 +3662,13 @@ function buildPremiumPdfHtml(startDate, endDate){
         border-bottom:1px solid rgba(15,23,42,0.06) !important;
         background:#ffffff !important;
       ">
-        ${diffCaixa > 0 ? "+ " : diffCaixa < 0 ? "- " : ""}${money(Math.abs(diffCaixa))}
+        ${diffCaixa > 0 ? "+ " : diffCaixa < 0 ? "- " : ""}
+        ${money(Math.abs(diffCaixa))}
       </td>
     </tr>
   `;
 }).join("");
-
+  
   return `
 <!DOCTYPE html>
 <html lang="pt-BR">
