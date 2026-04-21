@@ -3612,64 +3612,45 @@ function buildPremiumPdfHtml(startDate, endDate){
       </tr>
     `).join("");
 
-  const linhas = filtered.map((item, index) => {
-    const nome = item.nomeOperador || "Sem nome";
-    const turno = item.turnoTrabalhado || "-";
-    const data = formatDateBR(item.fechamentoDate || "");
-    const banco = money(getBancoRecaFromSnapshot(item.turno || {}));
-    const saidas = Number(item?.turno?.saidasTotal || 0);
+  const linhas = filtered.map((item) => {
+  const nome = item?.nome || item?.submittedByName || "-";
+  const turno = item?.turno || item?.shiftLabel || "-";
+  const data = item?.fechamentoDate ? formatDateBR(item.fechamentoDate) : "-";
 
-    const previousItem = filtered[index + 1] || {};
-    const previousSaldo = Number(previousItem?.turno?.saldoLiquido || 0);
-    const currentSaldo = Number(item?.turno?.saldoLiquido || 0);
-    const diffCaixa = (currentSaldo + saidas) - previousSaldo;
-
-  const linhas = filtered.map(item => {
-  const nome = item.nome || "-";
-  const turno = item.turno || "-";
-  const data = item.data ? formatDateBR(item.data) : "-";
-
-  const banco = money(item.bancoReca || 0);
-  const saidas = item.saidasCaixa || 0;
-
-  const diffCaixa = (item.bancoReca || 0) - (item.saidasCaixa || 0);
+  const bancoValor = Number(item?.bancoReca ?? item?.t1_banco ?? 0);
+  const saidasValor = Number(item?.saidasCaixa ?? item?.saidas ?? 0);
+  const diffCaixa = bancoValor - saidasValor;
 
   return `
     <tr style="background:#ffffff !important;">
       <td style="color:#0f172a !important; border-bottom:1px solid rgba(15,23,42,0.06) !important;">
-        ${escapeHtml(nome)}
+        ${escapeHtml(String(nome))}
       </td>
-
       <td style="color:#0f172a !important; border-bottom:1px solid rgba(15,23,42,0.06) !important;">
-        ${escapeHtml(turno)}
+        ${escapeHtml(String(turno))}
       </td>
-
       <td style="color:#0f172a !important; border-bottom:1px solid rgba(15,23,42,0.06) !important;">
-        ${escapeHtml(data)}
+        ${escapeHtml(String(data))}
       </td>
-
       <td style="color:#0f172a !important; border-bottom:1px solid rgba(15,23,42,0.06) !important;">
-        ${banco}
+        ${money(bancoValor)}
       </td>
-
       <td style="color:#0f172a !important; border-bottom:1px solid rgba(15,23,42,0.06) !important;">
-        ${money(saidas)}
+        ${money(saidasValor)}
       </td>
-
       <td style="
         font-weight:900;
         color:${diffCaixa > 0 ? "#16a34a" : diffCaixa < 0 ? "#dc2626" : "#0f172a"};
         border-bottom:1px solid rgba(15,23,42,0.06) !important;
         background:#ffffff !important;
       ">
-        ${diffCaixa > 0 ? "+ " : diffCaixa < 0 ? "- " : ""}
-        ${money(Math.abs(diffCaixa))}
+        ${diffCaixa > 0 ? "+" : diffCaixa < 0 ? "-" : ""} ${money(Math.abs(diffCaixa))}
       </td>
     </tr>
   `;
 }).join("");
-  
-  return `
+
+return `
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
@@ -3681,339 +3662,224 @@ function buildPremiumPdfHtml(startDate, endDate){
     }
 
     body{
-  margin:0;
-  font-family:Arial, Helvetica, sans-serif;
-  background:#020617;
-  color:#e2e8f0;
-  padding:28px;
-}
-
-.sheet{
-  max-width:1100px;
-  margin:0 auto;
-  background:linear-gradient(135deg, #020617 0%, #0f172a 100%);
-  border:1px solid rgba(59,130,246,.18);
-  box-shadow:0 20px 60px rgba(0,0,0,.55);
-  border-radius:20px;
-  overflow:hidden;
-}
-
-.top{
-  padding:28px 32px 18px;
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  gap:20px;
-  background:linear-gradient(135deg, rgba(16,185,129,.12), rgba(59,130,246,.12));
-  border-bottom:1px solid rgba(148,163,184,.10);
-}
-
-.brand-left{
-  display:flex;
-  align-items:center;
-  gap:16px;
-}
-
-.logo-box{
-  width:46px;
-  height:46px;
-  border-radius:14px;
-
-  display:flex;
-  align-items:center;
-  justify-content:center;
-
-  font-size:16px;
-  font-weight:900;
-  letter-spacing:.4px;
-
-  color:#0f172a;
-
-  background: linear-gradient(
-    145deg,
-    rgba(255,255,255,0.95),
-    rgba(241,245,249,0.90)
-  );
-
-  border:1px solid rgba(15,23,42,0.06);
-
-  box-shadow:
-    0 6px 18px rgba(15,23,42,0.08),
-    inset 0 1px 0 rgba(255,255,255,0.9);
-
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
-}
-
-.brand-text h1{
-  margin:0;
-  font-size:26px;
-  letter-spacing:.5px;
-  color:#ffffff;
-}
-
-.brand-text p{
-  margin:4px 0 0;
-  font-size:13px;
-  color:#94a3b8;
-}
-
-.brand-right{
-  display:flex;
-  gap:24px;
-  text-align:right;
-  flex-wrap:wrap;
-}
-
-.period-block,
-.generated-block{
-  font-size:12px;
-  color:#cbd5e1;
-}
-
-.period-title{
-  font-size:10px;
-  letter-spacing:.1em;
-  font-weight:700;
-  color:#64748b;
-  margin-bottom:4px;
-  text-transform:uppercase;
-}
-
-.divider-line{
-  height:3px;
-  background:linear-gradient(90deg, #10b981, #3b82f6);
-  margin:0 32px 12px;
-  border-radius:999px;
-}
-
-.summary{
-  display:grid;
-  grid-template-columns:repeat(3, 1fr);
-  gap:14px;
-  padding:22px 32px;
-  border-bottom:1px solid rgba(148,163,184,.10);
-}
-
-.card{
-  border:1px solid rgba(148,163,184,.10);
-  background:rgba(255,255,255,.03);
-  padding:16px;
-  border-radius:16px;
-  box-shadow:inset 0 1px 0 rgba(255,255,255,.02);
-}
-
-.label{
-  font-size:11px;
-  text-transform:uppercase;
-  letter-spacing:.08em;
-  color:#94a3b8;
-  margin-bottom:6px;
-}
-
-.value{
-  font-size:26px;
-  font-weight:900;
-  letter-spacing:-0.02em;
-  color:#ffffff;
-}
-
-.section-title{
-  padding:24px 32px 10px;
-  font-size:15px;
-  font-weight:900;
-  color:#ffffff;
-  letter-spacing:.02em;
-}
-
-.table-wrap{
-  padding:8px 32px 32px;
-}
-
-table{
-  width:100%;
-  border-collapse:collapse;
-  font-size:13px;
-}
-
-thead th{
-  text-align:left;
-  background:linear-gradient(90deg, #10b981, #3b82f6);
-  color:#ffffff;
-  padding:13px 10px;
-  font-size:11px;
-  letter-spacing:.05em;
-  text-transform:uppercase;
-}
-
-tbody td{
-  padding:11px 10px;
-  border-bottom:1px solid rgba(148,163,184,.10);
-  color:#e2e8f0;
-}
-
-tbody tr:nth-child(even){
-  background:rgba(255,255,255,.02);
-}
-
-    .empty{
-      padding:40px 20px;
-      text-align:center;
-      color:#64748b;
-      border:1px dashed #cbd5e1;
-      background:#f8fafc;
-      border-radius:14px;
+      margin:0;
+      padding:24px;
+      background:#ffffff;
+      color:#0f172a;
+      font-family:Inter, Arial, sans-serif;
     }
 
-    .footer{
-      padding:16px 32px 26px;
-      color:#64748b;
+    .sheet{
+      max-width:1100px;
+      margin:0 auto;
+      background:#ffffff;
+      color:#0f172a;
+    }
+
+    .top{
+      display:flex;
+      justify-content:space-between;
+      align-items:flex-start;
+      gap:20px;
+      padding-bottom:18px;
+      border-bottom:1px solid rgba(15,23,42,0.08);
+    }
+
+    .brand-left,
+    .brand-right{
+      display:flex;
+      gap:14px;
+      align-items:flex-start;
+    }
+
+    .brand-right{
+      flex-direction:column;
+      gap:10px;
+      text-align:right;
+    }
+
+    .logo-box{
+      width:48px;
+      height:48px;
+      border-radius:14px;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      background:#ffffff;
+      color:#1d4ed8;
+      border:1px solid rgba(15,23,42,0.08);
+      font-weight:900;
+    }
+
+    .brand-text h1{
+      margin:0;
+      color:#0f172a;
+      font-size:24px;
+    }
+
+    .brand-text p{
+      margin:4px 0 0 0;
+      color:#475569;
+    }
+
+    .period-title{
+      color:#1d4ed8;
+      font-weight:800;
+      margin-bottom:4px;
+    }
+
+    .divider-line{
+      height:1px;
+      background:rgba(15,23,42,0.08);
+      margin:18px 0;
+    }
+
+    .summary{
+      display:grid;
+      grid-template-columns:repeat(3, 1fr);
+      gap:14px;
+      margin-bottom:24px;
+    }
+
+    .card{
+      background:#ffffff;
+      border:1px solid rgba(15,23,42,0.08);
+      border-radius:16px;
+      padding:16px;
+    }
+
+    .label{
+      color:#1d4ed8;
       font-size:12px;
-      border-top:1px solid #e2e8f0;
+      font-weight:700;
+      text-transform:uppercase;
+      letter-spacing:.04em;
+    }
+
+    .value{
+      margin-top:8px;
+      color:#0f172a;
+      font-size:22px;
+      font-weight:800;
+    }
+
+    .section-title{
+      color:#0f172a;
+      font-size:18px;
+      font-weight:800;
+      margin:22px 0 14px;
+    }
+
+    .table-wrap{
+      background:#ffffff;
+    }
+
+    table{
+      width:100%;
+      border-collapse:collapse;
+      background:#ffffff;
+    }
+
+    thead th{
+      background:#eff6ff;
+      color:#1d4ed8;
+      padding:14px 12px;
+      text-align:left;
+      border-bottom:1px solid rgba(15,23,42,0.08);
+    }
+
+    tbody td{
+      padding:14px 12px;
+      color:#0f172a;
+      border-bottom:1px solid rgba(15,23,42,0.06);
+      background:#ffffff;
+    }
+
+    tbody tr:nth-child(even) td{
+      background:#f8fafc;
+    }
+
+    .empty{
+      padding:18px;
+      border:1px dashed rgba(15,23,42,0.12);
+      border-radius:14px;
+      color:#475569;
+      background:#ffffff;
     }
 
     @media print{
       body{
-        background:#fff;
+        background:#ffffff;
         padding:0;
       }
 
       .sheet{
         border:none;
         box-shadow:none;
-        border-radius:0;
       }
     }
-    
-    .system-badge{
-  padding: 10px 16px;
-  border-radius: 999px;
-
-  background: rgba(255,255,255,0.75);
-  backdrop-filter: blur(12px);
-
-  border: 1px solid rgba(15,23,42,0.06);
-
-  color: #d97706;
-  font-weight: 800;
-  font-size: 13px;
-
-  box-shadow:
-    inset 0 1px 0 rgba(255,255,255,0.9),
-    0 4px 12px rgba(15,23,42,0.05);
-}
-    /* =========================
-   CARD AZUL - VALOR + OLHO
-========================= */
-
-.balance-strip{
-  display:flex;
-  flex-direction:column;
-  gap:12px;
-}
-
-.balance-strip-row{
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  gap:12px;
-}
-
-.balance-strip-value{
-  margin:0;
-}
-
-.hide-balance-btn{
-  flex-shrink:0;
-  width:46px;
-  height:46px;
-  border-radius:999px;
-
-  display:flex;
-  align-items:center;
-  justify-content:center;
-
-  background: rgba(255,255,255,0.14);
-  border: 1px solid rgba(255,255,255,0.22);
-  color:#ffffff;
-
-  box-shadow:
-    inset 0 1px 0 rgba(255,255,255,0.18),
-    0 6px 14px rgba(15,23,42,0.14);
-
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
-
-  transition: transform .15s ease, opacity .15s ease, background .15s ease;
-}
-
-.hide-balance-btn:active{
-  transform: scale(0.95);
-  opacity: .88;
-}
-    
-</style>
+  </style>
 </head>
-<body style="background:#ffffff !important; color:#0f172a !important;">
-  <div class="sheet pdf-light" style="background:#ffffff !important; color:#0f172a !important; border:1px solid rgba(15,23,42,0.06) !important; box-shadow:none !important;">
-    <div class="top pdf-top" style="background:#ffffff !important; color:#0f172a !important; border-bottom:1px solid rgba(15,23,42,0.08) !important;">
+<body>
+  <div class="sheet">
+    <div class="top">
       <div class="brand-left">
-        <div class="logo-box" style="background:#ffffff !important; color:#1d4ed8 !important; border:1px solid rgba(15,23,42,0.08) !important; box-shadow:none !important;">BK</div>
+        <div class="logo-box">BK</div>
         <div class="brand-text">
-          <h1 style="color:#0f172a !important;">BANK KING</h1>
-          <p style="color:#475569 !important;">Relatório financeiro consolidado</p>
+          <h1>BANK KING</h1>
+          <p>Relatório financeiro consolidado</p>
         </div>
       </div>
 
-      <div class="brand-right" style="color:#0f172a !important;">
-        <div class="period-block" style="background:#ffffff !important; color:#0f172a !important;">
-          <div class="period-title" style="color:#1d4ed8 !important; font-weight:800 !important;">Período</div>
-          <div style="color:#0f172a !important;">De: ${formatDateBR(startDate)}</div>
-          <div style="color:#0f172a !important;">Até: ${formatDateBR(endDate)}</div>
+      <div class="brand-right">
+        <div class="period-block">
+          <div class="period-title">Período</div>
+          <div>De: ${formatDateBR(startDate)}</div>
+          <div>Até: ${formatDateBR(endDate)}</div>
         </div>
 
-        <div class="generated-block" style="background:#ffffff !important; color:#0f172a !important;">
-          <div class="period-title" style="color:#1d4ed8 !important; font-weight:800 !important;">Gerado em</div>
-          <div style="color:#0f172a !important;">${new Date().toLocaleDateString("pt-BR")}</div>
-          <div style="color:#0f172a !important;">${new Date().toLocaleTimeString("pt-BR", { hour: "2-digit", minute: "2-digit" })}</div>
+        <div class="generated-block">
+          <div class="period-title">Gerado em</div>
+          <div>${new Date().toLocaleDateString("pt-BR")}</div>
+          <div>${new Date().toLocaleTimeString("pt-BR", { hour: "2-digit", minute: "2-digit" })}</div>
         </div>
       </div>
     </div>
 
-    <div class="divider-line" style="background:rgba(15,23,42,0.08) !important;"></div>
+    <div class="divider-line"></div>
 
-    <div class="summary pdf-summary" style="background:transparent !important;">
-      <div class="card pdf-card" style="background:#ffffff !important; color:#0f172a !important; border:1px solid rgba(15,23,42,0.08) !important; box-shadow:none !important;">
-        <div class="label" style="color:#1d4ed8 !important;">Banco Reca</div>
-        <div class="value" style="color:#0f172a !important; font-weight:800 !important;">${money(ultimoBancoReca)}</div>
+    <div class="summary">
+      <div class="card">
+        <div class="label">Banco Reca</div>
+        <div class="value">${money(ultimoBancoReca)}</div>
       </div>
 
-      <div class="card pdf-card" style="background:#ffffff !important; color:#0f172a !important; border:1px solid rgba(15,23,42,0.08) !important; box-shadow:none !important;">
-        <div class="label" style="color:#1d4ed8 !important;">Saídas de Caixa</div>
-        <div class="value" style="color:#0f172a !important; font-weight:800 !important;">${money(totalSaidas)}</div>
+      <div class="card">
+        <div class="label">Saídas de Caixa</div>
+        <div class="value">${money(totalSaidas)}</div>
       </div>
 
-      <div class="card pdf-card" style="background:#ffffff !important; color:#0f172a !important; border:1px solid rgba(15,23,42,0.08) !important; box-shadow:none !important;">
-        <div class="label" style="color:#1d4ed8 !important;">Saldo Total</div>
-        <div class="value" style="color:#0f172a !important; font-weight:800 !important;">${money(totalDiferenca)}</div>
+      <div class="card">
+        <div class="label">Saldo Total</div>
+        <div class="value">${money(totalDiferenca)}</div>
       </div>
     </div>
 
-    <div class="section-title" style="color:#0f172a !important;">Fechamentos do período</div>
+    <div class="section-title">Fechamentos do período</div>
 
-    <div class="table-wrap pdf-table-wrap" style="background:#ffffff !important;">
+    <div class="table-wrap">
       ${
         filtered.length
           ? `
-            <table class="pdf-table" style="width:100%; background:#ffffff !important; color:#0f172a !important; border-collapse:collapse !important;">
+            <table>
               <thead>
-                <tr style="background:#eff6ff !important;">
-                  <th style="background:#eff6ff !important; color:#1d4ed8 !important; border-bottom:1px solid rgba(15,23,42,0.08) !important;">Nome</th>
-                  <th style="background:#eff6ff !important; color:#1d4ed8 !important; border-bottom:1px solid rgba(15,23,42,0.08) !important;">Turno</th>
-                  <th style="background:#eff6ff !important; color:#1d4ed8 !important; border-bottom:1px solid rgba(15,23,42,0.08) !important;">Data</th>
-                  <th style="background:#eff6ff !important; color:#1d4ed8 !important; border-bottom:1px solid rgba(15,23,42,0.08) !important;">Banco Reca</th>
-                  <th style="background:#eff6ff !important; color:#1d4ed8 !important; border-bottom:1px solid rgba(15,23,42,0.08) !important;">Saídas de Caixa</th>
-                  <th style="background:#eff6ff !important; color:#1d4ed8 !important; border-bottom:1px solid rgba(15,23,42,0.08) !important;">Diferença de Caixa</th>
+                <tr>
+                  <th>Nome</th>
+                  <th>Turno</th>
+                  <th>Data</th>
+                  <th>Banco Reca</th>
+                  <th>Saídas de Caixa</th>
+                  <th>Diferença de Caixa</th>
                 </tr>
               </thead>
               <tbody>
@@ -4022,45 +3888,17 @@ tbody tr:nth-child(even){
             </table>
           `
           : `
-            <div class="empty" style="background:#ffffff !important; color:#475569 !important; border:1px dashed rgba(15,23,42,0.12) !important;">
+            <div class="empty">
               Nenhum fechamento encontrado no período selecionado.
             </div>
           `
       }
     </div>
-
-    ${
-      Object.keys(rankingOperadores).length
-        ? `
-          <div class="section-title">Ranking por operador</div>
-          <div class="table-wrap" style="padding-top:8px;">
-            <table>
-              <thead>
-                <tr>
-                  <th>#</th>
-                  <th>Operador</th>
-                  <th>Fechamentos</th>
-                  <th>Sobra</th>
-                  <th>Falta</th>
-                  <th>Erro Total</th>
-                </tr>
-              </thead>
-              <tbody>
-                ${rankingHtml}
-              </tbody>
-            </table>
-          </div>
-        `
-        : ""
-    }
-
-    <div class="footer">
-      Documento interno • Bank King BRS
-    </div>
   </div>
 </body>
 </html>
-  `;
+`;
+  
 }
 function render(){
   ensureDates();
