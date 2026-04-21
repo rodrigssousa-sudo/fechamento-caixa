@@ -2754,7 +2754,7 @@ async function saveHistoryItem(item){
     const saidasTurnoAtual = Number(item?.turno?.saidasTotal || 0);
 
     // DIFERENÇA DE CAIXA IGUAL AO PDF
-    const diffCaixa = (currentSaldoTotal - saidasTurnoAtual) - previousSaldoTotal;
+    const diffCaixa = (currentSaldoTotal + saidasTurnoAtual) - previousSaldoTotal;
 
     // salva os valores no item
     item.currentSaldoTotal = currentSaldoTotal;
@@ -3372,7 +3372,23 @@ function renderHistoryListFromCache(){
 list.innerHTML = history.slice(0, 30).map((item, index) => {
   const saldoDisponivel = Number(item.total || 0);
   const saldoTotal = Number(item.currentSaldoTotal || item.turno?.saldoLiquido || 0);
-  const diferencaCaixa = Number(item.diff || item.bankVariation || 0);
+  const previousItem = history[index + 1] || {};
+
+const previousSaldoTotal = Number(
+  previousItem.currentSaldoTotal || previousItem?.turno?.saldoLiquido || 0
+);
+
+const saldoTotalAtual = Number(
+  item.currentSaldoTotal || item.turno?.saldoLiquido || 0
+);
+
+const retiradaLucro = Number(
+  item.retiradaLucro || item.turno?.saidasTotal || 0
+);
+
+const diferencaCaixa = index === history.length - 1
+  ? 0
+  : (saldoTotalAtual + retiradaLucro) - previousSaldoTotal;
 
   const nome = item.nomeOperador || "Sem nome";
   const turno = item.turnoTrabalhado || "-";
@@ -3742,7 +3758,7 @@ const totalDiferenca = filtered.reduce((acc, item, index) => {
   const previousItem = filtered[index + 1] || {};
   const previousSaldo = Number(previousItem?.turno?.saldoLiquido || 0);
   const currentSaldo = Number(item?.turno?.saldoLiquido || 0);
-  const diffCaixa = (currentSaldo - saidas) - previousSaldo;
+  const diffCaixa = (currentSaldo + saidas) - previousSaldo;
 
   return `
     <tr style="background:#ffffff !important;">
