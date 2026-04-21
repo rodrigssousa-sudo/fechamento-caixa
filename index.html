@@ -3673,14 +3673,13 @@ function buildPremiumPdfHtml(startDate, endDate){
 const totalDiferenca = filtered.reduce((acc, item, index) => {
   const previousItem = filtered[index + 1] || {};
 
-  const saldoAtual = Number(item?.turno?.saldoLiquido || 0);
-  const retirada = Number(item?.turno?.saidasTotal || 0);
+const saldoAtual = Number(item?.turno?.saldoLiquido || 0);
+const retirada = Number(item?.turno?.saidasTotal || 0);
+const saldoAnterior = Number(previousItem?.turno?.saldoLiquido || 0);
 
-  const saldoAnterior = Number(previousItem?.turno?.saldoLiquido || 0);
-
-  const diff = index === filtered.length - 1
-    ? 0
-    : (saldoAtual + retirada) - saldoAnterior;
+const diffCaixa = index === filtered.length - 1
+  ? 0
+  : (saldoAtual + retirada) - saldoAnterior;
 
   return acc + diff;
 }, 0);
