@@ -3285,11 +3285,9 @@ list.innerHTML = history.slice(0, 30).map((item, index) => {
 
 return `
   <div class="history-card" data-history-index="${index}">
-    
     <div class="history-title">${linhaTopo}</div>
 
     <div class="history-grid">
-
       <div class="history-box">
         <div class="history-label">Saldo Disponível(RECA)</div>
         <div class="history-value">${money(saldoDisponivel)}</div>
@@ -3306,9 +3304,7 @@ return `
           ${diferencaCaixa > 0 ? "+ " : diferencaCaixa < 0 ? "- " : ""}${money(Math.abs(diferencaCaixa))}
         </div>
       </div>
-
     </div>
-
   </div>
 `;
 }).join("");
