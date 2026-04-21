@@ -3632,100 +3632,77 @@ function openHistoryModal(index){
         </div>
       </div>
     </div>
-  `;
+  document.getElementById("saveHistoryBtn").onclick = async () => {
+  try {
+    const docRef = doc(db, "history", item.id);
 
-  document.getElementById("historyModal").classList.remove("hidden");
+    const newEntries = (turno.entries || []).map((e, i) => {
+      let inputValue = parseMoneyInput(
+        document.querySelector(`[data-entry="${i}"]`)?.value || ""
+      );
 
-  document.getElementById("editHistoryBtn").onclick = () => {
-    window.historyEditMode = true;
+      if (
+        e.name === "PPPoker (x400)" ||
+        e.name === "Suprema (x400)" ||
+        e.name === "Cargas F. Poker (x400)"
+      ) {
+        inputValue = inputValue * 400;
+      }
 
-    document.querySelectorAll("#historyModal input").forEach((input) => {
-      input.disabled = false;
+      return {
+        ...e,
+        value: inputValue
+      };
     });
 
-    document.getElementById("editHistoryBtn").classList.add("hidden");
-    document.getElementById("saveHistoryBtn").classList.remove("hidden");
-  };
+    const newOutflows = (turno.outflows || []).map((e, i) => ({
+      name: document.querySelector(`[data-out-name="${i}"]`)?.value || "",
+      value: parseMoneyInput(document.querySelector(`[data-out-value="${i}"]`)?.value || "")
+    }));
 
-  document.getElementById("saveHistoryBtn").onclick = async () => {
-    try {
-      const docRef = doc(db, "history", item.id);
+    const newPendings = (turno.pendings || []).map((e, i) => ({
+      name: document.querySelector(`[data-pen-name="${i}"]`)?.value || "",
+      value: parseMoneyInput(document.querySelector(`[data-pen-value="${i}"]`)?.value || "")
+    }));
 
-      const newEntries = (turno.entries || []).map((e, i) => {
-        let inputValue = parseMoneyInput(
-          document.querySelector(`[data-entry="${i}"]`)?.value || ""
-        );
+    const entradasTotal = newEntries.reduce((a, b) => a + b.value, 0);
+    const saidasTotal = newOutflows.reduce((a, b) => a + b.value, 0);
+    const pendentesTotal = newPendings.reduce((a, b) => a + b.value, 0);
+    const saldoLiquido = entradasTotal - saidasTotal - pendentesTotal;
 
-        if (
-          e.name === "PPPoker (x400)" ||
-          e.name === "Suprema (x400)" ||
-          e.name === "Cargas F. Poker (x400)"
-        ) {
-          inputValue = inputValue * 400;
-        }
+    const retiradaLucroEditada = saidasTotal;
+    const diffCaixaEditada = index === history.length - 1
+      ? 0
+      : saldoLiquido - previousSaldoTotal;
 
-              const newOutflows = (turno.outflows || []).map((e, i) => ({
-        name: document.querySelector(`[data-out-name="${i}"]`)?.value || "",
-        value: parseMoneyInput(document.querySelector(`[data-out-value="${i}"]`)?.value || "")
-      }));
+    await updateDoc(docRef, {
+      fechamentoDate: document.getElementById("editDate")?.value || item.fechamentoDate || "",
+      total: newEntries.find((e) => e.name === "Banco Reca")?.value || 0,
+      currentSaldoTotal: saldoLiquido,
+      retiradaLucro: retiradaLucroEditada,
+      turnProfit: retiradaLucroEditada,
+      diff: diffCaixaEditada,
+      bankVariation: diffCaixaEditada,
+      turno: {
+        ...turno,
+        dataFechamento: document.getElementById("editDate")?.value || item.fechamentoDate || "",
+        entries: newEntries,
+        outflows: newOutflows,
+        pendings: newPendings,
+        entradasTotal,
+        saidasTotal,
+        pendentesTotal,
+        saldoLiquido
+      }
+    });
 
-      const newPendings = (turno.pendings || []).map((e, i) => ({
-        name: document.querySelector(`[data-pen-name="${i}"]`)?.value || "",
-        value: parseMoneyInput(document.querySelector(`[data-pen-value="${i}"]`)?.value || "")
-      }));
-
-      const entradasTotal = newEntries.reduce((a, b) => a + b.value, 0);
-      const saidasTotal = newOutflows.reduce((a, b) => a + b.value, 0);
-      const pendentesTotal = newPendings.reduce((a, b) => a + b.value, 0);
-      const saldoLiquido = entradasTotal - saidasTotal - pendentesTotal;
-
-      const retiradaLucroEditada = saidasTotal;
-      const diffCaixaEditada = index === history.length - 1
-        ? 0
-        : saldoLiquido - previousSaldoTotal;
-
-      await updateDoc(docRef, {
-        fechamentoDate: document.getElementById("editDate")?.value || item.fechamentoDate || "",
-        total: newEntries.find((e) => e.name === "Banco Reca")?.value || 0,
-        currentSaldoTotal: saldoLiquido,
-        retiradaLucro: retiradaLucroEditada,
-        turnProfit: retiradaLucroEditada,
-        diff: diffCaixaEditada,
-        bankVariation: diffCaixaEditada,
-        turno: {
-          ...turno,
-          dataFechamento: document.getElementById("editDate")?.value || item.fechamentoDate || "",
-          entries: newEntries,
-          outflows: newOutflows,
-          pendings: newPendings,
-          entradasTotal,
-          saidasTotal,
-          pendentesTotal,
-          saldoLiquido
-        }
-      });
-
-      alert("Histórico atualizado com sucesso");
-      document.getElementById("historyModal").classList.add("hidden");
-    } catch (e) {
-      console.error("Erro ao salvar histórico editado:", e);
-      alert("Erro ao salvar");
-    }
-  };
-}
-
-// 🔥 BOTÃO EDITAR
-document.getElementById("editHistoryBtn").onclick = () => {
-  window.historyEditMode = true;
-
-  document.querySelectorAll("#historyModal input").forEach((input) => {
-    input.disabled = false;
-  });
-
-  document.getElementById("editHistoryBtn").classList.add("hidden");
-  document.getElementById("saveHistoryBtn").classList.remove("hidden");
+    alert("Histórico atualizado com sucesso");
+    document.getElementById("historyModal").classList.add("hidden");
+  } catch (e) {
+    console.error("Erro ao salvar histórico editado:", e);
+    alert("Erro ao salvar");
+  }
 };
-
 // 🔥 BOTÃO SALVAR
 document.getElementById("saveHistoryBtn").onclick = async () => {
   try {
