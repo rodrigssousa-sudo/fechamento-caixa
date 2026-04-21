@@ -4559,60 +4559,6 @@ function renderHistoryModalContent(item, editMode = false){
     `;
   }).join("") || `<div class="modal-line"><span>Sem registros</span><strong>$ 0,00</strong></div>`;
 
-  document.getElementById("historyModalBody").innerHTML = `
-    <div class="modal-summary-grid">
-      <div class="modal-summary-card">
-        <div class="modal-summary-label">Total do fechamento</div>
-        <div class="modal-summary-value">${money(item.total || 0)}</div>
-      </div>
-      <div class="modal-summary-card">
-        <div class="modal-summary-label">Saldo Total</div>
-        <div class="history-mini-value ${(item.turnProfit || 0) < 0 ? "red" : ""}">${money(item.turnProfit || 0)}</div>
-      </div>
-      <div class="modal-summary-card">
-        <div class="modal-summary-label">Responsável</div>
- <div class="modal-summary-value">${escapeHtml(item.nomeOperador || "-")}
-</div>
-      </div>
-      <div class="modal-summary-card">
-        <div class="modal-summary-label">Data</div>
-        ${
-          editMode
-            ? `<input id="editFechamentoDate" type="date" value="${item.fechamentoDate || ""}" style="width:100%; min-height:38px; border-radius:10px; border:1px solid rgba(148,163,184,.2); padding:8px 10px;" />`
-            : `<div class="modal-summary-value">${escapeHtml(formatDateBR(item.fechamentoDate || ""))}</div>`
-        }
-      </div>
-    </div>
-
-    <div class="modal-turnos-grid">
-      <div class="modal-panel">
-        <div class="modal-panel-head"><h4>Entradas</h4></div>
-        <div class="modal-panel-body">
-          <div>
-            <div class="modal-block-title">Detalhamento</div>
-            ${entriesHtml}
-          </div>
-        </div>
-      </div>
-
-      <div class="modal-panel">
-        <div class="modal-panel-head"><h4>Saídas e Pendentes</h4></div>
-        <div class="modal-panel-body">
-          <div>
-            <div class="modal-block-title">Saídas</div>
-            ${outflowsHtml}
-          </div>
-
-          <div>
-            <div class="modal-block-title">Pendentes</div>
-            ${pendingsHtml}
-          </div>
-        </div>
-      </div>
-    </div>
-  `;
-}
-
 async function saveEditedHistory(){
   if(editingHistoryIndex === null) return;
 
