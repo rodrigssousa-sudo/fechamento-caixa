@@ -3372,22 +3372,30 @@ function renderHistoryListFromCache(){
 list.innerHTML = history.slice(0, 30).map((item, index) => {
   const saldoDisponivel = Number(item.total || 0);
   const saldoTotal = Number(item.currentSaldoTotal || item.turno?.saldoLiquido || 0);
-  const previousItem = history[index + 1] || {};
+ const previousItem = history[index + 1] || {};
 
 const previousSaldoTotal = Number(
+
   previousItem.currentSaldoTotal || previousItem?.turno?.saldoLiquido || 0
+
 );
 
 const saldoTotalAtual = Number(
+
   item.currentSaldoTotal || item.turno?.saldoLiquido || 0
+
 );
 
 const retiradaLucro = Number(
+
   item.retiradaLucro || item.turno?.saidasTotal || 0
+
 );
 
 const diferencaCaixa = index === history.length - 1
+
   ? 0
+
   : (saldoTotalAtual + retiradaLucro) - previousSaldoTotal;
 
   const nome = item.nomeOperador || "Sem nome";
