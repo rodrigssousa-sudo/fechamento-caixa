@@ -68,6 +68,135 @@ input{
   /* 👇 COLE AQUI (no final do CSS) */
   
   /* =========================
+   PDF LIGHT
+========================= */
+
+body{
+  background:#ffffff !important;
+}
+
+.sheet,
+.sheet.pdf-light{
+  background:#ffffff !important;
+  color:#0f172a !important;
+  border:1px solid rgba(15,23,42,0.06) !important;
+  box-shadow:none !important;
+}
+
+.top,
+.top.pdf-top{
+  background:#ffffff !important;
+  color:#0f172a !important;
+}
+
+.logo-box{
+  background:#ffffff !important;
+  color:#1d4ed8 !important;
+  border:1px solid rgba(15,23,42,0.08) !important;
+  box-shadow:none !important;
+}
+
+.brand-text h1,
+.brand-text p,
+.brand-right,
+.brand-right *{
+  color:#0f172a !important;
+}
+
+.period-title{
+  color:#1d4ed8 !important;
+  font-weight:800 !important;
+}
+
+.divider-line{
+  background:rgba(15,23,42,0.08) !important;
+}
+
+.summary.pdf-summary{
+  background:transparent !important;
+}
+
+.card.pdf-card{
+  background:#ffffff !important;
+  color:#0f172a !important;
+  border:1px solid rgba(15,23,42,0.08) !important;
+  box-shadow:none !important;
+}
+
+.card.pdf-card .label{
+  color:#1d4ed8 !important;
+}
+
+.card.pdf-card .value{
+  color:#0f172a !important;
+  font-weight:800 !important;
+}
+
+.section-title{
+  color:#0f172a !important;
+}
+
+.table-wrap.pdf-table-wrap{
+  background:#ffffff !important;
+}
+
+table.pdf-table{
+  width:100%;
+  background:#ffffff !important;
+  color:#0f172a !important;
+  border-collapse:collapse;
+}
+
+table.pdf-table thead th{
+  background:#eff6ff !important;
+  color:#1d4ed8 !important;
+  border-bottom:1px solid rgba(15,23,42,0.08) !important;
+}
+
+table.pdf-table tbody tr{
+  background:#ffffff !important;
+}
+
+table.pdf-table tbody tr:nth-child(even){
+  background:#f8fafc !important;
+}
+
+table.pdf-table tbody td{
+  color:#0f172a !important;
+  border-bottom:1px solid rgba(15,23,42,0.06) !important;
+}
+
+.empty{
+  background:#ffffff !important;
+  color:#475569 !important;
+  border:1px dashed rgba(15,23,42,0.12) !important;
+}
+
+@media print{
+  body{
+    background:#ffffff !important;
+    color:#0f172a !important;
+  }
+
+  .sheet,
+  .sheet.pdf-light{
+    background:#ffffff !important;
+    color:#0f172a !important;
+    border:none !important;
+    box-shadow:none !important;
+  }
+
+  table.pdf-table thead th{
+    background:#eff6ff !important;
+    color:#1d4ed8 !important;
+  }
+
+  table.pdf-table tbody td{
+    color:#0f172a !important;
+  }
+}
+  
+  /* =========================
    ALINHAMENTO DIREITA
 ========================= */
 
@@ -3740,11 +3869,11 @@ tbody tr:nth-child(even){
   opacity: .88;
 }
     
-  </style>
+ </style>
 </head>
 <body>
-  <div class="sheet">
-    <div class="top">
+  <div class="sheet pdf-light">
+    <div class="top pdf-top">
       <div class="brand-left">
         <div class="logo-box">BK</div>
         <div class="brand-text">
@@ -3770,18 +3899,18 @@ tbody tr:nth-child(even){
 
     <div class="divider-line"></div>
 
-    <div class="summary">
-      <div class="card">
+    <div class="summary pdf-summary">
+      <div class="card pdf-card">
         <div class="label">Banco Reca</div>
         <div class="value">${money(ultimoBancoReca)}</div>
       </div>
 
-      <div class="card">
+      <div class="card pdf-card">
         <div class="label">Saídas de Caixa</div>
         <div class="value">${money(totalSaidas)}</div>
       </div>
 
-      <div class="card">
+      <div class="card pdf-card">
         <div class="label">Saldo Total</div>
         <div class="value">${money(totalDiferenca)}</div>
       </div>
@@ -3789,11 +3918,11 @@ tbody tr:nth-child(even){
 
     <div class="section-title">Fechamentos do período</div>
 
-    <div class="table-wrap">
+    <div class="table-wrap pdf-table-wrap">
       ${
         filtered.length
           ? `
-            <table>
+            <table class="pdf-table">
               <thead>
                 <tr>
                   <th>Nome</th>
