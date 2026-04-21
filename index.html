@@ -2730,7 +2730,7 @@ async function getUsersFromFirestore(){
 
 async function deleteUserDocFromFirestore(uid){
   if(!uid) return;
-  await deleteDoc(doc(db, "users", uid));
+await deleteDoc(doc(db, "users", uid));
 }
 
 async function saveHistoryItem(item){
@@ -2744,24 +2744,33 @@ async function saveHistoryItem(item){
     const snapshot = await getDocs(q);
     const previousItem = snapshot.docs[0]?.data() || null;
 
+    // SALDO TOTAL DO FECHAMENTO ANTERIOR
     const previousSaldoTotal = Number(previousItem?.turno?.saldoLiquido || 0);
+
+    // SALDO TOTAL DO FECHAMENTO ATUAL
     const currentSaldoTotal = Number(item?.turno?.saldoLiquido || 0);
-    const retiradaLucro = Number(item?.turno?.saidasTotal || 0);
 
-    const diffCaixa = (currentSaldoTotal + retiradaLucro) - previousSaldoTotal;
+    // SAÍDAS DO TURNO ATUAL
+    const saidasTurnoAtual = Number(item?.turno?.saidasTotal || 0);
 
+    // DIFERENÇA DE CAIXA IGUAL AO PDF
+    const diffCaixa = (currentSaldoTotal - saidasTurnoAtual) - previousSaldoTotal;
+
+    // salva os valores no item
     item.currentSaldoTotal = currentSaldoTotal;
-    item.retiradaLucro = retiradaLucro;
-    item.turnProfit = retiradaLucro;
+    item.turnProfit = diffCaixa;
     item.diff = diffCaixa;
     item.bankVariation = diffCaixa;
 
+    // data
     item.submittedAt = serverTimestamp();
 
+    // salva
     await addDoc(collection(db, "history"), item);
 
     console.log("Histórico salvo com sucesso.");
     return true;
+
   } catch (error) {
     console.error("Erro ao salvar histórico:", error);
     alert("Erro ao salvar histórico");
@@ -2793,26 +2802,25 @@ function formatDateTimeBR(value){
     minute: "2-digit"
   })}`;
 }
+    function parseMoneyInput(value){
+      if(!value) return 0;
+      const normalized = String(value)
+        .replace(/\./g, "")
+        .replace(",", ".")
+        .replace(/[^\d.-]/g, "");
+      const number = parseFloat(normalized);
+      return Number.isFinite(number) ? number : 0;
+    }
 
-function parseMoneyInput(value){
-  if(!value) return 0;
-  const normalized = String(value)
-    .replace(/\./g, "")
-    .replace(",", ".")
-    .replace(/[^\d.-]/g, "");
-  const number = parseFloat(normalized);
-  return Number.isFinite(number) ? number : 0;
-}
-
-function formatDigitsToMoneyString(digits){
-  const clean = String(digits || "").replace(/\D/g, "");
-  if(!clean) return "";
-  const number = Number(clean) / 100;
-  return number.toLocaleString("pt-BR", {
-    minimumFractionDigits: 2,
-    maximumFractionDigits: 2
-  });
-}
+    function formatDigitsToMoneyString(digits){
+      const clean = String(digits || "").replace(/\D/g, "");
+      if(!clean) return "";
+      const number = Number(clean) / 100;
+      return number.toLocaleString("pt-BR", {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2
+      });
+    }
 
     function setDigitsToInput(input, digits){
       if(!input) return;
@@ -3359,75 +3367,71 @@ function renderHistoryListFromCache(){
     document.getElementById("historyInfo").textContent = "Nenhum turno anterior salvo ainda.";
     updateHistoryVisibility();
     return;
-  }
+}
 
-  list.innerHTML = history.slice(0, 40).map((item, index) => {
-    const previousItem = history[index + 1] || {};
+list.innerHTML = history.slice(0, 30).map((item, index) => {
+  const saldoDisponivel = Number(item.total || 0);
+  const saldoTotal = Number(item.currentSaldoTotal || item.turno?.saldoLiquido || 0);
+  const diferencaCaixa = Number(item.diff || item.bankVariation || 0);
 
-    const saldoAtual = Number(item.currentSaldoTotal || item.turno?.saldoLiquido || 0);
-    const retirada = Number(item.retiradaLucro || item.turno?.saidasTotal || 0);
+  const nome = item.nomeOperador || "Sem nome";
+  const turno = item.turnoTrabalhado || "-";
+  const data = formatDateBR(item.fechamentoDate || "");
+  const linhaTopo = `${nome} • Turno ${turno} • ${data}`;
 
-    const saldoAnterior = Number(
-      previousItem.currentSaldoTotal || previousItem?.turno?.saldoLiquido || 0
-    );
+return `
+  <div class="history-card ${diferencaCaixa > 0 ? "is-positive" : diferencaCaixa < 0 ? "is-negative" : "is-neutral"}" data-history-index="${index}">
+    <div class="history-card-accent"></div>
 
-    const diferencaAtual = index === history.length - 1
-      ? 0
-      : (saldoAtual + retirada) - saldoAnterior;
+    <div class="history-title">${linhaTopo}</div>
 
-    return `
-      <div class="history-card ${diferencaAtual > 0 ? "is-positive" : diferencaAtual < 0 ? "is-negative" : "is-neutral"}" data-history-index="${index}">
-        <div class="history-title">${item.nomeOperador || "Sem nome"} • Turno ${item.turnoTrabalhado || "-"} • ${formatDateBR(item.fechamentoDate || "")}</div>
+    <div class="history-grid">
+      <div class="history-box">
+        <div class="history-label">Saldo Disponível(RECA)</div>
+        <div class="history-value">${money(saldoDisponivel)}</div>
+      </div>
 
-        <div class="history-grid">
-          <div class="history-box">
-            <div class="history-label">Saldo Total</div>
-            <div class="history-value">${money(saldoAtual)}</div>
-          </div>
+      <div class="history-box">
+        <div class="history-label">Saldo Total</div>
+        <div class="history-value">${money(saldoTotal)}</div>
+      </div>
 
-          <div class="history-box">
-            <div class="history-label">Retirada</div>
-            <div class="history-value">${money(retirada)}</div>
-          </div>
-
-          <div class="history-box">
-            <div class="history-label">Diferença Caixa</div>
-            <div class="history-value ${diferencaAtual > 0 ? "positive" : diferencaAtual < 0 ? "negative" : ""}">
-              ${diferencaAtual > 0 ? "+ " : diferencaAtual < 0 ? "- " : ""}${money(Math.abs(diferencaAtual))}
-            </div>
-          </div>
+      <div class="history-box">
+        <div class="history-label">Diferença Caixa</div>
+        <div class="history-value ${diferencaCaixa > 0 ? "positive" : diferencaCaixa < 0 ? "negative" : ""}">
+          ${diferencaCaixa > 0 ? "+ " : diferencaCaixa < 0 ? "- " : ""}${money(Math.abs(diferencaCaixa))}
         </div>
       </div>
-    `;
-  }).join("");
+    </div>
+  </div>
+`;
+}).join("");
 
-  const ultimoNome = history[0]?.nomeOperador || "Sem nome";
-  const ultimoTurno = history[0]?.turnoTrabalhado || "-";
-  const ultimaData = formatDateBR(history[0]?.fechamentoDate || "");
+const ultimoNome = history[0]?.nomeOperador || "Sem nome";
+const ultimoTurno = history[0]?.turnoTrabalhado || "-";
+const ultimaData = formatDateBR(history[0]?.fechamentoDate || "");
 
-  document.getElementById("historyInfo").textContent =
-    `Último fechamento: ${ultimoNome} • Turno ${ultimoTurno} • ${ultimaData}`;
+document.getElementById("historyInfo").textContent =
+  `Último fechamento: ${ultimoNome} • Turno ${ultimoTurno} • ${ultimaData}`;
 
-  list.querySelectorAll("[data-history-index]").forEach((el) => {
-    el.addEventListener("click", () => {
-      openHistoryModal(Number(el.dataset.historyIndex));
-    });
+list.querySelectorAll("[data-history-index]").forEach((el) => {
+  el.addEventListener("click", () => {
+    openHistoryModal(Number(el.dataset.historyIndex));
   });
+});
 
-  updateHistoryVisibility();
+updateHistoryVisibility();
 }
 
 function openHistoryModal(index){
-  const history = historyCache || [];
   const item = history[index];
   if(!item) return;
 
   window.editingHistoryIndex = index;
   window.historyEditMode = false;
 
-  document.getElementById("historyModalTitle").textContent =
-    `Fechamento • ${item.nomeOperador || "Sem nome"} • Turno ${item.turnoTrabalhado || "-"}`;
-
+document.getElementById("historyModalTitle").textContent =
+  `Fechamento • ${item.nomeOperador || "Sem nome"} • Turno ${item.turnoTrabalhado || "-"}`;
   document.getElementById("historyModalSub").textContent =
     `Data do fechamento: ${formatDateBR(item.fechamentoDate || "")} • Enviado em: ${formatDateTimeBR(item.submittedAt)}`;
 
@@ -3451,15 +3455,8 @@ function openHistoryModal(index){
 
 <div class="modal-summary-card">
   <div class="modal-summary-label">Diferença Caixa</div>
-  <div class="history-mini-value ${diferencaAtual < 0 ? "red" : diferencaAtual > 0 ? "green" : ""}">
-    ${diferencaAtual > 0 ? "+ " : diferencaAtual < 0 ? "- " : ""}${money(Math.abs(diferencaAtual))}
-  </div>
-</div>
-
-<div class="modal-summary-card">
-  <div class="modal-summary-label">Retirada</div>
-  <div class="history-mini-value orange">
-    ${money(retirada)}
+  <div class="history-mini-value ${(item.diff || 0) < 0 ? "red" : (item.diff || 0) > 0 ? "green" : ""}">
+    ${(item.diff || 0) > 0 ? "+ " : (item.diff || 0) < 0 ? "- " : ""}${money(Math.abs(item.diff || 0))}
   </div>
 </div>
 
@@ -3683,51 +3680,44 @@ function buildPremiumPdfHtml(startDate, endDate){
 
 const totalDiferenca = filtered.reduce((acc, item, index) => {
   const previousItem = filtered[index + 1] || {};
+  const previousSaldo = Number(previousItem?.turno?.saldoLiquido || 0);
+  const currentSaldo = Number(item?.turno?.saldoLiquido || 0);
+  const saidas = Number(item?.turno?.saidasTotal || 0);
 
-const saldoAtual = Number(item?.turno?.saldoLiquido || 0);
-const retirada = Number(item?.turno?.saidasTotal || 0);
-const saldoAnterior = Number(previousItem?.turno?.saldoLiquido || 0);
-
-const diffCaixa = index === filtered.length - 1
-  ? 0
-  : (saldoAtual + retirada) - saldoAnterior;
+  // 🔥 CORREÇÃO
+  const diff = (currentSaldo - saidas) - previousSaldo;
 
   return acc + diff;
 }, 0);
 
   const rankingOperadores = {};
 
-filtered.forEach((item, index) => {
+  filtered.forEach((item, index) => {
   const nome = item.nomeOperador || "Sem nome";
   const previousItem = filtered[index + 1] || {};
+  const previousSaldo = Number(previousItem?.turno?.saldoLiquido || 0);
+  const currentSaldo = Number(item?.turno?.saldoLiquido || 0);
+  const diff = currentSaldo - previousSaldo;
 
-  const saldoAtual = Number(item?.turno?.saldoLiquido || 0);
-  const retirada = Number(item?.turno?.saidasTotal || 0);
-  const saldoAnterior = Number(previousItem?.turno?.saldoLiquido || 0);
+    if(!rankingOperadores[nome]){
+      rankingOperadores[nome] = {
+        nome,
+        totalErro: 0,
+        qtd: 0,
+        sobra: 0,
+        falta: 0
+      };
+    }
 
-  const diff = index === filtered.length - 1
-    ? 0
-    : (saldoAtual + retirada) - saldoAnterior;
+    rankingOperadores[nome].totalErro += Math.abs(diff);
+    rankingOperadores[nome].qtd += 1;
 
-  if(!rankingOperadores[nome]){
-    rankingOperadores[nome] = {
-      nome,
-      totalErro: 0,
-      qtd: 0,
-      sobra: 0,
-      falta: 0
-    };
-  }
-
-  rankingOperadores[nome].totalErro += Math.abs(diff);
-  rankingOperadores[nome].qtd += 1;
-
-  if(diff > 0){
-    rankingOperadores[nome].sobra += diff;
-  }else if(diff < 0){
-    rankingOperadores[nome].falta += Math.abs(diff);
-  }
-});
+    if(diff > 0){
+      rankingOperadores[nome].sobra += diff;
+    }else if(diff < 0){
+      rankingOperadores[nome].falta += Math.abs(diff);
+    }
+  });
 
   const rankingHtml = Object.values(rankingOperadores)
     .sort((a, b) => b.totalErro - a.totalErro)
@@ -3750,17 +3740,11 @@ filtered.forEach((item, index) => {
   const saidas = Number(item?.turno?.saidasTotal || 0);
 
   const previousItem = filtered[index + 1] || {};
-const previousSaldo = Number(previousItem?.turno?.saldoLiquido || 0);
-const previousSaidas = Number(previousItem?.turno?.saidasTotal || 0);
+  const previousSaldo = Number(previousItem?.turno?.saldoLiquido || 0);
+  const currentSaldo = Number(item?.turno?.saldoLiquido || 0);
+  const diffCaixa = (currentSaldo - saidas) - previousSaldo;
 
-const currentSaldo = Number(item?.turno?.saldoLiquido || 0);
-const currentSaidas = Number(item?.turno?.saidasTotal || 0);
-
-const diffCaixa = index === filtered.length - 1
-  ? 0
-  : (currentSaldo + currentSaidas) - (previousSaldo + previousSaidas);
-
-return `
+  return `
     <tr style="background:#ffffff !important;">
       <td style="color:#0f172a !important; border-bottom:1px solid rgba(15,23,42,0.06) !important;">
         ${escapeHtml(nome)}
