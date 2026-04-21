@@ -3283,28 +3283,34 @@ list.innerHTML = history.slice(0, 30).map((item, index) => {
   const data = formatDateBR(item.fechamentoDate || "");
   const linhaTopo = `${nome} • Turno ${turno} • ${data}`;
 
-  return `
-    <div class="history-card" data-history-index="${index}">
-      <div class="history-title">${linhaTopo}</div>
+return `
+  <div class="history-card" data-history-index="${index}">
+    
+    <div class="history-title">${linhaTopo}</div>
 
-      <div class="history-metric">
+    <div class="history-grid">
+
+      <div class="history-box">
         <div class="history-label">Saldo Disponível(RECA)</div>
         <div class="history-value">${money(saldoDisponivel)}</div>
       </div>
 
-      <div class="history-metric">
+      <div class="history-box">
         <div class="history-label">Saldo Total</div>
         <div class="history-value">${money(saldoTotal)}</div>
       </div>
 
-      <div class="history-metric">
+      <div class="history-box">
         <div class="history-label">Diferença Caixa</div>
         <div class="history-value ${diferencaCaixa > 0 ? "positive" : diferencaCaixa < 0 ? "negative" : ""}">
           ${diferencaCaixa > 0 ? "+ " : diferencaCaixa < 0 ? "- " : ""}${money(Math.abs(diferencaCaixa))}
         </div>
       </div>
+
     </div>
-  `;
+
+  </div>
+`;
 }).join("");
 
 const ultimoNome = history[0]?.nomeOperador || "Sem nome";
@@ -3862,6 +3868,62 @@ return `
       font-size:12px;
       border-top:1px solid #e2e8f0;
     }
+
+/* =========================
+   CARD HISTÓRICO PREMIUM
+========================= */
+
+.history-card{
+  background:#ffffff;
+  border-radius:20px;
+  padding:16px;
+  margin-bottom:12px;
+
+  border:1px solid rgba(15,23,42,0.06);
+
+  box-shadow:
+    0 8px 20px rgba(15,23,42,0.06),
+    inset 0 1px 0 rgba(255,255,255,0.9);
+}
+
+.history-title{
+  font-weight:800;
+  font-size:14px;
+  margin-bottom:12px;
+  color:#0f172a;
+}
+
+.history-grid{
+  display:grid;
+  gap:10px;
+}
+
+.history-box{
+  padding:12px;
+  border-radius:14px;
+  background:#f8fafc;
+  border:1px solid rgba(15,23,42,0.04);
+}
+
+.history-label{
+  font-size:11px;
+  color:#64748b;
+  margin-bottom:4px;
+}
+
+.history-value{
+  font-size:16px;
+  font-weight:800;
+  color:#0f172a;
+}
+
+.history-value.positive{
+  color:#16a34a;
+}
+
+.history-value.negative{
+  color:#dc2626;
+}
 
     @media print{
       body{
