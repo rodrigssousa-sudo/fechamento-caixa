@@ -3742,7 +3742,7 @@ const totalDiferenca = filtered.reduce((acc, item, index) => {
 const previousItem = filtered[index + 1] || {};
 const previousSaldo = Number(previousItem?.turno?.saldoLiquido || 0);
 const currentSaldo = Number(item?.turno?.saldoLiquido || 0);
-const diffCaixa = currentSaldo - previousSaldo;
+const diffCaixa = (currentSaldoTotal + saidasTurnoAtual) - previousSaldoTotal;
 
   return `
     <tr style="background:#ffffff !important;">
