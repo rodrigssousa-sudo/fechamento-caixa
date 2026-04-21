@@ -1151,33 +1151,78 @@ input{
       color:var(--muted);
     }
 
-    .bottom-bar{
-      position:fixed;
-      left:0;
-      right:0;
-      bottom:0;
-      z-index:50;
-      padding:10px 12px calc(10px + var(--safe-bottom));
-      background:linear-gradient(180deg, rgba(2,6,23,0), rgba(2,6,23,.82) 18%, rgba(2,6,23,.94) 100%);
-      backdrop-filter:blur(16px);
-    }
+   /* ================= BARRA ESTILO APPLE ================= */
 
-    .bottom-bar-inner{
-      width:100%;
-      max-width:1180px;
-      margin:0 auto;
-      display:grid;
-      grid-template-columns:repeat(4, 1fr);
-      gap:8px;
-    }
+.bottom-bar{
+  position: fixed;
+  left: 12px;
+  right: 12px;
+  bottom: 0;
+  z-index: 50;
 
-    .bottom-bar button{
-      min-height:44px;
-      padding:10px 8px;
-      font-size:11px;
-      border-radius:14px;
-      letter-spacing:-.01em;
-    }
+  padding: 8px 10px calc(10px + env(safe-area-inset-bottom));
+
+  background: rgba(255,255,255,0.75);
+  backdrop-filter: blur(30px);
+  -webkit-backdrop-filter: blur(30px);
+
+  border-radius: 24px;
+  border: 1px solid rgba(15,23,42,0.06);
+
+  box-shadow:
+    0 -8px 30px rgba(15,23,42,0.08),
+    inset 0 1px 0 rgba(255,255,255,0.9);
+}
+
+/* ================= CONTAINER ================= */
+
+.bottom-bar-inner{
+  width: 100%;
+  max-width: 1180px;
+  margin: 0 auto;
+
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 10px;
+}
+
+/* ================= BOTÕES ================= */
+
+.bottom-bar button{
+  min-height: 44px;
+  padding: 8px;
+
+  font-size: 12px;
+  font-weight: 700;
+
+  border-radius: 14px;
+  border: 1px solid rgba(15,23,42,0.05);
+
+  background: rgba(255,255,255,0.9);
+  color: #0f172a;
+
+  box-shadow:
+    0 4px 12px rgba(15,23,42,0.06),
+    inset 0 1px 0 rgba(255,255,255,0.9);
+
+  transition: all .15s ease;
+}
+
+/* ================= BOTÃO PRINCIPAL ================= */
+
+.bottom-bar button.primary{
+  background: linear-gradient(135deg,#2563eb,#1d4ed8);
+  color:#fff;
+
+  box-shadow:
+    0 6px 18px rgba(37,99,235,0.25);
+}
+
+/* ================= CLICK ================= */
+
+.bottom-bar button:active{
+  transform: scale(0.95);
+}
 
    .main-btn{
   background:linear-gradient(135deg, var(--primary), var(--primary-strong));
@@ -3228,27 +3273,34 @@ function buildPremiumPdfHtml(startDate, endDate){
 }
 
 .logo-box{
-  width:54px;
-  height:54px;
-  border-radius:16px;
+  width:46px;
+  height:46px;
+  border-radius:14px;
 
-  background:#0F2A6B;
-
-  color:#ffffff;
-  font-weight:900;
   display:flex;
   align-items:center;
   justify-content:center;
-  font-size:18px;
-  letter-spacing:.5px;
 
-  /* borda mais elegante */
-  border: 1px solid rgba(0,0,0,0.05);
+  font-size:16px;
+  font-weight:900;
+  letter-spacing:.4px;
 
-  /* sombra premium */
+  color:#0f172a;
+
+  background: linear-gradient(
+    145deg,
+    rgba(255,255,255,0.95),
+    rgba(241,245,249,0.90)
+  );
+
+  border:1px solid rgba(15,23,42,0.06);
+
   box-shadow:
-    0 12px 30px rgba(15,42,107,0.25),
-    inset 0 1px 0 rgba(255,255,255,0.08);
+    0 6px 18px rgba(15,23,42,0.08),
+    inset 0 1px 0 rgba(255,255,255,0.9);
+
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
 }
 
 .brand-text h1{
