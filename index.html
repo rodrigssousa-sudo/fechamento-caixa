@@ -3353,70 +3353,81 @@ function closeHistoryModal(){
 function renderHistoryListFromCache(){
   const list = document.getElementById("historyList");
   const history = historyCache || [];
-const previousItem = history[index + 1] || {};
 
-const saldoAtual = Number(item.currentSaldoTotal || item.turno?.saldoLiquido || 0);
-const retirada = Number(item.retiradaLucro || item.turno?.saidasTotal || 0);
+  if(!history.length){
+    list.innerHTML = `<div class="history-empty">Sem histórico ainda.</div>`;
+    document.getElementById("historyInfo").textContent = "Nenhum turno anterior salvo ainda.";
+    updateHistoryVisibility();
+    return;
+  }
 
-const saldoAnterior = Number(
-  previousItem.currentSaldoTotal || previousItem?.turno?.saldoLiquido || 0
-);
+  list.innerHTML = history.slice(0, 40).map((item, index) => {
+    const previousItem = history[index + 1] || {};
 
-const diferencaAtual = index === history.length - 1
-  ? 0
-  : (saldoAtual + retirada) - saldoAnterior;
+    const saldoAtual = Number(item.currentSaldoTotal || item.turno?.saldoLiquido || 0);
+    const retirada = Number(item.retiradaLucro || item.turno?.saidasTotal || 0);
 
-  return `
-    <div class="history-card ${diffCaixa > 0 ? "is-positive" : diffCaixa < 0 ? "is-negative" : "is-neutral"}" data-history-index="${index}">
-      <div class="history-title">${item.nomeOperador || "Sem nome"} • Turno ${item.turnoTrabalhado || "-"} • ${formatDateBR(item.fechamentoDate || "")}</div>
+    const saldoAnterior = Number(
+      previousItem.currentSaldoTotal || previousItem?.turno?.saldoLiquido || 0
+    );
 
-      <div class="history-grid">
-        <div class="history-box">
-          <div class="history-label">Saldo Total</div>
-          <div class="history-value">${money(saldoTotal)}</div>
-        </div>
+    const diferencaAtual = index === history.length - 1
+      ? 0
+      : (saldoAtual + retirada) - saldoAnterior;
 
-        <div class="history-box">
-          <div class="history-label">Retirada</div>
-          <div class="history-value">${money(retirada)}</div>
-        </div>
+    return `
+      <div class="history-card ${diferencaAtual > 0 ? "is-positive" : diferencaAtual < 0 ? "is-negative" : "is-neutral"}" data-history-index="${index}">
+        <div class="history-title">${item.nomeOperador || "Sem nome"} • Turno ${item.turnoTrabalhado || "-"} • ${formatDateBR(item.fechamentoDate || "")}</div>
 
-        <div class="history-box">
-          <div class="history-label">Diferença Caixa</div>
-          <div class="history-value ${diffCaixa > 0 ? "positive" : diffCaixa < 0 ? "negative" : ""}">
-            ${diffCaixa > 0 ? "+ " : diffCaixa < 0 ? "- " : ""}${money(Math.abs(diffCaixa))}
+        <div class="history-grid">
+          <div class="history-box">
+            <div class="history-label">Saldo Total</div>
+            <div class="history-value">${money(saldoAtual)}</div>
+          </div>
+
+          <div class="history-box">
+            <div class="history-label">Retirada</div>
+            <div class="history-value">${money(retirada)}</div>
+          </div>
+
+          <div class="history-box">
+            <div class="history-label">Diferença Caixa</div>
+            <div class="history-value ${diferencaAtual > 0 ? "positive" : diferencaAtual < 0 ? "negative" : ""}">
+              ${diferencaAtual > 0 ? "+ " : diferencaAtual < 0 ? "- " : ""}${money(Math.abs(diferencaAtual))}
+            </div>
           </div>
         </div>
       </div>
-    </div>
-  `;
-}).join("");
+    `;
+  }).join("");
 
-const ultimoNome = history[0]?.nomeOperador || "Sem nome";
-const ultimoTurno = history[0]?.turnoTrabalhado || "-";
-const ultimaData = formatDateBR(history[0]?.fechamentoDate || "");
+  const ultimoNome = history[0]?.nomeOperador || "Sem nome";
+  const ultimoTurno = history[0]?.turnoTrabalhado || "-";
+  const ultimaData = formatDateBR(history[0]?.fechamentoDate || "");
 
-document.getElementById("historyInfo").textContent =
-  `Último fechamento: ${ultimoNome} • Turno ${ultimoTurno} • ${ultimaData}`;
+  document.getElementById("historyInfo").textContent =
+    `Último fechamento: ${ultimoNome} • Turno ${ultimoTurno} • ${ultimaData}`;
 
-list.querySelectorAll("[data-history-index]").forEach((el) => {
-  el.addEventListener("click", () => {
-    openHistoryModal(Number(el.dataset.historyIndex));
+  list.querySelectorAll("[data-history-index]").forEach((el) => {
+    el.addEventListener("click", () => {
+      openHistoryModal(Number(el.dataset.historyIndex));
+    });
   });
-});
 
-updateHistoryVisibility();
+  updateHistoryVisibility();
 }
 
 function openHistoryModal(index){
+  const history = historyCache || [];
   const item = history[index];
   if(!item) return;
 
   window.editingHistoryIndex = index;
   window.historyEditMode = false;
 
-document.getElementById("historyModalTitle").textContent =
-  `Fechamento • ${item.nomeOperador || "Sem nome"} • Turno ${item.turnoTrabalhado || "-"}`;
+  document.getElementById("historyModalTitle").textContent =
+    `Fechamento • ${item.nomeOperador || "Sem nome"} • Turno ${item.turnoTrabalhado || "-"}`;
+
   document.getElementById("historyModalSub").textContent =
     `Data do fechamento: ${formatDateBR(item.fechamentoDate || "")} • Enviado em: ${formatDateTimeBR(item.submittedAt)}`;
 
