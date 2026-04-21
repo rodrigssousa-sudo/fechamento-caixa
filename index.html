@@ -409,26 +409,70 @@ input{
   position: relative; /* garante que o ::after funcione */
 }
 
-   .logo-bk.premium-logo::after{
+ .logo-bk.premium-logo{
+  position: relative;
+  overflow: hidden;
+  border-radius: 16px;
+
+  background: linear-gradient(
+    145deg,
+    rgba(248,250,252,0.92) 0%,
+    rgba(226,232,240,0.88) 45%,
+    rgba(203,213,225,0.82) 100%
+  ) !important;
+
+  border: 1px solid rgba(255,255,255,0.55);
+
+  box-shadow:
+    0 10px 30px rgba(15,23,42,0.10),
+    inset 0 1px 0 rgba(255,255,255,0.85),
+    inset 0 -10px 20px rgba(148,163,184,0.10);
+
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+}
+
+.logo-bk.premium-logo::before{
   content:"";
   position:absolute;
   inset:0;
-  border-radius:14px;
-
-  background:linear-gradient(
-    120deg,
-    transparent 30%,
-    rgba(255,255,255,.15), /* ↓ menos forte */
-    transparent 70%
+  border-radius:16px;
+  background: radial-gradient(
+    circle at top left,
+    rgba(255,255,255,0.80) 0%,
+    rgba(255,255,255,0.18) 35%,
+    transparent 65%
   );
-
-  opacity:.4; /* ↑ um pouco mais visível */
   pointer-events:none;
 }
 
-    .logo-bk.premium-logo span:first-child{
-      opacity:.85;
-    }
+.logo-bk.premium-logo::after{
+  content:"";
+  position:absolute;
+  inset:0;
+  border-radius:16px;
+  background: linear-gradient(
+    120deg,
+    transparent 20%,
+    rgba(255,255,255,0.28) 45%,
+    transparent 75%
+  );
+  opacity:.55;
+  pointer-events:none;
+}
+
+.logo-bk.premium-logo span{
+  position: relative;
+  z-index: 2;
+  color: #0f172a !important;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  text-shadow: 0 1px 0 rgba(255,255,255,0.35);
+}
+
+.logo-bk.premium-logo span:first-child{
+  opacity: .96;
+}
 
    .brand-title{
   margin:0;
