@@ -399,6 +399,16 @@ input{
   overflow:hidden;
 }
 
+.logo-bk.premium-logo {
+  background: linear-gradient(
+    135deg,
+    #2563eb,
+    #1e40af
+  ) !important;
+
+  position: relative; /* garante que o ::after funcione */
+}
+
     .logo-bk.premium-logo::after{
       content:"";
       position:absolute;
