@@ -2662,22 +2662,19 @@ async function saveHistoryItem(item){
     const diffCaixa = (currentSaldoTotal + saidasTurnoAtual) - previousSaldoTotal;
 
     // salva os valores no item
-    item.turnProfit = diffCaixa;
-    item.diff = diffCaixa;
-    item.bankVariation = diffCaixa;
+item.currentSaldoTotal = currentSaldoTotal; // saldo total real do fechamento
+item.turnProfit = diffCaixa;               // lucro/diferença real do turno
+item.diff = diffCaixa;                     // diferença de caixa igual ao PDF
+item.bankVariation = diffCaixa;
 
-    // garante data de envio
-    item.submittedAt = serverTimestamp();
+// garante data de envio
+item.submittedAt = serverTimestamp();
 
-    // SALVA NO FIRESTORE
-    await addDoc(collection(db, "history"), item);
+// SALVA NO FIRESTORE
+await addDoc(collection(db, "history"), item);
 
-    console.log("Histórico salvo com sucesso.");
-    return true;
-  } catch (error) {
-    console.error("Erro ao salvar histórico:", error);
-    throw error;
-  }
+console.log("Histórico salvo com sucesso.");
+return true;
 }
 
 function formatDateBR(dateStr){
