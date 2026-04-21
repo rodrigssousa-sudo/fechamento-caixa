@@ -68,6 +68,38 @@ input{
   /* 👇 COLE AQUI (no final do CSS) */
   
   /* =========================
+   ALINHAMENTO DIREITA
+========================= */
+
+.summary-head.clean{
+  display:flex !important;
+  align-items:flex-start !important;
+  justify-content:space-between !important;
+  gap:12px;
+}
+
+#statusPill{
+  margin-left:auto !important;
+  align-self:flex-start !important;
+}
+
+.top-user-bar{
+  display:flex !important;
+  align-items:center !important;
+  justify-content:space-between !important;
+  gap:12px;
+}
+
+.top-user-info{
+  display:flex;
+  flex-direction:column;
+}
+
+.logout-btn{
+  margin-left:auto !important;
+}
+  
+  /* =========================
    CARD AZUL - VALOR + OLHO
 ========================= */
 
@@ -1965,34 +1997,34 @@ body{
         <button id="logoutBtn" class="logout-btn" type="button">Sair</button>
       </div>
 
-      <section class="app-shell-clean">
-        <section class="summary app-top">
-          <article class="summary-flat-card">
-            <div class="summary-head clean">
-              <div class="summary-left">
-                <span class="summary-label">Painel</span>
-                <h2>Financeiro</h2>
-              </div>
+    <section class="app-shell-clean">
+  <section class="summary app-top">
+    <article class="summary-flat-card">
+      <div class="summary-head clean">
+        <div class="summary-left">
+          <span class="summary-label">Painel</span>
+          <h2>Financeiro</h2>
+        </div>
 
-              <div id="statusPill" class="pill neutral">
-                <span class="dot"></span> Sem diferença
-              </div>
-            </div>
+        <div id="statusPill" class="pill neutral">
+          <span class="dot"></span> Sem diferença
+        </div>
+      </div>
 
-         <div class="balance-strip">
-  <div class="balance-strip-label">Saldo disponível(RECA)</div>
+      <div class="balance-strip">
+        <div class="balance-strip-label">Saldo disponível(RECA)</div>
 
-  <div class="balance-strip-row">
-    <div id="bankValue" class="balance-strip-value">$ 0,00</div>
+        <div class="balance-strip-row">
+          <div id="bankValue" class="balance-strip-value">$ 0,00</div>
 
-    <button id="toggleBalance" class="hide-balance-btn" type="button" aria-label="Mostrar ou ocultar banca">
-      <svg id="eyeIcon" width="20" height="20" viewBox="0 0 24 24" fill="none">
-        <path d="M2 12C4.5 7 8.5 5 12 5C15.5 5 19.5 7 22 12C19.5 17 15.5 19 12 19C8.5 19 4.5 17 2 12Z" stroke="currentColor" stroke-width="1.6"/>
-        <circle cx="12" cy="12" r="3" stroke="currentColor" stroke-width="1.6"/>
-      </svg>
-    </button>
-  </div>
-</div>
+          <button id="toggleBalance" class="hide-balance-btn" type="button" aria-label="Mostrar ou ocultar banca">
+            <svg id="eyeIcon" width="20" height="20" viewBox="0 0 24 24" fill="none">
+              <path d="M2 12C4.5 7 8.5 5 12 5C15.5 5 19.5 7 22 12C19.5 17 15.5 19 12 19C8.5 19 4.5 17 2 12Z" stroke="currentColor" stroke-width="1.6"/>
+              <circle cx="12" cy="12" r="3" stroke="currentColor" stroke-width="1.6"/>
+            </svg>
+          </button>
+        </div>
+      </div>
 
             <div class="top-metrics">
               <div class="top-metric">
