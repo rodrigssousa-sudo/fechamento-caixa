@@ -2656,16 +2656,15 @@ const currentSaldoTotal = Number(item?.turno?.saldoLiquido || 0);
 // SAÍDAS DO TURNO ATUAL
 const saidasTurnoAtual = Number(item?.turno?.saidasTotal || 0);
 
-// DIFERENÇA DE CAIXA SIMPLES
-// fórmula: saldo atual - saldo anterior
-const diffCaixa = currentSaldoTotal - previousSaldoTotal;
+// DIFERENÇA DE CAIXA IGUAL AO PDF
+// fórmula: (saldo atual + retiradas/saídas do turno atual) - saldo anterior
+
+const diffCaixa = (currentSaldoTotal + saidasTurnoAtual) - previousSaldoTotal;
 
 // salva os valores no item
-item.turnProfit = currentSaldoTotal; // saldo total do fechamento atual
-item.diff = diffCaixa;               // diferença simples entre saldos totais
-item.bankVariation = diffCaixa;      // mesma variação para exibição
-  await addDoc(collection(db, "history"), item);
-}
+item.turnProfit = diffCaixa;      // lucro/diferença real do turno
+item.diff = diffCaixa;            // diferença ajustada igual ao PDF
+item.bankVariation = diffCaixa;   // mesma variação para exibição
 
 function formatDateBR(dateStr){
   if(!dateStr) return "Sem data";
