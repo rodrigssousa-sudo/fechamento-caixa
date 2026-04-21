@@ -68,6 +68,55 @@ input{
   /* 👇 COLE AQUI (no final do CSS) */
   
   /* =========================
+   CARD AZUL - VALOR + OLHO
+========================= */
+
+.balance-strip{
+  display:flex;
+  flex-direction:column;
+  gap:12px;
+}
+
+.balance-strip-row{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:12px;
+}
+
+.balance-strip-value{
+  margin:0;
+}
+
+.hide-balance-btn{
+  flex-shrink:0;
+  width:46px;
+  height:46px;
+  border-radius:999px;
+
+  display:flex;
+  align-items:center;
+  justify-content:center;
+
+  background: rgba(255,255,255,0.14);
+  border: 1px solid rgba(255,255,255,0.22);
+  color:#ffffff;
+
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,0.18),
+    0 6px 14px rgba(15,23,42,0.14);
+
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+
+  transition: transform .15s ease, opacity .15s ease, background .15s ease;
+}
+
+.hide-balance-btn:active{
+  transform: scale(0.95);
+  opacity: .88;
+}
+  
 /* =========================
    RELATÓRIO SEMANAL / CARDS / PDF (LIGHT)
 ========================= */
@@ -1930,19 +1979,20 @@ body{
               </div>
             </div>
 
-            <div class="balance-strip">
-              <div>
-                <div class="balance-strip-label">Saldo disponível(RECA)</div>
-                <div id="bankValue" class="balance-strip-value">$ 0,00</div>
-              </div>
+         <div class="balance-strip">
+  <div class="balance-strip-label">Saldo disponível(RECA)</div>
 
-              <button id="toggleBalance" class="hide-balance-btn" type="button" aria-label="Mostrar ou ocultar banca">
-                <svg id="eyeIcon" width="20" height="20" viewBox="0 0 24 24" fill="none">
-                  <path d="M2 12C4.5 7 8.5 5 12 5C15.5 5 19.5 7 22 12C19.5 17 15.5 19 12 19C8.5 19 4.5 17 2 12Z" stroke="currentColor" stroke-width="1.6"/>
-                  <circle cx="12" cy="12" r="3" stroke="currentColor" stroke-width="1.6"/>
-                </svg>
-              </button>
-            </div>
+  <div class="balance-strip-row">
+    <div id="bankValue" class="balance-strip-value">$ 0,00</div>
+
+    <button id="toggleBalance" class="hide-balance-btn" type="button" aria-label="Mostrar ou ocultar banca">
+      <svg id="eyeIcon" width="20" height="20" viewBox="0 0 24 24" fill="none">
+        <path d="M2 12C4.5 7 8.5 5 12 5C15.5 5 19.5 7 22 12C19.5 17 15.5 19 12 19C8.5 19 4.5 17 2 12Z" stroke="currentColor" stroke-width="1.6"/>
+        <circle cx="12" cy="12" r="3" stroke="currentColor" stroke-width="1.6"/>
+      </svg>
+    </button>
+  </div>
+</div>
 
             <div class="top-metrics">
               <div class="top-metric">
