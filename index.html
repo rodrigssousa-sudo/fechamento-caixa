@@ -3625,16 +3625,38 @@ function buildPremiumPdfHtml(startDate, endDate){
     const diffCaixa = (currentSaldo + saidas) - previousSaldo;
 
     return `
-      <tr>
-        <td>${escapeHtml(nome)}</td>
-        <td>${escapeHtml(turno)}</td>
-        <td>${escapeHtml(data)}</td>
-        <td>${banco}</td>
-        <td>${money(saidas)}</td>
-        <td style="font-weight:900; color:${diffCaixa > 0 ? "#16a34a" : diffCaixa < 0 ? "#dc2626" : "#0f172a"};">
-          ${diffCaixa > 0 ? "+ " : diffCaixa < 0 ? "- " : ""}${money(Math.abs(diffCaixa))}
-        </td>
-      </tr>
+  <tr style="background:#ffffff !important;">
+    <td style="color:#0f172a !important; border-bottom:1px solid rgba(15,23,42,0.06) !important;">
+      ${escapeHtml(nome)}
+    </td>
+
+    <td style="color:#0f172a !important; border-bottom:1px solid rgba(15,23,42,0.06) !important;">
+      ${escapeHtml(turno)}
+    </td>
+
+    <td style="color:#0f172a !important; border-bottom:1px solid rgba(15,23,42,0.06) !important;">
+      ${escapeHtml(data)}
+    </td>
+
+    <td style="color:#0f172a !important; border-bottom:1px solid rgba(15,23,42,0.06) !important;">
+      ${banco}
+    </td>
+
+    <td style="color:#0f172a !important; border-bottom:1px solid rgba(15,23,42,0.06) !important;">
+      ${money(saidas)}
+    </td>
+
+    <td style="
+      font-weight:900;
+      color:${diffCaixa > 0 ? "#16a34a" : diffCaixa < 0 ? "#dc2626" : "#0f172a"};
+      border-bottom:1px solid rgba(15,23,42,0.06) !important;
+      background:#ffffff !important;
+    ">
+      ${diffCaixa > 0 ? "+ " : diffCaixa < 0 ? "- " : ""}
+      ${money(Math.abs(diffCaixa))}
+    </td>
+  </tr>
+`;
     `;
   }).join("");
 
@@ -3921,68 +3943,68 @@ tbody tr:nth-child(even){
   opacity: .88;
 }
     
- </style>
+</style>
 </head>
-<body>
-  <div class="sheet pdf-light">
-    <div class="top pdf-top">
+<body style="background:#ffffff !important; color:#0f172a !important;">
+  <div class="sheet pdf-light" style="background:#ffffff !important; color:#0f172a !important; border:1px solid rgba(15,23,42,0.06) !important; box-shadow:none !important;">
+    <div class="top pdf-top" style="background:#ffffff !important; color:#0f172a !important; border-bottom:1px solid rgba(15,23,42,0.08) !important;">
       <div class="brand-left">
-        <div class="logo-box">BK</div>
+        <div class="logo-box" style="background:#ffffff !important; color:#1d4ed8 !important; border:1px solid rgba(15,23,42,0.08) !important; box-shadow:none !important;">BK</div>
         <div class="brand-text">
-          <h1>BANK KING</h1>
-          <p>Relatório financeiro consolidado</p>
+          <h1 style="color:#0f172a !important;">BANK KING</h1>
+          <p style="color:#475569 !important;">Relatório financeiro consolidado</p>
         </div>
       </div>
 
-      <div class="brand-right">
-        <div class="period-block">
-          <div class="period-title">Período</div>
-          <div>De: ${formatDateBR(startDate)}</div>
-          <div>Até: ${formatDateBR(endDate)}</div>
+      <div class="brand-right" style="color:#0f172a !important;">
+        <div class="period-block" style="background:#ffffff !important; color:#0f172a !important;">
+          <div class="period-title" style="color:#1d4ed8 !important; font-weight:800 !important;">Período</div>
+          <div style="color:#0f172a !important;">De: ${formatDateBR(startDate)}</div>
+          <div style="color:#0f172a !important;">Até: ${formatDateBR(endDate)}</div>
         </div>
 
-        <div class="generated-block">
-          <div class="period-title">Gerado em</div>
-          <div>${new Date().toLocaleDateString("pt-BR")}</div>
-          <div>${new Date().toLocaleTimeString("pt-BR", { hour: "2-digit", minute: "2-digit" })}</div>
+        <div class="generated-block" style="background:#ffffff !important; color:#0f172a !important;">
+          <div class="period-title" style="color:#1d4ed8 !important; font-weight:800 !important;">Gerado em</div>
+          <div style="color:#0f172a !important;">${new Date().toLocaleDateString("pt-BR")}</div>
+          <div style="color:#0f172a !important;">${new Date().toLocaleTimeString("pt-BR", { hour: "2-digit", minute: "2-digit" })}</div>
         </div>
       </div>
     </div>
 
-    <div class="divider-line"></div>
+    <div class="divider-line" style="background:rgba(15,23,42,0.08) !important;"></div>
 
-    <div class="summary pdf-summary">
-      <div class="card pdf-card">
-        <div class="label">Banco Reca</div>
-        <div class="value">${money(ultimoBancoReca)}</div>
+    <div class="summary pdf-summary" style="background:transparent !important;">
+      <div class="card pdf-card" style="background:#ffffff !important; color:#0f172a !important; border:1px solid rgba(15,23,42,0.08) !important; box-shadow:none !important;">
+        <div class="label" style="color:#1d4ed8 !important;">Banco Reca</div>
+        <div class="value" style="color:#0f172a !important; font-weight:800 !important;">${money(ultimoBancoReca)}</div>
       </div>
 
-      <div class="card pdf-card">
-        <div class="label">Saídas de Caixa</div>
-        <div class="value">${money(totalSaidas)}</div>
+      <div class="card pdf-card" style="background:#ffffff !important; color:#0f172a !important; border:1px solid rgba(15,23,42,0.08) !important; box-shadow:none !important;">
+        <div class="label" style="color:#1d4ed8 !important;">Saídas de Caixa</div>
+        <div class="value" style="color:#0f172a !important; font-weight:800 !important;">${money(totalSaidas)}</div>
       </div>
 
-      <div class="card pdf-card">
-        <div class="label">Saldo Total</div>
-        <div class="value">${money(totalDiferenca)}</div>
+      <div class="card pdf-card" style="background:#ffffff !important; color:#0f172a !important; border:1px solid rgba(15,23,42,0.08) !important; box-shadow:none !important;">
+        <div class="label" style="color:#1d4ed8 !important;">Saldo Total</div>
+        <div class="value" style="color:#0f172a !important; font-weight:800 !important;">${money(totalDiferenca)}</div>
       </div>
     </div>
 
-    <div class="section-title">Fechamentos do período</div>
+    <div class="section-title" style="color:#0f172a !important;">Fechamentos do período</div>
 
-    <div class="table-wrap pdf-table-wrap">
+    <div class="table-wrap pdf-table-wrap" style="background:#ffffff !important;">
       ${
         filtered.length
           ? `
-            <table class="pdf-table">
+            <table class="pdf-table" style="width:100%; background:#ffffff !important; color:#0f172a !important; border-collapse:collapse !important;">
               <thead>
-                <tr>
-                  <th>Nome</th>
-                  <th>Turno</th>
-                  <th>Data</th>
-                  <th>Banco Reca</th>
-                  <th>Saídas de Caixa</th>
-                  <th>Diferença de Caixa</th>
+                <tr style="background:#eff6ff !important;">
+                  <th style="background:#eff6ff !important; color:#1d4ed8 !important; border-bottom:1px solid rgba(15,23,42,0.08) !important;">Nome</th>
+                  <th style="background:#eff6ff !important; color:#1d4ed8 !important; border-bottom:1px solid rgba(15,23,42,0.08) !important;">Turno</th>
+                  <th style="background:#eff6ff !important; color:#1d4ed8 !important; border-bottom:1px solid rgba(15,23,42,0.08) !important;">Data</th>
+                  <th style="background:#eff6ff !important; color:#1d4ed8 !important; border-bottom:1px solid rgba(15,23,42,0.08) !important;">Banco Reca</th>
+                  <th style="background:#eff6ff !important; color:#1d4ed8 !important; border-bottom:1px solid rgba(15,23,42,0.08) !important;">Saídas de Caixa</th>
+                  <th style="background:#eff6ff !important; color:#1d4ed8 !important; border-bottom:1px solid rgba(15,23,42,0.08) !important;">Diferença de Caixa</th>
                 </tr>
               </thead>
               <tbody>
@@ -3991,7 +4013,7 @@ tbody tr:nth-child(even){
             </table>
           `
           : `
-            <div class="empty">
+            <div class="empty" style="background:#ffffff !important; color:#475569 !important; border:1px dashed rgba(15,23,42,0.12) !important;">
               Nenhum fechamento encontrado no período selecionado.
             </div>
           `
