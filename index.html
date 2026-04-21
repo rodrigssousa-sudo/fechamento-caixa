@@ -2744,37 +2744,55 @@ async function saveHistoryItem(item){
     const snapshot = await getDocs(q);
     const previousItem = snapshot.docs[0]?.data() || null;
 
-    // SALDO TOTAL DO FECHAMENTO ANTERIOR
-    const previousSaldoTotal = Number(previousItem?.turno?.saldoLiquido || 0);
+    // =========================
+    // VALORES BASE
+    // =========================
 
-    // SALDO TOTAL DO FECHAMENTO ATUAL
+    const previousSaldoTotal = Number(previousItem?.turno?.saldoLiquido || 0);
     const currentSaldoTotal = Number(item?.turno?.saldoLiquido || 0);
 
-    // SAÍDAS DO TURNO ATUAL
     const saidasTurnoAtual = Number(item?.turno?.saidasTotal || 0);
+    const pendentesTurnoAtual = Number(item?.turno?.pendentesTotal || 0);
 
-    // diferença real (erro)
-const diffReal = (currentSaldoTotal + saidasTurnoAtual) - previousSaldoTotal;
+    // =========================
+    // 📌 RETIRADA / LUCRO
+    // =========================
 
-// lucro retirado
-const retirada = saidasTurnoAtual;
+    const retiradaLucro = saidasTurnoAtual;
 
-item.diff = diffReal;           // mostra no sistema
-item.retirada = retirada;       // opcional mostrar separado
-item.turnProfit = retirada;     // lucro do turno
-    // data
+    // =========================
+    // 📌 DIFERENÇA REAL DE CAIXA
+    // (IGNORA retirada)
+    // =========================
+
+    const diffCaixa = (currentSaldoTotal + retiradaLucro) - previousSaldoTotal;
+
+    // =========================
+    // 📌 LUCRO OPERACIONAL (opcional)
+    // =========================
+
+    const turnProfit = retiradaLucro;
+
+    // =========================
+    // SALVANDO ESTRUTURADO
+    // =========================
+
+    item.currentSaldoTotal = currentSaldoTotal; // saldo real
+    item.retiradaLucro = retiradaLucro;         // dinheiro que saiu
+    item.turnProfit = turnProfit;               // lucro do turno
+    item.diff = diffCaixa;                     // erro/diferença real
+    item.bankVariation = diffCaixa;
+
     item.submittedAt = serverTimestamp();
 
-    // salva
     await addDoc(collection(db, "history"), item);
 
-    console.log("Histórico salvo com sucesso.");
+    console.log("Histórico salvo com estrutura correta.");
     return true;
 
   } catch (error) {
     console.error("Erro ao salvar histórico:", error);
-    alert("Erro ao salvar histórico");
-    return false;
+    throw error;
   }
 }
     
