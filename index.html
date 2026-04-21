@@ -3269,45 +3269,38 @@ function renderHistoryListFromCache(){
   }
 
   list.innerHTML = history.slice(0, 30).map((item, index) => {
-    const saldoDisponivel = Number(item.total || 0);
-    const saldoTotal = Number(item.turnProfit || item.turno?.saldoLiquido || 0);
-    const diferencaCaixa = Number(item.diff || item.bankVariation || 0);
+  const saldoDisponivel = Number(item.total || 0);
+  const saldoTotal = Number(item.currentSaldoTotal || item.turno?.saldoLiquido || 0);
+  const diferencaCaixa = Number(item.diff || item.bankVariation || 0);
 
-    const nome = item.nomeOperador || "Sem nome";
-    const turno = item.turnoTrabalhado || "-";
-    const data = formatDateBR(item.fechamentoDate || "");
-    const linhaTopo = `${nome} • Turno ${turno} • ${data}`;
+  const nome = item.nomeOperador || "Sem nome";
+  const turno = item.turnoTrabalhado || "-";
+  const data = formatDateBR(item.fechamentoDate || "");
+  const linhaTopo = `${nome} • Turno ${turno} • ${data}`;
 
-    return `
-      <div class="history-item" data-history-index="${index}">
-        <div class="history-item-top">
-          <div class="history-user">${escapeHtml(linhaTopo)}</div>
-        </div>
+  return `
+    <div class="history-card">
+      <div class="history-title">${escapeHtml(linhaTopo)}</div>
 
-        <div class="history-item-grid">
-          <div class="history-mini-card">
-            <div class="history-mini-label">Saldo Disponível(RECA)</div>
-            <div class="history-mini-value">${money(saldoDisponivel)}</div>
-          </div>
+      <div class="history-metric">
+        <div class="history-label">Saldo Disponível(RECA)</div>
+        <div class="history-value">${money(saldoDisponivel)}</div>
+      </div>
 
-          <div class="history-mini-card">
-            <div class="history-mini-label">Saldo Total</div>
-            <div class="history-mini-value ${saldoTotal < 0 ? "red" : ""}">
-              ${money(saldoTotal)}
-            </div>
-          </div>
+      <div class="history-metric">
+        <div class="history-label">Saldo Total</div>
+        <div class="history-value">${money(saldoTotal)}</div>
+      </div>
 
-          <div class="history-mini-card">
-            <div class="history-mini-label">Diferença Caixa</div>
-            <div class="history-mini-value ${diferencaCaixa < 0 ? "red" : diferencaCaixa > 0 ? "green" : ""}">
-              ${diferencaCaixa > 0 ? "+ " : diferencaCaixa < 0 ? "- " : ""}
-              ${money(Math.abs(diferencaCaixa))}
-            </div>
-          </div>
+      <div class="history-metric">
+        <div class="history-label">Diferença Caixa</div>
+        <div class="history-value ${diferencaCaixa > 0 ? "positive" : diferencaCaixa < 0 ? "negative" : ""}">
+          ${diferencaCaixa > 0 ? "+ " : diferencaCaixa < 0 ? "- " : ""}${money(Math.abs(diferencaCaixa))}
         </div>
       </div>
-    `;
-  }).join("");
+    </div>
+  `;
+}).join("");
 
   const ultimoNome = history[0]?.nomeOperador || "Sem nome";
   const ultimoTurno = history[0]?.turnoTrabalhado || "-";
