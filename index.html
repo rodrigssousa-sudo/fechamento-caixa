@@ -178,22 +178,74 @@ table.pdf-table tbody td{
     color:#0f172a !important;
   }
 
-  .sheet,
-  .sheet.pdf-light{
-    background:#ffffff !important;
-    color:#0f172a !important;
-    border:none !important;
-    box-shadow:none !important;
-  }
+/* =========================
+   PDF LIGHT - FINAL FIX
+========================= */
 
-  table.pdf-table thead th{
-    background:#eff6ff !important;
-    color:#1d4ed8 !important;
-  }
+.sheet{
+  background:#ffffff !important;
+  color:#0f172a !important;
+  border:none !important;
+  box-shadow:none !important;
+}
 
-  table.pdf-table tbody td{
-    color:#0f172a !important;
-  }
+/* topo */
+.top{
+  background:#ffffff !important;
+  color:#0f172a !important;
+}
+
+/* resumo e cards */
+.summary,
+.card{
+  background:#ffffff !important;
+  color:#0f172a !important;
+  border:1px solid rgba(15,23,42,0.08) !important;
+  box-shadow:none !important;
+}
+
+/* labels */
+.label{
+  color:#1d4ed8 !important;
+}
+
+/* valores */
+.value{
+  color:#0f172a !important;
+  font-weight:800 !important;
+}
+
+/* tabela */
+.table-wrap,
+table{
+  background:#ffffff !important;
+  color:#0f172a !important;
+}
+
+thead th{
+  background:#eff6ff !important;
+  color:#1d4ed8 !important;
+  border-bottom:1px solid rgba(15,23,42,0.08) !important;
+}
+
+tbody td{
+  color:#0f172a !important;
+  border-bottom:1px solid rgba(15,23,42,0.06) !important;
+}
+
+/* linhas alternadas */
+tbody tr:nth-child(even){
+  background:#f8fafc !important;
+}
+
+tbody tr:nth-child(even) td{
+  background:#f8fafc !important;
+}
+
+/* força texto escuro */
+.sheet *{
+  color:#0f172a !important;
+}
 }
   
   /* =========================
