@@ -318,62 +318,107 @@ input{
       padding:16px 16px calc(100px + var(--safe-bottom));
     }
 
-   .header{
-  position:sticky;
-  top:0;
-  z-index:40;
-  margin:-16px -16px 16px;
-  padding:16px 16px 14px;
-  background:rgba(255,255,255,.78);
-  backdrop-filter:blur(18px);
-  -webkit-backdrop-filter:blur(18px);
-  border-bottom:1px solid var(--border);
-  box-shadow:0 6px 20px rgba(15,23,42,.04);
+/* ================= HEADER PREMIUM ================= */
+
+.header{
+  position: sticky;
+  top: 0;
+  z-index: 50;
+
+  margin: -16px -16px 18px;
+  padding: 18px 16px 14px;
+
+  background: rgba(255,255,255,0.65);
+  backdrop-filter: blur(22px);
+  -webkit-backdrop-filter: blur(22px);
+
+  border-bottom: 1px solid rgba(15,23,42,0.06);
+
+  box-shadow:
+    0 10px 30px rgba(15,23,42,0.06),
+    inset 0 -1px 0 rgba(255,255,255,0.6);
 }
-    .title-row,
-    .brand,
-    .summary-head,
-    .bank-topline,
-    .top-user-bar,
-    .history-item-top,
-    .report-head,
-    .turno-head,
-    .finance-head,
-    .modal-head,
-    .admin-head{
-      display:flex;
-      justify-content:space-between;
-      align-items:center;
-      gap:10px;
-    }
 
-    .brand{
-      justify-content:flex-start;
-      gap:12px;
-    }
+/* ================= LAYOUT HEADER ================= */
 
-    .menu-toggle-btn{
-      width:44px;
-      height:44px;
-      border-radius:14px;
-      border:1px solid var(--border);
-      background:rgba(255,255,255,.06);
-      display:inline-flex;
-      flex-direction:column;
-      align-items:center;
-      justify-content:center;
-      gap:4px;
-      padding:0;
-      box-shadow:0 8px 20px rgba(0,0,0,.12);
-    }
+.title-row,
+.brand,
+.summary-head,
+.bank-topline,
+.top-user-bar,
+.history-item-top,
+.report-head,
+.turno-head,
+.finance-head,
+.modal-head,
+.admin-head{
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+}
 
-    .menu-toggle-btn span{
-      display:block;
-      width:18px;
-      height:2px;
-      border-radius:999px;
-      background:#e2e8f0;
-    }
+/* ================= BRAND ================= */
+
+.brand{
+  justify-content: flex-start;
+  gap: 14px;
+}
+
+.brand-name{
+  font-size: 20px;
+  font-weight: 800;
+  color: #0f172a;
+  letter-spacing: -0.03em;
+}
+
+/* ================= MENU BUTTON ================= */
+
+.menu-toggle-btn{
+  width: 44px;
+  height: 44px;
+  border-radius: 14px;
+
+  border: 1px solid rgba(15,23,42,0.06);
+
+  background: rgba(255,255,255,0.7);
+
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+
+  box-shadow:
+    0 6px 18px rgba(15,23,42,0.08),
+    inset 0 1px 0 rgba(255,255,255,0.8);
+
+  transition: all 0.2s ease;
+}
+
+.menu-toggle-btn:active{
+  transform: scale(0.95);
+}
+
+/* ================= MENU ICON ================= */
+
+.menu-toggle-btn span{
+  display: block;
+  width: 18px;
+  height: 2px;
+  border-radius: 999px;
+
+  background: #334155;
+}
+
+/* ================= EXTRA SMOOTH ================= */
+
+.header *{
+  -webkit-font-smoothing: antialiased;
+}
 
     /* =========================
        LOGO PREMIUM
