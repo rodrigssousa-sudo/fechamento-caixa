@@ -3266,9 +3266,9 @@ function renderHistoryListFromCache(){
     document.getElementById("historyInfo").textContent = "Nenhum turno anterior salvo ainda.";
     updateHistoryVisibility();
     return;
-  }
+}
 
-  list.innerHTML = history.slice(0, 30).map((item, index) => {
+list.innerHTML = history.slice(0, 30).map((item, index) => {
   const saldoDisponivel = Number(item.total || 0);
   const saldoTotal = Number(item.currentSaldoTotal || item.turno?.saldoLiquido || 0);
   const diferencaCaixa = Number(item.diff || item.bankVariation || 0);
@@ -3279,8 +3279,8 @@ function renderHistoryListFromCache(){
   const linhaTopo = `${nome} • Turno ${turno} • ${data}`;
 
   return `
-    <div class="history-card">
-      <div class="history-title">${escapeHtml(linhaTopo)}</div>
+    <div class="history-card" data-history-index="${index}">
+      <div class="history-title">${linhaTopo}</div>
 
       <div class="history-metric">
         <div class="history-label">Saldo Disponível(RECA)</div>
@@ -3302,23 +3302,24 @@ function renderHistoryListFromCache(){
   `;
 }).join("");
 
-  const ultimoNome = history[0]?.nomeOperador || "Sem nome";
-  const ultimoTurno = history[0]?.turnoTrabalhado || "-";
-  const ultimaData = formatDateBR(history[0]?.fechamentoDate || "");
+const ultimoNome = history[0]?.nomeOperador || "Sem nome";
+const ultimoTurno = history[0]?.turnoTrabalhado || "-";
+const ultimaData = formatDateBR(history[0]?.fechamentoDate || "");
 
-  document.getElementById("historyInfo").textContent =
-    `Último fechamento: ${ultimoNome} • Turno ${ultimoTurno} • ${ultimaData}`;
+document.getElementById("historyInfo").textContent =
+  `Último fechamento: ${ultimoNome} • Turno ${ultimoTurno} • ${ultimaData}`;
 
-  list.querySelectorAll("[data-history-index]").forEach((el) => {
-    el.addEventListener("click", () => {
-      openHistoryModal(Number(el.dataset.historyIndex));
-    });
+list.querySelectorAll("[data-history-index]").forEach((el) => {
+  el.addEventListener("click", () => {
+    openHistoryModal(Number(el.dataset.historyIndex));
   });
+});
 
-  updateHistoryVisibility();
+updateHistoryVisibility();
 }
+
 function openHistoryModal(index){
-  const item = historyCache[index];
+  const item = history[index];
   if(!item) return;
 
   window.editingHistoryIndex = index;
