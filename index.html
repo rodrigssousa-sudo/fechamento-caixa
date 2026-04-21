@@ -3623,7 +3623,7 @@ function openHistoryModal(index){
         </div>
       </div>
 
-      <div class="modal-panel">
+          <div class="modal-panel">
         <div class="modal-panel-head"><h4>Saídas e Pendentes</h4></div>
         <div class="modal-panel-body">
           ${outflowsHtml}
@@ -3631,43 +3631,45 @@ function openHistoryModal(index){
         </div>
       </div>
     </div>
+  `;
+
   document.getElementById("saveHistoryBtn").onclick = async () => {
-  try {
-    const docRef = doc(db, "history", item.id);
+    try {
+      const docRef = doc(db, "history", item.id);
 
-    const newEntries = (turno.entries || []).map((e, i) => {
-      let inputValue = parseMoneyInput(
-        document.querySelector(`[data-entry="${i}"]`)?.value || ""
-      );
+      const newEntries = (turno.entries || []).map((e, i) => {
+        let inputValue = parseMoneyInput(
+          document.querySelector(`[data-entry="${i}"]`)?.value || ""
+        );
 
-      if (
-        e.name === "PPPoker (x400)" ||
-        e.name === "Suprema (x400)" ||
-        e.name === "Cargas F. Poker (x400)"
-      ) {
-        inputValue = inputValue * 400;
-      }
+        if (
+          e.name === "PPPoker (x400)" ||
+          e.name === "Suprema (x400)" ||
+          e.name === "Cargas F. Poker (x400)"
+        ) {
+          inputValue = inputValue * 400;
+        }
 
-      return {
-        ...e,
-        value: inputValue
-      };
-    });
+        return {
+          ...e,
+          value: inputValue
+        };
+      });
 
-    const newOutflows = (turno.outflows || []).map((e, i) => ({
-      name: document.querySelector(`[data-out-name="${i}"]`)?.value || "",
-      value: parseMoneyInput(document.querySelector(`[data-out-value="${i}"]`)?.value || "")
-    }));
+      const newOutflows = (turno.outflows || []).map((e, i) => ({
+        name: document.querySelector(`[data-out-name="${i}"]`)?.value || "",
+        value: parseMoneyInput(document.querySelector(`[data-out-value="${i}"]`)?.value || "")
+      }));
 
-    const newPendings = (turno.pendings || []).map((e, i) => ({
-      name: document.querySelector(`[data-pen-name="${i}"]`)?.value || "",
-      value: parseMoneyInput(document.querySelector(`[data-pen-value="${i}"]`)?.value || "")
-    }));
+      const newPendings = (turno.pendings || []).map((e, i) => ({
+        name: document.querySelector(`[data-pen-name="${i}"]`)?.value || "",
+        value: parseMoneyInput(document.querySelector(`[data-pen-value="${i}"]`)?.value || "")
+      }));
 
-    const entradasTotal = newEntries.reduce((a, b) => a + b.value, 0);
-    const saidasTotal = newOutflows.reduce((a, b) => a + b.value, 0);
-    const pendentesTotal = newPendings.reduce((a, b) => a + b.value, 0);
-    const saldoLiquido = entradasTotal - saidasTotal - pendentesTotal;
+      const entradasTotal = newEntries.reduce((a, b) => a + b.value, 0);
+      const saidasTotal = newOutflows.reduce((a, b) => a + b.value, 0);
+      const pendentesTotal = newPendings.reduce((a, b) => a + b.value, 0);
+      const saldoLiquido = entradasTotal - saidasTotal - pendentesTotal;
 
     const retiradaLucroEditada = saidasTotal;
     const diffCaixaEditada = index === history.length - 1
