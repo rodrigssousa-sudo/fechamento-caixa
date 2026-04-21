@@ -2730,7 +2730,7 @@ async function getUsersFromFirestore(){
 
 async function deleteUserDocFromFirestore(uid){
   if(!uid) return;
-await deleteDoc(doc(db, "users", uid));
+  await deleteDoc(doc(db, "users", uid));
 }
 
 async function saveHistoryItem(item){
@@ -2744,21 +2744,19 @@ async function saveHistoryItem(item){
     const snapshot = await getDocs(q);
     const previousItem = snapshot.docs[0]?.data() || null;
 
-    // SALDO TOTAL DO FECHAMENTO ANTERIOR
-    const previousSaldoTotal = Number(previousItem?.turno?.saldoLiquido || 0);
+    const previousSaldo = Number(previousItem?.turno?.saldoLiquido || 0);
+    const previousSaidas = Number(previousItem?.turno?.saidasTotal || 0);
 
-    // SALDO TOTAL DO FECHAMENTO ATUAL
-    const currentSaldoTotal = Number(item?.turno?.saldoLiquido || 0);
+    const currentSaldo = Number(item?.turno?.saldoLiquido || 0);
+    const currentSaidas = Number(item?.turno?.saidasTotal || 0);
 
-    // SAÍDAS DO TURNO ATUAL
-    const saidasTurnoAtual = Number(item?.turno?.saidasTotal || 0);
-
-    // DIFERENÇA DE CAIXA IGUAL AO PDF
-    const diffCaixa = (currentSaldoTotal - saidasTurnoAtual) - previousSaldoTotal;
+    // DIFERENÇA DE CAIXA CORRETA
+    const diffCaixa = (currentSaldo + currentSaidas) - (previousSaldo + previousSaidas);
 
     // salva os valores no item
-    item.currentSaldoTotal = currentSaldoTotal;
-    item.turnProfit = diffCaixa;
+    item.currentSaldoTotal = currentSaldo;
+    item.retiradaLucro = currentSaidas;
+    item.turnProfit = currentSaidas;
     item.diff = diffCaixa;
     item.bankVariation = diffCaixa;
 
@@ -2777,7 +2775,7 @@ async function saveHistoryItem(item){
     return false;
   }
 }
-    
+
 function formatDateBR(dateStr){
   if(!dateStr) return "Sem data";
   const [y,m,d] = dateStr.split("-");
@@ -2802,25 +2800,26 @@ function formatDateTimeBR(value){
     minute: "2-digit"
   })}`;
 }
-    function parseMoneyInput(value){
-      if(!value) return 0;
-      const normalized = String(value)
-        .replace(/\./g, "")
-        .replace(",", ".")
-        .replace(/[^\d.-]/g, "");
-      const number = parseFloat(normalized);
-      return Number.isFinite(number) ? number : 0;
-    }
 
-    function formatDigitsToMoneyString(digits){
-      const clean = String(digits || "").replace(/\D/g, "");
-      if(!clean) return "";
-      const number = Number(clean) / 100;
-      return number.toLocaleString("pt-BR", {
-        minimumFractionDigits: 2,
-        maximumFractionDigits: 2
-      });
-    }
+function parseMoneyInput(value){
+  if(!value) return 0;
+  const normalized = String(value)
+    .replace(/\./g, "")
+    .replace(",", ".")
+    .replace(/[^\d.-]/g, "");
+  const number = parseFloat(normalized);
+  return Number.isFinite(number) ? number : 0;
+}
+
+function formatDigitsToMoneyString(digits){
+  const clean = String(digits || "").replace(/\D/g, "");
+  if(!clean) return "";
+  const number = Number(clean) / 100;
+  return number.toLocaleString("pt-BR", {
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2
+  });
+}
 
     function setDigitsToInput(input, digits){
       if(!input) return;
