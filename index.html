@@ -3738,7 +3738,7 @@ function buildPremiumPdfHtml(startDate, endDate){
   const previousItem = filtered[index + 1] || {};
   const previousSaldo = Number(previousItem?.turno?.saldoLiquido || 0);
   const currentSaldo = Number(item?.turno?.saldoLiquido || 0);
-  const diffCaixa = (currentSaldo + saidas) - previousSaldo;
+  const diffCaixa = (currentSaldo - saidas) - previousSaldo;
 
   return `
     <tr style="background:#ffffff !important;">
