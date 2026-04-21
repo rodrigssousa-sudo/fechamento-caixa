@@ -3624,41 +3624,40 @@ function buildPremiumPdfHtml(startDate, endDate){
     const currentSaldo = Number(item?.turno?.saldoLiquido || 0);
     const diffCaixa = (currentSaldo + saidas) - previousSaldo;
 
-    return `
-  <tr style="background:#ffffff !important;">
-    <td style="color:#0f172a !important; border-bottom:1px solid rgba(15,23,42,0.06) !important;">
-      ${escapeHtml(nome)}
-    </td>
+  const linhas = filtered.map(item => {
+  return `
+    <tr style="background:#ffffff !important;">
+      <td style="color:#0f172a !important; border-bottom:1px solid rgba(15,23,42,0.06) !important;">
+        ${escapeHtml(nome)}
+      </td>
 
-    <td style="color:#0f172a !important; border-bottom:1px solid rgba(15,23,42,0.06) !important;">
-      ${escapeHtml(turno)}
-    </td>
+      <td style="color:#0f172a !important; border-bottom:1px solid rgba(15,23,42,0.06) !important;">
+        ${escapeHtml(turno)}
+      </td>
 
-    <td style="color:#0f172a !important; border-bottom:1px solid rgba(15,23,42,0.06) !important;">
-      ${escapeHtml(data)}
-    </td>
+      <td style="color:#0f172a !important; border-bottom:1px solid rgba(15,23,42,0.06) !important;">
+        ${escapeHtml(data)}
+      </td>
 
-    <td style="color:#0f172a !important; border-bottom:1px solid rgba(15,23,42,0.06) !important;">
-      ${banco}
-    </td>
+      <td style="color:#0f172a !important; border-bottom:1px solid rgba(15,23,42,0.06) !important;">
+        ${banco}
+      </td>
 
-    <td style="color:#0f172a !important; border-bottom:1px solid rgba(15,23,42,0.06) !important;">
-      ${money(saidas)}
-    </td>
+      <td style="color:#0f172a !important; border-bottom:1px solid rgba(15,23,42,0.06) !important;">
+        ${money(saidas)}
+      </td>
 
-    <td style="
-      font-weight:900;
-      color:${diffCaixa > 0 ? "#16a34a" : diffCaixa < 0 ? "#dc2626" : "#0f172a"};
-      border-bottom:1px solid rgba(15,23,42,0.06) !important;
-      background:#ffffff !important;
-    ">
-      ${diffCaixa > 0 ? "+ " : diffCaixa < 0 ? "- " : ""}
-      ${money(Math.abs(diffCaixa))}
-    </td>
-  </tr>
-`;
-    `;
-  }).join("");
+      <td style="
+        font-weight:900;
+        color:${diffCaixa > 0 ? "#16a34a" : diffCaixa < 0 ? "#dc2626" : "#0f172a"};
+        border-bottom:1px solid rgba(15,23,42,0.06) !important;
+        background:#ffffff !important;
+      ">
+        ${diffCaixa > 0 ? "+ " : diffCaixa < 0 ? "- " : ""}${money(Math.abs(diffCaixa))}
+      </td>
+    </tr>
+  `;
+}).join("");
 
   return `
 <!DOCTYPE html>
