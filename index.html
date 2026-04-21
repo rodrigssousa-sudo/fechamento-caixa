@@ -1237,33 +1237,93 @@ input{
       color:var(--muted);
     }
 
-    .bottom-bar{
-      position:fixed;
-      left:0;
-      right:0;
-      bottom:0;
-      z-index:50;
-      padding:10px 12px calc(10px + var(--safe-bottom));
-      background:linear-gradient(180deg, rgba(2,6,23,0), rgba(2,6,23,.82) 18%, rgba(2,6,23,.94) 100%);
-      backdrop-filter:blur(16px);
-    }
+  /* ================= BARRA INFERIOR PREMIUM ================= */
 
-    .bottom-bar-inner{
-      width:100%;
-      max-width:1180px;
-      margin:0 auto;
-      display:grid;
-      grid-template-columns:repeat(4, 1fr);
-      gap:8px;
-    }
+.bottom-bar{
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 8px;
+  z-index: 50;
 
-    .bottom-bar button{
-      min-height:44px;
-      padding:10px 8px;
-      font-size:11px;
-      border-radius:14px;
-      letter-spacing:-.01em;
-    }
+  margin: 0 10px;
+  padding: 10px 12px calc(12px + var(--safe-bottom));
+
+  background: rgba(255,255,255,0.65);
+  backdrop-filter: blur(22px);
+  -webkit-backdrop-filter: blur(22px);
+
+  border-top: 1px solid rgba(15,23,42,0.06);
+  border-radius: 22px;
+
+  box-shadow:
+    0 -10px 30px rgba(15,23,42,0.08),
+    inset 0 1px 0 rgba(255,255,255,0.6);
+}
+
+/* ================= CONTAINER ================= */
+
+.bottom-bar-inner{
+  width: 100%;
+  max-width: 1180px;
+  margin: 0 auto;
+
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 10px;
+}
+
+/* ================= BOTÕES ================= */
+
+.bottom-bar button{
+  min-height: 48px;
+  padding: 10px 8px;
+
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+
+  border-radius: 16px;
+  border: 1px solid rgba(15,23,42,0.05);
+
+  background: rgba(255,255,255,0.75);
+  color: #0f172a;
+
+  box-shadow:
+    0 6px 16px rgba(15,23,42,0.08),
+    inset 0 1px 0 rgba(255,255,255,0.8);
+
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+
+  transition: all 0.18s ease;
+}
+
+/* ================= CLIQUE ================= */
+
+.bottom-bar button:active{
+  transform: scale(0.96);
+  box-shadow:
+    0 4px 10px rgba(15,23,42,0.10),
+    inset 0 1px 0 rgba(255,255,255,0.6);
+}
+
+/* ================= BOTÃO ATIVO (se tiver) ================= */
+
+.bottom-bar button.active{
+  background: linear-gradient(
+    135deg,
+    #3b82f6,
+    #1d4ed8
+  );
+
+  color: #ffffff;
+  border: 1px solid rgba(37,99,235,0.25);
+
+  box-shadow:
+    0 8px 20px rgba(37,99,235,0.25),
+    inset 0 1px 0 rgba(255,255,255,0.2);
+}
 
    .main-btn{
   background:linear-gradient(135deg, var(--primary), var(--primary-strong));
