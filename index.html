@@ -2744,32 +2744,31 @@ async function saveHistoryItem(item){
     const snapshot = await getDocs(q);
     const previousItem = snapshot.docs[0]?.data() || null;
 
-    const previousSaldo = Number(previousItem?.turno?.saldoLiquido || 0);
-    const currentSaldo = Number(item?.turno?.saldoLiquido || 0);
-    const currentSaidas = Number(item?.turno?.saidasTotal || 0);
+    const previousSaldoTotal = Number(previousItem?.turno?.saldoLiquido || 0);
+    const currentSaldoTotal = Number(item?.turno?.saldoLiquido || 0);
+    const retiradaLucro = Number(item?.turno?.saidasTotal || 0);
 
-    // DIFERENÇA REAL
-    const diffCaixa = currentSaldo - previousSaldo;
+    const diffCaixa = (currentSaldoTotal + retiradaLucro) - previousSaldoTotal;
 
-    item.currentSaldoTotal = currentSaldo;
-    item.retiradaLucro = currentSaidas;
-    item.turnProfit = currentSaidas;
+    item.currentSaldoTotal = currentSaldoTotal;
+    item.retiradaLucro = retiradaLucro;
+    item.turnProfit = retiradaLucro;
     item.diff = diffCaixa;
     item.bankVariation = diffCaixa;
+
     item.submittedAt = serverTimestamp();
 
     await addDoc(collection(db, "history"), item);
 
     console.log("Histórico salvo com sucesso.");
     return true;
-
   } catch (error) {
     console.error("Erro ao salvar histórico:", error);
     alert("Erro ao salvar histórico");
     return false;
   }
 }
-
+    
 function formatDateBR(dateStr){
   if(!dateStr) return "Sem data";
   const [y,m,d] = dateStr.split("-");
@@ -3354,50 +3353,43 @@ function closeHistoryModal(){
 function renderHistoryListFromCache(){
   const list = document.getElementById("historyList");
   const history = historyCache || [];
+const previousItem = history[index + 1] || {};
 
-  if(!history.length){
-    list.innerHTML = `<div class="history-empty">Sem histórico ainda.</div>`;
-    document.getElementById("historyInfo").textContent = "Nenhum turno anterior salvo ainda.";
-    updateHistoryVisibility();
-    return;
-}
+const saldoAtual = Number(item.currentSaldoTotal || item.turno?.saldoLiquido || 0);
+const retirada = Number(item.retiradaLucro || item.turno?.saidasTotal || 0);
 
-list.innerHTML = history.slice(0, 30).map((item, index) => {
-  const saldoDisponivel = Number(item.total || 0);
-  const saldoTotal = Number(item.currentSaldoTotal || item.turno?.saldoLiquido || 0);
-  const diferencaCaixa = Number(item.diff || item.bankVariation || 0);
+const saldoAnterior = Number(
+  previousItem.currentSaldoTotal || previousItem?.turno?.saldoLiquido || 0
+);
 
-  const nome = item.nomeOperador || "Sem nome";
-  const turno = item.turnoTrabalhado || "-";
-  const data = formatDateBR(item.fechamentoDate || "");
-  const linhaTopo = `${nome} • Turno ${turno} • ${data}`;
+const diferencaAtual = index === history.length - 1
+  ? 0
+  : (saldoAtual + retirada) - saldoAnterior;
 
-return `
-  <div class="history-card ${diferencaCaixa > 0 ? "is-positive" : diferencaCaixa < 0 ? "is-negative" : "is-neutral"}" data-history-index="${index}">
-    <div class="history-card-accent"></div>
+  return `
+    <div class="history-card ${diffCaixa > 0 ? "is-positive" : diffCaixa < 0 ? "is-negative" : "is-neutral"}" data-history-index="${index}">
+      <div class="history-title">${item.nomeOperador || "Sem nome"} • Turno ${item.turnoTrabalhado || "-"} • ${formatDateBR(item.fechamentoDate || "")}</div>
 
-    <div class="history-title">${linhaTopo}</div>
+      <div class="history-grid">
+        <div class="history-box">
+          <div class="history-label">Saldo Total</div>
+          <div class="history-value">${money(saldoTotal)}</div>
+        </div>
 
-    <div class="history-grid">
-      <div class="history-box">
-        <div class="history-label">Saldo Disponível(RECA)</div>
-        <div class="history-value">${money(saldoDisponivel)}</div>
-      </div>
+        <div class="history-box">
+          <div class="history-label">Retirada</div>
+          <div class="history-value">${money(retirada)}</div>
+        </div>
 
-      <div class="history-box">
-        <div class="history-label">Saldo Total</div>
-        <div class="history-value">${money(saldoTotal)}</div>
-      </div>
-
-      <div class="history-box">
-        <div class="history-label">Diferença Caixa</div>
-        <div class="history-value ${diferencaCaixa > 0 ? "positive" : diferencaCaixa < 0 ? "negative" : ""}">
-          ${diferencaCaixa > 0 ? "+ " : diferencaCaixa < 0 ? "- " : ""}${money(Math.abs(diferencaCaixa))}
+        <div class="history-box">
+          <div class="history-label">Diferença Caixa</div>
+          <div class="history-value ${diffCaixa > 0 ? "positive" : diffCaixa < 0 ? "negative" : ""}">
+            ${diffCaixa > 0 ? "+ " : diffCaixa < 0 ? "- " : ""}${money(Math.abs(diffCaixa))}
+          </div>
         </div>
       </div>
     </div>
-  </div>
-`;
+  `;
 }).join("");
 
 const ultimoNome = history[0]?.nomeOperador || "Sem nome";
@@ -3448,8 +3440,15 @@ document.getElementById("historyModalTitle").textContent =
 
 <div class="modal-summary-card">
   <div class="modal-summary-label">Diferença Caixa</div>
-  <div class="history-mini-value ${(item.diff || 0) < 0 ? "red" : (item.diff || 0) > 0 ? "green" : ""}">
-    ${(item.diff || 0) > 0 ? "+ " : (item.diff || 0) < 0 ? "- " : ""}${money(Math.abs(item.diff || 0))}
+  <div class="history-mini-value ${diferencaAtual < 0 ? "red" : diferencaAtual > 0 ? "green" : ""}">
+    ${diferencaAtual > 0 ? "+ " : diferencaAtual < 0 ? "- " : ""}${money(Math.abs(diferencaAtual))}
+  </div>
+</div>
+
+<div class="modal-summary-card">
+  <div class="modal-summary-label">Retirada</div>
+  <div class="history-mini-value orange">
+    ${money(retirada)}
   </div>
 </div>
 
@@ -3673,15 +3672,15 @@ function buildPremiumPdfHtml(startDate, endDate){
 
 const totalDiferenca = filtered.reduce((acc, item, index) => {
   const previousItem = filtered[index + 1] || {};
-  const previousSaldo = Number(previousItem?.turno?.saldoLiquido || 0);
-  const previousSaidas = Number(previousItem?.turno?.saidasTotal || 0);
 
-  const currentSaldo = Number(item?.turno?.saldoLiquido || 0);
-  const currentSaidas = Number(item?.turno?.saidasTotal || 0);
+  const saldoAtual = Number(item?.turno?.saldoLiquido || 0);
+  const retirada = Number(item?.turno?.saidasTotal || 0);
+
+  const saldoAnterior = Number(previousItem?.turno?.saldoLiquido || 0);
 
   const diff = index === filtered.length - 1
     ? 0
-    : (currentSaldo + currentSaidas) - (previousSaldo + previousSaidas);
+    : (saldoAtual + retirada) - saldoAnterior;
 
   return acc + diff;
 }, 0);
@@ -3691,15 +3690,14 @@ const totalDiferenca = filtered.reduce((acc, item, index) => {
 filtered.forEach((item, index) => {
   const nome = item.nomeOperador || "Sem nome";
   const previousItem = filtered[index + 1] || {};
-  const previousSaldo = Number(previousItem?.turno?.saldoLiquido || 0);
-  const previousSaidas = Number(previousItem?.turno?.saidasTotal || 0);
 
-  const currentSaldo = Number(item?.turno?.saldoLiquido || 0);
-  const currentSaidas = Number(item?.turno?.saidasTotal || 0);
+  const saldoAtual = Number(item?.turno?.saldoLiquido || 0);
+  const retirada = Number(item?.turno?.saidasTotal || 0);
+  const saldoAnterior = Number(previousItem?.turno?.saldoLiquido || 0);
 
   const diff = index === filtered.length - 1
     ? 0
-    : (currentSaldo + currentSaidas) - (previousSaldo + previousSaidas);
+    : (saldoAtual + retirada) - saldoAnterior;
 
   if(!rankingOperadores[nome]){
     rankingOperadores[nome] = {
