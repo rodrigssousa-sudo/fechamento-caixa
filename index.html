@@ -3875,28 +3875,28 @@ filtered.forEach((item, index) => {
   const saidas = Number(item?.turno?.saidasTotal || 0);
 
   // 🔥 LÓGICA REAL DO SISTEMA
-  const diffCaixa = !previousItem
+const diff = !previousItem
   ? 0
   : (currentSaldo + saidas) - previousSaldo;
 
-  if(!rankingOperadores[nome]){
-    rankingOperadores[nome] = {
-      nome,
-      totalErro: 0,
-      qtd: 0,
-      sobra: 0,
-      falta: 0
-    };
-  }
+if(!rankingOperadores[nome]){
+  rankingOperadores[nome] = {
+    nome,
+    totalErro: 0,
+    qtd: 0,
+    sobra: 0,
+    falta: 0
+  };
+}
 
-  rankingOperadores[nome].totalErro += Math.abs(diff);
-  rankingOperadores[nome].qtd += 1;
+rankingOperadores[nome].totalErro += Math.abs(diff);
+rankingOperadores[nome].qtd += 1;
 
-  if(diff > 0){
-    rankingOperadores[nome].sobra += diff;
-  } else if(diff < 0){
-    rankingOperadores[nome].falta += Math.abs(diff);
-  }
+if(diff > 0){
+  rankingOperadores[nome].sobra += diff;
+} else if(diff < 0){
+  rankingOperadores[nome].falta += Math.abs(diff);
+}
 });
 
 const rankingHtml = Object.values(rankingOperadores)
