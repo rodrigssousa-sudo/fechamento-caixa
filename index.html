@@ -5159,26 +5159,18 @@ printWindow.onload = () => {
       const startLocal = new Date(start.getTime() - startOffset * 60000);
       const startDate = startLocal.toISOString().split("T")[0];
 
-      const printWindow = window.open("", "_blank", "width=1280,height=900");
-      if (!printWindow) {
-        alert("Não foi possível abrir a janela.");
-        return;
-      }
+     const printWindow = window.open("", "_blank", "width=1280,height=900");
+if (!printWindow) {
+  alert("Não foi possível abrir a janela.");
+  return;
+}
 
-    printWindow.document.open();
-printWindow.document.write(buildPremiumPdfHtml(startDate, endDate));
+const html = buildPremiumPdfHtml(startDate, endDate);
+console.log("HTML PDF:", html);
+
+printWindow.document.open();
+printWindow.document.write(html);
 printWindow.document.close();
-
-printWindow.onload = () => {
-  setTimeout(() => {
-    printWindow.focus();
-    printWindow.print();
-
-    setTimeout(() => {
-      printWindow.close();
-    }, 300);
-  }, 800);
-};
 
       byId("reportsMenu")?.classList.add("hidden");
     });
