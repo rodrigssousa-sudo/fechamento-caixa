@@ -2754,13 +2754,12 @@ async function saveHistoryItem(item){
     const saidasTurnoAtual = Number(item?.turno?.saidasTotal || 0);
 
    // DIFERENÇA DE CAIXA = (T2 - T1) + saídas do T2
-const diffCaixa = (currentSaldoTotal - previousSaldoTotal) + saidasTurnoAtual;
+const diffCaixa = (currentSaldoTotal - previousSaldoTotal) - saidasTurnoAtual;
 
-// salva os valores no item
-item.currentSaldoTotal = currentSaldoTotal; // saldo líquido do turno
-item.retiradaLucro = saidasTurnoAtual;      // saídas / retirada de lucro
-item.turnProfit = saidasTurnoAtual;         // lucro/retirada separado
-item.diff = diffCaixa;                      // diferença real de caixa
+item.currentSaldoTotal = currentSaldoTotal;
+item.retiradaLucro = saidasTurnoAtual;
+item.turnProfit = saidasTurnoAtual;
+item.diff = diffCaixa;
 item.bankVariation = diffCaixa;
 
 // data
