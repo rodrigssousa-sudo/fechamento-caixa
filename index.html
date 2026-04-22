@@ -5047,14 +5047,20 @@ document.addEventListener("DOMContentLoaded", () => {
       return;
     }
 
-    printWindow.document.open();
-    printWindow.document.write(buildPremiumPdfHtml(startDate, endDate));
-    printWindow.document.close();
-    printWindow.focus();
+ printWindow.document.open();
+printWindow.document.write(buildPremiumPdfHtml(startDate, endDate));
+printWindow.document.close();
 
-    printWindow.onload = () => {
-      printWindow.print();
-    };
+printWindow.onload = () => {
+  setTimeout(() => {
+    printWindow.focus();
+    printWindow.print();
+
+    setTimeout(() => {
+      printWindow.close();
+    }, 300);
+  }, 800);
+};
 
     closePdfRangeModal();
   });
@@ -5159,14 +5165,20 @@ document.addEventListener("DOMContentLoaded", () => {
         return;
       }
 
-      printWindow.document.open();
-      printWindow.document.write(buildPremiumPdfHtml(startDate, endDate));
-      printWindow.document.close();
-      printWindow.focus();
+    printWindow.document.open();
+printWindow.document.write(buildPremiumPdfHtml(startDate, endDate));
+printWindow.document.close();
 
-      printWindow.onload = () => {
-        printWindow.print();
-      };
+printWindow.onload = () => {
+  setTimeout(() => {
+    printWindow.focus();
+    printWindow.print();
+
+    setTimeout(() => {
+      printWindow.close();
+    }, 300);
+  }, 800);
+};
 
       byId("reportsMenu")?.classList.add("hidden");
     });
