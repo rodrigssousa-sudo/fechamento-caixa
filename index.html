@@ -132,6 +132,48 @@ input{
   min-width: fit-content;
   flex: 0 0 auto !important;
 }
+
+@media (min-width: 769px) {
+  #historyModal.modal {
+    position: fixed !important;
+    inset: 0 !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    padding: 24px !important;
+    z-index: 9999 !important;
+  }
+
+  #historyModal .modal-backdrop {
+    position: absolute !important;
+    inset: 0 !important;
+  }
+
+  #historyModal .modal-card {
+    position: relative !important;
+    width: min(1100px, 92vw) !important;
+    max-height: 88vh !important;
+    margin: 0 !important;
+    bottom: auto !important;
+    top: auto !important;
+    left: auto !important;
+    right: auto !important;
+    transform: none !important;
+
+    display: flex !important;
+    flex-direction: column !important;
+    overflow: hidden !important;
+
+    border-radius: 24px !important;
+    padding: 0 !important;
+  }
+
+  #historyModal .modal-body {
+    flex: 1 1 auto !important;
+    min-height: 0 !important;
+    overflow-y: auto !important;
+  }
+}
     
 /* =========================
    HISTÓRICO PREMIUM
