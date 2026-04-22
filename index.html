@@ -2753,14 +2753,14 @@ async function saveHistoryItem(item){
     // SAÍDAS DO TURNO ATUAL
     const saidasTurnoAtual = Number(item?.turno?.saidasTotal || 0);
 
-    // DIFERENÇA DE CAIXA IGUAL AO PDF
-    const diffCaixa = (currentSaldoTotal + saidasTurnoAtual) - previousSaldoTotal;
+   // DIFERENÇA DE CAIXA = (T2 - T1) + saídas do T2
+const diffCaixa = (currentSaldoTotal - previousSaldoTotal) + saidasTurnoAtual;
 
-    // salva os valores no item
-item.currentSaldoTotal = currentSaldoTotal;   // saldo líquido do turno
-item.retiradaLucro = saidasTurnoAtual;        // saídas / retirada de lucro do turno
-item.turnProfit = saidasTurnoAtual;           // mantém lucro/retirada separado
-item.diff = diffCaixa;                        // diferença real de caixa
+// salva os valores no item
+item.currentSaldoTotal = currentSaldoTotal; // saldo líquido do turno
+item.retiradaLucro = saidasTurnoAtual;      // saídas / retirada de lucro
+item.turnProfit = saidasTurnoAtual;         // lucro/retirada separado
+item.diff = diffCaixa;                      // diferença real de caixa
 item.bankVariation = diffCaixa;
 
 // data
@@ -3380,16 +3380,16 @@ list.innerHTML = history.slice(0, 30).map((item, index) => {
 
   const previousItem = history[index + 1] || null;
 
-  const previousSaldoTotal = previousItem
-    ? Number(
-        previousItem.currentSaldoTotal ||
-        previousItem?.turno?.saldoLiquido || 0
-      )
-    : 0;
+const previousSaldoTotal = previousItem
+  ? Number(
+      previousItem.currentSaldoTotal ||
+      previousItem?.turno?.saldoLiquido || 0
+    )
+  : 0;
 
-  const saidas = Number(
-    item.retiradaLucro || item.turno?.saidasTotal || 0
-  );
+const saidas = Number(
+  item.retiradaLucro || item.turno?.saidasTotal || 0
+);
 
   // 🔥 DIFERENÇA CORRETA
   const diferencaCaixa = !previousItem
