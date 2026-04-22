@@ -3417,7 +3417,7 @@ function renderHistoryListFromCache(){
       item.currentSaldoTotal || item.turno?.saldoLiquido || 0
     );
 
-    const previousItem = history[index + 1] || null;
+    const previousItem = history[index - 1] || null;
 
     const previousSaldoTotal = previousItem
       ? Number(
@@ -3431,8 +3431,8 @@ function renderHistoryListFromCache(){
     );
 
     const diferencaCaixa = !previousItem
-      ? 0
-      : (saldoTotal - previousSaldoTotal) + saidas;
+  ? 0
+  : saldoTotal - previousSaldoTotal;
 
     const nome = item.nomeOperador || "Sem nome";
     const turno = item.turnoTrabalhado || "-";
@@ -3499,13 +3499,35 @@ function openHistoryModal(index){
   window.editingHistoryIndex = index;
   window.historyEditMode = false;
 
-document.getElementById("historyModalTitle").textContent =
-  `Fechamento • ${item.nomeOperador || "Sem nome"} • Turno ${item.turnoTrabalhado || "-"}`;
+  document.getElementById("historyModalTitle").textContent =
+    `Fechamento • ${item.nomeOperador || "Sem nome"} • Turno ${item.turnoTrabalhado || "-"}`;
+
   document.getElementById("historyModalSub").textContent =
     `Data do fechamento: ${formatDateBR(item.fechamentoDate || "")} • Enviado em: ${formatDateTimeBR(item.submittedAt)}`;
 
   const turno = item.turno || {};
 
+  const previousItem = history[index - 1] || null;
+
+  const previousSaldoTotal = previousItem
+    ? Number(
+        previousItem.currentSaldoTotal ||
+        previousItem?.turno?.saldoLiquido || 0
+      )
+    : 0;
+
+  const saldoTotalAtual = Number(
+    item.currentSaldoTotal || item.turno?.saldoLiquido || 0
+  );
+
+  const saidas = Number(
+    item.retiradaLucro || item.turno?.saidasTotal || 0
+  );
+
+  const diferencaAtual = !previousItem
+    ? 0
+    : saldoTotalAtual - previousSaldoTotal;
+    
   document.getElementById("historyModalBody").innerHTML = `
     
     <!-- BOTÕES -->
@@ -3524,8 +3546,9 @@ document.getElementById("historyModalTitle").textContent =
 
 <div class="modal-summary-card">
   <div class="modal-summary-label">Diferença Caixa</div>
-  <div class="history-mini-value ${(item.diff || 0) < 0 ? "red" : (item.diff || 0) > 0 ? "green" : ""}">
-    ${(item.diff || 0) > 0 ? "+ " : (item.diff || 0) < 0 ? "- " : ""}${money(Math.abs(item.diff || 0))}
+  <div class="history-mini-value ${(diferencaAtual || 0) < 0 ? "red" : (diferencaAtual || 0) > 0 ? "green" : ""}">
+    ${(diferencaAtual || 0) > 0 ? "+ " : (diferencaAtual || 0) < 0 ? "- " : ""}
+    ${money(Math.abs(diferencaAtual || 0))}
   </div>
 </div>
 
