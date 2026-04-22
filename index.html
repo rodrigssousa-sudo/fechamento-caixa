@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+ <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8" />
@@ -3501,16 +3501,20 @@ function renderHistoryListFromCache(){
 
     const previousItem = history[index + 1] || null;
 
-const previousSaldoTotal = previousItem
-  ? Number(previousItem.currentSaldoTotal || previousItem?.turno?.saldoLiquido || 0)
-  : 0;
+    const previousSaldoTotal = previousItem
+      ? Number(
+          previousItem.currentSaldoTotal ||
+          previousItem?.turno?.saldoLiquido || 0
+        )
+      : 0;
 
-const saidas = Number(item.retiradaLucro || item.turno?.saidasTotal || 0);
-const saldoTotal = Number(item.currentSaldoTotal || item.turno?.saldoLiquido || 0);
+    const saidas = Number(
+      item.retiradaLucro || item.turno?.saidasTotal || 0
+    );
 
-const diferencaCaixa = !previousItem
-  ? 0
-  : (saldoTotal + saidas) - previousSaldoTotal;
+    const diferencaCaixa = !previousItem
+      ? 0
+      : saldoTotal - previousSaldoTotal;
 
     const nome = item.nomeOperador || "Sem nome";
     const turno = item.turnoTrabalhado || "-";
@@ -3587,16 +3591,17 @@ function openHistoryModal(index){
 
   const previousItem = history[index + 1] || null;
 
-const previousSaldoTotal = previousItem
-  ? Number(previousItem.currentSaldoTotal || previousItem?.turno?.saldoLiquido || 0)
-  : 0;
+  const previousSaldoTotal = previousItem
+    ? Number(previousItem.currentSaldoTotal || previousItem?.turno?.saldoLiquido || 0)
+    : 0;
 
-const saidas = Number(item.retiradaLucro || item.turno?.saidasTotal || 0);
-const saldoTotal = Number(item.currentSaldoTotal || item.turno?.saldoLiquido || 0);
+  const saldoTotalAtual = Number(
+    item.currentSaldoTotal || item.turno?.saldoLiquido || 0
+  );
 
-const diferencaCaixa = !previousItem
-  ? 0
-  : (saldoTotal + saidas) - previousSaldoTotal;
+  const diferencaAtual = !previousItem
+    ? 0
+    : saldoTotalAtual - previousSaldoTotal;
 
   document.getElementById("historyModalBody").innerHTML = `
     <div class="modal-summary-grid">
@@ -3739,7 +3744,7 @@ const diferencaCaixa = !previousItem
         ? Number(previousItem.currentSaldoTotal || previousItem?.turno?.saldoLiquido || 0)
         : 0;
 
-      const diff = !previousItem ? 0 : (saldoLiquido + saidasTotal) - previousSaldoTotal;
+      const diff = !previousItem ? 0 : saldoLiquido - previousSaldoTotal;
 
       await updateDoc(docRef, {
         fechamentoDate: document.getElementById("editDate")?.value || item.fechamentoDate || "",
@@ -3847,17 +3852,17 @@ function buildPremiumPdfHtml(startDate, endDate){
 
 const totalDiferenca = filtered.reduce((acc, item, index) => {
   const previousItem = filtered[index + 1] || null;
+  const previousSaldo = previousItem
+    ? Number(previousItem?.turno?.saldoLiquido || 0)
+    : 0;
 
-const previousSaldo = previousItem
-  ? Number(previousItem?.turno?.saldoLiquido || 0)
-  : 0;
+  const currentSaldo = Number(item?.turno?.saldoLiquido || 0);
+  const saidas = Number(item?.turno?.saidasTotal || 0);
 
-const currentSaldo = Number(item?.turno?.saldoLiquido || 0);
-const saidas = Number(item?.turno?.saidasTotal || 0);
+  const diff = !previousItem
+    ? 0
+    : (currentSaldo - previousSaldo) + saidas;
 
-const diff = !previousItem
-  ? 0
-  : (currentSaldo + saidas) - previousSaldo;
   return acc + diff;
 }, 0);
 
@@ -3875,28 +3880,28 @@ filtered.forEach((item, index) => {
   const saidas = Number(item?.turno?.saidasTotal || 0);
 
   // 🔥 LÓGICA REAL DO SISTEMA
-const diff = !previousItem
-  ? 0
-  : (currentSaldo + saidas) - previousSaldo;
+  const diff = !previousItem
+    ? 0
+    : (currentSaldo - previousSaldo) + saidas;
 
-if(!rankingOperadores[nome]){
-  rankingOperadores[nome] = {
-    nome,
-    totalErro: 0,
-    qtd: 0,
-    sobra: 0,
-    falta: 0
-  };
-}
+  if(!rankingOperadores[nome]){
+    rankingOperadores[nome] = {
+      nome,
+      totalErro: 0,
+      qtd: 0,
+      sobra: 0,
+      falta: 0
+    };
+  }
 
-rankingOperadores[nome].totalErro += Math.abs(diff);
-rankingOperadores[nome].qtd += 1;
+  rankingOperadores[nome].totalErro += Math.abs(diff);
+  rankingOperadores[nome].qtd += 1;
 
-if(diff > 0){
-  rankingOperadores[nome].sobra += diff;
-} else if(diff < 0){
-  rankingOperadores[nome].falta += Math.abs(diff);
-}
+  if(diff > 0){
+    rankingOperadores[nome].sobra += diff;
+  } else if(diff < 0){
+    rankingOperadores[nome].falta += Math.abs(diff);
+  }
 });
 
 const rankingHtml = Object.values(rankingOperadores)
@@ -3927,8 +3932,8 @@ const linhas = filtered.map((item, index) => {
   const currentSaldo = Number(item?.turno?.saldoLiquido || 0);
 
   const diffCaixa = !previousItem
-  ? 0
-  : (currentSaldo + saidas) - previousSaldo;
+    ? 0
+    : (currentSaldo - previousSaldo) + saidas;
 
   return `
     <tr style="background:#ffffff !important;">
@@ -4666,8 +4671,8 @@ async function saveEditedHistory(){
     : 0;
 
   const diffCaixaEditada = !previousItem
-  ? 0
-  : (saldoLiquido + saidasTotal) - previousSaldoTotal;
+    ? 0
+    : saldoLiquido - previousSaldoTotal;
 
   const fechamentoDate =
     document.getElementById("editFechamentoDate")?.value ||
