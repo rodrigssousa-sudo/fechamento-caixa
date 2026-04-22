@@ -3686,12 +3686,11 @@ function openHistoryModal(index){
   window.editingHistoryIndex = index;
   window.historyEditMode = false;
 
-  document.getElementById("historyModalTitle").textContent =
-    Fechamento • ${item.nomeOperador || "Sem nome"} • Turno ${item.turnoTrabalhado || "-"};
+ document.getElementById("historyModalTitle").textContent =
+  `Fechamento • ${item.nomeOperador || "Sem nome"} • Turno ${item.turnoTrabalhado || "-"}`;
 
-  document.getElementById("historyModalSub").textContent =
-    Data do fechamento: ${formatDateBR(item.fechamentoDate || "")} • Enviado em: ${formatDateTimeBR(item.submittedAt)};
-
+document.getElementById("historyModalSub").textContent =
+  `Data do fechamento: ${formatDateBR(item.fechamentoDate || "")} • Enviado em: ${formatDateTimeBR(item.submittedAt)}`;
   renderHistoryModalContent(item, false);
 
   if (modal) {
