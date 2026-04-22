@@ -3387,9 +3387,17 @@ const previousSaldoTotal = previousItem
     )
   : 0;
 
-const saidas = Number(
-  item.retiradaLucro || item.turno?.saidasTotal || 0
-);
+const saidas = Number(item.retiradaLucro || item.turno?.saidasTotal || 0);
+
+// 🔥 DIFERENÇA REAL
+const diferencaCaixa = !previousItem
+  ? 0
+  : (saldoTotal - previousSaldoTotal) - saidas;
+
+const nome = item.nomeOperador || "Sem nome";
+const turno = item.turnoTrabalhado || "-";
+const data = formatDateBR(item.fechamentoDate || "");
+const linhaTopo = `${nome} • Turno ${turno} • ${data}`;
 
   // 🔥 DIFERENÇA CORRETA
   const diferencaCaixa = !previousItem
