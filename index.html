@@ -1,4 +1,4 @@
- <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8" />
@@ -307,105 +307,82 @@ table.pdf-table tbody td{
   border:1px dashed rgba(15,23,42,0.12) !important;
 }
 
-@media print {
-  @page {
-    size: A4;
-    margin: 12mm;
+@media print{
+  body{
+    background:#ffffff !important;
+    color:#0f172a !important;
   }
 
-  html,
-  body {
-    background: #ffffff !important;
-    color: #0f172a !important;
-    margin: 0 !important;
-    padding: 0 !important;
-    -webkit-print-color-adjust: exact !important;
-    print-color-adjust: exact !important;
-  }
+/* =========================
+   PDF LIGHT - FINAL FIX
+========================= */
 
-  body * {
-    visibility: hidden !important;
-  }
-
-  .sheet,
-  .sheet * {
-    visibility: visible !important;
-  }
-
-  .sheet {
-    position: absolute !important;
-    left: 0 !important;
-    top: 0 !important;
-    width: 100% !important;
-    background: #ffffff !important;
-    color: #0f172a !important;
-    border: none !important;
-    box-shadow: none !important;
-    overflow: visible !important;
-  }
-
-  .top {
-    background: #ffffff !important;
-    color: #0f172a !important;
-  }
-
-  .summary,
-  .card {
-    background: #ffffff !important;
-    color: #0f172a !important;
-    border: 1px solid rgba(15, 23, 42, 0.08) !important;
-    box-shadow: none !important;
-    break-inside: avoid !important;
-    page-break-inside: avoid !important;
-  }
-
-  .label {
-    color: #1d4ed8 !important;
-  }
-
-  .value {
-    color: #0f172a !important;
-    font-weight: 800 !important;
-  }
-
-  .table-wrap,
-  table {
-    background: #ffffff !important;
-    color: #0f172a !important;
-    width: 100% !important;
-    border-collapse: collapse !important;
-  }
-
-  thead th {
-    background: #eff6ff !important;
-    color: #1d4ed8 !important;
-    border-bottom: 1px solid rgba(15, 23, 42, 0.08) !important;
-  }
-
-  tbody td {
-    color: #0f172a !important;
-    border-bottom: 1px solid rgba(15, 23, 42, 0.06) !important;
-  }
-
-  tbody tr:nth-child(even),
-  tbody tr:nth-child(even) td {
-    background: #f8fafc !important;
-  }
-
-  .sheet * {
-    color: #0f172a !important;
-  }
-
-  .no-print,
-  button,
-  .actions,
-  .topbar,
-  .sidebar,
-  .modal,
-  .modal-backdrop {
-    display: none !important;
-  }
+.sheet{
+  background:#ffffff !important;
+  color:#0f172a !important;
+  border:none !important;
+  box-shadow:none !important;
 }
+
+/* topo */
+.top{
+  background:#ffffff !important;
+  color:#0f172a !important;
+}
+
+/* resumo e cards */
+.summary,
+.card{
+  background:#ffffff !important;
+  color:#0f172a !important;
+  border:1px solid rgba(15,23,42,0.08) !important;
+  box-shadow:none !important;
+}
+
+/* labels */
+.label{
+  color:#1d4ed8 !important;
+}
+
+/* valores */
+.value{
+  color:#0f172a !important;
+  font-weight:800 !important;
+}
+
+/* tabela */
+.table-wrap,
+table{
+  background:#ffffff !important;
+  color:#0f172a !important;
+}
+
+thead th{
+  background:#eff6ff !important;
+  color:#1d4ed8 !important;
+  border-bottom:1px solid rgba(15,23,42,0.08) !important;
+}
+
+tbody td{
+  color:#0f172a !important;
+  border-bottom:1px solid rgba(15,23,42,0.06) !important;
+}
+
+/* linhas alternadas */
+tbody tr:nth-child(even){
+  background:#f8fafc !important;
+}
+
+tbody tr:nth-child(even) td{
+  background:#f8fafc !important;
+}
+
+/* força texto escuro */
+.sheet *{
+  color:#0f172a !important;
+}
+}
+  
   /* =========================
    ALINHAMENTO DIREITA
 ========================= */
@@ -4203,6 +4180,18 @@ return `
   color:#dc2626;
 }
 
+    @media print{
+      body{
+        background:#fff;
+        padding:0;
+      }
+
+      .sheet{
+        border:none;
+        box-shadow:none;
+        border-radius:0;
+      }
+    }
   </style>
 </head>
 <body>
@@ -5047,20 +5036,14 @@ document.addEventListener("DOMContentLoaded", () => {
       return;
     }
 
- printWindow.document.open();
-printWindow.document.write(buildPremiumPdfHtml(startDate, endDate));
-printWindow.document.close();
-
-printWindow.onload = () => {
-  setTimeout(() => {
+    printWindow.document.open();
+    printWindow.document.write(buildPremiumPdfHtml(startDate, endDate));
+    printWindow.document.close();
     printWindow.focus();
-    printWindow.print();
 
-    setTimeout(() => {
-      printWindow.close();
-    }, 300);
-  }, 800);
-};
+    printWindow.onload = () => {
+      printWindow.print();
+    };
 
     closePdfRangeModal();
   });
@@ -5159,38 +5142,24 @@ printWindow.onload = () => {
       const startLocal = new Date(start.getTime() - startOffset * 60000);
       const startDate = startLocal.toISOString().split("T")[0];
 
-     const printWindow = window.open("", "_blank", "width=1280,height=900");
-if (!printWindow) {
-  alert("Não foi possível abrir a janela.");
-  return;
-}
+      const printWindow = window.open("", "_blank", "width=1280,height=900");
+      if (!printWindow) {
+        alert("Não foi possível abrir a janela.");
+        return;
+      }
 
-const html = buildPremiumPdfHtml(startDate, endDate);
-console.log("HTML PDF:", html);
-console.log("TIPO:", typeof html);
-console.log("TAMANHO:", html ? html.length : 0);
+      printWindow.document.open();
+      printWindow.document.write(buildPremiumPdfHtml(startDate, endDate));
+      printWindow.document.close();
+      printWindow.focus();
 
-if (!html) {
-  alert("HTML vazio ou undefined");
-  return;
-}
+      printWindow.onload = () => {
+        printWindow.print();
+      };
 
-const printWindow = window.open("", "_blank", "width=1280,height=900");
-if (!printWindow) {
-  alert("Não foi possível abrir a janela.");
-  return;
-}
-
-printWindow.document.open();
-printWindow.document.write(`
-  <html>
-    <head><title>Teste</title></head>
-    <body>
-      <h1 style="color:black;">TESTE JANELA</h1>
-    </body>
-  </html>
-`);
-printWindow.document.close();
+      byId("reportsMenu")?.classList.add("hidden");
+    });
+  });
 
   on("deleteHistoryBtn", "click", async () => {
     const senha = prompt("Digite código interno:");
