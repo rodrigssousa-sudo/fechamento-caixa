@@ -3756,7 +3756,7 @@ function renderHistoryModalContent(item, editMode = false){
         <div class="modal-panel-head"><h4>Entradas</h4></div>
         <div class="modal-panel-body">
 
-          ${(turno.entries || []).map((entry, i) => {
+                  ${(turno.entries || []).map((entry, i) => {
             let displayValue = Number(entry.value || 0);
 
             if (
@@ -3768,7 +3768,7 @@ function renderHistoryModalContent(item, editMode = false){
             }
 
             if (editMode) {
-              return 
+              return `
                 <div class="modal-line">
                   <span>${escapeHtml(entry.name || "-")}</span>
                   <input
@@ -3777,10 +3777,10 @@ function renderHistoryModalContent(item, editMode = false){
                     data-edit-entry="${i}"
                   />
                 </div>
-              ;
+              `;
             }
 
-            return 
+            return `
               <div class="modal-line">
                 <span>${escapeHtml(entry.name || "-")}</span>
                 <input
@@ -3790,7 +3790,7 @@ function renderHistoryModalContent(item, editMode = false){
                   disabled
                 />
               </div>
-            ;
+            `;
           }).join("")}
 
         </div>
@@ -3802,7 +3802,7 @@ function renderHistoryModalContent(item, editMode = false){
 
           ${(turno.outflows || []).map((entry, i) => {
             if (editMode) {
-              return 
+              return `
                 <div class="modal-line">
                   <input
                     type="text"
@@ -3817,10 +3817,10 @@ function renderHistoryModalContent(item, editMode = false){
                     placeholder="Valor"
                   />
                 </div>
-              ;
+              `;
             }
 
-            return 
+            return `
               <div class="modal-line">
                 <span>${escapeHtml(entry.name || "-")}</span>
                 <input
@@ -3829,7 +3829,7 @@ function renderHistoryModalContent(item, editMode = false){
                   disabled
                 />
               </div>
-            ;
+            `;
           }).join("")}
 
         </div>
@@ -3841,7 +3841,7 @@ function renderHistoryModalContent(item, editMode = false){
 
           ${(turno.pendings || []).map((entry, i) => {
             if (editMode) {
-              return 
+              return `
                 <div class="modal-line">
                   <input
                     type="text"
@@ -3856,10 +3856,10 @@ function renderHistoryModalContent(item, editMode = false){
                     placeholder="Valor"
                   />
                 </div>
-              ;
+              `;
             }
 
-            return 
+            return `
               <div class="modal-line">
                 <span>${escapeHtml(entry.name || "-")}</span>
                 <input
@@ -3868,7 +3868,7 @@ function renderHistoryModalContent(item, editMode = false){
                   disabled
                 />
               </div>
-            ;
+            `;
           }).join("")}
 
         </div>
@@ -3877,7 +3877,6 @@ function renderHistoryModalContent(item, editMode = false){
     </div>
   `;
 }
-
       <div class="modal-panel">
         <div class="modal-panel-head"><h4>Saídas e Pendentes</h4></div>
         <div class="modal-panel-body">
