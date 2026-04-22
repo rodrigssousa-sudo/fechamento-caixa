@@ -3563,26 +3563,45 @@ function openHistoryModal(index){
   const item = history[index];
   if(!item) return;
 
+  // 🔥 COLE AQUI
+  const editBtn = document.getElementById("editHistoryBtn");
+  const saveBtn = document.getElementById("saveHistoryBtn");
+  const modal = document.getElementById("historyModal");
+
+  if (editBtn) {
+    editBtn.classList.remove("hidden");
+    editBtn.style.display = "inline-flex";
+  }
+
+  if (saveBtn) {
+    saveBtn.classList.add("hidden");
+  }
+
+  if (modal) {
+    modal.classList.remove("hidden");
+  }
+
+  // 👇 continua seu código normal
   window.editingHistoryIndex = index;
   window.historyEditMode = false;
 
   document.getElementById("historyModalTitle").textContent =
     `Fechamento • ${item.nomeOperador || "Sem nome"} • Turno ${item.turnoTrabalhado || "-"}`;
 
-document.getElementById("historyModalSub").textContent =
-  `Data do fechamento: ${formatDateBR(item.fechamentoDate || "")} • Enviado em: ${formatDateTimeBR(item.submittedAt)}`;
+  document.getElementById("historyModalSub").textContent =
+    `Data do fechamento: ${formatDateBR(item.fechamentoDate || "")} • Enviado em: ${formatDateTimeBR(item.submittedAt)}`;
 
-const previousItem = history[index + 1] || null;
+  const previousItem = history[index + 1] || null;
 
-const previousSaldoTotal = previousItem
-  ? calcularSaldoLiquido(previousItem.turno || {})
-  : 0;
+  const previousSaldoTotal = previousItem
+    ? calcularSaldoLiquido(previousItem.turno || {})
+    : 0;
 
-const saldoTotalAtual = calcularSaldoLiquido(item.turno || {});
+  const saldoTotalAtual = calcularSaldoLiquido(item.turno || {});
 
-const diferencaAtual = !previousItem
-  ? 0
-  : saldoTotalAtual - previousSaldoTotal;
+  const diferencaAtual = !previousItem
+    ? 0
+    : saldoTotalAtual - previousSaldoTotal;
 
   document.getElementById("historyModalBody").innerHTML = `
     <div class="modal-summary-grid">
