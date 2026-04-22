@@ -3306,18 +3306,17 @@ function serializeTurn(turno){
   { name: "Buffalo", value: getValue(f.buffalo) },
   { name: "Ganamos", value: getValue(f.ganamos) },
 
-  // 👇 AGORA COMO SAÍDA (NEGATIVO)
-  { name: "Carga de Fichas (-)", value: -getValue(f.cargas) },
-  { name: "Cargas F. Poker (- x400)", value: -(getValue(f.cargasPoker) * 400) }
+  { name: "Carga de Fichas", value: getValue(f.cargas) },
+{ name: "Cargas F. Poker (x400)", value: getValue(f.cargasPoker) * 400 }
 ];
 
-  const outflows = [...document.querySelectorAll(`#${turno}_dynamic_list .dynamic-row`)].map((row) => {
-    const inputs = row.querySelectorAll("input");
-    return {
-      name: inputs[0]?.value || "",
-      value: parseMoneyInput(inputs[1]?.value || "")
-    };
-  });
+const outflows = [...document.querySelectorAll(`#${turno}_dynamic_list .dynamic-row`)].map((row) => {
+  const inputs = row.querySelectorAll("input");
+  return {
+    name: inputs[0]?.value || "",
+    value: parseMoneyInput(inputs[1]?.value || "")
+  };
+});
 
   const pendings = [...document.querySelectorAll(`#${turno}_pending_list .dynamic-row`)].map((row) => {
     const inputs = row.querySelectorAll("input");
@@ -3652,48 +3651,65 @@ function openHistoryModal(index){
 });
 
       const newOutflows = (turno.outflows || []).map((e, i) => ({
-        name: document.querySelector(`[data-out-name="${i}"]`)?.value || "",
-        value: parseMoneyInput(document.querySelector(`[data-out-value="${i}"]`)?.value || "")
-      }));
+  name: document.querySelector(`[data-out-name="${i}"]`)?.value || "",
+  value: parseMoneyInput(document.querySelector(`[data-out-value="${i}"]`)?.value || "")
+}));
 
-      const newPendings = (turno.pendings || []).map((e, i) => ({
-        name: document.querySelector(`[data-pen-name="${i}"]`)?.value || "",
-        value: parseMoneyInput(document.querySelector(`[data-pen-value="${i}"]`)?.value || "")
-      }));
+const newPendings = (turno.pendings || []).map((e, i) => ({
+  name: document.querySelector(`[data-pen-name="${i}"]`)?.value || "",
+  value: parseMoneyInput(document.querySelector(`[data-pen-value="${i}"]`)?.value || "")
+}));
 
-      const entradasTotal = newEntries.reduce((a, b) => a + b.value, 0);
-      const saidasTotal = newOutflows.reduce((a, b) => a + b.value, 0);
-      const pendentesTotal = newPendings.reduce((a, b) => a + b.value, 0);
-      const saldoLiquido = entradasTotal - saidasTotal - pendentesTotal;
+const entradasTotal = newEntries.reduce((a, b) => a + b.value, 0);
+const saidasTotal = newOutflows.reduce((a, b) => a + b.value, 0);
+const pendentesTotal = newPendings.reduce((a, b) => a + b.value, 0);
+const saldoLiquido = entradasTotal - saidasTotal - pendentesTotal;
 
-      await updateDoc(docRef, {
-        fechamentoDate: document.getElementById("editDate")?.value || item.fechamentoDate || "",
-        total: newEntries.find((e) => e.name === "Banco Reca")?.value || 0,
-        turnProfit: saldoLiquido,
-        diff: item.diff || 0,
-        bankVariation: item.bankVariation || 0,
-        turno: {
-          ...turno,
-          dataFechamento: document.getElementById("editDate")?.value || item.fechamentoDate || "",
-          entries: newEntries,
-          outflows: newOutflows,
-          pendings: newPendings,
-          entradasTotal,
-          saidasTotal,
-          pendentesTotal,
-          saldoLiquido
-        }
-      });
+const previousItem = history[index + 1] || null;
+const previousSaldoTotal = previousItem
+  ? Number(
+      previousItem.currentSaldoTotal ||
+      previousItem?.turno?.saldoLiquido || 0
+    )
+  : 0;
 
-      alert("Histórico atualizado com sucesso");
-      document.getElementById("historyModal").classList.add("hidden");
-    } catch (e) {
-      console.error("Erro ao salvar histórico editado:", e);
-      alert("Erro ao salvar");
-    }
-  };
+// diferença real = saldo atual - saldo anterior
+const diffCaixaEditada = !previousItem
+  ? 0
+  : saldoLiquido - previousSaldoTotal;
 
-  document.getElementById("historyModal").classList.remove("hidden");
+await updateDoc(docRef, {
+  fechamentoDate: document.getElementById("editDate")?.value || item.fechamentoDate || "",
+  total: newEntries.find((e) => e.name === "Banco Reca")?.value || 0,
+
+  currentSaldoTotal: saldoLiquido,
+  retiradaLucro: saidasTotal,
+  turnProfit: saidasTotal,
+  diff: diffCaixaEditada,
+  bankVariation: diffCaixaEditada,
+
+  turno: {
+    ...turno,
+    dataFechamento: document.getElementById("editDate")?.value || item.fechamentoDate || "",
+    entries: newEntries,
+    outflows: newOutflows,
+    pendings: newPendings,
+    entradasTotal,
+    saidasTotal,
+    pendentesTotal,
+    saldoLiquido
+  }
+});
+
+alert("Histórico atualizado com sucesso");
+document.getElementById("historyModal").classList.add("hidden");
+} catch (e) {
+  console.error("Erro ao salvar histórico editado:", e);
+  alert("Erro ao salvar");
+}
+};
+
+document.getElementById("historyModal").classList.remove("hidden");
 }
 
 function startHistoryRealtimeListener(){
@@ -4535,24 +4551,26 @@ async function saveEditedHistory(){
   if(!item) return;
 
   const turno = item.turno || {};
+  const history = historyCache || [];
+  const index = editingHistoryIndex;
 
- const updatedEntries = (turno.entries || []).map((entry, i) => {
-  const input = document.querySelector(`[data-edit-entry="${i}"]`);
-  let value = parseMoneyInput(input?.value || 0);
+  const updatedEntries = (turno.entries || []).map((entry, i) => {
+    const input = document.querySelector(`[data-edit-entry="${i}"]`);
+    let value = parseMoneyInput(input?.value || 0);
 
-if (
-  entry.name === "PPPoker (x400)" ||
-  entry.name === "Suprema (x400)" ||
-  entry.name === "Cargas F. Poker (x400)"
-) {
-  value = value * 400;
-}
+    if (
+      entry.name === "PPPoker (x400)" ||
+      entry.name === "Suprema (x400)" ||
+      entry.name === "Cargas F. Poker (x400)"
+    ) {
+      value = value * 400;
+    }
 
-  return {
-    ...entry,
-    value
-  };
-});
+    return {
+      ...entry,
+      value
+    };
+  });
 
   const updatedOutflows = (turno.outflows || []).map((entry, i) => {
     const nameInput = document.querySelector(`[data-edit-outflow-name="${i}"]`);
@@ -4579,32 +4597,58 @@ if (
   const pendentesTotal = updatedPendings.reduce((acc, item) => acc + Number(item.value || 0), 0);
   const saldoLiquido = entradasTotal - saidasTotal - pendentesTotal;
 
-  const fechamentoDate = document.getElementById("editFechamentoDate")?.value || item.fechamentoDate || getTodayDateInput();
+  const previousItem = history[index + 1] || null;
+  const previousSaldoTotal = previousItem
+    ? Number(
+        previousItem.currentSaldoTotal ||
+        previousItem?.turno?.saldoLiquido || 0
+      )
+    : 0;
 
-  await updateDoc(doc(db, "history", item.id), {
-    fechamentoDate,
-    total: updatedEntries.find(e => e.name === "Banco Reca")?.value || 0,
-    turnProfit: saldoLiquido,
-    turno: {
-      ...turno,
-      dataFechamento: fechamentoDate,
-      entries: updatedEntries,
-      outflows: updatedOutflows,
-      pendings: updatedPendings,
-      entradasTotal,
-      saidasTotal,
-      pendentesTotal,
-      saldoLiquido
-    }
-  });
+  const diffCaixaEditada = !previousItem
+    ? 0
+    : saldoLiquido - previousSaldoTotal;
 
-  historyEditMode = false;
-  editingHistoryIndex = null;
+  const fechamentoDate =
+    document.getElementById("editFechamentoDate")?.value ||
+    item.fechamentoDate ||
+    getTodayDateInput();
 
-  document.getElementById("editHistoryBtn").classList.remove("hidden");
-  document.getElementById("saveHistoryBtn").classList.add("hidden");
+  try {
+    await updateDoc(doc(db, "history", item.id), {
+      fechamentoDate,
+      total: updatedEntries.find((e) => e.name === "Banco Reca")?.value || 0,
 
-  alert("Histórico atualizado com sucesso.");
+      currentSaldoTotal: saldoLiquido,
+      retiradaLucro: saidasTotal,
+      turnProfit: saidasTotal,
+      diff: diffCaixaEditada,
+      bankVariation: diffCaixaEditada,
+
+      turno: {
+        ...turno,
+        dataFechamento: fechamentoDate,
+        entries: updatedEntries,
+        outflows: updatedOutflows,
+        pendings: updatedPendings,
+        entradasTotal,
+        saidasTotal,
+        pendentesTotal,
+        saldoLiquido
+      }
+    });
+
+    historyEditMode = false;
+    editingHistoryIndex = null;
+
+    document.getElementById("editHistoryBtn").classList.remove("hidden");
+    document.getElementById("saveHistoryBtn").classList.add("hidden");
+
+    alert("Histórico atualizado com sucesso.");
+  } catch (e) {
+    console.error("Erro ao salvar histórico editado:", e);
+    alert("Erro ao salvar");
+  }
 }
 
     async function openAdminModal(){
