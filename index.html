@@ -3430,8 +3430,6 @@ function renderHistoryListFromCache(){
       item.retiradaLucro || item.turno?.saidasTotal || 0
     );
 
-alert("Index: " + index + " | Atual: " + saldoTotal + " | Anterior: " + previousSaldoTotal);
-
     const diferencaCaixa = !previousItem
   ? 0
   : saldoTotal - previousSaldoTotal;
