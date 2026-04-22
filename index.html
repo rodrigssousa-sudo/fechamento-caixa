@@ -3368,36 +3368,15 @@ function updateTurno1Visibility(){
 function serializeTurn(turno){
   const f = fieldsByTurn[turno];
 
-  const entries = [
+const entries = [
   { name: "Banco Reca", value: getValue(f.banco) },
   { name: "PPPoker (x400)", value: getValue(f.pppoker) * 400 },
   { name: "Suprema (x400)", value: getValue(f.suprema) * 400 },
   { name: "Buffalo", value: getValue(f.buffalo) },
   { name: "Ganamos", value: getValue(f.ganamos) },
-
   { name: "Carga de Fichas", value: getValue(f.cargas) },
-{ name: "Cargas F. Poker (x400)", value: getValue(f.cargasPoker) * 400 }
+  { name: "Cargas F. Poker (x400)", value: getValue(f.cargasPoker) * 400 }
 ];
-
-const outflows = [...document.querySelectorAll(`#${turno}_dynamic_list .dynamic-row`)].map((row) => {
-  const inputs = row.querySelectorAll("input");
-  return {
-    name: inputs[0]?.value || "",
-    value: parseMoneyInput(inputs[1]?.value || "")
-  };
-});
-
-  const pendings = [...document.querySelectorAll(`#${turno}_pending_list .dynamic-row`)].map((row) => {
-    const inputs = row.querySelectorAll("input");
-    return {
-      name: inputs[0]?.value || "",
-      value: parseMoneyInput(inputs[1]?.value || "")
-    };
-  });
-
-const entradasTotal = entries.reduce((acc, item) => acc + item.value, 0);
-const saidasTotal = outflows.reduce((acc, item) => acc + item.value, 0);
-const pendentesTotal = pendings.reduce((acc, item) => acc + item.value, 0);
 
 const outflows = [...document.querySelectorAll(`#${turno}_dynamic_list .dynamic-row`)].map((row) => {
   const inputs = row.querySelectorAll("input");
