@@ -3431,8 +3431,8 @@ function renderHistoryListFromCache(){
     );
 
     const diferencaCaixa = !previousItem
-  ? 0
-  : saldoTotal - previousSaldoTotal;
+      ? 0
+      : saldoTotal - previousSaldoTotal;
 
     const nome = item.nomeOperador || "Sem nome";
     const turno = item.turnoTrabalhado || "-";
@@ -3451,8 +3451,7 @@ function renderHistoryListFromCache(){
             diferencaCaixa > 0 ? "positive" :
             diferencaCaixa < 0 ? "negative" : ""
           }">
-          ${diferencaCaixa > 0 ? "+" : diferencaCaixa < 0 ? "-" : ""}
-${money(Math.abs(Number(diferencaCaixa || 0)))}
+            ${diferencaCaixa > 0 ? "+" : diferencaCaixa < 0 ? "-" : ""}${money(Math.abs(Number(diferencaCaixa || 0)))}
           </div>
         </div>
 
