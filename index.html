@@ -3399,7 +3399,27 @@ const entradasTotal = entries.reduce((acc, item) => acc + item.value, 0);
 const saidasTotal = outflows.reduce((acc, item) => acc + item.value, 0);
 const pendentesTotal = pendings.reduce((acc, item) => acc + item.value, 0);
 
-const turno = {
+const outflows = [...document.querySelectorAll(`#${turno}_dynamic_list .dynamic-row`)].map((row) => {
+  const inputs = row.querySelectorAll("input");
+  return {
+    name: inputs[0]?.value || "",
+    value: parseMoneyInput(inputs[1]?.value || "")
+  };
+});
+
+const pendings = [...document.querySelectorAll(`#${turno}_pending_list .dynamic-row`)].map((row) => {
+  const inputs = row.querySelectorAll("input");
+  return {
+    name: inputs[0]?.value || "",
+    value: parseMoneyInput(inputs[1]?.value || "")
+  };
+});
+
+const entradasTotal = entries.reduce((acc, item) => acc + item.value, 0);
+const saidasTotal = outflows.reduce((acc, item) => acc + item.value, 0);
+const pendentesTotal = pendings.reduce((acc, item) => acc + item.value, 0);
+
+const turnoData = {
   dataFechamento: document.getElementById(f.dataFechamento)?.value || getTodayDateInput(),
   entries,
   outflows,
@@ -3414,7 +3434,7 @@ const turno = {
   ganamos: getValue(f.ganamos)
 };
 
-turno.saldoLiquido = calcularSaldoLiquido(turno);
+turnoData.saldoLiquido = calcularSaldoLiquido(turnoData);
 
 return {
   nomeOperador: document.getElementById(f.nomeOperador)?.value?.trim() || "Sem nome",
@@ -3422,48 +3442,47 @@ return {
   submittedAt: serverTimestamp(),
   fechamentoDate: document.getElementById(f.dataFechamento)?.value || getTodayDateInput(),
   total: getValue(f.banco),
-  turno
+  turno: turnoData
 };
 }
 function applySnapshotToTurn(turno, snapshot){
   if(!snapshot) return;
 
-      clearTurn(turno);
+  clearTurn(turno);
 
-      const f = fieldsByTurn[turno];
-      document.getElementById(f.dataFechamento).value = snapshot.dataFechamento || getTodayDateInput();
+  const f = fieldsByTurn[turno];
+  document.getElementById(f.dataFechamento).value = snapshot.dataFechamento || getTodayDateInput();
 
-      const map = {
-        "Banco Reca": f.banco,
-        "PPPoker (x400)": f.pppoker,
-        "Suprema (x400)": f.suprema,
-        "Buffalo": f.buffalo,
-        "Ganamos": f.ganamos,
-        "Carga de Fichas": f.cargas,
-        "Cargas F. Poker (x400)": f.cargasPoker
-      };
+  const map = {
+    "Banco Reca": f.banco,
+    "PPPoker (x400)": f.pppoker,
+    "Suprema (x400)": f.suprema,
+    "Buffalo": f.buffalo,
+    "Ganamos": f.ganamos,
+    "Carga de Fichas": f.cargas,
+    "Cargas F. Poker (x400)": f.cargasPoker
+  };
 
-      (snapshot.entries || []).forEach((entry) => {
-        const id = map[entry.name];
-        if(!id) return;
-        let rawValue = entry.value || 0;
-        if(entry.name.includes("(x400)")) rawValue = rawValue / 400;
-        setDigitsToInput(document.getElementById(id), Math.round(rawValue * 100).toString());
-      });
+  (snapshot.entries || []).forEach((entry) => {
+    const id = map[entry.name];
+    if(!id) return;
+    let rawValue = entry.value || 0;
+    if(entry.name.includes("(x400)")) rawValue = rawValue / 400;
+    setDigitsToInput(document.getElementById(id), Math.round(rawValue * 100).toString());
+  });
 
-      (snapshot.outflows || []).forEach((item) => {
-        createDynamicRow(turno, item.name, Math.round((item.value || 0) * 100).toString());
-      });
+  (snapshot.outflows || []).forEach((item) => {
+    createDynamicRow(turno, item.name, Math.round((item.value || 0) * 100).toString());
+  });
 
-      (snapshot.pendings || []).forEach((item) => {
-        createPendingRow(turno, item.name, Math.round((item.value || 0) * 100).toString());
-      });
-    }
+  (snapshot.pendings || []).forEach((item) => {
+    createPendingRow(turno, item.name, Math.round((item.value || 0) * 100).toString());
+  });
+}
 
-    function getBancoRecaFromSnapshot(snapshot){
-      return (snapshot.entries || []).find((item) => item.name === "Banco Reca")?.value || 0;
-    }
-
+function getBancoRecaFromSnapshot(snapshot){
+  return (snapshot.entries || []).find((item) => item.name === "Banco Reca")?.value || 0;
+}
 function closeHistoryModal(){
   document.getElementById("historyModal").classList.add("hidden");
   editingHistoryIndex = null;
