@@ -3491,6 +3491,7 @@ function renderHistoryListFromCache(){
 }
 
 function openHistoryModal(index){
+  const history = historyCache || [];
   const item = history[index];
   if(!item) return;
 
@@ -3508,47 +3509,39 @@ function openHistoryModal(index){
   const previousItem = history[index + 1] || null;
 
   const previousSaldoTotal = previousItem
-    ? Number(
-        previousItem.currentSaldoTotal ||
-        previousItem?.turno?.saldoLiquido || 0
-      )
+    ? Number(previousItem.currentSaldoTotal || previousItem?.turno?.saldoLiquido || 0)
     : 0;
 
   const saldoTotalAtual = Number(
     item.currentSaldoTotal || item.turno?.saldoLiquido || 0
   );
 
-  const saidas = Number(
-    item.retiradaLucro || item.turno?.saidasTotal || 0
-  );
-
   const diferencaAtual = !previousItem
     ? 0
     : saldoTotalAtual - previousSaldoTotal;
-    
+
   document.getElementById("historyModalBody").innerHTML = `
-    
-    <!-- BOTÕES -->
     <div class="modal-summary-grid">
+
       <div class="modal-summary-card">
-        <div class="modal-summary-label">Total do fechamento</div>
+        <div class="modal-summary-label">Saldo (RECA)</div>
         <div class="modal-summary-value">${money(item.total || 0)}</div>
       </div>
 
-     <div class="modal-summary-card">
-  <div class="modal-summary-label">Diferença Caixa</div>
-  <div class="modal-summary-value">
-    ${money(item.currentSaldoTotal || item.turno?.saldoLiquido || 0)}
-  </div>
-</div>
+      <div class="modal-summary-card">
+        <div class="modal-summary-label">Saldo Total Turno</div>
+        <div class="modal-summary-value">
+          ${money(item.currentSaldoTotal || item.turno?.saldoLiquido || 0)}
+        </div>
+      </div>
 
-<div class="modal-summary-card">
-  <div class="modal-summary-label">Diferença Caixa</div>
-  <div class="history-mini-value ${(diferencaAtual || 0) < 0 ? "red" : (diferencaAtual || 0) > 0 ? "green" : ""}">
-    ${(diferencaAtual || 0) > 0 ? "+ " : (diferencaAtual || 0) < 0 ? "- " : ""}
-    ${money(Math.abs(diferencaAtual || 0))}
-  </div>
-</div>
+      <div class="modal-summary-card">
+        <div class="modal-summary-label">Diferença Real de Caixa</div>
+        <div class="history-mini-value ${(diferencaAtual || 0) < 0 ? "red" : (diferencaAtual || 0) > 0 ? "green" : ""}">
+          ${(diferencaAtual || 0) > 0 ? "+ " : (diferencaAtual || 0) < 0 ? "- " : ""}
+          ${money(Math.abs(diferencaAtual || 0))}
+        </div>
+      </div>
 
       <div class="modal-summary-card">
         <div class="modal-summary-label">Responsável</div>
@@ -3559,71 +3552,70 @@ function openHistoryModal(index){
         <div class="modal-summary-label">Data</div>
         <input id="editDate" type="date" value="${item.fechamentoDate || ""}" disabled />
       </div>
+
     </div>
 
     <div class="modal-turnos-grid">
 
-      <!-- ENTRADAS -->
       <div class="modal-panel">
         <div class="modal-panel-head"><h4>Entradas</h4></div>
         <div class="modal-panel-body">
-         ${(turno.entries || []).map((entry, i) => {
-  let displayValue = Number(entry.value || 0);
 
-  if (
-  entry.name === "PPPoker (x400)" ||
-  entry.name === "Suprema (x400)" ||
-  entry.name === "Cargas F. Poker (x400)"
-) {
-  displayValue = displayValue / 400;
-}
+          ${(turno.entries || []).map((entry, i) => {
+            let displayValue = Number(entry.value || 0);
 
-  return `
-    <div class="modal-line">
-      <span>${escapeHtml(entry.name || "-")}</span>
-      <input 
-        type="text" 
-        value="${Number(displayValue).toFixed(2).replace(".", ",")}" 
-        data-entry="${i}"
-        disabled
-        style="max-width:120px;"
-      />
-    </div>
-  `;
-}).join("")}
+            if (
+              entry.name === "PPPoker (x400)" ||
+              entry.name === "Suprema (x400)" ||
+              entry.name === "Cargas F. Poker (x400)"
+            ) {
+              displayValue = displayValue / 400;
+            }
+
+            return `
+              <div class="modal-line">
+                <span>${escapeHtml(entry.name || "-")}</span>
+                <input
+                  type="text"
+                  value="${Number(displayValue).toFixed(2).replace(".", ",")}"
+                  data-entry="${i}"
+                  disabled
+                />
+              </div>
+            `;
+          }).join("")}
+
         </div>
       </div>
 
-      <!-- SAÍDAS + PENDENTES -->
       <div class="modal-panel">
         <div class="modal-panel-head"><h4>Saídas e Pendentes</h4></div>
         <div class="modal-panel-body">
 
           ${(turno.outflows || []).map((entry, i) => `
             <div class="modal-line negative">
-              <input type="text" value="${escapeHtml(entry.name || "")}" data-out-name="${i}" disabled />
-              <input type="text" value="${Number(entry.value || 0).toFixed(2).replace(".", ",")}" data-out-value="${i}" disabled />
+              <input value="${escapeHtml(entry.name || "")}" data-out-name="${i}" disabled />
+              <input value="${Number(entry.value || 0).toFixed(2).replace(".", ",")}" data-out-value="${i}" disabled />
             </div>
           `).join("")}
 
           ${(turno.pendings || []).map((entry, i) => `
             <div class="modal-line negative">
-              <input type="text" value="${escapeHtml(entry.name || "")}" data-pen-name="${i}" disabled />
-              <input type="text" value="${Number(entry.value || 0).toFixed(2).replace(".", ",")}" data-pen-value="${i}" disabled />
+              <input value="${escapeHtml(entry.name || "")}" data-pen-name="${i}" disabled />
+              <input value="${Number(entry.value || 0).toFixed(2).replace(".", ",")}" data-pen-value="${i}" disabled />
             </div>
           `).join("")}
 
         </div>
       </div>
+
     </div>
   `;
 
   document.getElementById("historyModal").classList.remove("hidden");
 
-    // 🔥 BOTÃO EDITAR
+  // EDITAR
   document.getElementById("editHistoryBtn").onclick = () => {
-    window.historyEditMode = true;
-
     document.querySelectorAll("#historyModal input").forEach((input) => {
       input.disabled = false;
     });
@@ -3632,84 +3624,74 @@ function openHistoryModal(index){
     document.getElementById("saveHistoryBtn").classList.remove("hidden");
   };
 
-  // 🔥 BOTÃO SALVAR
+  // SALVAR
   document.getElementById("saveHistoryBtn").onclick = async () => {
     try {
       const docRef = doc(db, "history", item.id);
 
       const newEntries = (turno.entries || []).map((e, i) => {
-  let inputValue = parseMoneyInput(document.querySelector(`[data-entry="${i}"]`)?.value || "");
+        let val = parseMoneyInput(document.querySelector(`[data-entry="${i}"]`)?.value || "");
 
-  if (e.name === "PPPoker (x400)" || e.name === "Suprema (x400)") {
-    inputValue = inputValue * 400;
-  }
+        if (
+          e.name === "PPPoker (x400)" ||
+          e.name === "Suprema (x400)" ||
+          e.name === "Cargas F. Poker (x400)"
+        ) val *= 400;
 
-  return {
-    ...e,
-    value: inputValue
-  };
-});
+        return { ...e, value: val };
+      });
 
       const newOutflows = (turno.outflows || []).map((e, i) => ({
-  name: document.querySelector(`[data-out-name="${i}"]`)?.value || "",
-  value: parseMoneyInput(document.querySelector(`[data-out-value="${i}"]`)?.value || "")
-}));
+        name: document.querySelector(`[data-out-name="${i}"]`)?.value || "",
+        value: parseMoneyInput(document.querySelector(`[data-out-value="${i}"]`)?.value || "")
+      }));
 
-const newPendings = (turno.pendings || []).map((e, i) => ({
-  name: document.querySelector(`[data-pen-name="${i}"]`)?.value || "",
-  value: parseMoneyInput(document.querySelector(`[data-pen-value="${i}"]`)?.value || "")
-}));
+      const newPendings = (turno.pendings || []).map((e, i) => ({
+        name: document.querySelector(`[data-pen-name="${i}"]`)?.value || "",
+        value: parseMoneyInput(document.querySelector(`[data-pen-value="${i}"]`)?.value || "")
+      }));
 
-const entradasTotal = newEntries.reduce((a, b) => a + b.value, 0);
-const saidasTotal = newOutflows.reduce((a, b) => a + b.value, 0);
-const pendentesTotal = newPendings.reduce((a, b) => a + b.value, 0);
-const saldoLiquido = entradasTotal - saidasTotal - pendentesTotal;
+      const entradasTotal = newEntries.reduce((a,b)=>a+b.value,0);
+      const saidasTotal = newOutflows.reduce((a,b)=>a+b.value,0);
+      const pendentesTotal = newPendings.reduce((a,b)=>a+b.value,0);
+      const saldoLiquido = entradasTotal - saidasTotal - pendentesTotal;
 
-const previousItem = history[index + 1] || null;
-const previousSaldoTotal = previousItem
-  ? Number(
-      previousItem.currentSaldoTotal ||
-      previousItem?.turno?.saldoLiquido || 0
-    )
-  : 0;
+      const previousItem = history[index + 1] || null;
+      const previousSaldoTotal = previousItem
+        ? Number(previousItem.currentSaldoTotal || previousItem?.turno?.saldoLiquido || 0)
+        : 0;
 
-// diferença real = saldo atual - saldo anterior
-const diffCaixaEditada = !previousItem
-  ? 0
-  : saldoLiquido - previousSaldoTotal;
+      const diff = !previousItem ? 0 : saldoLiquido - previousSaldoTotal;
 
-await updateDoc(docRef, {
-  fechamentoDate: document.getElementById("editDate")?.value || item.fechamentoDate || "",
-  total: newEntries.find((e) => e.name === "Banco Reca")?.value || 0,
+      await updateDoc(docRef, {
+        fechamentoDate: document.getElementById("editDate")?.value || item.fechamentoDate || "",
+        total: newEntries.find(e => e.name === "Banco Reca")?.value || 0,
+        currentSaldoTotal: saldoLiquido,
+        retiradaLucro: saidasTotal,
+        turnProfit: saidasTotal,
+        diff,
+        bankVariation: diff,
+        turno: {
+          ...turno,
+          dataFechamento: document.getElementById("editDate")?.value || item.fechamentoDate || "",
+          entries: newEntries,
+          outflows: newOutflows,
+          pendings: newPendings,
+          entradasTotal,
+          saidasTotal,
+          pendentesTotal,
+          saldoLiquido
+        }
+      });
 
-  currentSaldoTotal: saldoLiquido,
-  retiradaLucro: saidasTotal,
-  turnProfit: saidasTotal,
-  diff: diffCaixaEditada,
-  bankVariation: diffCaixaEditada,
+      alert("Salvo com sucesso");
+      document.getElementById("historyModal").classList.add("hidden");
 
-  turno: {
-    ...turno,
-    dataFechamento: document.getElementById("editDate")?.value || item.fechamentoDate || "",
-    entries: newEntries,
-    outflows: newOutflows,
-    pendings: newPendings,
-    entradasTotal,
-    saidasTotal,
-    pendentesTotal,
-    saldoLiquido
-  }
-});
-
-alert("Histórico atualizado com sucesso");
-document.getElementById("historyModal").classList.add("hidden");
-} catch (e) {
-  console.error("Erro ao salvar histórico editado:", e);
-  alert("Erro ao salvar");
-}
-};
-
-document.getElementById("historyModal").classList.remove("hidden");
+    } catch(e){
+      console.error(e);
+      alert("Erro ao salvar");
+    }
+  };
 }
 
 function startHistoryRealtimeListener(){
