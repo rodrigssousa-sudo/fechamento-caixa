@@ -3451,8 +3451,8 @@ function renderHistoryListFromCache(){
             diferencaCaixa > 0 ? "positive" :
             diferencaCaixa < 0 ? "negative" : ""
           }">
-            ${diferencaCaixa > 0 ? "+ " : diferencaCaixa < 0 ? "- " : ""}
-            ${money(Math.abs(diferencaCaixa))}
+          ${diferencaCaixa > 0 ? "+" : diferencaCaixa < 0 ? "-" : ""}
+${money(Math.abs(Number(diferencaCaixa || 0)))}
           </div>
         </div>
 
