@@ -3766,17 +3766,23 @@ filtered.forEach((item, index) => {
       </tr>
     `).join("");
 
-  const linhas = filtered.map((item, index) => {
+const linhas = filtered.map((item, index) => {
   const nome = item.nomeOperador || "Sem nome";
   const turno = item.turnoTrabalhado || "-";
   const data = formatDateBR(item.fechamentoDate || "");
   const banco = money(getBancoRecaFromSnapshot(item.turno || {}));
   const saidas = Number(item?.turno?.saidasTotal || 0);
 
-  const previousItem = filtered[index + 1] || {};
-  const previousSaldo = Number(previousItem?.turno?.saldoLiquido || 0);
+  const previousItem = filtered[index + 1] || null;
+  const previousSaldo = previousItem
+    ? Number(previousItem?.turno?.saldoLiquido || 0)
+    : 0;
+
   const currentSaldo = Number(item?.turno?.saldoLiquido || 0);
-  const diff = (currentSaldo - previousSaldo) + saidas;
+
+  const diffCaixa = !previousItem
+    ? 0
+    : (currentSaldo - previousSaldo) + saidas;
 
   return `
     <tr style="background:#ffffff !important;">
@@ -3811,7 +3817,7 @@ filtered.forEach((item, index) => {
     </tr>
   `;
 }).join("");
-
+  
 return `
 <!DOCTYPE html>
 <html lang="pt-BR">
