@@ -307,82 +307,105 @@ table.pdf-table tbody td{
   border:1px dashed rgba(15,23,42,0.12) !important;
 }
 
-@media print{
-  body{
-    background:#ffffff !important;
-    color:#0f172a !important;
+@media print {
+  @page {
+    size: A4;
+    margin: 12mm;
   }
 
-/* =========================
-   PDF LIGHT - FINAL FIX
-========================= */
+  html,
+  body {
+    background: #ffffff !important;
+    color: #0f172a !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
 
-.sheet{
-  background:#ffffff !important;
-  color:#0f172a !important;
-  border:none !important;
-  box-shadow:none !important;
-}
+  body * {
+    visibility: hidden !important;
+  }
 
-/* topo */
-.top{
-  background:#ffffff !important;
-  color:#0f172a !important;
-}
+  .sheet,
+  .sheet * {
+    visibility: visible !important;
+  }
 
-/* resumo e cards */
-.summary,
-.card{
-  background:#ffffff !important;
-  color:#0f172a !important;
-  border:1px solid rgba(15,23,42,0.08) !important;
-  box-shadow:none !important;
-}
+  .sheet {
+    position: absolute !important;
+    left: 0 !important;
+    top: 0 !important;
+    width: 100% !important;
+    background: #ffffff !important;
+    color: #0f172a !important;
+    border: none !important;
+    box-shadow: none !important;
+    overflow: visible !important;
+  }
 
-/* labels */
-.label{
-  color:#1d4ed8 !important;
-}
+  .top {
+    background: #ffffff !important;
+    color: #0f172a !important;
+  }
 
-/* valores */
-.value{
-  color:#0f172a !important;
-  font-weight:800 !important;
-}
+  .summary,
+  .card {
+    background: #ffffff !important;
+    color: #0f172a !important;
+    border: 1px solid rgba(15, 23, 42, 0.08) !important;
+    box-shadow: none !important;
+    break-inside: avoid !important;
+    page-break-inside: avoid !important;
+  }
 
-/* tabela */
-.table-wrap,
-table{
-  background:#ffffff !important;
-  color:#0f172a !important;
-}
+  .label {
+    color: #1d4ed8 !important;
+  }
 
-thead th{
-  background:#eff6ff !important;
-  color:#1d4ed8 !important;
-  border-bottom:1px solid rgba(15,23,42,0.08) !important;
-}
+  .value {
+    color: #0f172a !important;
+    font-weight: 800 !important;
+  }
 
-tbody td{
-  color:#0f172a !important;
-  border-bottom:1px solid rgba(15,23,42,0.06) !important;
-}
+  .table-wrap,
+  table {
+    background: #ffffff !important;
+    color: #0f172a !important;
+    width: 100% !important;
+    border-collapse: collapse !important;
+  }
 
-/* linhas alternadas */
-tbody tr:nth-child(even){
-  background:#f8fafc !important;
-}
+  thead th {
+    background: #eff6ff !important;
+    color: #1d4ed8 !important;
+    border-bottom: 1px solid rgba(15, 23, 42, 0.08) !important;
+  }
 
-tbody tr:nth-child(even) td{
-  background:#f8fafc !important;
-}
+  tbody td {
+    color: #0f172a !important;
+    border-bottom: 1px solid rgba(15, 23, 42, 0.06) !important;
+  }
 
-/* força texto escuro */
-.sheet *{
-  color:#0f172a !important;
+  tbody tr:nth-child(even),
+  tbody tr:nth-child(even) td {
+    background: #f8fafc !important;
+  }
+
+  .sheet * {
+    color: #0f172a !important;
+  }
+
+  .no-print,
+  button,
+  .actions,
+  .topbar,
+  .sidebar,
+  .modal,
+  .modal-backdrop {
+    display: none !important;
+  }
 }
-}
-  
   /* =========================
    ALINHAMENTO DIREITA
 ========================= */
