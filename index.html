@@ -2714,148 +2714,139 @@ body{
 
     const SESSION_TIMEOUT_MS = 30 * 60 * 1000;
 
-    const authScreen = document.getElementById("authScreen");
-    const appShell = document.getElementById("appShell");
-    const loginForm = document.getElementById("loginForm");
-    const registerForm = document.getElementById("registerForm");
-    const forgotPasswordForm = document.getElementById("forgotPasswordForm");
-    const rememberLoginCheckbox = document.getElementById("rememberLogin");
+const authScreen = document.getElementById("authScreen");
+const appShell = document.getElementById("appShell");
+const loginForm = document.getElementById("loginForm");
+const registerForm = document.getElementById("registerForm");
+const forgotPasswordForm = document.getElementById("forgotPasswordForm");
+const rememberLoginCheckbox = document.getElementById("rememberLogin");
 
-    let balanceVisible = true;
-    let sessionWatcher = null;
-    let historyUnsubscribe = null;
-    let historyRealtimeStarted = false;
-    let historyCache = [];
-    let historyVisible = false;
+let balanceVisible = true;
+let sessionWatcher = null;
+let historyUnsubscribe = null;
+let historyRealtimeStarted = false;
+let historyCache = [];
+let historyVisible = false;
 let turno1Visible = false;
 let editingHistoryIndex = null;
 let historyEditMode = false;
 
-    function money(value){
-      return `$ ${Number(value || 0).toLocaleString("pt-BR", {
-        minimumFractionDigits: 2,
-        maximumFractionDigits: 2
-      })}`;
-    }
+function money(value) {
+  return `$ ${Number(value || 0).toLocaleString("pt-BR", {
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2
+  })}`;
+}
 
-    function negativeMoney(value){
-      return `- ${money(value)}`;
-    }
+function negativeMoney(value) {
+  return `- ${money(value)}`;
+}
 
-    function escapeHtml(text){
-      return String(text ?? "")
-        .replaceAll("&", "&amp;")
-        .replaceAll("<", "&lt;")
-        .replaceAll(">", "&gt;")
-        .replaceAll('"', "&quot;")
-        .replaceAll("'", "&#39;");
-    }
+function escapeHtml(text) {
+  return String(text ?? "")
+    .replaceAll("&", "&amp;")
+    .replaceAll("<", "&lt;")
+    .replaceAll(">", "&gt;")
+    .replaceAll('"', "&quot;")
+    .replaceAll("'", "&#39;");
+}
 
-function getTodayDateInput(){
+function getTodayDateInput() {
   const now = new Date();
   const offset = now.getTimezoneOffset();
   const local = new Date(now.getTime() - offset * 60000);
   return local.toISOString().split("T")[0];
 }
 
-/* COLE AQUI */
+function calcularSaldoLiquido(turno = {}) {
+  const reca = Number(turno.reca || 0);
+  const suprema = Number(turno.suprema || 0);
+  const pppoker = Number(turno.pppoker || 0);
+  const buffalo = Number(turno.buffalo || 0);
+  const ganamos = Number(turno.ganamos || 0);
 
-async function recalculateAllHistory(){
+  const pendentes = Number(turno.pendentesTotal || 0);
+  const saidas = Number(turno.saidasTotal || 0);
 
+  return (
+    reca +
+    (suprema * 400) +
+    (pppoker * 400) +
+    buffalo +
+    ganamos -
+    pendentes +
+    saidas
+  );
+}
+
+async function recalculateAllHistory() {
   try {
-
     const q = query(
-
       collection(db, "history"),
-
       orderBy("submittedAt", "desc")
-
     );
 
     const snapshot = await getDocs(q);
 
     const docs = snapshot.docs.map((docItem) => ({
-
       id: docItem.id,
-
       ...docItem.data()
-
     }));
 
-    for(let i = 0; i < docs.length; i++){
+   for (let i = 0; i < docs.length; i++) {
+  const item = docs[i];
+  const turno = item.turno || {};
 
-      const item = docs[i];
+  const currentSaldoTotal = calcularSaldoLiquido(turno);
 
-      const turno = item.turno || {};
+  const previousItem = docs[i + 1] || null;
 
-      const currentSaldoTotal = Number(
+  const previousSaldoTotal = previousItem
+    ? calcularSaldoLiquido(previousItem.turno || {})
+    : 0;
 
-        item.currentSaldoTotal || turno.saldoLiquido || 0
+  const diffCaixa = previousItem
+    ? currentSaldoTotal - previousSaldoTotal
+    : 0;
 
-      );
+  const saidasTurnoAtual = Number(turno.saidasTotal || 0);
 
-      const previousItem = docs[i + 1] || null;
-
-      const previousSaldoTotal = previousItem
-
-        ? Number(
-
-            previousItem.currentSaldoTotal ||
-
-            previousItem?.turno?.saldoLiquido || 0
-
-          )
-
-        : 0;
-
-      const diffCaixa = !previousItem
-
-        ? 0
-
-        : currentSaldoTotal - previousSaldoTotal;
-
-      await updateDoc(doc(db, "history", item.id), {
-
-        currentSaldoTotal,
-
-        retiradaLucro: Number(item.retiradaLucro || turno.saidasTotal || 0),
-
-        turnProfit: Number(item.retiradaLucro || turno.saidasTotal || 0),
-
-        diff: diffCaixa,
-
-        bankVariation: diffCaixa
-
-      });
-
-    }
+  await updateDoc(doc(db, "history", item.id), {
+    currentSaldoTotal,
+    retiradaLucro: saidasTurnoAtual,
+    turnProfit: saidasTurnoAtual,
+    diff: diffCaixa,
+    bankVariation: diffCaixa
+  });
+}
 
     alert("Histórico recalculado com sucesso.");
-
   } catch (e) {
-
     console.error("Erro ao recalcular histórico:", e);
-
     alert("Erro ao recalcular histórico.");
   }
 }
 
+async function getUsersFromFirestore() {
+  const q = query(
+    collection(db, "users"),
+    orderBy("createdAt", "desc")
+  );
 
-async function getUsersFromFirestore(){
-  const q = query(collection(db, "users"), orderBy("createdAt", "desc"));
   const snapshot = await getDocs(q);
+
   return snapshot.docs.map((docItem) => ({
     id: docItem.id,
     ...docItem.data()
   }));
 }
 
-async function deleteUserDocFromFirestore(uid){
-  if(!uid) return;
-await deleteDoc(doc(db, "users", uid));
+async function deleteUserDocFromFirestore(uid) {
+  if (!uid) return;
+  await deleteDoc(doc(db, "users", uid));
 }
 
-async function saveHistoryItem(item){
+async function saveHistoryItem(item) {
   try {
     const q = query(
       collection(db, "history"),
@@ -2866,38 +2857,33 @@ async function saveHistoryItem(item){
     const snapshot = await getDocs(q);
     const previousItem = snapshot.docs[0]?.data() || null;
 
-    // SALDO TOTAL DO FECHAMENTO ANTERIOR
-    const previousSaldoTotal = Number(previousItem?.turno?.saldoLiquido || 0);
+    const previousSaldoTotal = previousItem
+      ? calcularSaldoLiquido(previousItem.turno || {})
+      : 0;
 
-    // SALDO TOTAL DO FECHAMENTO ATUAL
-    const currentSaldoTotal = Number(item?.turno?.saldoLiquido || 0);
-
-    // SAÍDAS DO TURNO ATUAL
+    const currentSaldoTotal = calcularSaldoLiquido(item.turno || {});
     const saidasTurnoAtual = Number(item?.turno?.saidasTotal || 0);
 
-   // DIFERENÇA DE CAIXA = (T2 - T1) + saídas do T2
-const diffCaixa = currentSaldoTotal - previousSaldoTotal;
+    const diffCaixa = previousItem
+      ? currentSaldoTotal - previousSaldoTotal
+      : 0;
 
-item.currentSaldoTotal = currentSaldoTotal;
-item.retiradaLucro = saidasTurnoAtual;
-item.turnProfit = saidasTurnoAtual;
-item.diff = diffCaixa;
-item.bankVariation = diffCaixa;
+    item.currentSaldoTotal = currentSaldoTotal;
+    item.retiradaLucro = saidasTurnoAtual;
+    item.turnProfit = saidasTurnoAtual;
+    item.diff = diffCaixa;
+    item.bankVariation = diffCaixa;
+    item.submittedAt = serverTimestamp();
 
-// data
-item.submittedAt = serverTimestamp();
+    await addDoc(collection(db, "history"), item);
 
-// salva
-await addDoc(collection(db, "history"), item);
-
-console.log("Histórico salvo com sucesso.");
-return true;
-
-} catch (error) {
-  console.error("Erro ao salvar histórico:", error);
-  alert("Erro ao salvar histórico");
-  return false;
-}
+    console.log("Histórico salvo com sucesso.");
+    return true;
+  } catch (error) {
+    console.error("Erro ao salvar histórico:", error);
+    alert("Erro ao salvar histórico");
+    return false;
+  }
 }
     
 function formatDateBR(dateStr){
@@ -3409,31 +3395,38 @@ const outflows = [...document.querySelectorAll(`#${turno}_dynamic_list .dynamic-
     };
   });
 
-  const entradasTotal = entries.reduce((acc, item) => acc + item.value, 0);
-  const saidasTotal = outflows.reduce((acc, item) => acc + item.value, 0);
-  const pendentesTotal = pendings.reduce((acc, item) => acc + item.value, 0);
-  const saldoLiquido = entradasTotal - saidasTotal - pendentesTotal;
+const entradasTotal = entries.reduce((acc, item) => acc + item.value, 0);
+const saidasTotal = outflows.reduce((acc, item) => acc + item.value, 0);
+const pendentesTotal = pendings.reduce((acc, item) => acc + item.value, 0);
 
-  return {
-    nomeOperador: document.getElementById(f.nomeOperador)?.value?.trim() || "Sem nome",
-    turnoTrabalhado: document.getElementById(f.turnoTrabalhado)?.value?.trim() || "Não informado",
-    submittedAt: serverTimestamp(),
-    fechamentoDate: document.getElementById(f.dataFechamento)?.value || getTodayDateInput(),
-    total: getValue(f.banco),
-    turno: {
-      dataFechamento: document.getElementById(f.dataFechamento)?.value || getTodayDateInput(),
-      entries,
-      outflows,
-      pendings,
-      entradasTotal,
-      saidasTotal,
-      pendentesTotal,
-      saldoLiquido
-    }
-  };
+const turno = {
+  dataFechamento: document.getElementById(f.dataFechamento)?.value || getTodayDateInput(),
+  entries,
+  outflows,
+  pendings,
+  entradasTotal,
+  saidasTotal,
+  pendentesTotal,
+  reca: getValue(f.banco),
+  suprema: getValue(f.suprema),
+  pppoker: getValue(f.pppoker),
+  buffalo: getValue(f.buffalo),
+  ganamos: getValue(f.ganamos)
+};
+
+turno.saldoLiquido = calcularSaldoLiquido(turno);
+
+return {
+  nomeOperador: document.getElementById(f.nomeOperador)?.value?.trim() || "Sem nome",
+  turnoTrabalhado: document.getElementById(f.turnoTrabalhado)?.value?.trim() || "Não informado",
+  submittedAt: serverTimestamp(),
+  fechamentoDate: document.getElementById(f.dataFechamento)?.value || getTodayDateInput(),
+  total: getValue(f.banco),
+  turno
+};
 }
-    function applySnapshotToTurn(turno, snapshot){
-      if(!snapshot) return;
+function applySnapshotToTurn(turno, snapshot){
+  if(!snapshot) return;
 
       clearTurn(turno);
 
@@ -3492,30 +3485,24 @@ function renderHistoryListFromCache(){
     return;
   }
 
-  list.innerHTML = history.slice(0, 30).map((item, index) => {
-    const saldoDisponivel = Number(item.total || 0);
+ list.innerHTML = history.slice(0, 30).map((item, index) => {
+  const saldoDisponivel = Number(item.total || 0);
 
-    const saldoTotal = Number(
-      item.currentSaldoTotal || item.turno?.saldoLiquido || 0
-    );
+  const saldoTotal = calcularSaldoLiquido(item.turno || {});
 
-    const previousItem = history[index + 1] || null;
+  const previousItem = history[index + 1] || null;
 
-    const previousSaldoTotal = previousItem
-      ? Number(
-          previousItem.currentSaldoTotal ||
-          previousItem?.turno?.saldoLiquido || 0
-        )
-      : 0;
+  const previousSaldoTotal = previousItem
+    ? calcularSaldoLiquido(previousItem.turno || {})
+    : 0;
 
-    const saidas = Number(
-      item.retiradaLucro || item.turno?.saidasTotal || 0
-    );
+  const saidas = Number(
+    item.retiradaLucro || item.turno?.saidasTotal || 0
+  );
 
-    const diferencaCaixa = !previousItem
-      ? 0
-      : saldoTotal - previousSaldoTotal;
-
+  const diferencaCaixa = !previousItem
+    ? 0
+    : saldoTotal - previousSaldoTotal;
     const nome = item.nomeOperador || "Sem nome";
     const turno = item.turnoTrabalhado || "-";
     const data = formatDateBR(item.fechamentoDate || "");
@@ -3589,19 +3576,17 @@ function openHistoryModal(index){
 
   const turno = item.turno || {};
 
-  const previousItem = history[index + 1] || null;
+const previousItem = history[index + 1] || null;
 
-  const previousSaldoTotal = previousItem
-    ? Number(previousItem.currentSaldoTotal || previousItem?.turno?.saldoLiquido || 0)
-    : 0;
+const previousSaldoTotal = previousItem
+  ? calcularSaldoLiquido(previousItem.turno || {})
+  : 0;
 
-  const saldoTotalAtual = Number(
-    item.currentSaldoTotal || item.turno?.saldoLiquido || 0
-  );
+const saldoTotalAtual = calcularSaldoLiquido(item.turno || {});
 
-  const diferencaAtual = !previousItem
-    ? 0
-    : saldoTotalAtual - previousSaldoTotal;
+const diferencaAtual = !previousItem
+  ? 0
+  : saldoTotalAtual - previousSaldoTotal;
 
   document.getElementById("historyModalBody").innerHTML = `
     <div class="modal-summary-grid">
@@ -3611,20 +3596,20 @@ function openHistoryModal(index){
         <div class="modal-summary-value">${money(item.total || 0)}</div>
       </div>
 
-      <div class="modal-summary-card">
-        <div class="modal-summary-label">Saldo Total Turno</div>
-        <div class="modal-summary-value">
-          ${money(item.currentSaldoTotal || item.turno?.saldoLiquido || 0)}
-        </div>
-      </div>
+    <div class="modal-summary-card">
+  <div class="modal-summary-label">Saldo Total Turno</div>
+  <div class="modal-summary-value">
+    ${money(calcularSaldoLiquido(item.turno || {}))}
+  </div>
+</div>
 
-      <div class="modal-summary-card">
-        <div class="modal-summary-label">Diferença Real de Caixa</div>
-        <div class="history-mini-value ${(diferencaAtual || 0) < 0 ? "red" : (diferencaAtual || 0) > 0 ? "green" : ""}">
-          ${(diferencaAtual || 0) > 0 ? "+ " : (diferencaAtual || 0) < 0 ? "- " : ""}
-          ${money(Math.abs(diferencaAtual || 0))}
-        </div>
-      </div>
+<div class="modal-summary-card">
+  <div class="modal-summary-label">Diferença Real de Caixa</div>
+  <div class="history-mini-value ${(diferencaAtual || 0) < 0 ? "red" : (diferencaAtual || 0) > 0 ? "green" : ""}">
+    ${(diferencaAtual || 0) > 0 ? "+ " : (diferencaAtual || 0) < 0 ? "- " : ""}
+    ${money(Math.abs(diferencaAtual || 0))}
+  </div>
+</div>
 
       <div class="modal-summary-card">
         <div class="modal-summary-label">Responsável</div>
@@ -3724,59 +3709,60 @@ function openHistoryModal(index){
         return { ...e, value: val };
       });
 
-      const newOutflows = (turno.outflows || []).map((e, i) => ({
-        name: document.querySelector(`[data-out-name="${i}"]`)?.value || "",
-        value: parseMoneyInput(document.querySelector(`[data-out-value="${i}"]`)?.value || "")
-      }));
+    const newOutflows = (turno.outflows || []).map((e, i) => ({
+  name: document.querySelector(`[data-out-name="${i}"]`)?.value || "",
+  value: parseMoneyInput(document.querySelector(`[data-out-value="${i}"]`)?.value || "")
+}));
 
-      const newPendings = (turno.pendings || []).map((e, i) => ({
-        name: document.querySelector(`[data-pen-name="${i}"]`)?.value || "",
-        value: parseMoneyInput(document.querySelector(`[data-pen-value="${i}"]`)?.value || "")
-      }));
+const newPendings = (turno.pendings || []).map((e, i) => ({
+  name: document.querySelector(`[data-pen-name="${i}"]`)?.value || "",
+  value: parseMoneyInput(document.querySelector(`[data-pen-value="${i}"]`)?.value || "")
+}));
 
-      const entradasTotal = newEntries.reduce((a,b)=>a+b.value,0);
-      const saidasTotal = newOutflows.reduce((a,b)=>a+b.value,0);
-      const pendentesTotal = newPendings.reduce((a,b)=>a+b.value,0);
-      const saldoLiquido = entradasTotal - saidasTotal - pendentesTotal;
+const entradasTotal = newEntries.reduce((a, b) => a + b.value, 0);
+const saidasTotal = newOutflows.reduce((a, b) => a + b.value, 0);
+const pendentesTotal = newPendings.reduce((a, b) => a + b.value, 0);
 
-      const previousItem = history[index + 1] || null;
-      const previousSaldoTotal = previousItem
-        ? Number(previousItem.currentSaldoTotal || previousItem?.turno?.saldoLiquido || 0)
-        : 0;
+const turnoAtualizado = {
+  ...(item.turno || {}),
+  dataFechamento: document.getElementById("editDate")?.value || item.fechamentoDate || "",
+  entries: newEntries,
+  outflows: newOutflows,
+  pendings: newPendings,
+  entradasTotal,
+  saidasTotal,
+  pendentesTotal
+};
 
-      const diff = !previousItem ? 0 : saldoLiquido - previousSaldoTotal;
+const saldoLiquido = calcularSaldoLiquido(turnoAtualizado);
+turnoAtualizado.saldoLiquido = saldoLiquido;
 
-      await updateDoc(docRef, {
-        fechamentoDate: document.getElementById("editDate")?.value || item.fechamentoDate || "",
-        total: newEntries.find(e => e.name === "Banco Reca")?.value || 0,
-        currentSaldoTotal: saldoLiquido,
-        retiradaLucro: saidasTotal,
-        turnProfit: saidasTotal,
-        diff,
-        bankVariation: diff,
-        turno: {
-          ...turno,
-          dataFechamento: document.getElementById("editDate")?.value || item.fechamentoDate || "",
-          entries: newEntries,
-          outflows: newOutflows,
-          pendings: newPendings,
-          entradasTotal,
-          saidasTotal,
-          pendentesTotal,
-          saldoLiquido
-        }
-      });
+const previousSaldoTotal = previousItem
+  ? calcularSaldoLiquido(previousItem.turno || {})
+  : 0;
 
-      alert("Salvo com sucesso");
-      document.getElementById("historyModal").classList.add("hidden");
+const diff = !previousItem ? 0 : saldoLiquido - previousSaldoTotal;
 
-    } catch(e){
-      console.error(e);
-      alert("Erro ao salvar");
-    }
-  };
+await updateDoc(docRef, {
+  fechamentoDate: turnoAtualizado.dataFechamento,
+  total: newEntries.find(e => e.name === "Banco Reca")?.value || 0,
+  currentSaldoTotal: saldoLiquido,
+  retiradaLucro: saidasTotal,
+  turnProfit: saidasTotal,
+  diff,
+  bankVariation: diff,
+  turno: turnoAtualizado
+});
+
+alert("Salvo com sucesso");
+document.getElementById("historyModal").classList.add("hidden");
+
+} catch(e){
+  console.error(e);
+  alert("Erro ao salvar");
 }
-
+};
+}
 function startHistoryRealtimeListener(){
   if(historyRealtimeStarted) return;
   historyRealtimeStarted = true;
@@ -3846,45 +3832,22 @@ function buildPremiumPdfHtml(startDate, endDate){
     ? Number(getBancoRecaFromSnapshot(ultimoRegistro.turno || {}))
     : 0;
 
-  const totalSaidas = filtered.reduce((acc, item) => {
-    return acc + Number(item?.turno?.saidasTotal || 0);
-  }, 0);
-
-const totalDiferenca = filtered.reduce((acc, item, index) => {
-  const previousItem = filtered[index + 1] || null;
-  const previousSaldo = previousItem
-    ? Number(previousItem?.turno?.saldoLiquido || 0)
-    : 0;
-
-  const currentSaldo = Number(item?.turno?.saldoLiquido || 0);
-  const saidas = Number(item?.turno?.saidasTotal || 0);
-
-  const diff = !previousItem
-    ? 0
-    : (currentSaldo - previousSaldo) + saidas;
-
-  return acc + diff;
-}, 0);
-
-const rankingOperadores = {};
 
 filtered.forEach((item, index) => {
   const nome = item.nomeOperador || "Sem nome";
   const previousItem = filtered[index + 1] || null;
 
+  const currentSaldo = calcularSaldoLiquido(item.turno || {});
+
   const previousSaldo = previousItem
-    ? Number(previousItem?.turno?.saldoLiquido || 0)
+    ? calcularSaldoLiquido(previousItem.turno || {})
     : 0;
 
-  const currentSaldo = Number(item?.turno?.saldoLiquido || 0);
-  const saidas = Number(item?.turno?.saidasTotal || 0);
-
-  // 🔥 LÓGICA REAL DO SISTEMA
   const diff = !previousItem
     ? 0
-    : (currentSaldo - previousSaldo) + saidas;
+    : currentSaldo - previousSaldo;
 
-  if(!rankingOperadores[nome]){
+  if (!rankingOperadores[nome]) {
     rankingOperadores[nome] = {
       nome,
       totalErro: 0,
@@ -3897,9 +3860,9 @@ filtered.forEach((item, index) => {
   rankingOperadores[nome].totalErro += Math.abs(diff);
   rankingOperadores[nome].qtd += 1;
 
-  if(diff > 0){
+  if (diff > 0) {
     rankingOperadores[nome].sobra += diff;
-  } else if(diff < 0){
+  } else if (diff < 0) {
     rankingOperadores[nome].falta += Math.abs(diff);
   }
 });
@@ -3925,16 +3888,16 @@ const linhas = filtered.map((item, index) => {
   const saidas = Number(item?.turno?.saidasTotal || 0);
 
   const previousItem = filtered[index + 1] || null;
+
   const previousSaldo = previousItem
-    ? Number(previousItem?.turno?.saldoLiquido || 0)
+    ? calcularSaldoLiquido(previousItem.turno || {})
     : 0;
 
-  const currentSaldo = Number(item?.turno?.saldoLiquido || 0);
+  const currentSaldo = calcularSaldoLiquido(item.turno || {});
 
   const diffCaixa = !previousItem
     ? 0
-    : (currentSaldo - previousSaldo) + saidas;
-
+    : currentSaldo - previousSaldo;
   return `
     <tr style="background:#ffffff !important;">
       <td style="color:#0f172a !important; border-bottom:1px solid rgba(15,23,42,0.06) !important;">
@@ -4658,21 +4621,31 @@ async function saveEditedHistory(){
   });
 
   const entradasTotal = updatedEntries.reduce((acc, item) => acc + Number(item.value || 0), 0);
-  const saidasTotal = updatedOutflows.reduce((acc, item) => acc + Number(item.value || 0), 0);
-  const pendentesTotal = updatedPendings.reduce((acc, item) => acc + Number(item.value || 0), 0);
-  const saldoLiquido = entradasTotal - saidasTotal - pendentesTotal;
+const saidasTotal = updatedOutflows.reduce((acc, item) => acc + Number(item.value || 0), 0);
+const pendentesTotal = updatedPendings.reduce((acc, item) => acc + Number(item.value || 0), 0);
 
-  const previousItem = history[index + 1] || null;
-  const previousSaldoTotal = previousItem
-    ? Number(
-        previousItem.currentSaldoTotal ||
-        previousItem?.turno?.saldoLiquido || 0
-      )
-    : 0;
+const turnoAtualizado = {
+  ...(item.turno || {}),
+  entries: updatedEntries,
+  outflows: updatedOutflows,
+  pendings: updatedPendings,
+  entradasTotal,
+  saidasTotal,
+  pendentesTotal
+};
 
-  const diffCaixaEditada = !previousItem
-    ? 0
-    : saldoLiquido - previousSaldoTotal;
+const saldoLiquido = calcularSaldoLiquido(turnoAtualizado);
+turnoAtualizado.saldoLiquido = saldoLiquido;
+
+const previousItem = history[index + 1] || null;
+
+const previousSaldoTotal = previousItem
+  ? calcularSaldoLiquido(previousItem.turno || {})
+  : 0;
+
+const diffCaixaEditada = !previousItem
+  ? 0
+  : saldoLiquido - previousSaldoTotal;
 
   const fechamentoDate =
     document.getElementById("editFechamentoDate")?.value ||
