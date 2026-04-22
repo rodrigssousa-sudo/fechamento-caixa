@@ -4570,11 +4570,11 @@ function renderHistoryModalContent(item, editMode = false){
   `;
 }
 
-async function saveEditedHistory(){
-  if(editingHistoryIndex === null) return;
+async function saveEditedHistory() {
+  if (editingHistoryIndex === null) return;
 
   const item = historyCache[editingHistoryIndex];
-  if(!item) return;
+  if (!item) return;
 
   const turno = item.turno || {};
   const history = historyCache || [];
@@ -4619,59 +4619,48 @@ async function saveEditedHistory(){
   });
 
   const entradasTotal = updatedEntries.reduce((acc, item) => acc + Number(item.value || 0), 0);
-const saidasTotal = updatedOutflows.reduce((acc, item) => acc + Number(item.value || 0), 0);
-const pendentesTotal = updatedPendings.reduce((acc, item) => acc + Number(item.value || 0), 0);
-
-const turnoAtualizado = {
-  ...(item.turno || {}),
-  entries: updatedEntries,
-  outflows: updatedOutflows,
-  pendings: updatedPendings,
-  entradasTotal,
-  saidasTotal,
-  pendentesTotal
-};
-
-const saldoLiquido = calcularSaldoLiquido(turnoAtualizado);
-turnoAtualizado.saldoLiquido = saldoLiquido;
-
-const previousItem = history[index + 1] || null;
-
-const previousSaldoTotal = previousItem
-  ? calcularSaldoLiquido(previousItem.turno || {})
-  : 0;
-
-const diffCaixaEditada = !previousItem
-  ? 0
-  : saldoLiquido - previousSaldoTotal;
+  const saidasTotal = updatedOutflows.reduce((acc, item) => acc + Number(item.value || 0), 0);
+  const pendentesTotal = updatedPendings.reduce((acc, item) => acc + Number(item.value || 0), 0);
 
   const fechamentoDate =
     document.getElementById("editFechamentoDate")?.value ||
     item.fechamentoDate ||
     getTodayDateInput();
 
+  const turnoAtualizado = {
+    ...turno,
+    dataFechamento: fechamentoDate,
+    entries: updatedEntries,
+    outflows: updatedOutflows,
+    pendings: updatedPendings,
+    entradasTotal,
+    saidasTotal,
+    pendentesTotal
+  };
+
+  const saldoLiquido = calcularSaldoLiquido(turnoAtualizado);
+  turnoAtualizado.saldoLiquido = saldoLiquido;
+
+  const previousItem = history[index + 1] || null;
+
+  const previousSaldoTotal = previousItem
+    ? calcularSaldoLiquido(previousItem.turno || {})
+    : 0;
+
+  const diffCaixaEditada = !previousItem
+    ? 0
+    : saldoLiquido - previousSaldoTotal;
+
   try {
     await updateDoc(doc(db, "history", item.id), {
       fechamentoDate,
       total: updatedEntries.find((e) => e.name === "Banco Reca")?.value || 0,
-
       currentSaldoTotal: saldoLiquido,
       retiradaLucro: saidasTotal,
       turnProfit: saidasTotal,
       diff: diffCaixaEditada,
       bankVariation: diffCaixaEditada,
-
-      turno: {
-        ...turno,
-        dataFechamento: fechamentoDate,
-        entries: updatedEntries,
-        outflows: updatedOutflows,
-        pendings: updatedPendings,
-        entradasTotal,
-        saidasTotal,
-        pendentesTotal,
-        saldoLiquido
-      }
+      turno: turnoAtualizado
     });
 
     historyEditMode = false;
