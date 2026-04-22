@@ -3717,32 +3717,41 @@ const totalDiferenca = filtered.reduce((acc, item, index) => {
 
   const rankingOperadores = {};
 
-  filtered.forEach((item, index) => {
+filtered.forEach((item, index) => {
   const nome = item.nomeOperador || "Sem nome";
-  const previousItem = filtered[index + 1] || {};
-  const previousSaldo = Number(previousItem?.turno?.saldoLiquido || 0);
+  const previousItem = filtered[index + 1] || null;
+
+  const previousSaldo = previousItem
+    ? Number(previousItem?.turno?.saldoLiquido || 0)
+    : 0;
+
   const currentSaldo = Number(item?.turno?.saldoLiquido || 0);
-  const diff = currentSaldo - previousSaldo;
+  const saidas = Number(item?.turno?.saidasTotal || 0);
 
-    if(!rankingOperadores[nome]){
-      rankingOperadores[nome] = {
-        nome,
-        totalErro: 0,
-        qtd: 0,
-        sobra: 0,
-        falta: 0
-      };
-    }
+  // 🔥 MESMA LÓGICA DO SISTEMA
+  const diff = !previousItem
+    ? 0
+    : (currentSaldo - previousSaldo) + saidas;
 
-    rankingOperadores[nome].totalErro += Math.abs(diff);
-    rankingOperadores[nome].qtd += 1;
+  if(!rankingOperadores[nome]){
+    rankingOperadores[nome] = {
+      nome,
+      totalErro: 0,
+      qtd: 0,
+      sobra: 0,
+      falta: 0
+    };
+  }
 
-    if(diff > 0){
-      rankingOperadores[nome].sobra += diff;
-    }else if(diff < 0){
-      rankingOperadores[nome].falta += Math.abs(diff);
-    }
-  });
+  rankingOperadores[nome].totalErro += Math.abs(diff);
+  rankingOperadores[nome].qtd += 1;
+
+  if(diff > 0){
+    rankingOperadores[nome].sobra += diff;
+  } else if(diff < 0){
+    rankingOperadores[nome].falta += Math.abs(diff);
+  }
+});
 
   const rankingHtml = Object.values(rankingOperadores)
     .sort((a, b) => b.totalErro - a.totalErro)
