@@ -3671,24 +3671,22 @@ function openHistoryModal(index){
   const item = history[index];
   if(!item) return;
 
-  // 🔥 COLE AQUI
   const editBtn = document.getElementById("editHistoryBtn");
-const saveBtn = document.getElementById("saveHistoryBtn");
-const modal = document.getElementById("historyModal");
+  const saveBtn = document.getElementById("saveHistoryBtn");
+  const modal = document.getElementById("historyModal");
 
-if (editBtn) {
-  editBtn.classList.remove("hidden");
-}
+  if (editBtn) {
+    editBtn.classList.remove("hidden");
+  }
 
-if (saveBtn) {
-  saveBtn.classList.add("hidden");
-}
+  if (saveBtn) {
+    saveBtn.classList.add("hidden");
+  }
 
-if (modal) {
-  modal.classList.remove("hidden");
-}
+  if (modal) {
+    modal.classList.remove("hidden");
+  }
 
-  // 👇 continua seu código normal
   window.editingHistoryIndex = index;
   window.historyEditMode = false;
 
@@ -3709,6 +3707,9 @@ if (modal) {
   const diferencaAtual = !previousItem
     ? 0
     : saldoTotalAtual - previousSaldoTotal;
+
+  renderHistoryModalContent(item, false);
+}
 
   document.getElementById("historyModalBody").innerHTML = `
     <div class="modal-summary-grid">
