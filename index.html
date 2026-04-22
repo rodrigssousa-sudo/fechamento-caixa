@@ -2660,7 +2660,7 @@ body{
 
   <div id="historyModal" class="modal hidden">
     <div class="modal-backdrop" id="historyModalBackdrop"></div>
-    <div class="modal-card">
+    <div class="modal-card" style="width:min(1100px,92vw); max-height:88vh; display:flex; flex-direction:column; overflow:hidden; border-radius:24px;">
       <div class="modal-head">
         <div>
           <h3 id="historyModalTitle">Detalhes do fechamento</h3>
@@ -2674,7 +2674,7 @@ body{
         </div>
       </div>
 
-      <div class="modal-body" id="historyModalBody"></div>
+      <div class="modal-body" id="historyModalBody" style="flex:1 1 auto; overflow-y:auto; min-height:0; padding:18px 24px 24px;"></div>
     </div>
   </div>
 
