@@ -3828,105 +3828,122 @@ function buildPremiumPdfHtml(startDate, endDate){
     ? Number(getBancoRecaFromSnapshot(ultimoRegistro.turno || {}))
     : 0;
 
+  const totalSaidas = filtered.reduce((acc, item) => {
+    return acc + Number(item?.turno?.saidasTotal || 0);
+  }, 0);
 
-filtered.forEach((item, index) => {
-  const nome = item.nomeOperador || "Sem nome";
-  const previousItem = filtered[index + 1] || null;
+  const totalDiferenca = filtered.reduce((acc, item, index) => {
+    const previousItem = filtered[index + 1] || null;
 
-  const currentSaldo = calcularSaldoLiquido(item.turno || {});
+    const currentSaldo = calcularSaldoLiquido(item?.turno || {});
 
-  const previousSaldo = previousItem
-    ? calcularSaldoLiquido(previousItem.turno || {})
-    : 0;
+    const previousSaldo = previousItem
+      ? calcularSaldoLiquido(previousItem.turno || {})
+      : 0;
 
-  const diff = !previousItem
-    ? 0
-    : currentSaldo - previousSaldo;
+    const diff = !previousItem
+      ? 0
+      : currentSaldo - previousSaldo;
 
-  if (!rankingOperadores[nome]) {
-    rankingOperadores[nome] = {
-      nome,
-      totalErro: 0,
-      qtd: 0,
-      sobra: 0,
-      falta: 0
-    };
-  }
+    return acc + diff;
+  }, 0);
 
-  rankingOperadores[nome].totalErro += Math.abs(diff);
-  rankingOperadores[nome].qtd += 1;
+  const rankingOperadores = {};
 
-  if (diff > 0) {
-    rankingOperadores[nome].sobra += diff;
-  } else if (diff < 0) {
-    rankingOperadores[nome].falta += Math.abs(diff);
-  }
-});
+  filtered.forEach((item, index) => {
+    const nome = item.nomeOperador || "Sem nome";
+    const previousItem = filtered[index + 1] || null;
 
-const rankingHtml = Object.values(rankingOperadores)
-  .sort((a, b) => b.totalErro - a.totalErro)
-  .map((item, index) => `
-    <tr>
-      <td>${index + 1}</td>
-      <td>${escapeHtml(item.nome)}</td>
-      <td>${item.qtd}</td>
-      <td>${money(item.sobra)}</td>
-      <td>${money(item.falta)}</td>
-      <td><strong>${money(item.totalErro)}</strong></td>
-    </tr>
-  `).join("");
-  
-const linhas = filtered.map((item, index) => {
-  const nome = item.nomeOperador || "Sem nome";
-  const turno = item.turnoTrabalhado || "-";
-  const data = formatDateBR(item.fechamentoDate || "");
-  const banco = money(getBancoRecaFromSnapshot(item.turno || {}));
-  const saidas = Number(item?.turno?.saidasTotal || 0);
+    const currentSaldo = calcularSaldoLiquido(item.turno || {});
 
-  const previousItem = filtered[index + 1] || null;
+    const previousSaldo = previousItem
+      ? calcularSaldoLiquido(previousItem.turno || {})
+      : 0;
 
-  const previousSaldo = previousItem
-    ? calcularSaldoLiquido(previousItem.turno || {})
-    : 0;
+    const diff = !previousItem
+      ? 0
+      : currentSaldo - previousSaldo;
 
-  const currentSaldo = calcularSaldoLiquido(item.turno || {});
+    if (!rankingOperadores[nome]) {
+      rankingOperadores[nome] = {
+        nome,
+        totalErro: 0,
+        qtd: 0,
+        sobra: 0,
+        falta: 0
+      };
+    }
 
-  const diffCaixa = !previousItem
-    ? 0
-    : currentSaldo - previousSaldo;
-  return `
-    <tr style="background:#ffffff !important;">
-      <td style="color:#0f172a !important; border-bottom:1px solid rgba(15,23,42,0.06) !important;">
-        ${escapeHtml(nome)}
-      </td>
+    rankingOperadores[nome].totalErro += Math.abs(diff);
+    rankingOperadores[nome].qtd += 1;
 
-      <td style="color:#0f172a !important; border-bottom:1px solid rgba(15,23,42,0.06) !important;">
-        ${escapeHtml(turno)}
-      </td>
+    if (diff > 0) {
+      rankingOperadores[nome].sobra += diff;
+    } else if (diff < 0) {
+      rankingOperadores[nome].falta += Math.abs(diff);
+    }
+  });
 
-      <td style="color:#0f172a !important; border-bottom:1px solid rgba(15,23,42,0.06) !important;">
-        ${escapeHtml(data)}
-      </td>
+  const rankingHtml = Object.values(rankingOperadores)
+    .sort((a, b) => b.totalErro - a.totalErro)
+    .map((item, index) => `
+      <tr>
+        <td>${index + 1}</td>
+        <td>${escapeHtml(item.nome)}</td>
+        <td>${item.qtd}</td>
+        <td>${money(item.sobra)}</td>
+        <td>${money(item.falta)}</td>
+        <td><strong>${money(item.totalErro)}</strong></td>
+      </tr>
+    `).join("");
 
-      <td style="color:#0f172a !important; border-bottom:1px solid rgba(15,23,42,0.06) !important;">
-        ${banco}
-      </td>
+  const linhas = filtered.map((item, index) => {
+    const nome = item.nomeOperador || "Sem nome";
+    const turno = item.turnoTrabalhado || "-";
+    const data = formatDateBR(item.fechamentoDate || "");
+    const banco = money(getBancoRecaFromSnapshot(item.turno || {}));
+    const saidas = Number(item?.turno?.saidasTotal || 0);
 
-      <td style="color:#0f172a !important; border-bottom:1px solid rgba(15,23,42,0.06) !important;">
-        ${money(saidas)}
-      </td>
+    const previousItem = filtered[index + 1] || null;
 
-      <td style="
-        font-weight:900;
-        color:${diffCaixa > 0 ? "#16a34a" : diffCaixa < 0 ? "#dc2626" : "#0f172a"};
-        border-bottom:1px solid rgba(15,23,42,0.06) !important;
-        background:#ffffff !important;
-      ">
-        ${diffCaixa > 0 ? "+ " : diffCaixa < 0 ? "- " : ""}${money(Math.abs(diffCaixa))}
-      </td>
-    </tr>
-  `;
-}).join("");
+    const previousSaldo = previousItem
+      ? calcularSaldoLiquido(previousItem.turno || {})
+      : 0;
+
+    const currentSaldo = calcularSaldoLiquido(item.turno || {});
+
+    const diffCaixa = !previousItem
+      ? 0
+      : currentSaldo - previousSaldo;
+
+    return `
+      <tr style="background:#ffffff !important;">
+        <td style="color:#0f172a !important; border-bottom:1px solid rgba(15,23,42,0.06) !important;">
+          ${escapeHtml(nome)}
+        </td>
+        <td style="color:#0f172a !important; border-bottom:1px solid rgba(15,23,42,0.06) !important;">
+          ${escapeHtml(turno)}
+        </td>
+        <td style="color:#0f172a !important; border-bottom:1px solid rgba(15,23,42,0.06) !important;">
+          ${escapeHtml(data)}
+        </td>
+        <td style="color:#0f172a !important; border-bottom:1px solid rgba(15,23,42,0.06) !important;">
+          ${banco}
+        </td>
+        <td style="color:#0f172a !important; border-bottom:1px solid rgba(15,23,42,0.06) !important;">
+          ${money(saidas)}
+        </td>
+        <td style="
+          font-weight:900;
+          color:${diffCaixa > 0 ? "#16a34a" : diffCaixa < 0 ? "#dc2626" : "#0f172a"};
+          border-bottom:1px solid rgba(15,23,42,0.06) !important;
+          background:#ffffff !important;
+        ">
+          ${diffCaixa > 0 ? "+ " : diffCaixa < 0 ? "- " : ""}${money(Math.abs(diffCaixa))}
+        </td>
+      </tr>
+    `;
+  }).join("");
   
 return `
 <!DOCTYPE html>
