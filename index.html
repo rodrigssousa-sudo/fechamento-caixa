@@ -3877,29 +3877,6 @@ function renderHistoryModalContent(item, editMode = false){
     </div>
   `;
 }
-      <div class="modal-panel">
-        <div class="modal-panel-head"><h4>Saídas e Pendentes</h4></div>
-        <div class="modal-panel-body">
-
-          ${(turno.outflows || []).map((entry, i) => `
-            <div class="modal-line negative">
-              <input value="${escapeHtml(entry.name || "")}" data-out-name="${i}" disabled />
-              <input value="${Number(entry.value || 0).toFixed(2).replace(".", ",")}" data-out-value="${i}" disabled />
-            </div>
-          `).join("")}
-
-          ${(turno.pendings || []).map((entry, i) => `
-            <div class="modal-line negative">
-              <input value="${escapeHtml(entry.name || "")}" data-pen-name="${i}" disabled />
-              <input value="${Number(entry.value || 0).toFixed(2).replace(".", ",")}" data-pen-value="${i}" disabled />
-            </div>
-          `).join("")}
-
-        </div>
-      </div>
-
-    </div>
-  `;
 
   document.getElementById("historyModal").classList.remove("hidden");
 
