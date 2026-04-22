@@ -3417,7 +3417,7 @@ function renderHistoryListFromCache(){
       item.currentSaldoTotal || item.turno?.saldoLiquido || 0
     );
 
-    const previousItem = history[index - 1] || null;
+    const previousItem = history[index + 1] || null;
 
     const previousSaldoTotal = previousItem
       ? Number(
@@ -3509,7 +3509,7 @@ function openHistoryModal(index){
 
   const turno = item.turno || {};
 
-  const previousItem = history[index - 1] || null;
+  const previousItem = history[index + 1] || null;
 
   const previousSaldoTotal = previousItem
     ? Number(
