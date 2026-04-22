@@ -2793,7 +2793,7 @@ async function saveHistoryItem(item){
     const saidasTurnoAtual = Number(item?.turno?.saidasTotal || 0);
 
    // DIFERENÇA DE CAIXA = (T2 - T1) + saídas do T2
-const diffCaixa = (currentSaldoTotal - previousSaldoTotal) - saidasTurnoAtual;
+const diffCaixa = (currentSaldoTotal - previousSaldoTotal) + saidasTurnoAtual;
 
 item.currentSaldoTotal = currentSaldoTotal;
 item.retiradaLucro = saidasTurnoAtual;
@@ -3432,7 +3432,7 @@ function renderHistoryListFromCache(){
 
     const diferencaCaixa = !previousItem
       ? 0
-      : (saldoTotal - previousSaldoTotal) - saidas;
+      : (saldoTotal - previousSaldoTotal) + saidas;
 
     const nome = item.nomeOperador || "Sem nome";
     const turno = item.turnoTrabalhado || "-";
@@ -3758,7 +3758,7 @@ const totalDiferenca = filtered.reduce((acc, item, index) => {
 
   const diff = !previousItem
     ? 0
-    : (currentSaldo - previousSaldo) - saidas;
+    : (currentSaldo - previousSaldo) + saidas;
 
   return acc + diff;
 }, 0);
@@ -3779,7 +3779,7 @@ filtered.forEach((item, index) => {
   // 🔥 LÓGICA REAL DO SISTEMA
   const diff = !previousItem
     ? 0
-    : (currentSaldo - previousSaldo) - saidas;
+    : (currentSaldo - previousSaldo) + saidas;
 
   if(!rankingOperadores[nome]){
     rankingOperadores[nome] = {
@@ -3830,7 +3830,7 @@ const linhas = filtered.map((item, index) => {
 
   const diffCaixa = !previousItem
     ? 0
-    : (currentSaldo - previousSaldo) - saidas;
+    : (currentSaldo - previousSaldo) + saidas;
 
   return `
     <tr style="background:#ffffff !important;">
