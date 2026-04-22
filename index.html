@@ -2349,7 +2349,7 @@ body{
               </div>
 
               <div class="top-metric">
-                <div class="top-metric-label">Saldo total</div>
+                <div class="top-metric-label">Diferença Caixa</div>
                 <div id="lucroTotal" class="top-metric-value blue">$ 0,00</div>
               </div>
             </div>
@@ -3463,7 +3463,7 @@ ${money(Math.abs(Number(diferencaCaixa || 0)))}
           </div>
 
           <div class="history-box">
-            <div class="history-label">Saldo Total</div>
+            <div class="history-label">Diferença Caixa</div>
             <div class="history-value">${money(saldoTotal)}</div>
           </div>
 
@@ -4172,7 +4172,7 @@ return `
       </div>
 
       <div class="card">
-        <div class="label">Saldo Total</div>
+        <div class="label">Diferença Caixa</div>
         <div class="value">${money(totalDiferenca)}</div>
       </div>
     </div>
@@ -4459,7 +4459,7 @@ function renderHistoryModalContent(item, editMode = false){
         <div class="modal-summary-value">${money(item.total || 0)}</div>
       </div>
       <div class="modal-summary-card">
-        <div class="modal-summary-label">Saldo Total</div>
+        <div class="modal-summary-label">Diferença Caixa</div>
         <div class="history-mini-value ${(item.turnProfit || 0) < 0 ? "red" : ""}">${money(item.turnProfit || 0)}</div>
       </div>
       <div class="modal-summary-card">
