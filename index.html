@@ -3402,7 +3402,7 @@ const linhaTopo = `${nome} • Turno ${turno} • ${data}`;
   // 🔥 DIFERENÇA CORRETA
   const diferencaCaixa = !previousItem
     ? 0
-    : (saldoTotal - previousSaldoTotal) + saidas;
+    : (saldoTotal - previousSaldoTotal) - saidas;
 
   const nome = item.nomeOperador || "Sem nome";
   const turno = item.turnoTrabalhado || "-";
