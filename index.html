@@ -2758,6 +2758,89 @@ function getTodayDateInput(){
   return local.toISOString().split("T")[0];
 }
 
+ COLE AQUI
+
+async function recalculateAllHistory(){
+
+  try {
+
+    const q = query(
+
+      collection(db, "history"),
+
+      orderBy("submittedAt", "desc")
+
+    );
+
+    const snapshot = await getDocs(q);
+
+    const docs = snapshot.docs.map((docItem) => ({
+
+      id: docItem.id,
+
+      ...docItem.data()
+
+    }));
+
+    for(let i = 0; i < docs.length; i++){
+
+      const item = docs[i];
+
+      const turno = item.turno || {};
+
+      const currentSaldoTotal = Number(
+
+        item.currentSaldoTotal || turno.saldoLiquido || 0
+
+      );
+
+      const previousItem = docs[i + 1] || null;
+
+      const previousSaldoTotal = previousItem
+
+        ? Number(
+
+            previousItem.currentSaldoTotal ||
+
+            previousItem?.turno?.saldoLiquido || 0
+
+          )
+
+        : 0;
+
+      const diffCaixa = !previousItem
+
+        ? 0
+
+        : currentSaldoTotal - previousSaldoTotal;
+
+      await updateDoc(doc(db, "history", item.id), {
+
+        currentSaldoTotal,
+
+        retiradaLucro: Number(item.retiradaLucro || turno.saidasTotal || 0),
+
+        turnProfit: Number(item.retiradaLucro || turno.saidasTotal || 0),
+
+        diff: diffCaixa,
+
+        bankVariation: diffCaixa
+
+      });
+
+    }
+
+    alert("Histórico recalculado com sucesso.");
+
+  } catch (e) {
+
+    console.error("Erro ao recalcular histórico:", e);
+
+    alert("Erro ao recalcular histórico.");
+  }
+}
+
+
 async function getUsersFromFirestore(){
   const q = query(collection(db, "users"), orderBy("createdAt", "desc"));
   const snapshot = await getDocs(q);
