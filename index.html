@@ -3401,36 +3401,42 @@ const saidas = Number(
   const data = formatDateBR(item.fechamentoDate || "");
   const linhaTopo = `${nome} • Turno ${turno} • ${data}`;
 
-  return `
-    <div class="history-card ${diferencaCaixa > 0 ? "is-positive" : diferencaCaixa < 0 ? "is-negative" : "is-neutral"}" data-history-index="${index}">
-      <div class="history-card-accent"></div>
+return `
+  <div class="history-card ${diferencaCaixa > 0 ? "is-positive" : diferencaCaixa < 0 ? "is-negative" : "is-neutral"}" data-history-index="${index}">
+    <div class="history-card-accent"></div>
 
-      <div class="history-title">${linhaTopo}</div>
+    <div class="history-title">${linhaTopo}</div>
 
-      <div class="history-grid">
-        <div class="history-box">
-          <div class="history-label">Saldo Disponível(RECA)</div>
-          <div class="history-value">${money(saldoDisponivel)}</div>
-        </div>
-
-        <div class="history-box">
-          <div class="history-label">Saldo Total</div>
-          <div class="history-value">${money(saldoTotal)}</div>
-        </div>
-
-        <div class="history-box">
-          <div class="history-label">Diferença Caixa</div>
-          <div class="history-value ${
-            diferencaCaixa > 0 ? "positive" :
-            diferencaCaixa < 0 ? "negative" : ""
-          }">
-            ${diferencaCaixa > 0 ? "+ " : diferencaCaixa < 0 ? "- " : ""}
-            ${money(Math.abs(diferencaCaixa))}
-          </div>
-        </div>
+    <!-- 🔥 DIFERENÇA REAL NO TOPO -->
+    <div class="history-real-highlight">
+      <div class="history-real-label">Diferença Real de Caixa</div>
+      <div class="history-real-value ${
+        diferencaCaixa > 0 ? "positive" :
+        diferencaCaixa < 0 ? "negative" : ""
+      }">
+        ${diferencaCaixa > 0 ? "+ " : diferencaCaixa < 0 ? "- " : ""}
+        ${money(Math.abs(diferencaCaixa))}
       </div>
     </div>
-  `;
+
+    <div class="history-grid">
+      <div class="history-box">
+        <div class="history-label">Saldo Disponível(RECA)</div>
+        <div class="history-value">${money(saldoDisponivel)}</div>
+      </div>
+
+      <div class="history-box">
+        <div class="history-label">Saldo Total</div>
+        <div class="history-value">${money(saldoTotal)}</div>
+      </div>
+
+      <div class="history-box">
+        <div class="history-label">Saídas de Caixa</div>
+        <div class="history-value">${money(saidas)}</div>
+      </div>
+    </div>
+  </div>
+`;
 }).join("");
 
 const ultimoNome = history[0]?.nomeOperador || "Sem nome";
