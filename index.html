@@ -5167,14 +5167,30 @@ if (!printWindow) {
 
 const html = buildPremiumPdfHtml(startDate, endDate);
 console.log("HTML PDF:", html);
+console.log("TIPO:", typeof html);
+console.log("TAMANHO:", html ? html.length : 0);
+
+if (!html) {
+  alert("HTML vazio ou undefined");
+  return;
+}
+
+const printWindow = window.open("", "_blank", "width=1280,height=900");
+if (!printWindow) {
+  alert("Não foi possível abrir a janela.");
+  return;
+}
 
 printWindow.document.open();
-printWindow.document.write(html);
+printWindow.document.write(`
+  <html>
+    <head><title>Teste</title></head>
+    <body>
+      <h1 style="color:black;">TESTE JANELA</h1>
+    </body>
+  </html>
+`);
 printWindow.document.close();
-
-      byId("reportsMenu")?.classList.add("hidden");
-    });
-  });
 
   on("deleteHistoryBtn", "click", async () => {
     const senha = prompt("Digite código interno:");
