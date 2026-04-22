@@ -3571,10 +3571,8 @@ function openHistoryModal(index){
   document.getElementById("historyModalTitle").textContent =
     `Fechamento • ${item.nomeOperador || "Sem nome"} • Turno ${item.turnoTrabalhado || "-"}`;
 
-  document.getElementById("historyModalSub").textContent =
-    `Data do fechamento: ${formatDateBR(item.fechamentoDate || "")} • Enviado em: ${formatDateTimeBR(item.submittedAt)}`;
-
-  const turno = item.turno || {};
+document.getElementById("historyModalSub").textContent =
+  `Data do fechamento: ${formatDateBR(item.fechamentoDate || "")} • Enviado em: ${formatDateTimeBR(item.submittedAt)}`;
 
 const previousItem = history[index + 1] || null;
 
