@@ -4303,20 +4303,57 @@ return `
 `;
   
 }
-function render(){
+function render() {
   ensureDates();
 
   const t1Entradas = getEntradasTotal("t1");
   const t1Saidas = getDynamicTotal("t1");
   const t1Pendentes = getPendingTotal("t1");
-  const t1Total = t1Entradas - t1Saidas - t1Pendentes;
 
   const t2Entradas = getEntradasTotal("t2");
   const t2Saidas = getDynamicTotal("t2");
   const t2Pendentes = getPendingTotal("t2");
-  const t2Total = t2Entradas - t2Saidas - t2Pendentes;
 
-  const ultimoLucroDoTurno = Number(historyCache[0]?.turnProfit || 0);
+  const turno1Data = {
+    reca: getValue(fieldsByTurn.t1.banco),
+    suprema: getValue(fieldsByTurn.t1.suprema),
+    pppoker: getValue(fieldsByTurn.t1.pppoker),
+    buffalo: getValue(fieldsByTurn.t1.buffalo),
+    ganamos: getValue(fieldsByTurn.t1.ganamos),
+    pendentesTotal: t1Pendentes,
+    saidasTotal: t1Saidas
+  };
+
+  const turno2Data = {
+    reca: getValue(fieldsByTurn.t2.banco),
+    suprema: getValue(fieldsByTurn.t2.suprema),
+    pppoker: getValue(fieldsByTurn.t2.pppoker),
+    buffalo: getValue(fieldsByTurn.t2.buffalo),
+    ganamos: getValue(fieldsByTurn.t2.ganamos),
+    pendentesTotal: t2Pendentes,
+    saidasTotal: t2Saidas
+  };
+
+  const t1Total = calcularSaldoLiquido(turno1Data);
+  const t2Total = calcularSaldoLiquido(turno2Data);
+
+  const history = historyCache || [];
+  const currentItem = history[0] || null;
+  const previousItem = history[1] || null;
+
+  const currentSaldoTotal = currentItem
+    ? calcularSaldoLiquido(currentItem.turno || {})
+    : 0;
+
+  const previousSaldoTotal = previousItem
+    ? calcularSaldoLiquido(previousItem.turno || {})
+    : 0;
+
+  const diffCaixa = previousItem
+    ? currentSaldoTotal - previousSaldoTotal
+    : 0;
+
+  const ultimoLucroDoTurno = diffCaixa;
 
   const elT1Entradas = document.getElementById("t1_entradas_total");
   const elT1Saidas = document.getElementById("t1_saidas_total");
@@ -4329,26 +4366,38 @@ function render(){
   const elTotalT1 = document.getElementById("totalEntradasT1");
   const elLucro = document.getElementById("lucroTotal");
 
-  if(elT1Entradas) elT1Entradas.textContent = money(t1Entradas);
-  if(elT1Saidas) elT1Saidas.textContent = negativeMoney(t1Saidas);
-  if(elT1Pendentes) elT1Pendentes.textContent = negativeMoney(t1Pendentes);
+  if (elT1Entradas) elT1Entradas.textContent = money(t1Entradas);
+  if (elT1Saidas) elT1Saidas.textContent = negativeMoney(t1Saidas);
+  if (elT1Pendentes) elT1Pendentes.textContent = negativeMoney(t1Pendentes);
 
-  if(elT2Entradas) elT2Entradas.textContent = money(t2Entradas);
-  if(elT2Saidas) elT2Saidas.textContent = negativeMoney(t2Saidas);
-  if(elT2Pendentes) elT2Pendentes.textContent = negativeMoney(t2Pendentes);
+  if (elT2Entradas) elT2Entradas.textContent = money(t2Entradas);
+  if (elT2Saidas) elT2Saidas.textContent = negativeMoney(t2Saidas);
+  if (elT2Pendentes) elT2Pendentes.textContent = negativeMoney(t2Pendentes);
 
-  if(elTurno1) elTurno1.textContent = money(t1Total);
-  if(elTurno2) elTurno2.textContent = money(t2Total);
+  if (elTurno1) elTurno1.textContent = money(t1Total);
+  if (elTurno2) elTurno2.textContent = money(t2Total);
 
-  if(elTotalT1) elTotalT1.textContent = money(t1Entradas);
-  if(elLucro) elLucro.textContent = money(ultimoLucroDoTurno);
+  if (elTotalT1) elTotalT1.textContent = money(previousSaldoTotal);
+
+  if (elLucro) {
+    elLucro.textContent = `${diffCaixa < 0 ? "- " : diffCaixa > 0 ? "+ " : ""}${money(Math.abs(diffCaixa))}`;
+    elLucro.classList.remove("blue", "green", "red");
+
+    if (diffCaixa < 0) {
+      elLucro.classList.add("red");
+    } else if (diffCaixa > 0) {
+      elLucro.classList.add("green");
+    } else {
+      elLucro.classList.add("blue");
+    }
+  }
 
   const bancoRecaAtual = Number(
     getBancoRecaFromSnapshot(historyCache[0]?.turno || {})
   );
 
   const bankValueEl = document.getElementById("bankValue");
-  if(bankValueEl){
+  if (bankValueEl) {
     bankValueEl.textContent = balanceVisible ? money(bancoRecaAtual) : "••••••";
   }
 
@@ -4356,7 +4405,6 @@ function render(){
   updateStatusPill(ultimoLucroDoTurno);
   renderSystemsCompare();
 }
-
 
 /* =======================================================
    🔥 FUNÇÃO AUXILIAR (PEGAR VALOR PELO NOME)
