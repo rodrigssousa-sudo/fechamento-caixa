@@ -3669,7 +3669,7 @@ function renderHistoryListFromCache(){
 function openHistoryModal(index){
   const history = historyCache || [];
   const item = history[index];
-  if(!item) return;
+  if (!item) return;
 
   const editBtn = document.getElementById("editHistoryBtn");
   const saveBtn = document.getElementById("saveHistoryBtn");
@@ -3683,20 +3683,28 @@ function openHistoryModal(index){
     saveBtn.classList.add("hidden");
   }
 
-  if (modal) {
-    modal.classList.remove("hidden");
-  }
-
   window.editingHistoryIndex = index;
   window.historyEditMode = false;
 
   document.getElementById("historyModalTitle").textContent =
-    `Fechamento • ${item.nomeOperador || "Sem nome"} • Turno ${item.turnoTrabalhado || "-"}`;
+    Fechamento • ${item.nomeOperador || "Sem nome"} • Turno ${item.turnoTrabalhado || "-"};
 
   document.getElementById("historyModalSub").textContent =
-    `Data do fechamento: ${formatDateBR(item.fechamentoDate || "")} • Enviado em: ${formatDateTimeBR(item.submittedAt)}`;
+    Data do fechamento: ${formatDateBR(item.fechamentoDate || "")} • Enviado em: ${formatDateTimeBR(item.submittedAt)};
 
-  const previousItem = history[index + 1] || null;
+  renderHistoryModalContent(item, false);
+
+  if (modal) {
+    modal.classList.remove("hidden");
+  }
+}
+
+function renderHistoryModalContent(item, editMode = false){
+  const turno = item.turno || {};
+  const history = historyCache || [];
+  const index = editingHistoryIndex ?? history.findIndex((h) => h?.id === item?.id);
+
+  const previousItem = index >= 0 ? (history[index + 1] || null) : null;
 
   const previousSaldoTotal = previousItem
     ? calcularSaldoLiquido(previousItem.turno || {})
@@ -3708,9 +3716,6 @@ function openHistoryModal(index){
     ? 0
     : saldoTotalAtual - previousSaldoTotal;
 
-  renderHistoryModalContent(item, false);
-}
-
   document.getElementById("historyModalBody").innerHTML = `
     <div class="modal-summary-grid">
 
@@ -3719,20 +3724,20 @@ function openHistoryModal(index){
         <div class="modal-summary-value">${money(item.total || 0)}</div>
       </div>
 
-    <div class="modal-summary-card">
-  <div class="modal-summary-label">Saldo Total Turno</div>
-  <div class="modal-summary-value">
-    ${money(calcularSaldoLiquido(item.turno || {}))}
-  </div>
-</div>
+      <div class="modal-summary-card">
+        <div class="modal-summary-label">Saldo Total Turno</div>
+        <div class="modal-summary-value">
+          ${money(calcularSaldoLiquido(item.turno || {}))}
+        </div>
+      </div>
 
-<div class="modal-summary-card">
-  <div class="modal-summary-label">Diferença Real de Caixa</div>
-  <div class="history-mini-value ${(diferencaAtual || 0) < 0 ? "red" : (diferencaAtual || 0) > 0 ? "green" : ""}">
-    ${(diferencaAtual || 0) > 0 ? "+ " : (diferencaAtual || 0) < 0 ? "- " : ""}
-    ${money(Math.abs(diferencaAtual || 0))}
-  </div>
-</div>
+      <div class="modal-summary-card">
+        <div class="modal-summary-label">Diferença Real de Caixa</div>
+        <div class="history-mini-value ${(diferencaAtual || 0) < 0 ? "red" : (diferencaAtual || 0) > 0 ? "green" : ""}">
+          ${(diferencaAtual || 0) > 0 ? "+ " : (diferencaAtual || 0) < 0 ? "- " : ""}
+          ${money(Math.abs(diferencaAtual || 0))}
+        </div>
+      </div>
 
       <div class="modal-summary-card">
         <div class="modal-summary-label">Responsável</div>
@@ -3741,7 +3746,7 @@ function openHistoryModal(index){
 
       <div class="modal-summary-card">
         <div class="modal-summary-label">Data</div>
-        <input id="editDate" type="date" value="${item.fechamentoDate || ""}" disabled />
+        <input id="editFechamentoDate" type="date" value="${item.fechamentoDate || ""}" ${editMode ? "" : "disabled"} />
       </div>
 
     </div>
@@ -3763,7 +3768,20 @@ function openHistoryModal(index){
               displayValue = displayValue / 400;
             }
 
-            return `
+            if (editMode) {
+              return 
+                <div class="modal-line">
+                  <span>${escapeHtml(entry.name || "-")}</span>
+                  <input
+                    type="text"
+                    value="${Number(displayValue).toFixed(2).replace(".", ",")}"
+                    data-edit-entry="${i}"
+                  />
+                </div>
+              ;
+            }
+
+            return 
               <div class="modal-line">
                 <span>${escapeHtml(entry.name || "-")}</span>
                 <input
@@ -3773,11 +3791,93 @@ function openHistoryModal(index){
                   disabled
                 />
               </div>
-            `;
+            ;
           }).join("")}
 
         </div>
       </div>
+
+      <div class="modal-panel">
+        <div class="modal-panel-head"><h4>Saídas de Caixa</h4></div>
+        <div class="modal-panel-body">
+
+          ${(turno.outflows || []).map((entry, i) => {
+            if (editMode) {
+              return 
+                <div class="modal-line">
+                  <input
+                    type="text"
+                    value="${escapeHtml(entry.name || "")}"
+                    data-edit-outflow-name="${i}"
+                    placeholder="Nome"
+                  />
+                  <input
+                    type="text"
+                    value="${Number(entry.value || 0).toFixed(2).replace(".", ",")}"
+                    data-edit-outflow-value="${i}"
+                    placeholder="Valor"
+                  />
+                </div>
+              ;
+            }
+
+            return 
+              <div class="modal-line">
+                <span>${escapeHtml(entry.name || "-")}</span>
+                <input
+                  type="text"
+                  value="${Number(entry.value || 0).toFixed(2).replace(".", ",")}"
+                  disabled
+                />
+              </div>
+            ;
+          }).join("")}
+
+        </div>
+      </div>
+
+      <div class="modal-panel">
+        <div class="modal-panel-head"><h4>Pagos Pendentes</h4></div>
+        <div class="modal-panel-body">
+
+          ${(turno.pendings || []).map((entry, i) => {
+            if (editMode) {
+              return 
+                <div class="modal-line">
+                  <input
+                    type="text"
+                    value="${escapeHtml(entry.name || "")}"
+                    data-edit-pending-name="${i}"
+                    placeholder="Nome"
+                  />
+                  <input
+                    type="text"
+                    value="${Number(entry.value || 0).toFixed(2).replace(".", ",")}"
+                    data-edit-pending-value="${i}"
+                    placeholder="Valor"
+                  />
+                </div>
+              ;
+            }
+
+            return 
+              <div class="modal-line">
+                <span>${escapeHtml(entry.name || "-")}</span>
+                <input
+                  type="text"
+                  value="${Number(entry.value || 0).toFixed(2).replace(".", ",")}"
+                  disabled
+                />
+              </div>
+            ;
+          }).join("")}
+
+        </div>
+      </div>
+
+    </div>
+  `;
+}
 
       <div class="modal-panel">
         <div class="modal-panel-head"><h4>Saídas e Pendentes</h4></div>
