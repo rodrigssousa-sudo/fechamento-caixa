@@ -3501,20 +3501,16 @@ function renderHistoryListFromCache(){
 
     const previousItem = history[index + 1] || null;
 
-    const previousSaldoTotal = previousItem
-      ? Number(
-          previousItem.currentSaldoTotal ||
-          previousItem?.turno?.saldoLiquido || 0
-        )
-      : 0;
+const previousSaldoTotal = previousItem
+  ? Number(previousItem.currentSaldoTotal || previousItem?.turno?.saldoLiquido || 0)
+  : 0;
 
-    const saidas = Number(
-      item.retiradaLucro || item.turno?.saidasTotal || 0
-    );
+const saidas = Number(item.retiradaLucro || item.turno?.saidasTotal || 0);
+const saldoTotal = Number(item.currentSaldoTotal || item.turno?.saldoLiquido || 0);
 
-    const diferencaCaixa = !previousItem
-      ? 0
-      : saldoTotal - previousSaldoTotal;
+const diferencaCaixa = !previousItem
+  ? 0
+  : (saldoTotal + saidas) - previousSaldoTotal;
 
     const nome = item.nomeOperador || "Sem nome";
     const turno = item.turnoTrabalhado || "-";
@@ -3591,17 +3587,16 @@ function openHistoryModal(index){
 
   const previousItem = history[index + 1] || null;
 
-  const previousSaldoTotal = previousItem
-    ? Number(previousItem.currentSaldoTotal || previousItem?.turno?.saldoLiquido || 0)
-    : 0;
+const previousSaldoTotal = previousItem
+  ? Number(previousItem.currentSaldoTotal || previousItem?.turno?.saldoLiquido || 0)
+  : 0;
 
-  const saldoTotalAtual = Number(
-    item.currentSaldoTotal || item.turno?.saldoLiquido || 0
-  );
+const saidas = Number(item.retiradaLucro || item.turno?.saidasTotal || 0);
+const saldoTotal = Number(item.currentSaldoTotal || item.turno?.saldoLiquido || 0);
 
-  const diferencaAtual = !previousItem
-    ? 0
-    : saldoTotalAtual - previousSaldoTotal;
+const diferencaCaixa = !previousItem
+  ? 0
+  : (saldoTotal + saidas) - previousSaldoTotal;
 
   document.getElementById("historyModalBody").innerHTML = `
     <div class="modal-summary-grid">
@@ -3744,7 +3739,7 @@ function openHistoryModal(index){
         ? Number(previousItem.currentSaldoTotal || previousItem?.turno?.saldoLiquido || 0)
         : 0;
 
-      const diff = !previousItem ? 0 : saldoLiquido - previousSaldoTotal;
+      const diff = !previousItem ? 0 : (saldoLiquido + saidasTotal) - previousSaldoTotal;
 
       await updateDoc(docRef, {
         fechamentoDate: document.getElementById("editDate")?.value || item.fechamentoDate || "",
@@ -3852,17 +3847,17 @@ function buildPremiumPdfHtml(startDate, endDate){
 
 const totalDiferenca = filtered.reduce((acc, item, index) => {
   const previousItem = filtered[index + 1] || null;
-  const previousSaldo = previousItem
-    ? Number(previousItem?.turno?.saldoLiquido || 0)
-    : 0;
 
-  const currentSaldo = Number(item?.turno?.saldoLiquido || 0);
-  const saidas = Number(item?.turno?.saidasTotal || 0);
+const previousSaldo = previousItem
+  ? Number(previousItem?.turno?.saldoLiquido || 0)
+  : 0;
 
-  const diff = !previousItem
-    ? 0
-    : (currentSaldo - previousSaldo) + saidas;
+const currentSaldo = Number(item?.turno?.saldoLiquido || 0);
+const saidas = Number(item?.turno?.saidasTotal || 0);
 
+const diff = !previousItem
+  ? 0
+  : (currentSaldo + saidas) - previousSaldo;
   return acc + diff;
 }, 0);
 
@@ -3880,9 +3875,9 @@ filtered.forEach((item, index) => {
   const saidas = Number(item?.turno?.saidasTotal || 0);
 
   // 🔥 LÓGICA REAL DO SISTEMA
-  const diff = !previousItem
-    ? 0
-    : (currentSaldo - previousSaldo) + saidas;
+  const diffCaixa = !previousItem
+  ? 0
+  : (currentSaldo + saidas) - previousSaldo;
 
   if(!rankingOperadores[nome]){
     rankingOperadores[nome] = {
@@ -3932,8 +3927,8 @@ const linhas = filtered.map((item, index) => {
   const currentSaldo = Number(item?.turno?.saldoLiquido || 0);
 
   const diffCaixa = !previousItem
-    ? 0
-    : (currentSaldo - previousSaldo) + saidas;
+  ? 0
+  : (currentSaldo + saidas) - previousSaldo;
 
   return `
     <tr style="background:#ffffff !important;">
@@ -4671,8 +4666,8 @@ async function saveEditedHistory(){
     : 0;
 
   const diffCaixaEditada = !previousItem
-    ? 0
-    : saldoLiquido - previousSaldoTotal;
+  ? 0
+  : (saldoLiquido + saidasTotal) - previousSaldoTotal;
 
   const fechamentoDate =
     document.getElementById("editFechamentoDate")?.value ||
