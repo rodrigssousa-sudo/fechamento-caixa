@@ -805,8 +805,8 @@
       </section>
 
       <!-- GRÁFICO DE DESEMPENHO -->
-      <section class="section-card blue-section">
-        <div class="section-head">Desempenho</div>
+      <section id="rankingSection" class="section-card blue-section hidden">
+  <div class="section-head">Ranking</div>
         <div class="section-body">
           <div class="chart-actions">
             <button class="chart-range-btn active" type="button" data-chart-range="day">Dia</button>
@@ -975,15 +975,42 @@
     </main>
 
     <!-- MENU HAMBÚRGUER -->
-    <div id="mainMenu" class="floating-menu hidden">
-      <button class="menu-item" type="button" id="openPdfCustomBtn">Relatórios PDF</button>
-      <button class="menu-item" type="button" data-report-range="7">Relatório 7 dias</button>
-      <button class="menu-item" type="button" data-report-range="15">Relatório 15 dias</button>
-      <button class="menu-item" type="button" data-report-range="30">Relatório 30 dias</button>
-      <button class="menu-item" type="button" id="adminOpenBtn">Admin</button>
-      <button class="menu-item" type="button" id="menuHistoryBtn">Histórico detalhado</button>
-      <button class="menu-item" type="button" id="recalculateHistoryBtn">Recalcular histórico</button>
-    </div>
+<div id="mainMenu" class="floating-menu hidden">
+
+  <button class="menu-item" type="button" id="openPdfCustomBtn">
+    Relatórios PDF
+  </button>
+
+  <button class="menu-item" type="button" data-report-range="7">
+    Relatório 7 dias
+  </button>
+
+  <button class="menu-item" type="button" data-report-range="15">
+    Relatório 15 dias
+  </button>
+
+  <button class="menu-item" type="button" data-report-range="30">
+    Relatório 30 dias
+  </button>
+
+  <!-- 🔥 NOVO BOTÃO -->
+  <button class="menu-item" type="button" id="openRankingBtn">
+    Ranking operadores
+  </button>
+
+  <button class="menu-item" type="button" id="adminOpenBtn">
+    Admin
+  </button>
+
+  <button class="menu-item" type="button" id="menuHistoryBtn">
+    Histórico detalhado
+  </button>
+
+  <button class="menu-item" type="button" id="recalculateHistoryBtn">
+    Recalcular histórico
+  </button>
+
+</div>
   </div>
 
   <!-- MODAL HISTÓRICO -->
@@ -2004,6 +2031,31 @@ document.getElementById("menuHistoryBtn")?.addEventListener("click", () => {
     behavior: "smooth",
     block: "start"
   });
+});
+
+    document.getElementById("openRankingBtn")?.addEventListener("click", () => {
+  const code = prompt("Digite código interno:");
+
+  if (code === null) return;
+
+  if (code !== ADMIN_CODE) {
+    alert("Código incorreto.");
+    return;
+  }
+
+  document.getElementById("mainMenu")?.classList.add("hidden");
+
+  const section = document.getElementById("rankingSection");
+  if (!section) return;
+
+  section.classList.toggle("hidden");
+
+  if (!section.classList.contains("hidden")) {
+    section.scrollIntoView({
+      behavior: "smooth",
+      block: "start"
+    });
+  }
 });
     
 // =========================
