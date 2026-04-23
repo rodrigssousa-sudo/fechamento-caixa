@@ -2835,32 +2835,33 @@ async function recalculateAllHistory() {
       ...docItem.data()
     }));
 
-   for (let i = 0; i < docs.length; i++) {
-  const item = docs[i];
-  const turno = item.turno || {};
+    for (let i = 0; i < docs.length; i++) {
+      const item = docs[i];
+      const turno = item.turno || {};
+      const previousItem = docs[i + 1] || null;
 
-const currentBase = currentItem
-  ? calcularBaseComparacao(currentItem.turno || {})
-  : 0;
+      const currentSaldoTotal = calcularSaldoLiquido(turno);
 
-const previousBase = previousItem
-  ? calcularBaseComparacao(previousItem.turno || {})
-  : 0;
+      const currentBase = calcularBaseComparacao(turno);
 
-const diffCaixa = previousItem
-  ? currentBase - previousBase
-  : 0;
+      const previousBase = previousItem
+        ? calcularBaseComparacao(previousItem.turno || {})
+        : 0;
 
-const saidasTurnoAtual = Number(turno.saidasTotal || 0);
+      const diffCaixa = previousItem
+        ? currentBase - previousBase
+        : 0;
 
-  await updateDoc(doc(db, "history", item.id), {
-    currentSaldoTotal,
-    retiradaLucro: saidasTurnoAtual,
-    turnProfit: saidasTurnoAtual,
-    diff: diffCaixa,
-    bankVariation: diffCaixa
-  });
-}
+      const saidasTurnoAtual = Number(turno.saidasTotal || 0);
+
+      await updateDoc(doc(db, "history", item.id), {
+        currentSaldoTotal,
+        retiradaLucro: saidasTurnoAtual,
+        turnProfit: saidasTurnoAtual,
+        diff: diffCaixa,
+        bankVariation: diffCaixa
+      });
+    }
 
     alert("Histórico recalculado com sucesso.");
   } catch (e) {
@@ -2868,7 +2869,6 @@ const saidasTurnoAtual = Number(turno.saidasTotal || 0);
     alert("Erro ao recalcular histórico.");
   }
 }
-
 async function getUsersFromFirestore() {
   const q = query(
     collection(db, "users"),
