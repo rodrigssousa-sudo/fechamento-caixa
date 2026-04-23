@@ -2875,28 +2875,29 @@ async function saveHistoryItem(item) {
       limit(1)
     );
 
-  const snapshot = await getDocs(q);
-const previousItem = snapshot.docs[0]?.data() || null;
+    const snapshot = await getDocs(q);
+    const previousItem = snapshot.docs[0]?.data() || null;
 
-const previousSaldoTotal = previousItem
-  ? calcularSaldoLiquido(previousItem.turno || {})
-  : 0;
+    const currentSaldoTotal = calcularSaldoLiquido(item.turno || {});
 
-const currentBaseTotal = calcularBaseComparacao(turno);
+    const currentBaseTotal = calcularBaseComparacao(item.turno || {});
 
-const previousBaseTotal = previousItem
-  ? calcularBaseComparacao(previousItem.turno || {})
-  : 0;
+    const previousBaseTotal = previousItem
+      ? calcularBaseComparacao(previousItem.turno || {})
+      : 0;
 
-const diffCaixa = previousItem
-  ? currentBaseTotal - previousBaseTotal
-  : 0;
+    const diffCaixa = previousItem
+      ? currentBaseTotal - previousBaseTotal
+      : 0;
+
+    const saidasTurnoAtual = Number(item?.turno?.saidasTotal || 0);
 
     item.currentSaldoTotal = currentSaldoTotal;
     item.retiradaLucro = saidasTurnoAtual;
     item.turnProfit = saidasTurnoAtual;
     item.diff = diffCaixa;
     item.bankVariation = diffCaixa;
+
     item.submittedAt = serverTimestamp();
 
     await addDoc(collection(db, "history"), item);
