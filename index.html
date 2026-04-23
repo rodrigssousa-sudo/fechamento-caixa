@@ -2825,7 +2825,7 @@ async function recalculateAllHistory() {
 
  const diffCaixa = !previousItem
   ? 0
-  : previousSaldoTotal - currentSaldoTotal;
+  : currentSaldoTotal - previousSaldoTotal;
 
   const saidasTurnoAtual = Number(turno.saidasTotal || 0);
 
@@ -2882,9 +2882,9 @@ async function saveHistoryItem(item) {
     const currentSaldoTotal = calcularSaldoLiquido(item.turno || {});
     const saidasTurnoAtual = Number(item?.turno?.saidasTotal || 0);
 
-    const diffCaixa = !previousItem
+   const diffCaixa = !previousItem
   ? 0
-  : previousSaldoTotal - currentSaldoTotal;
+  : currentSaldoTotal - previousSaldoTotal;
 
     item.currentSaldoTotal = currentSaldoTotal;
     item.retiradaLucro = saidasTurnoAtual;
@@ -3617,8 +3617,8 @@ if (modal) {
   const saldoTotalAtual = calcularSaldoLiquido(item.turno || {});
 
   const diferencaAtual = !previousItem
-    ? 0
-    : saldoTotalAtual - previousSaldoTotal;
+  ? 0
+  : previousSaldoTotal - saldoTotalAtual;
 
   document.getElementById("historyModalBody").innerHTML = `
     <div class="modal-summary-grid">
@@ -3948,9 +3948,9 @@ function buildPremiumPdfHtml(startDate, endDate){
 
     const currentSaldo = calcularSaldoLiquido(item.turno || {});
 
-   const diffCaixa = !previousItem
+  const diffCaixa = !previousItem
   ? 0
-  : previousSaldoTotal - currentSaldoTotal;
+  : currentSaldoTotal - previousSaldoTotal;
 
     return `
       <tr style="background:#ffffff !important;">
@@ -4402,9 +4402,9 @@ const previousSaldoTotal = previousItem
   ? calcularSaldoLiquido(previousItem.turno || {})
   : 0;
 
-const diffCaixa = previousItem
-  ? previousSaldoTotal - currentSaldoTotal
-  : 0;
+const diffCaixa = !previousItem
+  ? 0
+  : currentSaldoTotal - previousSaldoTotal;
 
   const ultimoLucroDoTurno = diffCaixa;
 
