@@ -1794,16 +1794,13 @@ tbody tr:nth-child(even) td{
         <button class="auth-submit" type="submit">Enviar link de redefinição</button>
       </form>
 
-      <div class="auth-note">
-        Central King 24 horas
-      </div>
+      <div class="auth-note">Central King 24 horas</div>
     </div>
   </section>
 
-<div id="appShell" class="app-shell hidden">
-  <main class="app">
-    <header class="header">
-      <div class="title-row">
+  <div id="appShell" class="app-shell hidden">
+    <main class="app">
+      <header class="header">
         <div class="brand">
           <button id="menuToggle" class="menu-toggle-btn" type="button" aria-label="Abrir menu">
             <span></span><span></span><span></span>
@@ -1815,8 +1812,7 @@ tbody tr:nth-child(even) td{
 
           <h1 class="brand-title">Bank King</h1>
         </div>
-      </div>
-    </header>
+      </header>
 
       <div class="top-user-bar">
         <div class="top-user-info">
@@ -1826,73 +1822,71 @@ tbody tr:nth-child(even) td{
         <button id="logoutBtn" class="logout-btn" type="button">Sair</button>
       </div>
 
-    <section class="app-shell-clean">
-  <section class="summary app-top">
-    <article class="summary-flat-card">
-      <div class="summary-head clean">
-        <div class="summary-left">
-          <span class="summary-label">Painel</span>
-          <h2>Financeiro</h2>
-        </div>
+      <section class="app-shell-clean">
 
-        <div id="statusPill" class="pill neutral">
-          <span class="dot"></span> Sem diferença
-        </div>
-      </div>
+        <!-- CARD TOPO -->
+        <section class="summary app-top">
+          <article class="summary-flat-card">
+            <div class="summary-head clean">
+              <div class="summary-left">
+                <span class="summary-label">Resumo do turno atual</span>
+                <h2>Turno Atual</h2>
+              </div>
 
-      <div class="balance-strip">
-        <div class="balance-strip-label">Saldo disponível(RECA)</div>
+              <div id="statusPill" class="pill neutral">
+                <span class="dot"></span> Sem diferença
+              </div>
+            </div>
 
-        <div class="balance-strip-row">
-          <div id="bankValue" class="balance-strip-value">$ 0,00</div>
-
-          <button id="toggleBalance" class="hide-balance-btn" type="button" aria-label="Mostrar ou ocultar banca">
-            <svg id="eyeIcon" width="20" height="20" viewBox="0 0 24 24" fill="none">
-              <path d="M2 12C4.5 7 8.5 5 12 5C15.5 5 19.5 7 22 12C19.5 17 15.5 19 12 19C8.5 19 4.5 17 2 12Z" stroke="currentColor" stroke-width="1.6"/>
-              <circle cx="12" cy="12" r="3" stroke="currentColor" stroke-width="1.6"/>
-            </svg>
-          </button>
-        </div>
-      </div>
-
-            <div class="top-metrics">
+            <div class="top-metrics" style="grid-template-columns:repeat(4,1fr);">
               <div class="top-metric">
-                <div class="top-metric-label">Turno anterior</div>
-              <div id="totalEntradasT1" class="top-metric-value">$ 0,00</div>
+                <div class="top-metric-label">Operador</div>
+                <div id="summaryOperator" class="top-metric-value">—</div>
               </div>
 
               <div class="top-metric">
-                <div class="top-metric-label">Diferença Caixa</div>
-                <div id="lucroTotal" class="top-metric-value blue">$ 0,00</div>
+                <div class="top-metric-label">Data do fechamento</div>
+                <div id="summaryDate" class="top-metric-value">—</div>
+              </div>
+
+              <div class="top-metric">
+                <div class="top-metric-label">Turno</div>
+                <div id="summaryTurno" class="top-metric-value">—</div>
+              </div>
+
+              <div class="top-metric">
+                <div class="top-metric-label">Saldo líquido</div>
+                <div id="turno2InlineTotal" class="top-metric-value green">$ 0,00</div>
               </div>
             </div>
           </article>
         </section>
 
+        <!-- TURNO ATUAL -->
         <section class="main-entry">
           <article class="turno-flat" data-turno="t2">
             <div class="section-flat-header">
               <div>
                 <span class="summary-label">Preenchimento rápido</span>
-                <h3>Turno 2</h3>
-                <small>Preencha e feche o turno atual</small>
+                <h3>Turno Atual (T2)</h3>
+                <small>Preencha os dados operacionais do turno atual</small>
               </div>
 
               <div class="flat-total-box">
                 <div class="flat-total-label">Saldo líquido</div>
-                <div class="flat-total-value" id="turno2InlineTotal">$ 0,00</div>
+                <div class="flat-total-value" id="turno2InlineTotalMirror">$ 0,00</div>
               </div>
             </div>
 
             <div class="flat-form-grid">
               <div class="field">
                 <label for="t2_nome_operador">Nome do operador</label>
-                <input type="text" id="t2_nome_operador" placeholder="Ex.: Lucas" />
+                <input type="text" id="t2_nome_operador" placeholder="Ex.: Igor T" />
               </div>
 
               <div class="field">
                 <label for="t2_turno_trabalhado">Turno</label>
-                <input type="text" id="t2_turno_trabalhado" placeholder="Ex.: Manhã / Noite / T2" />
+                <input type="text" id="t2_turno_trabalhado" placeholder="Ex.: 18:00 - 00:00" />
               </div>
 
               <div class="field field-full">
@@ -1901,26 +1895,83 @@ tbody tr:nth-child(even) td{
               </div>
             </div>
 
+            <!-- BLOCO 1 — ENTRADAS -->
             <div class="flat-section">
               <div class="flat-section-head">
-                <h4>Entradas</h4>
+                <h4>1. Entradas</h4>
                 <div class="finance-total blue" id="t2_entradas_total">$ 0,00</div>
               </div>
 
               <div class="fields two-col">
-                <div class="field"><label for="t2_banco">Banco Reca</label><input type="text" inputmode="numeric" id="t2_banco" placeholder="0,00" /></div>
-                <div class="field"><label for="t2_pppoker">PPPoker (x400)</label><input type="text" inputmode="numeric" id="t2_pppoker" placeholder="0,00" /></div>
-                <div class="field"><label for="t2_suprema">Suprema (x400)</label><input type="text" inputmode="numeric" id="t2_suprema" placeholder="0,00" /></div>
-                <div class="field"><label for="t2_buffalo">Buffalo</label><input type="text" inputmode="numeric" id="t2_buffalo" placeholder="0,00" /></div>
-                <div class="field"><label for="t2_ganamos">Ganamos</label><input type="text" inputmode="numeric" id="t2_ganamos" placeholder="0,00" /></div>
-                <div class="field"><label for="t2_cargas">Carga de Fichas</label><input type="text" inputmode="numeric" id="t2_cargas" placeholder="0,00" /></div>
-                <div class="field"><label for="t2_cargas_poker">Cargas F. Poker (x400)</label><input type="text" inputmode="numeric" id="t2_cargas_poker" placeholder="0,00" /></div>
+                <div class="field">
+                  <label for="t2_banco">Banco Reca</label>
+                  <input type="text" inputmode="numeric" id="t2_banco" placeholder="0,00" />
+                </div>
+
+                <div class="field">
+                  <label for="t2_suprema">Suprema (x400)</label>
+                  <input type="text" inputmode="numeric" id="t2_suprema" placeholder="0,00" />
+                </div>
+
+                <div class="field">
+                  <label for="t2_pppoker">PPPoker (x400)</label>
+                  <input type="text" inputmode="numeric" id="t2_pppoker" placeholder="0,00" />
+                </div>
+
+                <div class="field">
+                  <label for="t2_buffalo">Buffalo</label>
+                  <input type="text" inputmode="numeric" id="t2_buffalo" placeholder="0,00" />
+                </div>
+
+                <div class="field field-full">
+                  <label for="t2_ganamos">Ganamos</label>
+                  <input type="text" inputmode="numeric" id="t2_ganamos" placeholder="0,00" />
+                </div>
               </div>
             </div>
 
-            <div class="flat-section">
+            <!-- BLOCO 2 — CARGAS -->
+            <div class="flat-section" style="border-top:1px solid rgba(37,99,235,.12);">
               <div class="flat-section-head">
-                <h4>Saídas de caixa</h4>
+                <div style="display:flex;align-items:center;gap:10px;">
+                  <h4 style="color:var(--primary);">2. Cargas</h4>
+                  <span class="pill neutral" style="background:rgba(37,99,235,.08);color:var(--primary);border:1px solid rgba(37,99,235,.12);">
+                    <span class="dot"></span> Movimentação interna
+                  </span>
+                </div>
+              </div>
+
+              <div class="fields two-col">
+                <div class="field">
+                  <label for="t2_cargas">Carga de Fichas</label>
+                  <input type="text" inputmode="numeric" id="t2_cargas" placeholder="0,00" />
+                </div>
+
+                <div class="field">
+                  <label for="t2_cargas_poker">Carga Poker (x400)</label>
+                  <input type="text" inputmode="numeric" id="t2_cargas_poker" placeholder="0,00" />
+                </div>
+              </div>
+            </div>
+
+            <!-- BLOCO 3 — PENDENTES -->
+            <div class="flat-section" style="border-top:1px solid rgba(245,158,11,.14);">
+              <div class="flat-section-head">
+                <h4 style="color:var(--amber);">3. Pendentes</h4>
+                <div class="finance-total red" id="t2_pendentes_total">- $ 0,00</div>
+              </div>
+
+              <div class="dynamic-list" id="t2_pending_list"></div>
+
+              <div class="inline-actions">
+                <button class="btn-add soft-btn" type="button" data-add-pending="t2">+ Adicionar pendente</button>
+              </div>
+            </div>
+
+            <!-- BLOCO 4 — SAÍDAS -->
+            <div class="flat-section" style="border-top:1px solid rgba(239,68,68,.14);">
+              <div class="flat-section-head">
+                <h4 style="color:var(--red);">4. Saídas</h4>
                 <div class="finance-total red" id="t2_saidas_total">- $ 0,00</div>
               </div>
 
@@ -1931,39 +1982,62 @@ tbody tr:nth-child(even) td{
               </div>
             </div>
 
-            <div class="flat-section">
+            <!-- BLOCO 5 — AÇÕES -->
+            <div class="flat-section" style="border-top:1px solid rgba(22,163,74,.12);">
               <div class="flat-section-head">
-                <h4>Pagos pendentes</h4>
-                <div class="finance-total red" id="t2_pendentes_total">- $ 0,00</div>
+                <h4 style="color:var(--green);">5. Ações</h4>
               </div>
 
-              <div class="dynamic-list" id="t2_pending_list"></div>
-
-              <div class="inline-actions">
-                <button class="btn-add soft-btn" type="button" data-add-pending="t2">+ Adicionar pendente</button>
+              <div class="bottom-bar-inner" style="position:static;grid-template-columns:repeat(4,1fr);gap:12px;">
+                <button class="secondary-btn" id="limpar" type="button">Limpar</button>
+                <button class="main-btn" id="calcular" type="button">Calcular</button>
+                <button class="close-btn" id="fecharTurno" type="button">Finalizar Turno</button>
+                <button class="pdf-btn" id="abrirAnaliseBtn" type="button">Abrir Análise</button>
               </div>
             </div>
           </article>
         </section>
 
+        <!-- LATERAL SECUNDÁRIA -->
         <section class="secondary-info">
-          <article class="history-card slim-card" id="systemsCompareCard">
+
+          <article class="history-card slim-card">
             <div class="history-card-top">
               <div>
-                <div class="history-card-title">Comparativo dos sistemas</div>
-                <div class="history-card-text" id="systemsCompareInfo">
-                  Último fechamento comparado com o anterior.
+                <div class="history-card-title">Comparação de Turnos</div>
+                <div class="history-card-text">
+                  Análise da variação entre os fechamentos salvos.
+                </div>
+              </div>
+
+              <button id="openReportsMenuBtn" class="danger-mini-btn" type="button">
+                Abrir análise
+              </button>
+            </div>
+
+            <div class="systems-compare-bar">
+              <div class="system-pill">
+                <span class="system-dot up"></span>
+                <div class="system-pill-text">
+                  <div class="system-pill-name">Turno Atual</div>
+                  <div class="system-pill-value" id="totalEntradasT1">$ 0,00</div>
+                </div>
+              </div>
+
+              <div class="system-pill">
+                <span class="system-dot same"></span>
+                <div class="system-pill-text">
+                  <div class="system-pill-name">Diferença Caixa</div>
+                  <div class="system-pill-value" id="lucroTotal">$ 0,00</div>
                 </div>
               </div>
             </div>
-
-            <div id="systemsCompareBar" class="systems-compare-bar"></div>
           </article>
 
           <article class="history-card slim-card">
             <div class="history-card-top">
               <div>
-                <div class="history-card-title">Histórico automático</div>
+                <div class="history-card-title">Histórico</div>
                 <div id="historyInfo" class="history-card-text">
                   Nenhum turno anterior salvo ainda.
                 </div>
@@ -1976,7 +2050,7 @@ tbody tr:nth-child(even) td{
 
             <div id="historyList" class="history-list hidden"></div>
 
-            <button id="deleteHistoryBtn" class="danger-mini-btn" type="button" style="margin-top:10px; width:100%;">
+            <button id="deleteHistoryBtn" class="danger-mini-btn" type="button" style="margin-top:10px;width:100%;">
               🔴 Excluir Histórico
             </button>
           </article>
@@ -1988,7 +2062,7 @@ tbody tr:nth-child(even) td{
                 <small>Carregado automaticamente do último fechamento</small>
               </div>
 
-              <div style="display:flex; align-items:center; gap:10px;">
+              <div style="display:flex;align-items:center;gap:10px;">
                 <div class="flat-total-box flat-total-box-sm">
                   <div class="flat-total-label">Saldo líquido</div>
                   <div class="flat-total-value" id="turno1InlineTotal">$ 0,00</div>
@@ -2016,18 +2090,27 @@ tbody tr:nth-child(even) td{
 
                 <div class="fields two-col">
                   <div class="field"><label for="t1_banco">Banco Reca</label><input type="text" inputmode="numeric" id="t1_banco" placeholder="0,00" /></div>
-                  <div class="field"><label for="t1_pppoker">PPPoker (x400)</label><input type="text" inputmode="numeric" id="t1_pppoker" placeholder="0,00" /></div>
                   <div class="field"><label for="t1_suprema">Suprema (x400)</label><input type="text" inputmode="numeric" id="t1_suprema" placeholder="0,00" /></div>
+                  <div class="field"><label for="t1_pppoker">PPPoker (x400)</label><input type="text" inputmode="numeric" id="t1_pppoker" placeholder="0,00" /></div>
                   <div class="field"><label for="t1_buffalo">Buffalo</label><input type="text" inputmode="numeric" id="t1_buffalo" placeholder="0,00" /></div>
                   <div class="field"><label for="t1_ganamos">Ganamos</label><input type="text" inputmode="numeric" id="t1_ganamos" placeholder="0,00" /></div>
-                  <div class="field"><label for="t1_cargas">Carga de Fichas</label><input type="text" inputmode="numeric" id="t1_cargas" placeholder="0,00" /></div>
-                  <div class="field"><label for="t1_cargas_poker">Cargas F. Poker (x400)</label><input type="text" inputmode="numeric" id="t1_cargas_poker" placeholder="0,00" /></div>
                 </div>
               </div>
 
               <div class="flat-section">
                 <div class="flat-section-head">
-                  <h4>Saídas de caixa</h4>
+                  <h4>Cargas</h4>
+                </div>
+
+                <div class="fields two-col">
+                  <div class="field"><label for="t1_cargas">Carga de Fichas</label><input type="text" inputmode="numeric" id="t1_cargas" placeholder="0,00" /></div>
+                  <div class="field"><label for="t1_cargas_poker">Carga Poker (x400)</label><input type="text" inputmode="numeric" id="t1_cargas_poker" placeholder="0,00" /></div>
+                </div>
+              </div>
+
+              <div class="flat-section">
+                <div class="flat-section-head">
+                  <h4>Saídas</h4>
                   <div class="finance-total red" id="t1_saidas_total">- $ 0,00</div>
                 </div>
 
@@ -2040,7 +2123,7 @@ tbody tr:nth-child(even) td{
 
               <div class="flat-section">
                 <div class="flat-section-head">
-                  <h4>Pagos pendentes</h4>
+                  <h4>Pendentes</h4>
                   <div class="finance-total red" id="t1_pendentes_total">- $ 0,00</div>
                 </div>
 
@@ -2054,11 +2137,12 @@ tbody tr:nth-child(even) td{
           </article>
         </section>
 
+        <!-- TELA RELATÓRIO -->
         <section id="reportScreen" class="report-screen hidden">
           <div class="report-head">
             <div>
-              <h3 id="reportTitle">Relatório</h3>
-              <small id="reportSubtitle" style="color: var(--muted);">Fluxo de caixa do período</small>
+              <h3 id="reportTitle">Comparação de Turnos</h3>
+              <small id="reportSubtitle" style="color:var(--muted);">Fluxo e variação por período</small>
             </div>
             <button id="closeReportScreen" class="report-close-btn" type="button">Fechar</button>
           </div>
@@ -2080,31 +2164,24 @@ tbody tr:nth-child(even) td{
             </div>
 
             <div class="report-card">
-              <div class="report-card-label">Lucro real</div>
+              <div class="report-card-label">Resultado / Diferença</div>
               <div class="report-card-value green" id="reportLucro">$ 0,00</div>
             </div>
           </div>
 
           <div id="reportList" class="report-list"></div>
         </section>
+      </section>
     </main>
 
     <div id="reportsMenu" class="reports-menu hidden">
-      <button class="reports-menu-item" type="button" data-report-range="7">Relatório 7</button>
-      <button class="reports-menu-item" type="button" data-report-range="15">Relatório 15</button>
-      <button class="reports-menu-item" type="button" data-report-range="30">Relatório 30</button>
-    </div>
-
-    <div class="bottom-bar">
-      <div class="bottom-bar-inner">
-        <button class="secondary-btn" id="limpar" type="button">Limpar</button>
-        <button class="close-btn" id="fecharTurno" type="button">FINALIZAR TURNO</button>
-        <button class="pdf-btn" id="exportarPdf" type="button">Exportar PDF</button>
-        <button class="main-btn" id="calcular" type="button">Calcular</button>
-      </div>
+      <button class="reports-menu-item" type="button" data-report-range="7">Comparação 7 dias</button>
+      <button class="reports-menu-item" type="button" data-report-range="15">Comparação 15 dias</button>
+      <button class="reports-menu-item" type="button" data-report-range="30">Comparação 30 dias</button>
     </div>
   </div>
 
+  <!-- MODAL HISTÓRICO -->
   <div id="historyModal" class="modal hidden">
     <div class="modal-backdrop" id="historyModalBackdrop"></div>
     <div class="modal-card">
@@ -2114,7 +2191,7 @@ tbody tr:nth-child(even) td{
           <small id="historyModalSub">Turno salvo</small>
         </div>
 
-        <div style="display:flex; gap:8px; flex-wrap:wrap;">
+        <div style="display:flex;gap:8px;flex-wrap:wrap;">
           <button id="editHistoryBtn" class="btn-add" type="button">Editar</button>
           <button id="saveHistoryBtn" class="close-btn hidden" type="button">Salvar alterações</button>
           <button id="closeHistoryModal" class="modal-close-btn" type="button">Fechar</button>
@@ -2125,6 +2202,7 @@ tbody tr:nth-child(even) td{
     </div>
   </div>
 
+  <!-- MODAL ADMIN -->
   <div id="adminModal" class="admin-modal hidden">
     <div class="admin-modal-backdrop" id="adminModalBackdrop"></div>
     <div class="admin-modal-card">
@@ -2145,34 +2223,42 @@ tbody tr:nth-child(even) td{
     </div>
   </div>
 
-  <div id="pdfRangeModal" class="modal hidden">
-    <div class="modal-backdrop" id="pdfRangeBackdrop"></div>
-    <div class="modal-card" style="max-width:520px;">
-      <div class="modal-head">
-        <div>
-          <h3>Exportar relatório PDF</h3>
-          <small>Escolha o período que deseja exportar</small>
-        </div>
-        <button id="closePdfRangeModal" class="modal-close-btn" type="button">Fechar</button>
+  <!-- MODAL PDF -->
+<div id="pdfRangeModal" class="modal hidden">
+  <div class="modal-backdrop" id="pdfRangeBackdrop"></div>
+
+  <div class="modal-card" style="max-width:520px;">
+    <div class="modal-head">
+      <div>
+        <h3>Exportar relatório PDF</h3>
+        <small>Escolha o período que deseja exportar</small>
       </div>
 
-      <div class="modal-body">
-        <div class="field">
-          <label for="pdfDateStart">Data inicial</label>
-          <input type="date" id="pdfDateStart" />
-        </div>
+      <button id="closePdfRangeModal" class="modal-close-btn" type="button">
+        Fechar
+      </button>
+    </div>
 
-        <div class="field">
-          <label for="pdfDateEnd">Data final</label>
-          <input type="date" id="pdfDateEnd" />
-        </div>
-
-        <button id="confirmExportPdf" class="auth-submit" type="button">
-          Gerar PDF
-        </button>
+    <div class="modal-body">
+      <div class="field">
+        <label for="pdfDateStart">Data inicial</label>
+        <input type="date" id="pdfDateStart" />
       </div>
+
+      <div class="field">
+        <label for="pdfDateEnd">Data final</label>
+        <input type="date" id="pdfDateEnd" />
+      </div>
+
+      <button id="confirmExportPdf" class="auth-submit" type="button">
+        Gerar PDF
+      </button>
     </div>
   </div>
+</div>
+
+</body>
+</html>
 
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-app.js";
