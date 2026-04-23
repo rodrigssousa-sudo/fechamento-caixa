@@ -782,7 +782,7 @@
           </div>
 
           <div class="summary-box">
-            <div class="summary-box-label">Saldo Reca</div>
+            <div class="summary-box-label">Total Turno Anterior</div>
             <div id="previousReca" class="summary-box-value green">$ 0,00</div>
           </div>
         </div>
@@ -1661,7 +1661,7 @@ function renderTopPreviousCards() {
   }
 
   const diff = Number(last.diff || 0);
-  const lastReca = Number(last.total || last.turno?.reca || 0);
+  const lastTotal = calcularSaldo(last.turno || {});
 
   if (previousOperator) previousOperator.textContent = last.nomeOperador || "Sem nome";
   if (previousDate) previousDate.textContent = formatDateBR(last.fechamentoDate || last.turno?.dataFechamento || "");
@@ -1673,8 +1673,8 @@ function renderTopPreviousCards() {
     if (diff < 0) previousDiff.classList.add("red");
   }
 
-  if (previousReca) previousReca.textContent = money(lastReca);
-  if (bankValue) bankValue.textContent = balanceVisible ? money(lastReca) : "Saldo oculto";
+  if (previousReca) previousReca.textContent = money(lastTotal);
+if (bankValue) bankValue.textContent = balanceVisible ? money(lastTotal) : "Saldo oculto";
 }
 
 function openHistoryModal(index) {
