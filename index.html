@@ -1565,6 +1565,73 @@ onAuthStateChanged(auth, (user) => {
 });
 
 // =========================
+// 🔘 FIX BOTÕES FINAIS
+// =========================
+
+// Botão hambúrguer ☰
+document.getElementById("menuToggle")?.addEventListener("click", () => {
+  document.getElementById("mainMenu")?.classList.toggle("hidden");
+});
+
+// Botão Histórico das ações
+document.getElementById("openDetailedHistoryBtn")?.addEventListener("click", () => {
+  historyVisible = !historyVisible;
+
+  const list = document.getElementById("historyList");
+  const btn = document.getElementById("toggleHistoryBtn");
+
+  if (list) list.classList.toggle("hidden", !historyVisible);
+  if (btn) btn.textContent = historyVisible ? "Ocultar" : "Ver";
+
+  if (typeof renderHistory === "function") renderHistory();
+});
+
+// Botão Ver/Ocultar histórico
+document.getElementById("toggleHistoryBtn")?.addEventListener("click", () => {
+  historyVisible = !historyVisible;
+
+  const list = document.getElementById("historyList");
+  const btn = document.getElementById("toggleHistoryBtn");
+
+  if (list) list.classList.toggle("hidden", !historyVisible);
+  if (btn) btn.textContent = historyVisible ? "Ocultar" : "Ver";
+
+  if (typeof renderHistory === "function") renderHistory();
+});
+
+// Botão Histórico detalhado dentro do menu ☰
+document.getElementById("menuHistoryBtn")?.addEventListener("click", () => {
+  document.getElementById("mainMenu")?.classList.add("hidden");
+
+  historyVisible = true;
+
+  const list = document.getElementById("historyList");
+  const btn = document.getElementById("toggleHistoryBtn");
+
+  if (list) list.classList.remove("hidden");
+  if (btn) btn.textContent = "Ocultar";
+
+  if (typeof renderHistory === "function") renderHistory();
+
+  list?.scrollIntoView({ behavior: "smooth", block: "start" });
+});
+
+// Fecha menu ao clicar fora
+document.addEventListener("click", (e) => {
+  const menu = document.getElementById("mainMenu");
+  const toggle = document.getElementById("menuToggle");
+
+  if (!menu || !toggle) return;
+
+  const clickedInsideMenu = menu.contains(e.target);
+  const clickedToggle = toggle.contains(e.target);
+
+  if (!clickedInsideMenu && !clickedToggle) {
+    menu.classList.add("hidden");
+  }
+});
+    
+// =========================
 // 🚪 LOGOUT
 // =========================
 document.getElementById("logoutBtn")?.addEventListener("click", async () => {
