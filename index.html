@@ -1584,22 +1584,17 @@ onAuthStateChanged(auth, (user) => {
   if (user) {
     console.log("LOGADO:", user.email);
 
-    document.getElementById("authScreen")?.classList.add("hidden");
-    document.getElementById("appShell")?.classList.remove("hidden");
+document.getElementById("authScreen")?.classList.add("hidden");
+document.getElementById("appShell")?.classList.remove("hidden");
 
-    const activeUserName = document.getElementById("activeUserName");
-    const activeUserEmail = document.getElementById("activeUserEmail");
+document.getElementById("activeUserName").textContent =
+  user.email?.split("@")[0] || "Usuário";
 
-    if (activeUserName) {
-      activeUserName.textContent = user.email?.split("@")[0] || "Usuário";
-    }
+document.getElementById("activeUserEmail").textContent =
+  user.email || "";
 
-    if (activeUserEmail) {
-      activeUserEmail.textContent = user.email || "";
-    }
-
-    startHistoryRealtimeListener();
-    render();
+startHistoryRealtimeListener();
+render();
   } else {
     console.log("USUÁRIO DESLOGADO");
 
@@ -1687,6 +1682,186 @@ document.getElementById("logoutBtn")?.addEventListener("click", async () => {
   }
 });
 
+// =========================
+// 🔥 CORREÇÃO FINAL: TOPO + HISTÓRICO + MENU
+// =========================
+
+function renderTopPreviousCards() {
+  const last = historyCache[0] || null;
+  const prev = historyCache[1] || null;
+
+  const previousOperator = document.getElementById("previousOperator");
+  const previousDate = document.getElementById("previousDate");
+  const previousDiff = document.getElementById("previousDiff");
+  const previousReca = document.getElementById("previousReca");
+
+  if (!last) {
+    if (previousOperator) previousOperator.textContent = "-";
+    if (previousDate) previousDate.textContent = "-";
+    if (previousDiff) previousDiff.textContent = money(0);
+    if (previousReca) previousReca.textContent = money(0);
+    return;
+  }
+
+  const diff = Number(last.diff || 0);
+
+  if (previousOperator) previousOperator.textContent = last.nomeOperador || "Sem nome";
+  if (previousDate) previousDate.textContent = formatDateBR(last.fechamentoDate || last.turno?.dataFechamento || "");
+  if (previousDiff) {
+    previousDiff.textContent = `${diff > 0 ? "+" : diff < 0 ? "-" : ""}${money(Math.abs(diff))}`;
+    previousDiff.classList.remove("green", "red");
+    if (diff > 0) previousDiff.classList.add("green");
+    if (diff < 0) previousDiff.classList.add("red");
+  }
+  if (previousReca) previousReca.textContent = money(last.total || last.turno?.reca || 0);
+}
+
+function openHistoryModal(index) {
+  const item = historyCache[index];
+  if (!item) return;
+
+  const turno = item.turno || {};
+  const diff = Number(item.diff || 0);
+  const saldo = item.saldo ?? item.currentSaldoTotal ?? calcularSaldo(turno);
+
+  document.getElementById("historyModalTitle").textContent =
+    `${formatDateBR(item.fechamentoDate || turno.dataFechamento || "")} - ${item.nomeOperador || "Sem nome"}`;
+
+  document.getElementById("historyModalSub").textContent =
+    `Enviado em: ${formatDateTimeBR(item.submittedAt)}`;
+
+  document.getElementById("historyModalBody").innerHTML = `
+    <div class="modal-grid">
+      <div class="summary-box">
+        <div class="summary-box-label">Banco Reca</div>
+        <div class="summary-box-value">${money(item.total || turno.reca || 0)}</div>
+      </div>
+
+      <div class="summary-box">
+        <div class="summary-box-label">Saldo Líquido</div>
+        <div class="summary-box-value">${money(saldo)}</div>
+      </div>
+
+      <div class="summary-box">
+        <div class="summary-box-label">Diferença Real</div>
+        <div class="summary-box-value ${diff > 0 ? "green" : diff < 0 ? "red" : ""}">
+          ${diff > 0 ? "+" : diff < 0 ? "-" : ""}${money(Math.abs(diff))}
+        </div>
+      </div>
+
+      <div class="summary-box">
+        <div class="summary-box-label">Saídas de Caixa</div>
+        <div class="summary-box-value red">${money(turno.saidasTotal || turno.saidas || 0)}</div>
+      </div>
+    </div>
+
+    <div style="margin-top:18px;display:grid;gap:10px;">
+      <div><strong>Suprema:</strong> ${money(turno.suprema || 0)} x400</div>
+      <div><strong>PPPoker:</strong> ${money(turno.pppoker || 0)} x400</div>
+      <div><strong>Buffalo:</strong> ${money(turno.buffalo || 0)}</div>
+      <div><strong>Ganamos:</strong> ${money(turno.ganamos || 0)}</div>
+      <div><strong>Carga fichas:</strong> ${money(turno.cargaFichas || 0)}</div>
+      <div><strong>Carga Poker:</strong> ${money(turno.cargaPoker || 0)}</div>
+      <div><strong>Pendentes:</strong> ${money(turno.pendentesTotal || turno.pendentes || 0)}</div>
+    </div>
+  `;
+
+  document.getElementById("historyModal")?.classList.remove("hidden");
+}
+
+function renderHistory() {
+  const list = document.getElementById("historyList");
+  if (!list) return;
+
+  renderTopPreviousCards();
+
+  if (!historyCache.length) {
+    list.innerHTML = `<div class="history-card">Sem histórico ainda.</div>`;
+    return;
+  }
+
+  list.innerHTML = historyCache.map((item, index) => {
+    const nome = item.nomeOperador || "Sem nome";
+    const data = formatDateBR(item.fechamentoDate || item.turno?.dataFechamento || "");
+    const banco = money(item.total || item.turno?.reca || 0);
+    const saldo = item.saldo ?? item.currentSaldoTotal ?? calcularSaldo(item.turno || {});
+    const diff = Number(item.diff || 0);
+
+    return `
+      <div class="history-card" data-history-open="${index}">
+        <div class="history-title">${data} - ${escapeHtml(nome)}</div>
+        <div class="history-meta">
+          <span>Banco: ${banco}</span>
+          <span>Saldo: ${money(saldo)}</span>
+        </div>
+        <div class="history-badge ${diff > 0 ? "positive" : diff < 0 ? "negative" : "neutral"}">
+          Dif: ${diff > 0 ? "+" : diff < 0 ? "-" : ""}${money(Math.abs(diff))}
+        </div>
+      </div>
+    `;
+  }).join("");
+
+  document.querySelectorAll("[data-history-open]").forEach((card) => {
+    card.addEventListener("click", () => {
+      openHistoryModal(Number(card.dataset.historyOpen));
+    });
+  });
+}
+
+// botão fechar modal histórico
+document.getElementById("closeHistoryModal")?.addEventListener("click", () => {
+  document.getElementById("historyModal")?.classList.add("hidden");
+});
+
+document.getElementById("historyModalBackdrop")?.addEventListener("click", () => {
+  document.getElementById("historyModal")?.classList.add("hidden");
+});
+
+// botão mostrar histórico
+document.getElementById("toggleHistoryBtn")?.addEventListener("click", () => {
+  historyVisible = !historyVisible;
+  document.getElementById("historyList")?.classList.toggle("hidden", !historyVisible);
+  document.getElementById("toggleHistoryBtn").textContent = historyVisible ? "Ocultar" : "Ver";
+});
+
+document.getElementById("openDetailedHistoryBtn")?.addEventListener("click", () => {
+  historyVisible = true;
+  document.getElementById("historyList")?.classList.remove("hidden");
+  document.getElementById("toggleHistoryBtn").textContent = "Ocultar";
+});
+
+// menu hambúrguer
+document.getElementById("menuToggle")?.addEventListener("click", () => {
+  document.getElementById("mainMenu")?.classList.toggle("hidden");
+});
+
+// botões dentro do menu
+document.getElementById("menuHistoryBtn")?.addEventListener("click", () => {
+  document.getElementById("mainMenu")?.classList.add("hidden");
+  historyVisible = true;
+  document.getElementById("historyList")?.classList.remove("hidden");
+  document.getElementById("toggleHistoryBtn").textContent = "Ocultar";
+});
+
+document.getElementById("openPdfCustomBtn")?.addEventListener("click", () => {
+  document.getElementById("mainMenu")?.classList.add("hidden");
+  document.getElementById("pdfRangeModal")?.classList.remove("hidden");
+});
+
+document.getElementById("adminOpenBtn")?.addEventListener("click", () => {
+  document.getElementById("mainMenu")?.classList.add("hidden");
+  if (typeof openAdminModal === "function") openAdminModal();
+});
+
+document.getElementById("recalculateHistoryBtn")?.addEventListener("click", () => {
+  document.getElementById("mainMenu")?.classList.add("hidden");
+  if (typeof recalculateAllHistory === "function") {
+    recalculateAllHistory();
+  } else {
+    alert("Função de recalcular histórico ainda não está instalada.");
+  }
+});
+    
 // =========================
 // 🔥 INICIALIZAÇÃO FINAL
 // =========================
