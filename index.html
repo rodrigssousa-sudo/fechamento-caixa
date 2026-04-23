@@ -2000,47 +2000,6 @@ document.getElementById("menuHistoryBtn")?.addEventListener("click", () => {
     block: "start"
   });
 });
-
-// =========================
-// ✅ CORRIGIR CARD PRINCIPAL
-// =========================
-function renderTopPreviousCards() {
-  const last = historyCache[0] || null;
-  const prev = historyCache[1] || null;
-
-  const previousOperator = document.getElementById("previousOperator");
-  const previousDate = document.getElementById("previousDate");
-  const previousDiff = document.getElementById("previousDiff");
-  const previousReca = document.getElementById("previousReca");
-  const bankValue = document.getElementById("bankValue");
-
-  if (!last) {
-    if (previousOperator) previousOperator.textContent = "-";
-    if (previousDate) previousDate.textContent = "-";
-    if (previousDiff) previousDiff.textContent = money(0);
-    if (previousReca) previousReca.textContent = money(0);
-    if (bankValue) bankValue.textContent = balanceVisible ? money(0) : "Saldo oculto";
-    return;
-  }
-
-  const lastReca = Number(last.total || last.turno?.reca || 0);
-
-  const currentBase = calcularSaldo(last.turno || {});
-  const previousBase = prev ? calcularSaldo(prev.turno || {}) : 0;
-  const diff = prev ? currentBase - previousBase : Number(last.diff || 0);
-
-  if (previousOperator) previousOperator.textContent = last.nomeOperador || "Sem nome";
-  if (previousDate) previousDate.textContent = formatDateBR(last.fechamentoDate || last.turno?.dataFechamento || "");
-  if (previousDiff) {
-    previousDiff.textContent = `${diff > 0 ? "+ " : diff < 0 ? "- " : ""}${money(Math.abs(diff))}`;
-    previousDiff.classList.remove("green", "red");
-    if (diff > 0) previousDiff.classList.add("green");
-    if (diff < 0) previousDiff.classList.add("red");
-  }
-
-  if (previousReca) previousReca.textContent = money(lastReca);
-  if (bankValue) bankValue.textContent = balanceVisible ? money(lastReca) : "Saldo oculto";
-}
     
 // =========================
 // 🔥 INICIALIZAÇÃO FINAL
