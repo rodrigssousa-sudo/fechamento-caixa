@@ -3510,27 +3510,28 @@ function renderHistoryListFromCache(){
   }
 
  list.innerHTML = history.slice(0, 30).map((item, index) => {
-  const saldoDisponivel = Number(item.total || 0);
+ const saldoDisponivel = Number(item.total || 0);
 
-  const saldoTotal = calcularSaldoLiquido(item.turno || {});
+const baseTotal = calcularBaseComparacao(item.turno || {});
 
-  const previousItem = history[index + 1] || null;
+const previousItem = history[index + 1] || null;
 
-  const previousSaldoTotal = previousItem
-    ? calcularSaldoLiquido(previousItem.turno || {})
-    : 0;
+const previousBaseTotal = previousItem
+  ? calcularBaseComparacao(previousItem.turno || {})
+  : 0;
 
-  const saidas = Number(
-    item.retiradaLucro || item.turno?.saidasTotal || 0
-  );
+const saidas = Number(
+  item.retiradaLucro || item.turno?.saidasTotal || 0
+);
 
-  const diferencaCaixa = !previousItem
-    ? 0
-    : saldoTotal - previousSaldoTotal;
-    const nome = item.nomeOperador || "Sem nome";
-    const turno = item.turnoTrabalhado || "-";
-    const data = formatDateBR(item.fechamentoDate || "");
-    const linhaTopo = `${nome} • Turno ${turno} • ${data}`;
+const diferencaCaixa = !previousItem
+  ? 0
+  : baseTotal - previousBaseTotal;
+
+const nome = item.nomeOperador || "Sem nome";
+const turno = item.turnoTrabalhado || "-";
+const data = formatDateBR(item.fechamentoDate || "");
+const linhaTopo = `${nome} • Turno ${turno} • ${data}`;
 
     return `
       <div class="history-card ${diferencaCaixa > 0 ? "is-positive" : diferencaCaixa < 0 ? "is-negative" : "is-neutral"}" data-history-index="${index}">
@@ -4395,62 +4396,63 @@ function render() {
     pendentesTotal: t2Pendentes,
     saidasTotal: t2Saidas
   };
+const t1Total = calcularSaldoLiquido(turno1Data);
+const t2Total = calcularSaldoLiquido(turno2Data);
 
-  const t1Total = calcularSaldoLiquido(turno1Data);
-  const t2Total = calcularSaldoLiquido(turno2Data);
-
-  const history = historyCache || [];
-  const currentItem = history[0] || null;
-  const previousItem = history[1] || null;
+const history = historyCache || [];
+const currentItem = history[0] || null;
+const previousItem = history[1] || null;
 
 const previousBaseTotal = previousItem
   ? calcularBaseComparacao(previousItem.turno || {})
   : 0;
 
-const currentBaseTotal = calcularBaseComparacao(item.turno || {});
+const currentBaseTotal = currentItem
+  ? calcularBaseComparacao(currentItem.turno || {})
+  : 0;
 
-const diferencaAtual = !previousItem
-  ? 0
-  : currentBaseTotal - previousBaseTotal;
+const diffCaixa = previousItem
+  ? currentBaseTotal - previousBaseTotal
+  : 0;
 
-  const ultimoLucroDoTurno = diffCaixa;
+const ultimoLucroDoTurno = diffCaixa;
 
-  const elT1Entradas = document.getElementById("t1_entradas_total");
-  const elT1Saidas = document.getElementById("t1_saidas_total");
-  const elT1Pendentes = document.getElementById("t1_pendentes_total");
-  const elT2Entradas = document.getElementById("t2_entradas_total");
-  const elT2Saidas = document.getElementById("t2_saidas_total");
-  const elT2Pendentes = document.getElementById("t2_pendentes_total");
-  const elTurno1 = document.getElementById("turno1InlineTotal");
-  const elTurno2 = document.getElementById("turno2InlineTotal");
-  const elTotalT1 = document.getElementById("totalEntradasT1");
-  const elLucro = document.getElementById("lucroTotal");
+const elT1Entradas = document.getElementById("t1_entradas_total");
+const elT1Saidas = document.getElementById("t1_saidas_total");
+const elT1Pendentes = document.getElementById("t1_pendentes_total");
+const elT2Entradas = document.getElementById("t2_entradas_total");
+const elT2Saidas = document.getElementById("t2_saidas_total");
+const elT2Pendentes = document.getElementById("t2_pendentes_total");
+const elTurno1 = document.getElementById("turno1InlineTotal");
+const elTurno2 = document.getElementById("turno2InlineTotal");
+const elTotalT1 = document.getElementById("totalEntradasT1");
+const elLucro = document.getElementById("lucroTotal");
 
-  if (elT1Entradas) elT1Entradas.textContent = money(t1Entradas);
-  if (elT1Saidas) elT1Saidas.textContent = negativeMoney(t1Saidas);
-  if (elT1Pendentes) elT1Pendentes.textContent = negativeMoney(t1Pendentes);
+if (elT1Entradas) elT1Entradas.textContent = money(t1Entradas);
+if (elT1Saidas) elT1Saidas.textContent = negativeMoney(t1Saidas);
+if (elT1Pendentes) elT1Pendentes.textContent = negativeMoney(t1Pendentes);
 
-  if (elT2Entradas) elT2Entradas.textContent = money(t2Entradas);
-  if (elT2Saidas) elT2Saidas.textContent = negativeMoney(t2Saidas);
-  if (elT2Pendentes) elT2Pendentes.textContent = negativeMoney(t2Pendentes);
+if (elT2Entradas) elT2Entradas.textContent = money(t2Entradas);
+if (elT2Saidas) elT2Saidas.textContent = negativeMoney(t2Saidas);
+if (elT2Pendentes) elT2Pendentes.textContent = negativeMoney(t2Pendentes);
 
-  if (elTurno1) elTurno1.textContent = money(t1Total);
-  if (elTurno2) elTurno2.textContent = money(t2Total);
+if (elTurno1) elTurno1.textContent = money(t1Total);
+if (elTurno2) elTurno2.textContent = money(t2Total);
 
-  if (elTotalT1) elTotalT1.textContent = money(previousSaldoTotal);
+if (elTotalT1) elTotalT1.textContent = money(previousBaseTotal);
 
-  if (elLucro) {
-    elLucro.textContent = `${diffCaixa < 0 ? "- " : diffCaixa > 0 ? "+ " : ""}${money(Math.abs(diffCaixa))}`;
-    elLucro.classList.remove("blue", "green", "red");
+if (elLucro) {
+  elLucro.textContent = `${diffCaixa < 0 ? "- " : diffCaixa > 0 ? "+ " : ""}${money(Math.abs(diffCaixa))}`;
+  elLucro.classList.remove("blue", "green", "red");
 
-    if (diffCaixa < 0) {
-      elLucro.classList.add("red");
-    } else if (diffCaixa > 0) {
-      elLucro.classList.add("green");
-    } else {
-      elLucro.classList.add("blue");
-    }
+  if (diffCaixa < 0) {
+    elLucro.classList.add("red");
+  } else if (diffCaixa > 0) {
+    elLucro.classList.add("green");
+  } else {
+    elLucro.classList.add("blue");
   }
+}
 
   const bancoRecaAtual = Number(
     getBancoRecaFromSnapshot(historyCache[0]?.turno || {})
