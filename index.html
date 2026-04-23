@@ -2776,19 +2776,21 @@ function getTodayDateInput() {
   return local.toISOString().split("T")[0];
 }
 
-function calcularEntradas(turno = {}) {
+    function calcularBaseComparacao(turno = {}) {
   const reca = Number(turno.reca || 0);
   const suprema = Number(turno.suprema || 0);
   const pppoker = Number(turno.pppoker || 0);
   const buffalo = Number(turno.buffalo || 0);
   const ganamos = Number(turno.ganamos || 0);
+  const pendentes = Number(turno.pendentesTotal || 0);
 
   return (
     reca +
     (suprema * 400) +
     (pppoker * 400) +
     buffalo +
-    ganamos
+    ganamos -
+    pendentes
   );
 }
 
@@ -2810,17 +2812,17 @@ async function recalculateAllHistory() {
   const item = docs[i];
   const turno = item.turno || {};
 
-const currentEntradasTotal = calcularEntradas(turno);
+const currentBaseTotal = calcularBaseComparacao(turno);
 
 const previousItem = docs[i + 1] || null;
 
-const previousEntradasTotal = previousItem
-  ? calcularEntradas(previousItem.turno || {})
+const previousBaseTotal = previousItem
+  ? calcularBaseComparacao(previousItem.turno || {})
   : 0;
 
 const diffCaixa = !previousItem
   ? 0
-  : currentEntradasTotal - previousEntradasTotal;
+  : currentBaseTotal - previousBaseTotal;
 
 const saidasTurnoAtual = Number(turno.saidasTotal || 0);
 
