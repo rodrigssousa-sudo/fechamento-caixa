@@ -2776,24 +2776,19 @@ function getTodayDateInput() {
   return local.toISOString().split("T")[0];
 }
 
-function calcularSaldoLiquido(turno = {}) {
+function calcularEntradas(turno = {}) {
   const reca = Number(turno.reca || 0);
   const suprema = Number(turno.suprema || 0);
   const pppoker = Number(turno.pppoker || 0);
   const buffalo = Number(turno.buffalo || 0);
   const ganamos = Number(turno.ganamos || 0);
 
-  const pendentes = Number(turno.pendentesTotal || 0);
-  const saidas = Number(turno.saidasTotal || 0);
-
   return (
     reca +
     (suprema * 400) +
     (pppoker * 400) +
     buffalo +
-    ganamos -
-    pendentes -
-    saidas // 🔥 CORRETO
+    ganamos
   );
 }
 
@@ -2815,19 +2810,19 @@ async function recalculateAllHistory() {
   const item = docs[i];
   const turno = item.turno || {};
 
-  const currentSaldoTotal = calcularSaldoLiquido(turno);
+const currentEntradasTotal = calcularEntradas(turno);
 
-  const previousItem = docs[i + 1] || null;
+const previousItem = docs[i + 1] || null;
 
-  const previousSaldoTotal = previousItem
-    ? calcularSaldoLiquido(previousItem.turno || {})
-    : 0;
+const previousEntradasTotal = previousItem
+  ? calcularEntradas(previousItem.turno || {})
+  : 0;
 
- const diffCaixa = !previousItem
+const diffCaixa = !previousItem
   ? 0
-  : currentSaldoTotal - previousSaldoTotal;
+  : currentEntradasTotal - previousEntradasTotal;
 
-  const saidasTurnoAtual = Number(turno.saidasTotal || 0);
+const saidasTurnoAtual = Number(turno.saidasTotal || 0);
 
   await updateDoc(doc(db, "history", item.id), {
     currentSaldoTotal,
