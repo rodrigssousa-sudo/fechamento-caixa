@@ -2260,1340 +2260,1333 @@ tbody tr:nth-child(even) td{
 </body>
 </html>
 
-  <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-app.js";
-    import {
-  getFirestore,
-  collection,
-  addDoc,
-  getDocs,
-  deleteDoc,
-  doc,
-  setDoc,
-  updateDoc,
-  onSnapshot,
-  query,
-  orderBy,
-  limit,
-  serverTimestamp
-} from "https://www.gstatic.com/firebasejs/12.0.0/firebase-firestore.js";
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-app.js";
+  import {
+    getFirestore,
+    collection,
+    addDoc,
+    getDocs,
+    deleteDoc,
+    doc,
+    setDoc,
+    updateDoc,
+    onSnapshot,
+    query,
+    orderBy,
+    limit,
+    serverTimestamp
+  } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-firestore.js";
 
-    import {
-      getAuth,
-      createUserWithEmailAndPassword,
-      signInWithEmailAndPassword,
-      signOut,
-      onAuthStateChanged,
-      sendPasswordResetEmail
-    } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-auth.js";
+  import {
+    getAuth,
+    createUserWithEmailAndPassword,
+    signInWithEmailAndPassword,
+    signOut,
+    onAuthStateChanged,
+    sendPasswordResetEmail
+  } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-auth.js";
 
-    const firebaseConfig = {
-      apiKey: "AIzaSyAuyfJNu2vwvVyH5gRsvg82m98teFCmPXw",
-      authDomain: "bank-king-c53cf.firebaseapp.com",
-      projectId: "bank-king-c53cf",
-      storageBucket: "bank-king-c53cf.firebasestorage.app",
-      messagingSenderId: "108865328748",
-      appId: "1:108865328748:web:65dbbcf146a67f95512a49",
-      measurementId: "G-S43L7WM4LH"
-    };
+  const firebaseConfig = {
+    apiKey: "AIzaSyAuyfJNu2vwvVyH5gRsvg82m98teFCmPXw",
+    authDomain: "bank-king-c53cf.firebaseapp.com",
+    projectId: "bank-king-c53cf",
+    storageBucket: "bank-king-c53cf.firebasestorage.app",
+    messagingSenderId: "108865328748",
+    appId: "1:108865328748:web:65dbbcf146a67f95512a49",
+    measurementId: "G-S43L7WM4LH"
+  };
 
-    const app = initializeApp(firebaseConfig);
-    const db = getFirestore(app);
-    const auth = getAuth(app);
+  const app = initializeApp(firebaseConfig);
+  const db = getFirestore(app);
+  const auth = getAuth(app);
 
-    const PDF_CODE = "9507";
-    const REPORT_CODE = "9507";
-    const DELETE_HISTORY_CODE = "9507";
-    const ADMIN_CODE = "9507";
+  const PDF_CODE = "9507";
+  const REPORT_CODE = "9507";
+  const DELETE_HISTORY_CODE = "9507";
+  const ADMIN_CODE = "9507";
 
-    const ACTIVE_USER_STORAGE_KEY = "bank-king-active-user-v1";
-    const REMEMBER_LOGIN_STORAGE_KEY = "bank-king-remember-login-v1";
-    const REMEMBERED_EMAIL_STORAGE_KEY = "bank-king-remembered-email-v1";
-    const SESSION_LAST_ACTIVITY_KEY = "bank-king-session-last-activity-v1";
+  const ACTIVE_USER_STORAGE_KEY = "bank-king-active-user-v1";
+  const REMEMBER_LOGIN_STORAGE_KEY = "bank-king-remember-login-v1";
+  const REMEMBERED_EMAIL_STORAGE_KEY = "bank-king-remembered-email-v1";
+  const SESSION_LAST_ACTIVITY_KEY = "bank-king-session-last-activity-v1";
 
-    const SESSION_TIMEOUT_MS = 30 * 60 * 1000;
+  const SESSION_TIMEOUT_MS = 30 * 60 * 1000;
 
-const authScreen = document.getElementById("authScreen");
-const appShell = document.getElementById("appShell");
-const loginForm = document.getElementById("loginForm");
-const registerForm = document.getElementById("registerForm");
-const forgotPasswordForm = document.getElementById("forgotPasswordForm");
-const rememberLoginCheckbox = document.getElementById("rememberLogin");
+  const authScreen = document.getElementById("authScreen");
+  const appShell = document.getElementById("appShell");
+  const loginForm = document.getElementById("loginForm");
+  const registerForm = document.getElementById("registerForm");
+  const forgotPasswordForm = document.getElementById("forgotPasswordForm");
+  const rememberLoginCheckbox = document.getElementById("rememberLogin");
 
-let balanceVisible = true;
-let sessionWatcher = null;
-let historyUnsubscribe = null;
-let historyRealtimeStarted = false;
-let historyCache = [];
-let historyVisible = false;
-let turno1Visible = false;
-let editingHistoryIndex = null;
-let historyEditMode = false;
+  let balanceVisible = true;
+  let sessionWatcher = null;
+  let historyUnsubscribe = null;
+  let historyRealtimeStarted = false;
+  let historyCache = [];
+  let historyVisible = false;
+  let turno1Visible = false;
+  let editingHistoryIndex = null;
+  let historyEditMode = false;
 
-function money(value) {
-  return `$ ${Number(value || 0).toLocaleString("pt-BR", {
-    minimumFractionDigits: 2,
-    maximumFractionDigits: 2
-  })}`;
-}
+  function money(value) {
+    return `$ ${Number(value || 0).toLocaleString("pt-BR", {
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2
+    })}`;
+  }
 
-function negativeMoney(value) {
-  return `- ${money(value)}`;
-}
+  function negativeMoney(value) {
+    return `- ${money(value)}`;
+  }
 
-function escapeHtml(text) {
-  return String(text ?? "")
-    .replaceAll("&", "&amp;")
-    .replaceAll("<", "&lt;")
-    .replaceAll(">", "&gt;")
-    .replaceAll('"', "&quot;")
-    .replaceAll("'", "&#39;");
-}
+  function escapeHtml(text) {
+    return String(text ?? "")
+      .replaceAll("&", "&amp;")
+      .replaceAll("<", "&lt;")
+      .replaceAll(">", "&gt;")
+      .replaceAll('"', "&quot;")
+      .replaceAll("'", "&#39;");
+  }
 
-function getTodayDateInput() {
-  const now = new Date();
-  const offset = now.getTimezoneOffset();
-  const local = new Date(now.getTime() - offset * 60000);
-  return local.toISOString().split("T")[0];
-}
+  function getTodayDateInput() {
+    const now = new Date();
+    const offset = now.getTimezoneOffset();
+    const local = new Date(now.getTime() - offset * 60000);
+    return local.toISOString().split("T")[0];
+  }
 
-function calcularSaldoLiquido(turno = {}) {
-  const reca = Number(turno.reca || 0);
-  const suprema = Number(turno.suprema || 0);
-  const pppoker = Number(turno.pppoker || 0);
-  const buffalo = Number(turno.buffalo || 0);
-  const ganamos = Number(turno.ganamos || 0);
+  function formatDateBR(dateStr) {
+    if (!dateStr) return "Sem data";
+    const [y, m, d] = dateStr.split("-");
+    if (!y || !m || !d) return dateStr;
+    return `${d}/${m}/${y}`;
+  }
 
-  const pendentes = Number(turno.pendentesTotal || 0);
-  const saidas = Number(turno.saidasTotal || 0);
+  function formatDateTimeBR(value) {
+    if (!value) return "Sem data";
 
-  return (
-    reca +
-    (suprema * 400) +
-    (pppoker * 400) +
-    buffalo +
-    ganamos -
-    pendentes -
-    saidas
-  );
-}
-    
-function calcularBaseComparacao(turno = {}) {
-  const reca = Number(turno.reca || 0);
-  const suprema = Number(turno.suprema || 0);
-  const pppoker = Number(turno.pppoker || 0);
-  const buffalo = Number(turno.buffalo || 0);
-  const ganamos = Number(turno.ganamos || 0);
+    let dt;
+    if (value?.toDate) {
+      dt = value.toDate();
+    } else {
+      dt = new Date(value);
+    }
 
-  const cargaFichas = Number(turno.cargaFichas || 0);
-  const cargaPoker = Number(turno.cargaPoker || 0);
+    if (isNaN(dt.getTime())) return "Sem data";
 
-  const pendentes = Number(turno.pendentesTotal || 0);
+    return `${dt.toLocaleDateString("pt-BR")} às ${dt.toLocaleTimeString("pt-BR", {
+      hour: "2-digit",
+      minute: "2-digit"
+    })}`;
+  }
 
-  return (
-    reca +
-    (suprema * 400) +
-    (pppoker * 400) +
-    buffalo +
-    ganamos -
-    cargaFichas -
-    cargaPoker -
-    pendentes
-  );
-}
+  function parseMoneyInput(value) {
+    if (!value) return 0;
+    const normalized = String(value)
+      .replace(/\./g, "")
+      .replace(",", ".")
+      .replace(/[^\d.-]/g, "");
+    const number = parseFloat(normalized);
+    return Number.isFinite(number) ? number : 0;
+  }
 
-async function recalculateAllHistory() {
-  try {
+  function formatDigitsToMoneyString(digits) {
+    const clean = String(digits || "").replace(/\D/g, "");
+    if (!clean) return "";
+    const number = Number(clean) / 100;
+    return number.toLocaleString("pt-BR", {
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2
+    });
+  }
+
+  function setDigitsToInput(input, digits) {
+    if (!input) return;
+    const clean = String(digits || "").replace(/\D/g, "");
+    input.dataset.raw = clean;
+    input.value = formatDigitsToMoneyString(clean);
+  }
+
+  function getDigitsFromInput(input) {
+    return input?.dataset?.raw || "";
+  }
+
+  function moveCursorToEnd(input) {
+    requestAnimationFrame(() => {
+      const len = input.value.length;
+      try { input.setSelectionRange(len, len); } catch (_) {}
+    });
+  }
+
+  function attachMoneyMask(input) {
+    if (!input || input.dataset.maskAttached === "true") return;
+
+    input.dataset.maskAttached = "true";
+    input.dataset.raw = input.dataset.raw || "";
+    input.placeholder = "0,00";
+    input.autocomplete = "off";
+    input.spellcheck = false;
+
+    input.addEventListener("keydown", (e) => {
+      const allowed = [
+        "Tab", "Shift", "Control", "Meta", "Alt",
+        "ArrowLeft", "ArrowRight", "ArrowUp", "ArrowDown", "Home", "End"
+      ].includes(e.key);
+
+      if (allowed) return;
+
+      const shortcut = (e.ctrlKey || e.metaKey) && ["a", "c", "v", "x"].includes(e.key.toLowerCase());
+      if (shortcut) return;
+
+      if (/^\d$/.test(e.key)) {
+        e.preventDefault();
+        setDigitsToInput(input, getDigitsFromInput(input) + e.key);
+        moveCursorToEnd(input);
+        render();
+        return;
+      }
+
+      if (e.key === "Backspace") {
+        e.preventDefault();
+        setDigitsToInput(input, getDigitsFromInput(input).slice(0, -1));
+        moveCursorToEnd(input);
+        render();
+        return;
+      }
+
+      if (e.key === "Delete") {
+        e.preventDefault();
+        setDigitsToInput(input, "");
+        moveCursorToEnd(input);
+        render();
+        return;
+      }
+
+      e.preventDefault();
+    });
+
+    input.addEventListener("paste", (e) => {
+      e.preventDefault();
+      const pasted = (e.clipboardData || window.clipboardData).getData("text") || "";
+      const digits = pasted.replace(/\D/g, "");
+      setDigitsToInput(input, getDigitsFromInput(input) + digits);
+      moveCursorToEnd(input);
+      render();
+    });
+
+    input.addEventListener("focus", () => moveCursorToEnd(input));
+  }
+
+  function calcularSaldoLiquido(turno = {}) {
+    const reca = Number(turno.reca || 0);
+    const suprema = Number(turno.suprema || 0);
+    const pppoker = Number(turno.pppoker || 0);
+    const buffalo = Number(turno.buffalo || 0);
+    const ganamos = Number(turno.ganamos || 0);
+
+    const pendentes = Number(turno.pendentesTotal || 0);
+    const saidas = Number(turno.saidasTotal || 0);
+
+    return (
+      reca +
+      (suprema * 400) +
+      (pppoker * 400) +
+      buffalo +
+      ganamos -
+      pendentes -
+      saidas
+    );
+  }
+
+  function calcularBaseComparacao(turno = {}) {
+    const reca = Number(turno.reca || 0);
+    const suprema = Number(turno.suprema || 0);
+    const pppoker = Number(turno.pppoker || 0);
+    const buffalo = Number(turno.buffalo || 0);
+    const ganamos = Number(turno.ganamos || 0);
+
+    const cargaFichas = Number(turno.cargaFichas || 0);
+    const cargaPoker = Number(turno.cargaPoker || 0);
+
+    const pendentes = Number(turno.pendentesTotal || 0);
+
+    return (
+      reca +
+      (suprema * 400) +
+      (pppoker * 400) +
+      buffalo +
+      ganamos -
+      cargaFichas -
+      cargaPoker -
+      pendentes
+    );
+  }
+
+  async function recalculateAllHistory() {
+    try {
+      const q = query(
+        collection(db, "history"),
+        orderBy("submittedAt", "desc")
+      );
+
+      const snapshot = await getDocs(q);
+
+      const docs = snapshot.docs.map((docItem) => ({
+        id: docItem.id,
+        ...docItem.data()
+      }));
+
+      for (let i = 0; i < docs.length; i++) {
+        const item = docs[i];
+        const turno = item.turno || {};
+        const previousItem = docs[i + 1] || null;
+
+        const currentSaldoTotal = calcularSaldoLiquido(turno);
+        const currentBase = calcularBaseComparacao(turno);
+
+        const previousBase = previousItem
+          ? calcularBaseComparacao(previousItem.turno || {})
+          : 0;
+
+        const diffCaixa = previousItem
+          ? currentBase - previousBase
+          : 0;
+
+        const saidasTurnoAtual = Number(turno.saidasTotal || 0);
+
+        await updateDoc(doc(db, "history", item.id), {
+          currentSaldoTotal,
+          retiradaLucro: saidasTurnoAtual,
+          turnProfit: saidasTurnoAtual,
+          diff: diffCaixa,
+          bankVariation: diffCaixa
+        });
+      }
+
+      alert("Histórico recalculado com sucesso.");
+    } catch (e) {
+      console.error("Erro ao recalcular histórico:", e);
+      alert("Erro ao recalcular histórico.");
+    }
+  }
+
+  async function getUsersFromFirestore() {
     const q = query(
-      collection(db, "history"),
-      orderBy("submittedAt", "desc")
+      collection(db, "users"),
+      orderBy("createdAt", "desc")
     );
 
     const snapshot = await getDocs(q);
 
-    const docs = snapshot.docs.map((docItem) => ({
+    return snapshot.docs.map((docItem) => ({
       id: docItem.id,
       ...docItem.data()
     }));
+  }
 
-    for (let i = 0; i < docs.length; i++) {
-      const item = docs[i];
-      const turno = item.turno || {};
-      const previousItem = docs[i + 1] || null;
+  async function deleteUserDocFromFirestore(uid) {
+    if (!uid) return;
+    await deleteDoc(doc(db, "users", uid));
+  }
 
-      const currentSaldoTotal = calcularSaldoLiquido(turno);
+  async function saveHistoryItem(item) {
+    try {
+      const q = query(
+        collection(db, "history"),
+        orderBy("submittedAt", "desc"),
+        limit(1)
+      );
 
-      const currentBase = calcularBaseComparacao(turno);
+      const snapshot = await getDocs(q);
+      const previousItem = snapshot.docs[0]?.data() || null;
 
-      const previousBase = previousItem
+      const currentSaldoTotal = calcularSaldoLiquido(item.turno || {});
+      const currentBaseTotal = calcularBaseComparacao(item.turno || {});
+
+      const previousBaseTotal = previousItem
         ? calcularBaseComparacao(previousItem.turno || {})
         : 0;
 
       const diffCaixa = previousItem
-        ? currentBase - previousBase
+        ? currentBaseTotal - previousBaseTotal
         : 0;
 
-      const saidasTurnoAtual = Number(turno.saidasTotal || 0);
+      const saidasTurnoAtual = Number(item?.turno?.saidasTotal || 0);
 
-      await updateDoc(doc(db, "history", item.id), {
-        currentSaldoTotal,
-        retiradaLucro: saidasTurnoAtual,
-        turnProfit: saidasTurnoAtual,
-        diff: diffCaixa,
-        bankVariation: diffCaixa
+      item.currentSaldoTotal = currentSaldoTotal;
+      item.retiradaLucro = saidasTurnoAtual;
+      item.turnProfit = saidasTurnoAtual;
+      item.diff = diffCaixa;
+      item.bankVariation = diffCaixa;
+      item.submittedAt = serverTimestamp();
+
+      await addDoc(collection(db, "history"), item);
+
+      console.log("Histórico salvo com sucesso.");
+      return true;
+    } catch (error) {
+      console.error("Erro ao salvar histórico:", error);
+      alert("Erro ao salvar histórico");
+      return false;
+    }
+  }
+
+  function saveRememberedLogin(enabled, email = "") {
+    localStorage.setItem(REMEMBER_LOGIN_STORAGE_KEY, enabled ? "true" : "false");
+    if (enabled) {
+      localStorage.setItem(REMEMBERED_EMAIL_STORAGE_KEY, email);
+    } else {
+      localStorage.removeItem(REMEMBERED_EMAIL_STORAGE_KEY);
+    }
+  }
+
+  function getRememberedLogin() {
+    return localStorage.getItem(REMEMBER_LOGIN_STORAGE_KEY) === "true";
+  }
+
+  function getRememberedEmail() {
+    return localStorage.getItem(REMEMBERED_EMAIL_STORAGE_KEY) || "";
+  }
+
+  function saveActiveUser(user) {
+    localStorage.setItem(ACTIVE_USER_STORAGE_KEY, JSON.stringify(user));
+  }
+
+  function loadActiveUser() {
+    const raw = localStorage.getItem(ACTIVE_USER_STORAGE_KEY);
+    if (!raw) return null;
+    try {
+      return JSON.parse(raw);
+    } catch {
+      return null;
+    }
+  }
+
+  function removeActiveUser() {
+    localStorage.removeItem(ACTIVE_USER_STORAGE_KEY);
+  }
+
+  function setSessionActivity() {
+    if (loadActiveUser()) {
+      localStorage.setItem(SESSION_LAST_ACTIVITY_KEY, String(Date.now()));
+    }
+  }
+
+  function getSessionLastActivity() {
+    return Number(localStorage.getItem(SESSION_LAST_ACTIVITY_KEY) || 0);
+  }
+
+  function isSessionExpired() {
+    const last = getSessionLastActivity();
+    if (!last) return true;
+    return (Date.now() - last) > SESSION_TIMEOUT_MS;
+  }
+
+  function stopSessionWatcher() {
+    if (sessionWatcher) {
+      clearInterval(sessionWatcher);
+      sessionWatcher = null;
+    }
+  }
+
+  function startSessionWatcher() {
+    stopSessionWatcher();
+    sessionWatcher = setInterval(() => {
+      if (loadActiveUser() && isSessionExpired()) {
+        alert("Sessão expirada por inatividade de 30 minutos.");
+        logout();
+      }
+    }, 15000);
+  }
+
+  function bindSessionEvents() {
+    ["click", "touchstart", "keydown", "input", "scroll"].forEach((eventName) => {
+      window.addEventListener(eventName, () => {
+        if (loadActiveUser()) setSessionActivity();
+      }, { passive: true });
+    });
+  }
+
+  function switchTab(mode) {
+    document.getElementById("tabLogin").classList.toggle("active", mode === "login");
+    document.getElementById("tabRegister").classList.toggle("active", mode === "register");
+    document.getElementById("tabForgot").classList.toggle("active", mode === "forgot");
+
+    loginForm.classList.toggle("hidden", mode !== "login");
+    registerForm.classList.toggle("hidden", mode !== "register");
+    forgotPasswordForm.classList.toggle("hidden", mode !== "forgot");
+
+    if (mode === "login") preloadLogin();
+  }
+
+  function preloadLogin() {
+    const remember = getRememberedLogin();
+    const rememberedEmail = getRememberedEmail();
+
+    const emailInput = document.getElementById("loginEmail");
+    const passwordInput = document.getElementById("loginPassword");
+
+    rememberLoginCheckbox.checked = remember;
+
+    if (rememberedEmail) {
+      emailInput.value = rememberedEmail;
+      requestAnimationFrame(() => passwordInput.focus());
+    } else {
+      emailInput.value = "";
+      requestAnimationFrame(() => emailInput.focus());
+    }
+  }
+
+  function showApp(user) {
+    document.getElementById("activeUserName").textContent = user?.name || "Usuário";
+    document.getElementById("activeUserEmail").textContent = user?.email || "";
+    authScreen.classList.add("hidden");
+    appShell.classList.remove("hidden");
+    ensureDates();
+    setSessionActivity();
+    startSessionWatcher();
+    render();
+  }
+
+  async function logout() {
+    try {
+      await signOut(auth);
+    } catch (error) {
+      console.error("Erro ao sair do Firebase:", error);
+    }
+
+    removeActiveUser();
+    localStorage.removeItem(SESSION_LAST_ACTIVITY_KEY);
+    stopSessionWatcher();
+    authScreen.classList.remove("hidden");
+    appShell.classList.add("hidden");
+    preloadLogin();
+    switchTab("login");
+  }
+
+  function ensureDates() {
+    const t1 = document.getElementById("t1_data_fechamento");
+    const t2 = document.getElementById("t2_data_fechamento");
+    if (t1 && !t1.value) t1.value = getTodayDateInput();
+    if (t2 && !t2.value) t2.value = getTodayDateInput();
+  }
+
+  const fieldsByTurn = {
+    t1: {
+      dataFechamento: "t1_data_fechamento",
+      nomeOperador: "t1_nome_operador",
+      turnoTrabalhado: "t1_turno_trabalhado",
+      banco: "t1_banco",
+      pppoker: "t1_pppoker",
+      suprema: "t1_suprema",
+      buffalo: "t1_buffalo",
+      ganamos: "t1_ganamos",
+      cargas: "t1_cargas",
+      cargasPoker: "t1_cargas_poker"
+    },
+    t2: {
+      dataFechamento: "t2_data_fechamento",
+      nomeOperador: "t2_nome_operador",
+      turnoTrabalhado: "t2_turno_trabalhado",
+      banco: "t2_banco",
+      pppoker: "t2_pppoker",
+      suprema: "t2_suprema",
+      buffalo: "t2_buffalo",
+      ganamos: "t2_ganamos",
+      cargas: "t2_cargas",
+      cargasPoker: "t2_cargas_poker"
+    }
+  };
+
+  function getValue(id) {
+    const el = document.getElementById(id);
+    return el ? parseMoneyInput(el.value) : 0;
+  }
+
+  function getEntradasTotal(turno) {
+    const f = fieldsByTurn[turno];
+
+    return (
+      getValue(f.banco) +
+      (getValue(f.pppoker) * 400) +
+      (getValue(f.suprema) * 400) +
+      getValue(f.buffalo) +
+      getValue(f.ganamos) -
+      getValue(f.cargas) -
+      (getValue(f.cargasPoker) * 400)
+    );
+  }
+
+  function getDynamicTotal(turno) {
+    const list = document.getElementById(`${turno}_dynamic_list`);
+    if (!list) return 0;
+
+    let total = 0;
+    list.querySelectorAll('input[data-dynamic-value="true"]').forEach((input) => {
+      total += parseMoneyInput(input.value);
+    });
+    return total;
+  }
+
+  function getPendingTotal(turno) {
+    const list = document.getElementById(`${turno}_pending_list`);
+    if (!list) return 0;
+
+    let total = 0;
+    list.querySelectorAll('input[data-pending-value="true"]').forEach((input) => {
+      total += parseMoneyInput(input.value);
+    });
+    return total;
+  }
+
+  function updateStatusPill(value) {
+    const pill = document.getElementById("statusPill");
+    if (value > 0) {
+      pill.innerHTML = `<span class="dot"></span> Positivo`;
+      pill.className = "pill positive";
+    } else if (value < 0) {
+      pill.innerHTML = `<span class="dot"></span> Negativo`;
+      pill.className = "pill negative";
+    } else {
+      pill.innerHTML = `<span class="dot"></span> Sem diferença`;
+      pill.className = "pill neutral";
+    }
+  }
+
+  function updateHistoryVisibility() {
+    const list = document.getElementById("historyList");
+    const btn = document.getElementById("toggleHistoryBtn");
+    if (!list || !btn) return;
+
+    if (historyVisible) {
+      list.classList.remove("hidden");
+      btn.textContent = "Ocultar";
+    } else {
+      list.classList.add("hidden");
+      btn.textContent = "Ver";
+    }
+  }
+
+  function updateTurno1Visibility() {
+    const content = document.getElementById("turno1Content");
+    const btn = document.getElementById("toggleTurno1Btn");
+
+    if (!content || !btn) return;
+
+    if (turno1Visible) {
+      content.classList.remove("hidden");
+      btn.textContent = "Ocultar";
+    } else {
+      content.classList.add("hidden");
+      btn.textContent = "Mostrar";
+    }
+  }
+
+  function updateEyeIcon() {
+    const eye = document.getElementById("eyeIcon");
+    if (balanceVisible) {
+      eye.innerHTML = `
+        <path d="M2 12C4.5 7 8.5 5 12 5C15.5 5 19.5 7 22 12C19.5 17 15.5 19 12 19C8.5 19 4.5 17 2 12Z" stroke="currentColor" stroke-width="1.6"/>
+        <circle cx="12" cy="12" r="3" stroke="currentColor" stroke-width="1.6"/>
+      `;
+    } else {
+      eye.innerHTML = `
+        <path d="M3 3L21 21" stroke="currentColor" stroke-width="1.6"/>
+        <path d="M10.5 10.5C10.2 10.8 10 11.3 10 12C10 13.1 10.9 14 12 14C12.7 14 13.2 13.8 13.5 13.5" stroke="currentColor" stroke-width="1.6"/>
+        <path d="M6.5 6.5C5 7.7 3.7 9.5 2 12C4.5 17 8.5 19 12 19C13.5 19 15 18.5 16.5 17.5" stroke="currentColor" stroke-width="1.6"/>
+        <path d="M17.5 17.5C19 16.3 20.3 14.5 22 12C19.5 7 15.5 5 12 5C10.5 5 9 5.5 7.5 6.5" stroke="currentColor" stroke-width="1.6"/>
+      `;
+    }
+  }
+
+  function updatePreviewForRow(row, value, pending = false) {
+    const preview = row.querySelector(".signed-preview");
+    if (!preview) return;
+    preview.textContent = negativeMoney(value);
+    preview.className = `signed-preview ${pending ? "amber" : "red"}`;
+  }
+
+  function bindDynamicRow(row, pending = false) {
+    const valueInput = row.querySelector(
+      pending ? '[data-pending-value="true"]' : '[data-dynamic-value="true"]'
+    );
+    const textInput = row.querySelector('[data-row-name="true"]');
+
+    if (valueInput) {
+      attachMoneyMask(valueInput);
+      valueInput.addEventListener("input", () => {
+        updatePreviewForRow(row, parseMoneyInput(valueInput.value), pending);
+        render();
       });
     }
 
-    alert("Histórico recalculado com sucesso.");
-  } catch (e) {
-    console.error("Erro ao recalcular histórico:", e);
-    alert("Erro ao recalcular histórico.");
+    if (textInput) {
+      textInput.addEventListener("input", render);
+    }
+
+    const removeBtn = row.querySelector(".remove-btn");
+    if (removeBtn) {
+      removeBtn.addEventListener("click", () => {
+        row.remove();
+        render();
+      });
+    }
+
+    updatePreviewForRow(row, parseMoneyInput(valueInput?.value || 0), pending);
   }
-}
-async function getUsersFromFirestore() {
-  const q = query(
-    collection(db, "users"),
-    orderBy("createdAt", "desc")
-  );
 
-  const snapshot = await getDocs(q);
+  function createDynamicRow(turno, name = "", digits = "") {
+    const row = document.createElement("div");
+    row.className = "dynamic-row outflow";
+    row.innerHTML = `
+      <div class="field">
+        <label>Saída</label>
+        <input type="text" data-row-name="true" placeholder="Ex.: salário, fornecedor, marketing" value="${escapeHtml(name)}" />
+      </div>
+      <div class="field">
+        <label>Valor</label>
+        <input type="text" inputmode="numeric" pattern="[0-9]*" data-dynamic-value="true" placeholder="0,00" />
+      </div>
+      <div class="signed-preview red">- $ 0,00</div>
+      <button class="remove-btn" type="button">Remover</button>
+    `;
+    document.getElementById(`${turno}_dynamic_list`).appendChild(row);
+    const valueInput = row.querySelector('[data-dynamic-value="true"]');
+    if (digits) setDigitsToInput(valueInput, digits);
+    bindDynamicRow(row, false);
+  }
 
-  return snapshot.docs.map((docItem) => ({
-    id: docItem.id,
-    ...docItem.data()
-  }));
-}
+  function createPendingRow(turno, name = "", digits = "") {
+    const row = document.createElement("div");
+    row.className = "dynamic-row pending";
+    row.innerHTML = `
+      <div class="field">
+        <label>Nome do cliente</label>
+        <input type="text" data-row-name="true" placeholder="Ex.: João, Carlos, Maria" value="${escapeHtml(name)}" />
+      </div>
+      <div class="field">
+        <label>Valor</label>
+        <input type="text" inputmode="numeric" pattern="[0-9]*" data-pending-value="true" placeholder="0,00" />
+      </div>
+      <div class="signed-preview amber">- $ 0,00</div>
+      <button class="remove-btn" type="button">Remover</button>
+    `;
+    document.getElementById(`${turno}_pending_list`).appendChild(row);
+    const valueInput = row.querySelector('[data-pending-value="true"]');
+    if (digits) setDigitsToInput(valueInput, digits);
+    bindDynamicRow(row, true);
+  }
 
-async function deleteUserDocFromFirestore(uid) {
-  if (!uid) return;
-  await deleteDoc(doc(db, "users", uid));
-}
+  function clearTurn(turno) {
+    const f = fieldsByTurn[turno];
+    Object.values(f).forEach((id) => {
+      const input = document.getElementById(id);
+      if (!input) return;
 
-async function saveHistoryItem(item) {
-  try {
-    const q = query(
-      collection(db, "history"),
-      orderBy("submittedAt", "desc"),
-      limit(1)
-    );
+      if (id === f.dataFechamento) {
+        input.value = getTodayDateInput();
+      } else {
+        input.value = "";
+        input.dataset.raw = "";
+      }
+    });
 
-    const snapshot = await getDocs(q);
-    const previousItem = snapshot.docs[0]?.data() || null;
+    const dynamicList = document.getElementById(`${turno}_dynamic_list`);
+    const pendingList = document.getElementById(`${turno}_pending_list`);
+    if (dynamicList) dynamicList.innerHTML = "";
+    if (pendingList) pendingList.innerHTML = "";
+  }
 
-    const currentSaldoTotal = calcularSaldoLiquido(item.turno || {});
+  function serializeTurn(turno) {
+    const f = fieldsByTurn[turno];
 
-    const currentBaseTotal = calcularBaseComparacao(item.turno || {});
+    const entries = [
+      { name: "Banco Reca", value: getValue(f.banco) },
+      { name: "PPPoker (x400)", value: getValue(f.pppoker) * 400 },
+      { name: "Suprema (x400)", value: getValue(f.suprema) * 400 },
+      { name: "Buffalo", value: getValue(f.buffalo) },
+      { name: "Ganamos", value: getValue(f.ganamos) },
+      { name: "Carga de Fichas", value: getValue(f.cargas) },
+      { name: "Cargas F. Poker (x400)", value: getValue(f.cargasPoker) * 400 }
+    ];
+
+    const outflows = [...document.querySelectorAll(`#${turno}_dynamic_list .dynamic-row`)].map((row) => {
+      const nameInput = row.querySelector('[data-row-name="true"]');
+      const valueInput = row.querySelector('[data-dynamic-value="true"]');
+
+      return {
+        name: nameInput?.value || "",
+        value: parseMoneyInput(valueInput?.value || "")
+      };
+    });
+
+    const pendings = [...document.querySelectorAll(`#${turno}_pending_list .dynamic-row`)].map((row) => {
+      const nameInput = row.querySelector('[data-row-name="true"]');
+      const valueInput = row.querySelector('[data-pending-value="true"]');
+
+      return {
+        name: nameInput?.value || "",
+        value: parseMoneyInput(valueInput?.value || "")
+      };
+    });
+
+    const entradasTotal = entries.reduce((acc, item) => acc + item.value, 0);
+    const saidasTotal = outflows.reduce((acc, item) => acc + item.value, 0);
+    const pendentesTotal = pendings.reduce((acc, item) => acc + item.value, 0);
+
+    const turnoData = {
+      dataFechamento: document.getElementById(f.dataFechamento)?.value || getTodayDateInput(),
+      entries,
+      outflows,
+      pendings,
+      entradasTotal,
+      saidasTotal,
+      pendentesTotal,
+      reca: getValue(f.banco),
+      suprema: getValue(f.suprema),
+      pppoker: getValue(f.pppoker),
+      buffalo: getValue(f.buffalo),
+      ganamos: getValue(f.ganamos),
+      cargaFichas: getValue(f.cargas),
+      cargaPoker: getValue(f.cargasPoker) * 400
+    };
+
+    turnoData.saldoLiquido = calcularSaldoLiquido(turnoData);
+
+    return {
+      nomeOperador: document.getElementById(f.nomeOperador)?.value?.trim() || "Sem nome",
+      turnoTrabalhado: document.getElementById(f.turnoTrabalhado)?.value?.trim() || "Não informado",
+      submittedAt: serverTimestamp(),
+      fechamentoDate: document.getElementById(f.dataFechamento)?.value || getTodayDateInput(),
+      total: getValue(f.banco),
+      turno: turnoData
+    };
+  }
+
+  function applySnapshotToTurn(turno, snapshot) {
+    if (!snapshot) return;
+
+    clearTurn(turno);
+
+    const f = fieldsByTurn[turno];
+    const dateInput = document.getElementById(f.dataFechamento);
+    if (dateInput) dateInput.value = snapshot.dataFechamento || getTodayDateInput();
+
+    const map = {
+      "Banco Reca": f.banco,
+      "PPPoker (x400)": f.pppoker,
+      "Suprema (x400)": f.suprema,
+      "Buffalo": f.buffalo,
+      "Ganamos": f.ganamos,
+      "Carga de Fichas": f.cargas,
+      "Cargas F. Poker (x400)": f.cargasPoker
+    };
+
+    (snapshot.entries || []).forEach((entry) => {
+      const id = map[entry.name];
+      if (!id) return;
+
+      let rawValue = entry.value || 0;
+      if (entry.name.includes("(x400)")) rawValue = rawValue / 400;
+
+      setDigitsToInput(document.getElementById(id), Math.round(rawValue * 100).toString());
+    });
+
+    (snapshot.outflows || []).forEach((item) => {
+      createDynamicRow(turno, item.name, Math.round((item.value || 0) * 100).toString());
+    });
+
+    (snapshot.pendings || []).forEach((item) => {
+      createPendingRow(turno, item.name, Math.round((item.value || 0) * 100).toString());
+    });
+  }
+
+  function getBancoRecaFromSnapshot(snapshot) {
+    return (snapshot.entries || []).find((item) => item.name === "Banco Reca")?.value || 0;
+  }
+
+  function closeHistoryModal() {
+    document.getElementById("historyModal").classList.add("hidden");
+    editingHistoryIndex = null;
+    historyEditMode = false;
+    document.getElementById("editHistoryBtn").classList.remove("hidden");
+    document.getElementById("saveHistoryBtn").classList.add("hidden");
+  }
+
+  function renderHistoryListFromCache() {
+    const list = document.getElementById("historyList");
+    const history = historyCache || [];
+
+    if (!list) return;
+
+    if (!history.length) {
+      list.innerHTML = `<div class="history-empty">Sem histórico ainda.</div>`;
+      document.getElementById("historyInfo").textContent = "Nenhum turno anterior salvo ainda.";
+      updateHistoryVisibility();
+      return;
+    }
+
+    list.innerHTML = history.slice(0, 30).map((item, index) => {
+      const saldoDisponivel = Number(item.total || 0);
+      const baseTotal = calcularBaseComparacao(item.turno || {});
+      const saldoTotal = calcularSaldoLiquido(item.turno || {});
+      const previousItem = history[index + 1] || null;
+
+      const previousBaseTotal = previousItem
+        ? calcularBaseComparacao(previousItem.turno || {})
+        : 0;
+
+      const saidas = Number(
+        item.retiradaLucro || item.turno?.saidasTotal || 0
+      );
+
+      const diferencaCaixa = !previousItem
+        ? 0
+        : baseTotal - previousBaseTotal;
+
+      const nome = item.nomeOperador || "Sem nome";
+      const turno = item.turnoTrabalhado || "-";
+      const data = formatDateBR(item.fechamentoDate || "");
+      const linhaTopo = `${nome} • Turno ${turno} • ${data}`;
+
+      return `
+        <div class="history-card ${diferencaCaixa > 0 ? "is-positive" : diferencaCaixa < 0 ? "is-negative" : "is-neutral"}" data-history-index="${index}">
+          <div class="history-card-accent"></div>
+
+          <div class="history-title">${linhaTopo}</div>
+
+          <div class="history-real-highlight">
+            <div class="history-real-label">Diferença Real de Caixa</div>
+            <div class="history-real-value ${
+              diferencaCaixa > 0 ? "positive" :
+              diferencaCaixa < 0 ? "negative" : ""
+            }">
+              ${diferencaCaixa > 0 ? "+" : diferencaCaixa < 0 ? "-" : ""}${money(Math.abs(Number(diferencaCaixa || 0)))}
+            </div>
+          </div>
+
+          <div class="history-grid">
+            <div class="history-box">
+              <div class="history-label">Saldo (RECA)</div>
+              <div class="history-value">${money(saldoDisponivel)}</div>
+            </div>
+
+            <div class="history-box">
+              <div class="history-label">Saldo Total Turno</div>
+              <div class="history-value">${money(saldoTotal)}</div>
+            </div>
+
+            <div class="history-box">
+              <div class="history-label">Saídas de Caixa</div>
+              <div class="history-value">${money(saidas)}</div>
+            </div>
+          </div>
+        </div>
+      `;
+    }).join("");
+
+    const ultimoNome = history[0]?.nomeOperador || "Sem nome";
+    const ultimoTurno = history[0]?.turnoTrabalhado || "-";
+    const ultimaData = formatDateBR(history[0]?.fechamentoDate || "");
+
+    document.getElementById("historyInfo").textContent =
+      `Último fechamento: ${ultimoNome} • Turno ${ultimoTurno} • ${ultimaData}`;
+
+    list.querySelectorAll("[data-history-index]").forEach((el) => {
+      el.addEventListener("click", () => {
+        openHistoryModal(Number(el.dataset.historyIndex));
+      });
+    });
+
+    updateHistoryVisibility();
+  }
+
+  function openHistoryModal(index) {
+    const history = historyCache || [];
+    const item = history[index];
+    if (!item) return;
+
+    const turno = item.turno || {};
+    const editBtn = document.getElementById("editHistoryBtn");
+    const saveBtn = document.getElementById("saveHistoryBtn");
+    const modal = document.getElementById("historyModal");
+
+    if (editBtn) editBtn.classList.remove("hidden");
+    if (saveBtn) saveBtn.classList.add("hidden");
+    if (modal) modal.classList.remove("hidden");
+
+    window.editingHistoryIndex = index;
+    window.historyEditMode = false;
+
+    document.getElementById("historyModalTitle").textContent =
+      `Fechamento • ${item.nomeOperador || "Sem nome"} • Turno ${item.turnoTrabalhado || "-"}`;
+
+    document.getElementById("historyModalSub").textContent =
+      `Data do fechamento: ${formatDateBR(item.fechamentoDate || "")} • Enviado em: ${formatDateTimeBR(item.submittedAt)}`;
+
+    const previousItem = history[index + 1] || null;
 
     const previousBaseTotal = previousItem
       ? calcularBaseComparacao(previousItem.turno || {})
       : 0;
 
-    const diffCaixa = previousItem
-      ? currentBaseTotal - previousBaseTotal
-      : 0;
+    const baseTotalAtual = calcularBaseComparacao(item.turno || {});
 
-    const saidasTurnoAtual = Number(item?.turno?.saidasTotal || 0);
-
-    item.currentSaldoTotal = currentSaldoTotal;
-    item.retiradaLucro = saidasTurnoAtual;
-    item.turnProfit = saidasTurnoAtual;
-    item.diff = diffCaixa;
-    item.bankVariation = diffCaixa;
-
-    item.submittedAt = serverTimestamp();
-
-    await addDoc(collection(db, "history"), item);
-
-    console.log("Histórico salvo com sucesso.");
-    return true;
-  } catch (error) {
-    console.error("Erro ao salvar histórico:", error);
-    alert("Erro ao salvar histórico");
-    return false;
-  }
-}
-    
-function formatDateBR(dateStr){
-  if(!dateStr) return "Sem data";
-  const [y,m,d] = dateStr.split("-");
-  if(!y || !m || !d) return dateStr;
-  return `${d}/${m}/${y}`;
-}
-
-function formatDateTimeBR(value){
-  if(!value) return "Sem data";
-
-  let dt;
-  if (value?.toDate) {
-    dt = value.toDate();
-  } else {
-    dt = new Date(value);
-  }
-
-  if (isNaN(dt.getTime())) return "Sem data";
-
-  return `${dt.toLocaleDateString("pt-BR")} às ${dt.toLocaleTimeString("pt-BR", {
-    hour: "2-digit",
-    minute: "2-digit"
-  })}`;
-}
-    function parseMoneyInput(value){
-      if(!value) return 0;
-      const normalized = String(value)
-        .replace(/\./g, "")
-        .replace(",", ".")
-        .replace(/[^\d.-]/g, "");
-      const number = parseFloat(normalized);
-      return Number.isFinite(number) ? number : 0;
-    }
-
-    function formatDigitsToMoneyString(digits){
-      const clean = String(digits || "").replace(/\D/g, "");
-      if(!clean) return "";
-      const number = Number(clean) / 100;
-      return number.toLocaleString("pt-BR", {
-        minimumFractionDigits: 2,
-        maximumFractionDigits: 2
-      });
-    }
-
-    function setDigitsToInput(input, digits){
-      if(!input) return;
-      const clean = String(digits || "").replace(/\D/g, "");
-      input.dataset.raw = clean;
-      input.value = formatDigitsToMoneyString(clean);
-    }
-
-    function getDigitsFromInput(input){
-      return input?.dataset?.raw || "";
-    }
-
-    function moveCursorToEnd(input){
-      requestAnimationFrame(() => {
-        const len = input.value.length;
-        try{ input.setSelectionRange(len, len); }catch(_){}
-      });
-    }
-
-    function attachMoneyMask(input){
-      if(!input || input.dataset.maskAttached === "true") return;
-
-      input.dataset.maskAttached = "true";
-      input.dataset.raw = input.dataset.raw || "";
-      input.placeholder = "0,00";
-      input.autocomplete = "off";
-      input.spellcheck = false;
-
-      input.addEventListener("keydown", (e) => {
-        const allowed = [
-          "Tab","Shift","Control","Meta","Alt",
-          "ArrowLeft","ArrowRight","ArrowUp","ArrowDown","Home","End"
-        ].includes(e.key);
-
-        if(allowed) return;
-
-        const shortcut = (e.ctrlKey || e.metaKey) && ["a","c","v","x"].includes(e.key.toLowerCase());
-        if(shortcut) return;
-
-        if(/^\d$/.test(e.key)){
-          e.preventDefault();
-          setDigitsToInput(input, getDigitsFromInput(input) + e.key);
-          moveCursorToEnd(input);
-          render();
-          return;
-        }
-
-        if(e.key === "Backspace"){
-          e.preventDefault();
-          setDigitsToInput(input, getDigitsFromInput(input).slice(0, -1));
-          moveCursorToEnd(input);
-          render();
-          return;
-        }
-
-        if(e.key === "Delete"){
-          e.preventDefault();
-          setDigitsToInput(input, "");
-          moveCursorToEnd(input);
-          render();
-          return;
-        }
-
-        e.preventDefault();
-      });
-
-      input.addEventListener("paste", (e) => {
-        e.preventDefault();
-        const pasted = (e.clipboardData || window.clipboardData).getData("text") || "";
-        const digits = pasted.replace(/\D/g, "");
-        setDigitsToInput(input, getDigitsFromInput(input) + digits);
-        moveCursorToEnd(input);
-        render();
-      });
-
-      input.addEventListener("focus", () => moveCursorToEnd(input));
-    }
-
-    function saveRememberedLogin(enabled, email = ""){
-      localStorage.setItem(REMEMBER_LOGIN_STORAGE_KEY, enabled ? "true" : "false");
-      if(enabled){
-        localStorage.setItem(REMEMBERED_EMAIL_STORAGE_KEY, email);
-      }else{
-        localStorage.removeItem(REMEMBERED_EMAIL_STORAGE_KEY);
-      }
-    }
-
-    function getRememberedLogin(){
-      return localStorage.getItem(REMEMBER_LOGIN_STORAGE_KEY) === "true";
-    }
-
-    function getRememberedEmail(){
-      return localStorage.getItem(REMEMBERED_EMAIL_STORAGE_KEY) || "";
-    }
-
-    function saveActiveUser(user){
-      localStorage.setItem(ACTIVE_USER_STORAGE_KEY, JSON.stringify(user));
-    }
-
-    function loadActiveUser(){
-      const raw = localStorage.getItem(ACTIVE_USER_STORAGE_KEY);
-      if(!raw) return null;
-      try{
-        return JSON.parse(raw);
-      }catch{
-        return null;
-      }
-    }
-
-    function removeActiveUser(){
-      localStorage.removeItem(ACTIVE_USER_STORAGE_KEY);
-    }
-
-    function setSessionActivity(){
-      if(loadActiveUser()){
-        localStorage.setItem(SESSION_LAST_ACTIVITY_KEY, String(Date.now()));
-      }
-    }
-
-    function getSessionLastActivity(){
-      return Number(localStorage.getItem(SESSION_LAST_ACTIVITY_KEY) || 0);
-    }
-
-    function isSessionExpired(){
-      const last = getSessionLastActivity();
-      if(!last) return true;
-      return (Date.now() - last) > SESSION_TIMEOUT_MS;
-    }
-
-    function stopSessionWatcher(){
-      if(sessionWatcher){
-        clearInterval(sessionWatcher);
-        sessionWatcher = null;
-      }
-    }
-
-    function startSessionWatcher(){
-      stopSessionWatcher();
-      sessionWatcher = setInterval(() => {
-        if(loadActiveUser() && isSessionExpired()){
-          alert("Sessão expirada por inatividade de 30 minutos.");
-          logout();
-        }
-      }, 15000);
-    }
-
-    function bindSessionEvents(){
-      ["click","touchstart","keydown","input","scroll"].forEach((eventName) => {
-        window.addEventListener(eventName, () => {
-          if(loadActiveUser()) setSessionActivity();
-        }, { passive:true });
-      });
-    }
-
-    function switchTab(mode){
-      document.getElementById("tabLogin").classList.toggle("active", mode === "login");
-      document.getElementById("tabRegister").classList.toggle("active", mode === "register");
-      document.getElementById("tabForgot").classList.toggle("active", mode === "forgot");
-
-      loginForm.classList.toggle("hidden", mode !== "login");
-      registerForm.classList.toggle("hidden", mode !== "register");
-      forgotPasswordForm.classList.toggle("hidden", mode !== "forgot");
-
-      if(mode === "login") preloadLogin();
-    }
-
-    function preloadLogin(){
-      const remember = getRememberedLogin();
-      const rememberedEmail = getRememberedEmail();
-
-      const emailInput = document.getElementById("loginEmail");
-      const passwordInput = document.getElementById("loginPassword");
-
-      rememberLoginCheckbox.checked = remember;
-
-      if(rememberedEmail){
-        emailInput.value = rememberedEmail;
-        requestAnimationFrame(() => passwordInput.focus());
-      }else{
-        emailInput.value = "";
-        requestAnimationFrame(() => emailInput.focus());
-      }
-    }
-
-    function showApp(user){
-      document.getElementById("activeUserName").textContent = user?.name || "Usuário";
-      document.getElementById("activeUserEmail").textContent = user?.email || "";
-      authScreen.classList.add("hidden");
-      appShell.classList.remove("hidden");
-      ensureDates();
-      setSessionActivity();
-      startSessionWatcher();
-      render();
-    }
-
-    async function logout(){
-      try{
-        await signOut(auth);
-      }catch(error){
-        console.error("Erro ao sair do Firebase:", error);
-      }
-
-      removeActiveUser();
-      localStorage.removeItem(SESSION_LAST_ACTIVITY_KEY);
-      stopSessionWatcher();
-      authScreen.classList.remove("hidden");
-      appShell.classList.add("hidden");
-      preloadLogin();
-      switchTab("login");
-    }
-
-    function ensureDates(){
-      const t1 = document.getElementById("t1_data_fechamento");
-      const t2 = document.getElementById("t2_data_fechamento");
-      if(t1 && !t1.value) t1.value = getTodayDateInput();
-      if(t2 && !t2.value) t2.value = getTodayDateInput();
-    }
-
-const fieldsByTurn = {
-  t1: {
-    dataFechamento: "t1_data_fechamento",
-    nomeOperador: "t1_nome_operador",
-    turnoTrabalhado: "t1_turno_trabalhado",
-    banco: "t1_banco",
-    pppoker: "t1_pppoker",
-    suprema: "t1_suprema",
-    buffalo: "t1_buffalo",
-    ganamos: "t1_ganamos",
-    cargas: "t1_cargas",
-    cargasPoker: "t1_cargas_poker"
-  },
-  t2: {
-    dataFechamento: "t2_data_fechamento",
-    nomeOperador: "t2_nome_operador",
-    turnoTrabalhado: "t2_turno_trabalhado",
-    banco: "t2_banco",
-    pppoker: "t2_pppoker",
-    suprema: "t2_suprema",
-    buffalo: "t2_buffalo",
-    ganamos: "t2_ganamos",
-    cargas: "t2_cargas",
-    cargasPoker: "t2_cargas_poker"
-  }
-};
-    function getValue(id){
-      const el = document.getElementById(id);
-      return el ? parseMoneyInput(el.value) : 0;
-    }
-
-   function getEntradasTotal(turno){
-  const f = fieldsByTurn[turno];
-
-  return (
-    getValue(f.banco) +
-    (getValue(f.pppoker) * 400) +
-    (getValue(f.suprema) * 400) +
-    getValue(f.buffalo) +
-    getValue(f.ganamos) -
-    getValue(f.cargas) -
-    (getValue(f.cargasPoker) * 400)
-  );
-}
-
-    function getDynamicTotal(turno){
-      const list = document.getElementById(`${turno}_dynamic_list`);
-      if(!list) return 0;
-      let total = 0;
-      list.querySelectorAll('input[data-dynamic-value="true"]').forEach((input) => {
-        total += parseMoneyInput(input.value);
-      });
-      return total;
-    }
-
-    function getPendingTotal(turno){
-      const list = document.getElementById(`${turno}_pending_list`);
-      if(!list) return 0;
-      let total = 0;
-      list.querySelectorAll('input[data-pending-value="true"]').forEach((input) => {
-        total += parseMoneyInput(input.value);
-      });
-      return total;
-    }
-
-    function updateStatusPill(value){
-      const pill = document.getElementById("statusPill");
-      if(value > 0){
-        pill.textContent = "Positivo";
-        pill.className = "pill positive";
-      }else if(value < 0){
-        pill.textContent = "Negativo";
-        pill.className = "pill negative";
-      }else{
-        pill.textContent = "Sem diferença";
-        pill.className = "pill neutral";
-      }
-    }
-
-    function updateHistoryVisibility(){
-      const list = document.getElementById("historyList");
-      const btn = document.getElementById("toggleHistoryBtn");
-      if(!list || !btn) return;
-
-      if(historyVisible){
-        list.classList.remove("hidden");
-        btn.textContent = "Ocultar";
-      } else {
-        list.classList.add("hidden");
-        btn.textContent = "Ver";
-      }
-    }
-
-function updateTurno1Visibility(){
-  const content = document.getElementById("turno1Content");
-  const btn = document.getElementById("toggleTurno1Btn");
-
-  if(!content || !btn) return;
-
-  if(turno1Visible){
-    content.classList.remove("hidden");
-    btn.textContent = "Ocultar";
-  }else{
-    content.classList.add("hidden");
-    btn.textContent = "Mostrar";
-  }
-}
-
-    function updateEyeIcon(){
-      const eye = document.getElementById("eyeIcon");
-      if(balanceVisible){
-        eye.innerHTML = `
-          <path d="M2 12C4.5 7 8.5 5 12 5C15.5 5 19.5 7 22 12C19.5 17 15.5 19 12 19C8.5 19 4.5 17 2 12Z" stroke="currentColor" stroke-width="1.6"/>
-          <circle cx="12" cy="12" r="3" stroke="currentColor" stroke-width="1.6"/>
-        `;
-      }else{
-        eye.innerHTML = `
-          <path d="M3 3L21 21" stroke="currentColor" stroke-width="1.6"/>
-          <path d="M10.5 10.5C10.2 10.8 10 11.3 10 12C10 13.1 10.9 14 12 14C12.7 14 13.2 13.8 13.5 13.5" stroke="currentColor" stroke-width="1.6"/>
-          <path d="M6.5 6.5C5 7.7 3.7 9.5 2 12C4.5 17 8.5 19 12 19C13.5 19 15 18.5 16.5 17.5" stroke="currentColor" stroke-width="1.6"/>
-          <path d="M17.5 17.5C19 16.3 20.3 14.5 22 12C19.5 7 15.5 5 12 5C10.5 5 9 5.5 7.5 6.5" stroke="currentColor" stroke-width="1.6"/>
-        `;
-      }
-    }
-
-    function updatePreviewForRow(row, value, pending = false){
-      const preview = row.querySelector(".signed-preview");
-      if(!preview) return;
-      preview.textContent = negativeMoney(value);
-      preview.className = `signed-preview ${pending ? "amber" : "red"}`;
-    }
-
-    function bindDynamicRow(row, pending = false){
-      const valueInput = row.querySelector(pending ? '[data-pending-value="true"]' : '[data-dynamic-value="true"]');
-      const textInput = row.querySelector('input[type="text"]:not([data-dynamic-value="true"]):not([data-pending-value="true"])');
-
-      if(valueInput){
-        attachMoneyMask(valueInput);
-        valueInput.addEventListener("input", () => {
-          updatePreviewForRow(row, parseMoneyInput(valueInput.value), pending);
-          render();
-        });
-      }
-
-      if(textInput){
-        textInput.addEventListener("input", render);
-      }
-
-      const removeBtn = row.querySelector(".remove-btn");
-      if(removeBtn){
-        removeBtn.addEventListener("click", () => {
-          row.remove();
-          render();
-        });
-      }
-
-      updatePreviewForRow(row, parseMoneyInput(valueInput?.value || 0), pending);
-    }
-
-    function createDynamicRow(turno, name = "", digits = ""){
-      const row = document.createElement("div");
-      row.className = "dynamic-row outflow";
-      row.innerHTML = `
-        <div class="field">
-          <label>Saída</label>
-          <input type="text" placeholder="Ex.: salário, fornecedor, marketing" value="${escapeHtml(name)}" />
-        </div>
-        <div class="field">
-          <label>Valor</label>
-       <input type="text" inputmode="numeric" pattern="[0-9]*" id="t2_banco" placeholder="0,00" />
-        </div>
-        <div class="signed-preview red">- $ 0,00</div>
-        <button class="remove-btn" type="button">Remover</button>
-      `;
-      document.getElementById(`${turno}_dynamic_list`).appendChild(row);
-      const valueInput = row.querySelector('[data-dynamic-value="true"]');
-      if(digits) setDigitsToInput(valueInput, digits);
-      bindDynamicRow(row, false);
-    }
-
-    function createPendingRow(turno, name = "", digits = ""){
-      const row = document.createElement("div");
-      row.className = "dynamic-row pending";
-      row.innerHTML = `
-        <div class="field">
-          <label>Nome do cliente</label>
-          <input type="text" placeholder="Ex.: João, Carlos, Maria" value="${escapeHtml(name)}" />
-        </div>
-        <div class="field">
-          <label>Valor</label>
-          <input type="text" inputmode="numeric" pattern="[0-9]*" data-dynamic-value="true" placeholder="0,00" />
-        </div>
-        <div class="signed-preview amber">- $ 0,00</div>
-        <button class="remove-btn" type="button">Remover</button>
-      `;
-      document.getElementById(`${turno}_pending_list`).appendChild(row);
-      const valueInput = row.querySelector('[data-pending-value="true"]');
-      if(digits) setDigitsToInput(valueInput, digits);
-      bindDynamicRow(row, true);
-    }
-
-    function clearTurn(turno){
-      const f = fieldsByTurn[turno];
-      Object.values(f).forEach((id) => {
-        const input = document.getElementById(id);
-        if(!input) return;
-        if(id === f.dataFechamento){
-          input.value = getTodayDateInput();
-        }else{
-          input.value = "";
-          input.dataset.raw = "";
-        }
-      });
-
-      document.getElementById(`${turno}_dynamic_list`).innerHTML = "";
-      document.getElementById(`${turno}_pending_list`).innerHTML = "";
-    }
-
-function serializeTurn(turno){
-  const f = fieldsByTurn[turno];
-
-const entries = [
-  { name: "Banco Reca", value: getValue(f.banco) },
-  { name: "PPPoker (x400)", value: getValue(f.pppoker) * 400 },
-  { name: "Suprema (x400)", value: getValue(f.suprema) * 400 },
-  { name: "Buffalo", value: getValue(f.buffalo) },
-  { name: "Ganamos", value: getValue(f.ganamos) },
-  { name: "Carga de Fichas", value: getValue(f.cargas) },
-  { name: "Cargas F. Poker (x400)", value: getValue(f.cargasPoker) * 400 }
-];
-
-const outflows = [...document.querySelectorAll(`#${turno}_dynamic_list .dynamic-row`)].map((row) => {
-  const inputs = row.querySelectorAll("input");
-  return {
-    name: inputs[0]?.value || "",
-    value: parseMoneyInput(inputs[1]?.value || "")
-  };
-});
-
-const pendings = [...document.querySelectorAll(`#${turno}_pending_list .dynamic-row`)].map((row) => {
-  const inputs = row.querySelectorAll("input");
-  return {
-    name: inputs[0]?.value || "",
-    value: parseMoneyInput(inputs[1]?.value || "")
-  };
-});
-
-const entradasTotal = entries.reduce((acc, item) => acc + item.value, 0);
-const saidasTotal = outflows.reduce((acc, item) => acc + item.value, 0);
-const pendentesTotal = pendings.reduce((acc, item) => acc + item.value, 0);
-
-const turnoData = {
-  dataFechamento: document.getElementById(f.dataFechamento)?.value || getTodayDateInput(),
-  entries,
-  outflows,
-  pendings,
-  entradasTotal,
-  saidasTotal,
-  pendentesTotal,
-  reca: getValue(f.banco),
-  suprema: getValue(f.suprema),
-  pppoker: getValue(f.pppoker),
-  buffalo: getValue(f.buffalo),
-  ganamos: getValue(f.ganamos),
-  cargaFichas: getValue(f.cargas),
-  cargaPoker: getValue(f.cargasPoker) * 400
-};
-
-turnoData.saldoLiquido = calcularSaldoLiquido(turnoData);
-
-return {
-  nomeOperador: document.getElementById(f.nomeOperador)?.value?.trim() || "Sem nome",
-  turnoTrabalhado: document.getElementById(f.turnoTrabalhado)?.value?.trim() || "Não informado",
-  submittedAt: serverTimestamp(),
-  fechamentoDate: document.getElementById(f.dataFechamento)?.value || getTodayDateInput(),
-  total: getValue(f.banco),
-  turno: turnoData
-};
-}
-function applySnapshotToTurn(turno, snapshot){
-  if(!snapshot) return;
-
-  clearTurn(turno);
-
-  const f = fieldsByTurn[turno];
-  document.getElementById(f.dataFechamento).value = snapshot.dataFechamento || getTodayDateInput();
-
-  const map = {
-    "Banco Reca": f.banco,
-    "PPPoker (x400)": f.pppoker,
-    "Suprema (x400)": f.suprema,
-    "Buffalo": f.buffalo,
-    "Ganamos": f.ganamos,
-    "Carga de Fichas": f.cargas,
-    "Cargas F. Poker (x400)": f.cargasPoker
-  };
-
-  (snapshot.entries || []).forEach((entry) => {
-    const id = map[entry.name];
-    if(!id) return;
-    let rawValue = entry.value || 0;
-    if(entry.name.includes("(x400)")) rawValue = rawValue / 400;
-    setDigitsToInput(document.getElementById(id), Math.round(rawValue * 100).toString());
-  });
-
-  (snapshot.outflows || []).forEach((item) => {
-    createDynamicRow(turno, item.name, Math.round((item.value || 0) * 100).toString());
-  });
-
-  (snapshot.pendings || []).forEach((item) => {
-    createPendingRow(turno, item.name, Math.round((item.value || 0) * 100).toString());
-  });
-}
-
-function getBancoRecaFromSnapshot(snapshot){
-  return (snapshot.entries || []).find((item) => item.name === "Banco Reca")?.value || 0;
-}
-function closeHistoryModal(){
-  document.getElementById("historyModal").classList.add("hidden");
-  editingHistoryIndex = null;
-  historyEditMode = false;
-  document.getElementById("editHistoryBtn").classList.remove("hidden");
-  document.getElementById("saveHistoryBtn").classList.add("hidden");
-}
-
-function renderHistoryListFromCache(){
-  const list = document.getElementById("historyList");
-  const history = historyCache || [];
-
-  if(!list) return;
-
-  if(!history.length){
-    list.innerHTML = `<div class="history-empty">Sem histórico ainda.</div>`;
-    document.getElementById("historyInfo").textContent = "Nenhum turno anterior salvo ainda.";
-    updateHistoryVisibility();
-    return;
-  }
-
- list.innerHTML = history.slice(0, 30).map((item, index) => {
- const saldoDisponivel = Number(item.total || 0);
-
-const baseTotal = calcularBaseComparacao(item.turno || {});
-
-const previousItem = history[index + 1] || null;
-
-const previousBaseTotal = previousItem
-  ? calcularBaseComparacao(previousItem.turno || {})
-  : 0;
-
-const saidas = Number(
-  item.retiradaLucro || item.turno?.saidasTotal || 0
-);
-
-const diferencaCaixa = !previousItem
-  ? 0
-  : baseTotal - previousBaseTotal;
-
-const nome = item.nomeOperador || "Sem nome";
-const turno = item.turnoTrabalhado || "-";
-const data = formatDateBR(item.fechamentoDate || "");
-const linhaTopo = `${nome} • Turno ${turno} • ${data}`;
-const saldoTotal = calcularSaldoLiquido(item.turno || {});
-
-    return `
-      <div class="history-card ${diferencaCaixa > 0 ? "is-positive" : diferencaCaixa < 0 ? "is-negative" : "is-neutral"}" data-history-index="${index}">
-        <div class="history-card-accent"></div>
-
-        <div class="history-title">${linhaTopo}</div>
-
-        <div class="history-real-highlight">
-          <div class="history-real-label">Diferença Real de Caixa</div>
-          <div class="history-real-value ${
-            diferencaCaixa > 0 ? "positive" :
-            diferencaCaixa < 0 ? "negative" : ""
-          }">
-            ${diferencaCaixa > 0 ? "+" : diferencaCaixa < 0 ? "-" : ""}${money(Math.abs(Number(diferencaCaixa || 0)))}
-          </div>
-        </div>
-
-        <div class="history-grid">
-          <div class="history-box">
-            <div class="history-label">Saldo (RECA)</div>
-            <div class="history-value">${money(saldoDisponivel)}</div>
-          </div>
-
-          <div class="history-box">
-            <div class="history-label">Saldo Total Turno</div>
-            <div class="history-value">${money(saldoTotal)}</div>
-          </div>
-
-          <div class="history-box">
-            <div class="history-label">Saídas de Caixa</div>
-            <div class="history-value">${money(saidas)}</div>
-          </div>
-        </div>
-      </div>
-    `;
-  }).join("");
-
-  const ultimoNome = history[0]?.nomeOperador || "Sem nome";
-  const ultimoTurno = history[0]?.turnoTrabalhado || "-";
-  const ultimaData = formatDateBR(history[0]?.fechamentoDate || "");
-
-  document.getElementById("historyInfo").textContent =
-    `Último fechamento: ${ultimoNome} • Turno ${ultimoTurno} • ${ultimaData}`;
-
-  list.querySelectorAll("[data-history-index]").forEach((el) => {
-    el.addEventListener("click", () => {
-      openHistoryModal(Number(el.dataset.historyIndex));
-    });
-  });
-
-  updateHistoryVisibility();
-}
-
-function openHistoryModal(index){
-  const history = historyCache || [];
-  const item = history[index];
-  if(!item) return;
-
-  // 🔥 COLE AQUI
-  const editBtn = document.getElementById("editHistoryBtn");
-const saveBtn = document.getElementById("saveHistoryBtn");
-const modal = document.getElementById("historyModal");
-
-if (editBtn) {
-  editBtn.classList.remove("hidden");
-}
-
-if (saveBtn) {
-  saveBtn.classList.add("hidden");
-}
-
-if (modal) {
-  modal.classList.remove("hidden");
-}
-
-  // 👇 continua seu código normal
-  window.editingHistoryIndex = index;
-  window.historyEditMode = false;
-
-  document.getElementById("historyModalTitle").textContent =
-    `Fechamento • ${item.nomeOperador || "Sem nome"} • Turno ${item.turnoTrabalhado || "-"}`;
-
-  document.getElementById("historyModalSub").textContent =
-    `Data do fechamento: ${formatDateBR(item.fechamentoDate || "")} • Enviado em: ${formatDateTimeBR(item.submittedAt)}`;
-
-  const previousItem = history[index + 1] || null;
-
- const previousBaseTotal = previousItem
-  ? calcularBaseComparacao(previousItem.turno || {})
-  : 0;
-
-const baseTotalAtual = calcularBaseComparacao(item.turno || {});
-
-const diferencaAtual = !previousItem
-  ? 0
-  : baseTotalAtual - previousBaseTotal;
-
-  document.getElementById("historyModalBody").innerHTML = `
-    <div class="modal-summary-grid">
-
-      <div class="modal-summary-card">
-        <div class="modal-summary-label">Saldo (RECA)</div>
-        <div class="modal-summary-value">${money(item.total || 0)}</div>
-      </div>
-
-    <div class="modal-summary-card">
-  <div class="modal-summary-label">Saldo Total Turno</div>
-  <div class="modal-summary-value">
-    ${money(calcularSaldoLiquido(item.turno || {}))}
-  </div>
-</div>
-
-<div class="modal-summary-card">
-  <div class="modal-summary-label">Diferença Real de Caixa</div>
-  <div class="history-mini-value ${(diferencaAtual || 0) < 0 ? "red" : (diferencaAtual || 0) > 0 ? "green" : ""}">
-    ${(diferencaAtual || 0) > 0 ? "+ " : (diferencaAtual || 0) < 0 ? "- " : ""}
-    ${money(Math.abs(diferencaAtual || 0))}
-  </div>
-</div>
-
-      <div class="modal-summary-card">
-        <div class="modal-summary-label">Responsável</div>
-        <div class="modal-summary-value">${escapeHtml(item.nomeOperador || "-")}</div>
-      </div>
-
-      <div class="modal-summary-card">
-        <div class="modal-summary-label">Data</div>
-        <input id="editDate" type="date" value="${item.fechamentoDate || ""}" disabled />
-      </div>
-
-    </div>
-
-    <div class="modal-turnos-grid">
-
-      <div class="modal-panel">
-        <div class="modal-panel-head"><h4>Entradas</h4></div>
-        <div class="modal-panel-body">
-
-          ${(turno.entries || []).map((entry, i) => {
-            let displayValue = Number(entry.value || 0);
-
-            if (
-              entry.name === "PPPoker (x400)" ||
-              entry.name === "Suprema (x400)" ||
-              entry.name === "Cargas F. Poker (x400)"
-            ) {
-              displayValue = displayValue / 400;
-            }
-
-            return `
-              <div class="modal-line">
-                <span>${escapeHtml(entry.name || "-")}</span>
-                <input
-                  type="text"
-                  value="${Number(displayValue).toFixed(2).replace(".", ",")}"
-                  data-entry="${i}"
-                  disabled
-                />
-              </div>
-            `;
-          }).join("")}
-
-        </div>
-      </div>
-
-      <div class="modal-panel">
-        <div class="modal-panel-head"><h4>Saídas e Pendentes</h4></div>
-        <div class="modal-panel-body">
-
-          ${(turno.outflows || []).map((entry, i) => `
-            <div class="modal-line negative">
-              <input value="${escapeHtml(entry.name || "")}" data-out-name="${i}" disabled />
-              <input value="${Number(entry.value || 0).toFixed(2).replace(".", ",")}" data-out-value="${i}" disabled />
-            </div>
-          `).join("")}
-
-          ${(turno.pendings || []).map((entry, i) => `
-            <div class="modal-line negative">
-              <input value="${escapeHtml(entry.name || "")}" data-pen-name="${i}" disabled />
-              <input value="${Number(entry.value || 0).toFixed(2).replace(".", ",")}" data-pen-value="${i}" disabled />
-            </div>
-          `).join("")}
-
-        </div>
-      </div>
-
-    </div>
-  `;
-
-  document.getElementById("historyModal").classList.remove("hidden");
-
-  // EDITAR
-  document.getElementById("editHistoryBtn").onclick = () => {
-    document.querySelectorAll("#historyModal input").forEach((input) => {
-      input.disabled = false;
-    });
-
-    document.getElementById("editHistoryBtn").classList.add("hidden");
-    document.getElementById("saveHistoryBtn").classList.remove("hidden");
-  };
-
-  // SALVAR
-  document.getElementById("saveHistoryBtn").onclick = async () => {
-    try {
-      const docRef = doc(db, "history", item.id);
-
-      const newEntries = (turno.entries || []).map((e, i) => {
-        let val = parseMoneyInput(document.querySelector(`[data-entry="${i}"]`)?.value || "");
-
-        if (
-          e.name === "PPPoker (x400)" ||
-          e.name === "Suprema (x400)" ||
-          e.name === "Cargas F. Poker (x400)"
-        ) val *= 400;
-
-        return { ...e, value: val };
-      });
-
-    const newOutflows = (turno.outflows || []).map((e, i) => ({
-  name: document.querySelector(`[data-out-name="${i}"]`)?.value || "",
-  value: parseMoneyInput(document.querySelector(`[data-out-value="${i}"]`)?.value || "")
-}));
-
-const newPendings = (turno.pendings || []).map((e, i) => ({
-  name: document.querySelector(`[data-pen-name="${i}"]`)?.value || "",
-  value: parseMoneyInput(document.querySelector(`[data-pen-value="${i}"]`)?.value || "")
-}));
-
-const entradasTotal = newEntries.reduce((a, b) => a + b.value, 0);
-const saidasTotal = newOutflows.reduce((a, b) => a + b.value, 0);
-const pendentesTotal = newPendings.reduce((a, b) => a + b.value, 0);
-
-const turnoAtualizado = {
-  ...(item.turno || {}),
-  dataFechamento: document.getElementById("editDate")?.value || item.fechamentoDate || "",
-  entries: newEntries,
-  outflows: newOutflows,
-  pendings: newPendings,
-  entradasTotal,
-  saidasTotal,
-  pendentesTotal
-};
-
-const saldoLiquido = calcularSaldoLiquido(turnoAtualizado);
-const baseComparacaoAtual = calcularBaseComparacao(turnoAtualizado);
-
-const previousBaseTotal = previousItem
-  ? calcularBaseComparacao(previousItem.turno || {})
-  : 0;
-
-const diffCaixaEditada = !previousItem
-  ? 0
-  : baseComparacaoAtual - previousBaseTotal;
-
-await updateDoc(docRef, {
-  fechamentoDate: turnoAtualizado.dataFechamento,
-  total: newEntries.find(e => e.name === "Banco Reca")?.value || 0,
-  currentSaldoTotal: saldoLiquido,
-  retiradaLucro: saidasTotal,
-  turnProfit: saidasTotal,
-  diff: diffCaixaEditada,
-  bankVariation: diffCaixaEditada,
-  turno: turnoAtualizado
-});
-
-alert("Salvo com sucesso");
-document.getElementById("historyModal").classList.add("hidden");
-
-} catch(e){
-  console.error(e);
-  alert("Erro ao salvar");
-}
-};
-}
-function startHistoryRealtimeListener(){
-  if(historyRealtimeStarted) return;
-  historyRealtimeStarted = true;
-
-  const q = query(collection(db, "history"), orderBy("submittedAt", "desc"), limit(100));
-
-  historyUnsubscribe = onSnapshot(q, (snapshot) => {
-    historyCache = snapshot.docs.map((docItem) => ({
-      id: docItem.id,
-      ...docItem.data()
-    }));
-
-    if(historyCache[0]?.turno){
-      applySnapshotToTurn("t1", historyCache[0].turno);
-    }else{
-      clearTurn("t1");
-    }
-
-    renderHistoryListFromCache();
-    render();
-  }, (error) => {
-    console.error("Erro no listener do Firestore:", error);
-    alert("Erro no listener do Firestore. Veja o console.");
-  });
-}
-
-function openPdfRangeModal(){
-  const today = getTodayDateInput();
-
-  document.getElementById("pdfDateEnd").value = today;
-
-  const start = new Date();
-  start.setDate(start.getDate() - 7);
-  const startOffset = start.getTimezoneOffset();
-  const startLocal = new Date(start.getTime() - startOffset * 60000);
-  document.getElementById("pdfDateStart").value = startLocal.toISOString().split("T")[0];
-
-  document.getElementById("pdfRangeModal").classList.remove("hidden");
-}
-
-function closePdfRangeModal(){
-  document.getElementById("pdfRangeModal").classList.add("hidden");
-}
-
-function getHistoryByDateRange(startDate, endDate){
-  if(!startDate || !endDate) return historyCache || [];
-
-  const start = new Date(`${startDate}T00:00:00`);
-  const end = new Date(`${endDate}T23:59:59`);
-
-  return (historyCache || []).filter((item) => {
-    const baseDate = item?.fechamentoDate || item?.turno?.dataFechamento;
-    if(!baseDate) return false;
-
-    const current = new Date(`${baseDate}T12:00:00`);
-    if(isNaN(current.getTime())) return false;
-
-    return current >= start && current <= end;
-  });
-}
-function buildPremiumPdfHtml(startDate, endDate){
-  const filtered = getHistoryByDateRange(startDate, endDate);
-
-  const ultimoRegistro = filtered.length ? filtered[0] : null;
-
-  const ultimoBancoReca = ultimoRegistro
-    ? Number(getBancoRecaFromSnapshot(ultimoRegistro.turno || {}))
-    : 0;
-
-  const totalSaidas = filtered.reduce((acc, item) => {
-    return acc + Number(item?.turno?.saidasTotal || 0);
-  }, 0);
-
-const totalDiferenca = filtered.reduce((acc, item, index) => {
-  const previousItem = filtered[index + 1] || null;
-
-  const currentBase = calcularBaseComparacao(item.turno || {});
-  const previousBase = previousItem
-    ? calcularBaseComparacao(previousItem.turno || {})
-    : 0;
-
-  const diff = !previousItem
-    ? 0
-    : currentBase - previousBase;
-
-  return acc + diff;
-}, 0);
-
-  const rankingOperadores = {};
-
-  filtered.forEach((item, index) => {
-    const nome = item.nomeOperador || "Sem nome";
-    const previousItem = filtered[index + 1] || null;
-
-    const currentSaldo = calcularSaldoLiquido(item.turno || {});
-
-    const previousSaldo = previousItem
-      ? calcularSaldoLiquido(previousItem.turno || {})
-      : 0;
-
-    const diff = !previousItem
+    const diferencaAtual = !previousItem
       ? 0
-      : currentSaldo - previousSaldo;
+      : baseTotalAtual - previousBaseTotal;
 
-    if (!rankingOperadores[nome]) {
-      rankingOperadores[nome] = {
-        nome,
-        totalErro: 0,
-        qtd: 0,
-        sobra: 0,
-        falta: 0
-      };
-    }
+    document.getElementById("historyModalBody").innerHTML = `
+      <div class="modal-summary-grid">
+        <div class="modal-summary-card">
+          <div class="modal-summary-label">Saldo (RECA)</div>
+          <div class="modal-summary-value">${money(item.total || 0)}</div>
+        </div>
 
-    rankingOperadores[nome].totalErro += Math.abs(diff);
-    rankingOperadores[nome].qtd += 1;
+        <div class="modal-summary-card">
+          <div class="modal-summary-label">Saldo Total Turno</div>
+          <div class="modal-summary-value">
+            ${money(calcularSaldoLiquido(item.turno || {}))}
+          </div>
+        </div>
 
-    if (diff > 0) {
-      rankingOperadores[nome].sobra += diff;
-    } else if (diff < 0) {
-      rankingOperadores[nome].falta += Math.abs(diff);
-    }
-  });
+        <div class="modal-summary-card">
+          <div class="modal-summary-label">Diferença Real de Caixa</div>
+          <div class="history-mini-value ${(diferencaAtual || 0) < 0 ? "red" : (diferencaAtual || 0) > 0 ? "green" : ""}">
+            ${(diferencaAtual || 0) > 0 ? "+ " : (diferencaAtual || 0) < 0 ? "- " : ""}
+            ${money(Math.abs(diferencaAtual || 0))}
+          </div>
+        </div>
 
-  const rankingHtml = Object.values(rankingOperadores)
-    .sort((a, b) => b.totalErro - a.totalErro)
-    .map((item, index) => `
-      <tr>
-        <td>${index + 1}</td>
-        <td>${escapeHtml(item.nome)}</td>
-        <td>${item.qtd}</td>
-        <td>${money(item.sobra)}</td>
-        <td>${money(item.falta)}</td>
-        <td><strong>${money(item.totalErro)}</strong></td>
-      </tr>
-    `).join("");
+        <div class="modal-summary-card">
+          <div class="modal-summary-label">Responsável</div>
+          <div class="modal-summary-value">${escapeHtml(item.nomeOperador || "-")}</div>
+        </div>
 
-  const linhas = filtered.map((item, index) => {
-    const nome = item.nomeOperador || "Sem nome";
-    const turno = item.turnoTrabalhado || "-";
-    const data = formatDateBR(item.fechamentoDate || "");
-    const banco = money(getBancoRecaFromSnapshot(item.turno || {}));
-    const saidas = Number(item?.turno?.saidasTotal || 0);
+        <div class="modal-summary-card">
+          <div class="modal-summary-label">Data</div>
+          <input id="editDate" type="date" value="${item.fechamentoDate || ""}" disabled />
+        </div>
+      </div>
 
-   const previousItem = filtered[index + 1] || null;
+      <div class="modal-turnos-grid">
+        <div class="modal-panel">
+          <div class="modal-panel-head"><h4>Entradas</h4></div>
+          <div class="modal-panel-body">
+            ${(turno.entries || []).map((entry, i) => {
+              let displayValue = Number(entry.value || 0);
 
-const previousBase = previousItem
-  ? calcularBaseComparacao(previousItem.turno || {})
-  : 0;
+              if (
+                entry.name === "PPPoker (x400)" ||
+                entry.name === "Suprema (x400)" ||
+                entry.name === "Cargas F. Poker (x400)"
+              ) {
+                displayValue = displayValue / 400;
+              }
 
-const currentBase = calcularBaseComparacao(item.turno || {});
+              return `
+                <div class="modal-line">
+                  <span>${escapeHtml(entry.name || "-")}</span>
+                  <input
+                    type="text"
+                    value="${Number(displayValue).toFixed(2).replace(".", ",")}"
+                    data-entry="${i}"
+                    disabled
+                  />
+                </div>
+              `;
+            }).join("")}
+          </div>
+        </div>
 
-const diffCaixa = !previousItem
-  ? 0
-  : currentBase - previousBase;
+        <div class="modal-panel">
+          <div class="modal-panel-head"><h4>Saídas e Pendentes</h4></div>
+          <div class="modal-panel-body">
+            ${(turno.outflows || []).map((entry, i) => `
+              <div class="modal-line negative">
+                <input value="${escapeHtml(entry.name || "")}" data-out-name="${i}" disabled />
+                <input value="${Number(entry.value || 0).toFixed(2).replace(".", ",")}" data-out-value="${i}" disabled />
+              </div>
+            `).join("")}
 
-    return `
-      <tr style="background:#ffffff !important;">
-        <td style="color:#0f172a !important; border-bottom:1px solid rgba(15,23,42,0.06) !important;">
-          ${escapeHtml(nome)}
-        </td>
-        <td style="color:#0f172a !important; border-bottom:1px solid rgba(15,23,42,0.06) !important;">
-          ${escapeHtml(turno)}
-        </td>
-        <td style="color:#0f172a !important; border-bottom:1px solid rgba(15,23,42,0.06) !important;">
-          ${escapeHtml(data)}
-        </td>
-        <td style="color:#0f172a !important; border-bottom:1px solid rgba(15,23,42,0.06) !important;">
-          ${banco}
-        </td>
-        <td style="color:#0f172a !important; border-bottom:1px solid rgba(15,23,42,0.06) !important;">
-          ${money(saidas)}
-        </td>
-        <td style="
-          font-weight:900;
-          color:${diffCaixa > 0 ? "#16a34a" : diffCaixa < 0 ? "#dc2626" : "#0f172a"};
-          border-bottom:1px solid rgba(15,23,42,0.06) !important;
-          background:#ffffff !important;
-        ">
-          ${diffCaixa > 0 ? "+ " : diffCaixa < 0 ? "- " : ""}${money(Math.abs(diffCaixa))}
-        </td>
-      </tr>
+            ${(turno.pendings || []).map((entry, i) => `
+              <div class="modal-line negative">
+                <input value="${escapeHtml(entry.name || "")}" data-pen-name="${i}" disabled />
+                <input value="${Number(entry.value || 0).toFixed(2).replace(".", ",")}" data-pen-value="${i}" disabled />
+              </div>
+            `).join("")}
+          </div>
+        </div>
+      </div>
     `;
-  }).join("");
+
+    document.getElementById("editHistoryBtn").onclick = () => {
+      document.querySelectorAll("#historyModal input").forEach((input) => {
+        input.disabled = false;
+      });
+
+      document.getElementById("editHistoryBtn").classList.add("hidden");
+      document.getElementById("saveHistoryBtn").classList.remove("hidden");
+    };
+
+    document.getElementById("saveHistoryBtn").onclick = async () => {
+      try {
+        const docRef = doc(db, "history", item.id);
+
+        const newEntries = (turno.entries || []).map((e, i) => {
+          let val = parseMoneyInput(document.querySelector(`[data-entry="${i}"]`)?.value || "");
+
+          if (
+            e.name === "PPPoker (x400)" ||
+            e.name === "Suprema (x400)" ||
+            e.name === "Cargas F. Poker (x400)"
+          ) val *= 400;
+
+          return { ...e, value: val };
+        });
+
+        const newOutflows = (turno.outflows || []).map((e, i) => ({
+          name: document.querySelector(`[data-out-name="${i}"]`)?.value || "",
+          value: parseMoneyInput(document.querySelector(`[data-out-value="${i}"]`)?.value || "")
+        }));
+
+        const newPendings = (turno.pendings || []).map((e, i) => ({
+          name: document.querySelector(`[data-pen-name="${i}"]`)?.value || "",
+          value: parseMoneyInput(document.querySelector(`[data-pen-value="${i}"]`)?.value || "")
+        }));
+
+        const entradasTotal = newEntries.reduce((a, b) => a + b.value, 0);
+        const saidasTotal = newOutflows.reduce((a, b) => a + b.value, 0);
+        const pendentesTotal = newPendings.reduce((a, b) => a + b.value, 0);
+
+        const turnoAtualizado = {
+          ...(item.turno || {}),
+          dataFechamento: document.getElementById("editDate")?.value || item.fechamentoDate || "",
+          entries: newEntries,
+          outflows: newOutflows,
+          pendings: newPendings,
+          entradasTotal,
+          saidasTotal,
+          pendentesTotal
+        };
+
+        const saldoLiquido = calcularSaldoLiquido(turnoAtualizado);
+        const baseComparacaoAtual = calcularBaseComparacao(turnoAtualizado);
+
+        const previousBaseTotal = previousItem
+          ? calcularBaseComparacao(previousItem.turno || {})
+          : 0;
+
+        const diffCaixaEditada = !previousItem
+          ? 0
+          : baseComparacaoAtual - previousBaseTotal;
+
+        await updateDoc(docRef, {
+          fechamentoDate: turnoAtualizado.dataFechamento,
+          total: newEntries.find(e => e.name === "Banco Reca")?.value || 0,
+          currentSaldoTotal: saldoLiquido,
+          retiradaLucro: saidasTotal,
+          turnProfit: saidasTotal,
+          diff: diffCaixaEditada,
+          bankVariation: diffCaixaEditada,
+          turno: turnoAtualizado
+        });
+
+        alert("Salvo com sucesso");
+        document.getElementById("historyModal").classList.add("hidden");
+      } catch (e) {
+        console.error(e);
+        alert("Erro ao salvar");
+      }
+    };
+  }
+
+  function startHistoryRealtimeListener() {
+    if (historyRealtimeStarted) return;
+    historyRealtimeStarted = true;
+
+    const q = query(collection(db, "history"), orderBy("submittedAt", "desc"), limit(100));
+
+    historyUnsubscribe = onSnapshot(q, (snapshot) => {
+      historyCache = snapshot.docs.map((docItem) => ({
+        id: docItem.id,
+        ...docItem.data()
+      }));
+
+      if (historyCache[0]?.turno) {
+        applySnapshotToTurn("t1", historyCache[0].turno);
+      } else {
+        clearTurn("t1");
+      }
+
+      renderHistoryListFromCache();
+      render();
+    }, (error) => {
+      console.error("Erro no listener do Firestore:", error);
+      alert("Erro no listener do Firestore. Veja o console.");
+    });
+  }
+
+  function openPdfRangeModal() {
+    const today = getTodayDateInput();
+
+    document.getElementById("pdfDateEnd").value = today;
+
+    const start = new Date();
+    start.setDate(start.getDate() - 7);
+    const startOffset = start.getTimezoneOffset();
+    const startLocal = new Date(start.getTime() - startOffset * 60000);
+    document.getElementById("pdfDateStart").value = startLocal.toISOString().split("T")[0];
+
+    document.getElementById("pdfRangeModal").classList.remove("hidden");
+  }
+
+  function closePdfRangeModal() {
+    document.getElementById("pdfRangeModal").classList.add("hidden");
+  }
+
+  function getHistoryByDateRange(startDate, endDate) {
+    if (!startDate || !endDate) return historyCache || [];
+
+    const start = new Date(`${startDate}T00:00:00`);
+    const end = new Date(`${endDate}T23:59:59`);
+
+    return (historyCache || []).filter((item) => {
+      const baseDate = item?.fechamentoDate || item?.turno?.dataFechamento;
+      if (!baseDate) return false;
+
+      const current = new Date(`${baseDate}T12:00:00`);
+      if (isNaN(current.getTime())) return false;
+
+      return current >= start && current <= end;
+    });
+  }
+
+  function buildPremiumPdfHtml(startDate, endDate) {
+    const filtered = getHistoryByDateRange(startDate, endDate);
+
+    const ultimoRegistro = filtered.length ? filtered[0] : null;
+
+    const ultimoBancoReca = ultimoRegistro
+      ? Number(getBancoRecaFromSnapshot(ultimoRegistro.turno || {}))
+      : 0;
+
+    const totalSaidas = filtered.reduce((acc, item) => {
+      return acc + Number(item?.turno?.saidasTotal || 0);
+    }, 0);
+
+    const totalDiferenca = filtered.reduce((acc, item, index) => {
+      const previousItem = filtered[index + 1] || null;
+
+      const currentBase = calcularBaseComparacao(item.turno || {});
+      const previousBase = previousItem
+        ? calcularBaseComparacao(previousItem.turno || {})
+        : 0;
+
+      const diff = !previousItem
+        ? 0
+        : currentBase - previousBase;
+
+      return acc + diff;
+    }, 0);
+
+    const rankingOperadores = {};
+
+    filtered.forEach((item, index) => {
+      const nome = item.nomeOperador || "Sem nome";
+      const previousItem = filtered[index + 1] || null;
+
+      const currentBase = calcularBaseComparacao(item.turno || {});
+      const previousBase = previousItem
+        ? calcularBaseComparacao(previousItem.turno || {})
+        : 0;
+
+      const diff = !previousItem
+        ? 0
+        : currentBase - previousBase;
+
+      if (!rankingOperadores[nome]) {
+        rankingOperadores[nome] = {
+          nome,
+          totalErro: 0,
+          qtd: 0,
+          sobra: 0,
+          falta: 0
+        };
+      }
+
+      rankingOperadores[nome].totalErro += Math.abs(diff);
+      rankingOperadores[nome].qtd += 1;
+
+      if (diff > 0) {
+        rankingOperadores[nome].sobra += diff;
+      } else if (diff < 0) {
+        rankingOperadores[nome].falta += Math.abs(diff);
+      }
+    });
+
+    const rankingHtml = Object.values(rankingOperadores)
+      .sort((a, b) => b.totalErro - a.totalErro)
+      .map((item, index) => `
+        <tr>
+          <td>${index + 1}</td>
+          <td>${escapeHtml(item.nome)}</td>
+          <td>${item.qtd}</td>
+          <td>${money(item.sobra)}</td>
+          <td>${money(item.falta)}</td>
+          <td><strong>${money(item.totalErro)}</strong></td>
+        </tr>
+      `).join("");
+
+    const linhas = filtered.map((item, index) => {
+      const nome = item.nomeOperador || "Sem nome";
+      const turno = item.turnoTrabalhado || "-";
+      const data = formatDateBR(item.fechamentoDate || "");
+      const banco = money(getBancoRecaFromSnapshot(item.turno || {}));
+      const saidas = Number(item?.turno?.saidasTotal || 0);
+
+      const previousItem = filtered[index + 1] || null;
+
+      const previousBase = previousItem
+        ? calcularBaseComparacao(previousItem.turno || {})
+        : 0;
+
+      const currentBase = calcularBaseComparacao(item.turno || {});
+
+      const diffCaixa = !previousItem
+        ? 0
+        : currentBase - previousBase;
+
+      return `
+        <tr style="background:#ffffff !important;">
+          <td style="color:#0f172a !important; border-bottom:1px solid rgba(15,23,42,0.06) !important;">
+            ${escapeHtml(nome)}
+          </td>
+          <td style="color:#0f172a !important; border-bottom:1px solid rgba(15,23,42,0.06) !important;">
+            ${escapeHtml(turno)}
+          </td>
+          <td style="color:#0f172a !important; border-bottom:1px solid rgba(15,23,42,0.06) !important;">
+            ${escapeHtml(data)}
+          </td>
+          <td style="color:#0f172a !important; border-bottom:1px solid rgba(15,23,42,0.06) !important;">
+            ${banco}
+          </td>
+          <td style="color:#0f172a !important; border-bottom:1px solid rgba(15,23,42,0.06) !important;">
+            ${money(saidas)}
+          </td>
+          <td style="
+            font-weight:900;
+            color:${diffCaixa > 0 ? "#16a34a" : diffCaixa < 0 ? "#dc2626" : "#0f172a"};
+            border-bottom:1px solid rgba(15,23,42,0.06) !important;
+            background:#ffffff !important;
+          ">
+            ${diffCaixa > 0 ? "+ " : diffCaixa < 0 ? "- " : ""}${money(Math.abs(diffCaixa))}
+          </td>
+        </tr>
+      `;
+    }).join("");
   
 return `
 <!DOCTYPE html>
