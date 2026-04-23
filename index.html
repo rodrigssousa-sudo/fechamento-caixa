@@ -3641,15 +3641,15 @@ if (modal) {
 
   const previousItem = history[index + 1] || null;
 
-  const previousSaldoTotal = previousItem
-    ? calcularSaldoLiquido(previousItem.turno || {})
-    : 0;
+ const previousBaseTotal = previousItem
+  ? calcularBaseComparacao(previousItem.turno || {})
+  : 0;
 
-  const saldoTotalAtual = calcularSaldoLiquido(item.turno || {});
+const baseTotalAtual = calcularBaseComparacao(item.turno || {});
 
-  const diferencaAtual = !previousItem
+const diferencaAtual = !previousItem
   ? 0
-  : previousSaldoTotal - saldoTotalAtual;
+  : baseTotalAtual - previousBaseTotal;
 
   document.getElementById("historyModalBody").innerHTML = `
     <div class="modal-summary-grid">
@@ -3814,8 +3814,8 @@ await updateDoc(docRef, {
   currentSaldoTotal: saldoLiquido,
   retiradaLucro: saidasTotal,
   turnProfit: saidasTotal,
-  diff,
-  bankVariation: diff,
+  diff: diffCaixaEditada,
+  bankVariation: diffCaixaEditada,
   turno: turnoAtualizado
 });
 
@@ -3972,17 +3972,17 @@ const totalDiferenca = filtered.reduce((acc, item, index) => {
     const banco = money(getBancoRecaFromSnapshot(item.turno || {}));
     const saidas = Number(item?.turno?.saidasTotal || 0);
 
-    const previousItem = filtered[index + 1] || null;
+   const previousItem = filtered[index + 1] || null;
 
-    const previousSaldo = previousItem
-      ? calcularSaldoLiquido(previousItem.turno || {})
-      : 0;
+const previousBase = previousItem
+  ? calcularBaseComparacao(previousItem.turno || {})
+  : 0;
 
-    const currentSaldo = calcularSaldoLiquido(item.turno || {});
+const currentBase = calcularBaseComparacao(item.turno || {});
 
-  const diffCaixa = !previousItem
+const diffCaixa = !previousItem
   ? 0
-  : currentSaldoTotal - previousSaldoTotal;
+  : currentBase - previousBase;
 
     return `
       <tr style="background:#ffffff !important;">
@@ -4768,19 +4768,20 @@ async function saveEditedHistory() {
     pendentesTotal
   };
 
-  const saldoLiquido = calcularSaldoLiquido(turnoAtualizado);
-  turnoAtualizado.saldoLiquido = saldoLiquido;
+const saldoLiquido = calcularSaldoLiquido(turnoAtualizado);
+turnoAtualizado.saldoLiquido = saldoLiquido;
 
-  const previousItem = history[index + 1] || null;
+const baseAtual = calcularBaseComparacao(turnoAtualizado);
 
-  const previousSaldoTotal = previousItem
-    ? calcularSaldoLiquido(previousItem.turno || {})
-    : 0;
+const previousItem = history[index + 1] || null;
 
-  const diffCaixaEditada = !previousItem
-    ? 0
-    : saldoLiquido - previousSaldoTotal;
+const previousBaseTotal = previousItem
+  ? calcularBaseComparacao(previousItem.turno || {})
+  : 0;
 
+const diffCaixaEditada = !previousItem
+  ? 0
+  : baseAtual - previousBaseTotal;
   try {
     await updateDoc(doc(db, "history", item.id), {
       fechamentoDate,
