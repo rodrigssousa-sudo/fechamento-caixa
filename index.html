@@ -1400,35 +1400,59 @@
       location.reload();
     }
 
-    function buildPDF() {
-      const html = `
-        <html>
-        <body style="font-family:Arial;padding:24px;">
-          <h2>BANK KING</h2>
-          <p>Relatório</p>
-          ${historyCache.map(i => `
-            <div style="margin-bottom:14px;padding:12px;border:1px solid #ccc;border-radius:10px;">
-              <strong>${i.nomeOperador}</strong><br>
-              Reca: ${money(i.total)}<br>
-              Dif: ${money(i.diff)}
-            </div>
-          `).join("")}
-        </body>
-        </html>
-      `;
+   function buildPDF() {
+  const html = `
+    <html>
+      <body style="font-family:Arial;padding:24px;">
+        <h2>BANK KING</h2>
+        <p>Relatório</p>
+        ${historyCache.map(i => `
+          <div style="margin-bottom:14px;padding:12px;border:1px solid #ccc;border-radius:10px;">
+            <strong>${i.nomeOperador || "Sem nome"}</strong><br>
+            Reca: ${money(i.total || 0)}<br>
+            Dif: ${money(i.diff || 0)}
+          </div>
+        `).join("")}
+      </body>
+    </html>
+  `;
 
-      const w = window.open();
-      w.document.write(html);
-      w.print();
-    }
+  const w = window.open("", "_blank");
+  if (!w) {
+    alert("Não foi possível abrir o relatório.");
+    return;
+  }
 
-    document.getElementById("fecharTurno")?.addEventListener("click", saveTurn);
+  w.document.open();
+  w.document.write(html);
+  w.document.close();
+  w.focus();
 
-document.querySelectorAll("input").forEach(i=>{
-  attachMoneyMask(i);
-  i.addEventListener("input", render);
+  w.onload = () => {
+    w.print();
+  };
+}
+
+document.getElementById("fecharTurno")?.addEventListener("click", saveTurn);
+
+[
+  "t2_banco",
+  "t2_suprema",
+  "t2_pppoker",
+  "t2_buffalo",
+  "t2_ganamos",
+  "t2_cargas",
+  "t2_cargas_poker"
+].forEach((id) => {
+  const input = document.getElementById(id);
+  if (input) {
+    attachMoneyMask(input);
+    input.addEventListener("input", render);
+  }
 });
 
+document.getElementById("t2_nome_operador")?.addEventListener("input", render);
+document.getElementById("t2_data_fechamento")?.addEventListener("input", render);
 
 // =========================
 // 🔐 LOGIN
@@ -1445,13 +1469,51 @@ document.getElementById("loginForm")?.addEventListener("submit", async (e) => {
   }
 
   try {
+    console.log("Tentando login:", email);
     await signInWithEmailAndPassword(auth, email, password);
+    console.log("Login enviado para Firebase");
   } catch (error) {
     console.error("ERRO LOGIN:", error);
-    alert("Erro ao fazer login");
+    alert(error.message || "Erro ao fazer login.");
   }
 });
 
+// =========================
+// 🔥 HISTÓRICO EM TEMPO REAL
+// =========================
+let historyListenerStarted = false;
+
+function startHistoryRealtimeListener() {
+  if (historyListenerStarted) return;
+  historyListenerStarted = true;
+
+  console.log("Iniciando listener do histórico...");
+
+  const q = query(
+    collection(db, "history"),
+    orderBy("submittedAt", "desc"),
+    limit(100)
+  );
+
+  onSnapshot(q, (snapshot) => {
+    historyCache = snapshot.docs.map((docItem) => ({
+      id: docItem.id,
+      ...docItem.data()
+    }));
+
+    console.log("Histórico carregado:", historyCache.length, historyCache);
+
+    renderHistory();
+    renderCompare();
+    renderRanking();
+    renderChart();
+    render();
+
+  }, (error) => {
+    console.error("Erro ao carregar histórico:", error);
+    alert("Erro ao carregar histórico. Veja o console.");
+  });
+}
 
 // =========================
 // 👤 CONTROLE DE SESSÃO
@@ -1463,31 +1525,46 @@ onAuthStateChanged(auth, (user) => {
     document.getElementById("authScreen")?.classList.add("hidden");
     document.getElementById("appShell")?.classList.remove("hidden");
 
-    document.getElementById("activeUserName").textContent =
-      user.email?.split("@")[0] || "Usuário";
+    const activeUserName = document.getElementById("activeUserName");
+    const activeUserEmail = document.getElementById("activeUserEmail");
 
-    document.getElementById("activeUserEmail").textContent =
-      user.email || "";
+    if (activeUserName) {
+      activeUserName.textContent = user.email?.split("@")[0] || "Usuário";
+    }
 
-    startHistoryRealtimeListener?.();
+    if (activeUserEmail) {
+      activeUserEmail.textContent = user.email || "";
+    }
+
+    startHistoryRealtimeListener();
     render();
   } else {
+    console.log("USUÁRIO DESLOGADO");
+
     document.getElementById("authScreen")?.classList.remove("hidden");
     document.getElementById("appShell")?.classList.add("hidden");
   }
 });
 
-
 // =========================
 // 🚪 LOGOUT
 // =========================
 document.getElementById("logoutBtn")?.addEventListener("click", async () => {
-  await signOut(auth);
+  try {
+    await signOut(auth);
+  } catch (error) {
+    console.error("Erro ao sair:", error);
+    alert("Erro ao sair.");
+  }
 });
 
-
-// 🔥 SEMPRE POR ÚLTIMO
-render();
+// =========================
+// 🔥 INICIALIZAÇÃO FINAL
+// =========================
+const dateInput = document.getElementById("t2_data_fechamento");
+if (dateInput && !dateInput.value) {
+  dateInput.value = getTodayDateInput();
+}
     
   </script>
 </body>
