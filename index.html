@@ -1479,39 +1479,58 @@ document.getElementById("loginForm")?.addEventListener("submit", async (e) => {
 });
 
 // =========================
-// 🔥 HISTÓRICO EM TEMPO REAL
+// 🔥 HISTÓRICO EM TEMPO REAL (FIX FINAL)
 // =========================
 let historyListenerStarted = false;
+let historyUnsubscribe = null;
 
 function startHistoryRealtimeListener() {
   if (historyListenerStarted) return;
   historyListenerStarted = true;
 
-  console.log("Iniciando listener do histórico...");
+  console.log("🔥 Iniciando listener do histórico...");
 
-  const q = query(
+  const qHistory = query(
     collection(db, "history"),
-    orderBy("submittedAt", "desc"),
     limit(100)
   );
 
-  onSnapshot(q, (snapshot) => {
-    historyCache = snapshot.docs.map((docItem) => ({
-      id: docItem.id,
-      ...docItem.data()
-    }));
+  historyUnsubscribe = onSnapshot(qHistory, (snapshot) => {
+    historyCache = snapshot.docs.map((docItem) => {
+      const data = docItem.data();
 
-    console.log("Histórico carregado:", historyCache.length, historyCache);
+      return {
+        id: docItem.id,
+        ...data
+      };
+    });
 
-    renderHistory();
-    renderCompare();
-    renderRanking();
-    renderChart();
-    render();
+    // 🔥 ordena manual (evita bug de submittedAt)
+    historyCache.sort((a, b) => {
+      const dateA =
+        a.submittedAt?.toDate?.()?.getTime?.() ||
+        Number(a.submittedAt) ||
+        new Date(a.fechamentoDate || a.turno?.dataFechamento || 0).getTime();
+
+      const dateB =
+        b.submittedAt?.toDate?.()?.getTime?.() ||
+        Number(b.submittedAt) ||
+        new Date(b.fechamentoDate || b.turno?.dataFechamento || 0).getTime();
+
+      return dateB - dateA;
+    });
+
+    console.log("✅ Histórico carregado:", historyCache.length);
+
+    // 🔥 evita crash se função não existir
+    if (typeof renderHistory === "function") renderHistory();
+    if (typeof renderCompare === "function") renderCompare();
+    if (typeof renderRanking === "function") renderRanking();
+    if (typeof renderChart === "function") renderChart();
+    if (typeof render === "function") render();
 
   }, (error) => {
-    console.error("Erro ao carregar histórico:", error);
-    alert("Erro ao carregar histórico. Veja o console.");
+    console.error("❌ Erro ao carregar histórico:", error);
   });
 }
 
