@@ -2776,6 +2776,27 @@ function getTodayDateInput() {
   return local.toISOString().split("T")[0];
 }
 
+function calcularSaldoLiquido(turno = {}) {
+  const reca = Number(turno.reca || 0);
+  const suprema = Number(turno.suprema || 0);
+  const pppoker = Number(turno.pppoker || 0);
+  const buffalo = Number(turno.buffalo || 0);
+  const ganamos = Number(turno.ganamos || 0);
+
+  const pendentes = Number(turno.pendentesTotal || 0);
+  const saidas = Number(turno.saidasTotal || 0);
+
+  return (
+    reca +
+    (suprema * 400) +
+    (pppoker * 400) +
+    buffalo +
+    ganamos -
+    pendentes -
+    saidas
+  );
+}
+    
 function calcularBaseComparacao(turno = {}) {
   const reca = Number(turno.reca || 0);
   const suprema = Number(turno.suprema || 0);
