@@ -1817,6 +1817,230 @@ document.getElementById("recalculateHistoryBtn")?.addEventListener("click", () =
     alert("Função de recalcular histórico ainda não está instalada.");
   }
 });
+
+// =========================
+// ✅ CORREÇÃO FINAL BOTÕES + CARD PRINCIPAL
+// =========================
+
+// Botão VER HISTÓRICO
+document.getElementById("toggleHistoryBtn")?.addEventListener("click", () => {
+  historyVisible = !historyVisible;
+
+  const list = document.getElementById("historyList");
+  const btn = document.getElementById("toggleHistoryBtn");
+
+  if (list) list.classList.toggle("hidden", !historyVisible);
+  if (btn) btn.textContent = historyVisible ? "Ocultar" : "Ver";
+});
+
+// Botão HISTÓRICO das ações
+document.getElementById("openDetailedHistoryBtn")?.addEventListener("click", () => {
+  historyVisible = true;
+
+  const list = document.getElementById("historyList");
+  const btn = document.getElementById("toggleHistoryBtn");
+
+  if (list) list.classList.remove("hidden");
+  if (btn) btn.textContent = "Ocultar";
+
+  document.getElementById("historyList")?.scrollIntoView({
+    behavior: "smooth",
+    block: "start"
+  });
+});
+
+// Botão 3 traços / menu
+document.getElementById("menuToggle")?.addEventListener("click", () => {
+  const menu = document.getElementById("mainMenu");
+  if (menu) menu.classList.toggle("hidden");
+});
+
+// Fechar menu ao clicar em item
+document.querySelectorAll("#mainMenu .menu-item").forEach((btn) => {
+  btn.addEventListener("click", () => {
+    document.getElementById("mainMenu")?.classList.add("hidden");
+  });
+});
+
+// PDF datas
+document.getElementById("openPdfCustomBtn")?.addEventListener("click", () => {
+  const modal = document.getElementById("pdfRangeModal");
+  const start = document.getElementById("pdfDateStart");
+  const end = document.getElementById("pdfDateEnd");
+
+  const today = getTodayDateInput();
+
+  if (end) end.value = today;
+
+  const d = new Date();
+  d.setDate(d.getDate() - 7);
+  const offset = d.getTimezoneOffset();
+  const local = new Date(d.getTime() - offset * 60000);
+
+  if (start) start.value = local.toISOString().split("T")[0];
+
+  if (modal) modal.classList.remove("hidden");
+});
+
+// fechar modal PDF
+document.getElementById("closePdfRangeModal")?.addEventListener("click", () => {
+  document.getElementById("pdfRangeModal")?.classList.add("hidden");
+});
+
+document.getElementById("pdfRangeBackdrop")?.addEventListener("click", () => {
+  document.getElementById("pdfRangeModal")?.classList.add("hidden");
+});
+
+// Gerar PDF custom
+document.getElementById("confirmExportPdf")?.addEventListener("click", () => {
+  const startDate = document.getElementById("pdfDateStart")?.value;
+  const endDate = document.getElementById("pdfDateEnd")?.value;
+
+  if (!startDate || !endDate) {
+    alert("Selecione data inicial e final.");
+    return;
+  }
+
+  const code = prompt("Digite código interno:");
+  if (code === null) return;
+
+  if (code !== REPORT_CODE) {
+    alert("Código incorreto.");
+    return;
+  }
+
+  const w = window.open("", "_blank", "width=1280,height=900");
+  if (!w) {
+    alert("Não foi possível abrir a janela.");
+    return;
+  }
+
+  w.document.open();
+  w.document.write(buildPremiumBankReceiptPdf(startDate, endDate));
+  w.document.close();
+  w.focus();
+
+  w.onload = () => w.print();
+
+  document.getElementById("pdfRangeModal")?.classList.add("hidden");
+});
+
+// Relatórios rápidos
+document.querySelectorAll("[data-report-range]").forEach((btn) => {
+  btn.addEventListener("click", () => {
+    const days = Number(btn.dataset.reportRange || 7);
+
+    const code = prompt("Digite código interno:");
+    if (code === null) return;
+
+    if (code !== REPORT_CODE) {
+      alert("Código incorreto.");
+      return;
+    }
+
+    const end = new Date();
+    const start = new Date();
+    start.setDate(start.getDate() - days);
+
+    const endLocal = new Date(end.getTime() - end.getTimezoneOffset() * 60000)
+      .toISOString()
+      .split("T")[0];
+
+    const startLocal = new Date(start.getTime() - start.getTimezoneOffset() * 60000)
+      .toISOString()
+      .split("T")[0];
+
+    const w = window.open("", "_blank", "width=1280,height=900");
+    if (!w) {
+      alert("Não foi possível abrir a janela.");
+      return;
+    }
+
+    w.document.open();
+    w.document.write(buildPremiumBankReceiptPdf(startLocal, endLocal));
+    w.document.close();
+    w.focus();
+
+    w.onload = () => w.print();
+  });
+});
+
+// Admin
+document.getElementById("adminOpenBtn")?.addEventListener("click", openAdminModal);
+
+// Recalcular histórico
+document.getElementById("recalculateHistoryBtn")?.addEventListener("click", async () => {
+  const code = prompt("Digite código interno:");
+  if (code === null) return;
+
+  if (code !== ADMIN_CODE) {
+    alert("Código incorreto.");
+    return;
+  }
+
+  if (typeof recalculateAllHistory === "function") {
+    await recalculateAllHistory();
+  } else {
+    alert("Função de recalcular ainda não está instalada.");
+  }
+});
+
+// Histórico detalhado menu
+document.getElementById("menuHistoryBtn")?.addEventListener("click", () => {
+  historyVisible = true;
+
+  const list = document.getElementById("historyList");
+  const btn = document.getElementById("toggleHistoryBtn");
+
+  if (list) list.classList.remove("hidden");
+  if (btn) btn.textContent = "Ocultar";
+
+  list?.scrollIntoView({
+    behavior: "smooth",
+    block: "start"
+  });
+});
+
+// =========================
+// ✅ CORRIGIR CARD PRINCIPAL
+// =========================
+function renderTopPreviousCards() {
+  const last = historyCache[0] || null;
+  const prev = historyCache[1] || null;
+
+  const previousOperator = document.getElementById("previousOperator");
+  const previousDate = document.getElementById("previousDate");
+  const previousDiff = document.getElementById("previousDiff");
+  const previousReca = document.getElementById("previousReca");
+  const bankValue = document.getElementById("bankValue");
+
+  if (!last) {
+    if (previousOperator) previousOperator.textContent = "-";
+    if (previousDate) previousDate.textContent = "-";
+    if (previousDiff) previousDiff.textContent = money(0);
+    if (previousReca) previousReca.textContent = money(0);
+    if (bankValue) bankValue.textContent = balanceVisible ? money(0) : "Saldo oculto";
+    return;
+  }
+
+  const lastReca = Number(last.total || last.turno?.reca || 0);
+
+  const currentBase = calcularSaldo(last.turno || {});
+  const previousBase = prev ? calcularSaldo(prev.turno || {}) : 0;
+  const diff = prev ? currentBase - previousBase : Number(last.diff || 0);
+
+  if (previousOperator) previousOperator.textContent = last.nomeOperador || "Sem nome";
+  if (previousDate) previousDate.textContent = formatDateBR(last.fechamentoDate || last.turno?.dataFechamento || "");
+  if (previousDiff) {
+    previousDiff.textContent = `${diff > 0 ? "+ " : diff < 0 ? "- " : ""}${money(Math.abs(diff))}`;
+    previousDiff.classList.remove("green", "red");
+    if (diff > 0) previousDiff.classList.add("green");
+    if (diff < 0) previousDiff.classList.add("red");
+  }
+
+  if (previousReca) previousReca.textContent = money(lastReca);
+  if (bankValue) bankValue.textContent = balanceVisible ? money(lastReca) : "Saldo oculto";
+}
     
 // =========================
 // 🔥 INICIALIZAÇÃO FINAL
