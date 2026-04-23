@@ -1209,16 +1209,6 @@
       });
     }
 
-    function parseMoney(v) {
-      if (!v) return 0;
-      return Number(
-        String(v)
-          .replace(/\./g, "")
-          .replace(",", ".")
-          .replace(/[^\d.-]/g, "")
-      ) || 0;
-    }
-
     function money(v) {
       return `R$ ${Number(v || 0).toLocaleString("pt-BR", {
         minimumFractionDigits: 2
