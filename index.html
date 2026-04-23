@@ -2776,21 +2776,24 @@ function getTodayDateInput() {
   return local.toISOString().split("T")[0];
 }
 
-    function calcularBaseComparacao(turno = {}) {
+function calcularEntradas(turno = {}) {
   const reca = Number(turno.reca || 0);
   const suprema = Number(turno.suprema || 0);
   const pppoker = Number(turno.pppoker || 0);
   const buffalo = Number(turno.buffalo || 0);
   const ganamos = Number(turno.ganamos || 0);
-  const pendentes = Number(turno.pendentesTotal || 0);
+
+  const cargaFichas = Number(turno.cargaFichas || 0);
+  const cargaPoker = Number(turno.cargaPoker || 0);
 
   return (
     reca +
     (suprema * 400) +
     (pppoker * 400) +
     buffalo +
-    ganamos -
-    pendentes
+    ganamos +
+    cargaFichas +
+    cargaPoker
   );
 }
 
