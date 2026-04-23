@@ -2823,9 +2823,9 @@ async function recalculateAllHistory() {
     ? calcularSaldoLiquido(previousItem.turno || {})
     : 0;
 
-  const diffCaixa = previousItem
-    ? currentSaldoTotal - previousSaldoTotal
-    : 0;
+ const diffCaixa = !previousItem
+  ? 0
+  : previousSaldoTotal - currentSaldoTotal;
 
   const saidasTurnoAtual = Number(turno.saidasTotal || 0);
 
@@ -2882,9 +2882,9 @@ async function saveHistoryItem(item) {
     const currentSaldoTotal = calcularSaldoLiquido(item.turno || {});
     const saidasTurnoAtual = Number(item?.turno?.saidasTotal || 0);
 
-    const diffCaixa = previousItem
-      ? currentSaldoTotal - previousSaldoTotal
-      : 0;
+    const diffCaixa = !previousItem
+  ? 0
+  : previousSaldoTotal - currentSaldoTotal;
 
     item.currentSaldoTotal = currentSaldoTotal;
     item.retiradaLucro = saidasTurnoAtual;
@@ -3948,9 +3948,9 @@ function buildPremiumPdfHtml(startDate, endDate){
 
     const currentSaldo = calcularSaldoLiquido(item.turno || {});
 
-    const diffCaixa = !previousItem
-      ? 0
-      : currentSaldo - previousSaldo;
+   const diffCaixa = !previousItem
+  ? 0
+  : previousSaldoTotal - currentSaldoTotal;
 
     return `
       <tr style="background:#ffffff !important;">
