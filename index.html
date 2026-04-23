@@ -67,6 +67,15 @@ input{
 
   /* 👇 COLE AQUI (no final do CSS) */
 
+#lucroTotal::after {
+  content: attr(data-label);
+  display: block;
+  font-size: 11px;
+  opacity: 0.6;
+  margin-top: 2px;
+  letter-spacing: .3px;
+}
+    
  /* 👇 botao editor */
 #editHistoryBtn,
 #saveHistoryBtn,
@@ -4386,16 +4395,16 @@ function render() {
   const previousItem = history[1] || null;
 
   const currentSaldoTotal = currentItem
-    ? calcularSaldoLiquido(currentItem.turno || {})
-    : 0;
+  ? calcularSaldoLiquido(currentItem.turno || {})
+  : 0;
 
-  const previousSaldoTotal = previousItem
-    ? calcularSaldoLiquido(previousItem.turno || {})
-    : 0;
+const previousSaldoTotal = previousItem
+  ? calcularSaldoLiquido(previousItem.turno || {})
+  : 0;
 
-  const diffCaixa = previousItem
-    ? currentSaldoTotal - previousSaldoTotal
-    : 0;
+const diffCaixa = previousItem
+  ? previousSaldoTotal - currentSaldoTotal
+  : 0;
 
   const ultimoLucroDoTurno = diffCaixa;
 
