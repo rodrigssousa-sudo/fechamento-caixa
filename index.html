@@ -3,109 +3,72 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-  <title>Bank King BRS - PRO</title>
+  <title>Bank King PRO</title>
 
   <style>
     :root{
       --bg:#f4f7fb;
-      --bg-soft:#eef3fb;
       --card:#ffffff;
-      --card-soft:#fbfdff;
-      --card-muted:#f8fafc;
-      --border:rgba(15,23,42,.08);
-      --border-strong:rgba(15,23,42,.14);
       --text:#0f172a;
       --muted:#64748b;
-      --muted-2:#94a3b8;
+      --border:rgba(15,23,42,.08);
       --primary:#1d4ed8;
-      --primary-strong:#1e40af;
-      --primary-soft:rgba(37,99,235,.08);
+      --primary2:#2563eb;
       --green:#16a34a;
-      --green-soft:rgba(22,163,74,.10);
-      --blue:#2563eb;
-      --blue-soft:rgba(37,99,235,.08);
-      --amber:#f59e0b;
-      --amber-soft:rgba(245,158,11,.10);
-      --red:#ef4444;
-      --red-soft:rgba(239,68,68,.10);
+      --red:#dc2626;
+      --amber:#d97706;
       --purple:#7c3aed;
-      --purple-soft:rgba(124,58,237,.08);
-      --shadow:0 10px 30px rgba(15,23,42,.06);
-      --shadow-soft:0 6px 18px rgba(15,23,42,.05);
-      --safe-bottom:env(safe-area-inset-bottom, 0px);
+      --shadow:0 18px 45px rgba(15,23,42,.08);
+      --shadow-soft:0 8px 22px rgba(15,23,42,.06);
     }
 
-    *{
-      box-sizing:border-box;
-      -webkit-tap-highlight-color:transparent;
-    }
-
-    html,body{
-      margin:0;
-      padding:0;
-    }
+    *{box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+    html,body{margin:0;padding:0;}
 
     body{
       min-height:100vh;
-      font-family:Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      font-family:Inter,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
       color:var(--text);
       background:
-        radial-gradient(circle at top left, rgba(37,99,235,.08), transparent 24%),
-        radial-gradient(circle at top right, rgba(124,58,237,.05), transparent 18%),
-        linear-gradient(180deg, #f8fbff 0%, #f2f6fb 100%);
+        radial-gradient(circle at top left, rgba(37,99,235,.09), transparent 25%),
+        linear-gradient(180deg,#f8fbff 0%,#eef3fb 100%);
     }
 
-    .hidden{display:none !important;}
+    .hidden{display:none!important;}
     .green{color:var(--green)!important;}
-    .blue{color:var(--blue)!important;}
     .red{color:var(--red)!important;}
+    .blue{color:var(--primary)!important;}
     .amber{color:var(--amber)!important;}
 
     button{
       border:0;
       cursor:pointer;
-      font-weight:800;
-      transition:transform .16s ease, opacity .16s ease, box-shadow .16s ease, background .16s ease;
+      font-weight:900;
+      transition:.16s ease;
     }
 
-    button:active{
-      transform:scale(.98);
-    }
+    button:active{transform:scale(.98);}
 
     input{
       width:100%;
-      min-height:48px;
-      padding:12px 14px;
-      border-radius:14px;
+      min-height:50px;
+      border-radius:16px;
       border:1px solid var(--border);
       background:#fff;
-      color:var(--text)!important;
-      font-size:15px;
-      font-weight:700;
+      color:var(--text);
+      font-size:16px;
+      font-weight:800;
+      padding:12px 16px;
       outline:none;
-      box-shadow:inset 0 1px 0 rgba(255,255,255,.8);
-    }
-
-    input::placeholder{
-      color:var(--muted-2);
     }
 
     input:focus{
-      border-color:rgba(37,99,235,.30);
+      border-color:rgba(37,99,235,.35);
       box-shadow:0 0 0 4px rgba(37,99,235,.08);
     }
 
-    .field{
-      display:flex;
-      flex-direction:column;
-      gap:8px;
-    }
-
-    .field label{
-      font-size:12px;
-      font-weight:800;
-      color:var(--muted);
-    }
+    .field{display:flex;flex-direction:column;gap:8px;}
+    .field label{font-size:12px;color:var(--muted);font-weight:900;}
 
     .auth-screen{
       min-height:100vh;
@@ -117,87 +80,68 @@
 
     .auth-card{
       width:100%;
-      max-width:460px;
+      max-width:430px;
       background:#fff;
-      border-radius:32px;
-      box-shadow:
-        0 28px 80px rgba(15,23,42,.12),
-        inset 0 1px 0 rgba(255,255,255,.95);
-      padding:28px;
       border:1px solid rgba(255,255,255,.9);
+      border-radius:34px;
+      padding:30px;
+      box-shadow:var(--shadow);
     }
 
     .auth-logo{
-      width:58px;
-      height:58px;
+      width:60px;
+      height:60px;
       border-radius:18px;
       display:flex;
       align-items:center;
       justify-content:center;
-      font-weight:900;
       color:#fff;
-      background:linear-gradient(135deg,var(--primary),var(--primary-strong));
+      font-weight:950;
+      background:linear-gradient(135deg,#1d4ed8,#2563eb);
       margin-bottom:16px;
-      box-shadow:0 12px 24px rgba(37,99,235,.18);
     }
 
-    .auth-title{
-      margin:0 0 6px;
-      font-size:30px;
-      font-weight:900;
-      letter-spacing:-.03em;
-    }
-
-    .auth-subtitle{
-      margin:0 0 18px;
-      color:var(--muted);
-      font-size:13px;
-    }
+    .auth-title{font-size:30px;font-weight:950;margin:0;}
+    .auth-sub{color:var(--muted);font-size:14px;margin:6px 0 20px;}
 
     .auth-toggle{
       display:grid;
       grid-template-columns:1fr 1fr 1fr;
       gap:8px;
-      margin:18px 0 16px;
+      margin-bottom:16px;
     }
 
     .auth-tab{
       min-height:44px;
       border-radius:14px;
-      border:1px solid var(--border);
       background:#fff;
+      border:1px solid var(--border);
       color:var(--text);
     }
 
     .auth-tab.active{
-      background:linear-gradient(135deg,var(--primary),var(--primary-strong));
+      background:linear-gradient(135deg,#1d4ed8,#2563eb);
       color:#fff;
-      box-shadow:0 12px 24px rgba(37,99,235,.16);
+      box-shadow:0 12px 24px rgba(37,99,235,.18);
     }
 
-    .auth-form{
-      display:grid;
-      gap:12px;
-    }
+    .auth-form{display:grid;gap:12px;}
 
     .auth-submit{
-      min-height:50px;
+      min-height:52px;
       border-radius:16px;
       color:#fff;
-      background:linear-gradient(135deg,var(--primary),var(--primary-strong));
-      width:100%;
-      margin-top:6px;
-      box-shadow:0 12px 24px rgba(37,99,235,.16);
+      background:linear-gradient(135deg,#1d4ed8,#2563eb);
+      box-shadow:0 14px 28px rgba(37,99,235,.18);
     }
 
     .remember-row{
       display:flex;
       align-items:center;
       gap:10px;
-      margin-top:4px;
       color:var(--muted);
       font-size:13px;
-      font-weight:700;
+      font-weight:800;
     }
 
     .remember-row input{
@@ -207,505 +151,444 @@
       padding:0;
     }
 
-    .app-shell{
-      width:100%;
-    }
+    .app-shell{width:100%;}
 
     .app{
       width:100%;
-      max-width:1320px;
+      max-width:1440px;
       margin:0 auto;
-      padding:18px 18px 120px;
-    }
-
-    .header{
-      position:sticky;
-      top:0;
-      z-index:40;
-      display:flex;
-      justify-content:space-between;
-      align-items:center;
-      gap:12px;
       padding:18px;
-      margin-bottom:16px;
-      background:rgba(255,255,255,.84);
-      backdrop-filter:blur(10px);
-      border-radius:22px;
-      box-shadow:var(--shadow-soft);
-      border:1px solid rgba(255,255,255,.8);
+      display:grid;
+      gap:18px;
     }
 
-    .brand-wrap{
+    .topbar{
+      position:sticky;
+      top:12px;
+      z-index:50;
       display:flex;
       align-items:center;
-      gap:12px;
+      justify-content:space-between;
+      gap:16px;
+      padding:20px 24px;
+      background:rgba(255,255,255,.88);
+      backdrop-filter:blur(18px);
+      border:1px solid rgba(255,255,255,.92);
+      border-radius:30px;
+      box-shadow:var(--shadow-soft);
     }
 
-    .brand-box{
-      width:44px;
-      height:44px;
-      border-radius:14px;
+    .brand{
+      display:flex;
+      align-items:center;
+      gap:14px;
+    }
+
+    .brand-logo{
+      width:58px;
+      height:58px;
+      border-radius:18px;
       display:flex;
       align-items:center;
       justify-content:center;
-      font-size:16px;
-      font-weight:900;
       color:#fff;
-      background:linear-gradient(135deg,var(--primary),var(--primary-strong));
-      box-shadow:0 12px 22px rgba(37,99,235,.20);
+      font-weight:950;
+      background:linear-gradient(135deg,#1d4ed8,#2563eb);
+      box-shadow:0 14px 28px rgba(37,99,235,.20);
     }
 
-    .header-title{
-      font-size:22px;
-      font-weight:900;
-      letter-spacing:-.03em;
-      margin:0;
+    .brand-title{
+      font-size:25px;
+      font-weight:950;
+      letter-spacing:-.04em;
     }
 
-    .header-sub{
-      margin:2px 0 0;
-      font-size:12px;
+    .brand-sub{
       color:var(--muted);
+      font-size:14px;
+      margin-top:2px;
     }
 
-    .admin-top-btn{
-      min-height:44px;
-      padding:0 16px;
-      border-radius:14px;
+    .menu-btn{
+      width:56px;
+      height:56px;
+      border-radius:18px;
       background:#fff;
       border:1px solid var(--border);
-      color:var(--text);
       box-shadow:var(--shadow-soft);
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      font-size:26px;
+      color:var(--text);
     }
 
-    .top-user-bar{
+    .user-card{
       display:flex;
       justify-content:space-between;
       align-items:center;
-      gap:12px;
-      padding:16px 18px;
+      gap:14px;
       background:#fff;
-      border-radius:24px;
-      margin-bottom:16px;
-      box-shadow:var(--shadow-soft);
       border:1px solid var(--border);
+      border-radius:30px;
+      padding:20px 24px;
+      box-shadow:var(--shadow-soft);
     }
 
-    .user-name{
-      font-weight:900;
-      font-size:16px;
-      color:var(--text);
-    }
-
-    .user-email{
-      color:var(--muted);
-      font-size:13px;
-      margin-top:4px;
-    }
+    .user-name{font-size:20px;font-weight:950;}
+    .user-email{font-size:14px;color:var(--muted);margin-top:4px;}
 
     .logout-btn{
-      min-height:44px;
-      padding:0 16px;
-      border-radius:14px;
+      min-height:50px;
+      padding:0 22px;
+      border-radius:17px;
       background:#fff5f5;
       color:var(--red);
-      border:1px solid rgba(239,68,68,.12);
+      border:1px solid rgba(220,38,38,.14);
     }
 
-    .summary-flat-card,
-    .history-card,
-    .modal-card,
-    .reports-menu{
+    .main-card{
       background:#fff;
       border:1px solid var(--border);
-      border-radius:24px;
+      border-radius:30px;
       box-shadow:var(--shadow-soft);
+      overflow:hidden;
     }
 
-    .summary-flat-card{
-      padding:18px;
-    }
+    .main-card-pad{padding:24px;}
 
-    .balance-strip{
-      background:linear-gradient(135deg, #1d4ed8, #2563eb);
-      padding:22px;
-      border-radius:24px;
+    .balance-card{
+      background:linear-gradient(135deg,#1d4ed8,#3458e6);
       color:#fff;
-      margin-bottom:16px;
+      border-radius:28px;
+      padding:28px;
+      box-shadow:0 20px 42px rgba(37,99,235,.22);
       display:flex;
       justify-content:space-between;
       align-items:center;
-      gap:12px;
-      box-shadow:0 18px 36px rgba(37,99,235,.20);
+      gap:16px;
     }
 
     .balance-label{
       font-size:12px;
-      opacity:.85;
-      font-weight:800;
-      margin-bottom:6px;
       text-transform:uppercase;
-      letter-spacing:.06em;
+      letter-spacing:.12em;
+      opacity:.85;
+      font-weight:950;
+      margin-bottom:10px;
     }
 
     .balance-value{
-      font-size:30px;
-      font-weight:900;
-      line-height:1.1;
-      letter-spacing:-.03em;
+      font-size:38px;
+      font-weight:950;
+      letter-spacing:-.05em;
     }
 
-    .eye-btn{
-      min-width:48px;
+    .balance-toggle{
       min-height:48px;
-      border-radius:14px;
-      background:rgba(255,255,255,.16);
+      padding:0 18px;
+      border-radius:16px;
+      background:rgba(255,255,255,.14);
       color:#fff;
-      font-size:18px;
-      border:1px solid rgba(255,255,255,.15);
+      border:1px solid rgba(255,255,255,.18);
     }
 
-    .summary-head{
-      display:flex;
-      justify-content:space-between;
-      align-items:center;
-      gap:12px;
-      margin-bottom:14px;
-    }
-
-    .summary-label{
-      font-size:11px;
-      font-weight:900;
-      letter-spacing:.08em;
-      text-transform:uppercase;
-      color:var(--muted);
-    }
-
-    .summary-title{
-      font-size:20px;
-      font-weight:900;
-      color:var(--text);
-      margin-top:4px;
-    }
-
-    .pill{
-      display:inline-flex;
-      align-items:center;
-      gap:6px;
-      padding:8px 12px;
-      border-radius:999px;
-      font-size:11px;
-      font-weight:900;
-      white-space:nowrap;
-    }
-
-    .pill .dot{
-      width:7px;
-      height:7px;
-      border-radius:50%;
-      background:currentColor;
-    }
-
-    .pill.positive{
-      background:var(--green-soft);
-      color:var(--green);
-    }
-
-    .pill.negative{
-      background:var(--red-soft);
-      color:var(--red);
-    }
-
-    .pill.neutral{
-      background:var(--amber-soft);
-      color:var(--amber);
-    }
-
-    .top-metrics{
+    .summary-grid{
       display:grid;
       grid-template-columns:repeat(4,1fr);
-      gap:12px;
+      gap:14px;
     }
 
-    .top-metric{
-      padding:16px;
-      border-radius:18px;
+    .summary-box{
       background:#fff;
       border:1px solid var(--border);
-      min-height:96px;
+      border-radius:22px;
+      padding:20px;
+      min-height:120px;
       display:flex;
       flex-direction:column;
       justify-content:center;
-      gap:6px;
     }
 
-    .metric-label{
-      font-size:11px;
-      text-transform:uppercase;
+    .summary-box-label{
+      font-size:12px;
       color:var(--muted);
-      font-weight:900;
+      font-weight:950;
+      text-transform:uppercase;
+      letter-spacing:.08em;
+      margin-bottom:8px;
     }
 
-    .metric-value{
-      font-size:18px;
-      font-weight:900;
-      line-height:1.15;
-      color:var(--text);
+    .summary-box-value{
+      font-size:24px;
+      font-weight:950;
+      letter-spacing:-.04em;
     }
 
     .section-grid{
       display:grid;
       grid-template-columns:1fr 1fr;
-      gap:16px;
-      margin-top:16px;
+      gap:18px;
     }
 
     .section-card{
       background:#fff;
       border:1px solid var(--border);
-      border-radius:22px;
-      overflow:hidden;
+      border-radius:28px;
       box-shadow:var(--shadow-soft);
+      overflow:hidden;
     }
 
-    .section-card-header{
-      display:flex;
-      align-items:center;
-      justify-content:space-between;
-      gap:10px;
-      padding:16px 18px;
+    .section-head{
+      padding:18px 22px;
       border-bottom:1px solid var(--border);
-      background:#fbfdff;
+      font-size:18px;
+      font-weight:950;
     }
 
-    .section-card-title{
-      font-size:15px;
-      font-weight:900;
-      color:var(--text);
-    }
-
-    .section-card-body{
-      padding:16px 18px;
+    .section-body{
+      padding:20px 22px;
       display:grid;
-      gap:12px;
+      gap:14px;
     }
 
-    .section-card.blue-theme{
-      border-color:rgba(37,99,235,.18);
-    }
+    .blue-section{border-color:rgba(37,99,235,.16);}
+    .blue-section .section-head{background:#f4f7ff;color:var(--primary);}
 
-    .section-card.blue-theme .section-card-header{
-      background:#f5f8ff;
-    }
+    .amber-section{border-color:rgba(245,158,11,.18);}
+    .amber-section .section-head{background:#fffaf2;color:var(--amber);}
 
-    .section-card.blue-theme .section-card-title{
-      color:var(--primary);
-    }
+    .red-section{border-color:rgba(220,38,38,.18);}
+    .red-section .section-head{background:#fff7f7;color:var(--red);}
 
-    .section-card.amber-theme{
-      border-color:rgba(245,158,11,.18);
-    }
+    .green-section{border-color:rgba(22,163,74,.18);}
+    .green-section .section-head{background:#f4fbf6;color:var(--green);}
 
-    .section-card.amber-theme .section-card-header{
-      background:#fffaf2;
-    }
-
-    .section-card.amber-theme .section-card-title{
-      color:#d97706;
-    }
-
-    .section-card.red-theme{
-      border-color:rgba(239,68,68,.18);
-    }
-
-    .section-card.red-theme .section-card-header{
-      background:#fff8f8;
-    }
-
-    .section-card.red-theme .section-card-title{
-      color:#dc2626;
-    }
-
-    .dynamic-list{
-      display:grid;
-      gap:10px;
-    }
+    .dynamic-list{display:grid;gap:12px;}
 
     .dynamic-row{
       display:grid;
-      grid-template-columns:1.2fr .9fr auto;
+      grid-template-columns:1.2fr .8fr auto;
       gap:10px;
       align-items:end;
-      padding:12px;
-      border-radius:16px;
-      background:#fff;
+      padding:14px;
+      border-radius:18px;
       border:1px solid var(--border);
+      background:#fff;
     }
 
     .dynamic-row.pending{
-      background:#fffdf7;
-      border-color:rgba(245,158,11,.16);
+      background:#fffdf8;
+      border-color:rgba(245,158,11,.18);
     }
 
     .dynamic-row.outflow{
-      background:#fff9f9;
-      border-color:rgba(239,68,68,.16);
+      background:#fffafa;
+      border-color:rgba(220,38,38,.16);
     }
 
     .remove-btn{
-      min-height:48px;
-      min-width:48px;
-      border-radius:12px;
-      background:var(--amber-soft);
-      color:#d97706;
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      font-size:18px;
-    }
-
-    .remove-btn.red-remove{
-      background:var(--red-soft);
+      min-height:50px;
+      min-width:50px;
+      border-radius:16px;
+      background:#fff1f2;
       color:var(--red);
+      font-size:18px;
+      border:1px solid rgba(220,38,38,.12);
     }
 
-    .add-btn-outline{
-      width:100%;
-      min-height:46px;
-      border-radius:14px;
-      border:1px dashed rgba(15,23,42,.14);
+    .add-btn{
+      min-height:48px;
+      border-radius:16px;
       background:#fff;
+      border:1px dashed rgba(15,23,42,.18);
       color:var(--muted);
       font-size:14px;
-      font-weight:900;
     }
 
-    .section-card.amber-theme .add-btn-outline{
-      color:#d97706;
-      border-color:rgba(245,158,11,.28);
-      background:#fffdf8;
-    }
-
-    .section-card.red-theme .add-btn-outline{
-      color:#dc2626;
-      border-color:rgba(239,68,68,.25);
-      background:#fffafa;
-    }
-
-    .actions-card{
-      margin-top:16px;
-      background:#fff;
-      border:1px solid rgba(22,163,74,.16);
-      border-radius:24px;
-      overflow:hidden;
-      box-shadow:var(--shadow-soft);
-    }
-
-    .actions-head{
-      padding:16px 18px;
-      border-bottom:1px solid rgba(22,163,74,.10);
-      background:#f7fcf9;
-      color:var(--green);
-      font-weight:900;
-    }
+    .amber-section .add-btn{color:var(--amber);border-color:rgba(245,158,11,.28);background:#fffdf8;}
+    .red-section .add-btn{color:var(--red);border-color:rgba(220,38,38,.28);background:#fffafa;}
 
     .actions-grid{
-      padding:16px 18px;
       display:grid;
       grid-template-columns:repeat(4,1fr);
       gap:16px;
     }
 
     .action-btn{
-      min-height:78px;
-      border-radius:16px;
-      padding:14px 16px;
+      min-height:82px;
+      border-radius:20px;
+      padding:16px 18px;
       text-align:left;
       border:1px solid var(--border);
       background:#fff;
+    }
+
+    .action-title{display:block;font-size:16px;font-weight:950;color:var(--text);margin-bottom:5px;}
+    .action-sub{display:block;font-size:12px;color:var(--muted);font-weight:800;}
+
+    .action-blue{background:#f4f7ff;color:var(--primary);}
+    .action-green{background:#f2fbf5;color:var(--green);}
+    .action-purple{background:#f8f4ff;color:var(--purple);}
+    .action-gray{background:#fafafa;}
+
+    .compare-grid{
+      display:grid;
+      grid-template-columns:repeat(auto-fit,minmax(180px,1fr));
+      gap:12px;
+    }
+
+    .compare-pill{
+      border:1px solid var(--border);
+      background:#fff;
+      border-radius:18px;
+      padding:14px;
       display:flex;
-      flex-direction:column;
-      justify-content:center;
-      gap:4px;
+      gap:10px;
+      align-items:center;
     }
 
-    .action-title{
-      font-size:14px;
-      font-weight:900;
-      color:var(--text);
+    .compare-dot{
+      width:12px;
+      height:12px;
+      border-radius:999px;
+      background:#94a3b8;
+      flex-shrink:0;
     }
 
-    .action-sub{
-      font-size:12px;
-      color:var(--muted);
-      font-weight:700;
+    .compare-dot.up{background:var(--green);box-shadow:0 0 0 4px rgba(22,163,74,.12);}
+    .compare-dot.down{background:var(--red);box-shadow:0 0 0 4px rgba(220,38,38,.12);}
+    .compare-dot.same{background:#94a3b8;box-shadow:0 0 0 4px rgba(148,163,184,.12);}
+
+    .compare-name{font-size:13px;font-weight:950;}
+    .compare-value{font-size:12px;color:var(--muted);font-weight:800;margin-top:2px;}
+
+    .chart-wrap{
+      width:100%;
+      height:280px;
+      border:1px solid var(--border);
+      border-radius:22px;
+      padding:14px;
+      background:#fff;
     }
 
-    .action-btn.blue-btn{background:#f4f7ff;color:var(--primary);}
-    .action-btn.green-btn{background:#f2fbf5;color:var(--green);}
-    .action-btn.purple-btn{background:#f8f4ff;color:var(--purple);}
-    .action-btn.gray-btn{background:#fafafa;color:#111827;}
+    #performanceChart{
+      width:100%;
+      height:100%;
+      display:block;
+    }
 
-    .history-section{
-      margin-top:16px;
+    .chart-actions{
+      display:flex;
+      flex-wrap:wrap;
+      gap:8px;
+      margin-bottom:14px;
+    }
+
+    .chart-range-btn{
+      min-height:38px;
+      padding:0 14px;
+      border-radius:999px;
       background:#fff;
       border:1px solid var(--border);
-      border-radius:24px;
-      padding:18px;
-      box-shadow:var(--shadow-soft);
+      color:var(--muted);
+      font-size:12px;
     }
 
-    .history-head{
-      display:flex;
-      justify-content:space-between;
-      align-items:center;
-      gap:12px;
-      margin-bottom:12px;
+    .chart-range-btn.active{
+      background:#1d4ed8;
+      color:#fff;
+      border-color:#1d4ed8;
     }
 
-    .history-list{
-      display:grid;
-      gap:12px;
-    }
+    .history-list{display:grid;gap:14px;}
 
     .history-card{
-      padding:16px;
-      border-radius:18px;
-      background:#fff;
       border:1px solid var(--border);
-      box-shadow:none;
-      margin:0;
+      border-radius:22px;
+      padding:18px;
+      background:#fff;
       cursor:pointer;
+      transition:.16s ease;
     }
 
-    .history-card-title{
-      font-size:15px;
-      font-weight:900;
+    .history-card:hover{transform:translateY(-1px);box-shadow:var(--shadow-soft);}
+
+    .history-title{
+      font-size:18px;
+      font-weight:950;
       margin-bottom:8px;
-      color:var(--text);
     }
 
     .history-meta{
       display:flex;
       justify-content:space-between;
-      gap:10px;
+      gap:12px;
       flex-wrap:wrap;
-      font-size:13px;
       color:var(--muted);
+      font-size:14px;
+      font-weight:800;
     }
 
-    .history-highlight{
-      margin-top:12px;
+    .history-badge{
       display:inline-flex;
+      margin-top:12px;
       padding:8px 12px;
       border-radius:999px;
       font-size:12px;
-      font-weight:900;
+      font-weight:950;
     }
 
-    .history-highlight.positive{background:var(--green-soft);color:var(--green);}
-    .history-highlight.negative{background:var(--red-soft);color:var(--red);}
-    .history-highlight.neutral{background:#f1f5f9;color:#475569;}
+    .history-badge.positive{background:rgba(22,163,74,.10);color:var(--green);}
+    .history-badge.negative{background:rgba(220,38,38,.10);color:var(--red);}
+    .history-badge.neutral{background:#f1f5f9;color:#475569;}
+
+    .ranking-table{
+      width:100%;
+      border-collapse:collapse;
+      font-size:13px;
+    }
+
+    .ranking-table th,
+    .ranking-table td{
+      border-bottom:1px solid var(--border);
+      padding:12px 8px;
+      text-align:left;
+    }
+
+    .ranking-table th{
+      color:var(--primary);
+      background:#f4f7ff;
+      font-size:11px;
+      text-transform:uppercase;
+      letter-spacing:.06em;
+    }
+
+    .floating-menu{
+      position:fixed;
+      top:92px;
+      right:22px;
+      z-index:120;
+      width:310px;
+      max-width:calc(100vw - 44px);
+      background:#fff;
+      border:1px solid var(--border);
+      border-radius:22px;
+      padding:10px;
+      box-shadow:0 24px 60px rgba(15,23,42,.14);
+      display:grid;
+      gap:8px;
+    }
+
+    .menu-item{
+      min-height:48px;
+      border-radius:16px;
+      background:#fff;
+      border:1px solid var(--border);
+      color:var(--text);
+      text-align:left;
+      padding:0 14px;
+    }
 
     .modal{
       position:fixed;
@@ -719,19 +602,20 @@
     .modal-backdrop{
       position:absolute;
       inset:0;
-      background:rgba(0,0,0,.35);
-      backdrop-filter:blur(4px);
+      background:rgba(15,23,42,.38);
+      backdrop-filter:blur(6px);
     }
 
     .modal-card{
       position:relative;
       width:100%;
-      max-width:880px;
+      max-width:940px;
       max-height:90vh;
-      overflow-y:auto;
+      overflow:auto;
       background:#fff;
-      border-radius:28px 28px 0 0;
+      border-radius:30px 30px 0 0;
       padding:24px;
+      box-shadow:0 -20px 60px rgba(15,23,42,.18);
     }
 
     .modal-head{
@@ -739,93 +623,53 @@
       justify-content:space-between;
       align-items:flex-start;
       gap:12px;
-      margin-bottom:16px;
+      margin-bottom:18px;
     }
 
-    .modal-head h3{
-      margin:0;
+    .modal-title{
       font-size:22px;
-      letter-spacing:-.03em;
+      font-weight:950;
+      margin:0;
+    }
+
+    .modal-close{
+      min-height:42px;
+      padding:0 16px;
+      border-radius:14px;
+      background:#f8fafc;
+      color:var(--text);
+      border:1px solid var(--border);
     }
 
     .modal-grid{
       display:grid;
       grid-template-columns:1fr 1fr;
-      gap:16px;
+      gap:14px;
     }
 
-    .reports-menu{
-      position:fixed;
-      top:84px;
-      right:18px;
-      z-index:140;
-      width:280px;
-      max-width:calc(100vw - 36px);
-      padding:10px;
-      display:grid;
-      gap:8px;
+    @media(max-width:900px){
+      .summary-grid,.section-grid,.actions-grid{grid-template-columns:1fr 1fr;}
+      .balance-value{font-size:30px;}
     }
 
-    .reports-menu-item{
-      width:100%;
-      min-height:46px;
-      border-radius:14px;
-      border:1px solid var(--border);
-      background:#fff;
-      color:var(--text);
-      text-align:left;
-      padding:0 14px;
-      font-size:14px;
-      font-weight:800;
-    }
-
-    @media (max-width:900px){
-      .top-metrics,
-      .section-grid,
-      .actions-grid{
-        grid-template-columns:repeat(2,1fr);
-      }
-    }
-
-    @media (max-width:700px){
-      .top-user-bar,
-      .balance-strip,
-      .modal-head{
-        flex-direction:column;
-        align-items:flex-start;
-      }
-
-      .top-metrics,
-      .section-grid,
-      .actions-grid,
-      .modal-grid{
-        grid-template-columns:1fr;
-      }
-
-      .dynamic-row{
-        grid-template-columns:1fr;
-      }
-
-      .reports-menu{
-        right:14px;
-        left:14px;
-        width:auto;
-        max-width:none;
-      }
-
-      .app{
-        padding:14px 14px 100px;
-      }
+    @media(max-width:700px){
+      .topbar,.user-card,.balance-card{flex-direction:column;align-items:flex-start;}
+      .summary-grid,.section-grid,.actions-grid,.dynamic-row,.modal-grid{grid-template-columns:1fr;}
+      .app{padding:12px 12px 90px;}
+      .brand-title{font-size:21px;}
+      .balance-value{font-size:28px;}
     }
   </style>
 </head>
+
 <body>
 
+  <!-- AUTH -->
   <section id="authScreen" class="auth-screen">
     <div class="auth-card">
       <div class="auth-logo">BK</div>
       <h1 class="auth-title">Bank King</h1>
-      <p class="auth-subtitle">Acesso interno Central King.</p>
+      <p class="auth-sub">Acesso interno Central King</p>
 
       <div class="auth-toggle">
         <button id="tabLogin" class="auth-tab active" type="button">Entrar</button>
@@ -836,16 +680,16 @@
       <form id="loginForm" class="auth-form">
         <div class="field">
           <label for="loginEmail">Email</label>
-          <input id="loginEmail" type="email" placeholder="Digite seu email" required>
+          <input id="loginEmail" type="email" placeholder="Digite seu email" required />
         </div>
 
         <div class="field">
           <label for="loginPassword">Senha</label>
-          <input id="loginPassword" type="password" placeholder="Digite sua senha" required>
+          <input id="loginPassword" type="password" placeholder="Digite sua senha" required />
         </div>
 
         <div class="remember-row">
-          <input id="rememberLogin" type="checkbox">
+          <input id="rememberLogin" type="checkbox" />
           <label for="rememberLogin">Manter conectado</label>
         </div>
 
@@ -855,17 +699,17 @@
       <form id="registerForm" class="auth-form hidden">
         <div class="field">
           <label for="registerName">Nome</label>
-          <input id="registerName" type="text" placeholder="Seu nome" required>
+          <input id="registerName" type="text" placeholder="Seu nome" required />
         </div>
 
         <div class="field">
           <label for="registerEmail">Email</label>
-          <input id="registerEmail" type="email" placeholder="Seu email" required>
+          <input id="registerEmail" type="email" placeholder="Seu email" required />
         </div>
 
         <div class="field">
           <label for="registerPassword">Senha</label>
-          <input id="registerPassword" type="password" placeholder="Crie uma senha" required>
+          <input id="registerPassword" type="password" placeholder="Crie uma senha" required />
         </div>
 
         <button class="auth-submit" type="submit">Registrar</button>
@@ -874,7 +718,7 @@
       <form id="forgotPasswordForm" class="auth-form hidden">
         <div class="field">
           <label for="resetEmail">Email de recuperação</label>
-          <input id="resetEmail" type="email" placeholder="Digite seu email" required>
+          <input id="resetEmail" type="email" placeholder="Digite seu email" required />
         </div>
 
         <button class="auth-submit" type="submit">Enviar link</button>
@@ -882,204 +726,313 @@
     </div>
   </section>
 
+  <!-- APP -->
   <div id="appShell" class="app-shell hidden">
     <main class="app">
 
-      <header class="header">
-        <div class="brand-wrap">
-          <div class="brand-box">BK</div>
+      <!-- TOPO PREMIUM -->
+      <header class="topbar">
+        <div class="brand">
+          <div class="brand-logo">BK</div>
           <div>
-            <h2 class="header-title">Bank King PRO</h2>
-            <p class="header-sub">Controle premium de fechamento</p>
+            <div class="brand-title">Bank King PRO</div>
+            <div class="brand-sub">Controle premium de fechamento</div>
           </div>
         </div>
 
-        <button id="adminOpenBtn" type="button" class="admin-top-btn">ADMIN</button>
+        <button id="menuToggle" class="menu-btn" type="button">☰</button>
       </header>
 
-      <div class="top-user-bar">
+      <!-- USUÁRIO -->
+      <section class="user-card">
         <div>
           <div id="activeUserName" class="user-name">Usuário</div>
           <div id="activeUserEmail" class="user-email">email@exemplo.com</div>
         </div>
 
-        <button id="logoutBtn" type="button" class="logout-btn">Sair</button>
-      </div>
+        <button id="logoutBtn" class="logout-btn" type="button">Sair</button>
+      </section>
 
-      <div class="balance-strip">
+      <!-- SALDO RECA -->
+      <section class="balance-card">
         <div>
-          <div class="balance-label">Saldo reca atual</div>
+          <div class="balance-label">Saldo Reca Atual</div>
           <div id="bankValue" class="balance-value">R$ 0,00</div>
         </div>
 
-        <button id="toggleBalance" type="button" class="eye-btn">👁</button>
-      </div>
+        <button id="toggleBalance" class="balance-toggle" type="button">Ocultar saldo</button>
+      </section>
 
-      <div class="summary-flat-card">
-        <div class="summary-head">
-          <div>
-            <div class="summary-label">Resumo do turno</div>
-            <div class="summary-title">Turno Atual</div>
+      <!-- RESUMO DO ÚLTIMO TURNO / ANTERIOR -->
+      <section class="main-card main-card-pad">
+        <div class="summary-grid">
+          <div class="summary-box">
+            <div class="summary-box-label">Turno anterior</div>
+            <div id="previousOperator" class="summary-box-value">-</div>
           </div>
 
-          <div id="statusPill" class="pill neutral">
-            <span class="dot"></span> Sem diferença
-          </div>
-        </div>
-
-        <div class="top-metrics">
-          <div class="top-metric">
-            <div class="metric-label">Operador</div>
-            <div id="resOperador" class="metric-value">-</div>
+          <div class="summary-box">
+            <div class="summary-box-label">Último fechamento</div>
+            <div id="previousDate" class="summary-box-value">-</div>
           </div>
 
-          <div class="top-metric">
-            <div class="metric-label">Data</div>
-            <div id="resData" class="metric-value">-</div>
+          <div class="summary-box">
+            <div class="summary-box-label">Diferença real</div>
+            <div id="previousDiff" class="summary-box-value">R$ 0,00</div>
           </div>
 
-          <div class="top-metric">
-            <div class="metric-label">Turno</div>
-            <div class="metric-value">Atual</div>
-          </div>
-
-          <div class="top-metric">
-            <div class="metric-label">Saldo Líquido</div>
-            <div id="saldoLiquido" class="metric-value green">R$ 0,00</div>
+          <div class="summary-box">
+            <div class="summary-box-label">Saldo Reca</div>
+            <div id="previousReca" class="summary-box-value green">R$ 0,00</div>
           </div>
         </div>
-      </div>
+      </section>
 
+      <!-- COMPARATIVO DAS FICHAS -->
+      <section class="section-card green-section">
+        <div class="section-head">Comparativo das fichas — último fechamento vs anterior</div>
+        <div class="section-body">
+          <div id="systemsCompareBar" class="compare-grid">
+            <div class="compare-pill">
+              <span class="compare-dot same"></span>
+              <div>
+                <div class="compare-name">Aguardando dados</div>
+                <div class="compare-value">Faça pelo menos dois fechamentos</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- GRÁFICO DE DESEMPENHO -->
+      <section class="section-card blue-section">
+        <div class="section-head">Desempenho</div>
+        <div class="section-body">
+          <div class="chart-actions">
+            <button class="chart-range-btn active" type="button" data-chart-range="day">Dia</button>
+            <button class="chart-range-btn" type="button" data-chart-range="week">Semana</button>
+            <button class="chart-range-btn" type="button" data-chart-range="15">Quinzenal</button>
+            <button class="chart-range-btn" type="button" data-chart-range="30">Mensal</button>
+          </div>
+
+          <div class="chart-wrap">
+            <canvas id="performanceChart"></canvas>
+          </div>
+        </div>
+      </section>
+
+      <!-- FORMULÁRIO TURNO ATUAL -->
       <div class="section-grid">
-        <section class="section-card blue-theme">
-          <div class="section-card-header">
-            <div class="section-card-title">1. Dados e Entradas</div>
-          </div>
 
-          <div class="section-card-body">
+        <!-- ENTRADAS -->
+        <section class="section-card blue-section">
+          <div class="section-head">1. Dados e Entradas</div>
+
+          <div class="section-body">
             <div class="field">
               <label for="t2_nome_operador">Nome do operador</label>
-              <input id="t2_nome_operador" type="text" placeholder="Ex.: Lucas">
+              <input id="t2_nome_operador" type="text" placeholder="Ex.: Igor T" />
             </div>
 
             <div class="field">
               <label for="t2_data_fechamento">Data do fechamento</label>
-              <input id="t2_data_fechamento" type="date">
+              <input id="t2_data_fechamento" type="date" />
             </div>
 
             <div class="field">
               <label for="t2_banco">Banco Reca</label>
-              <input id="t2_banco" type="text" placeholder="0,00">
+              <input id="t2_banco" type="text" inputmode="numeric" placeholder="0,00" />
             </div>
 
             <div class="field">
               <label for="t2_suprema">Suprema (x400)</label>
-              <input id="t2_suprema" type="text" placeholder="0,00">
+              <input id="t2_suprema" type="text" inputmode="numeric" placeholder="0,00" />
             </div>
 
             <div class="field">
               <label for="t2_pppoker">PPPoker (x400)</label>
-              <input id="t2_pppoker" type="text" placeholder="0,00">
+              <input id="t2_pppoker" type="text" inputmode="numeric" placeholder="0,00" />
             </div>
 
             <div class="field">
               <label for="t2_buffalo">Buffalo</label>
-              <input id="t2_buffalo" type="text" placeholder="0,00">
+              <input id="t2_buffalo" type="text" inputmode="numeric" placeholder="0,00" />
             </div>
 
             <div class="field">
               <label for="t2_ganamos">Ganamos</label>
-              <input id="t2_ganamos" type="text" placeholder="0,00">
+              <input id="t2_ganamos" type="text" inputmode="numeric" placeholder="0,00" />
             </div>
 
             <div class="field">
-              <label for="t2_cargas">Carga Fichas</label>
-              <input id="t2_cargas" type="text" placeholder="0,00">
+              <label for="t2_cargas">Carga de Fichas</label>
+              <input id="t2_cargas" type="text" inputmode="numeric" placeholder="0,00" />
             </div>
 
             <div class="field">
               <label for="t2_cargas_poker">Carga Poker (x400)</label>
-              <input id="t2_cargas_poker" type="text" placeholder="0,00">
+              <input id="t2_cargas_poker" type="text" inputmode="numeric" placeholder="0,00" />
             </div>
           </div>
         </section>
 
-        <section class="section-card amber-theme">
-          <div class="section-card-header">
-            <div class="section-card-title">2. Pagos Pendentes</div>
-          </div>
+        <!-- PENDENTES -->
+        <section class="section-card amber-section">
+          <div class="section-head">2. Pagos Pendentes</div>
 
-          <div class="section-card-body">
+          <div class="section-body">
             <div id="t2_pending_list" class="dynamic-list"></div>
-            <button type="button" class="add-btn-outline" data-add-pending="t2">+ Adicionar pendente</button>
+
+            <button type="button" class="add-btn" data-add-pending="t2">
+              + Adicionar pendente
+            </button>
           </div>
         </section>
 
-        <section class="section-card red-theme" style="grid-column:1 / -1;">
-          <div class="section-card-header">
-            <div class="section-card-title">3. Saídas de Caixa</div>
-          </div>
-
-          <div class="section-card-body">
-            <div id="t2_dynamic_list" class="dynamic-list"></div>
-            <button type="button" class="add-btn-outline" data-add-row="t2">+ Adicionar saída</button>
-          </div>
-        </section>
       </div>
 
-      <section class="actions-card">
-        <div class="actions-head">4. Ações</div>
+      <!-- SAÍDAS -->
+      <section class="section-card red-section">
+        <div class="section-head">3. Saídas de Caixa</div>
 
-        <div class="actions-grid">
-          <button id="limparBtn" type="button" class="action-btn gray-btn">
-            <span class="action-title">Limpar</span>
-            <span class="action-sub">Apaga o turno atual</span>
-          </button>
+        <div class="section-body">
+          <div id="t2_dynamic_list" class="dynamic-list"></div>
 
-          <button id="calcular" type="button" class="action-btn blue-btn">
-            <span class="action-title">Calcular</span>
-            <span class="action-sub">Atualizar resumo</span>
-          </button>
-
-          <button id="fecharTurno" type="button" class="action-btn green-btn">
-            <span class="action-title">Finalizar Turno</span>
-            <span class="action-sub">Salvar no histórico</span>
-          </button>
-
-          <button id="menuToggle" type="button" class="action-btn purple-btn">
-            <span class="action-title">Análise</span>
-            <span class="action-sub">Relatório por período</span>
+          <button type="button" class="add-btn" data-add-row="t2">
+            + Adicionar saída
           </button>
         </div>
       </section>
 
-      <section class="history-section">
-        <div class="history-head">
-          <h3 style="margin:0;">Histórico</h3>
-          <button id="toggleHistoryBtn" type="button" class="admin-top-btn">Ver</button>
+      <!-- AÇÕES -->
+      <section class="section-card green-section">
+        <div class="section-head">4. Ações</div>
+
+        <div class="section-body">
+          <div class="actions-grid">
+            <button id="limparBtn" type="button" class="action-btn action-gray">
+              <span class="action-title">Limpar</span>
+              <span class="action-sub">Apaga o turno atual</span>
+            </button>
+
+            <button id="calcular" type="button" class="action-btn action-blue">
+              <span class="action-title">Calcular</span>
+              <span class="action-sub">Atualizar resumo</span>
+            </button>
+
+            <button id="fecharTurno" type="button" class="action-btn action-green">
+              <span class="action-title">Finalizar Turno</span>
+              <span class="action-sub">Salvar no histórico</span>
+            </button>
+
+            <button id="openDetailedHistoryBtn" type="button" class="action-btn action-purple">
+              <span class="action-title">Histórico</span>
+              <span class="action-sub">Mostrar/Ocultar lista</span>
+            </button>
+          </div>
+        </div>
+      </section>
+
+      <!-- RANKING FUNCIONÁRIOS -->
+      <section class="section-card blue-section">
+        <div class="section-head">Ranking por operador</div>
+        <div class="section-body">
+          <div style="overflow:auto;">
+            <table class="ranking-table">
+              <thead>
+                <tr>
+                  <th>Operador</th>
+                  <th>Fechamentos</th>
+                  <th>Sobra</th>
+                  <th>Falta</th>
+                  <th>Saídas</th>
+                </tr>
+              </thead>
+              <tbody id="operatorRankingBody">
+                <tr>
+                  <td colspan="5">Sem dados ainda.</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- HISTÓRICO -->
+      <section class="section-card">
+        <div class="section-head" style="display:flex;justify-content:space-between;align-items:center;">
+          <span>Histórico</span>
+          <button id="toggleHistoryBtn" class="balance-toggle" style="background:#f8fafc;color:var(--text);border:1px solid var(--border);" type="button">
+            Ver
+          </button>
         </div>
 
-        <div id="historyList" class="history-list hidden"></div>
+        <div class="section-body">
+          <div id="historyList" class="history-list hidden"></div>
+        </div>
       </section>
+
     </main>
+
+    <!-- MENU HAMBÚRGUER -->
+    <div id="mainMenu" class="floating-menu hidden">
+      <button class="menu-item" type="button" id="openPdfCustomBtn">Relatórios PDF por datas</button>
+      <button class="menu-item" type="button" data-report-range="7">Relatório 7 dias</button>
+      <button class="menu-item" type="button" data-report-range="15">Relatório 15 dias</button>
+      <button class="menu-item" type="button" data-report-range="30">Relatório 30 dias</button>
+      <button class="menu-item" type="button" id="adminOpenBtn">Admin</button>
+      <button class="menu-item" type="button" id="menuHistoryBtn">Histórico detalhado</button>
+      <button class="menu-item" type="button" id="recalculateHistoryBtn">Recalcular histórico</button>
+    </div>
   </div>
 
-  <div id="reportsMenu" class="reports-menu hidden">
-    <button class="reports-menu-item" type="button" data-report-range="7">Relatório 7 dias</button>
-    <button class="reports-menu-item" type="button" data-report-range="15">Relatório 15 dias</button>
-    <button class="reports-menu-item" type="button" data-report-range="30">Relatório 30 dias</button>
-  </div>
-
+  <!-- MODAL HISTÓRICO -->
   <div id="historyModal" class="modal hidden">
-    <div class="modal-backdrop"></div>
+    <div class="modal-backdrop" id="historyModalBackdrop"></div>
 
     <div class="modal-card">
       <div class="modal-head">
-        <h3 id="historyModalTitle">Detalhes do turno</h3>
-        <button id="closeHistoryModal" type="button" class="admin-top-btn">Fechar</button>
+        <div>
+          <h3 id="historyModalTitle" class="modal-title">Detalhes do turno</h3>
+          <div id="historyModalSub" style="color:var(--muted);font-size:13px;margin-top:4px;"></div>
+        </div>
+
+        <button id="closeHistoryModal" class="modal-close" type="button">Fechar</button>
       </div>
 
       <div id="historyModalBody"></div>
+    </div>
+  </div>
+
+  <!-- MODAL PDF CUSTOM -->
+  <div id="pdfRangeModal" class="modal hidden">
+    <div class="modal-backdrop" id="pdfRangeBackdrop"></div>
+
+    <div class="modal-card" style="max-width:520px;">
+      <div class="modal-head">
+        <div>
+          <h3 class="modal-title">Relatório PDF</h3>
+          <div style="color:var(--muted);font-size:13px;margin-top:4px;">Escolha o período</div>
+        </div>
+
+        <button id="closePdfRangeModal" class="modal-close" type="button">Fechar</button>
+      </div>
+
+      <div style="display:grid;gap:14px;">
+        <div class="field">
+          <label for="pdfDateStart">Data inicial</label>
+          <input id="pdfDateStart" type="date" />
+        </div>
+
+        <div class="field">
+          <label for="pdfDateEnd">Data final</label>
+          <input id="pdfDateEnd" type="date" />
+        </div>
+
+        <button id="confirmExportPdf" class="auth-submit" type="button">
+          Gerar PDF
+        </button>
+      </div>
     </div>
   </div>
 
@@ -1134,34 +1087,21 @@
     const SESSION_TIMEOUT_MS = 30 * 60 * 1000;
 
     let historyCache = [];
-    let balanceVisible = true;
     let historyVisible = false;
+    let balanceVisible = true;
     let editingHistoryIndex = null;
     let sessionWatcher = null;
     let historyUnsubscribe = null;
+    let chartRange = "day";
 
-    const authScreen = document.getElementById("authScreen");
-    const appShell = document.getElementById("appShell");
+    const byId = (id) => document.getElementById(id);
 
-    const loginForm = document.getElementById("loginForm");
-    const registerForm = document.getElementById("registerForm");
-    const forgotPasswordForm = document.getElementById("forgotPasswordForm");
-
-    const tabLogin = document.getElementById("tabLogin");
-    const tabRegister = document.getElementById("tabRegister");
-    const tabForgot = document.getElementById("tabForgot");
-
-    const activeUserName = document.getElementById("activeUserName");
-    const activeUserEmail = document.getElementById("activeUserEmail");
-
-    const historyList = document.getElementById("historyList");
-    const historyModal = document.getElementById("historyModal");
-    const historyModalTitle = document.getElementById("historyModalTitle");
-    const historyModalBody = document.getElementById("historyModalBody");
-
-    function byId(id) {
-      return document.getElementById(id);
-    }
+    const authScreen = byId("authScreen");
+    const appShell = byId("appShell");
+    const loginForm = byId("loginForm");
+    const registerForm = byId("registerForm");
+    const forgotPasswordForm = byId("forgotPasswordForm");
+    const historyList = byId("historyList");
 
     function money(value) {
       return `R$ ${Number(value || 0).toLocaleString("pt-BR", {
@@ -1195,16 +1135,8 @@
 
     function formatDateTimeBR(value) {
       if (!value) return "Sem data";
-
-      let dt;
-      if (value?.toDate) {
-        dt = value.toDate();
-      } else {
-        dt = new Date(value);
-      }
-
+      const dt = value?.toDate ? value.toDate() : new Date(value);
       if (isNaN(dt.getTime())) return "Sem data";
-
       return `${dt.toLocaleDateString("pt-BR")} às ${dt.toLocaleTimeString("pt-BR", {
         hour: "2-digit",
         minute: "2-digit"
@@ -1244,373 +1176,89 @@
 
     function moveCursorToEnd(input) {
       requestAnimationFrame(() => {
-        const len = input.value.length;
         try {
+          const len = input.value.length;
           input.setSelectionRange(len, len);
         } catch (_) {}
       });
     }
-
     function attachMoneyMask(input) {
       if (!input || input.dataset.maskAttached === "true") return;
 
       input.dataset.maskAttached = "true";
       input.dataset.raw = input.dataset.raw || "";
-      input.placeholder = "0,00";
       input.autocomplete = "off";
-      input.spellcheck = false;
 
       input.addEventListener("keydown", (e) => {
-        const allowed = [
-          "Tab", "Shift", "Control", "Meta", "Alt",
-          "ArrowLeft", "ArrowRight", "ArrowUp", "ArrowDown", "Home", "End"
-        ].includes(e.key);
-
-        if (allowed) return;
-
-        const shortcut = (e.ctrlKey || e.metaKey) && ["a", "c", "v", "x"].includes(e.key.toLowerCase());
-        if (shortcut) return;
-
         if (/^\d$/.test(e.key)) {
           e.preventDefault();
-          setDigitsToInput(input, getDigitsFromInput(input) + e.key);
-          moveCursorToEnd(input);
-          render();
-          return;
-        }
-
-        if (e.key === "Backspace") {
+          input.dataset.raw += e.key;
+        } else if (e.key === "Backspace") {
           e.preventDefault();
-          setDigitsToInput(input, getDigitsFromInput(input).slice(0, -1));
-          moveCursorToEnd(input);
-          render();
+          input.dataset.raw = input.dataset.raw.slice(0, -1);
+        } else {
           return;
         }
 
-        if (e.key === "Delete") {
-          e.preventDefault();
-          setDigitsToInput(input, "");
-          moveCursorToEnd(input);
-          render();
-          return;
-        }
+        const val = Number(input.dataset.raw || 0) / 100;
+        input.value = val.toLocaleString("pt-BR", {
+          minimumFractionDigits: 2
+        });
 
-        e.preventDefault();
-      });
-
-      input.addEventListener("paste", (e) => {
-        e.preventDefault();
-        const pasted = (e.clipboardData || window.clipboardData).getData("text") || "";
-        const digits = pasted.replace(/\D/g, "");
-        setDigitsToInput(input, getDigitsFromInput(input) + digits);
-        moveCursorToEnd(input);
         render();
       });
-
-      input.addEventListener("focus", () => moveCursorToEnd(input));
     }
 
-    function saveRememberedLogin(enabled, email = "") {
-      localStorage.setItem(REMEMBER_LOGIN_STORAGE_KEY, enabled ? "true" : "false");
-      if (enabled) {
-        localStorage.setItem(REMEMBERED_EMAIL_STORAGE_KEY, email);
-      } else {
-        localStorage.removeItem(REMEMBERED_EMAIL_STORAGE_KEY);
-      }
+    function parseMoney(v) {
+      if (!v) return 0;
+      return Number(
+        String(v)
+          .replace(/\./g, "")
+          .replace(",", ".")
+          .replace(/[^\d.-]/g, "")
+      ) || 0;
     }
 
-    function getRememberedLogin() {
-      return localStorage.getItem(REMEMBER_LOGIN_STORAGE_KEY) === "true";
-    }
-
-    function getRememberedEmail() {
-      return localStorage.getItem(REMEMBERED_EMAIL_STORAGE_KEY) || "";
-    }
-
-    function saveActiveUser(user) {
-      localStorage.setItem(ACTIVE_USER_STORAGE_KEY, JSON.stringify(user));
-    }
-
-    function loadActiveUser() {
-      const raw = localStorage.getItem(ACTIVE_USER_STORAGE_KEY);
-      if (!raw) return null;
-      try {
-        return JSON.parse(raw);
-      } catch {
-        return null;
-      }
-    }
-
-    function removeActiveUser() {
-      localStorage.removeItem(ACTIVE_USER_STORAGE_KEY);
-    }
-
-    function setSessionActivity() {
-      if (loadActiveUser()) {
-        localStorage.setItem(SESSION_LAST_ACTIVITY_KEY, String(Date.now()));
-      }
-    }
-
-    function getSessionLastActivity() {
-      return Number(localStorage.getItem(SESSION_LAST_ACTIVITY_KEY) || 0);
-    }
-
-    function isSessionExpired() {
-      const last = getSessionLastActivity();
-      if (!last) return true;
-      return (Date.now() - last) > SESSION_TIMEOUT_MS;
-    }
-
-    function stopSessionWatcher() {
-      if (sessionWatcher) {
-        clearInterval(sessionWatcher);
-        sessionWatcher = null;
-      }
-    }
-
-    function startSessionWatcher() {
-      stopSessionWatcher();
-      sessionWatcher = setInterval(() => {
-        if (loadActiveUser() && isSessionExpired()) {
-          alert("Sessão expirada por inatividade de 30 minutos.");
-          logout();
-        }
-      }, 15000);
-    }
-
-    function bindSessionEvents() {
-      ["click", "touchstart", "keydown", "input", "scroll"].forEach((eventName) => {
-        window.addEventListener(eventName, () => {
-          if (loadActiveUser()) setSessionActivity();
-        }, { passive: true });
-      });
-    }
-
-    function switchTab(mode) {
-      tabLogin?.classList.toggle("active", mode === "login");
-      tabRegister?.classList.toggle("active", mode === "register");
-      tabForgot?.classList.toggle("active", mode === "forgot");
-
-      loginForm?.classList.toggle("hidden", mode !== "login");
-      registerForm?.classList.toggle("hidden", mode !== "register");
-      forgotPasswordForm?.classList.toggle("hidden", mode !== "forgot");
-    }
-
-    function preloadLogin() {
-      const remember = getRememberedLogin();
-      const rememberedEmail = getRememberedEmail();
-
-      const emailInput = byId("loginEmail");
-      const rememberBox = byId("rememberLogin");
-
-      if (rememberBox) rememberBox.checked = remember;
-      if (emailInput && rememberedEmail) emailInput.value = rememberedEmail;
-    }
-
-    function ensureDates() {
-      const t2 = byId("t2_data_fechamento");
-      if (t2 && !t2.value) t2.value = getTodayDateInput();
-    }
-
-    function showApp(user) {
-      if (activeUserName) activeUserName.textContent = user?.name || "Usuário";
-      if (activeUserEmail) activeUserEmail.textContent = user?.email || "";
-      authScreen?.classList.add("hidden");
-      appShell?.classList.remove("hidden");
-      ensureDates();
-      setSessionActivity();
-      startSessionWatcher();
-      render();
-    }
-
-    async function logout() {
-      try {
-        await signOut(auth);
-      } catch (error) {
-        console.error("Erro ao sair:", error);
-      }
-
-      removeActiveUser();
-      localStorage.removeItem(SESSION_LAST_ACTIVITY_KEY);
-      stopSessionWatcher();
-
-      authScreen?.classList.remove("hidden");
-      appShell?.classList.add("hidden");
-      preloadLogin();
-      switchTab("login");
+    function money(v) {
+      return `R$ ${Number(v || 0).toLocaleString("pt-BR", {
+        minimumFractionDigits: 2
+      })}`;
     }
 
     function getValue(id) {
-      const el = byId(id);
-      return el ? parseMoney(el.value) : 0;
+      return parseMoney(document.getElementById(id)?.value);
     }
 
     function getDynamicTotal(turno) {
       let total = 0;
-      document.querySelectorAll(`#${turno}_dynamic_list [data-dynamic-value="true"]`)
-        .forEach(input => total += parseMoney(input.value));
+      document.querySelectorAll(`#${turno}_dynamic_list [data-dynamic-value]`)
+        .forEach(i => total += parseMoney(i.value));
       return total;
     }
 
     function getPendingTotal(turno) {
       let total = 0;
-      document.querySelectorAll(`#${turno}_pending_list [data-pending-value="true"]`)
-        .forEach(input => total += parseMoney(input.value));
+      document.querySelectorAll(`#${turno}_pending_list [data-pending-value]`)
+        .forEach(i => total += parseMoney(i.value));
       return total;
     }
 
-    function calcularSaldoLiquido(turno = {}) {
+    function calcularSaldo(turno) {
       return (
-        (turno.reca || 0) +
-        (turno.suprema || 0) * 400 +
-        (turno.pppoker || 0) * 400 +
-        (turno.buffalo || 0) +
-        (turno.ganamos || 0) -
-        (turno.cargaFichas || 0) -
-        (turno.cargaPoker || 0) -
-        (turno.saidasTotal || 0) -
-        (turno.pendentesTotal || 0)
+        turno.reca +
+        turno.suprema * 400 +
+        turno.pppoker * 400 +
+        turno.buffalo +
+        turno.ganamos -
+        turno.cargaFichas -
+        turno.cargaPoker -
+        turno.saidas -
+        turno.pendentes
       );
     }
 
-    function calcularBaseComparacao(turno = {}) {
-      return (
-        (turno.reca || 0) +
-        (turno.suprema || 0) * 400 +
-        (turno.pppoker || 0) * 400 +
-        (turno.buffalo || 0) +
-        (turno.ganamos || 0) -
-        (turno.cargaFichas || 0) -
-        (turno.cargaPoker || 0) -
-        (turno.pendentesTotal || 0)
-      );
-    }
-
-    function updateStatusPill(diff) {
-      const pill = byId("statusPill");
-      if (!pill) return;
-
-      if (diff > 0) {
-        pill.className = "pill positive";
-        pill.innerHTML = `<span class="dot"></span> Positivo`;
-      } else if (diff < 0) {
-        pill.className = "pill negative";
-        pill.innerHTML = `<span class="dot"></span> Negativo`;
-      } else {
-        pill.className = "pill neutral";
-        pill.innerHTML = `<span class="dot"></span> Sem diferença`;
-      }
-    }
-
-    function createDynamicRow(turno, name = "", digits = "") {
-      const container = byId(`${turno}_dynamic_list`);
-      if (!container) return;
-
-      const row = document.createElement("div");
-      row.className = "dynamic-row outflow";
-      row.innerHTML = `
-        <div class="field">
-          <label>Descrição</label>
-          <input type="text" data-row-name="true" value="${escapeHtml(name)}" placeholder="Ex.: salário, fornecedor">
-        </div>
-        <div class="field">
-          <label>Valor</label>
-          <input type="text" data-dynamic-value="true" placeholder="0,00">
-        </div>
-        <button class="remove-btn red-remove" type="button">✕</button>
-      `;
-
-      container.appendChild(row);
-
-      const valueInput = row.querySelector('[data-dynamic-value="true"]');
-      if (digits) setDigitsToInput(valueInput, digits);
-      attachMoneyMask(valueInput);
-
-      row.querySelector(".remove-btn")?.addEventListener("click", () => {
-        row.remove();
-        render();
-      });
-
-      row.querySelector('[data-row-name="true"]')?.addEventListener("input", render);
-      valueInput?.addEventListener("input", render);
-    }
-
-    function createPendingRow(turno, name = "", digits = "") {
-      const container = byId(`${turno}_pending_list`);
-      if (!container) return;
-
-      const row = document.createElement("div");
-      row.className = "dynamic-row pending";
-      row.innerHTML = `
-        <div class="field">
-          <label>Nome</label>
-          <input type="text" data-row-name="true" value="${escapeHtml(name)}" placeholder="Ex.: cliente">
-        </div>
-        <div class="field">
-          <label>Valor</label>
-          <input type="text" data-pending-value="true" placeholder="0,00">
-        </div>
-        <button class="remove-btn" type="button">✕</button>
-      `;
-
-      container.appendChild(row);
-
-      const valueInput = row.querySelector('[data-pending-value="true"]');
-      if (digits) setDigitsToInput(valueInput, digits);
-      attachMoneyMask(valueInput);
-
-      row.querySelector(".remove-btn")?.addEventListener("click", () => {
-        row.remove();
-        render();
-      });
-
-      row.querySelector('[data-row-name="true"]')?.addEventListener("input", render);
-      valueInput?.addEventListener("input", render);
-    }
-
-    function clearTurn(turno) {
-      [
-        `${turno}_nome_operador`,
-        `${turno}_data_fechamento`,
-        `${turno}_banco`,
-        `${turno}_suprema`,
-        `${turno}_pppoker`,
-        `${turno}_buffalo`,
-        `${turno}_ganamos`,
-        `${turno}_cargas`,
-        `${turno}_cargas_poker`
-      ].forEach((id) => {
-        const input = byId(id);
-        if (!input) return;
-
-        if (id === `${turno}_data_fechamento`) {
-          input.value = getTodayDateInput();
-        } else {
-          input.value = "";
-          input.dataset.raw = "";
-        }
-      });
-
-      const dynamicList = byId(`${turno}_dynamic_list`);
-      const pendingList = byId(`${turno}_pending_list`);
-
-      if (dynamicList) dynamicList.innerHTML = "";
-      if (pendingList) pendingList.innerHTML = "";
-    }
-
-    function serializeTurn(turno) {
-      const outflows = [...document.querySelectorAll(`#${turno}_dynamic_list .dynamic-row`)].map(row => ({
-        name: row.querySelector('[data-row-name="true"]')?.value || "",
-        value: parseMoney(row.querySelector('[data-dynamic-value="true"]')?.value || "")
-      }));
-
-      const pendings = [...document.querySelectorAll(`#${turno}_pending_list .dynamic-row`)].map(row => ({
-        name: row.querySelector('[data-row-name="true"]')?.value || "",
-        value: parseMoney(row.querySelector('[data-pending-value="true"]')?.value || "")
-      }));
-
-      const turnoData = {
-        dataFechamento: byId("t2_data_fechamento")?.value || getTodayDateInput(),
+    function render() {
+      const turno = {
         reca: getValue("t2_banco"),
         suprema: getValue("t2_suprema"),
         pppoker: getValue("t2_pppoker"),
@@ -1618,507 +1266,120 @@
         ganamos: getValue("t2_ganamos"),
         cargaFichas: getValue("t2_cargas"),
         cargaPoker: getValue("t2_cargas_poker") * 400,
-        saidasTotal: outflows.reduce((a, b) => a + b.value, 0),
-        pendentesTotal: pendings.reduce((a, b) => a + b.value, 0),
-        outflows,
-        pendings
+        saidas: getDynamicTotal("t2"),
+        pendentes: getPendingTotal("t2")
       };
 
-      turnoData.saldoLiquido = calcularSaldoLiquido(turnoData);
+      const saldo = calcularSaldo(turno);
 
-      return {
-        nomeOperador: byId("t2_nome_operador")?.value?.trim() || "Sem nome",
-        fechamentoDate: turnoData.dataFechamento,
-        total: turnoData.reca,
-        turno: turnoData,
-        submittedAt: serverTimestamp()
-      };
+      document.getElementById("bankValue").textContent = money(saldo);
+
+      renderCompare();
+      renderRanking();
+      renderChart();
     }
 
-    async function saveHistoryItem(item) {
-      const q = query(collection(db, "history"), orderBy("submittedAt", "desc"), limit(1));
-      const snap = await getDocs(q);
-      const prev = snap.docs[0]?.data();
+    function renderCompare() {
+      if (historyCache.length < 2) return;
 
-      const currentBase = calcularBaseComparacao(item.turno);
-      const prevBase = prev ? calcularBaseComparacao(prev.turno || {}) : 0;
+      const current = historyCache[0].turno;
+      const prev = historyCache[1].turno;
 
-      item.diff = prev ? currentBase - prevBase : 0;
-      item.turnProfit = item.turno.saidasTotal;
-      item.currentSaldoTotal = calcularSaldoLiquido(item.turno);
-      item.retiradaLucro = item.turno.saidasTotal;
+      const systems = [
+        ["Banco", current.reca, prev.reca],
+        ["Suprema", current.suprema, prev.suprema],
+        ["PPPoker", current.pppoker, prev.pppoker],
+        ["Buffalo", current.buffalo, prev.buffalo],
+        ["Ganamos", current.ganamos, prev.ganamos]
+      ];
 
-      await addDoc(collection(db, "history"), item);
-    }
-
-    async function getUsersFromFirestore() {
-      const q = query(collection(db, "users"), orderBy("createdAt", "desc"));
-      const snapshot = await getDocs(q);
-      return snapshot.docs.map((docItem) => ({
-        id: docItem.id,
-        ...docItem.data()
-      }));
-    }
-
-    async function deleteUserDocFromFirestore(uid) {
-      if (!uid) return;
-      await deleteDoc(doc(db, "users", uid));
-    }
-
-    async function renderAdminUsersInline() {
-      const users = await getUsersFromFirestore();
-
-      if (!users.length) {
-        alert("Nenhum usuário encontrado.");
-        return;
-      }
-
-      const lista = users
-        .map((user, index) => `${index + 1}. ${user.name || "Sem nome"} — ${user.email || "Sem email"}`)
-        .join("\n");
-
-      alert(`USUÁRIOS CADASTRADOS\n\n${lista}`);
-    }
-
-    async function openAdminModal() {
-      const code = prompt("Código admin:");
-      if (code === null) return;
-
-      if (code !== ADMIN_CODE) {
-        alert("Código incorreto.");
-        return;
-      }
-
-      const action = prompt(
-        "Painel Admin\n\n1 = Listar usuários\n2 = Excluir usuário por UID\n3 = Reenviar redefinição de senha\n\nDigite a opção:"
-      );
-
-      if (action === "1") {
-        await renderAdminUsersInline();
-        return;
-      }
-
-      if (action === "2") {
-        const uid = prompt("Digite o UID do usuário para excluir da coleção users:");
-        if (!uid) return;
-
-        if (!confirm(`Confirma excluir UID ${uid} da coleção users?`)) return;
-
-        try {
-          await deleteUserDocFromFirestore(uid);
-          alert("Usuário removido da coleção users.");
-        } catch (error) {
-          console.error(error);
-          alert("Erro ao excluir usuário.");
-        }
-        return;
-      }
-
-      if (action === "3") {
-        const email = prompt("Digite o email para enviar redefinição:");
-        if (!email) return;
-
-        try {
-          await sendPasswordResetEmail(auth, email.trim().toLowerCase());
-          alert("Email de redefinição enviado.");
-        } catch (error) {
-          console.error(error);
-          alert("Erro ao enviar redefinição.");
-        }
-      }
-    }
-
-    async function saveEditedHistory() {
-      if (editingHistoryIndex === null) return;
-
-      const item = historyCache[editingHistoryIndex];
-      if (!item) return;
-
-      const currentBaseInput = parseMoney(byId("edit_base_reca")?.value || 0);
-      const currentSupremaInput = parseMoney(byId("edit_base_suprema")?.value || 0);
-      const currentPppokerInput = parseMoney(byId("edit_base_pppoker")?.value || 0);
-      const currentBuffaloInput = parseMoney(byId("edit_base_buffalo")?.value || 0);
-      const currentGanamosInput = parseMoney(byId("edit_base_ganamos")?.value || 0);
-      const currentCargaFichasInput = parseMoney(byId("edit_base_carga_fichas")?.value || 0);
-      const currentCargaPokerInput = parseMoney(byId("edit_base_carga_poker")?.value || 0);
-      const currentSaidasInput = parseMoney(byId("edit_base_saidas")?.value || 0);
-      const currentPendentesInput = parseMoney(byId("edit_base_pendentes")?.value || 0);
-      const currentDateInput = byId("edit_base_data")?.value || item.fechamentoDate || getTodayDateInput();
-      const currentNomeInput = byId("edit_base_nome")?.value?.trim() || item.nomeOperador || "Sem nome";
-
-      const turnoAtualizado = {
-        ...(item.turno || {}),
-        dataFechamento: currentDateInput,
-        reca: currentBaseInput,
-        suprema: currentSupremaInput,
-        pppoker: currentPppokerInput,
-        buffalo: currentBuffaloInput,
-        ganamos: currentGanamosInput,
-        cargaFichas: currentCargaFichasInput,
-        cargaPoker: currentCargaPokerInput * 400,
-        saidasTotal: currentSaidasInput,
-        pendentesTotal: currentPendentesInput
-      };
-
-      turnoAtualizado.saldoLiquido = calcularSaldoLiquido(turnoAtualizado);
-
-      const previousItem = historyCache[editingHistoryIndex + 1] || null;
-      const previousBaseTotal = previousItem
-        ? calcularBaseComparacao(previousItem.turno || {})
-        : 0;
-
-      const baseAtual = calcularBaseComparacao(turnoAtualizado);
-      const diffCaixaEditada = previousItem ? baseAtual - previousBaseTotal : 0;
-
-      try {
-        await updateDoc(doc(db, "history", item.id), {
-          nomeOperador: currentNomeInput,
-          fechamentoDate: currentDateInput,
-          total: currentBaseInput,
-          currentSaldoTotal: turnoAtualizado.saldoLiquido,
-          retiradaLucro: currentSaidasInput,
-          turnProfit: currentSaidasInput,
-          diff: diffCaixaEditada,
-          bankVariation: diffCaixaEditada,
-          turno: turnoAtualizado
-        });
-
-        alert("Histórico atualizado com sucesso.");
-        closeHistoryModal();
-      } catch (error) {
-        console.error(error);
-        alert("Erro ao salvar histórico editado.");
-      }
-    }
-
-    async function deleteHistoryItemByIndex(index) {
-      const item = historyCache[index];
-      if (!item) return;
-
-      const code = prompt("Digite o código interno para excluir este histórico:");
-      if (code === null) return;
-
-      if (code !== DELETE_HISTORY_CODE) {
-        alert("Código incorreto.");
-        return;
-      }
-
-      const ok = confirm(
-        `Confirma excluir o histórico de ${item.nomeOperador || "Sem nome"} em ${formatDateBR(item.fechamentoDate || "")}?`
-      );
-
-      if (!ok) return;
-
-      try {
-        await deleteDoc(doc(db, "history", item.id));
-        alert("Histórico excluído com sucesso.");
-        closeHistoryModal();
-      } catch (error) {
-        console.error(error);
-        alert("Erro ao excluir histórico.");
-      }
-    }
-
-    function openHistoryModal(index) {
-      editingHistoryIndex = index;
-      const item = historyCache[index];
-      if (!item) return;
-
-      const previousItem = historyCache[index + 1] || null;
-      const currentBase = calcularBaseComparacao(item.turno || {});
-      const previousBase = previousItem
-        ? calcularBaseComparacao(previousItem.turno || {})
-        : 0;
-
-      const diffCaixa = previousItem ? currentBase - previousBase : 0;
-      const saldoTotal = calcularSaldoLiquido(item.turno || {});
-      const turno = item.turno || {};
-
-      historyModalTitle.textContent = `Turno: ${item.nomeOperador || "Sem nome"}`;
-      historyModalBody.innerHTML = `
-        <div style="display:grid;gap:10px;">
-          <div class="field">
-            <label>Nome do operador</label>
-            <input id="edit_base_nome" value="${escapeHtml(item.nomeOperador || "")}">
-          </div>
-
-          <div class="field">
-            <label>Data</label>
-            <input id="edit_base_data" type="date" value="${item.fechamentoDate || ""}">
-          </div>
-
-          <div class="modal-grid">
-            <div class="field">
-              <label>Banco Reca</label>
-              <input id="edit_base_reca" value="${Number(turno.reca || 0).toLocaleString("pt-BR", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}">
-            </div>
-
-            <div class="field">
-              <label>Suprema (base)</label>
-              <input id="edit_base_suprema" value="${Number(turno.suprema || 0).toLocaleString("pt-BR", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}">
-            </div>
-
-            <div class="field">
-              <label>PPPoker (base)</label>
-              <input id="edit_base_pppoker" value="${Number(turno.pppoker || 0).toLocaleString("pt-BR", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}">
-            </div>
-
-            <div class="field">
-              <label>Buffalo</label>
-              <input id="edit_base_buffalo" value="${Number(turno.buffalo || 0).toLocaleString("pt-BR", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}">
-            </div>
-
-            <div class="field">
-              <label>Ganamos</label>
-              <input id="edit_base_ganamos" value="${Number(turno.ganamos || 0).toLocaleString("pt-BR", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}">
-            </div>
-
-            <div class="field">
-              <label>Carga Fichas</label>
-              <input id="edit_base_carga_fichas" value="${Number(turno.cargaFichas || 0).toLocaleString("pt-BR", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}">
-            </div>
-
-            <div class="field">
-              <label>Carga Poker (base)</label>
-              <input id="edit_base_carga_poker" value="${Number((turno.cargaPoker || 0) / 400).toLocaleString("pt-BR", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}">
-            </div>
-
-            <div class="field">
-              <label>Saídas</label>
-              <input id="edit_base_saidas" value="${Number(turno.saidasTotal || 0).toLocaleString("pt-BR", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}">
-            </div>
-
-            <div class="field">
-              <label>Pendentes</label>
-              <input id="edit_base_pendentes" value="${Number(turno.pendentesTotal || 0).toLocaleString("pt-BR", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}">
-            </div>
-          </div>
-
-          <div style="display:grid;gap:8px;padding:12px;border:1px solid var(--border);border-radius:16px;background:#f8fafc;">
-            <div><strong>Saldo Líquido Atual:</strong> ${money(saldoTotal)}</div>
-            <div><strong>Diferença Caixa:</strong> ${diffCaixa > 0 ? "+" : diffCaixa < 0 ? "-" : ""}${money(Math.abs(diffCaixa))}</div>
-            <div><strong>Enviado em:</strong> ${formatDateTimeBR(item.submittedAt)}</div>
-          </div>
-
-          <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:8px;">
-            <button id="historyInlineSaveBtn" class="action-btn blue-btn" type="button">
-              <span class="action-title">Salvar Alterações</span>
-            </button>
-            <button id="historyInlineDeleteBtn" class="action-btn" style="background:#fff5f5;color:#dc2626;" type="button">
-              <span class="action-title">Excluir Histórico</span>
-            </button>
-          </div>
-        </div>
-      `;
-
-      [
-        "edit_base_reca",
-        "edit_base_suprema",
-        "edit_base_pppoker",
-        "edit_base_buffalo",
-        "edit_base_ganamos",
-        "edit_base_carga_fichas",
-        "edit_base_carga_poker",
-        "edit_base_saidas",
-        "edit_base_pendentes"
-      ].forEach((id) => {
-        const input = byId(id);
-        if (input) attachMoneyMask(input);
-      });
-
-      byId("historyInlineSaveBtn")?.addEventListener("click", saveEditedHistory);
-      byId("historyInlineDeleteBtn")?.addEventListener("click", () => deleteHistoryItemByIndex(index));
-
-      historyModal?.classList.remove("hidden");
-    }
-
-    function closeHistoryModal() {
-      historyModal?.classList.add("hidden");
-      editingHistoryIndex = null;
-    }
-
-    function renderHistory() {
-      if (!historyList) return;
-
-      if (!historyCache.length) {
-        historyList.innerHTML = `<div class="history-card">Sem histórico</div>`;
-        const bank = byId("bankValue");
-        if (bank) bank.textContent = balanceVisible ? money(0) : "••••";
-        return;
-      }
-
-      historyList.innerHTML = historyCache.map((item, i) => {
-        const prev = historyCache[i + 1];
-        const currentBase = calcularBaseComparacao(item.turno || {});
-        const prevBase = prev ? calcularBaseComparacao(prev.turno || {}) : 0;
-        const diff = prev ? currentBase - prevBase : 0;
+      const html = systems.map(s => {
+        const diff = s[1] - s[2];
+        const cls = diff > 0 ? "up" : diff < 0 ? "down" : "same";
 
         return `
-          <div class="history-card" data-index="${i}">
-            <div class="history-card-title">${formatDateBR(item.fechamentoDate)} - ${escapeHtml(item.nomeOperador)}</div>
-            <div class="history-meta">
-              <span>Banco: ${money(item.total)}</span>
-              <span>Saldo: ${money(calcularSaldoLiquido(item.turno || {}))}</span>
-            </div>
-            <div class="history-highlight ${diff > 0 ? "positive" : diff < 0 ? "negative" : "neutral"}">
-              Dif: ${diff > 0 ? "+" : diff < 0 ? "-" : ""}${money(Math.abs(diff))}
+          <div class="compare-pill">
+            <span class="compare-dot ${cls}"></span>
+            <div>
+              <div class="compare-name">${s[0]}</div>
+              <div class="compare-value">
+                ${money(s[1])} vs ${money(s[2])}
+              </div>
             </div>
           </div>
         `;
       }).join("");
 
-      document.querySelectorAll("[data-index]").forEach(card => {
-        card.onclick = () => openHistoryModal(Number(card.dataset.index));
-      });
-
-      const last = historyCache[0];
-      const bank = byId("bankValue");
-      if (last && bank) {
-        bank.textContent = balanceVisible ? money(last.total) : "••••";
-      }
+      document.getElementById("systemsCompareBar").innerHTML = html;
     }
 
-    function startHistoryRealtimeListener() {
-      if (historyUnsubscribe) {
-        historyUnsubscribe();
-        historyUnsubscribe = null;
-      }
+    function renderRanking() {
+      const ranking = {};
 
-      const q = query(collection(db, "history"), orderBy("submittedAt", "desc"), limit(50));
+      historyCache.forEach(item => {
+        const nome = item.nomeOperador || "Sem nome";
+        const diff = item.diff || 0;
 
-      historyUnsubscribe = onSnapshot(
-        q,
-        (snap) => {
-          historyCache = snap.docs.map(d => ({ id: d.id, ...d.data() }));
-          renderHistory();
-          render();
-        },
-        (error) => {
-          console.error("Erro no listener do histórico:", error);
-          alert("Erro ao carregar histórico em tempo real.");
+        if (!ranking[nome]) {
+          ranking[nome] = {
+            qtd: 0,
+            sobra: 0,
+            falta: 0,
+            saidas: 0
+          };
         }
-      );
-    }
 
-    function getHistoryByDateRange(startDate, endDate) {
-      if (!startDate || !endDate) return historyCache || [];
+        ranking[nome].qtd++;
+        ranking[nome].saidas += item.turno.saidasTotal || 0;
 
-      const start = new Date(`${startDate}T00:00:00`);
-      const end = new Date(`${endDate}T23:59:59`);
-
-      return (historyCache || []).filter((item) => {
-        const baseDate = item?.fechamentoDate || item?.turno?.dataFechamento;
-        if (!baseDate) return false;
-
-        const current = new Date(`${baseDate}T12:00:00`);
-        if (isNaN(current.getTime())) return false;
-
-        return current >= start && current <= end;
+        if (diff > 0) ranking[nome].sobra += diff;
+        if (diff < 0) ranking[nome].falta += Math.abs(diff);
       });
-    }
 
-    function buildSimplePdfHtml(startDate, endDate) {
-      const filtered = getHistoryByDateRange(startDate, endDate);
+      const html = Object.entries(ranking).map(([nome, r]) => `
+        <tr>
+          <td>${nome}</td>
+          <td>${r.qtd}</td>
+          <td class="green">${money(r.sobra)}</td>
+          <td class="red">${money(r.falta)}</td>
+          <td>${money(r.saidas)}</td>
+        </tr>
+      `).join("");
 
-      const linhas = filtered.map((item, index) => {
-        const previousItem = filtered[index + 1] || null;
-        const currentBase = calcularBaseComparacao(item.turno || {});
-        const previousBase = previousItem ? calcularBaseComparacao(previousItem.turno || {}) : 0;
-        const diff = previousItem ? currentBase - previousBase : 0;
-
-        return `
-          <tr>
-            <td>${escapeHtml(item.nomeOperador || "Sem nome")}</td>
-            <td>${escapeHtml(formatDateBR(item.fechamentoDate || ""))}</td>
-            <td>${money(item.total || 0)}</td>
-            <td>${money(item?.turno?.saidasTotal || 0)}</td>
-            <td>${diff > 0 ? "+" : diff < 0 ? "-" : ""}${money(Math.abs(diff))}</td>
-          </tr>
-        `;
-      }).join("");
-
-      return `
-        <!DOCTYPE html>
-        <html lang="pt-BR">
-        <head>
-          <meta charset="UTF-8" />
-          <title>Relatório Bank King</title>
-          <style>
-            body{font-family:Arial,sans-serif;padding:24px;color:#0f172a}
-            h1{margin:0 0 12px}
-            .sub{margin-bottom:20px;color:#475569}
-            table{width:100%;border-collapse:collapse}
-            th,td{border:1px solid #dbe2ea;padding:10px;text-align:left;font-size:13px}
-            th{background:#eff6ff;color:#1d4ed8}
-          </style>
-        </head>
-        <body>
-          <h1>BANK KING</h1>
-          <div class="sub">Período de ${formatDateBR(startDate)} até ${formatDateBR(endDate)}</div>
-          <table>
-            <thead>
-              <tr>
-                <th>Operador</th>
-                <th>Data</th>
-                <th>Banco Reca</th>
-                <th>Saídas</th>
-                <th>Diferença Caixa</th>
-              </tr>
-            </thead>
-            <tbody>
-              ${linhas || `<tr><td colspan="5">Nenhum fechamento encontrado.</td></tr>`}
-            </tbody>
-          </table>
-        </body>
-        </html>
+      document.getElementById("operatorRankingBody").innerHTML = html || `
+        <tr><td colspan="5">Sem dados</td></tr>
       `;
     }
 
-    function openAnalysisMenu() {
-      const menu = byId("reportsMenu");
-      if (!menu) return;
-      menu.classList.toggle("hidden");
+    function renderChart() {
+      const canvas = document.getElementById("performanceChart");
+      if (!canvas) return;
+
+      const ctx = canvas.getContext("2d");
+      canvas.width = canvas.offsetWidth;
+      canvas.height = canvas.offsetHeight;
+
+      ctx.clearRect(0,0,canvas.width,canvas.height);
+
+      const data = historyCache.slice(0,20).reverse().map(i => i.diff || 0);
+      const max = Math.max(...data, 1);
+
+      const w = canvas.width / data.length;
+
+      data.forEach((v,i)=>{
+        const h = (v/max) * canvas.height * 0.8;
+        ctx.fillStyle = v >= 0 ? "#16a34a" : "#dc2626";
+        ctx.fillRect(i*w, canvas.height - h, w*0.6, h);
+      });
     }
 
-    function exportRange(days) {
-      const code = prompt("Digite código interno:");
-      if (code === null) return;
+    async function saveTurn() {
+      const nome = document.getElementById("t2_nome_operador").value.trim();
 
-      if (code !== REPORT_CODE) {
-        alert("Código incorreto.");
+      if (!nome) {
+        alert("Operador obrigatório");
         return;
       }
-
-      const end = new Date();
-      const start = new Date();
-      start.setDate(start.getDate() - days);
-
-      const endOffset = end.getTimezoneOffset();
-      const startOffset = start.getTimezoneOffset();
-
-      const endLocal = new Date(end.getTime() - endOffset * 60000).toISOString().split("T")[0];
-      const startLocal = new Date(start.getTime() - startOffset * 60000).toISOString().split("T")[0];
-
-      const printWindow = window.open("", "_blank", "width=1280,height=900");
-      if (!printWindow) {
-        alert("Não foi possível abrir a janela.");
-        return;
-      }
-
-      printWindow.document.open();
-      printWindow.document.write(buildSimplePdfHtml(startLocal, endLocal));
-      printWindow.document.close();
-      printWindow.focus();
-
-      printWindow.onload = () => {
-        printWindow.print();
-      };
-
-      byId("reportsMenu")?.classList.add("hidden");
-    }
-
-    function render() {
-      ensureDates();
 
       const turno = {
         reca: getValue("t2_banco"),
@@ -2132,248 +1393,57 @@
         pendentesTotal: getPendingTotal("t2")
       };
 
-      const saldo = calcularSaldoLiquido(turno);
+      const saldo = calcularSaldo(turno);
 
-      const elSaldo = byId("saldoLiquido");
-      const elOperador = byId("resOperador");
-      const elData = byId("resData");
+      const item = {
+        nomeOperador: nome,
+        turno,
+        total: turno.reca,
+        saldo,
+        submittedAt: Date.now()
+      };
 
-      if (elSaldo) elSaldo.textContent = money(saldo);
-      if (elOperador) elOperador.textContent = byId("t2_nome_operador")?.value || "-";
-      if (elData) elData.textContent = formatDateBR(byId("t2_data_fechamento")?.value || "");
-
-      const previousItem = historyCache[0] || null;
-      const currentBase = calcularBaseComparacao(turno);
-      const previousBase = previousItem ? calcularBaseComparacao(previousItem.turno || {}) : 0;
-      const diffAtual = previousItem ? currentBase - previousBase : 0;
-
-      updateStatusPill(diffAtual);
-
-      const bank = byId("bankValue");
-      if (!historyCache.length && bank) {
-        bank.textContent = balanceVisible ? money(0) : "••••";
+      if (historyCache.length) {
+        const prev = historyCache[0].turno;
+        const baseNow = calcularSaldo(turno);
+        const basePrev = calcularSaldo(prev);
+        item.diff = baseNow - basePrev;
       }
+
+      await addDoc(collection(db, "history"), item);
+
+      alert("Turno salvo");
+      location.reload();
     }
 
-    onAuthStateChanged(auth, (user) => {
-      if (user) {
-        const userData = {
-          name: user.email?.split("@")[0] || "Usuário",
-          email: user.email,
-          uid: user.uid
-        };
+    function buildPDF() {
+      const html = `
+        <html>
+        <body style="font-family:Arial;padding:24px;">
+          <h2>BANK KING</h2>
+          <p>Relatório</p>
+          ${historyCache.map(i => `
+            <div style="margin-bottom:14px;padding:12px;border:1px solid #ccc;border-radius:10px;">
+              <strong>${i.nomeOperador}</strong><br>
+              Reca: ${money(i.total)}<br>
+              Dif: ${money(i.diff)}
+            </div>
+          `).join("")}
+        </body>
+        </html>
+      `;
 
-        saveActiveUser(userData);
-        showApp(userData);
-        startHistoryRealtimeListener();
-      } else {
-        removeActiveUser();
-        localStorage.removeItem(SESSION_LAST_ACTIVITY_KEY);
-        authScreen?.classList.remove("hidden");
-        appShell?.classList.add("hidden");
+      const w = window.open();
+      w.document.write(html);
+      w.print();
+    }
 
-        if (historyUnsubscribe) {
-          historyUnsubscribe();
-          historyUnsubscribe = null;
-        }
-      }
+    document.getElementById("fecharTurno")?.addEventListener("click", saveTurn);
+
+    document.querySelectorAll("input").forEach(i=>{
+      attachMoneyMask(i);
+      i.addEventListener("input", render);
     });
-
-    tabLogin?.addEventListener("click", () => switchTab("login"));
-    tabRegister?.addEventListener("click", () => switchTab("register"));
-    tabForgot?.addEventListener("click", () => switchTab("forgot"));
-
-    loginForm?.addEventListener("submit", async (e) => {
-      e.preventDefault();
-
-      const email = byId("loginEmail")?.value?.trim().toLowerCase();
-      const password = byId("loginPassword")?.value;
-      const remember = byId("rememberLogin")?.checked || false;
-
-      try {
-        const userCredential = await signInWithEmailAndPassword(auth, email, password);
-        saveRememberedLogin(remember, email);
-
-        const user = {
-          name: userCredential.user.email?.split("@")[0] || "Usuário",
-          email: userCredential.user.email,
-          uid: userCredential.user.uid
-        };
-
-        saveActiveUser(user);
-        showApp(user);
-      } catch (error) {
-        console.error(error);
-        alert("Erro ao fazer login.");
-      }
-    });
-
-    registerForm?.addEventListener("submit", async (e) => {
-      e.preventDefault();
-
-      const name = byId("registerName")?.value?.trim();
-      const email = byId("registerEmail")?.value?.trim().toLowerCase();
-      const password = byId("registerPassword")?.value;
-
-      if (!name || !email || !password) {
-        alert("Preencha todos os campos.");
-        return;
-      }
-
-      try {
-        const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-
-        await setDoc(doc(db, "users", userCredential.user.uid), {
-          uid: userCredential.user.uid,
-          name,
-          email,
-          role: "user",
-          createdAt: serverTimestamp()
-        });
-
-        saveActiveUser({
-          name,
-          email,
-          uid: userCredential.user.uid
-        });
-
-        alert("Usuário registrado com sucesso.");
-        showApp({
-          name,
-          email,
-          uid: userCredential.user.uid
-        });
-      } catch (error) {
-        console.error(error);
-        alert("Erro ao registrar usuário.");
-      }
-    });
-
-    forgotPasswordForm?.addEventListener("submit", async (e) => {
-      e.preventDefault();
-
-      const email = byId("resetEmail")?.value?.trim().toLowerCase();
-      if (!email) {
-        alert("Informe seu email.");
-        return;
-      }
-
-      try {
-        await sendPasswordResetEmail(auth, email);
-        alert("Link enviado para o email.");
-        switchTab("login");
-      } catch (error) {
-        console.error(error);
-        alert("Erro ao enviar redefinição.");
-      }
-    });
-
-    bindSessionEvents();
-    preloadLogin();
-    switchTab("login");
-    ensureDates();
-
-    byId("logoutBtn")?.addEventListener("click", logout);
-
-    byId("toggleBalance")?.addEventListener("click", () => {
-      balanceVisible = !balanceVisible;
-      renderHistory();
-    });
-
-    byId("toggleHistoryBtn")?.addEventListener("click", () => {
-      historyVisible = !historyVisible;
-      historyList?.classList.toggle("hidden", !historyVisible);
-      const btn = byId("toggleHistoryBtn");
-      if (btn) btn.textContent = historyVisible ? "Ocultar" : "Ver";
-    });
-
-    byId("closeHistoryModal")?.addEventListener("click", closeHistoryModal);
-    document.querySelector("#historyModal .modal-backdrop")?.addEventListener("click", closeHistoryModal);
-
-    byId("calcular")?.addEventListener("click", render);
-    byId("menuToggle")?.addEventListener("click", openAnalysisMenu);
-    byId("adminOpenBtn")?.addEventListener("click", openAdminModal);
-
-    byId("limparBtn")?.addEventListener("click", () => {
-      if (!confirm("Deseja limpar o turno atual?")) return;
-      clearTurn("t2");
-      render();
-    });
-
-    byId("fecharTurno")?.addEventListener("click", async (e) => {
-      const btn = e.currentTarget;
-      if (btn.disabled) return;
-
-      const item = serializeTurn("t2");
-
-      if (!item.nomeOperador || item.nomeOperador === "Sem nome") {
-        alert("Digite o operador.");
-        return;
-      }
-
-      if (!item.fechamentoDate) {
-        alert("Informe a data do fechamento.");
-        return;
-      }
-
-      const originalHtml = btn.innerHTML;
-
-      try {
-        btn.disabled = true;
-        btn.textContent = "PROCESSANDO...";
-
-        await saveHistoryItem(item);
-
-        alert("Turno salvo com sucesso.");
-        clearTurn("t2");
-        render();
-      } catch (error) {
-        console.error(error);
-        alert("Erro ao salvar turno.");
-      } finally {
-        btn.disabled = false;
-        btn.innerHTML = originalHtml;
-      }
-    });
-
-    document.querySelectorAll("[data-add-row]").forEach((btn) => {
-      btn.addEventListener("click", () => {
-        createDynamicRow(btn.dataset.addRow);
-        render();
-      });
-    });
-
-    document.querySelectorAll("[data-add-pending]").forEach((btn) => {
-      btn.addEventListener("click", () => {
-        createPendingRow(btn.dataset.addPending);
-        render();
-      });
-    });
-
-    document.querySelectorAll("[data-report-range]").forEach((btn) => {
-      btn.addEventListener("click", () => {
-        exportRange(Number(btn.dataset.reportRange));
-      });
-    });
-
-    [
-      "t2_banco",
-      "t2_suprema",
-      "t2_pppoker",
-      "t2_buffalo",
-      "t2_ganamos",
-      "t2_cargas",
-      "t2_cargas_poker"
-    ].forEach((id) => {
-      const input = byId(id);
-      if (input) {
-        attachMoneyMask(input);
-        input.addEventListener("input", render);
-      }
-    });
-
-    byId("t2_nome_operador")?.addEventListener("input", render);
-    byId("t2_data_fechamento")?.addEventListener("input", render);
 
     render();
   </script>
