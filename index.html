@@ -1209,12 +1209,6 @@
       });
     }
 
-    function money(v) {
-      return `R$ ${Number(v || 0).toLocaleString("pt-BR", {
-        minimumFractionDigits: 2
-      })}`;
-    }
-
     function getValue(id) {
       return parseMoney(document.getElementById(id)?.value);
     }
