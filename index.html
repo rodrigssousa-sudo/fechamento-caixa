@@ -3540,7 +3540,7 @@ tbody tr:nth-child(even) td{
         </tr>
       `).join("");
 
-    const linhas = filtered.map((item, index) => {
+        const linhas = filtered.map((item, index) => {
       const nome = item.nomeOperador || "Sem nome";
       const turno = item.turnoTrabalhado || "-";
       const data = formatDateBR(item.fechamentoDate || "");
@@ -3587,17 +3587,15 @@ tbody tr:nth-child(even) td{
         </tr>
       `;
     }).join("");
-  
-return `
+
+    return `
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8" />
   <title>Relatório Financeiro - Bank King</title>
   <style>
-    *{
-      box-sizing:border-box;
-    }
+    *{ box-sizing:border-box; }
 
     body{
       margin:0;
@@ -3784,62 +3782,6 @@ return `
       border-top:1px solid #e2e8f0;
     }
 
-/* =========================
-   CARD HISTÓRICO PREMIUM
-========================= */
-
-.history-card{
-  background:#ffffff;
-  border-radius:20px;
-  padding:16px;
-  margin-bottom:12px;
-
-  border:1px solid rgba(15,23,42,0.06);
-
-  box-shadow:
-    0 8px 20px rgba(15,23,42,0.06),
-    inset 0 1px 0 rgba(255,255,255,0.9);
-}
-
-.history-title{
-  font-weight:800;
-  font-size:14px;
-  margin-bottom:12px;
-  color:#0f172a;
-}
-
-.history-grid{
-  display:grid;
-  gap:10px;
-}
-
-.history-box{
-  padding:12px;
-  border-radius:14px;
-  background:#f8fafc;
-  border:1px solid rgba(15,23,42,0.04);
-}
-
-.history-label{
-  font-size:11px;
-  color:#64748b;
-  margin-bottom:4px;
-}
-
-.history-value{
-  font-size:16px;
-  font-weight:800;
-  color:#0f172a;
-}
-
-.history-value.positive{
-  color:#16a34a;
-}
-
-.history-value.negative{
-  color:#dc2626;
-}
-
     @media print{
       body{
         background:#fff;
@@ -3961,850 +3903,771 @@ return `
 </body>
 </html>
 `;
-  
-}
-function render() {
-  ensureDates();
-
-  const t1Entradas = getEntradasTotal("t1");
-  const t1Saidas = getDynamicTotal("t1");
-  const t1Pendentes = getPendingTotal("t1");
-
-  const t2Entradas = getEntradasTotal("t2");
-  const t2Saidas = getDynamicTotal("t2");
-  const t2Pendentes = getPendingTotal("t2");
-
-  const turno1Data = {
-    reca: getValue(fieldsByTurn.t1.banco),
-    suprema: getValue(fieldsByTurn.t1.suprema),
-    pppoker: getValue(fieldsByTurn.t1.pppoker),
-    buffalo: getValue(fieldsByTurn.t1.buffalo),
-    ganamos: getValue(fieldsByTurn.t1.ganamos),
-    pendentesTotal: t1Pendentes,
-    saidasTotal: t1Saidas
-  };
-
-  const turno2Data = {
-    reca: getValue(fieldsByTurn.t2.banco),
-    suprema: getValue(fieldsByTurn.t2.suprema),
-    pppoker: getValue(fieldsByTurn.t2.pppoker),
-    buffalo: getValue(fieldsByTurn.t2.buffalo),
-    ganamos: getValue(fieldsByTurn.t2.ganamos),
-    pendentesTotal: t2Pendentes,
-    saidasTotal: t2Saidas
-  };
-const t1Total = calcularSaldoLiquido(turno1Data);
-const t2Total = calcularSaldoLiquido(turno2Data);
-
-const history = historyCache || [];
-const currentItem = history[0] || null;
-const previousItem = history[1] || null;
-
-const previousBaseTotal = previousItem
-  ? calcularBaseComparacao(previousItem.turno || {})
-  : 0;
-
-const currentBaseTotal = currentItem
-  ? calcularBaseComparacao(currentItem.turno || {})
-  : 0;
-
-const diffCaixa = previousItem
-  ? currentBaseTotal - previousBaseTotal
-  : 0;
-
-const ultimoLucroDoTurno = diffCaixa;
-
-const elT1Entradas = document.getElementById("t1_entradas_total");
-const elT1Saidas = document.getElementById("t1_saidas_total");
-const elT1Pendentes = document.getElementById("t1_pendentes_total");
-const elT2Entradas = document.getElementById("t2_entradas_total");
-const elT2Saidas = document.getElementById("t2_saidas_total");
-const elT2Pendentes = document.getElementById("t2_pendentes_total");
-const elTurno1 = document.getElementById("turno1InlineTotal");
-const elTurno2 = document.getElementById("turno2InlineTotal");
-const elTotalT1 = document.getElementById("totalEntradasT1");
-const elLucro = document.getElementById("lucroTotal");
-
-if (elT1Entradas) elT1Entradas.textContent = money(t1Entradas);
-if (elT1Saidas) elT1Saidas.textContent = negativeMoney(t1Saidas);
-if (elT1Pendentes) elT1Pendentes.textContent = negativeMoney(t1Pendentes);
-
-if (elT2Entradas) elT2Entradas.textContent = money(t2Entradas);
-if (elT2Saidas) elT2Saidas.textContent = negativeMoney(t2Saidas);
-if (elT2Pendentes) elT2Pendentes.textContent = negativeMoney(t2Pendentes);
-
-if (elTurno1) elTurno1.textContent = money(t1Total);
-if (elTurno2) elTurno2.textContent = money(t2Total);
-
-if (elTotalT1) elTotalT1.textContent = money(previousBaseTotal);
-
-if (elLucro) {
-  elLucro.textContent = `${diffCaixa < 0 ? "- " : diffCaixa > 0 ? "+ " : ""}${money(Math.abs(diffCaixa))}`;
-  elLucro.classList.remove("blue", "green", "red");
-
-  if (diffCaixa < 0) {
-    elLucro.classList.add("red");
-  } else if (diffCaixa > 0) {
-    elLucro.classList.add("green");
-  } else {
-    elLucro.classList.add("blue");
-  }
-}
-
-  const bancoRecaAtual = Number(
-    getBancoRecaFromSnapshot(historyCache[0]?.turno || {})
-  );
-
-  const bankValueEl = document.getElementById("bankValue");
-  if (bankValueEl) {
-    bankValueEl.textContent = balanceVisible ? money(bancoRecaAtual) : "••••••";
   }
 
-  updateEyeIcon();
-  updateStatusPill(ultimoLucroDoTurno);
-  renderSystemsCompare();
-}
+  function render() {
+    ensureDates();
 
-/* =======================================================
-   🔥 FUNÇÃO AUXILIAR (PEGAR VALOR PELO NOME)
-======================================================= */
-function getEntryValueByName(snapshot, entryName){
-  return Number(
-    (snapshot?.entries || []).find((item) => item.name === entryName)?.value || 0
-  );
-}
+    const t1Entradas = getEntradasTotal("t1");
+    const t1Saidas = getDynamicTotal("t1");
+    const t1Pendentes = getPendingTotal("t1");
 
+    const t2Entradas = getEntradasTotal("t2");
+    const t2Saidas = getDynamicTotal("t2");
+    const t2Pendentes = getPendingTotal("t2");
 
-/* =======================================================
-   🔥 COMPARATIVO ENTRE TURNOS
-======================================================= */
-function renderSystemsCompare(){
-  const bar = document.getElementById("systemsCompareBar");
-  const info = document.getElementById("systemsCompareInfo");
+    const turno1Data = {
+      reca: getValue(fieldsByTurn.t1.banco),
+      suprema: getValue(fieldsByTurn.t1.suprema),
+      pppoker: getValue(fieldsByTurn.t1.pppoker),
+      buffalo: getValue(fieldsByTurn.t1.buffalo),
+      ganamos: getValue(fieldsByTurn.t1.ganamos),
+      cargaFichas: getValue(fieldsByTurn.t1.cargas),
+      cargaPoker: getValue(fieldsByTurn.t1.cargasPoker) * 400,
+      pendentesTotal: t1Pendentes,
+      saidasTotal: t1Saidas
+    };
 
-  if(!bar || !info) return;
+    const turno2Data = {
+      reca: getValue(fieldsByTurn.t2.banco),
+      suprema: getValue(fieldsByTurn.t2.suprema),
+      pppoker: getValue(fieldsByTurn.t2.pppoker),
+      buffalo: getValue(fieldsByTurn.t2.buffalo),
+      ganamos: getValue(fieldsByTurn.t2.ganamos),
+      cargaFichas: getValue(fieldsByTurn.t2.cargas),
+      cargaPoker: getValue(fieldsByTurn.t2.cargasPoker) * 400,
+      pendentesTotal: t2Pendentes,
+      saidasTotal: t2Saidas
+    };
 
-  const current = historyCache[0]?.turno || null;
-  const previous = historyCache[1]?.turno || null;
+    const t1Total = calcularSaldoLiquido(turno1Data);
+    const t2Total = calcularSaldoLiquido(turno2Data);
 
-  if(!current || !previous){
-    info.textContent = "Ainda não há dois fechamentos para comparar.";
-    bar.innerHTML = `<div class="history-empty">Faça pelo menos dois fechamentos.</div>`;
-    return;
-  }
+    const history = historyCache || [];
+    const currentItem = history[0] || null;
+    const previousItem = history[1] || null;
 
-  const systems = [
-    { label: "Banco Reca", key: "Banco Reca" },
-    { label: "PPPoker", key: "PPPoker (x400)" },
-    { label: "Suprema", key: "Suprema (x400)" },
-    { label: "Buffalo", key: "Buffalo" },
-    { label: "Ganamos", key: "Ganamos" },
-    { label: "Carga de Fichas", key: "Carga de Fichas" },
-    { label: "Cargas F. Poker", key: "Cargas F. Poker (x400)" }
-  ];
+    const previousBaseTotal = previousItem
+      ? calcularBaseComparacao(previousItem.turno || {})
+      : 0;
 
-  info.textContent = "Último fechamento vs anterior";
+    const currentBaseTotal = currentItem
+      ? calcularBaseComparacao(currentItem.turno || {})
+      : 0;
 
-  bar.innerHTML = systems.map((system) => {
-    const currentValue = getEntryValueByName(current, system.key);
-    const previousValue = getEntryValueByName(previous, system.key);
-    const diff = currentValue - previousValue;
+    const diffCaixa = previousItem
+      ? currentBaseTotal - previousBaseTotal
+      : 0;
 
-    let statusClass = "same";
-    let statusText = "Sem alteração";
+    const elT1Entradas = document.getElementById("t1_entradas_total");
+    const elT1Saidas = document.getElementById("t1_saidas_total");
+    const elT1Pendentes = document.getElementById("t1_pendentes_total");
+    const elT2Entradas = document.getElementById("t2_entradas_total");
+    const elT2Saidas = document.getElementById("t2_saidas_total");
+    const elT2Pendentes = document.getElementById("t2_pendentes_total");
+    const elTurno1 = document.getElementById("turno1InlineTotal");
+    const elTurno2 = document.getElementById("turno2InlineTotal");
+    const elTotalT1 = document.getElementById("totalEntradasT1");
+    const elLucro = document.getElementById("lucroTotal");
 
-    if(diff > 0){
-      statusClass = "up";
-      statusText = `Subiu ${money(diff)}`;
-    }else if(diff < 0){
-      statusClass = "down";
-      statusText = `Caiu ${money(Math.abs(diff))}`;
+    if (elT1Entradas) elT1Entradas.textContent = money(t1Entradas);
+    if (elT1Saidas) elT1Saidas.textContent = negativeMoney(t1Saidas);
+    if (elT1Pendentes) elT1Pendentes.textContent = negativeMoney(t1Pendentes);
+
+    if (elT2Entradas) elT2Entradas.textContent = money(t2Entradas);
+    if (elT2Saidas) elT2Saidas.textContent = negativeMoney(t2Saidas);
+    if (elT2Pendentes) elT2Pendentes.textContent = negativeMoney(t2Pendentes);
+
+    if (elTurno1) elTurno1.textContent = money(t1Total);
+    if (elTurno2) elTurno2.textContent = money(t2Total);
+
+    if (elTotalT1) elTotalT1.textContent = money(previousBaseTotal);
+
+    if (elLucro) {
+      elLucro.textContent = `${diffCaixa < 0 ? "- " : diffCaixa > 0 ? "+ " : ""}${money(Math.abs(diffCaixa))}`;
+      elLucro.classList.remove("blue", "green", "red");
+
+      if (diffCaixa < 0) {
+        elLucro.classList.add("red");
+      } else if (diffCaixa > 0) {
+        elLucro.classList.add("green");
+      } else {
+        elLucro.classList.add("blue");
+      }
+
+      const label = diffCaixa > 0 ? "Entrada" : diffCaixa < 0 ? "Saída" : "Equilibrado";
+      elLucro.setAttribute("data-label", label);
     }
 
-    return `
-      <div class="system-pill">
-        <span class="system-dot ${statusClass}"></span>
-        <div class="system-pill-text">
-          <div class="system-pill-name">${escapeHtml(system.label)}</div>
-          <div class="system-pill-value">${statusText}</div>
+    const bancoRecaAtual = Number(
+      getBancoRecaFromSnapshot(historyCache[0]?.turno || {})
+    );
+
+    const bankValueEl = document.getElementById("bankValue");
+    if (bankValueEl) {
+      bankValueEl.textContent = balanceVisible ? money(bancoRecaAtual) : "••••••";
+    }
+
+    updateEyeIcon();
+    updateStatusPill(diffCaixa);
+    renderSystemsCompare();
+  }
+
+  function getEntryValueByName(snapshot, entryName) {
+    return Number(
+      (snapshot?.entries || []).find((item) => item.name === entryName)?.value || 0
+    );
+  }
+
+  function renderSystemsCompare() {
+    const bar = document.getElementById("systemsCompareBar");
+    const info = document.getElementById("systemsCompareInfo");
+
+    if (!bar || !info) return;
+
+    const current = historyCache[0]?.turno || null;
+    const previous = historyCache[1]?.turno || null;
+
+    if (!current || !previous) {
+      info.textContent = "Ainda não há dois fechamentos para comparar.";
+      bar.innerHTML = `<div class="history-empty">Faça pelo menos dois fechamentos.</div>`;
+      return;
+    }
+
+    const systems = [
+      { label: "Banco Reca", key: "Banco Reca" },
+      { label: "PPPoker", key: "PPPoker (x400)" },
+      { label: "Suprema", key: "Suprema (x400)" },
+      { label: "Buffalo", key: "Buffalo" },
+      { label: "Ganamos", key: "Ganamos" },
+      { label: "Carga de Fichas", key: "Carga de Fichas" },
+      { label: "Cargas F. Poker", key: "Cargas F. Poker (x400)" }
+    ];
+
+    info.textContent = "Último fechamento vs anterior";
+
+    bar.innerHTML = systems.map((system) => {
+      const currentValue = getEntryValueByName(current, system.key);
+      const previousValue = getEntryValueByName(previous, system.key);
+      const diff = currentValue - previousValue;
+
+      let statusClass = "same";
+      let statusText = "Sem alteração";
+
+      if (diff > 0) {
+        statusClass = "up";
+        statusText = `Subiu ${money(diff)}`;
+      } else if (diff < 0) {
+        statusClass = "down";
+        statusText = `Caiu ${money(Math.abs(diff))}`;
+      }
+
+      return `
+        <div class="system-pill">
+          <span class="system-dot ${statusClass}"></span>
+          <div class="system-pill-text">
+            <div class="system-pill-name">${escapeHtml(system.label)}</div>
+            <div class="system-pill-value">${statusText}</div>
+          </div>
         </div>
-      </div>
-    `;
-  }).join("");
-}
+      `;
+    }).join("");
+  }
 
-function renderHistoryModalContent(item, editMode = false){
-  const turno = item.turno || {};
+  function renderHistoryModalContent(item, editMode = false) {
+    const history = historyCache || [];
+    const index = editingHistoryIndex ?? history.findIndex((h) => h.id === item.id);
+    const previousItem = history[index + 1] || null;
+    const turno = item.turno || {};
 
-  document.getElementById("historyModalTitle").textContent =
-    `Fechamento • ${item.nomeOperador || "Sem nome"} • Turno ${item.turnoTrabalhado || "-"}`;
+    const previousBaseTotal = previousItem
+      ? calcularBaseComparacao(previousItem.turno || {})
+      : 0;
 
-  document.getElementById("historyModalSub").textContent =
-    `Data do fechamento: ${formatDateBR(item.fechamentoDate || "")} • Enviado em: ${formatDateTimeBR(item.submittedAt)}`;
+    const baseTotalAtual = calcularBaseComparacao(item.turno || {});
 
-  const entriesHtml = (turno.entries || []).map((entry, i) => {
-    if(editMode){
+    const diferencaAtual = !previousItem
+      ? 0
+      : baseTotalAtual - previousBaseTotal;
+
+    document.getElementById("historyModalTitle").textContent =
+      `Fechamento • ${item.nomeOperador || "Sem nome"} • Turno ${item.turnoTrabalhado || "-"}`;
+
+    document.getElementById("historyModalSub").textContent =
+      `Data do fechamento: ${formatDateBR(item.fechamentoDate || "")} • Enviado em: ${formatDateTimeBR(item.submittedAt)}`;
+
+    const entriesHtml = (turno.entries || []).map((entry, i) => {
+      let displayValue = Number(entry.value || 0);
+
+      if (
+        entry.name === "PPPoker (x400)" ||
+        entry.name === "Suprema (x400)" ||
+        entry.name === "Cargas F. Poker (x400)"
+      ) {
+        displayValue = displayValue / 400;
+      }
+
+      if (editMode) {
+        return `
+          <div class="modal-line">
+            <span>${escapeHtml(entry.name || "-")}</span>
+            <input
+              type="text"
+              data-edit-entry="${i}"
+              value="${Number(displayValue).toFixed(2).replace(".", ",")}"
+              style="max-width:140px; min-height:38px; border-radius:10px; border:1px solid rgba(148,163,184,.2); padding:8px 10px;"
+            />
+          </div>
+        `;
+      }
+
       return `
         <div class="modal-line">
           <span>${escapeHtml(entry.name || "-")}</span>
-          <input
-            type="text"
-            data-edit-entry="${i}"
-            value="${Number(entry.value || 0).toFixed(2).replace(".", ",")}"
-            style="max-width:140px; min-height:38px; border-radius:10px; border:1px solid rgba(148,163,184,.2); padding:8px 10px;"
-          />
+          <strong>${money(entry.value || 0)}</strong>
         </div>
       `;
-    }
+    }).join("") || `<div class="modal-line"><span>Sem registros</span><strong>$ 0,00</strong></div>`;
 
-    return `
-      <div class="modal-line">
-        <span>${escapeHtml(entry.name || "-")}</span>
-        <strong>${money(entry.value || 0)}</strong>
-      </div>
-    `;
-  }).join("") || `<div class="modal-line"><span>Sem registros</span><strong>$ 0,00</strong></div>`;
-
-  const outflowsHtml = (turno.outflows || []).map((entry, i) => {
-    if(editMode){
-      return `
-        <div class="modal-line negative">
-          <input
-            type="text"
-            data-edit-outflow-name="${i}"
-            value="${escapeHtml(entry.name || "")}"
-            style="flex:1; min-height:38px; border-radius:10px; border:1px solid rgba(148,163,184,.2); padding:8px 10px;"
-          />
-          <input
-            type="text"
-            data-edit-outflow-value="${i}"
-            value="${Number(entry.value || 0).toFixed(2).replace(".", ",")}"
-            style="max-width:140px; min-height:38px; border-radius:10px; border:1px solid rgba(148,163,184,.2); padding:8px 10px;"
-          />
-        </div>
-      `;
-    }
-
-    return `
-      <div class="modal-line negative">
-        <span>${escapeHtml(entry.name || "-")}</span>
-        <strong>${negativeMoney(entry.value || 0)}</strong>
-      </div>
-    `;
-  }).join("") || `<div class="modal-line"><span>Sem registros</span><strong>$ 0,00</strong></div>`;
-
-  const pendingsHtml = (turno.pendings || []).map((entry, i) => {
-    if(editMode){
-      return `
-        <div class="modal-line negative">
-          <input
-            type="text"
-            data-edit-pending-name="${i}"
-            value="${escapeHtml(entry.name || "")}"
-            style="flex:1; min-height:38px; border-radius:10px; border:1px solid rgba(148,163,184,.2); padding:8px 10px;"
-          />
-          <input
-            type="text"
-            data-edit-pending-value="${i}"
-            value="${Number(entry.value || 0).toFixed(2).replace(".", ",")}"
-            style="max-width:140px; min-height:38px; border-radius:10px; border:1px solid rgba(148,163,184,.2); padding:8px 10px;"
-          />
-        </div>
-      `;
-    }
-
-    return `
-      <div class="modal-line negative">
-        <span>${escapeHtml(entry.name || "-")}</span>
-        <strong>${negativeMoney(entry.value || 0)}</strong>
-      </div>
-    `;
-  }).join("") || `<div class="modal-line"><span>Sem registros</span><strong>$ 0,00</strong></div>`;
-
-  document.getElementById("historyModalBody").innerHTML = `
-    <div class="modal-summary-grid">
-      <div class="modal-summary-card">
-        <div class="modal-summary-label">Total do fechamento</div>
-        <div class="modal-summary-value">${money(item.total || 0)}</div>
-      </div>
-      <div class="modal-summary-card">
-        <div class="modal-summary-label">Diferença Caixa</div>
-        <div class="history-mini-value ${(item.turnProfit || 0) < 0 ? "red" : ""}">${money(item.turnProfit || 0)}</div>
-      </div>
-      <div class="modal-summary-card">
-        <div class="modal-summary-label">Responsável</div>
- <div class="modal-summary-value">${escapeHtml(item.nomeOperador || "-")}
-</div>
-      </div>
-      <div class="modal-summary-card">
-        <div class="modal-summary-label">Data</div>
-        ${
-          editMode
-            ? `<input id="editFechamentoDate" type="date" value="${item.fechamentoDate || ""}" style="width:100%; min-height:38px; border-radius:10px; border:1px solid rgba(148,163,184,.2); padding:8px 10px;" />`
-            : `<div class="modal-summary-value">${escapeHtml(formatDateBR(item.fechamentoDate || ""))}</div>`
-        }
-      </div>
-    </div>
-
-    <div class="modal-turnos-grid">
-      <div class="modal-panel">
-        <div class="modal-panel-head"><h4>Entradas</h4></div>
-        <div class="modal-panel-body">
-          <div>
-            <div class="modal-block-title">Detalhamento</div>
-            ${entriesHtml}
-          </div>
-        </div>
-      </div>
-
-      <div class="modal-panel">
-        <div class="modal-panel-head"><h4>Saídas e Pendentes</h4></div>
-        <div class="modal-panel-body">
-          <div>
-            <div class="modal-block-title">Saídas</div>
-            ${outflowsHtml}
-          </div>
-
-          <div>
-            <div class="modal-block-title">Pendentes</div>
-            ${pendingsHtml}
-          </div>
-        </div>
-      </div>
-    </div>
-  `;
-}
-
-async function saveEditedHistory() {
-  if (editingHistoryIndex === null) return;
-
-  const item = historyCache[editingHistoryIndex];
-  if (!item) return;
-
-  const turno = item.turno || {};
-  const history = historyCache || [];
-  const index = editingHistoryIndex;
-
-  const updatedEntries = (turno.entries || []).map((entry, i) => {
-    const input = document.querySelector(`[data-edit-entry="${i}"]`);
-    let value = parseMoneyInput(input?.value || 0);
-
-    if (
-      entry.name === "PPPoker (x400)" ||
-      entry.name === "Suprema (x400)" ||
-      entry.name === "Cargas F. Poker (x400)"
-    ) {
-      value = value * 400;
-    }
-
-    return {
-      ...entry,
-      value
-    };
-  });
-
-  const updatedOutflows = (turno.outflows || []).map((entry, i) => {
-    const nameInput = document.querySelector(`[data-edit-outflow-name="${i}"]`);
-    const valueInput = document.querySelector(`[data-edit-outflow-value="${i}"]`);
-
-    return {
-      name: nameInput?.value || "",
-      value: parseMoneyInput(valueInput?.value || 0)
-    };
-  });
-
-  const updatedPendings = (turno.pendings || []).map((entry, i) => {
-    const nameInput = document.querySelector(`[data-edit-pending-name="${i}"]`);
-    const valueInput = document.querySelector(`[data-edit-pending-value="${i}"]`);
-
-    return {
-      name: nameInput?.value || "",
-      value: parseMoneyInput(valueInput?.value || 0)
-    };
-  });
-
-  const entradasTotal = updatedEntries.reduce((acc, item) => acc + Number(item.value || 0), 0);
-  const saidasTotal = updatedOutflows.reduce((acc, item) => acc + Number(item.value || 0), 0);
-  const pendentesTotal = updatedPendings.reduce((acc, item) => acc + Number(item.value || 0), 0);
-
-  const fechamentoDate =
-    document.getElementById("editFechamentoDate")?.value ||
-    item.fechamentoDate ||
-    getTodayDateInput();
-
-  const turnoAtualizado = {
-    ...turno,
-    dataFechamento: fechamentoDate,
-    entries: updatedEntries,
-    outflows: updatedOutflows,
-    pendings: updatedPendings,
-    entradasTotal,
-    saidasTotal,
-    pendentesTotal
-  };
-
-const saldoLiquido = calcularSaldoLiquido(turnoAtualizado);
-turnoAtualizado.saldoLiquido = saldoLiquido;
-
-const baseAtual = calcularBaseComparacao(turnoAtualizado);
-
-const previousItem = history[index + 1] || null;
-
-const previousBaseTotal = previousItem
-  ? calcularBaseComparacao(previousItem.turno || {})
-  : 0;
-
-const diffCaixaEditada = !previousItem
-  ? 0
-  : baseAtual - previousBaseTotal;
-  try {
-    await updateDoc(doc(db, "history", item.id), {
-      fechamentoDate,
-      total: updatedEntries.find((e) => e.name === "Banco Reca")?.value || 0,
-      currentSaldoTotal: saldoLiquido,
-      retiradaLucro: saidasTotal,
-      turnProfit: saidasTotal,
-      diff: diffCaixaEditada,
-      bankVariation: diffCaixaEditada,
-      turno: turnoAtualizado
-    });
-
-    historyEditMode = false;
-    editingHistoryIndex = null;
-
-    document.getElementById("editHistoryBtn").classList.remove("hidden");
-    document.getElementById("saveHistoryBtn").classList.add("hidden");
-
-    alert("Histórico atualizado com sucesso.");
-  } catch (e) {
-    console.error("Erro ao salvar histórico editado:", e);
-    alert("Erro ao salvar");
-  }
-}
-
-    async function openAdminModal(){
-      const code = prompt("Digite código interno:");
-      if(code === null) return;
-
-      if(code !== ADMIN_CODE){
-        alert("Código interno incorreto.");
-        return;
-      }
-
-      await renderAdminUsers();
-      document.getElementById("adminModal").classList.remove("hidden");
-      requestAnimationFrame(() => document.getElementById("adminSearchInput").focus());
-    }
-
-    function closeAdminModal(){
-      document.getElementById("adminModal").classList.add("hidden");
-      document.getElementById("adminSearchInput").value = "";
-    }
-
-    async function renderAdminUsers(){
-      const users = await getUsersFromFirestore();
-      const term = document.getElementById("adminSearchInput").value.trim().toLowerCase();
-
-      const filtered = users.filter((user) => {
-        const name = String(user?.name || "").toLowerCase();
-        const email = String(user?.email || "").toLowerCase();
-        return !term || name.includes(term) || email.includes(term);
-      });
-
-      const adminUsersList = document.getElementById("adminUsersList");
-
-      if(!filtered.length){
-        adminUsersList.innerHTML = `<div class="admin-empty">Nenhum usuário encontrado.</div>`;
-        return;
-      }
-
-      adminUsersList.innerHTML = filtered.map((user) => {
+    const outflowsHtml = (turno.outflows || []).map((entry, i) => {
+      if (editMode) {
         return `
-          <div class="admin-user-card">
-            <div class="admin-user-top">
-              <div>
-                <div class="admin-user-name">${escapeHtml(user.name || "Sem nome")}</div>
-                <div class="admin-user-email">${escapeHtml(user.email || "Sem email")}</div>
-              </div>
-              <div class="admin-user-badge">${escapeHtml(user.role || "user")}</div>
-            </div>
-
-            <div class="admin-actions">
-              <button class="admin-action-btn admin-view-btn" type="button" data-admin-view="${user.id}">👁 Ver</button>
-              <button class="admin-action-btn admin-reset-btn" type="button" data-admin-reset="${user.email}">🔒 Resetar senha</button>
-              <button class="admin-action-btn admin-delete-btn" type="button" data-admin-delete="${user.id}">🗑 Excluir</button>
-            </div>
-
-            <div class="admin-inline-details" id="adminDetails_${user.id}">
-              <div class="admin-inline-line"><span>Nome</span><strong>${escapeHtml(user.name || "-")}</strong></div>
-              <div class="admin-inline-line"><span>Email</span><strong>${escapeHtml(user.email || "-")}</strong></div>
-              <div class="admin-inline-line"><span>UID</span><strong>${escapeHtml(user.uid || "-")}</strong></div>
-              <div class="admin-inline-line"><span>Perfil</span><strong>${escapeHtml(user.role || "user")}</strong></div>
-            </div>
+          <div class="modal-line negative">
+            <input
+              type="text"
+              data-edit-outflow-name="${i}"
+              value="${escapeHtml(entry.name || "")}"
+              style="flex:1; min-height:38px; border-radius:10px; border:1px solid rgba(148,163,184,.2); padding:8px 10px;"
+            />
+            <input
+              type="text"
+              data-edit-outflow-value="${i}"
+              value="${Number(entry.value || 0).toFixed(2).replace(".", ",")}"
+              style="max-width:140px; min-height:38px; border-radius:10px; border:1px solid rgba(148,163,184,.2); padding:8px 10px;"
+            />
           </div>
         `;
-      }).join("");
+      }
 
-      bindAdminActions();
-    }
+      return `
+        <div class="modal-line negative">
+          <span>${escapeHtml(entry.name || "-")}</span>
+          <strong>${negativeMoney(entry.value || 0)}</strong>
+        </div>
+      `;
+    }).join("") || `<div class="modal-line"><span>Sem registros</span><strong>$ 0,00</strong></div>`;
 
-    function bindAdminActions(){
-      document.querySelectorAll("[data-admin-view]").forEach((btn) => {
-        btn.addEventListener("click", () => {
-          const id = btn.dataset.adminView;
-          const box = document.getElementById(`adminDetails_${id}`);
-          if(box) box.classList.toggle("show");
-        });
-      });
+    const pendingsHtml = (turno.pendings || []).map((entry, i) => {
+      if (editMode) {
+        return `
+          <div class="modal-line negative">
+            <input
+              type="text"
+              data-edit-pending-name="${i}"
+              value="${escapeHtml(entry.name || "")}"
+              style="flex:1; min-height:38px; border-radius:10px; border:1px solid rgba(148,163,184,.2); padding:8px 10px;"
+            />
+            <input
+              type="text"
+              data-edit-pending-value="${i}"
+              value="${Number(entry.value || 0).toFixed(2).replace(".", ",")}"
+              style="max-width:140px; min-height:38px; border-radius:10px; border:1px solid rgba(148,163,184,.2); padding:8px 10px;"
+            />
+          </div>
+        `;
+      }
 
-      document.querySelectorAll("[data-admin-reset]").forEach((btn) => {
-        btn.addEventListener("click", async () => {
-          const email = btn.dataset.adminReset;
-          if(!email) return;
+      return `
+        <div class="modal-line negative">
+          <span>${escapeHtml(entry.name || "-")}</span>
+          <strong>${negativeMoney(entry.value || 0)}</strong>
+        </div>
+      `;
+    }).join("") || `<div class="modal-line"><span>Sem registros</span><strong>$ 0,00</strong></div>`;
 
-          const confirmacao = confirm(`Enviar email de redefinição de senha para ${email}?`);
-          if(!confirmacao) return;
+    document.getElementById("historyModalBody").innerHTML = `
+      <div class="modal-summary-grid">
+        <div class="modal-summary-card">
+          <div class="modal-summary-label">Saldo (RECA)</div>
+          <div class="modal-summary-value">${money(item.total || 0)}</div>
+        </div>
 
-          try {
-            await sendPasswordResetEmail(auth, email);
-            alert("Email de redefinição enviado com sucesso.");
-          } catch (error) {
-            console.error("Erro ao enviar redefinição:", error);
-            alert("Não foi possível enviar o email de redefinição.");
+        <div class="modal-summary-card">
+          <div class="modal-summary-label">Saldo Total Turno</div>
+          <div class="modal-summary-value">${money(calcularSaldoLiquido(item.turno || {}))}</div>
+        </div>
+
+        <div class="modal-summary-card">
+          <div class="modal-summary-label">Diferença Real de Caixa</div>
+          <div class="history-mini-value ${(diferencaAtual || 0) < 0 ? "red" : (diferencaAtual || 0) > 0 ? "green" : ""}">
+            ${(diferencaAtual || 0) > 0 ? "+ " : (diferencaAtual || 0) < 0 ? "- " : ""}
+            ${money(Math.abs(diferencaAtual || 0))}
+          </div>
+        </div>
+
+        <div class="modal-summary-card">
+          <div class="modal-summary-label">Responsável</div>
+          <div class="modal-summary-value">${escapeHtml(item.nomeOperador || "-")}</div>
+        </div>
+
+        <div class="modal-summary-card">
+          <div class="modal-summary-label">Data</div>
+          ${
+            editMode
+              ? `<input id="editFechamentoDate" type="date" value="${item.fechamentoDate || ""}" style="width:100%; min-height:38px; border-radius:10px; border:1px solid rgba(148,163,184,.2); padding:8px 10px;" />`
+              : `<div class="modal-summary-value">${escapeHtml(formatDateBR(item.fechamentoDate || ""))}</div>`
           }
-        });
-      });
+        </div>
+      </div>
 
-      document.querySelectorAll("[data-admin-delete]").forEach((btn) => {
-        btn.addEventListener("click", async () => {
-          const uid = btn.dataset.adminDelete;
+      <div class="modal-turnos-grid">
+        <div class="modal-panel">
+          <div class="modal-panel-head"><h4>Entradas</h4></div>
+          <div class="modal-panel-body">
+            <div>
+              <div class="modal-block-title">Detalhamento</div>
+              ${entriesHtml}
+            </div>
+          </div>
+        </div>
 
-          if (!uid) {
-            alert("ID do usuário inválido.");
-            return;
-          }
+        <div class="modal-panel">
+          <div class="modal-panel-head"><h4>Saídas e Pendentes</h4></div>
+          <div class="modal-panel-body">
+            <div>
+              <div class="modal-block-title">Saídas</div>
+              ${outflowsHtml}
+            </div>
 
-          const confirmacao = confirm("Confirma a exclusão deste usuário?");
-          if (!confirmacao) return;
-
-          try {
-            await deleteUserDocFromFirestore(uid);
-            await renderAdminUsers();
-            alert("Usuário removido da coleção 'users' com sucesso.\n(A conta no Firebase Auth NÃO foi excluída)");
-          } catch (error) {
-            console.error("Erro ao excluir usuário:", error);
-            alert("Erro ao excluir usuário. Verifique o console.");
-          }
-        });
-      });
-    }
-
-    onAuthStateChanged(auth, (user) => {
-      if (user) {
-        const userData = {
-          name: user.email?.split("@")[0] || "Usuário",
-          email: user.email,
-          uid: user.uid
-        };
-
-        saveActiveUser(userData);
-        showApp(userData);
-      } else {
-        removeActiveUser();
-        localStorage.removeItem(SESSION_LAST_ACTIVITY_KEY);
-        authScreen.classList.remove("hidden");
-        appShell.classList.add("hidden");
-      }
-    });
-
-    document.getElementById("tabLogin").addEventListener("click", () => switchTab("login"));
-    document.getElementById("tabRegister").addEventListener("click", () => switchTab("register"));
-    document.getElementById("tabForgot").addEventListener("click", () => switchTab("forgot"));
-
-    loginForm.addEventListener("submit", async (e) => {
-      e.preventDefault();
-      const email = document.getElementById("loginEmail").value.trim().toLowerCase();
-      const password = document.getElementById("loginPassword").value;
-      const remember = rememberLoginCheckbox.checked;
-
-      try {
-        const userCredential = await signInWithEmailAndPassword(auth, email, password);
-
-        saveRememberedLogin(remember, email);
-
-        const user = {
-          name: userCredential.user.email?.split("@")[0] || "Usuário",
-          email: userCredential.user.email,
-          uid: userCredential.user.uid
-        };
-
-        saveActiveUser(user);
-        showApp(user);
-      } catch (error) {
-        console.error("Erro ao fazer login:", error);
-
-        if (
-          error.code === "auth/invalid-credential" ||
-          error.code === "auth/user-not-found" ||
-          error.code === "auth/wrong-password" ||
-          error.code === "auth/invalid-login-credentials"
-        ) {
-          alert("Email ou senha incorretos.");
-        } else if (error.code === "auth/invalid-email") {
-          alert("Email inválido.");
-        } else {
-          alert("Erro ao fazer login.");
-        }
-      }
-    });
-
-    forgotPasswordForm.addEventListener("submit", async (e) => {
-      e.preventDefault();
-
-      const email = document.getElementById("resetEmail").value.trim().toLowerCase();
-
-      if (!email) {
-        alert("Informe seu email.");
-        return;
-      }
-
-      try {
-        await sendPasswordResetEmail(auth, email);
-        alert("Verifique seu email. Se não encontrar, confira a caixa de spam.");
-        document.getElementById("resetEmail").value = "";
-        document.getElementById("tabLogin").click();
-      } catch (error) {
-        console.error("Erro ao enviar redefinição:", error);
-
-        if (error.code === "auth/invalid-email") {
-          alert("Email inválido.");
-        } else if (error.code === "auth/user-not-found") {
-          alert("Usuário não encontrado.");
-        } else {
-          alert("Não foi possível enviar o email.");
-        }
-      }
-    });
-
-    registerForm.addEventListener("submit", async (e) => {
-      e.preventDefault();
-
-      const name = document.getElementById("registerName").value.trim();
-      const email = document.getElementById("registerEmail").value.trim().toLowerCase();
-      const password = document.getElementById("registerPassword").value;
-
-      if (!name || !email || !password) {
-        alert("Preencha todos os campos.");
-        return;
-      }
-
-      try {
-        const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-
-        await setDoc(doc(db, "users", userCredential.user.uid), {
-          uid: userCredential.user.uid,
-          name,
-          email,
-          role: "user",
-          createdAt: serverTimestamp()
-        });
-
-        saveActiveUser({
-          name,
-          email,
-          uid: userCredential.user.uid
-        });
-
-        alert("Usuário registrado com sucesso.");
-        showApp({
-          name,
-          email,
-          uid: userCredential.user.uid
-        });
-      } catch (error) {
-        console.error("Erro ao registrar usuário:", error);
-
-        if (error.code === "auth/email-already-in-use") {
-          alert("Esse email já está cadastrado.");
-        } else if (error.code === "auth/weak-password") {
-          alert("A senha precisa ter pelo menos 6 caracteres.");
-        } else if (error.code === "auth/invalid-email") {
-          alert("Email inválido.");
-        } else {
-          alert("Erro ao registrar usuário.");
-        }
-      }
-    });
-
-function exportToPdfProtected(){
-  const code = prompt("Digite código interno:");
-  if(code === null) return;
-  
-  if(code !== PDF_CODE){
-    alert("Código interno incorreto.");
-    return;
+            <div>
+              <div class="modal-block-title">Pendentes</div>
+              ${pendingsHtml}
+            </div>
+          </div>
+        </div>
+      </div>
+    `;
   }
 
-  openPdfRangeModal();
-}
-    
-document.addEventListener("DOMContentLoaded", () => {
-  bindSessionEvents();
-  startHistoryRealtimeListener();
+  async function saveEditedHistory() {
+    if (editingHistoryIndex === null) return;
 
-  const byId = (id) => document.getElementById(id);
+    const item = historyCache[editingHistoryIndex];
+    if (!item) return;
 
-  const on = (id, event, handler) => {
-    const el = byId(id);
-    if (!el) {
-      console.error(`Elemento não encontrado: #${id}`);
-      return;
-    }
-    el.addEventListener(event, handler);
-  };
+    const turno = item.turno || {};
+    const history = historyCache || [];
+    const index = editingHistoryIndex;
 
-  on("toggleHistoryBtn", "click", () => {
-    historyVisible = !historyVisible;
-    updateHistoryVisibility();
-  });
+    const updatedEntries = (turno.entries || []).map((entry, i) => {
+      const input = document.querySelector(`[data-edit-entry="${i}"]`);
+      let value = parseMoneyInput(input?.value || 0);
 
-  on("toggleTurno1Btn", "click", () => {
-    turno1Visible = !turno1Visible;
-    updateTurno1Visibility();
-  });
+      if (
+        entry.name === "PPPoker (x400)" ||
+        entry.name === "Suprema (x400)" ||
+        entry.name === "Cargas F. Poker (x400)"
+      ) {
+        value = value * 400;
+      }
 
-  on("closePdfRangeModal", "click", closePdfRangeModal);
-  on("pdfRangeBackdrop", "click", closePdfRangeModal);
+      return {
+        ...entry,
+        value
+      };
+    });
 
-  on("confirmExportPdf", "click", () => {
-    const startDate = byId("pdfDateStart")?.value;
-    const endDate = byId("pdfDateEnd")?.value;
+    const updatedOutflows = (turno.outflows || []).map((entry, i) => {
+      const nameInput = document.querySelector(`[data-edit-outflow-name="${i}"]`);
+      const valueInput = document.querySelector(`[data-edit-outflow-value="${i}"]`);
 
-    if (!startDate || !endDate) {
-      alert("Selecione a data inicial e a data final.");
-      return;
-    }
+      return {
+        name: nameInput?.value || "",
+        value: parseMoneyInput(valueInput?.value || 0)
+      };
+    });
 
-    if (startDate > endDate) {
-      alert("A data inicial não pode ser maior que a data final.");
-      return;
-    }
+    const updatedPendings = (turno.pendings || []).map((entry, i) => {
+      const nameInput = document.querySelector(`[data-edit-pending-name="${i}"]`);
+      const valueInput = document.querySelector(`[data-edit-pending-value="${i}"]`);
 
-    const printWindow = window.open("", "_blank", "width=1280,height=900");
-    if (!printWindow) {
-      alert("Não foi possível abrir a janela de impressão.");
-      return;
-    }
+      return {
+        name: nameInput?.value || "",
+        value: parseMoneyInput(valueInput?.value || 0)
+      };
+    });
 
-    printWindow.document.open();
-    printWindow.document.write(buildPremiumPdfHtml(startDate, endDate));
-    printWindow.document.close();
-    printWindow.focus();
+    const entradasTotal = updatedEntries.reduce((acc, item) => acc + Number(item.value || 0), 0);
+    const saidasTotal = updatedOutflows.reduce((acc, item) => acc + Number(item.value || 0), 0);
+    const pendentesTotal = updatedPendings.reduce((acc, item) => acc + Number(item.value || 0), 0);
 
-    printWindow.onload = () => {
-      printWindow.print();
+    const fechamentoDate =
+      document.getElementById("editFechamentoDate")?.value ||
+      item.fechamentoDate ||
+      getTodayDateInput();
+
+    const turnoAtualizado = {
+      ...turno,
+      dataFechamento: fechamentoDate,
+      entries: updatedEntries,
+      outflows: updatedOutflows,
+      pendings: updatedPendings,
+      entradasTotal,
+      saidasTotal,
+      pendentesTotal
     };
 
-    closePdfRangeModal();
-  });
+    const saldoLiquido = calcularSaldoLiquido(turnoAtualizado);
+    turnoAtualizado.saldoLiquido = saldoLiquido;
 
-  updateHistoryVisibility();
-  updateTurno1Visibility();
+    const baseAtual = calcularBaseComparacao(turnoAtualizado);
 
-  [
-    "t1_banco","t1_pppoker","t1_suprema","t1_buffalo","t1_ganamos","t1_cargas","t1_cargas_poker",
-    "t2_banco","t2_pppoker","t2_suprema","t2_buffalo","t2_ganamos","t2_cargas","t2_cargas_poker"
-  ].forEach((id) => {
-    const input = byId(id);
-    if (input) attachMoneyMask(input);
-  });
+    const previousItem = history[index + 1] || null;
 
-  document.querySelectorAll("[data-add-row]").forEach((btn) => {
-    btn.addEventListener("click", () => {
-      createDynamicRow(btn.dataset.addRow);
-      render();
-    });
-  });
+    const previousBaseTotal = previousItem
+      ? calcularBaseComparacao(previousItem.turno || {})
+      : 0;
 
-  document.querySelectorAll("[data-add-pending]").forEach((btn) => {
-    btn.addEventListener("click", () => {
-      createPendingRow(btn.dataset.addPending);
-      render();
-    });
-  });
-
-  on("toggleBalance", "click", () => {
-    balanceVisible = !balanceVisible;
-    render();
-  });
-
-  on("calcular", "click", render);
-
-  on("limpar", "click", () => {
-    if (!confirm("Deseja limpar apenas o Turno 2 atual?")) return;
-    clearTurn("t2");
-    render();
-  });
-
-  on("fecharTurno", "click", async (e) => {
-    const btn = e.currentTarget;
-    if (btn.disabled) return; // Evita cliques simultâneos
+    const diffCaixaEditada = !previousItem
+      ? 0
+      : baseAtual - previousBaseTotal;
 
     try {
-        btn.disabled = true;
-        btn.textContent = "PROCESSANDO...";
-        
-        const item = serializeTurn("t2");
-        await saveHistoryItem(item);
-        
-        clearTurn("t2");
-        render();
-        alert("Turno fechado com sucesso.");
-    } catch (error) {
-        console.error(error);
-        alert("Erro ao salvar.");
-    } finally {
-        btn.disabled = false;
-        btn.textContent = "FINALIZAR TURNO";
+      await updateDoc(doc(db, "history", item.id), {
+        fechamentoDate,
+        total: updatedEntries.find((e) => e.name === "Banco Reca")?.value || 0,
+        currentSaldoTotal: saldoLiquido,
+        retiradaLucro: saidasTotal,
+        turnProfit: saidasTotal,
+        diff: diffCaixaEditada,
+        bankVariation: diffCaixaEditada,
+        turno: turnoAtualizado
+      });
+
+      historyEditMode = false;
+      editingHistoryIndex = null;
+
+      document.getElementById("editHistoryBtn").classList.remove("hidden");
+      document.getElementById("saveHistoryBtn").classList.add("hidden");
+
+      alert("Histórico atualizado com sucesso.");
+    } catch (e) {
+      console.error("Erro ao salvar histórico editado:", e);
+      alert("Erro ao salvar");
     }
-});
+  }
 
-  on("exportarPdf", "click", exportToPdfProtected);
+  async function openAdminModal() {
+    const code = prompt("Digite código interno:");
+    if (code === null) return;
 
-  on("closeReportScreen", "click", () => {
-    byId("reportScreen")?.classList.add("hidden");
+    if (code !== ADMIN_CODE) {
+      alert("Código interno incorreto.");
+      return;
+    }
+
+    await renderAdminUsers();
+    document.getElementById("adminModal").classList.remove("hidden");
+    requestAnimationFrame(() => document.getElementById("adminSearchInput").focus());
+  }
+
+  function closeAdminModal() {
+    document.getElementById("adminModal").classList.add("hidden");
+    document.getElementById("adminSearchInput").value = "";
+  }
+
+  async function renderAdminUsers() {
+    const users = await getUsersFromFirestore();
+    const term = document.getElementById("adminSearchInput").value.trim().toLowerCase();
+
+    const filtered = users.filter((user) => {
+      const name = String(user?.name || "").toLowerCase();
+      const email = String(user?.email || "").toLowerCase();
+      return !term || name.includes(term) || email.includes(term);
+    });
+
+    const adminUsersList = document.getElementById("adminUsersList");
+
+    if (!filtered.length) {
+      adminUsersList.innerHTML = `<div class="admin-empty">Nenhum usuário encontrado.</div>`;
+      return;
+    }
+
+    adminUsersList.innerHTML = filtered.map((user) => {
+      return `
+        <div class="admin-user-card">
+          <div class="admin-user-top">
+            <div>
+              <div class="admin-user-name">${escapeHtml(user.name || "Sem nome")}</div>
+              <div class="admin-user-email">${escapeHtml(user.email || "Sem email")}</div>
+            </div>
+            <div class="admin-user-badge">${escapeHtml(user.role || "user")}</div>
+          </div>
+
+          <div class="admin-actions">
+            <button class="admin-action-btn admin-view-btn" type="button" data-admin-view="${user.id}">👁 Ver</button>
+            <button class="admin-action-btn admin-reset-btn" type="button" data-admin-reset="${user.email}">🔒 Resetar senha</button>
+            <button class="admin-action-btn admin-delete-btn" type="button" data-admin-delete="${user.id}">🗑 Excluir</button>
+          </div>
+
+          <div class="admin-inline-details" id="adminDetails_${user.id}">
+            <div class="admin-inline-line"><span>Nome</span><strong>${escapeHtml(user.name || "-")}</strong></div>
+            <div class="admin-inline-line"><span>Email</span><strong>${escapeHtml(user.email || "-")}</strong></div>
+            <div class="admin-inline-line"><span>UID</span><strong>${escapeHtml(user.uid || "-")}</strong></div>
+            <div class="admin-inline-line"><span>Perfil</span><strong>${escapeHtml(user.role || "user")}</strong></div>
+          </div>
+        </div>
+      `;
+    }).join("");
+
+    bindAdminActions();
+  }
+
+  function bindAdminActions() {
+    document.querySelectorAll("[data-admin-view]").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        const id = btn.dataset.adminView;
+        const box = document.getElementById(`adminDetails_${id}`);
+        if (box) box.classList.toggle("show");
+      });
+    });
+
+    document.querySelectorAll("[data-admin-reset]").forEach((btn) => {
+      btn.addEventListener("click", async () => {
+        const email = btn.dataset.adminReset;
+        if (!email) return;
+
+        const confirmacao = confirm(`Enviar email de redefinição de senha para ${email}?`);
+        if (!confirmacao) return;
+
+        try {
+          await sendPasswordResetEmail(auth, email);
+          alert("Email de redefinição enviado com sucesso.");
+        } catch (error) {
+          console.error("Erro ao enviar redefinição:", error);
+          alert("Não foi possível enviar o email de redefinição.");
+        }
+      });
+    });
+
+    document.querySelectorAll("[data-admin-delete]").forEach((btn) => {
+      btn.addEventListener("click", async () => {
+        const uid = btn.dataset.adminDelete;
+
+        if (!uid) {
+          alert("ID do usuário inválido.");
+          return;
+        }
+
+        const confirmacao = confirm("Confirma a exclusão deste usuário?");
+        if (!confirmacao) return;
+
+        try {
+          await deleteUserDocFromFirestore(uid);
+          await renderAdminUsers();
+          alert("Usuário removido da coleção 'users' com sucesso.\n(A conta no Firebase Auth NÃO foi excluída)");
+        } catch (error) {
+          console.error("Erro ao excluir usuário:", error);
+          alert("Erro ao excluir usuário. Verifique o console.");
+        }
+      });
+    });
+  }
+
+  onAuthStateChanged(auth, (user) => {
+    if (user) {
+      const userData = {
+        name: user.email?.split("@")[0] || "Usuário",
+        email: user.email,
+        uid: user.uid
+      };
+
+      saveActiveUser(userData);
+      showApp(userData);
+    } else {
+      removeActiveUser();
+      localStorage.removeItem(SESSION_LAST_ACTIVITY_KEY);
+      authScreen.classList.remove("hidden");
+      appShell.classList.add("hidden");
+    }
   });
 
-  on("menuToggle", "click", () => {
-    byId("reportsMenu")?.classList.toggle("hidden");
+  document.getElementById("tabLogin").addEventListener("click", () => switchTab("login"));
+  document.getElementById("tabRegister").addEventListener("click", () => switchTab("register"));
+  document.getElementById("tabForgot").addEventListener("click", () => switchTab("forgot"));
+
+  loginForm.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const email = document.getElementById("loginEmail").value.trim().toLowerCase();
+    const password = document.getElementById("loginPassword").value;
+    const remember = rememberLoginCheckbox.checked;
+
+    try {
+      const userCredential = await signInWithEmailAndPassword(auth, email, password);
+
+      saveRememberedLogin(remember, email);
+
+      const user = {
+        name: userCredential.user.email?.split("@")[0] || "Usuário",
+        email: userCredential.user.email,
+        uid: userCredential.user.uid
+      };
+
+      saveActiveUser(user);
+      showApp(user);
+    } catch (error) {
+      console.error("Erro ao fazer login:", error);
+
+      if (
+        error.code === "auth/invalid-credential" ||
+        error.code === "auth/user-not-found" ||
+        error.code === "auth/wrong-password" ||
+        error.code === "auth/invalid-login-credentials"
+      ) {
+        alert("Email ou senha incorretos.");
+      } else if (error.code === "auth/invalid-email") {
+        alert("Email inválido.");
+      } else {
+        alert("Erro ao fazer login.");
+      }
+    }
   });
 
-  document.querySelectorAll("[data-report-range]").forEach((btn) => {
-    btn.addEventListener("click", () => {
-      const senha = prompt("Digite código interno:");
-      if (senha === null) return;
+  forgotPasswordForm.addEventListener("submit", async (e) => {
+    e.preventDefault();
 
-      if (senha !== REPORT_CODE) {
-        alert("Código interno incorreto.");
+    const email = document.getElementById("resetEmail").value.trim().toLowerCase();
+
+    if (!email) {
+      alert("Informe seu email.");
+      return;
+    }
+
+    try {
+      await sendPasswordResetEmail(auth, email);
+      alert("Verifique seu email. Se não encontrar, confira a caixa de spam.");
+      document.getElementById("resetEmail").value = "";
+      document.getElementById("tabLogin").click();
+    } catch (error) {
+      console.error("Erro ao enviar redefinição:", error);
+
+      if (error.code === "auth/invalid-email") {
+        alert("Email inválido.");
+      } else if (error.code === "auth/user-not-found") {
+        alert("Usuário não encontrado.");
+      } else {
+        alert("Não foi possível enviar o email.");
+      }
+    }
+  });
+
+  registerForm.addEventListener("submit", async (e) => {
+    e.preventDefault();
+
+    const name = document.getElementById("registerName").value.trim();
+    const email = document.getElementById("registerEmail").value.trim().toLowerCase();
+    const password = document.getElementById("registerPassword").value;
+
+    if (!name || !email || !password) {
+      alert("Preencha todos os campos.");
+      return;
+    }
+
+    try {
+      const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+
+      await setDoc(doc(db, "users", userCredential.user.uid), {
+        uid: userCredential.user.uid,
+        name,
+        email,
+        role: "user",
+        createdAt: serverTimestamp()
+      });
+
+      saveActiveUser({
+        name,
+        email,
+        uid: userCredential.user.uid
+      });
+
+      alert("Usuário registrado com sucesso.");
+      showApp({
+        name,
+        email,
+        uid: userCredential.user.uid
+      });
+    } catch (error) {
+      console.error("Erro ao registrar usuário:", error);
+
+      if (error.code === "auth/email-already-in-use") {
+        alert("Esse email já está cadastrado.");
+      } else if (error.code === "auth/weak-password") {
+        alert("A senha precisa ter pelo menos 6 caracteres.");
+      } else if (error.code === "auth/invalid-email") {
+        alert("Email inválido.");
+      } else {
+        alert("Erro ao registrar usuário.");
+      }
+    }
+  });
+
+  function exportToPdfProtected() {
+    const code = prompt("Digite código interno:");
+    if (code === null) return;
+
+    if (code !== PDF_CODE) {
+      alert("Código interno incorreto.");
+      return;
+    }
+
+    openPdfRangeModal();
+  }
+
+  document.addEventListener("DOMContentLoaded", () => {
+    bindSessionEvents();
+    startHistoryRealtimeListener();
+
+    const byId = (id) => document.getElementById(id);
+
+    const on = (id, event, handler) => {
+      const el = byId(id);
+      if (!el) {
+        console.error(`Elemento não encontrado: #${id}`);
+        return;
+      }
+      el.addEventListener(event, handler);
+    };
+
+    on("toggleHistoryBtn", "click", () => {
+      historyVisible = !historyVisible;
+      updateHistoryVisibility();
+    });
+
+    on("toggleTurno1Btn", "click", () => {
+      turno1Visible = !turno1Visible;
+      updateTurno1Visibility();
+    });
+
+    on("closePdfRangeModal", "click", closePdfRangeModal);
+    on("pdfRangeBackdrop", "click", closePdfRangeModal);
+
+    on("confirmExportPdf", "click", () => {
+      const startDate = byId("pdfDateStart")?.value;
+      const endDate = byId("pdfDateEnd")?.value;
+
+      if (!startDate || !endDate) {
+        alert("Selecione a data inicial e a data final.");
         return;
       }
 
-      const range = Number(btn.dataset.reportRange);
-
-      const end = new Date();
-      const endOffset = end.getTimezoneOffset();
-      const endLocal = new Date(end.getTime() - endOffset * 60000);
-      const endDate = endLocal.toISOString().split("T")[0];
-
-      const start = new Date();
-      start.setDate(start.getDate() - range);
-      const startOffset = start.getTimezoneOffset();
-      const startLocal = new Date(start.getTime() - startOffset * 60000);
-      const startDate = startLocal.toISOString().split("T")[0];
+      if (startDate > endDate) {
+        alert("A data inicial não pode ser maior que a data final.");
+        return;
+      }
 
       const printWindow = window.open("", "_blank", "width=1280,height=900");
       if (!printWindow) {
-        alert("Não foi possível abrir a janela.");
+        alert("Não foi possível abrir a janela de impressão.");
         return;
       }
 
@@ -4817,119 +4680,231 @@ document.addEventListener("DOMContentLoaded", () => {
         printWindow.print();
       };
 
-      byId("reportsMenu")?.classList.add("hidden");
+      closePdfRangeModal();
     });
+
+    updateHistoryVisibility();
+    updateTurno1Visibility();
+
+    [
+      "t1_banco","t1_pppoker","t1_suprema","t1_buffalo","t1_ganamos","t1_cargas","t1_cargas_poker",
+      "t2_banco","t2_pppoker","t2_suprema","t2_buffalo","t2_ganamos","t2_cargas","t2_cargas_poker"
+    ].forEach((id) => {
+      const input = byId(id);
+      if (input) attachMoneyMask(input);
+    });
+
+    document.querySelectorAll("[data-add-row]").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        createDynamicRow(btn.dataset.addRow);
+        render();
+      });
+    });
+
+    document.querySelectorAll("[data-add-pending]").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        createPendingRow(btn.dataset.addPending);
+        render();
+      });
+    });
+
+    on("toggleBalance", "click", () => {
+      balanceVisible = !balanceVisible;
+      render();
+    });
+
+    on("calcular", "click", render);
+
+    on("limpar", "click", () => {
+      if (!confirm("Deseja limpar apenas o Turno 2 atual?")) return;
+      clearTurn("t2");
+      render();
+    });
+
+    on("fecharTurno", "click", async (e) => {
+      const btn = e.currentTarget;
+      if (btn.disabled) return;
+
+      try {
+        btn.disabled = true;
+        btn.textContent = "PROCESSANDO...";
+
+        const item = serializeTurn("t2");
+        await saveHistoryItem(item);
+
+        clearTurn("t2");
+        render();
+        alert("Turno fechado com sucesso.");
+      } catch (error) {
+        console.error(error);
+        alert("Erro ao salvar.");
+      } finally {
+        btn.disabled = false;
+        btn.textContent = "FINALIZAR TURNO";
+      }
+    });
+
+    on("exportarPdf", "click", exportToPdfProtected);
+
+    on("closeReportScreen", "click", () => {
+      byId("reportScreen")?.classList.add("hidden");
+    });
+
+    on("menuToggle", "click", () => {
+      byId("reportsMenu")?.classList.toggle("hidden");
+    });
+
+    document.querySelectorAll("[data-report-range]").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        const senha = prompt("Digite código interno:");
+        if (senha === null) return;
+
+        if (senha !== REPORT_CODE) {
+          alert("Código interno incorreto.");
+          return;
+        }
+
+        const range = Number(btn.dataset.reportRange);
+
+        const end = new Date();
+        const endOffset = end.getTimezoneOffset();
+        const endLocal = new Date(end.getTime() - endOffset * 60000);
+        const endDate = endLocal.toISOString().split("T")[0];
+
+        const start = new Date();
+        start.setDate(start.getDate() - range);
+        const startOffset = start.getTimezoneOffset();
+        const startLocal = new Date(start.getTime() - startOffset * 60000);
+        const startDate = startLocal.toISOString().split("T")[0];
+
+        const printWindow = window.open("", "_blank", "width=1280,height=900");
+        if (!printWindow) {
+          alert("Não foi possível abrir a janela.");
+          return;
+        }
+
+        printWindow.document.open();
+        printWindow.document.write(buildPremiumPdfHtml(startDate, endDate));
+        printWindow.document.close();
+        printWindow.focus();
+
+        printWindow.onload = () => {
+          printWindow.print();
+        };
+
+        byId("reportsMenu")?.classList.add("hidden");
+      });
+    });
+
+    on("deleteHistoryBtn", "click", async () => {
+      const senha = prompt("Digite código interno:");
+      if (senha === null) return;
+
+      if (senha !== DELETE_HISTORY_CODE) {
+        alert("Código interno incorreto.");
+        return;
+      }
+
+      if (!historyCache.length) {
+        alert("Não há histórico para excluir.");
+        return;
+      }
+
+      const lista = historyCache
+        .map((item, index) => {
+          const nome = item.nomeOperador || "Sem nome";
+          const turno = item.turnoTrabalhado || "-";
+          const data = formatDateBR(item.fechamentoDate || "");
+          const total = money(item.total || 0);
+
+          return `${index + 1} - ${nome} - Turno ${turno} - ${data} - ${total}`;
+        })
+        .join("\n");
+
+      const escolha = prompt(`Digite o número do histórico que deseja excluir:\n\n${lista}`);
+      if (escolha === null) return;
+
+      const indice = Number(escolha) - 1;
+
+      if (!Number.isInteger(indice) || indice < 0 || indice >= historyCache.length) {
+        alert("Número inválido.");
+        return;
+      }
+
+      const itemSelecionado = historyCache[indice];
+
+      if (!confirm(`Deseja excluir o histórico de ${itemSelecionado.nomeOperador || "Sem nome"} em ${formatDateBR(itemSelecionado.fechamentoDate || "")}?`)) {
+        return;
+      }
+
+      await deleteDoc(doc(db, "history", itemSelecionado.id));
+      alert("Histórico excluído com sucesso.");
+    });
+
+    on("editHistoryBtn", "click", () => {
+      if (editingHistoryIndex === null) return;
+
+      historyEditMode = true;
+      byId("editHistoryBtn")?.classList.add("hidden");
+      byId("saveHistoryBtn")?.classList.remove("hidden");
+
+      const item = historyCache[editingHistoryIndex];
+      renderHistoryModalContent(item, true);
+    });
+
+    on("saveHistoryBtn", "click", async () => {
+      try {
+        await saveEditedHistory();
+        closeHistoryModal();
+      } catch (error) {
+        console.error("Erro ao editar histórico:", error);
+        alert("Não foi possível salvar as alterações.");
+      }
+    });
+
+    on("logoutBtn", "click", logout);
+    on("closeHistoryModal", "click", closeHistoryModal);
+    on("historyModalBackdrop", "click", closeHistoryModal);
+
+    const adminBtn = byId("adminOpenBtn");
+    if (adminBtn) {
+      adminBtn.addEventListener("click", openAdminModal);
+    }
+
+    on("adminCloseBtn", "click", closeAdminModal);
+    on("adminModalBackdrop", "click", closeAdminModal);
+    on("adminSearchInput", "input", renderAdminUsers);
+
+    on("adminDeleteAllBtn", "click", () => {
+      const code = prompt("Digite código interno:");
+      if (code === null) return;
+
+      if (code !== ADMIN_CODE) {
+        alert("Código interno incorreto.");
+        return;
+      }
+
+      if (!confirm("Tem certeza que deseja limpar os dados locais deste dispositivo?")) return;
+
+      localStorage.removeItem(ACTIVE_USER_STORAGE_KEY);
+      localStorage.removeItem(REMEMBER_LOGIN_STORAGE_KEY);
+      localStorage.removeItem(REMEMBERED_EMAIL_STORAGE_KEY);
+      localStorage.removeItem(SESSION_LAST_ACTIVITY_KEY);
+
+      renderAdminUsers();
+      alert("Dados locais removidos com sucesso.\n(Usuários no Firebase NÃO foram excluídos)");
+    });
+
+    const rememberedUser = loadActiveUser();
+    if (rememberedUser && getRememberedLogin() && !isSessionExpired()) {
+      showApp(rememberedUser);
+    } else {
+      authScreen.classList.remove("hidden");
+      appShell.classList.add("hidden");
+      preloadLogin();
+      switchTab("login");
+    }
   });
-
-  on("deleteHistoryBtn", "click", async () => {
-    const senha = prompt("Digite código interno:");
-    if (senha === null) return;
-
-    if (senha !== DELETE_HISTORY_CODE) {
-      alert("Código interno incorreto.");
-      return;
-    }
-
-    if (!historyCache.length) {
-      alert("Não há histórico para excluir.");
-      return;
-    }
-
-    const lista = historyCache
-      .map((item, index) => {
-        const nome = item.nomeOperador || "Sem nome";
-        const turno = item.turnoTrabalhado || "-";
-        const data = formatDateBR(item.fechamentoDate || "");
-        const total = money(item.total || 0);
-
-        return `${index + 1} - ${nome} - Turno ${turno} - ${data} - ${total}`;
-      })
-      .join("\n");
-
-    const escolha = prompt(`Digite o número do histórico que deseja excluir:\n\n${lista}`);
-    if (escolha === null) return;
-
-    const indice = Number(escolha) - 1;
-
-    if (!Number.isInteger(indice) || indice < 0 || indice >= historyCache.length) {
-      alert("Número inválido.");
-      return;
-    }
-
-    const itemSelecionado = historyCache[indice];
-
-    if (!confirm(`Deseja excluir o histórico de ${itemSelecionado.nomeOperador || "Sem nome"} em ${formatDateBR(itemSelecionado.fechamentoDate || "")}?`)) {
-      return;
-    }
-
-    await deleteDoc(doc(db, "history", itemSelecionado.id));
-    alert("Histórico excluído com sucesso.");
-  });
-
-  on("editHistoryBtn", "click", () => {
-    if (editingHistoryIndex === null) return;
-
-    historyEditMode = true;
-    byId("editHistoryBtn")?.classList.add("hidden");
-    byId("saveHistoryBtn")?.classList.remove("hidden");
-
-    const item = historyCache[editingHistoryIndex];
-    renderHistoryModalContent(item, true);
-  });
-
-  on("saveHistoryBtn", "click", async () => {
-    try {
-      await saveEditedHistory();
-      closeHistoryModal();
-    } catch (error) {
-      console.error("Erro ao editar histórico:", error);
-      alert("Não foi possível salvar as alterações.");
-    }
-  });
-
-  on("logoutBtn", "click", logout);
-  on("closeHistoryModal", "click", closeHistoryModal);
-  on("historyModalBackdrop", "click", closeHistoryModal);
-
-  const adminBtn = byId("adminOpenBtn");
-  if (adminBtn) {
-    adminBtn.addEventListener("click", openAdminModal);
-  }
-
-  on("adminCloseBtn", "click", closeAdminModal);
-  on("adminModalBackdrop", "click", closeAdminModal);
-  on("adminSearchInput", "input", renderAdminUsers);
-
-  on("adminDeleteAllBtn", "click", () => {
-    const code = prompt("Digite código interno:");
-    if (code === null) return;
-
-    if (code !== ADMIN_CODE) {
-      alert("Código interno incorreto.");
-      return;
-    }
-
-    if (!confirm("Tem certeza que deseja limpar os dados locais deste dispositivo?")) return;
-
-    localStorage.removeItem(ACTIVE_USER_STORAGE_KEY);
-    localStorage.removeItem(REMEMBER_LOGIN_STORAGE_KEY);
-    localStorage.removeItem(REMEMBERED_EMAIL_STORAGE_KEY);
-    localStorage.removeItem(SESSION_LAST_ACTIVITY_KEY);
-
-    renderAdminUsers();
-    alert("Dados locais removidos com sucesso.\n(Usuários no Firebase NÃO foram excluídos)");
-  });
-
-  const rememberedUser = loadActiveUser();
-  if (rememberedUser && getRememberedLogin() && !isSessionExpired()) {
-    showApp(rememberedUser);
-  } else {
-    authScreen.classList.remove("hidden");
-    appShell.classList.add("hidden");
-    preloadLogin();
-    switchTab("login");
-  }
-});
-  </script>
+</script>
 </body>
 </html>
