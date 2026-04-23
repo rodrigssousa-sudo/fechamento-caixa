@@ -1263,50 +1263,6 @@ function render() {
   renderChart();
 }
 
-function renderHistory() {
-  const list = document.getElementById("historyList");
-  if (!list) return;
-
-  if (!historyCache.length) {
-    list.innerHTML = `<div class="history-card">Sem histórico ainda.</div>`;
-    return;
-  }
-
-  list.innerHTML = historyCache.map((item, index) => {
-    const nome = item.nomeOperador || "Sem nome";
-    const data = formatDateBR(item.fechamentoDate || item.turno?.dataFechamento || "");
-    const banco = money(item.total || item.turno?.reca || 0);
-    const saldo = item.saldo ?? item.currentSaldoTotal ?? calcularSaldo(item.turno || {});
-    const diff = Number(item.diff || 0);
-
-    const diffClass =
-      diff > 0 ? "positive" :
-      diff < 0 ? "negative" :
-      "neutral";
-
-    return `
-      <div class="history-card" data-index="${index}">
-        <div class="history-title">${data} - ${escapeHtml(nome)}</div>
-
-        <div class="history-meta">
-          <span>Banco: ${banco}</span>
-          <span>Saldo: ${money(saldo)}</span>
-        </div>
-
-        <div class="history-badge ${diffClass}">
-          Dif: ${diff > 0 ? "+" : diff < 0 ? "-" : ""}${money(Math.abs(diff))}
-        </div>
-      </div>
-    `;
-  }).join("");
-
-  document.querySelectorAll("[data-index]").forEach((card) => {
-    card.addEventListener("click", () => {
-      openHistoryModal(Number(card.dataset.index));
-    });
-  });
-}
-
     function renderCompare() {
       if (historyCache.length < 2) return;
 
