@@ -2875,19 +2875,22 @@ async function saveHistoryItem(item) {
       limit(1)
     );
 
-    const snapshot = await getDocs(q);
-    const previousItem = snapshot.docs[0]?.data() || null;
+  const snapshot = await getDocs(q);
+const previousItem = snapshot.docs[0]?.data() || null;
 
-    const previousSaldoTotal = previousItem
-      ? calcularSaldoLiquido(previousItem.turno || {})
-      : 0;
+const previousSaldoTotal = previousItem
+  ? calcularSaldoLiquido(previousItem.turno || {})
+  : 0;
 
-    const currentSaldoTotal = calcularSaldoLiquido(item.turno || {});
-    const saidasTurnoAtual = Number(item?.turno?.saidasTotal || 0);
+const currentBaseTotal = calcularBaseComparacao(turno);
 
-   const diffCaixa = !previousItem
-  ? 0
-  : currentSaldoTotal - previousSaldoTotal;
+const previousBaseTotal = previousItem
+  ? calcularBaseComparacao(previousItem.turno || {})
+  : 0;
+
+const diffCaixa = previousItem
+  ? currentBaseTotal - previousBaseTotal
+  : 0;
 
     item.currentSaldoTotal = currentSaldoTotal;
     item.retiradaLucro = saidasTurnoAtual;
@@ -3431,7 +3434,9 @@ const turnoData = {
   suprema: getValue(f.suprema),
   pppoker: getValue(f.pppoker),
   buffalo: getValue(f.buffalo),
-  ganamos: getValue(f.ganamos)
+  ganamos: getValue(f.ganamos),
+  cargaFichas: getValue(f.cargas),
+  cargaPoker: getValue(f.cargasPoker) * 400
 };
 
 turnoData.saldoLiquido = calcularSaldoLiquido(turnoData);
@@ -3770,13 +3775,15 @@ const turnoAtualizado = {
 };
 
 const saldoLiquido = calcularSaldoLiquido(turnoAtualizado);
-turnoAtualizado.saldoLiquido = saldoLiquido;
+const baseComparacaoAtual = calcularBaseComparacao(turnoAtualizado);
 
-const previousSaldoTotal = previousItem
-  ? calcularSaldoLiquido(previousItem.turno || {})
+const previousBaseTotal = previousItem
+  ? calcularBaseComparacao(previousItem.turno || {})
   : 0;
 
-const diff = !previousItem ? 0 : saldoLiquido - previousSaldoTotal;
+const diffCaixaEditada = !previousItem
+  ? 0
+  : baseComparacaoAtual - previousBaseTotal;
 
 await updateDoc(docRef, {
   fechamentoDate: turnoAtualizado.dataFechamento,
@@ -3871,21 +3878,20 @@ function buildPremiumPdfHtml(startDate, endDate){
     return acc + Number(item?.turno?.saidasTotal || 0);
   }, 0);
 
-  const totalDiferenca = filtered.reduce((acc, item, index) => {
-    const previousItem = filtered[index + 1] || null;
+const totalDiferenca = filtered.reduce((acc, item, index) => {
+  const previousItem = filtered[index + 1] || null;
 
-    const currentSaldo = calcularSaldoLiquido(item?.turno || {});
+  const currentBase = calcularBaseComparacao(item.turno || {});
+  const previousBase = previousItem
+    ? calcularBaseComparacao(previousItem.turno || {})
+    : 0;
 
-    const previousSaldo = previousItem
-      ? calcularSaldoLiquido(previousItem.turno || {})
-      : 0;
+  const diff = !previousItem
+    ? 0
+    : currentBase - previousBase;
 
-    const diff = !previousItem
-      ? 0
-      : currentSaldo - previousSaldo;
-
-    return acc + diff;
-  }, 0);
+  return acc + diff;
+}, 0);
 
   const rankingOperadores = {};
 
@@ -4397,17 +4403,15 @@ function render() {
   const currentItem = history[0] || null;
   const previousItem = history[1] || null;
 
-  const currentSaldoTotal = currentItem
-  ? calcularSaldoLiquido(currentItem.turno || {})
+const previousBaseTotal = previousItem
+  ? calcularBaseComparacao(previousItem.turno || {})
   : 0;
 
-const previousSaldoTotal = previousItem
-  ? calcularSaldoLiquido(previousItem.turno || {})
-  : 0;
+const currentBaseTotal = calcularBaseComparacao(item.turno || {});
 
-const diffCaixa = !previousItem
+const diferencaAtual = !previousItem
   ? 0
-  : currentSaldoTotal - previousSaldoTotal;
+  : currentBaseTotal - previousBaseTotal;
 
   const ultimoLucroDoTurno = diffCaixa;
 
