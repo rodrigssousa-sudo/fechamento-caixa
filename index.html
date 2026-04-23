@@ -2776,7 +2776,7 @@ function getTodayDateInput() {
   return local.toISOString().split("T")[0];
 }
 
-function calcularEntradas(turno = {}) {
+function calcularBaseComparacao(turno = {}) {
   const reca = Number(turno.reca || 0);
   const suprema = Number(turno.suprema || 0);
   const pppoker = Number(turno.pppoker || 0);
@@ -2786,6 +2786,8 @@ function calcularEntradas(turno = {}) {
   const cargaFichas = Number(turno.cargaFichas || 0);
   const cargaPoker = Number(turno.cargaPoker || 0);
 
+  const pendentes = Number(turno.pendentesTotal || 0);
+
   return (
     reca +
     (suprema * 400) +
@@ -2793,7 +2795,8 @@ function calcularEntradas(turno = {}) {
     buffalo +
     ganamos +
     cargaFichas +
-    cargaPoker
+    cargaPoker -
+    pendentes
   );
 }
 
@@ -2815,17 +2818,17 @@ async function recalculateAllHistory() {
   const item = docs[i];
   const turno = item.turno || {};
 
-const currentBaseTotal = calcularBaseComparacao(turno);
+const currentBase = currentItem
+  ? calcularBaseComparacao(currentItem.turno || {})
+  : 0;
 
-const previousItem = docs[i + 1] || null;
-
-const previousBaseTotal = previousItem
+const previousBase = previousItem
   ? calcularBaseComparacao(previousItem.turno || {})
   : 0;
 
-const diffCaixa = !previousItem
-  ? 0
-  : currentBaseTotal - previousBaseTotal;
+const diffCaixa = previousItem
+  ? currentBase - previousBase
+  : 0;
 
 const saidasTurnoAtual = Number(turno.saidasTotal || 0);
 
