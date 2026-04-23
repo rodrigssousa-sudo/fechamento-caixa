@@ -669,7 +669,7 @@
     <div class="auth-card">
       <div class="auth-logo">BK</div>
       <h1 class="auth-title">Bank King</h1>
-      <p class="auth-sub">Acesso interno Central King</p>
+      <p class="auth-sub">Acesso interno BK</p>
 
       <div class="auth-toggle">
         <button id="tabLogin" class="auth-tab active" type="button">Entrar</button>
@@ -735,8 +735,8 @@
         <div class="brand">
           <div class="brand-logo">BK</div>
           <div>
-            <div class="brand-title">Bank King PRO</div>
-            <div class="brand-sub">Controle premium de fechamento</div>
+            <div class="brand-title">Bank King</div>
+            <div class="brand-sub">Controle Fechamento</div>
           </div>
         </div>
 
@@ -756,11 +756,11 @@
       <!-- SALDO RECA -->
       <section class="balance-card">
         <div>
-          <div class="balance-label">Saldo Reca Atual</div>
-          <div id="bankValue" class="balance-value">R$ 0,00</div>
+          <div class="balance-label">Saldo Reca</div>
+          <div id="bankValue" class="balance-value">$ 0,00</div>
         </div>
 
-        <button id="toggleBalance" class="balance-toggle" type="button">Ocultar saldo</button>
+        <button id="toggleBalance" class="balance-toggle" type="button">Ocultar</button>
       </section>
 
       <!-- RESUMO DO ÚLTIMO TURNO / ANTERIOR -->
@@ -777,20 +777,20 @@
           </div>
 
           <div class="summary-box">
-            <div class="summary-box-label">Diferença real</div>
-            <div id="previousDiff" class="summary-box-value">R$ 0,00</div>
+            <div class="summary-box-label">Diferença Caixa</div>
+            <div id="previousDiff" class="summary-box-value">$ 0,00</div>
           </div>
 
           <div class="summary-box">
             <div class="summary-box-label">Saldo Reca</div>
-            <div id="previousReca" class="summary-box-value green">R$ 0,00</div>
+            <div id="previousReca" class="summary-box-value green">$ 0,00</div>
           </div>
         </div>
       </section>
 
       <!-- COMPARATIVO DAS FICHAS -->
       <section class="section-card green-section">
-        <div class="section-head">Comparativo das fichas — último fechamento vs anterior</div>
+        <div class="section-head">Comparativo das fichas</div>
         <div class="section-body">
           <div id="systemsCompareBar" class="compare-grid">
             <div class="compare-pill">
@@ -830,7 +830,7 @@
 
           <div class="section-body">
             <div class="field">
-              <label for="t2_nome_operador">Nome do operador</label>
+              <label for="t2_nome_operador">Operador</label>
               <input id="t2_nome_operador" type="text" placeholder="Ex.: Igor T" />
             </div>
 
@@ -850,7 +850,7 @@
             </div>
 
             <div class="field">
-              <label for="t2_pppoker">PPPoker (x400)</label>
+              <label for="t2_pppoker">PPPoker</label>
               <input id="t2_pppoker" type="text" inputmode="numeric" placeholder="0,00" />
             </div>
 
@@ -870,7 +870,7 @@
             </div>
 
             <div class="field">
-              <label for="t2_cargas_poker">Carga Poker (x400)</label>
+              <label for="t2_cargas_poker">Carga Poker</label>
               <input id="t2_cargas_poker" type="text" inputmode="numeric" placeholder="0,00" />
             </div>
           </div>
@@ -927,7 +927,7 @@
 
             <button id="openDetailedHistoryBtn" type="button" class="action-btn action-purple">
               <span class="action-title">Histórico</span>
-              <span class="action-sub">Mostrar/Ocultar lista</span>
+              <span class="action-sub">Mostrar/Ocultar</span>
             </button>
           </div>
         </div>
@@ -935,7 +935,7 @@
 
       <!-- RANKING FUNCIONÁRIOS -->
       <section class="section-card blue-section">
-        <div class="section-head">Ranking por operador</div>
+        <div class="section-head">Ranking</div>
         <div class="section-body">
           <div style="overflow:auto;">
             <table class="ranking-table">
@@ -976,7 +976,7 @@
 
     <!-- MENU HAMBÚRGUER -->
     <div id="mainMenu" class="floating-menu hidden">
-      <button class="menu-item" type="button" id="openPdfCustomBtn">Relatórios PDF por datas</button>
+      <button class="menu-item" type="button" id="openPdfCustomBtn">Relatórios PDF</button>
       <button class="menu-item" type="button" data-report-range="7">Relatório 7 dias</button>
       <button class="menu-item" type="button" data-report-range="15">Relatório 15 dias</button>
       <button class="menu-item" type="button" data-report-range="30">Relatório 30 dias</button>
@@ -1104,7 +1104,7 @@
     const historyList = byId("historyList");
 
     function money(value) {
-      return `R$ ${Number(value || 0).toLocaleString("pt-BR", {
+      return `$ ${Number(value || 0).toLocaleString("pt-BR", {
         minimumFractionDigits: 2,
         maximumFractionDigits: 2
       })}`;
