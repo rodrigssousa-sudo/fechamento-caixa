@@ -1424,12 +1424,71 @@
 
     document.getElementById("fecharTurno")?.addEventListener("click", saveTurn);
 
-    document.querySelectorAll("input").forEach(i=>{
-      attachMoneyMask(i);
-      i.addEventListener("input", render);
-    });
+document.querySelectorAll("input").forEach(i=>{
+  attachMoneyMask(i);
+  i.addEventListener("input", render);
+});
 
+
+// =========================
+// 🔐 LOGIN
+// =========================
+document.getElementById("loginForm")?.addEventListener("submit", async (e) => {
+  e.preventDefault();
+
+  const email = document.getElementById("loginEmail")?.value.trim().toLowerCase();
+  const password = document.getElementById("loginPassword")?.value;
+
+  if (!email || !password) {
+    alert("Preencha email e senha.");
+    return;
+  }
+
+  try {
+    await signInWithEmailAndPassword(auth, email, password);
+  } catch (error) {
+    console.error("ERRO LOGIN:", error);
+    alert("Erro ao fazer login");
+  }
+});
+
+
+// =========================
+// 👤 CONTROLE DE SESSÃO
+// =========================
+onAuthStateChanged(auth, (user) => {
+  if (user) {
+    console.log("LOGADO:", user.email);
+
+    document.getElementById("authScreen")?.classList.add("hidden");
+    document.getElementById("appShell")?.classList.remove("hidden");
+
+    document.getElementById("activeUserName").textContent =
+      user.email?.split("@")[0] || "Usuário";
+
+    document.getElementById("activeUserEmail").textContent =
+      user.email || "";
+
+    startHistoryRealtimeListener?.();
     render();
+  } else {
+    document.getElementById("authScreen")?.classList.remove("hidden");
+    document.getElementById("appShell")?.classList.add("hidden");
+  }
+});
+
+
+// =========================
+// 🚪 LOGOUT
+// =========================
+document.getElementById("logoutBtn")?.addEventListener("click", async () => {
+  await signOut(auth);
+});
+
+
+// 🔥 SEMPRE POR ÚLTIMO
+render();
+    
   </script>
 </body>
 </html>
