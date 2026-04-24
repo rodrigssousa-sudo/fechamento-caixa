@@ -2072,6 +2072,28 @@ function toggleDetailedHistory(){
     btn.textContent = historyVisible ? "Ocultar" : "Ver";
   }
 }
+
+function toggleDetailedHistory(){
+  const section = document.getElementById("detailedHistorySection");
+  const list = document.getElementById("historyList");
+  const btn = document.getElementById("openDetailedHistoryBtn");
+
+  if(section){
+    section.classList.toggle("hidden");
+  }
+
+  if(list){
+    list.classList.toggle("hidden");
+  }
+
+  if(btn){
+    const isHidden =
+      (section && section.classList.contains("hidden")) ||
+      (list && list.classList.contains("hidden"));
+
+    btn.querySelector(".action-title").textContent = isHidden ? "Histórico" : "Ocultar";
+  }
+}
     
     // =============================
 // 🔗 BIND BOTÕES
