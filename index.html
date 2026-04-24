@@ -3140,6 +3140,36 @@ document.addEventListener("click", (e) => {
     openHistoryModal(index);
   }
 });    
+
+    async function finalizeTurn(){
+  try {
+    if(typeof serializeTurn !== "function"){
+      alert("Função serializeTurn não encontrada.");
+      return;
+    }
+
+    if(typeof saveHistoryItem !== "function"){
+      alert("Função saveHistoryItem não encontrada.");
+      return;
+    }
+
+    const item = serializeTurn("t2");
+
+    await saveHistoryItem(item);
+
+    alert("Turno finalizado com sucesso.");
+
+    clearTurn("t2");
+
+    if(typeof render === "function"){
+      render();
+    }
+
+  } catch(error){
+    console.error("Erro ao finalizar turno:", error);
+    alert("Erro ao finalizar turno.");
+  }
+}
     
     // 🔥 INICIALIZAR BOTÕES
 bindSessionEvents();
