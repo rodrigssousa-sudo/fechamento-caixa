@@ -325,11 +325,22 @@
       letter-spacing:-.04em;
     }
 
-    .section-grid{
-      display:grid;
-      grid-template-columns:1fr 1fr;
-      gap:18px;
-    }
+ .section-grid{
+  display:grid;
+  grid-template-columns:repeat(2,1fr);
+  gap:16px;
+}
+
+@media (max-width:600px){
+  .section-grid{
+    display:block !important;
+  }
+
+  .section-grid .section-card{
+    width:100% !important;
+    margin-bottom:16px !important;
+  }
+}
 
     .section-card{
       background:#fff;
