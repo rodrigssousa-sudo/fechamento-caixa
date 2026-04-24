@@ -1845,32 +1845,39 @@ const parseFicha = (v) => {
   return Number(s) || 0;
 };
 
-  const val = (id) => parseBRMoney(document.getElementById(id)?.value || "");
+ const valMoney = (id) => parseBRMoney(document.getElementById(id)?.value || "");
+const valFicha = (id) => parseFicha(document.getElementById(id)?.value || "");
 
-  const reca = val("t2_banco");
-  const suprema = val("t2_suprema");
-  const pppoker = val("t2_pppoker");
-  const buffalo = val("t2_buffalo");
-  const ganamos = val("t2_ganamos");
-  const cargaFichas = val("t2_cargas");
-  const cargaPokerRaw = val("t2_cargas_poker");
-  const cargaPoker = cargaPokerRaw * 400;
+const reca = valMoney("t2_banco");
 
-  const pendings = [...document.querySelectorAll("#t2_pending_list .dynamic-row")].map((row) => {
-    const inputs = row.querySelectorAll("input");
-    return {
-      name: inputs[0]?.value || "",
-      value: parseBRMoney(inputs[1]?.value || "")
-    };
-  }).filter(item => item.name || item.value);
+// fichas/plataformas com decimal tipo 131.19
+const suprema = valFicha("t2_suprema");
+const pppoker = valFicha("t2_pppoker");
 
-  const outflows = [...document.querySelectorAll("#t2_dynamic_list .dynamic-row")].map((row) => {
-    const inputs = row.querySelectorAll("input");
-    return {
-      name: inputs[0]?.value || "",
-      value: parseBRMoney(inputs[1]?.value || "")
-    };
-  }).filter(item => item.name || item.value);
+// dinheiro normal
+const buffalo = valMoney("t2_buffalo");
+const ganamos = valMoney("t2_ganamos");
+const cargaFichas = valMoney("t2_cargas");
+
+// carga poker também é ficha
+const cargaPokerRaw = valFicha("t2_cargas_poker");
+const cargaPoker = cargaPokerRaw * 400;
+
+const pendings = [...document.querySelectorAll("#t2_pending_list .dynamic-row")].map((row) => {
+  const inputs = row.querySelectorAll("input");
+  return {
+    name: inputs[0]?.value || "",
+    value: parseBRMoney(inputs[1]?.value || "")
+  };
+}).filter(item => item.name || item.value);
+
+const outflows = [...document.querySelectorAll("#t2_dynamic_list .dynamic-row")].map((row) => {
+  const inputs = row.querySelectorAll("input");
+  return {
+    name: inputs[0]?.value || "",
+    value: parseBRMoney(inputs[1]?.value || "")
+  };
+}).filter(item => item.name || item.value);
 
   const entradasTotal =
     reca +
