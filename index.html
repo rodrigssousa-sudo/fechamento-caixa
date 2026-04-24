@@ -2701,23 +2701,25 @@ function buildPremiumBankReceiptPdf(startDate, endDate) {
 
   const ranking = {};
 
-  filtered.forEach((item) => {
-    const nome = item.nomeOperador || "Sem nome";
-   const previousItem = historyCache[index + 1];
+  filtered.forEach((item, index) => {
+  const nome = item.nomeOperador || "Sem nome";
 
-const diff = previousItem
-  ? calcularDiffReal(item.turno || {}, previousItem.turno || {})
-  : 0;
-    const saidas = Number(item.turno?.saidasTotal || item.turno?.saidas || 0);
+  const previousItem = filtered[index + 1];
 
-    if (!ranking[nome]) {
-      ranking[nome] = {
-        qtd: 0,
-        sobra: 0,
-        falta: 0,
-        saidas: 0
-      };
-    }
+  const diff = previousItem
+    ? calcularDiffReal(item.turno || {}, previousItem.turno || {})
+    : 0;
+
+  const saidas = Number(item.turno?.saidasTotal || item.turno?.saidas || 0);
+
+  if (!ranking[nome]) {
+    ranking[nome] = {
+      qtd: 0,
+      sobra: 0,
+      falta: 0,
+      saidas: 0
+    };
+  }
 
     ranking[nome].qtd += 1;
     ranking[nome].saidas += saidas;
