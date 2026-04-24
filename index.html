@@ -900,6 +900,42 @@
 
 }
 
+@media (max-width:600px){
+
+  /* pega o card azul direto */
+  .bank-header,
+  .saldo,
+  .saldo-reca,
+  .balance,
+  .card-blue,
+  .hero-card{
+    padding:16px !important;
+  }
+
+  /* pega TODOS textos grandes dentro dele */
+  .bank-header h1,
+  .bank-header .value,
+  .bank-header strong,
+  .bank-header span{
+    font-size:32px !important;
+    line-height:1.1 !important;
+  }
+
+  /* fallback agressivo (garante funcionar) */
+  .bank-header *{
+    max-width:100%;
+  }
+
+}
+
+@media (max-width:600px){
+
+  div:has(> div:contains("SALDO RECA")){
+    padding:16px !important;
+  }
+
+}
+
 .balance-card .value,
 .saldo-card .value{
   font-size:28px !important;
