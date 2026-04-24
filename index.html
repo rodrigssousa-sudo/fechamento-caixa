@@ -2494,24 +2494,6 @@ function startHistoryRealtimeListener() {
     console.error("❌ Erro ao carregar histórico:", error);
   });
 }
-
-// =========================
-// 👤 CONTROLE DE SESSÃO
-// =========================
-
-  console.log("LOGADO:", user.email);
-  console.log("UID:", user.uid);
-
-  try {
-    const userRef = doc(db, "users", user.uid);
-    const snap = await getDoc(userRef);
-
-    if (!snap.exists()) {
-      alert("Usuário não autorizado.");
-      await signOut(auth);
-      return;
-    }
-
     const data = snap.data();
 
     if (data.status === "pending") {
