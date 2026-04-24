@@ -3244,13 +3244,19 @@ document.addEventListener("click", (e) => {
     { name: "Cargas F. Poker (x400)", value: getValue(`${turno}_cargas_poker`) * 400 }
   ];
 
-  const pendings = [...document.querySelectorAll(`#${turno}_pending_list .dynamic-row`)].map((row) => {
-    const inputs = row.querySelectorAll("input");
-    return {
-      name: inputs[0]?.value || "",
-      value: parseMoneyInput(inputs[1]?.value || "")
-    };
-  });
+  const pendingList = document.getElementById(`${turno}_pending_list`);
+
+const pendings = pendingList
+  ? [...pendingList.querySelectorAll("[data-pen-value]")].map((valueInput) => {
+      const index = valueInput.dataset.penValue;
+      const nameInput = pendingList.querySelector(`[data-pen-name="${index}"]`);
+
+      return {
+        name: nameInput?.value || "",
+        value: parseMoneyInput(valueInput.value || "")
+      };
+    })
+  : [];
 
   const outflows = [...document.querySelectorAll(`#${turno}_dynamic_list .dynamic-row`)].map((row) => {
     const inputs = row.querySelectorAll("input");
