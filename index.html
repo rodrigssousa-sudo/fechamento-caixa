@@ -3262,7 +3262,11 @@ const pendings = pendingList
     const inputs = row.querySelectorAll("input");
     return {
       name: inputs[0]?.value || "",
-      value: parseMoneyInput(inputs[1]?.value || "")
+      value: Number(
+  (inputs[1]?.value || "0")
+    .replace(/\./g, "")   // remove milhar
+    .replace(",", ".")    // vírgula → ponto
+)
     };
   });
 
