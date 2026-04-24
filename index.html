@@ -1984,44 +1984,123 @@ document.addEventListener("click", (e) => {
     menu.classList.add("hidden");
   }
 });
+
+function createPendingRow(turno){
+  const list = document.getElementById(`${turno}_pending_list`);
+  if(!list) return;
+
+  const index = list.querySelectorAll(".dynamic-row").length;
+
+  const row = document.createElement("div");
+  row.className = "dynamic-row";
+
+  row.innerHTML = `
+    <input type="text" placeholder="Nome do pendente" data-pen-name="${index}">
+    <input type="text" inputmode="numeric" placeholder="0,00" data-pen-value="${index}">
+    <button type="button" class="remove-row-btn">×</button>
+  `;
+
+  row.querySelector(".remove-row-btn").onclick = () => {
+    row.remove();
+    render();
+  };
+
+  list.appendChild(row);
+}
+
+function createDynamicRow(turno){
+  const list = document.getElementById(`${turno}_dynamic_list`);
+  if(!list) return;
+
+  const index = list.querySelectorAll(".dynamic-row").length;
+
+  const row = document.createElement("div");
+  row.className = "dynamic-row";
+
+  row.innerHTML = `
+    <input type="text" placeholder="Nome da saída" data-out-name="${index}">
+    <input type="text" inputmode="numeric" placeholder="0,00" data-out-value="${index}">
+    <button type="button" class="remove-row-btn">×</button>
+  `;
+
+  row.querySelector(".remove-row-btn").onclick = () => {
+    row.remove();
+    render();
+  };
+
+  list.appendChild(row);
+}
+
+function clearTurn(turno){
+  const f = fieldsByTurn[turno];
+  if(!f) return;
+
+  [
+    f.banco,
+    f.suprema,
+    f.pppoker,
+    f.buffalo,
+    f.ganamos,
+    f.cargas,
+    f.cargasPoker
+  ].forEach((id) => {
+    const el = document.getElementById(id);
+    if(el) el.value = "";
+  });
+
+  const pendingList = document.getElementById(`${turno}_pending_list`);
+  const dynamicList = document.getElementById(`${turno}_dynamic_list`);
+
+  if(pendingList) pendingList.innerHTML = "";
+  if(dynamicList) dynamicList.innerHTML = "";
+
+  render();
+}
+
+function toggleDetailedHistory(){
+  historyVisible = !historyVisible;
+
+  const list = document.getElementById("historyList");
+  const btn = document.getElementById("toggleHistoryBtn");
+
+  if(list){
+    list.classList.toggle("hidden", !historyVisible);
+  }
+
+  if(btn){
+    btn.textContent = historyVisible ? "Ocultar" : "Ver";
+  }
+}
     
     // =============================
 // 🔗 BIND BOTÕES
 // =============================
 function bindSessionEvents(){
 
-  // Pendentes
+  document.getElementById("calcular")?.addEventListener("click", () => {
+    render();
+  });
+
+  document.getElementById("limparBtn")?.addEventListener("click", () => {
+    clearTurn("t2");
+  });
+
+  document.getElementById("fecharTurno")?.addEventListener("click", async () => {
+    await finalizeTurn();
+  });
+
   document.querySelectorAll("[data-add-pending]").forEach((btn) => {
     btn.onclick = () => {
       createPendingRow(btn.dataset.addPending);
     };
   });
 
-  // Saídas
-  document.querySelectorAll("[data-add-outflow], [data-add-dynamic]").forEach((btn) => {
+  document.querySelectorAll("[data-add-outflow]").forEach((btn) => {
     btn.onclick = () => {
-      const turno = btn.dataset.addOutflow || btn.dataset.addDynamic;
-      createDynamicRow(turno);
+      createDynamicRow(btn.dataset.addOutflow);
     };
   });
 
-  // ✅ CALCULAR
-  document.getElementById("calcular")?.addEventListener("click", () => {
-    render();
-  });
-
-  // ✅ LIMPAR
-  document.getElementById("limparBtn")?.addEventListener("click", () => {
-    clearTurn("t2");
-    render();
-  });
-
-  // ✅ FINALIZAR TURNO
-  document.getElementById("fecharTurno")?.addEventListener("click", async () => {
-    await finalizeTurn();
-  });
-
-  // (opcional) histórico
   document.getElementById("openDetailedHistoryBtn")?.addEventListener("click", () => {
     toggleDetailedHistory();
   });
