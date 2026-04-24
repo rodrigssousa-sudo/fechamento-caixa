@@ -658,71 +658,50 @@
       gap:14px;
     }
 
-    @media(max-width:900px){
-      .summary-grid,.section-grid,.actions-grid{grid-template-columns:1fr 1fr;}
-      .balance-value{font-size:30px;}
-    }
+  @media (max-width:600px){
 
-    @media(max-width:700px){
-      .topbar,.user-card,.balance-card{flex-direction:column;align-items:flex-start;}
-      .summary-grid,.section-grid,.actions-grid,.dynamic-row,.modal-grid{grid-template-columns:1fr;}
-      .app{padding:12px 12px 90px;}
-      .brand-title{font-size:21px;}
-      .balance-value{font-size:28px;}
-    }
-    
-    @media (max-width:600px){
-
-  .header{
-    position:relative;
-    padding:14px !important;
-  }
-
-  .title-row{
+  .topbar{
     display:flex !important;
     align-items:center !important;
     justify-content:space-between !important;
+
+    padding:12px 14px !important;
+    border-radius:20px !important;
   }
 
   .brand{
     display:flex !important;
     align-items:center !important;
-    gap:12px !important;
+    gap:10px !important;
   }
 
-  /* LOGO */
-  .logo-box{
-    width:50px !important;
-    height:50px !important;
-    min-width:50px !important;
-  }
-
-  /* TEXTO */
-  .brand div{
-    display:flex;
-    flex-direction:column;
-    justify-content:center;
-  }
-
-  .brand div strong,
-  .brand-title{
-    font-size:20px !important;
-    line-height:1.1;
-  }
-
-  .brand div span,
-  .brand-subtitle{
-    font-size:13px !important;
-  }
-
-  /* 🔥 MENU VAI PRA DIREITA */
-  .menu-toggle-btn{
-    position:absolute !important;
-    right:16px !important;
-    top:20px !important;
-
+  /* LOGO BK */
+  .brand-logo{
     width:44px !important;
     height:44px !important;
+    min-width:44px !important;
+
+    font-size:16px !important;
+    border-radius:12px !important;
+  }
+
+  /* TEXTOS */
+  .brand-title{
+    font-size:18px !important;
+    line-height:1.1 !important;
+  }
+
+  .brand-sub{
+    font-size:12px !important;
+  }
+
+  /* BOTÃO MENU */
+  .menu-btn{
+    width:42px !important;
+    height:42px !important;
+    min-width:42px !important;
+
+    font-size:20px !important;
   }
 
 }
