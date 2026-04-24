@@ -1291,10 +1291,8 @@ function render() {
     pendentes: getPendingTotal("t2")
   };
 
-  const saldo = calcularSaldo(turno);
-
-  const bank = document.getElementById("bankValue");
-  if (bank) bank.textContent = balanceVisible ? money(saldo) : "Saldo oculto";
+  // ✅ AGORA O TOPO VEM DO HISTÓRICO
+  renderTopPreviousCards();
 
   renderCompare();
   renderRanking();
