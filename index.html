@@ -1706,7 +1706,7 @@ document.getElementById("logoutBtn")?.addEventListener("click", async () => {
 // =========================
 
 function renderTopPreviousCards() {
-  const last = historyCache[0] || null;
+  const last = historyCache[0];
 
   const previousOperator = document.getElementById("previousOperator");
   const previousDate = document.getElementById("previousDate");
@@ -1719,16 +1719,21 @@ function renderTopPreviousCards() {
     if (previousDate) previousDate.textContent = "-";
     if (previousDiff) previousDiff.textContent = money(0);
     if (previousReca) previousReca.textContent = money(0);
-    if (bankValue) bankValue.textContent = balanceVisible ? money(0) : "Saldo oculto";
+    if (bankValue) bankValue.textContent = money(0);
     return;
   }
 
   const diff = Number(last.diff || 0);
   const lastTotal = calcularSaldo(last.turno || {});
-const lastReca = Number(last.total || last.turno?.reca || 0);
+  const lastReca = Number(last.total || last.turno?.reca || 0);
 
-if (previousReca) previousReca.textContent = money(lastTotal); // total turno (card branco)
-if (bankValue) bankValue.textContent = balanceVisible ? money(lastReca) : "Saldo oculto"; // banco (card azul)
+  if (previousOperator) previousOperator.textContent = last.nomeOperador || "Sem nome";
+
+  if (previousDate) {
+    previousDate.textContent = formatDateBR(
+      last.fechamentoDate || last.turno?.dataFechamento || ""
+    );
+  }
 
   if (previousDiff) {
     previousDiff.textContent = `${diff > 0 ? "+" : diff < 0 ? "-" : ""}${money(Math.abs(diff))}`;
@@ -1737,8 +1742,11 @@ if (bankValue) bankValue.textContent = balanceVisible ? money(lastReca) : "Saldo
     if (diff < 0) previousDiff.classList.add("red");
   }
 
+  // ⚪ CARD BRANCO → TOTAL DO TURNO
   if (previousReca) previousReca.textContent = money(lastTotal);
-if (bankValue) bankValue.textContent = balanceVisible ? money(lastTotal) : "Saldo oculto";
+
+  // 🔵 CARD AZUL → BANCO RECA
+  if (bankValue) bankValue.textContent = balanceVisible ? money(lastReca) : "Saldo oculto";
 }
 
 function openHistoryModal(index) {
