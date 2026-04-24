@@ -253,25 +253,6 @@
       .modal-grid{grid-template-columns:1fr!important;}
       .auth-card{padding:30px!important;}
     }
-    
-#mainMenu{
-  position: fixed !important;
-  top: 92px !important;
-  right: 18px !important;
-  z-index: 999999 !important;
-  display: grid !important;
-}
-
-#mainMenu.hidden{
-  display: none !important;
-}
-
-.menu-btn{
-  position: relative !important;
-  z-index: 1000000 !important;
-}
-
-    
   </style>
 </head>
 <body>
@@ -1705,25 +1686,15 @@
       byId("mainMenu")?.classList.toggle("hidden");
     });
 
-   const menuToggle = document.getElementById("menuToggle");
-const mainMenu = document.getElementById("mainMenu");
+    document.addEventListener("click", (e) => {
+      const menu = byId("mainMenu");
+      const toggle = byId("menuToggle");
+      if (!menu || !toggle) return;
 
-menuToggle?.addEventListener("click", (e) => {
-  e.preventDefault();
-  e.stopPropagation();
-
-  mainMenu?.classList.toggle("hidden");
-
-  console.log("Menu clicado. Hidden?", mainMenu?.classList.contains("hidden"));
-});
-
-document.addEventListener("click", (e) => {
-  if (!mainMenu || !menuToggle) return;
-
-  if (!mainMenu.contains(e.target) && !menuToggle.contains(e.target)) {
-    mainMenu.classList.add("hidden");
-  }
-});
+      if (!menu.contains(e.target) && !toggle.contains(e.target)) {
+        menu.classList.add("hidden");
+      }
+    });
 
     byId("openDetailedHistoryBtn")?.addEventListener("click", () => {
       historyVisible = true;
