@@ -3244,32 +3244,41 @@ document.addEventListener("click", (e) => {
     { name: "Cargas F. Poker (x400)", value: getValue(`${turno}_cargas_poker`) * 400 }
   ];
 
-  const pendingList = document.getElementById(`${turno}_pending_list`);
+  const parseBRMoney = (value) => {
+  return Number(
+    String(value || "0")
+      .replace(/\s/g, "")
+      .replace(/\$/g, "")
+      .replace(/\./g, "")
+      .replace(",", ".")
+  ) || 0;
+};
+
+const pendingList = document.getElementById(`${turno}_pending_list`);
 
 const pendings = pendingList
-  ? [...pendingList.querySelectorAll("[data-pen-value]")].map((valueInput) => {
-      const index = valueInput.dataset.penValue;
-      const nameInput = pendingList.querySelector(`[data-pen-name="${index}"]`);
+  ? [...pendingList.querySelectorAll(".dynamic-row")].map((row) => {
+      const inputs = row.querySelectorAll("input");
 
       return {
-        name: nameInput?.value || "",
-        value: parseMoneyInput(valueInput.value || "")
+        name: inputs[0]?.value || "",
+        value: parseBRMoney(inputs[1]?.value || "")
       };
-    })
+    }).filter((item) => item.name || item.value)
   : [];
 
-  const outflows = [...document.querySelectorAll(`#${turno}_dynamic_list .dynamic-row`)].map((row) => {
-    const inputs = row.querySelectorAll("input");
-    return {
-      name: inputs[0]?.value || "",
-      value: Number(
-  (inputs[1]?.value || "0")
-    .replace(/\./g, "")   // remove milhar
-    .replace(",", ".")    // vírgula → ponto
-)
-    };
-  });
+const dynamicList = document.getElementById(`${turno}_dynamic_list`);
 
+const outflows = dynamicList
+  ? [...dynamicList.querySelectorAll(".dynamic-row")].map((row) => {
+      const inputs = row.querySelectorAll("input");
+
+      return {
+        name: inputs[0]?.value || "",
+        value: parseBRMoney(inputs[1]?.value || "")
+      };
+    }).filter((item) => item.name || item.value)
+  : [];
   const entradasTotal = entries.reduce((acc, item) => acc + Number(item.value || 0), 0);
   const pendentesTotal = pendings.reduce((acc, item) => acc + Number(item.value || 0), 0);
   const saidasTotal = outflows.reduce((acc, item) => acc + Number(item.value || 0), 0);
