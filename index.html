@@ -2353,37 +2353,48 @@ document.addEventListener("DOMContentLoaded", () => {
   tabRegister?.addEventListener("click", () => showAuthForm("register"));
   tabPassword?.addEventListener("click", () => showAuthForm("password"));
 
-  // =========================
-  // 🔐 LOGIN
-  // =========================
-  loginForm?.addEventListener("submit", async (e) => {
-    e.preventDefault();
+// =========================
+// 🔐 LOGIN
+// =========================
+loginForm?.addEventListener("submit", async (e) => {
+  e.preventDefault();
 
-    const email = document.getElementById("loginEmail")?.value.trim().toLowerCase();
-    const password = document.getElementById("loginPassword")?.value;
+  const email = document.getElementById("loginEmail")?.value.trim().toLowerCase();
+  const password = document.getElementById("loginPassword")?.value;
 
-    if (!email || !password) {
-      alert("Preencha email e senha.");
-      return;
+  if (!email || !password) {
+    alert("Preencha email e senha.");
+    return;
+  }
+
+  try {
+    console.log("Tentando login:", email);
+
+    const userCredential = await signInWithEmailAndPassword(auth, email, password);
+    const user = userCredential.user;
+
+    console.log("UID LOGIN:", user.uid);
+
+    const userRef = doc(db, "users", user.uid);
+    const snap = await getDoc(userRef);
+
+    console.log("DOC EXISTE?", snap.exists());
+
+    if (snap.exists()) {
+      console.log("DADOS USER:", snap.data());
     }
 
-    try {
-      console.log("Tentando login:", email);
+    const allowed = await validateUserAccess(user);
+    if (!allowed) return;
 
-      const userCredential = await signInWithEmailAndPassword(auth, email, password);
-      const user = userCredential.user;
+    console.log("Login liberado:", user.email);
 
-      const allowed = await validateUserAccess(user);
-      if (!allowed) return;
-
-      console.log("Login liberado:", user.email);
-
-    } catch (error) {
-      console.error("ERRO LOGIN:", error);
-      alert(error.message || "Erro ao fazer login.");
-    }
-  });
-
+  } catch (error) {
+    console.error("ERRO LOGIN:", error);
+    alert(error.message || "Erro ao fazer login.");
+  }
+});
+      
   // =========================
   // 📝 REGISTRO COMO PENDING
   // =========================
