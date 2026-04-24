@@ -2609,47 +2609,6 @@ tabLogin?.addEventListener("click", () => showAuthForm("login"));
 tabRegister?.addEventListener("click", () => showAuthForm("register"));
 tabPassword?.addEventListener("click", () => showAuthForm("password"));
 
-
-// =========================
-// 📝 REGISTRO
-// =========================
-async function registerUser(name, email, password) {
-  try {
-    const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-
-    await setDoc(doc(db, "users", userCredential.user.uid), {
-      name,
-      email,
-      role: "pending",
-      status: "pending",
-      createdAt: serverTimestamp()
-    });
-
-    alert("Conta criada com sucesso! Aguarde aprovação do administrador.");
-    await signOut(auth);
-    showAuthForm("login");
-
-  } catch (error) {
-    console.error("Erro ao registrar:", error);
-    alert(error.message || "Erro ao registrar usuário.");
-  }
-}
-
-document.getElementById("registerForm")?.addEventListener("submit", async (e) => {
-  e.preventDefault();
-
-  const name = document.getElementById("registerName")?.value.trim();
-  const email = document.getElementById("registerEmail")?.value.trim().toLowerCase();
-  const password = document.getElementById("registerPassword")?.value;
-
-  if (!name || !email || !password) {
-    alert("Preencha nome, email e senha.");
-    return;
-  }
-
-  await registerUser(name, email, password);
-});
-
 // =========================
 // 🔘 FIX BOTÕES FINAIS
 // =========================
