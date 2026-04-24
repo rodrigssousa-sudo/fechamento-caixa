@@ -1924,18 +1924,15 @@ const outflows = [...document.querySelectorAll("#t2_dynamic_list .dynamic-row")]
     saldoLiquido
   };
 
-  const currentComparison = saidasTotal;
-
- let diff = 0;
+let diff = 0;
 
 if (historyCache.length) {
   const previous = historyCache[0];
-  const prevTurno = previous.turno || {};
 
   const previousSaldo = Number(
     previous.currentSaldoTotal ||
     previous.saldo ||
-    prevTurno.saldoLiquido ||
+    previous.turno?.saldoLiquido ||
     0
   );
 
