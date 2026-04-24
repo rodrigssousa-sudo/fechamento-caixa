@@ -1681,9 +1681,13 @@
     const db = getFirestore(app);
     const auth = getAuth(app);
 
-    const REPORT_CODE = "9507";
-    const DELETE_HISTORY_CODE = "9507";
-    const ADMIN_CODE = "9507";
+   async function isCurrentUserAdmin() {
+  const user = auth.currentUser;
+  if (!user) return false;
+
+  const snap = await getDoc(doc(db, "users", user.uid));
+  return snap.exists() && snap.data().role === "admin";
+}
 
     const ACTIVE_USER_STORAGE_KEY = "bank-king-active-user-v1";
     const REMEMBER_LOGIN_STORAGE_KEY = "bank-king-remember-login-v1";
@@ -2932,11 +2936,12 @@ function openHistoryModal(index) {
 
   // 🔥 EVENTO EXCLUIR
   document.getElementById("deleteHistoryBtn")?.addEventListener("click", async () => {
-    const code = prompt("Código para excluir:");
-    if (code !== DELETE_HISTORY_CODE) {
-      alert("Código incorreto");
-      return;
-    }
+    const isAdmin = await isCurrentUserAdmin();
+
+if (!isAdmin) {
+  alert("Apenas admin pode excluir.");
+  return;
+}
 
     if (!confirm("Tem certeza que deseja excluir?")) return;
 
@@ -3635,7 +3640,7 @@ document.getElementById("pdfRangeBackdrop")?.addEventListener("click", () => {
   document.getElementById("pdfRangeModal")?.classList.add("hidden");
 });
 
-document.getElementById("confirmExportPdf")?.addEventListener("click", () => {
+document.getElementById("confirmExportPdf")?.addEventListener("click", async () => {
   const startDate = document.getElementById("pdfDateStart")?.value;
   const endDate = document.getElementById("pdfDateEnd")?.value;
 
@@ -3644,13 +3649,12 @@ document.getElementById("confirmExportPdf")?.addEventListener("click", () => {
     return;
   }
 
-  const code = prompt("Digite código interno:");
-  if (code === null) return;
+ const isAdmin = await isCurrentUserAdmin();
 
-  if (code !== REPORT_CODE) {
-    alert("Código incorreto.");
-    return;
-  }
+if (!isAdmin) {
+  alert("Acesso permitido apenas para admin.");
+  return;
+}
 
   const html = buildPremiumBankReceiptPdf(startDate, endDate);
 
@@ -3683,16 +3687,15 @@ document.getElementById("confirmExportPdf")?.addEventListener("click", () => {
 // RELATÓRIOS RÁPIDOS
 // =========================
 document.querySelectorAll("[data-report-range]").forEach((btn) => {
-  btn.addEventListener("click", () => {
+  btn.addEventListener("click", async () => {
     const days = Number(btn.dataset.reportRange || 7);
 
-    const code = prompt("Digite código interno:");
-    if (code === null) return;
+   const isAdmin = await isCurrentUserAdmin();
 
-    if (code !== REPORT_CODE) {
-      alert("Código incorreto.");
-      return;
-    }
+if (!isAdmin) {
+  alert("Acesso permitido apenas para admin.");
+  return;
+}
 
     const end = new Date();
     const start = new Date();
@@ -3728,12 +3731,12 @@ document.querySelectorAll("[data-report-range]").forEach((btn) => {
 // =========================
 // MENU / HISTÓRICO / RANKING
 // =========================
-document.getElementById("recalculateHistoryBtn")?.addEventListener("click", async () => {
-  const code = prompt("Digite código interno:");
-  if (code === null) return;
 
-  if (code !== ADMIN_CODE) {
-    alert("Código incorreto.");
+document.getElementById("recalculateHistoryBtn")?.addEventListener("click", async () => {
+  const isAdmin = await isCurrentUserAdmin();
+
+  if (!isAdmin) {
+    alert("Acesso permitido apenas para admin.");
     return;
   }
 
@@ -3741,30 +3744,6 @@ document.getElementById("recalculateHistoryBtn")?.addEventListener("click", asyn
     await recalculateAllHistory();
   } else {
     alert("Função de recalcular ainda não está instalada.");
-  }
-});
-
-document.getElementById("openRankingBtn")?.addEventListener("click", () => {
-  const code = prompt("Digite código interno:");
-  if (code === null) return;
-
-  if (code !== ADMIN_CODE) {
-    alert("Código incorreto.");
-    return;
-  }
-
-  document.getElementById("mainMenu")?.classList.add("hidden");
-
-  const section = document.getElementById("rankingSection");
-  if (!section) return;
-
-  section.classList.toggle("hidden");
-
-  if (!section.classList.contains("hidden")) {
-    section.scrollIntoView({
-      behavior: "smooth",
-      block: "start"
-    });
   }
 });
 
