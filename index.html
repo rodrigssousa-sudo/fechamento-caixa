@@ -1937,6 +1937,184 @@ document.querySelectorAll("#mainMenu .menu-item").forEach((btn) => {
   });
 });
 
+function buildPremiumBankReceiptPdf(startDate, endDate) {
+  const filtered = historyCache.filter((item) => {
+    const date = item.fechamentoDate || item.turno?.dataFechamento;
+    if (!date) return false;
+    return date >= startDate && date <= endDate;
+  });
+
+  const totalReca = filtered.reduce((acc, item) => acc + Number(item.total || item.turno?.reca || 0), 0);
+  const totalSaidas = filtered.reduce((acc, item) => acc + Number(item.turno?.saidasTotal || item.turno?.saidas || 0), 0);
+  const totalDiff = filtered.reduce((acc, item) => acc + Number(item.diff || 0), 0);
+
+  const rows = filtered.map((item) => {
+    const turno = item.turno || {};
+    const diff = Number(item.diff || 0);
+    const saldo = item.saldo ?? item.currentSaldoTotal ?? calcularSaldo(turno);
+
+    return `
+      <div class="receipt">
+        <div class="receipt-top">
+          <div>
+            <div class="receipt-title">${escapeHtml(item.nomeOperador || "Sem nome")}</div>
+            <div class="receipt-date">${formatDateBR(item.fechamentoDate || turno.dataFechamento || "")}</div>
+          </div>
+          <div class="${diff >= 0 ? "positive" : "negative"}">
+            ${diff > 0 ? "+" : diff < 0 ? "-" : ""}${money(Math.abs(diff))}
+          </div>
+        </div>
+
+        <div class="receipt-grid">
+          <div><span>Banco Reca</span><strong>${money(item.total || turno.reca || 0)}</strong></div>
+          <div><span>Saldo turno</span><strong>${money(saldo)}</strong></div>
+          <div><span>Saídas</span><strong>${money(turno.saidasTotal || turno.saidas || 0)}</strong></div>
+          <div><span>Pendentes</span><strong>${money(turno.pendentesTotal || turno.pendentes || 0)}</strong></div>
+        </div>
+      </div>
+    `;
+  }).join("");
+
+  return `
+    <!DOCTYPE html>
+    <html lang="pt-BR">
+    <head>
+      <meta charset="UTF-8">
+      <title>Relatório Bank King</title>
+      <style>
+        body{
+          font-family:Arial,sans-serif;
+          background:#f3f6fb;
+          color:#0f172a;
+          padding:28px;
+        }
+        .page{
+          max-width:900px;
+          margin:0 auto;
+        }
+        .header{
+          background:#fff;
+          border-radius:22px;
+          padding:24px;
+          margin-bottom:18px;
+          border:1px solid #e2e8f0;
+        }
+        .brand{
+          font-size:32px;
+          font-weight:900;
+          margin-bottom:6px;
+        }
+        .period{
+          color:#64748b;
+          font-size:14px;
+        }
+        .cards{
+          display:grid;
+          grid-template-columns:repeat(3,1fr);
+          gap:12px;
+          margin-bottom:18px;
+        }
+        .card{
+          background:#fff;
+          border-radius:18px;
+          padding:18px;
+          border:1px solid #e2e8f0;
+        }
+        .label{
+          font-size:11px;
+          color:#64748b;
+          font-weight:900;
+          text-transform:uppercase;
+          margin-bottom:8px;
+        }
+        .value{
+          font-size:22px;
+          font-weight:900;
+        }
+        .receipt{
+          background:#fff;
+          border:1px solid #e2e8f0;
+          border-radius:20px;
+          padding:18px;
+          margin-bottom:12px;
+          page-break-inside:avoid;
+        }
+        .receipt-top{
+          display:flex;
+          justify-content:space-between;
+          gap:12px;
+          align-items:flex-start;
+          border-bottom:1px solid #e2e8f0;
+          padding-bottom:12px;
+          margin-bottom:12px;
+        }
+        .receipt-title{
+          font-size:18px;
+          font-weight:900;
+        }
+        .receipt-date{
+          font-size:13px;
+          color:#64748b;
+          margin-top:4px;
+        }
+        .receipt-grid{
+          display:grid;
+          grid-template-columns:repeat(4,1fr);
+          gap:10px;
+        }
+        .receipt-grid div{
+          background:#f8fafc;
+          border-radius:14px;
+          padding:12px;
+        }
+        .receipt-grid span{
+          display:block;
+          font-size:11px;
+          color:#64748b;
+          font-weight:800;
+          margin-bottom:6px;
+        }
+        .receipt-grid strong{
+          font-size:14px;
+        }
+        .positive{color:#16a34a;font-weight:900;}
+        .negative{color:#dc2626;font-weight:900;}
+        @media print{
+          body{background:#fff;}
+        }
+      </style>
+    </head>
+    <body>
+      <div class="page">
+        <div class="header">
+          <div class="brand">BANK KING</div>
+          <div class="period">Período de ${formatDateBR(startDate)} até ${formatDateBR(endDate)}</div>
+        </div>
+
+        <div class="cards">
+          <div class="card">
+            <div class="label">Total Banco Reca</div>
+            <div class="value">${money(totalReca)}</div>
+          </div>
+          <div class="card">
+            <div class="label">Total Saídas</div>
+            <div class="value">${money(totalSaidas)}</div>
+          </div>
+          <div class="card">
+            <div class="label">Diferença Total</div>
+            <div class="value ${totalDiff >= 0 ? "positive" : "negative"}">
+              ${totalDiff > 0 ? "+" : totalDiff < 0 ? "-" : ""}${money(Math.abs(totalDiff))}
+            </div>
+          </div>
+        </div>
+
+        ${rows || `<div class="receipt">Nenhum fechamento encontrado nesse período.</div>`}
+      </div>
+    </body>
+    </html>
+  `;
+}
+    
 // PDF datas
 document.getElementById("openPdfCustomBtn")?.addEventListener("click", () => {
   const modal = document.getElementById("pdfRangeModal");
