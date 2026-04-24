@@ -1985,6 +1985,38 @@ document.addEventListener("click", (e) => {
   }
 });
     
+    // =============================
+// 🔗 BIND BOTÕES
+// =============================
+function bindSessionEvents(){
+
+  document.querySelectorAll("[data-add-pending]").forEach((btn) => {
+    btn.onclick = () => {
+      createPendingRow(btn.dataset.addPending);
+    };
+  });
+
+  document.querySelectorAll("[data-add-outflow], [data-add-dynamic]").forEach((btn) => {
+    btn.onclick = () => {
+      const turno = btn.dataset.addOutflow || btn.dataset.addDynamic;
+      createDynamicRow(turno);
+    };
+  });
+
+  document.getElementById("calculateBtn")?.addEventListener("click", () => {
+    render();
+  });
+
+  document.getElementById("clearBtn")?.addEventListener("click", () => {
+    clearTurn("t2");
+    render();
+  });
+
+  document.getElementById("saveShiftBtn")?.addEventListener("click", async () => {
+    await finalizeTurn();
+  });
+}
+  
 // =========================
 // 🚪 LOGOUT
 // =========================
