@@ -1192,8 +1192,8 @@
           <div class="section-body">
             <div id="t2_pending_list" class="dynamic-list"></div>
 
-            <button type="button" class="add-btn" data-add-outflow="t2">
-  + Adicionar saída
+           <button type="button" class="add-btn" data-add-pending="t2">
+  + Adicionar pendente
 </button>
           </div>
         </section>
@@ -1207,9 +1207,9 @@
         <div class="section-body">
           <div id="t2_dynamic_list" class="dynamic-list"></div>
 
-          <button type="button" class="add-btn" data-add-row="t2">
-            + Adicionar saída
-          </button>
+          <button type="button" class="add-btn" data-add-outflow="t2">
+  + Adicionar saída
+</button>
         </div>
       </section>
 
@@ -2032,18 +2032,19 @@ function createDynamicRow(turno){
 }
 
 function clearTurn(turno){
-  const f = fieldsByTurn[turno];
-  if(!f) return;
+  const ids = [
+    `${turno}_nome_operador`,
+    `${turno}_data_fechamento`,
+    `${turno}_banco`,
+    `${turno}_suprema`,
+    `${turno}_pppoker`,
+    `${turno}_buffalo`,
+    `${turno}_ganamos`,
+    `${turno}_cargas`,
+    `${turno}_cargas_poker`
+  ];
 
-  [
-    f.banco,
-    f.suprema,
-    f.pppoker,
-    f.buffalo,
-    f.ganamos,
-    f.cargas,
-    f.cargasPoker
-  ].forEach((id) => {
+  ids.forEach((id) => {
     const el = document.getElementById(id);
     if(el) el.value = "";
   });
@@ -2054,7 +2055,7 @@ function clearTurn(turno){
   if(pendingList) pendingList.innerHTML = "";
   if(dynamicList) dynamicList.innerHTML = "";
 
-  render();
+  if(typeof render === "function") render();
 }
 
 function toggleDetailedHistory(){
