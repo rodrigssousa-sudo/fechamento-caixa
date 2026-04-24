@@ -968,9 +968,18 @@
 }
 
 @media (max-width:600px){
+
   .actions-grid{
-    grid-template-columns:1fr !important;
+    display:grid !important;
+    grid-template-columns:1fr 1fr !important;
+    gap:12px !important;
   }
+
+  .action-btn{
+    width:100% !important;
+    min-width:0 !important;
+  }
+
 }
     
   </style>
