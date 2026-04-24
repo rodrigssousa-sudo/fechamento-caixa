@@ -3692,27 +3692,25 @@ const diff = previousItem
 `;
 }
     
-// PDF datas
+// =========================
+// PDF DATAS
+// =========================
 document.getElementById("openPdfCustomBtn")?.addEventListener("click", () => {
   const modal = document.getElementById("pdfRangeModal");
   const start = document.getElementById("pdfDateStart");
   const end = document.getElementById("pdfDateEnd");
 
   const today = getTodayDateInput();
-
   if (end) end.value = today;
 
   const d = new Date();
   d.setDate(d.getDate() - 7);
-  const offset = d.getTimezoneOffset();
-  const local = new Date(d.getTime() - offset * 60000);
+  const local = new Date(d.getTime() - d.getTimezoneOffset() * 60000);
 
   if (start) start.value = local.toISOString().split("T")[0];
-
   if (modal) modal.classList.remove("hidden");
 });
 
-// fechar modal PDF
 document.getElementById("closePdfRangeModal")?.addEventListener("click", () => {
   document.getElementById("pdfRangeModal")?.classList.add("hidden");
 });
@@ -3721,7 +3719,6 @@ document.getElementById("pdfRangeBackdrop")?.addEventListener("click", () => {
   document.getElementById("pdfRangeModal")?.classList.add("hidden");
 });
 
-// Gerar PDF custom
 document.getElementById("confirmExportPdf")?.addEventListener("click", () => {
   const startDate = document.getElementById("pdfDateStart")?.value;
   const endDate = document.getElementById("pdfDateEnd")?.value;
@@ -3765,7 +3762,10 @@ document.getElementById("confirmExportPdf")?.addEventListener("click", () => {
   }, 800);
 });
 
-// Relatórios rápidos
+
+// =========================
+// RELATÓRIOS RÁPIDOS
+// =========================
 document.querySelectorAll("[data-report-range]").forEach((btn) => {
   btn.addEventListener("click", () => {
     const days = Number(btn.dataset.reportRange || 7);
@@ -3791,6 +3791,7 @@ document.querySelectorAll("[data-report-range]").forEach((btn) => {
       .split("T")[0];
 
     const w = window.open("", "_blank", "width=1280,height=900");
+
     if (!w) {
       alert("Não foi possível abrir a janela.");
       return;
@@ -3799,13 +3800,18 @@ document.querySelectorAll("[data-report-range]").forEach((btn) => {
     w.document.open();
     w.document.write(buildPremiumBankReceiptPdf(startLocal, endLocal));
     w.document.close();
-    w.focus();
 
-    w.onload = () => w.print();
+    setTimeout(() => {
+      w.focus();
+      w.print();
+    }, 800);
   });
 });
 
-// Recalcular histórico
+
+// =========================
+// MENU / HISTÓRICO / RANKING
+// =========================
 document.getElementById("recalculateHistoryBtn")?.addEventListener("click", async () => {
   const code = prompt("Digite código interno:");
   if (code === null) return;
@@ -3822,25 +3828,8 @@ document.getElementById("recalculateHistoryBtn")?.addEventListener("click", asyn
   }
 });
 
-// Histórico detalhado menu
-document.getElementById("menuHistoryBtn")?.addEventListener("click", () => {
-  historyVisible = true;
-
-  const list = document.getElementById("historyList");
-  const btn = document.getElementById("toggleHistoryBtn");
-
-  if (list) list.classList.remove("hidden");
-  if (btn) btn.textContent = "Ocultar";
-
-  list?.scrollIntoView({
-    behavior: "smooth",
-    block: "start"
-  });
-});
-
-    document.getElementById("openRankingBtn")?.addEventListener("click", () => {
+document.getElementById("openRankingBtn")?.addEventListener("click", () => {
   const code = prompt("Digite código interno:");
-
   if (code === null) return;
 
   if (code !== ADMIN_CODE) {
@@ -3863,11 +3852,6 @@ document.getElementById("menuHistoryBtn")?.addEventListener("click", () => {
   }
 });
 
-// =========================
-// ✅ CORREÇÃO HISTÓRICO DETALHADO
-// =========================
-
-// Botão do menu: Histórico detalhado
 document.getElementById("menuHistoryBtn")?.addEventListener("click", () => {
   document.getElementById("mainMenu")?.classList.add("hidden");
 
@@ -3879,7 +3863,7 @@ document.getElementById("menuHistoryBtn")?.addEventListener("click", () => {
   if (list) list.classList.remove("hidden");
   if (btn) btn.textContent = "Ocultar";
 
-  renderHistory();
+  if (typeof renderHistory === "function") renderHistory();
 
   setTimeout(() => {
     list?.scrollIntoView({
@@ -3889,7 +3873,6 @@ document.getElementById("menuHistoryBtn")?.addEventListener("click", () => {
   }, 100);
 });
 
-// Botão roxo: Histórico
 document.getElementById("openDetailedHistoryBtn")?.addEventListener("click", () => {
   historyVisible = true;
 
@@ -3899,7 +3882,7 @@ document.getElementById("openDetailedHistoryBtn")?.addEventListener("click", () 
   if (list) list.classList.remove("hidden");
   if (btn) btn.textContent = "Ocultar";
 
-  renderHistory();
+  if (typeof renderHistory === "function") renderHistory();
 
   setTimeout(() => {
     list?.scrollIntoView({
@@ -3909,7 +3892,6 @@ document.getElementById("openDetailedHistoryBtn")?.addEventListener("click", () 
   }, 100);
 });
 
-// Botão Ver/Ocultar histórico
 document.getElementById("toggleHistoryBtn")?.addEventListener("click", () => {
   historyVisible = !historyVisible;
 
@@ -3919,12 +3901,11 @@ document.getElementById("toggleHistoryBtn")?.addEventListener("click", () => {
   if (list) list.classList.toggle("hidden", !historyVisible);
   if (btn) btn.textContent = historyVisible ? "Ocultar" : "Ver";
 
-  if (historyVisible) {
+  if (historyVisible && typeof renderHistory === "function") {
     renderHistory();
   }
 });
 
-// Clique nos cards do histórico para abrir modal
 document.addEventListener("click", (e) => {
   const card = e.target.closest("[data-history-open]");
   if (!card) return;
@@ -3934,9 +3915,13 @@ document.addEventListener("click", (e) => {
   if (Number.isInteger(index)) {
     openHistoryModal(index);
   }
-});    
+});
 
-    function serializeTurn(turno){
+
+// =========================
+// SERIALIZAR / FINALIZAR TURNO
+// =========================
+function serializeTurn(turno) {
   const getValue = (id) => parseMoneyInput(document.getElementById(id)?.value || "");
 
   const entries = [
@@ -3950,40 +3935,45 @@ document.addEventListener("click", (e) => {
   ];
 
   const parseBRMoney = (value) => {
-  return Number(
-    String(value || "0")
-      .replace(/\s/g, "")
-      .replace(/\$/g, "")
-      .replace(/\./g, "")
-      .replace(",", ".")
-  ) || 0;
-};
+    return Number(
+      String(value || "0")
+        .replace(/\s/g, "")
+        .replace(/\$/g, "")
+        .replace(/\./g, "")
+        .replace(",", ".")
+    ) || 0;
+  };
 
-const pendingList = document.getElementById(`${turno}_pending_list`);
+  const pendingList = document.getElementById(`${turno}_pending_list`);
 
-const pendings = pendingList
-  ? [...pendingList.querySelectorAll(".dynamic-row")].map((row) => {
-      const inputs = row.querySelectorAll("input");
+  const pendings = pendingList
+    ? [...pendingList.querySelectorAll(".dynamic-row")]
+        .map((row) => {
+          const inputs = row.querySelectorAll("input");
 
-      return {
-        name: inputs[0]?.value || "",
-        value: parseBRMoney(inputs[1]?.value || "")
-      };
-    }).filter((item) => item.name || item.value)
-  : [];
+          return {
+            name: inputs[0]?.value || "",
+            value: parseBRMoney(inputs[1]?.value || "")
+          };
+        })
+        .filter((item) => item.name || item.value)
+    : [];
 
-const dynamicList = document.getElementById(`${turno}_dynamic_list`);
+  const dynamicList = document.getElementById(`${turno}_dynamic_list`);
 
-const outflows = dynamicList
-  ? [...dynamicList.querySelectorAll(".dynamic-row")].map((row) => {
-      const inputs = row.querySelectorAll("input");
+  const outflows = dynamicList
+    ? [...dynamicList.querySelectorAll(".dynamic-row")]
+        .map((row) => {
+          const inputs = row.querySelectorAll("input");
 
-      return {
-        name: inputs[0]?.value || "",
-        value: parseBRMoney(inputs[1]?.value || "")
-      };
-    }).filter((item) => item.name || item.value)
-  : [];
+          return {
+            name: inputs[0]?.value || "",
+            value: parseBRMoney(inputs[1]?.value || "")
+          };
+        })
+        .filter((item) => item.name || item.value)
+    : [];
+
   const entradasTotal = entries.reduce((acc, item) => acc + Number(item.value || 0), 0);
   const pendentesTotal = pendings.reduce((acc, item) => acc + Number(item.value || 0), 0);
   const saidasTotal = outflows.reduce((acc, item) => acc + Number(item.value || 0), 0);
@@ -4013,14 +4003,14 @@ const outflows = dynamicList
   };
 }
 
-   async function finalizeTurn(){
+async function finalizeTurn() {
   try {
-    if(typeof serializeTurn !== "function"){
+    if (typeof serializeTurn !== "function") {
       alert("Função serializeTurn não encontrada.");
       return;
     }
 
-    if(typeof saveHistoryItem !== "function"){
+    if (typeof saveHistoryItem !== "function") {
       alert("Função saveHistoryItem não encontrada.");
       return;
     }
@@ -4033,21 +4023,134 @@ const outflows = dynamicList
 
     clearTurn("t2");
 
-    if(typeof render === "function"){
+    if (typeof render === "function") {
       render();
     }
 
-  } catch(error){
+  } catch (error) {
     console.error("Erro ao finalizar turno:", error);
     alert("Erro ao finalizar turno.");
   }
 }
 
-// 🔥 INICIALIZAR BOTÕES
-bindSessionEvents();
 
 // =========================
-// 👑 ABRIR PAINEL ADMIN
+// AUTH: LOGIN / REGISTRO / ABAS
+// =========================
+function initAuthEvents() {
+  console.log("✅ initAuthEvents carregado");
+
+  const tabLogin = document.getElementById("tabLogin");
+  const tabRegister = document.getElementById("tabRegister");
+  const tabPassword = document.getElementById("tabPassword");
+
+  const loginForm = document.getElementById("loginForm");
+  const registerForm = document.getElementById("registerForm");
+  const forgotPasswordForm = document.getElementById("forgotPasswordForm");
+
+  function showAuthForm(formName) {
+    loginForm?.classList.add("hidden");
+    registerForm?.classList.add("hidden");
+    forgotPasswordForm?.classList.add("hidden");
+
+    tabLogin?.classList.remove("active");
+    tabRegister?.classList.remove("active");
+    tabPassword?.classList.remove("active");
+
+    if (formName === "login") {
+      loginForm?.classList.remove("hidden");
+      tabLogin?.classList.add("active");
+    }
+
+    if (formName === "register") {
+      registerForm?.classList.remove("hidden");
+      tabRegister?.classList.add("active");
+    }
+
+    if (formName === "password") {
+      forgotPasswordForm?.classList.remove("hidden");
+      tabPassword?.classList.add("active");
+    }
+  }
+
+  window.showAuthForm = showAuthForm;
+
+  tabLogin?.onclick = () => showAuthForm("login");
+  tabRegister?.onclick = () => showAuthForm("register");
+  tabPassword?.onclick = () => showAuthForm("password");
+
+  loginForm?.addEventListener("submit", async (e) => {
+    e.preventDefault();
+
+    console.log("🔥 SUBMIT LOGIN CAPTURADO");
+
+    const email = document.getElementById("loginEmail")?.value.trim().toLowerCase();
+    const password = document.getElementById("loginPassword")?.value;
+
+    if (!email || !password) {
+      alert("Preencha email e senha.");
+      return;
+    }
+
+    try {
+      const userCredential = await signInWithEmailAndPassword(auth, email, password);
+      const user = userCredential.user;
+
+      const allowed = await validateUserAccess(user);
+      if (!allowed) return;
+
+      console.log("Login liberado:", user.email);
+
+    } catch (error) {
+      console.error("ERRO LOGIN:", error);
+      alert(error.message || "Erro ao fazer login.");
+    }
+  });
+
+  registerForm?.addEventListener("submit", async (e) => {
+    e.preventDefault();
+
+    console.log("🔥 SUBMIT REGISTRO CAPTURADO");
+
+    const name = document.getElementById("registerName")?.value.trim();
+    const email = document.getElementById("registerEmail")?.value.trim().toLowerCase();
+    const password = document.getElementById("registerPassword")?.value;
+
+    if (!name || !email || !password) {
+      alert("Preencha nome, email e senha.");
+      return;
+    }
+
+    try {
+      const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+
+      await setDoc(doc(db, "users", userCredential.user.uid), {
+        name,
+        email,
+        role: "pending",
+        status: "pending",
+        createdAt: serverTimestamp()
+      });
+
+      alert("Conta criada com sucesso! Aguarde aprovação do administrador.");
+
+      await signOut(auth);
+      showAuthForm("login");
+
+    } catch (error) {
+      console.error("Erro ao registrar:", error);
+      alert(error.message || "Erro ao registrar usuário.");
+    }
+  });
+
+  showAuthForm("login");
+}
+
+initAuthEvents();
+
+
+// =========================
+// ADMIN PANEL
 // =========================
 document.getElementById("adminOpenBtn")?.addEventListener("click", () => {
   const panel = document.getElementById("adminPanel");
@@ -4056,59 +4159,25 @@ document.getElementById("adminOpenBtn")?.addEventListener("click", () => {
 
   panel.classList.toggle("hidden");
 
-  // 🔥 carrega usuários quando abre
-  if (!panel.classList.contains("hidden")) {
+  if (!panel.classList.contains("hidden") && typeof loadUsers === "function") {
     loadUsers();
   }
 });
-      
+
+
 // =========================
-// 🔥 FUNÇÃO DE REGISTRO (COLE AQUI)
+// INICIALIZAÇÃO FINAL
 // =========================
-async function registerUser(name, email, password) {
-  try {
-    const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+document.getElementById("fecharTurno")?.addEventListener("click", finalizeTurn);
 
-    await setDoc(doc(db, "users", userCredential.user.uid), {
-      name: name,
-      email: email,
-      role: "pending",
-      status: "pending",
-      createdAt: serverTimestamp()
-    });
-
-    alert("Conta criada com sucesso! Aguarde aprovação do administrador.");
-    await signOut(auth);
-
-  } catch (error) {
-    console.error("Erro ao registrar:", error);
-    alert("Erro ao registrar usuário.");
-  }
+if (typeof bindSessionEvents === "function") {
+  bindSessionEvents();
 }
-    
-document.getElementById("registerForm")?.addEventListener("submit", async (e) => {
-  e.preventDefault();
 
-  const name = document.getElementById("registerName")?.value.trim();
-  const email = document.getElementById("registerEmail")?.value.trim();
-  const password = document.getElementById("registerPassword")?.value;
-
-  if (!name || !email || !password) {
-    alert("Preencha nome, email e senha.");
-    return;
-  }
-
-  await registerUser(name, email, password);
-});
-
-// =========================
-// 🔥 INICIALIZAÇÃO FINAL
-// =========================
 const dateInput = document.getElementById("t2_data_fechamento");
 if (dateInput && !dateInput.value) {
   dateInput.value = getTodayDateInput();
 }
-
 </script>
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
