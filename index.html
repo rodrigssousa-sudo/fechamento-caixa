@@ -840,6 +840,33 @@
   }
 
 }
+
+@media (max-width:600px){
+
+  .summary-grid,
+  .metrics-grid,
+  .top-metrics,
+  .stats-grid,
+  .info-grid,
+  .kpi-grid{
+    display:grid !important;
+    grid-template-columns:1fr !important;
+    gap:14px !important;
+    overflow:visible !important;
+  }
+
+  .summary-grid > *,
+  .metrics-grid > *,
+  .top-metrics > *,
+  .stats-grid > *,
+  .info-grid > *,
+  .kpi-grid > *{
+    width:100% !important;
+    max-width:100% !important;
+    min-width:0 !important;
+  }
+
+}
     
   </style>
 </head>
