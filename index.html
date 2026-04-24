@@ -1938,180 +1938,191 @@ document.querySelectorAll("#mainMenu .menu-item").forEach((btn) => {
 });
 
 function buildPremiumBankReceiptPdf(startDate, endDate) {
+
   const filtered = historyCache.filter((item) => {
     const date = item.fechamentoDate || item.turno?.dataFechamento;
     if (!date) return false;
     return date >= startDate && date <= endDate;
   });
 
-  const totalReca = filtered.reduce((acc, item) => acc + Number(item.total || item.turno?.reca || 0), 0);
-  const totalSaidas = filtered.reduce((acc, item) => acc + Number(item.turno?.saidasTotal || item.turno?.saidas || 0), 0);
-  const totalDiff = filtered.reduce((acc, item) => acc + Number(item.diff || 0), 0);
+  const totalReca = filtered.reduce((acc, i) => acc + Number(i.turno?.reca || 0), 0);
+  const totalSaidas = filtered.reduce((acc, i) => acc + Number(i.turno?.saidasTotal || 0), 0);
+  const totalPendentes = filtered.reduce((acc, i) => acc + Number(i.turno?.pendentesTotal || 0), 0);
+  const totalLiquido = filtered.reduce((acc, i) => acc + calcularSaldo(i.turno || {}), 0);
 
-  const rows = filtered.map((item) => {
-    const turno = item.turno || {};
+  // 🔥 Ranking operadores
+  const ranking = {};
+
+  filtered.forEach(item => {
+    const nome = item.nomeOperador || "Sem nome";
     const diff = Number(item.diff || 0);
-    const saldo = item.saldo ?? item.currentSaldoTotal ?? calcularSaldo(turno);
+
+    if (!ranking[nome]) {
+      ranking[nome] = { qtd: 0, sobra: 0, falta: 0 };
+    }
+
+    ranking[nome].qtd++;
+
+    if (diff > 0) ranking[nome].sobra += diff;
+    if (diff < 0) ranking[nome].falta += Math.abs(diff);
+  });
+
+  const rankingHtml = Object.entries(ranking).map(([nome, r]) => `
+    <div class="row">
+      <span>${nome}</span>
+      <span>${r.qtd} fech.</span>
+      <span class="pos">${money(r.sobra)}</span>
+      <span class="neg">${money(r.falta)}</span>
+    </div>
+  `).join("");
+
+  // 🔥 Turnos detalhados
+  const rows = filtered.map((item) => {
+    const t = item.turno || {};
+    const saldo = calcularSaldo(t);
+    const diff = Number(item.diff || 0);
 
     return `
       <div class="receipt">
-        <div class="receipt-top">
-          <div>
-            <div class="receipt-title">${escapeHtml(item.nomeOperador || "Sem nome")}</div>
-            <div class="receipt-date">${formatDateBR(item.fechamentoDate || turno.dataFechamento || "")}</div>
-          </div>
-          <div class="${diff >= 0 ? "positive" : "negative"}">
+        <div class="top">
+          <strong>${item.nomeOperador || "Sem nome"}</strong>
+          <span>${formatDateBR(item.fechamentoDate || t.dataFechamento || "")}</span>
+          <span class="${diff >= 0 ? "pos" : "neg"}">
             ${diff > 0 ? "+" : diff < 0 ? "-" : ""}${money(Math.abs(diff))}
-          </div>
+          </span>
         </div>
 
-        <div class="receipt-grid">
-          <div><span>Banco Reca</span><strong>${money(item.total || turno.reca || 0)}</strong></div>
-          <div><span>Saldo turno</span><strong>${money(saldo)}</strong></div>
-          <div><span>Saídas</span><strong>${money(turno.saidasTotal || turno.saidas || 0)}</strong></div>
-          <div><span>Pendentes</span><strong>${money(turno.pendentesTotal || turno.pendentes || 0)}</strong></div>
+        <div class="grid">
+          <div>Banco: <b>${money(t.reca)}</b></div>
+          <div>Suprema: <b>${t.suprema || 0}</b></div>
+          <div>PPPoker: <b>${t.pppoker || 0}</b></div>
+          <div>Buffalo: <b>${money(t.buffalo)}</b></div>
+          <div>Ganamos: <b>${money(t.ganamos)}</b></div>
+          <div>Cargas: <b>${money(t.cargaFichas)}</b></div>
+          <div>Saídas: <b class="neg">${money(t.saidasTotal || 0)}</b></div>
+          <div>Pendentes: <b class="neg">${money(t.pendentesTotal || 0)}</b></div>
+          <div class="full">Saldo: <b>${money(saldo)}</b></div>
         </div>
       </div>
     `;
   }).join("");
 
   return `
-    <!DOCTYPE html>
-    <html lang="pt-BR">
-    <head>
-      <meta charset="UTF-8">
-      <title>Relatório Bank King</title>
-      <style>
-        body{
-          font-family:Arial,sans-serif;
-          background:#f3f6fb;
-          color:#0f172a;
-          padding:28px;
-        }
-        .page{
-          max-width:900px;
-          margin:0 auto;
-        }
-        .header{
-          background:#fff;
-          border-radius:22px;
-          padding:24px;
-          margin-bottom:18px;
-          border:1px solid #e2e8f0;
-        }
-        .brand{
-          font-size:32px;
-          font-weight:900;
-          margin-bottom:6px;
-        }
-        .period{
-          color:#64748b;
-          font-size:14px;
-        }
-        .cards{
-          display:grid;
-          grid-template-columns:repeat(3,1fr);
-          gap:12px;
-          margin-bottom:18px;
-        }
-        .card{
-          background:#fff;
-          border-radius:18px;
-          padding:18px;
-          border:1px solid #e2e8f0;
-        }
-        .label{
-          font-size:11px;
-          color:#64748b;
-          font-weight:900;
-          text-transform:uppercase;
-          margin-bottom:8px;
-        }
-        .value{
-          font-size:22px;
-          font-weight:900;
-        }
-        .receipt{
-          background:#fff;
-          border:1px solid #e2e8f0;
-          border-radius:20px;
-          padding:18px;
-          margin-bottom:12px;
-          page-break-inside:avoid;
-        }
-        .receipt-top{
-          display:flex;
-          justify-content:space-between;
-          gap:12px;
-          align-items:flex-start;
-          border-bottom:1px solid #e2e8f0;
-          padding-bottom:12px;
-          margin-bottom:12px;
-        }
-        .receipt-title{
-          font-size:18px;
-          font-weight:900;
-        }
-        .receipt-date{
-          font-size:13px;
-          color:#64748b;
-          margin-top:4px;
-        }
-        .receipt-grid{
-          display:grid;
-          grid-template-columns:repeat(4,1fr);
-          gap:10px;
-        }
-        .receipt-grid div{
-          background:#f8fafc;
-          border-radius:14px;
-          padding:12px;
-        }
-        .receipt-grid span{
-          display:block;
-          font-size:11px;
-          color:#64748b;
-          font-weight:800;
-          margin-bottom:6px;
-        }
-        .receipt-grid strong{
-          font-size:14px;
-        }
-        .positive{color:#16a34a;font-weight:900;}
-        .negative{color:#dc2626;font-weight:900;}
-        @media print{
-          body{background:#fff;}
-        }
-      </style>
-    </head>
-    <body>
-      <div class="page">
-        <div class="header">
-          <div class="brand">BANK KING</div>
-          <div class="period">Período de ${formatDateBR(startDate)} até ${formatDateBR(endDate)}</div>
-        </div>
+  <html>
+  <head>
+    <style>
+      body{font-family:Arial;padding:30px;background:#f3f6fb;}
+      .container{max-width:900px;margin:auto;}
 
-        <div class="cards">
-          <div class="card">
-            <div class="label">Total Banco Reca</div>
-            <div class="value">${money(totalReca)}</div>
-          </div>
-          <div class="card">
-            <div class="label">Total Saídas</div>
-            <div class="value">${money(totalSaidas)}</div>
-          </div>
-          <div class="card">
-            <div class="label">Diferença Total</div>
-            <div class="value ${totalDiff >= 0 ? "positive" : "negative"}">
-              ${totalDiff > 0 ? "+" : totalDiff < 0 ? "-" : ""}${money(Math.abs(totalDiff))}
-            </div>
-          </div>
-        </div>
+      .header{margin-bottom:20px;}
+      .title{font-size:28px;font-weight:900;}
+      .period{color:#64748b;}
 
-        ${rows || `<div class="receipt">Nenhum fechamento encontrado nesse período.</div>`}
+      .cards{
+        display:grid;
+        grid-template-columns:repeat(4,1fr);
+        gap:10px;
+        margin-bottom:20px;
+      }
+
+      .card{
+        background:#fff;
+        padding:14px;
+        border-radius:12px;
+        border:1px solid #e2e8f0;
+      }
+
+      .label{font-size:11px;color:#64748b;font-weight:900;}
+      .value{font-size:18px;font-weight:900;}
+
+      .receipt{
+        background:#fff;
+        padding:14px;
+        border-radius:12px;
+        margin-bottom:10px;
+        border:1px solid #e2e8f0;
+      }
+
+      .top{
+        display:flex;
+        justify-content:space-between;
+        margin-bottom:10px;
+      }
+
+      .grid{
+        display:grid;
+        grid-template-columns:repeat(3,1fr);
+        gap:6px;
+        font-size:13px;
+      }
+
+      .full{
+        grid-column:span 3;
+        font-size:15px;
+        margin-top:6px;
+      }
+
+      .pos{color:#16a34a;}
+      .neg{color:#dc2626;}
+
+      .ranking{
+        margin-top:20px;
+        background:#fff;
+        padding:14px;
+        border-radius:12px;
+        border:1px solid #e2e8f0;
+      }
+
+      .row{
+        display:grid;
+        grid-template-columns:2fr 1fr 1fr 1fr;
+        padding:6px 0;
+        border-bottom:1px solid #eee;
+        font-size:13px;
+      }
+    </style>
+  </head>
+
+  <body>
+    <div class="container">
+
+      <div class="header">
+        <div class="title">BANK KING</div>
+        <div class="period">De ${formatDateBR(startDate)} até ${formatDateBR(endDate)}</div>
       </div>
-    </body>
-    </html>
+
+      <div class="cards">
+        <div class="card">
+          <div class="label">Banco Reca</div>
+          <div class="value">${money(totalReca)}</div>
+        </div>
+
+        <div class="card">
+          <div class="label">Saídas</div>
+          <div class="value">${money(totalSaidas)}</div>
+        </div>
+
+        <div class="card">
+          <div class="label">Pendentes</div>
+          <div class="value">${money(totalPendentes)}</div>
+        </div>
+
+        <div class="card">
+          <div class="label">Saldo Líquido</div>
+          <div class="value">${money(totalLiquido)}</div>
+        </div>
+      </div>
+
+      ${rows}
+
+      <div class="ranking">
+        <h3>Ranking Operadores</h3>
+        ${rankingHtml || "Sem dados"}
+      </div>
+
+    </div>
+  </body>
+  </html>
   `;
 }
     
