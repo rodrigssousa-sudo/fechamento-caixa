@@ -1639,33 +1639,34 @@
     </div>
   </div>
 
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-app.js";
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-app.js";
 
-import {
-  getFirestore,
-  collection,
-  addDoc,
-  getDocs,
-  deleteDoc,
-  doc,
-  updateDoc,
-  setDoc,
-  getDoc,
-  onSnapshot,
-  query,
-  orderBy,
-  limit,
-  serverTimestamp
-} from "https://www.gstatic.com/firebasejs/12.0.0/firebase-firestore.js";
+    import {
+      getFirestore,
+      collection,
+      addDoc,
+      getDocs,
+      deleteDoc,
+      doc,
+      updateDoc,
+      setDoc,
+      getDoc,
+      onSnapshot,
+      query,
+      orderBy,
+      limit,
+      serverTimestamp
+    } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-firestore.js";
 
-import {
-  getAuth,
-  createUserWithEmailAndPassword,
-  signInWithEmailAndPassword,
-  signOut,
-  onAuthStateChanged,
-  sendPasswordResetEmail
-} from "https://www.gstatic.com/firebasejs/12.0.0/firebase-auth.js";
+    import {
+      getAuth,
+      createUserWithEmailAndPassword,
+      signInWithEmailAndPassword,
+      signOut,
+      onAuthStateChanged,
+      sendPasswordResetEmail
+    } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-auth.js";
 
     const firebaseConfig = {
       apiKey: "AIzaSyAuyfJNu2vwvVyH5gRsvg82m98teFCmPXw",
@@ -2244,7 +2245,7 @@ if (historyCache.length) {
   alert("Turno salvo");
   location.reload();
 }
-   function buildPDF() {
+  function buildPDF() {
   const html = `
     <html>
       <body style="font-family:Arial;padding:24px;">
@@ -2260,6 +2261,9 @@ if (historyCache.length) {
       </body>
     </html>
   `;
+
+  return html;
+}
 document.getElementById("fecharTurno")?.addEventListener("click", saveTurn);
 
 [
@@ -2434,13 +2438,6 @@ function initAuthEvents() {
   });
 }
 
-// 🔥 INICIALIZAÇÃO SEGURA
-if (document.readyState === "loading") {
-  document.addEventListener("DOMContentLoaded", initAuthEvents);
-} else {
-  initAuthEvents();
-}
-
 // =========================
 // 🔥 HISTÓRICO EM TEMPO REAL
 // =========================
@@ -2568,46 +2565,6 @@ onAuthStateChanged(auth, async (user) => {
     await signOut(auth);
   }
 });
-
-      // =========================
-// 🔁 ABAS LOGIN / REGISTRO / SENHA
-// =========================
-const tabLogin = document.getElementById("tabLogin");
-const tabRegister = document.getElementById("tabRegister");
-const tabPassword = document.getElementById("tabPassword");
-
-const loginForm = document.getElementById("loginForm");
-const registerForm = document.getElementById("registerForm");
-const forgotPasswordForm = document.getElementById("forgotPasswordForm");
-
-function showAuthForm(formName) {
-  loginForm?.classList.add("hidden");
-  registerForm?.classList.add("hidden");
-  forgotPasswordForm?.classList.add("hidden");
-
-  tabLogin?.classList.remove("active");
-  tabRegister?.classList.remove("active");
-  tabPassword?.classList.remove("active");
-
-  if (formName === "login") {
-    loginForm?.classList.remove("hidden");
-    tabLogin?.classList.add("active");
-  }
-
-  if (formName === "register") {
-    registerForm?.classList.remove("hidden");
-    tabRegister?.classList.add("active");
-  }
-
-  if (formName === "password") {
-    forgotPasswordForm?.classList.remove("hidden");
-    tabPassword?.classList.add("active");
-  }
-}
-
-tabLogin?.addEventListener("click", () => showAuthForm("login"));
-tabRegister?.addEventListener("click", () => showAuthForm("register"));
-tabPassword?.addEventListener("click", () => showAuthForm("password"));
 
 // =========================
 // 🔘 FIX BOTÕES FINAIS
