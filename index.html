@@ -1106,6 +1106,67 @@
 .balance-card{
   background:linear-gradient(...);
 }
+
+/* MENU PREMIUM */
+.menu-panel,
+.side-menu,
+.dropdown-menu{
+  background: rgba(255,255,255,0.94) !important;
+  backdrop-filter: blur(18px);
+  border: 1px solid rgba(15,23,42,0.08);
+  border-radius: 28px;
+  box-shadow:
+    0 30px 80px rgba(15,23,42,0.14),
+    0 8px 24px rgba(15,23,42,0.08);
+}
+
+/* BOTÕES DO MENU */
+.menu-panel button,
+.side-menu button,
+.dropdown-menu button{
+  width:100%;
+  min-height:64px;
+  border-radius:18px !important;
+  border:1px solid rgba(15,23,42,0.08) !important;
+  background: linear-gradient(180deg, #ffffff, #f8fafc) !important;
+  color:#0f172a !important;
+
+  font-size:17px;
+  font-weight:850;
+  letter-spacing:-0.2px;
+  text-align:left;
+
+  padding:0 22px;
+  cursor:pointer;
+
+  box-shadow:
+    0 10px 24px rgba(15,23,42,0.04),
+    inset 0 1px 0 rgba(255,255,255,0.9);
+
+  transition:
+    transform .18s ease,
+    box-shadow .18s ease,
+    border-color .18s ease,
+    background .18s ease;
+}
+
+.menu-panel button:hover,
+.side-menu button:hover,
+.dropdown-menu button:hover{
+  transform: translateY(-2px);
+  border-color: rgba(37,99,235,0.25) !important;
+  background: linear-gradient(135deg, #0F2A6B, #2563eb) !important;
+  color:#ffffff !important;
+  box-shadow:
+    0 18px 36px rgba(37,99,235,0.22),
+    inset 0 1px 0 rgba(255,255,255,0.14);
+}
+
+.menu-panel button:active,
+.side-menu button:active,
+.dropdown-menu button:active{
+  transform: translateY(0);
+}
     
   </style>
 </head>
