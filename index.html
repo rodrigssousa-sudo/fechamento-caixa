@@ -1753,7 +1753,8 @@ function openHistoryModal(index) {
 
   const turno = item.turno || {};
   const diff = Number(item.diff || 0);
-  const saldo = item.saldo ?? item.currentSaldoTotal ?? calcularSaldo(turno);
+
+  const saldo = item.saldo ?? calcularSaldo(turno);
 
   document.getElementById("historyModalTitle").textContent =
     `${formatDateBR(item.fechamentoDate || turno.dataFechamento || "")} - ${item.nomeOperador || "Sem nome"}`;
@@ -1761,77 +1762,84 @@ function openHistoryModal(index) {
   document.getElementById("historyModalSub").textContent =
     `Enviado em: ${formatDateTimeBR(item.submittedAt)}`;
 
+  // 🔥 AQUI ESTAVA O PROBLEMA (conteúdo vazio)
   document.getElementById("historyModalBody").innerHTML = `
+    
     <div class="modal-grid">
+
       <div class="summary-box">
         <div class="summary-box-label">Banco Reca</div>
-        <div class="summary-box-value">${money(item.total || turno.reca || 0)}</div>
+        <div class="summary-box-value">
+          ${money(turno.reca || item.total || 0)}
+        </div>
       </div>
 
       <div class="summary-box">
         <div class="summary-box-label">Saldo Líquido</div>
-        <div class="summary-box-value">${money(saldo)}</div>
+        <div class="summary-box-value">
+          ${money(saldo)}
+        </div>
       </div>
 
       <div class="summary-box">
-        <div class="summary-box-label">Diferença Real</div>
+        <div class="summary-box-label">Diferença</div>
         <div class="summary-box-value ${diff > 0 ? "green" : diff < 0 ? "red" : ""}">
           ${diff > 0 ? "+" : diff < 0 ? "-" : ""}${money(Math.abs(diff))}
         </div>
       </div>
 
       <div class="summary-box">
-        <div class="summary-box-label">Saídas de Caixa</div>
-        <div class="summary-box-value red">${money(turno.saidasTotal || turno.saidas || 0)}</div>
+        <div class="summary-box-label">Saídas</div>
+        <div class="summary-box-value red">
+          ${money(turno.saidasTotal || turno.saidas || 0)}
+        </div>
       </div>
+
     </div>
 
-    <div style="margin-top:18px;display:grid;gap:10px;">
-      <div><strong>Suprema:</strong> ${money(turno.suprema || 0)} x400</div>
-      <div><strong>PPPoker:</strong> ${money(turno.pppoker || 0)} x400</div>
-      <div><strong>Buffalo:</strong> ${money(turno.buffalo || 0)}</div>
-      <div><strong>Ganamos:</strong> ${money(turno.ganamos || 0)}</div>
-      <div><strong>Carga fichas:</strong> ${money(turno.cargaFichas || 0)}</div>
-      <div><strong>Carga Poker:</strong> ${money(turno.cargaPoker || 0)}</div>
-      <div><strong>Pendentes:</strong> ${money(turno.pendentesTotal || turno.pendentes || 0)}</div>
+    <div style="margin-top:20px;display:grid;gap:8px;font-weight:700;">
+      <div>Suprema: ${money(turno.suprema || 0)} x400</div>
+      <div>PPPoker: ${money(turno.pppoker || 0)} x400</div>
+      <div>Buffalo: ${money(turno.buffalo || 0)}</div>
+      <div>Ganamos: ${money(turno.ganamos || 0)}</div>
+      <div>Carga Fichas: ${money(turno.cargaFichas || 0)}</div>
+      <div>Carga Poker: ${money(turno.cargaPoker || 0)}</div>
+      <div>Pendentes: ${money(turno.pendentesTotal || turno.pendentes || 0)}</div>
     </div>
-  `;
 
-document.getElementById("historyModalBody").innerHTML = `...conteúdo...`;
-
-// 👇 COLE AQUI (ANTES de abrir o modal)
-document.getElementById("historyModalBody").innerHTML += `
-  <div style="margin-top:18px;">
-    <button id="deleteHistoryBtn" type="button" class="remove-btn red-remove" style="width:100%;">
+    <button id="deleteHistoryBtn" style="
+      margin-top:20px;
+      width:100%;
+      padding:14px;
+      border-radius:14px;
+      border:none;
+      background:#fee2e2;
+      color:#dc2626;
+      font-weight:900;
+      cursor:pointer;
+    ">
       Excluir histórico
     </button>
-  </div>
-`;
+  `;
 
-document.getElementById("deleteHistoryBtn")?.addEventListener("click", async () => {
-  const code = prompt("Digite código interno para excluir:");
-  if (code === null) return;
+  // botão excluir
+  document.getElementById("deleteHistoryBtn")?.addEventListener("click", async () => {
+    const code = prompt("Código para excluir:");
+    if (code !== DELETE_HISTORY_CODE) {
+      alert("Código incorreto");
+      return;
+    }
 
-  if (code !== DELETE_HISTORY_CODE) {
-    alert("Código incorreto.");
-    return;
-  }
+    try {
+      await deleteDoc(doc(db, "history", item.id));
+      alert("Excluído com sucesso");
+      document.getElementById("historyModal")?.classList.add("hidden");
+    } catch (err) {
+      console.error(err);
+      alert("Erro ao excluir");
+    }
+  });
 
-  if (!confirm("Tem certeza que deseja excluir este histórico?")) return;
-
-  try {
-    await deleteDoc(doc(db, "history", item.id));
-    alert("Histórico excluído com sucesso.");
-    document.getElementById("historyModal")?.classList.add("hidden");
-  } catch (error) {
-    console.error(error);
-    alert("Erro ao excluir histórico.");
-  }
-});
-
-// 👇 DEPOIS disso abre o modal
-document.getElementById("historyModal")?.classList.remove("hidden");
-  
   document.getElementById("historyModal")?.classList.remove("hidden");
 }
 
