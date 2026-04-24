@@ -2393,8 +2393,13 @@ function renderTopPreviousCards() {
     return;
   }
 
-  const diff = Number(last.diff || 0);
-  const lastTotal = calcularSaldo(last.turno || {});
+  const previousLast = historyCache[1];
+
+  const diff = previousLast
+    ? calcularDiffReal(last.turno || {}, previousLast.turno || {})
+    : 0;
+
+  const lastTotal = calcularSaldoCaixa(last.turno || {});
   const lastReca = Number(last.total || last.turno?.reca || 0);
 
   if (previousOperator) previousOperator.textContent = last.nomeOperador || "Sem nome";
@@ -2412,6 +2417,9 @@ function renderTopPreviousCards() {
     if (diff < 0) previousDiff.classList.add("red");
   }
 
+  if (previousReca) previousReca.textContent = money(lastReca);
+  if (bankValue) bankValue.textContent = money(lastTotal);
+}
   // ⚪ CARD BRANCO → TOTAL DO TURNO
   if (previousReca) previousReca.textContent = money(lastTotal);
 
