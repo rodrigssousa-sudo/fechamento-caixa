@@ -1589,8 +1589,8 @@ function calcularSaldoBase(turno) {
 
 function calcularSaldoCaixa(turno) {
   return (
-    calcularSaldoBase(turno) -
-    Number(turno.cargaFichas || 0) -
+    calcularSaldoBase(turno) +
+    Number(turno.cargaFichas || 0) +
     Number(turno.cargaPoker || 0) -
     Number(turno.saidas || turno.saidasTotal || 0)
   );
@@ -1602,7 +1602,11 @@ function calcularDiffReal(turnoAtual, turnoAnterior) {
 
   const saidasAtual = Number(turnoAtual.saidas || turnoAtual.saidasTotal || 0);
 
-  return (baseAtual + saidasAtual) - baseAnterior;
+  const cargasAtual =
+    Number(turnoAtual.cargaFichas || 0) +
+    Number(turnoAtual.cargaPoker || 0);
+
+  return (baseAtual - cargasAtual + saidasAtual) - baseAnterior;
 }
 
 /* compatibilidade com o código antigo */
