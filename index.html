@@ -1938,200 +1938,451 @@ document.querySelectorAll("#mainMenu .menu-item").forEach((btn) => {
 });
 
 function buildPremiumBankReceiptPdf(startDate, endDate) {
-
   const filtered = historyCache.filter((item) => {
     const date = item.fechamentoDate || item.turno?.dataFechamento;
     if (!date) return false;
     return date >= startDate && date <= endDate;
   });
 
-  const totalReca = filtered.reduce((acc, i) => acc + Number(i.turno?.reca || 0), 0);
-  const totalSaidas = filtered.reduce((acc, i) => acc + Number(i.turno?.saidasTotal || 0), 0);
-  const totalPendentes = filtered.reduce((acc, i) => acc + Number(i.turno?.pendentesTotal || 0), 0);
-  const totalLiquido = filtered.reduce((acc, i) => acc + calcularSaldo(i.turno || {}), 0);
+  const totalReca = filtered.reduce((acc, i) => acc + Number(i.turno?.reca || i.total || 0), 0);
+  const totalSaidas = filtered.reduce((acc, i) => acc + Number(i.turno?.saidasTotal || i.turno?.saidas || 0), 0);
+  const totalPendentes = filtered.reduce((acc, i) => acc + Number(i.turno?.pendentesTotal || i.turno?.pendentes || 0), 0);
+  const totalSaldo = filtered.reduce((acc, i) => acc + calcularSaldo(i.turno || {}), 0);
+  const totalDiff = filtered.reduce((acc, i) => acc + Number(i.diff || 0), 0);
 
-  // 🔥 Ranking operadores
   const ranking = {};
 
-  filtered.forEach(item => {
+  filtered.forEach((item) => {
     const nome = item.nomeOperador || "Sem nome";
     const diff = Number(item.diff || 0);
+    const saidas = Number(item.turno?.saidasTotal || item.turno?.saidas || 0);
 
     if (!ranking[nome]) {
-      ranking[nome] = { qtd: 0, sobra: 0, falta: 0 };
+      ranking[nome] = {
+        qtd: 0,
+        sobra: 0,
+        falta: 0,
+        saidas: 0
+      };
     }
 
-    ranking[nome].qtd++;
+    ranking[nome].qtd += 1;
+    ranking[nome].saidas += saidas;
 
     if (diff > 0) ranking[nome].sobra += diff;
     if (diff < 0) ranking[nome].falta += Math.abs(diff);
   });
 
-  const rankingHtml = Object.entries(ranking).map(([nome, r]) => `
-    <div class="row">
-      <span>${nome}</span>
-      <span>${r.qtd} fech.</span>
-      <span class="pos">${money(r.sobra)}</span>
-      <span class="neg">${money(r.falta)}</span>
-    </div>
-  `).join("");
-
-  // 🔥 Turnos detalhados
-  const rows = filtered.map((item) => {
+  const statementRows = filtered.map((item, index) => {
     const t = item.turno || {};
+    const data = formatDateBR(item.fechamentoDate || t.dataFechamento || "");
+    const nome = escapeHtml(item.nomeOperador || "Sem nome");
     const saldo = calcularSaldo(t);
     const diff = Number(item.diff || 0);
 
+    const status = diff > 0 ? "Crédito" : diff < 0 ? "Débito" : "Neutro";
+    const statusClass = diff > 0 ? "pos" : diff < 0 ? "neg" : "neutral";
+
     return `
-      <div class="receipt">
-        <div class="top">
-          <strong>${item.nomeOperador || "Sem nome"}</strong>
-          <span>${formatDateBR(item.fechamentoDate || t.dataFechamento || "")}</span>
-          <span class="${diff >= 0 ? "pos" : "neg"}">
+      <div class="statement-item">
+        <div class="statement-main">
+          <div>
+            <div class="statement-title">${nome}</div>
+            <div class="statement-sub">Fechamento #${filtered.length - index} • ${data}</div>
+          </div>
+
+          <div class="statement-amount ${statusClass}">
             ${diff > 0 ? "+" : diff < 0 ? "-" : ""}${money(Math.abs(diff))}
-          </span>
+            <span>${status}</span>
+          </div>
         </div>
 
-        <div class="grid">
-          <div>Banco: <b>${money(t.reca)}</b></div>
-          <div>Suprema: <b>${t.suprema || 0}</b></div>
-          <div>PPPoker: <b>${t.pppoker || 0}</b></div>
-          <div>Buffalo: <b>${money(t.buffalo)}</b></div>
-          <div>Ganamos: <b>${money(t.ganamos)}</b></div>
-          <div>Cargas: <b>${money(t.cargaFichas)}</b></div>
-          <div>Saídas: <b class="neg">${money(t.saidasTotal || 0)}</b></div>
-          <div>Pendentes: <b class="neg">${money(t.pendentesTotal || 0)}</b></div>
-          <div class="full">Saldo: <b>${money(saldo)}</b></div>
+        <div class="statement-details">
+          <div><small>Banco Reca</small><strong>${money(t.reca || item.total || 0)}</strong></div>
+          <div><small>Suprema</small><strong>${Number(t.suprema || 0).toLocaleString("pt-BR")} fichas</strong></div>
+          <div><small>PPPoker</small><strong>${Number(t.pppoker || 0).toLocaleString("pt-BR")} fichas</strong></div>
+          <div><small>Buffalo</small><strong>${money(t.buffalo || 0)}</strong></div>
+          <div><small>Ganamos</small><strong>${money(t.ganamos || 0)}</strong></div>
+          <div><small>Carga Fichas</small><strong>${money(t.cargaFichas || 0)}</strong></div>
+          <div><small>Carga Poker</small><strong>${money(t.cargaPoker || 0)}</strong></div>
+          <div><small>Saídas</small><strong class="neg">${money(t.saidasTotal || t.saidas || 0)}</strong></div>
+          <div><small>Pendentes</small><strong class="neg">${money(t.pendentesTotal || t.pendentes || 0)}</strong></div>
+          <div><small>Saldo do turno</small><strong>${money(saldo)}</strong></div>
         </div>
       </div>
     `;
   }).join("");
 
+  const rankingRows = Object.entries(ranking)
+    .sort((a, b) => (b[1].sobra + b[1].falta) - (a[1].sobra + a[1].falta))
+    .map(([nome, r], index) => `
+      <tr>
+        <td>${index + 1}</td>
+        <td>${escapeHtml(nome)}</td>
+        <td>${r.qtd}</td>
+        <td class="pos">${money(r.sobra)}</td>
+        <td class="neg">${money(r.falta)}</td>
+        <td>${money(r.saidas)}</td>
+      </tr>
+    `).join("");
+
   return `
-  <html>
-  <head>
-    <style>
-      body{font-family:Arial;padding:30px;background:#f3f6fb;}
-      .container{max-width:900px;margin:auto;}
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <title>Extrato Bank King</title>
 
-    .header{
-  margin-bottom:14px;
-  padding:10px 12px;
-}
+  <style>
+    *{box-sizing:border-box;}
 
-.title{
-  font-size:20px;
-  font-weight:900;
-  line-height:1.2;
-}
-      .period{color:#64748b;}
+    body{
+      margin:0;
+      padding:28px;
+      font-family:Arial, Helvetica, sans-serif;
+      color:#0f172a;
+      background:#eef3fb;
+    }
 
-      .cards{
-        display:grid;
-        grid-template-columns:repeat(4,1fr);
-        gap:10px;
-        margin-bottom:20px;
-      }
+    .page{
+      max-width:980px;
+      margin:0 auto;
+    }
 
-      .card{
+    .bank-header{
+      background:linear-gradient(135deg,#0f2a6b,#1d4ed8);
+      color:#fff;
+      border-radius:28px;
+      padding:28px;
+      margin-bottom:18px;
+      box-shadow:0 18px 42px rgba(15,42,107,.22);
+    }
+
+    .bank-top{
+      display:flex;
+      justify-content:space-between;
+      gap:18px;
+      align-items:flex-start;
+      margin-bottom:24px;
+    }
+
+    .brand{
+      display:flex;
+      align-items:center;
+      gap:14px;
+    }
+
+    .logo{
+      width:54px;
+      height:54px;
+      border-radius:18px;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      background:rgba(255,255,255,.14);
+      border:1px solid rgba(255,255,255,.18);
+      font-weight:900;
+      font-size:18px;
+    }
+
+    .brand-title{
+      font-size:28px;
+      font-weight:900;
+      letter-spacing:-.03em;
+    }
+
+    .brand-sub{
+      font-size:13px;
+      opacity:.82;
+      margin-top:4px;
+    }
+
+    .period-box{
+      text-align:right;
+      font-size:13px;
+      opacity:.9;
+      line-height:1.5;
+    }
+
+    .main-balance-label{
+      font-size:11px;
+      text-transform:uppercase;
+      letter-spacing:.12em;
+      opacity:.8;
+      font-weight:900;
+      margin-bottom:8px;
+    }
+
+    .main-balance{
+      font-size:38px;
+      font-weight:900;
+      letter-spacing:-.05em;
+    }
+
+    .cards{
+      display:grid;
+      grid-template-columns:repeat(4,1fr);
+      gap:12px;
+      margin-bottom:18px;
+    }
+
+    .card{
+      background:#fff;
+      border:1px solid #e2e8f0;
+      border-radius:20px;
+      padding:18px;
+      box-shadow:0 8px 22px rgba(15,23,42,.05);
+    }
+
+    .card-label{
+      font-size:11px;
+      text-transform:uppercase;
+      letter-spacing:.08em;
+      color:#64748b;
+      font-weight:900;
+      margin-bottom:8px;
+    }
+
+    .card-value{
+      font-size:20px;
+      font-weight:900;
+      letter-spacing:-.03em;
+    }
+
+    .section{
+      background:#fff;
+      border:1px solid #e2e8f0;
+      border-radius:24px;
+      padding:20px;
+      margin-bottom:18px;
+      box-shadow:0 8px 22px rgba(15,23,42,.05);
+    }
+
+    .section-title{
+      font-size:18px;
+      font-weight:900;
+      margin-bottom:14px;
+    }
+
+    .statement-item{
+      border:1px solid #e2e8f0;
+      border-radius:20px;
+      padding:16px;
+      margin-bottom:12px;
+      page-break-inside:avoid;
+      background:#fff;
+    }
+
+    .statement-main{
+      display:flex;
+      justify-content:space-between;
+      align-items:flex-start;
+      gap:14px;
+      padding-bottom:14px;
+      border-bottom:1px solid #e2e8f0;
+      margin-bottom:14px;
+    }
+
+    .statement-title{
+      font-size:17px;
+      font-weight:900;
+    }
+
+    .statement-sub{
+      font-size:12px;
+      color:#64748b;
+      margin-top:4px;
+    }
+
+    .statement-amount{
+      text-align:right;
+      font-size:18px;
+      font-weight:900;
+      white-space:nowrap;
+    }
+
+    .statement-amount span{
+      display:block;
+      font-size:11px;
+      margin-top:3px;
+      color:#64748b;
+      font-weight:800;
+    }
+
+    .statement-details{
+      display:grid;
+      grid-template-columns:repeat(5,1fr);
+      gap:10px;
+    }
+
+    .statement-details div{
+      background:#f8fafc;
+      border-radius:14px;
+      padding:10px;
+      min-height:62px;
+    }
+
+    .statement-details small{
+      display:block;
+      color:#64748b;
+      font-size:10px;
+      font-weight:900;
+      text-transform:uppercase;
+      margin-bottom:6px;
+    }
+
+    .statement-details strong{
+      font-size:13px;
+      font-weight:900;
+    }
+
+    .ranking-table{
+      width:100%;
+      border-collapse:collapse;
+      font-size:13px;
+    }
+
+    .ranking-table th,
+    .ranking-table td{
+      padding:11px 8px;
+      border-bottom:1px solid #e2e8f0;
+      text-align:left;
+    }
+
+    .ranking-table th{
+      background:#eff6ff;
+      color:#1d4ed8;
+      font-size:11px;
+      text-transform:uppercase;
+      letter-spacing:.06em;
+    }
+
+    .pos{color:#16a34a!important;}
+    .neg{color:#dc2626!important;}
+    .neutral{color:#475569!important;}
+
+    .empty{
+      padding:24px;
+      border-radius:18px;
+      background:#f8fafc;
+      color:#64748b;
+      text-align:center;
+      border:1px dashed #cbd5e1;
+    }
+
+    .footer{
+      color:#64748b;
+      font-size:12px;
+      text-align:center;
+      margin-top:20px;
+    }
+
+    @media print{
+      body{
         background:#fff;
-        padding:14px;
-        border-radius:12px;
-        border:1px solid #e2e8f0;
+        padding:0;
       }
 
-      .label{font-size:11px;color:#64748b;font-weight:900;}
-      .value{font-size:18px;font-weight:900;}
-
-      .receipt{
-        background:#fff;
-        padding:14px;
-        border-radius:12px;
-        margin-bottom:10px;
-        border:1px solid #e2e8f0;
+      .page{
+        max-width:none;
       }
 
-      .top{
-        display:flex;
-        justify-content:space-between;
-        margin-bottom:10px;
+      .bank-header,
+      .card,
+      .section{
+        box-shadow:none;
       }
+    }
+  </style>
+</head>
 
-      .grid{
-        display:grid;
-        grid-template-columns:repeat(3,1fr);
-        gap:6px;
-        font-size:13px;
-      }
+<body>
+  <div class="page">
 
-      .full{
-        grid-column:span 3;
-        font-size:15px;
-        margin-top:6px;
-      }
+    <div class="bank-header">
+      <div class="bank-top">
+        <div class="brand">
+          <div class="logo">BK</div>
+          <div>
+            <div class="brand-title">Bank King</div>
+            <div class="brand-sub">Extrato financeiro interno</div>
+          </div>
+        </div>
 
-      .pos{color:#16a34a;}
-      .neg{color:#dc2626;}
-
-      .ranking{
-        margin-top:20px;
-        background:#fff;
-        padding:14px;
-        border-radius:12px;
-        border:1px solid #e2e8f0;
-      }
-
-      .row{
-        display:grid;
-        grid-template-columns:2fr 1fr 1fr 1fr;
-        padding:6px 0;
-        border-bottom:1px solid #eee;
-        font-size:13px;
-      }
-    </style>
-  </head>
-
-  <body>
-    <div class="container">
-
-      <div class="header">
-        <div class="title">BANK KING</div>
-        <div class="period">De ${formatDateBR(startDate)} até ${formatDateBR(endDate)}</div>
+        <div class="period-box">
+          <strong>Período</strong><br>
+          ${formatDateBR(startDate)} até ${formatDateBR(endDate)}<br>
+          Gerado em ${new Date().toLocaleDateString("pt-BR")}
+        </div>
       </div>
 
-      <div class="cards">
-        <div class="card">
-          <div class="label">Banco Reca</div>
-          <div class="value">${money(totalReca)}</div>
-        </div>
-
-        <div class="card">
-          <div class="label">Saídas</div>
-          <div class="value">${money(totalSaidas)}</div>
-        </div>
-
-        <div class="card">
-          <div class="label">Pendentes</div>
-          <div class="value">${money(totalPendentes)}</div>
-        </div>
-
-        <div class="card">
-          <div class="label">Saldo Líquido</div>
-          <div class="value">${money(totalLiquido)}</div>
-        </div>
-      </div>
-
-      ${rows}
-
-      <div class="ranking">
-        <h3>Ranking Operadores</h3>
-        ${rankingHtml || "Sem dados"}
-      </div>
-
+      <div class="main-balance-label">Saldo consolidado do período</div>
+      <div class="main-balance">${money(totalSaldo)}</div>
     </div>
-  </body>
-  </html>
-  `;
+
+    <div class="cards">
+      <div class="card">
+        <div class="card-label">Banco Reca</div>
+        <div class="card-value">${money(totalReca)}</div>
+      </div>
+
+      <div class="card">
+        <div class="card-label">Saídas</div>
+        <div class="card-value neg">${money(totalSaidas)}</div>
+      </div>
+
+      <div class="card">
+        <div class="card-label">Pendentes</div>
+        <div class="card-value neg">${money(totalPendentes)}</div>
+      </div>
+
+      <div class="card">
+        <div class="card-label">Diferença caixa</div>
+        <div class="card-value ${totalDiff >= 0 ? "pos" : "neg"}">
+          ${totalDiff > 0 ? "+" : totalDiff < 0 ? "-" : ""}${money(Math.abs(totalDiff))}
+        </div>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-title">Movimentações do período</div>
+      ${statementRows || `<div class="empty">Nenhum fechamento encontrado nesse período.</div>`}
+    </div>
+
+    <div class="section">
+      <div class="section-title">Ranking de operadores</div>
+
+      ${
+        rankingRows
+          ? `
+            <table class="ranking-table">
+              <thead>
+                <tr>
+                  <th>#</th>
+                  <th>Operador</th>
+                  <th>Fech.</th>
+                  <th>Sobra</th>
+                  <th>Falta</th>
+                  <th>Saídas</th>
+                </tr>
+              </thead>
+              <tbody>
+                ${rankingRows}
+              </tbody>
+            </table>
+          `
+          : `<div class="empty">Sem dados de operadores no período.</div>`
+      }
+    </div>
+
+    <div class="footer">
+      Documento interno • Bank King PRO
+    </div>
+
+  </div>
+</body>
+</html>
+`;
 }
     
 // PDF datas
