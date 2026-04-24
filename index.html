@@ -1282,38 +1282,55 @@
           <input id="resetEmail" type="email" placeholder="Digite seu email" required />
         </div>
 
-        <button class="auth-submit" type="submit">Enviar link</button>
-      </form>
+   <button class="auth-submit" type="submit">Enviar link</button>
+</form>
+</div>
+</section>
+
+<!-- APP -->
+<div id="appShell" class="app-shell hidden">
+
+  <!-- TOPO PREMIUM -->
+  <header class="topbar">
+    <div class="brand">
+      <div class="brand-logo">BK</div>
+      <div>
+        <div class="brand-title">Bank King</div>
+        <div class="brand-sub">Controle Fechamento</div>
+      </div>
     </div>
-  </section>
 
-  <!-- APP -->
-  <div id="appShell" class="app-shell hidden">
-    <main class="app">
+    <button id="menuToggle" class="menu-btn" type="button">☰</button>
+  </header>
 
-      <!-- TOPO PREMIUM -->
-      <header class="topbar">
-        <div class="brand">
-          <div class="brand-logo">BK</div>
-          <div>
-            <div class="brand-title">Bank King</div>
-            <div class="brand-sub">Controle Fechamento</div>
-          </div>
-        </div>
+  <main class="app">
 
-        <button id="menuToggle" class="menu-btn" type="button">☰</button>
-      </header>
+    <!-- 👑 PAINEL ADMIN PREMIUM -->
+    <div id="adminPanel" class="hidden" style="
+      padding:20px;
+      margin-bottom:20px;
+      border-radius:20px;
+      background:#f8fafc;
+      border:1px solid #e5e7eb;
+      box-shadow:0 10px 30px rgba(0,0,0,0.05);
+    ">
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
+        <h3 style="margin:0;">👑 Usuários</h3>
+        <span style="font-size:12px; color:#64748b;">Painel Admin</span>
+      </div>
 
-      <!-- USUÁRIO -->
-      <section class="user-card">
-        <div>
-          <div id="activeUserName" class="user-name">Usuário</div>
-          <div id="activeUserEmail" class="user-email">email@exemplo.com</div>
-        </div>
+      <div id="usersList" style="display:flex; flex-direction:column; gap:10px;"></div>
+    </div>
 
-        <button id="logoutBtn" class="logout-btn" type="button">Sair</button>
-      </section>
+    <!-- USUÁRIO -->
+    <section class="user-card">
+      <div>
+        <div id="activeUserName" class="user-name">Usuário</div>
+        <div id="activeUserEmail" class="user-email">email@exemplo.com</div>
+      </div>
 
+      <button id="logoutBtn" class="logout-btn" type="button">Sair</button>
+    </section>
       <!-- SALDO RECA -->
       <section class="balance-card">
         <div>
