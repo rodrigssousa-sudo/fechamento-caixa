@@ -3811,7 +3811,21 @@ async function registerUser(name, email, password) {
     alert("Erro ao registrar usuário.");
   }
 }
+    
+document.getElementById("registerForm")?.addEventListener("submit", async (e) => {
+  e.preventDefault();
 
+  const name = document.getElementById("registerName")?.value.trim();
+  const email = document.getElementById("registerEmail")?.value.trim();
+  const password = document.getElementById("registerPassword")?.value;
+
+  if (!name || !email || !password) {
+    alert("Preencha nome, email e senha.");
+    return;
+  }
+
+  await registerUser(name, email, password);
+});
 
 // =========================
 // 🔥 INICIALIZAÇÃO FINAL
