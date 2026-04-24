@@ -456,12 +456,23 @@
       flex-shrink:0;
     }
 
-    .compare-dot.up{background:var(--green);box-shadow:0 0 0 4px rgba(22,163,74,.12);}
-    .compare-dot.down{background:var(--red);box-shadow:0 0 0 4px rgba(220,38,38,.12);}
+    .compare-dot.up{
+  background:#16a34a;
+  box-shadow:0 0 0 4px rgba(22,163,74,.12);
+}
+
+.compare-dot.down{
+  background:#dc2626;
+  box-shadow:0 0 0 4px rgba(220,38,38,.12);
+}
     .compare-dot.same{background:#94a3b8;box-shadow:0 0 0 4px rgba(148,163,184,.12);}
 
     .compare-name{font-size:13px;font-weight:950;}
-    .compare-value{font-size:12px;color:var(--muted);font-weight:800;margin-top:2px;}
+    .compare-value{
+  font-size:12px;
+  color:var(--muted);
+  font-weight:800;
+}
 
     .chart-wrap{
       width:100%;
@@ -1290,39 +1301,64 @@ function render() {
   renderChart();
 }
 
-    function renderCompare() {
-      if (historyCache.length < 2) return;
+   function renderCompare() {
+  if (historyCache.length < 2) return;
 
-      const current = historyCache[0].turno;
-      const prev = historyCache[1].turno;
+  const current = historyCache[0].turno;
+  const prev = historyCache[1].turno;
 
-      const systems = [
-        ["Banco", current.reca, prev.reca],
-        ["Suprema", current.suprema, prev.suprema],
-        ["PPPoker", current.pppoker, prev.pppoker],
-        ["Buffalo", current.buffalo, prev.buffalo],
-        ["Ganamos", current.ganamos, prev.ganamos]
-      ];
-
-      const html = systems.map(s => {
-        const diff = s[1] - s[2];
-        const cls = diff > 0 ? "up" : diff < 0 ? "down" : "same";
-
-        return `
-          <div class="compare-pill">
-            <span class="compare-dot ${cls}"></span>
-            <div>
-              <div class="compare-name">${s[0]}</div>
-              <div class="compare-value">
-                ${money(s[1])} vs ${money(s[2])}
-              </div>
-            </div>
-          </div>
-        `;
-      }).join("");
-
-      document.getElementById("systemsCompareBar").innerHTML = html;
+  const systems = [
+    {
+      name: "Banco",
+      diff: (current.reca || 0) - (prev.reca || 0),
+      type: "money"
+    },
+    {
+      name: "Suprema",
+      diff: (current.suprema || 0) - (prev.suprema || 0),
+      type: "fichas"
+    },
+    {
+      name: "PPPoker",
+      diff: (current.pppoker || 0) - (prev.pppoker || 0),
+      type: "fichas"
+    },
+    {
+      name: "Buffalo",
+      diff: (current.buffalo || 0) - (prev.buffalo || 0),
+      type: "money"
+    },
+    {
+      name: "Ganamos",
+      diff: (current.ganamos || 0) - (prev.ganamos || 0),
+      type: "money"
     }
+  ];
+
+  const html = systems.map(s => {
+    const cls = s.diff > 0 ? "up" : s.diff < 0 ? "down" : "same";
+
+    let valueText = "";
+
+    if (s.type === "money") {
+      valueText = `${s.diff > 0 ? "+" : s.diff < 0 ? "-" : ""} ${money(Math.abs(s.diff))}`;
+    } else {
+      valueText = `${s.diff > 0 ? "+" : s.diff < 0 ? "-" : ""} ${Math.abs(s.diff).toLocaleString("pt-BR")} fichas`;
+    }
+
+    return `
+      <div class="compare-pill">
+        <span class="compare-dot ${cls}"></span>
+        <div>
+          <div class="compare-name">${s.name}</div>
+          <div class="compare-value">${valueText}</div>
+        </div>
+      </div>
+    `;
+  }).join("");
+
+  document.getElementById("systemsCompareBar").innerHTML = html;
+}
 
     function renderRanking() {
       const ranking = {};
