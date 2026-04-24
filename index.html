@@ -1736,7 +1736,7 @@ function renderRanking(range = rankingRange){
     const saidas = Number(item?.turno?.saidasTotal || 0);
 
     // 🔥 SOMA DA DIFERENÇA DE CAIXA
-    const diff = (currentSaldo + saidas) - previousSaldo;
+    const diff = currentSaldo - previousSaldo;
 
     if(!ranking[nome]){
       ranking[nome] = 0;
@@ -1929,15 +1929,20 @@ let diff = 0;
 if (historyCache.length) {
   const previous = historyCache[0];
 
-  const previousSaldo = Number(
-    previous.currentSaldoTotal ||
+let previousSaldo = 0;
+
+if (previous.turno && typeof calcularSaldo === "function") {
+  previousSaldo = calcularSaldo(previous.turno);
+} else {
+  previousSaldo = Number(
     previous.saldo ||
+    previous.currentSaldoTotal ||
     previous.turno?.saldoLiquido ||
     0
   );
-
-  diff = saldoLiquido - previousSaldo;
 }
+
+diff = saldoLiquido - previousSaldo;
 
   const item = {
     nomeOperador: nome,
