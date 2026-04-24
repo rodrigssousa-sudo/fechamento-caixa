@@ -1655,29 +1655,60 @@ function render() {
 
   document.getElementById("systemsCompareBar").innerHTML = html;
 }
-
 let rankingChart;
+let rankingRange = "day";
 
-function renderRanking(){
+function getRankingStartDate(range){
+  const now = new Date();
+  const start = new Date(now);
+
+  if(range === "day"){
+    start.setHours(0,0,0,0);
+  }
+
+  if(range === "week"){
+    start.setDate(start.getDate() - 7);
+  }
+
+  if(range === "15"){
+    start.setDate(start.getDate() - 15);
+  }
+
+  if(range === "30"){
+    start.setDate(start.getDate() - 30);
+  }
+
+  return start;
+}
+
+function renderRanking(range = rankingRange){
+  rankingRange = range;
 
   const canvas = document.getElementById("performanceChart");
   if(!canvas) return;
 
   const history = historyCache || [];
-  if(!history.length) return;
+  const startDate = getRankingStartDate(range);
 
   const ranking = {};
 
   history.forEach((item, index) => {
+    const baseDate = item.fechamentoDate || item.turno?.dataFechamento;
+    if(!baseDate) return;
+
+    const itemDate = new Date(`${baseDate}T12:00:00`);
+    if(itemDate < startDate) return;
+
+    const previousItem = history[index + 1] || null;
+    if(!previousItem) return;
 
     const nome = item.nomeOperador || "Sem nome";
-    const previousItem = history[index + 1];
-    if(!previousItem) return;
 
     const currentSaldo = Number(item?.turno?.saldoLiquido || 0);
     const previousSaldo = Number(previousItem?.turno?.saldoLiquido || 0);
     const saidas = Number(item?.turno?.saidasTotal || 0);
 
+    // 🔥 SOMA DA DIFERENÇA DE CAIXA
     const diff = (currentSaldo + saidas) - previousSaldo;
 
     if(!ranking[nome]){
@@ -1697,21 +1728,38 @@ function renderRanking(){
   rankingChart = new Chart(canvas, {
     type: "bar",
     data: {
-      labels: labels,
+      labels,
       datasets: [{
-        label: "Diferença de Caixa",
-        data: values,
+        label: "Soma da Diferença de Caixa",
+        data: values
       }]
     },
     options: {
       responsive: true,
       plugins: {
-        legend: { display: false }
+        legend: {
+          display: true
+        },
+        tooltip: {
+          callbacks: {
+            label: function(context){
+              return money(context.raw || 0);
+            }
+          }
+        }
+      },
+      scales: {
+        y: {
+          ticks: {
+            callback: function(value){
+              return money(value);
+            }
+          }
+        }
       }
     }
   });
 }
-
     function renderChart() {
       const canvas = document.getElementById("performanceChart");
       if (!canvas) return;
