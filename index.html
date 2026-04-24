@@ -1928,12 +1928,17 @@ document.getElementById("activeUserEmail").textContent =
 
 startHistoryRealtimeListener();
 render();
-  } else {
-    console.log("USUÁRIO DESLOGADO");
 
-    document.getElementById("authScreen")?.classList.remove("hidden");
-    document.getElementById("appShell")?.classList.add("hidden");
-  }
+if(typeof renderRanking === "function"){
+  renderRanking();
+}
+
+} else {
+  console.log("USUÁRIO DESLOGADO");
+
+  document.getElementById("authScreen")?.classList.remove("hidden");
+  document.getElementById("appShell")?.classList.add("hidden");
+}
 });
 
 // =========================
