@@ -2473,6 +2473,18 @@ onAuthStateChanged(auth, async (user) => {
     const allowed = await validateUserAccess(user);
     if (!allowed) return;
 
+    const userRef = doc(db, "users", user.uid);
+    const snap = await getDoc(userRef);
+    const data = snap.data();
+
+    // 👑 CONTROLE ADMIN
+    if (data.role === "admin") {
+      document.getElementById("adminOpenBtn")?.classList.remove("hidden");
+    } else {
+      document.getElementById("adminOpenBtn")?.classList.add("hidden");
+      document.getElementById("adminPanel")?.classList.add("hidden");
+    }
+
     document.getElementById("authScreen")?.classList.add("hidden");
     document.getElementById("appShell")?.classList.remove("hidden");
 
@@ -2492,6 +2504,9 @@ onAuthStateChanged(auth, async (user) => {
 
     document.getElementById("authScreen")?.classList.remove("hidden");
     document.getElementById("appShell")?.classList.add("hidden");
+
+    document.getElementById("adminOpenBtn")?.classList.add("hidden");
+    document.getElementById("adminPanel")?.classList.add("hidden");
   }
 });
 // =========================
@@ -3890,7 +3905,22 @@ const outflows = dynamicList
 // 🔥 INICIALIZAR BOTÕES
 bindSessionEvents();
 
+// =========================
+// 👑 ABRIR PAINEL ADMIN
+// =========================
+document.getElementById("adminOpenBtn")?.addEventListener("click", () => {
+  const panel = document.getElementById("adminPanel");
 
+  if (!panel) return;
+
+  panel.classList.toggle("hidden");
+
+  // 🔥 carrega usuários quando abre
+  if (!panel.classList.contains("hidden")) {
+    loadUsers();
+  }
+});
+      
 // =========================
 // 🔥 FUNÇÃO DE REGISTRO (COLE AQUI)
 // =========================
