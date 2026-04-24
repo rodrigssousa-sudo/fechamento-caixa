@@ -2583,6 +2583,79 @@ document.getElementById("menuHistoryBtn")?.addEventListener("click", () => {
     });
   }
 });
+
+// =========================
+// ✅ CORREÇÃO HISTÓRICO DETALHADO
+// =========================
+
+// Botão do menu: Histórico detalhado
+document.getElementById("menuHistoryBtn")?.addEventListener("click", () => {
+  document.getElementById("mainMenu")?.classList.add("hidden");
+
+  historyVisible = true;
+
+  const list = document.getElementById("historyList");
+  const btn = document.getElementById("toggleHistoryBtn");
+
+  if (list) list.classList.remove("hidden");
+  if (btn) btn.textContent = "Ocultar";
+
+  renderHistory();
+
+  setTimeout(() => {
+    list?.scrollIntoView({
+      behavior: "smooth",
+      block: "start"
+    });
+  }, 100);
+});
+
+// Botão roxo: Histórico
+document.getElementById("openDetailedHistoryBtn")?.addEventListener("click", () => {
+  historyVisible = true;
+
+  const list = document.getElementById("historyList");
+  const btn = document.getElementById("toggleHistoryBtn");
+
+  if (list) list.classList.remove("hidden");
+  if (btn) btn.textContent = "Ocultar";
+
+  renderHistory();
+
+  setTimeout(() => {
+    list?.scrollIntoView({
+      behavior: "smooth",
+      block: "start"
+    });
+  }, 100);
+});
+
+// Botão Ver/Ocultar histórico
+document.getElementById("toggleHistoryBtn")?.addEventListener("click", () => {
+  historyVisible = !historyVisible;
+
+  const list = document.getElementById("historyList");
+  const btn = document.getElementById("toggleHistoryBtn");
+
+  if (list) list.classList.toggle("hidden", !historyVisible);
+  if (btn) btn.textContent = historyVisible ? "Ocultar" : "Ver";
+
+  if (historyVisible) {
+    renderHistory();
+  }
+});
+
+// Clique nos cards do histórico para abrir modal
+document.addEventListener("click", (e) => {
+  const card = e.target.closest("[data-history-open]");
+  if (!card) return;
+
+  const index = Number(card.dataset.historyOpen);
+
+  if (Number.isInteger(index)) {
+    openHistoryModal(index);
+  }
+});    
     
 // =========================
 // 🔥 INICIALIZAÇÃO FINAL
