@@ -1753,7 +1753,6 @@ function openHistoryModal(index) {
 
   const turno = item.turno || {};
   const diff = Number(item.diff || 0);
-
   const saldo = item.saldo ?? calcularSaldo(turno);
 
   document.getElementById("historyModalTitle").textContent =
@@ -1762,23 +1761,17 @@ function openHistoryModal(index) {
   document.getElementById("historyModalSub").textContent =
     `Enviado em: ${formatDateTimeBR(item.submittedAt)}`;
 
-  // 🔥 AQUI ESTAVA O PROBLEMA (conteúdo vazio)
+  // 🔥 CONTEÚDO FINAL (SEM SOBRESCREVER)
   document.getElementById("historyModalBody").innerHTML = `
-    
     <div class="modal-grid">
-
       <div class="summary-box">
         <div class="summary-box-label">Banco Reca</div>
-        <div class="summary-box-value">
-          ${money(turno.reca || item.total || 0)}
-        </div>
+        <div class="summary-box-value">${money(turno.reca || item.total || 0)}</div>
       </div>
 
       <div class="summary-box">
         <div class="summary-box-label">Saldo Líquido</div>
-        <div class="summary-box-value">
-          ${money(saldo)}
-        </div>
+        <div class="summary-box-value">${money(saldo)}</div>
       </div>
 
       <div class="summary-box">
@@ -1794,41 +1787,43 @@ function openHistoryModal(index) {
           ${money(turno.saidasTotal || turno.saidas || 0)}
         </div>
       </div>
-
     </div>
 
-    <div style="margin-top:20px;display:grid;gap:8px;font-weight:700;">
+    <div style="margin-top:18px;display:grid;gap:8px;font-weight:700;">
       <div>Suprema: ${money(turno.suprema || 0)} x400</div>
       <div>PPPoker: ${money(turno.pppoker || 0)} x400</div>
       <div>Buffalo: ${money(turno.buffalo || 0)}</div>
       <div>Ganamos: ${money(turno.ganamos || 0)}</div>
-      <div>Carga Fichas: ${money(turno.cargaFichas || 0)}</div>
+      <div>Carga fichas: ${money(turno.cargaFichas || 0)}</div>
       <div>Carga Poker: ${money(turno.cargaPoker || 0)}</div>
       <div>Pendentes: ${money(turno.pendentesTotal || turno.pendentes || 0)}</div>
     </div>
 
-    <button id="deleteHistoryBtn" style="
-      margin-top:20px;
-      width:100%;
-      padding:14px;
-      border-radius:14px;
-      border:none;
-      background:#fee2e2;
-      color:#dc2626;
-      font-weight:900;
-      cursor:pointer;
-    ">
-      Excluir histórico
-    </button>
+    <div style="margin-top:18px;">
+      <button id="deleteHistoryBtn" style="
+        width:100%;
+        padding:14px;
+        border-radius:14px;
+        border:none;
+        background:#fee2e2;
+        color:#dc2626;
+        font-weight:900;
+        cursor:pointer;
+      ">
+        Excluir histórico
+      </button>
+    </div>
   `;
 
-  // botão excluir
+  // 🔥 EVENTO EXCLUIR
   document.getElementById("deleteHistoryBtn")?.addEventListener("click", async () => {
     const code = prompt("Código para excluir:");
     if (code !== DELETE_HISTORY_CODE) {
       alert("Código incorreto");
       return;
     }
+
+    if (!confirm("Tem certeza que deseja excluir?")) return;
 
     try {
       await deleteDoc(doc(db, "history", item.id));
@@ -1840,6 +1835,7 @@ function openHistoryModal(index) {
     }
   });
 
+  // 🔥 ABRIR MODAL
   document.getElementById("historyModal")?.classList.remove("hidden");
 }
 
