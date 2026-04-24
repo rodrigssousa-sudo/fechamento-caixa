@@ -1797,6 +1797,41 @@ function openHistoryModal(index) {
     </div>
   `;
 
+document.getElementById("historyModalBody").innerHTML = `...conteúdo...`;
+
+// 👇 COLE AQUI (ANTES de abrir o modal)
+document.getElementById("historyModalBody").innerHTML += `
+  <div style="margin-top:18px;">
+    <button id="deleteHistoryBtn" type="button" class="remove-btn red-remove" style="width:100%;">
+      Excluir histórico
+    </button>
+  </div>
+`;
+
+document.getElementById("deleteHistoryBtn")?.addEventListener("click", async () => {
+  const code = prompt("Digite código interno para excluir:");
+  if (code === null) return;
+
+  if (code !== DELETE_HISTORY_CODE) {
+    alert("Código incorreto.");
+    return;
+  }
+
+  if (!confirm("Tem certeza que deseja excluir este histórico?")) return;
+
+  try {
+    await deleteDoc(doc(db, "history", item.id));
+    alert("Histórico excluído com sucesso.");
+    document.getElementById("historyModal")?.classList.add("hidden");
+  } catch (error) {
+    console.error(error);
+    alert("Erro ao excluir histórico.");
+  }
+});
+
+// 👇 DEPOIS disso abre o modal
+document.getElementById("historyModal")?.classList.remove("hidden");
+  
   document.getElementById("historyModal")?.classList.remove("hidden");
 }
 
