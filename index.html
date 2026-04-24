@@ -1656,43 +1656,61 @@ function render() {
   document.getElementById("systemsCompareBar").innerHTML = html;
 }
 
-    function renderRanking() {
-      const ranking = {};
+let rankingChart;
 
-      historyCache.forEach(item => {
-        const nome = item.nomeOperador || "Sem nome";
-        const diff = item.diff || 0;
+function renderRanking(){
 
-        if (!ranking[nome]) {
-          ranking[nome] = {
-            qtd: 0,
-            sobra: 0,
-            falta: 0,
-            saidas: 0
-          };
-        }
+  const canvas = document.getElementById("performanceChart");
+  if(!canvas) return;
 
-        ranking[nome].qtd++;
-        ranking[nome].saidas += item.turno.saidasTotal || 0;
+  const history = historyCache || [];
+  if(!history.length) return;
 
-        if (diff > 0) ranking[nome].sobra += diff;
-        if (diff < 0) ranking[nome].falta += Math.abs(diff);
-      });
+  const ranking = {};
 
-      const html = Object.entries(ranking).map(([nome, r]) => `
-        <tr>
-          <td>${nome}</td>
-          <td>${r.qtd}</td>
-          <td class="green">${money(r.sobra)}</td>
-          <td class="red">${money(r.falta)}</td>
-          <td>${money(r.saidas)}</td>
-        </tr>
-      `).join("");
+  history.forEach((item, index) => {
 
-      document.getElementById("operatorRankingBody").innerHTML = html || `
-        <tr><td colspan="5">Sem dados</td></tr>
-      `;
+    const nome = item.nomeOperador || "Sem nome";
+    const previousItem = history[index + 1];
+    if(!previousItem) return;
+
+    const currentSaldo = Number(item?.turno?.saldoLiquido || 0);
+    const previousSaldo = Number(previousItem?.turno?.saldoLiquido || 0);
+    const saidas = Number(item?.turno?.saidasTotal || 0);
+
+    const diff = (currentSaldo + saidas) - previousSaldo;
+
+    if(!ranking[nome]){
+      ranking[nome] = 0;
     }
+
+    ranking[nome] += diff;
+  });
+
+  const labels = Object.keys(ranking);
+  const values = Object.values(ranking);
+
+  if(rankingChart){
+    rankingChart.destroy();
+  }
+
+  rankingChart = new Chart(canvas, {
+    type: "bar",
+    data: {
+      labels: labels,
+      datasets: [{
+        label: "Diferença de Caixa",
+        data: values,
+      }]
+    },
+    options: {
+      responsive: true,
+      plugins: {
+        legend: { display: false }
+      }
+    }
+  });
+}
 
     function renderChart() {
       const canvas = document.getElementById("performanceChart");
@@ -3134,7 +3152,7 @@ document.addEventListener("click", (e) => {
   }
 });    
 
-    async function finalizeTurn(){
+   async function finalizeTurn(){
   try {
     if(typeof serializeTurn !== "function"){
       alert("Função serializeTurn não encontrada.");
@@ -3163,10 +3181,10 @@ document.addEventListener("click", (e) => {
     alert("Erro ao finalizar turno.");
   }
 }
-    
-    // 🔥 INICIALIZAR BOTÕES
+
+// 🔥 INICIALIZAR BOTÕES
 bindSessionEvents();
-    
+
 // =========================
 // 🔥 INICIALIZAÇÃO FINAL
 // =========================
@@ -3174,7 +3192,10 @@ const dateInput = document.getElementById("t2_data_fechamento");
 if (dateInput && !dateInput.value) {
   dateInput.value = getTodayDateInput();
 }
-    
-  </script>
+
+</script>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
 </body>
 </html>
