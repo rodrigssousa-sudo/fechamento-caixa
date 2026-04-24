@@ -2365,6 +2365,7 @@ function startHistoryRealtimeListener() {
 onAuthStateChanged(auth, (user) => {
   if (user) {
     console.log("LOGADO:", user.email);
+    console.log("UID:", user.uid);
 
 document.getElementById("authScreen")?.classList.add("hidden");
 document.getElementById("appShell")?.classList.remove("hidden");
