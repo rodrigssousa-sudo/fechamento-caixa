@@ -1990,12 +1990,14 @@ document.addEventListener("click", (e) => {
 // =============================
 function bindSessionEvents(){
 
+  // Pendentes
   document.querySelectorAll("[data-add-pending]").forEach((btn) => {
     btn.onclick = () => {
       createPendingRow(btn.dataset.addPending);
     };
   });
 
+  // Saídas
   document.querySelectorAll("[data-add-outflow], [data-add-dynamic]").forEach((btn) => {
     btn.onclick = () => {
       const turno = btn.dataset.addOutflow || btn.dataset.addDynamic;
@@ -2003,17 +2005,25 @@ function bindSessionEvents(){
     };
   });
 
-  document.getElementById("calculateBtn")?.addEventListener("click", () => {
+  // ✅ CALCULAR
+  document.getElementById("calcular")?.addEventListener("click", () => {
     render();
   });
 
-  document.getElementById("clearBtn")?.addEventListener("click", () => {
+  // ✅ LIMPAR
+  document.getElementById("limparBtn")?.addEventListener("click", () => {
     clearTurn("t2");
     render();
   });
 
-  document.getElementById("saveShiftBtn")?.addEventListener("click", async () => {
+  // ✅ FINALIZAR TURNO
+  document.getElementById("fecharTurno")?.addEventListener("click", async () => {
     await finalizeTurn();
+  });
+
+  // (opcional) histórico
+  document.getElementById("openDetailedHistoryBtn")?.addEventListener("click", () => {
+    toggleDetailedHistory();
   });
 }
   
@@ -3042,6 +3052,9 @@ document.addEventListener("click", (e) => {
     openHistoryModal(index);
   }
 });    
+    
+    // 🔥 INICIALIZAR BOTÕES
+bindSessionEvents();
     
 // =========================
 // 🔥 INICIALIZAÇÃO FINAL
