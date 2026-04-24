@@ -1725,9 +1725,10 @@ function renderTopPreviousCards() {
 
   const diff = Number(last.diff || 0);
   const lastTotal = calcularSaldo(last.turno || {});
+const lastReca = Number(last.total || last.turno?.reca || 0);
 
-  if (previousOperator) previousOperator.textContent = last.nomeOperador || "Sem nome";
-  if (previousDate) previousDate.textContent = formatDateBR(last.fechamentoDate || last.turno?.dataFechamento || "");
+if (previousReca) previousReca.textContent = money(lastTotal); // total turno (card branco)
+if (bankValue) bankValue.textContent = balanceVisible ? money(lastReca) : "Saldo oculto"; // banco (card azul)
 
   if (previousDiff) {
     previousDiff.textContent = `${diff > 0 ? "+" : diff < 0 ? "-" : ""}${money(Math.abs(diff))}`;
