@@ -995,7 +995,7 @@
       <p class="auth-sub">Acesso interno BK</p>
 
       <div class="auth-toggle">
-        <button id="tabLogin" class="auth-tab active" type="button">Entrar</button>
+        id="tabLogin" class="auth-tab active" type="button">Entrar</button>
         <button id="tabRegister" class="auth-tab" type="button">Registrar</button>
         <button id="tabForgot" class="auth-tab" type="button">Senha</button>
       </div>
@@ -3241,20 +3241,30 @@ document.getElementById("confirmExportPdf")?.addEventListener("click", () => {
     return;
   }
 
+  const html = buildPremiumBankReceiptPdf(startDate, endDate);
+
+  if (!html || !html.trim()) {
+    alert("Relatório vazio. Verifique o período selecionado.");
+    return;
+  }
+
   const w = window.open("", "_blank", "width=1280,height=900");
+
   if (!w) {
     alert("Não foi possível abrir a janela.");
     return;
   }
 
   w.document.open();
-  w.document.write(buildPremiumBankReceiptPdf(startDate, endDate));
+  w.document.write(html);
   w.document.close();
-  w.focus();
-
-  w.onload = () => w.print();
 
   document.getElementById("pdfRangeModal")?.classList.add("hidden");
+
+  setTimeout(() => {
+    w.focus();
+    w.print();
+  }, 800);
 });
 
 // Relatórios rápidos
