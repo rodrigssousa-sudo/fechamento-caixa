@@ -1591,17 +1591,30 @@ function calcularSaldo(turno) {
 }
 
 function render() {
-  const turno = {
-    reca: getValue("t2_banco"),
-    suprema: getValue("t2_suprema"),
-    pppoker: getValue("t2_pppoker"),
-    buffalo: getValue("t2_buffalo"),
-    ganamos: getValue("t2_ganamos"),
-    cargaFichas: getValue("t2_cargas"),
-    cargaPoker: getValue("t2_cargas_poker") * 400,
-    saidas: getDynamicTotal("t2"),
-    pendentes: getPendingTotal("t2")
-  };
+  const parseBRMoney = (v) =>
+  Number(String(v || "0").replace(/\./g,"").replace(",", ".")) || 0;
+
+const turno = {
+  reca: parseBRMoney(document.getElementById("t2_banco")?.value),
+  suprema: parseBRMoney(document.getElementById("t2_suprema")?.value) * 400,
+  pppoker: parseBRMoney(document.getElementById("t2_pppoker")?.value) * 400,
+  buffalo: parseBRMoney(document.getElementById("t2_buffalo")?.value),
+  ganamos: parseBRMoney(document.getElementById("t2_ganamos")?.value),
+  cargaFichas: parseBRMoney(document.getElementById("t2_cargas")?.value),
+  cargaPoker: parseBRMoney(document.getElementById("t2_cargas_poker")?.value) * 400,
+
+  saidasTotal: [...document.querySelectorAll("#t2_dynamic_list .dynamic-row")]
+    .reduce((acc, row) => {
+      const v = row.querySelectorAll("input")[1]?.value;
+      return acc + parseBRMoney(v);
+    }, 0),
+
+  pendentesTotal: [...document.querySelectorAll("#t2_pending_list .dynamic-row")]
+    .reduce((acc, row) => {
+      const v = row.querySelectorAll("input")[1]?.value;
+      return acc + parseBRMoney(v);
+    }, 0)
+};
 
   // ✅ AGORA O TOPO VEM DO HISTÓRICO
   renderTopPreviousCards();
