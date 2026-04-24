@@ -2309,11 +2309,12 @@ async function validateUserAccess(user) {
   return true;
 }
 
-
 // =========================
 // 🔐 AUTH: LOGIN / REGISTRO / ABAS
 // =========================
-document.addEventListener("DOMContentLoaded", () => {
+function initAuthEvents() {
+  console.log("✅ initAuthEvents carregado");
+
   const tabLogin = document.getElementById("tabLogin");
   const tabRegister = document.getElementById("tabRegister");
   const tabPassword = document.getElementById("tabPassword");
@@ -2321,6 +2322,9 @@ document.addEventListener("DOMContentLoaded", () => {
   const loginForm = document.getElementById("loginForm");
   const registerForm = document.getElementById("registerForm");
   const forgotPasswordForm = document.getElementById("forgotPasswordForm");
+
+  console.log("loginForm:", loginForm);
+  console.log("registerForm:", registerForm);
 
   function showAuthForm(formName) {
     loginForm?.classList.add("hidden");
@@ -2353,52 +2357,58 @@ document.addEventListener("DOMContentLoaded", () => {
   tabRegister?.addEventListener("click", () => showAuthForm("register"));
   tabPassword?.addEventListener("click", () => showAuthForm("password"));
 
-// =========================
-// 🔐 LOGIN
-// =========================
-loginForm?.addEventListener("submit", async (e) => {
-  e.preventDefault();
+  // =========================
+  // 🔐 LOGIN
+  // =========================
+  loginForm?.addEventListener("submit", async (e) => {
+    e.preventDefault();
 
-  const email = document.getElementById("loginEmail")?.value.trim().toLowerCase();
-  const password = document.getElementById("loginPassword")?.value;
+    console.log("🔥 SUBMIT LOGIN CAPTURADO");
 
-  if (!email || !password) {
-    alert("Preencha email e senha.");
-    return;
-  }
+    const email = document.getElementById("loginEmail")?.value.trim().toLowerCase();
+    const password = document.getElementById("loginPassword")?.value;
 
-  try {
-    console.log("Tentando login:", email);
-
-    const userCredential = await signInWithEmailAndPassword(auth, email, password);
-    const user = userCredential.user;
-
-    console.log("UID LOGIN:", user.uid);
-
-    const userRef = doc(db, "users", user.uid);
-    const snap = await getDoc(userRef);
-
-    console.log("DOC EXISTE?", snap.exists());
-
-    if (snap.exists()) {
-      console.log("DADOS USER:", snap.data());
+    if (!email || !password) {
+      alert("Preencha email e senha.");
+      return;
     }
 
-    const allowed = await validateUserAccess(user);
-    if (!allowed) return;
+    try {
+      console.log("Tentando login:", email);
 
-    console.log("Login liberado:", user.email);
+      const userCredential = await signInWithEmailAndPassword(auth, email, password);
+      const user = userCredential.user;
 
-  } catch (error) {
-    console.error("ERRO LOGIN:", error);
-    alert(error.message || "Erro ao fazer login.");
-  }
-});
-      
+      console.log("UID LOGIN:", user.uid);
+
+      const allowed = await validateUserAccess(user);
+      if (!allowed) return;
+
+      console.log("Login liberado:", user.email);
+
+    } catch (error) {
+      console.error("ERRO LOGIN:", error);
+      alert(error.message || "Erro ao fazer login.");
+    }
+  });
+
   // =========================
-  // 📝 REGISTRO COMO PENDING
+  // 📝 REGISTRO
   // =========================
-  async function registerUser(name, email, password) {
+  registerForm?.addEventListener("submit", async (e) => {
+    e.preventDefault();
+
+    console.log("🔥 SUBMIT REGISTRO CAPTURADO");
+
+    const name = document.getElementById("registerName")?.value.trim();
+    const email = document.getElementById("registerEmail")?.value.trim().toLowerCase();
+    const password = document.getElementById("registerPassword")?.value;
+
+    if (!name || !email || !password) {
+      alert("Preencha nome, email e senha.");
+      return;
+    }
+
     try {
       const userCredential = await createUserWithEmailAndPassword(auth, email, password);
 
@@ -2412,31 +2422,21 @@ loginForm?.addEventListener("submit", async (e) => {
 
       alert("Conta criada com sucesso! Aguarde aprovação do administrador.");
       await signOut(auth);
-
       showAuthForm("login");
 
     } catch (error) {
       console.error("Erro ao registrar:", error);
       alert(error.message || "Erro ao registrar usuário.");
     }
-  }
-
-  registerForm?.addEventListener("submit", async (e) => {
-    e.preventDefault();
-
-    const name = document.getElementById("registerName")?.value.trim();
-    const email = document.getElementById("registerEmail")?.value.trim().toLowerCase();
-    const password = document.getElementById("registerPassword")?.value;
-
-    if (!name || !email || !password) {
-      alert("Preencha nome, email e senha.");
-      return;
-    }
-
-    await registerUser(name, email, password);
   });
-});
+}
 
+// 🔥 INICIALIZAÇÃO SEGURA
+if (document.readyState === "loading") {
+  document.addEventListener("DOMContentLoaded", initAuthEvents);
+} else {
+  initAuthEvents();
+}
 
 // =========================
 // 🔥 HISTÓRICO EM TEMPO REAL
