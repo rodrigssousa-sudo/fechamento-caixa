@@ -1809,7 +1809,7 @@ function renderRanking(range = rankingRange){
       });
     }
 
-   async function saveTurn() {
+  async function saveTurn() {
   const nome = document.getElementById("t2_nome_operador")?.value.trim();
 
   if (!nome) {
@@ -1817,9 +1817,9 @@ function renderRanking(range = rankingRange){
     return;
   }
 
-  const parseBRMoney = (value) => {
+  const parseBRMoney = (v) => {
     return Number(
-      String(value || "0")
+      String(v || "0")
         .replace(/\s/g, "")
         .replace(/\$/g, "")
         .replace(/\./g, "")
@@ -1827,57 +1827,75 @@ function renderRanking(range = rankingRange){
     ) || 0;
   };
 
-  const getInputValue = (id) => {
-  if (typeof getValue === "function") {
-    return getValue(id);
-  }
+  const val = (id) => parseBRMoney(document.getElementById(id)?.value || "");
 
-  return parseBRMoney(document.getElementById(id)?.value || "");
-};
-
-  const outflows = [...document.querySelectorAll("#t2_dynamic_list .dynamic-row")].map((row) => {
-    const inputs = row.querySelectorAll("input");
-
-    return {
-      name: inputs[0]?.value || "",
-      value: parseBRMoney(inputs[1]?.value || "")
-    };
-  }).filter((item) => item.name || item.value);
+  const reca = val("t2_banco");
+  const suprema = val("t2_suprema");
+  const pppoker = val("t2_pppoker");
+  const buffalo = val("t2_buffalo");
+  const ganamos = val("t2_ganamos");
+  const cargaFichas = val("t2_cargas");
+  const cargaPokerRaw = val("t2_cargas_poker");
+  const cargaPoker = cargaPokerRaw * 400;
 
   const pendings = [...document.querySelectorAll("#t2_pending_list .dynamic-row")].map((row) => {
     const inputs = row.querySelectorAll("input");
-
     return {
       name: inputs[0]?.value || "",
       value: parseBRMoney(inputs[1]?.value || "")
     };
-  }).filter((item) => item.name || item.value);
+  }).filter(item => item.name || item.value);
 
-  const entries = [
-    { name: "Banco Reca", value: getInputValue("t2_banco") },
-    { name: "Suprema (x400)", value: getInputValue("t2_suprema") * 400 },
-    { name: "PPPoker (x400)", value: getInputValue("t2_pppoker") * 400 },
-    { name: "Buffalo", value: getInputValue("t2_buffalo") },
-    { name: "Ganamos", value: getInputValue("t2_ganamos") },
-    { name: "Carga de Fichas", value: getInputValue("t2_cargas") },
-    { name: "Cargas F. Poker (x400)", value: getInputValue("t2_cargas_poker") * 400 }
-  ];
+  const outflows = [...document.querySelectorAll("#t2_dynamic_list .dynamic-row")].map((row) => {
+    const inputs = row.querySelectorAll("input");
+    return {
+      name: inputs[0]?.value || "",
+      value: parseBRMoney(inputs[1]?.value || "")
+    };
+  }).filter(item => item.name || item.value);
 
-  const entradasTotal = entries.reduce((acc, item) => acc + Number(item.value || 0), 0);
-  const saidasTotal = outflows.reduce((acc, item) => acc + Number(item.value || 0), 0);
-  const pendentesTotal = pendings.reduce((acc, item) => acc + Number(item.value || 0), 0);
+  const entradasTotal =
+    reca +
+    (suprema * 400) +
+    (pppoker * 400) +
+    buffalo +
+    ganamos -
+    cargaFichas -
+    cargaPoker;
 
-  // Saldo Total Turno = entradas - pendentes
+  const pendentesTotal = pendings.reduce((acc, item) => acc + item.value, 0);
+  const saidasTotal = outflows.reduce((acc, item) => acc + item.value, 0);
+
   const saldoLiquido = entradasTotal - pendentesTotal;
 
+  const entries = [
+    { name: "Banco Reca", value: reca },
+    { name: "Suprema (x400)", value: suprema * 400 },
+    { name: "PPPoker (x400)", value: pppoker * 400 },
+    { name: "Buffalo", value: buffalo },
+    { name: "Ganamos", value: ganamos },
+    { name: "Carga de Fichas", value: cargaFichas },
+    { name: "Cargas F. Poker (x400)", value: cargaPoker }
+  ];
+
   const turno = {
+    // campos antigos para o modal continuar funcionando
+    reca,
+    suprema,
+    pppoker,
+    buffalo,
+    ganamos,
+    cargaFichas,
+    cargaPoker,
+
+    // campos novos completos
     dataFechamento: document.getElementById("t2_data_fechamento")?.value || getTodayDateInput(),
     entries,
-    outflows,
     pendings,
+    outflows,
     entradasTotal,
-    saidasTotal,
     pendentesTotal,
+    saidasTotal,
     saldoLiquido
   };
 
@@ -1891,6 +1909,7 @@ function renderRanking(range = rankingRange){
 
     const previousSaldo = Number(
       previous.currentSaldoTotal ||
+      previous.saldo ||
       prevTurno.saldoLiquido ||
       0
     );
@@ -1901,9 +1920,7 @@ function renderRanking(range = rankingRange){
       0
     );
 
-    const previousComparison = previousSaldo + previousSaidas;
-
-    diff = currentComparison - previousComparison;
+    diff = currentComparison - (previousSaldo + previousSaidas);
   }
 
   const item = {
@@ -1911,9 +1928,10 @@ function renderRanking(range = rankingRange){
     turnoTrabalhado: document.getElementById("t2_turno_trabalhado")?.value || "",
     fechamentoDate: turno.dataFechamento,
 
-    total: getInputValue("t2_banco"),
-
+    total: reca,
+    saldo: saldoLiquido,
     currentSaldoTotal: saldoLiquido,
+
     retiradaLucro: saidasTotal,
     turnProfit: saidasTotal,
 
