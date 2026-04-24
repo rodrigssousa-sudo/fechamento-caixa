@@ -3787,6 +3787,32 @@ const outflows = dynamicList
 // 🔥 INICIALIZAR BOTÕES
 bindSessionEvents();
 
+
+// =========================
+// 🔥 FUNÇÃO DE REGISTRO (COLE AQUI)
+// =========================
+async function registerUser(name, email, password) {
+  try {
+    const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+
+    await setDoc(doc(db, "users", userCredential.user.uid), {
+      name: name,
+      email: email,
+      role: "pending",
+      status: "pending",
+      createdAt: serverTimestamp()
+    });
+
+    alert("Conta criada com sucesso! Aguarde aprovação do administrador.");
+    await signOut(auth);
+
+  } catch (error) {
+    console.error("Erro ao registrar:", error);
+    alert("Erro ao registrar usuário.");
+  }
+}
+
+
 // =========================
 // 🔥 INICIALIZAÇÃO FINAL
 // =========================
