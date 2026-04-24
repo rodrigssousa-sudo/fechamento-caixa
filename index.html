@@ -1926,27 +1926,21 @@ const outflows = [...document.querySelectorAll("#t2_dynamic_list .dynamic-row")]
 
   const currentComparison = saidasTotal;
 
-  let diff = 0;
+ let diff = 0;
 
-  if (historyCache.length) {
-    const previous = historyCache[0];
-    const prevTurno = previous.turno || {};
+if (historyCache.length) {
+  const previous = historyCache[0];
+  const prevTurno = previous.turno || {};
 
-    const previousSaldo = Number(
-      previous.currentSaldoTotal ||
-      previous.saldo ||
-      prevTurno.saldoLiquido ||
-      0
-    );
+  const previousSaldo = Number(
+    previous.currentSaldoTotal ||
+    previous.saldo ||
+    prevTurno.saldoLiquido ||
+    0
+  );
 
-    const previousSaidas = Number(
-      previous.retiradaLucro ||
-      prevTurno.saidasTotal ||
-      0
-    );
-
-    diff = currentComparison - (previousSaldo + previousSaidas);
-  }
+  diff = saldoLiquido - previousSaldo;
+}
 
   const item = {
     nomeOperador: nome,
