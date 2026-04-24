@@ -1815,8 +1815,12 @@ function renderRanking(range = rankingRange){
   };
 
   const getInputValue = (id) => {
-    return parseBRMoney(document.getElementById(id)?.value || "");
-  };
+  if (typeof getValue === "function") {
+    return getValue(id);
+  }
+
+  return parseBRMoney(document.getElementById(id)?.value || "");
+};
 
   const outflows = [...document.querySelectorAll("#t2_dynamic_list .dynamic-row")].map((row) => {
     const inputs = row.querySelectorAll("input");
