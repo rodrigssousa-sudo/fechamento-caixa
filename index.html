@@ -1796,49 +1796,123 @@ function renderRanking(range = rankingRange){
       });
     }
 
-    async function saveTurn() {
-      const nome = document.getElementById("t2_nome_operador").value.trim();
+   async function saveTurn() {
+  const nome = document.getElementById("t2_nome_operador")?.value.trim();
 
-      if (!nome) {
-        alert("Operador obrigatório");
-        return;
-      }
+  if (!nome) {
+    alert("Operador obrigatório");
+    return;
+  }
 
-      const turno = {
-        reca: getValue("t2_banco"),
-        suprema: getValue("t2_suprema"),
-        pppoker: getValue("t2_pppoker"),
-        buffalo: getValue("t2_buffalo"),
-        ganamos: getValue("t2_ganamos"),
-        cargaFichas: getValue("t2_cargas"),
-        cargaPoker: getValue("t2_cargas_poker") * 400,
-        saidasTotal: getDynamicTotal("t2"),
-        pendentesTotal: getPendingTotal("t2")
-      };
+  const parseBRMoney = (value) => {
+    return Number(
+      String(value || "0")
+        .replace(/\s/g, "")
+        .replace(/\$/g, "")
+        .replace(/\./g, "")
+        .replace(",", ".")
+    ) || 0;
+  };
 
-      const saldo = calcularSaldo(turno);
+  const getInputValue = (id) => {
+    return parseBRMoney(document.getElementById(id)?.value || "");
+  };
 
-      const item = {
-        nomeOperador: nome,
-        turno,
-        total: turno.reca,
-        saldo,
-        submittedAt: Date.now()
-      };
+  const outflows = [...document.querySelectorAll("#t2_dynamic_list .dynamic-row")].map((row) => {
+    const inputs = row.querySelectorAll("input");
 
-      if (historyCache.length) {
-        const prev = historyCache[0].turno;
-        const baseNow = calcularSaldo(turno);
-        const basePrev = calcularSaldo(prev);
-        item.diff = baseNow - basePrev;
-      }
+    return {
+      name: inputs[0]?.value || "",
+      value: parseBRMoney(inputs[1]?.value || "")
+    };
+  }).filter((item) => item.name || item.value);
 
-      await addDoc(collection(db, "history"), item);
+  const pendings = [...document.querySelectorAll("#t2_pending_list .dynamic-row")].map((row) => {
+    const inputs = row.querySelectorAll("input");
 
-      alert("Turno salvo");
-      location.reload();
-    }
+    return {
+      name: inputs[0]?.value || "",
+      value: parseBRMoney(inputs[1]?.value || "")
+    };
+  }).filter((item) => item.name || item.value);
 
+  const entries = [
+    { name: "Banco Reca", value: getInputValue("t2_banco") },
+    { name: "Suprema (x400)", value: getInputValue("t2_suprema") * 400 },
+    { name: "PPPoker (x400)", value: getInputValue("t2_pppoker") * 400 },
+    { name: "Buffalo", value: getInputValue("t2_buffalo") },
+    { name: "Ganamos", value: getInputValue("t2_ganamos") },
+    { name: "Carga de Fichas", value: getInputValue("t2_cargas") },
+    { name: "Cargas F. Poker (x400)", value: getInputValue("t2_cargas_poker") * 400 }
+  ];
+
+  const entradasTotal = entries.reduce((acc, item) => acc + Number(item.value || 0), 0);
+  const saidasTotal = outflows.reduce((acc, item) => acc + Number(item.value || 0), 0);
+  const pendentesTotal = pendings.reduce((acc, item) => acc + Number(item.value || 0), 0);
+
+  // Saldo Total Turno = entradas - pendentes
+  const saldoLiquido = entradasTotal - pendentesTotal;
+
+  const turno = {
+    dataFechamento: document.getElementById("t2_data_fechamento")?.value || getTodayDateInput(),
+    entries,
+    outflows,
+    pendings,
+    entradasTotal,
+    saidasTotal,
+    pendentesTotal,
+    saldoLiquido
+  };
+
+  const currentComparison = saldoLiquido + saidasTotal;
+
+  let diff = 0;
+
+  if (historyCache.length) {
+    const previous = historyCache[0];
+    const prevTurno = previous.turno || {};
+
+    const previousSaldo = Number(
+      previous.currentSaldoTotal ||
+      prevTurno.saldoLiquido ||
+      0
+    );
+
+    const previousSaidas = Number(
+      previous.retiradaLucro ||
+      prevTurno.saidasTotal ||
+      0
+    );
+
+    const previousComparison = previousSaldo + previousSaidas;
+
+    diff = currentComparison - previousComparison;
+  }
+
+  const item = {
+    nomeOperador: nome,
+    turnoTrabalhado: document.getElementById("t2_turno_trabalhado")?.value || "",
+    fechamentoDate: turno.dataFechamento,
+
+    total: getInputValue("t2_banco"),
+
+    currentSaldoTotal: saldoLiquido,
+    retiradaLucro: saidasTotal,
+    turnProfit: saidasTotal,
+
+    diff,
+    bankVariation: diff,
+
+    turno,
+
+    submittedAt: Date.now()
+  };
+
+  await addDoc(collection(db, "history"), item);
+
+  alert("Turno salvo");
+  location.reload();
+}
    function buildPDF() {
   const html = `
     <html>
