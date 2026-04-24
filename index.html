@@ -2059,39 +2059,25 @@ function clearTurn(turno){
 }
 
 function toggleDetailedHistory(){
-  historyVisible = !historyVisible;
-
-  const list = document.getElementById("historyList");
-  const btn = document.getElementById("toggleHistoryBtn");
-
-  if(list){
-    list.classList.toggle("hidden", !historyVisible);
-  }
-
-  if(btn){
-    btn.textContent = historyVisible ? "Ocultar" : "Ver";
-  }
-}
-
-function toggleDetailedHistory(){
-  const section = document.getElementById("detailedHistorySection");
   const list = document.getElementById("historyList");
   const btn = document.getElementById("openDetailedHistoryBtn");
 
-  if(section){
-    section.classList.toggle("hidden");
-  }
+  if(!list) return;
 
-  if(list){
-    list.classList.toggle("hidden");
-  }
+  list.classList.toggle("hidden");
 
   if(btn){
-    const isHidden =
-      (section && section.classList.contains("hidden")) ||
-      (list && list.classList.contains("hidden"));
+    const title = btn.querySelector(".action-title");
+    const sub = btn.querySelector(".action-sub");
 
-    btn.querySelector(".action-title").textContent = isHidden ? "Histórico" : "Ocultar";
+    if(list.classList.contains("hidden")){
+      if(title) title.textContent = "Histórico";
+      if(sub) sub.textContent = "Mostrar/Ocultar";
+    } else {
+      if(title) title.textContent = "Ocultar";
+      if(sub) sub.textContent = "Histórico aberto";
+      list.scrollIntoView({ behavior: "smooth", block: "start" });
+    }
   }
 }
     
