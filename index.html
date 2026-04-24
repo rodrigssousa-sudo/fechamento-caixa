@@ -2435,15 +2435,30 @@ function openHistoryModal(index) {
       </div>
     </div>
 
+   ${(() => {
+  const getEntry = (name) => {
+    return Number((turno.entries || []).find(e => e.name === name)?.value || 0);
+  };
+
+  const suprema = getEntry("Suprema (x400)") / 400;
+  const pppoker = getEntry("PPPoker (x400)") / 400;
+  const buffalo = getEntry("Buffalo");
+  const ganamos = getEntry("Ganamos");
+  const cargaFichas = getEntry("Carga de Fichas");
+  const cargaPoker = getEntry("Cargas F. Poker (x400)") / 400;
+
+  return `
     <div style="margin-top:18px;display:grid;gap:8px;font-weight:700;">
-      <div>Suprema: ${money(turno.suprema || 0)} x400</div>
-      <div>PPPoker: ${money(turno.pppoker || 0)} x400</div>
-      <div>Buffalo: ${money(turno.buffalo || 0)}</div>
-      <div>Ganamos: ${money(turno.ganamos || 0)}</div>
-      <div>Carga fichas: ${money(turno.cargaFichas || 0)}</div>
-      <div>Carga Poker: ${money(turno.cargaPoker || 0)}</div>
+      <div>Suprema: ${money(suprema)} x400</div>
+      <div>PPPoker: ${money(pppoker)} x400</div>
+      <div>Buffalo: ${money(buffalo)}</div>
+      <div>Ganamos: ${money(ganamos)}</div>
+      <div>Carga fichas: ${money(cargaFichas)}</div>
+      <div>Carga Poker: ${money(cargaPoker)}</div>
       <div>Pendentes: ${money(turno.pendentesTotal || turno.pendentes || 0)}</div>
     </div>
+  `;
+})()}
 
     <div style="margin-top:18px;">
       <button id="deleteHistoryBtn" style="
