@@ -1686,15 +1686,13 @@
       byId("mainMenu")?.classList.toggle("hidden");
     });
 
-    document.addEventListener("click", (e) => {
-      const menu = byId("mainMenu");
-      const toggle = byId("menuToggle");
-      if (!menu || !toggle) return;
+   const menuToggle = document.getElementById("menuToggle");
+const mainMenu = document.getElementById("mainMenu");
 
-      if (!menu.contains(e.target) && !toggle.contains(e.target)) {
-        menu.classList.add("hidden");
-      }
-    });
+menuToggle.addEventListener("click", (e) => {
+  e.stopPropagation(); // 🔥 evita fechar instantâneo
+  mainMenu.classList.toggle("hidden");
+});
 
     byId("openDetailedHistoryBtn")?.addEventListener("click", () => {
       historyVisible = true;
