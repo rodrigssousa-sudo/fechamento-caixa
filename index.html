@@ -293,7 +293,8 @@
     .ranking-table th,.ranking-table td{border-bottom:1px solid rgba(10,16,32,.08);padding:12px 8px;text-align:left;}
     .ranking-table th{color:var(--primary2);background:#f4f7ff;font-size:11px;text-transform:uppercase;letter-spacing:.06em;}
 
-    .floating-menu{position:fixed;top:102px;right:22px;z-index:120;width:330px;max-width:calc(100vw - 44px);background:rgba(255,255,255,0.94)!important;backdrop-filter:blur(22px);border-radius:30px;padding:12px;box-shadow:0 34px 90px rgba(10,16,32,0.16),0 10px 28px rgba(10,16,32,0.08);border:1px solid rgba(255,255,255,.96);display:grid;gap:8px;}
+    .floating-menu{position:fixed;top:86px;right:22px;z-index:999999;$1}
+    .floating-menu:not(.hidden){display:grid!important;}
     .menu-item{width:100%;min-height:64px;border-radius:18px;border:1px solid rgba(10,16,32,0.08);background:linear-gradient(180deg,#ffffff,#f8fafc);color:#0a1020;font-size:17px;font-weight:900;letter-spacing:-0.2px;text-align:left;padding:0 22px;cursor:pointer;box-shadow:0 10px 24px rgba(10,16,32,0.04),inset 0 1px 0 rgba(255,255,255,0.9);transition:all .18s ease;}
     .menu-item:hover{transform:translateY(-2px);background:linear-gradient(135deg,#06152e,#102a56);color:#ffffff;border-color:rgba(199,164,90,0.32);box-shadow:0 18px 36px rgba(16,42,86,0.23),inset 0 1px 0 rgba(255,255,255,0.14);}
     .menu-item::before{content:"";width:6px;height:6px;border-radius:50%;background:var(--gold);display:inline-block;margin-right:10px;}
@@ -311,27 +312,38 @@
     .detail-table th,.detail-table td{padding:11px 12px;border-bottom:1px solid rgba(10,16,32,.06);text-align:left;}
     .detail-table th{font-size:10px;text-transform:uppercase;letter-spacing:.07em;color:#667085;background:#fbfcff;}
 
+    .admin-create-card{background:linear-gradient(180deg,#fff,#fbfcff);border:1px solid #e5eaf2;border-radius:22px;padding:16px;margin-bottom:14px;display:grid;gap:12px;}
+    .admin-create-grid{display:grid;grid-template-columns:1.2fr 1.4fr 1fr .8fr auto;gap:10px;align-items:end;}
+    .admin-btn{min-height:52px;border-radius:16px;padding:0 16px;background:linear-gradient(135deg,#051124,#102a56);color:#fff;border:1px solid rgba(232,205,122,.22);box-shadow:0 12px 24px rgba(16,42,86,.18);}
+
     @media (max-width:600px){
-      .app{padding:12px!important;max-width:100%!important;overflow-x:hidden!important;}
-      .topbar{position:sticky!important;top:0!important;z-index:50!important;padding:10px 12px!important;border-radius:18px!important;margin-top:0;}
+      body{padding-bottom:104px!important;}
+      .app{padding:10px 12px 18px!important;max-width:100%!important;overflow-x:hidden!important;gap:14px!important;}
+      .topbar{position:sticky!important;top:0!important;z-index:80!important;padding:8px 10px!important;border-radius:0 0 18px 18px!important;margin-top:0!important;min-height:58px!important;}
       .brand{gap:10px!important;}
-      .brand-logo{width:38px!important;height:38px!important;min-width:38px!important;font-size:14px!important;border-radius:12px!important;}
-      .brand-title{font-size:16px!important;line-height:1.1!important;}
-      .brand-sub{font-size:11px!important;}
-      .menu-btn{width:38px!important;height:38px!important;min-width:38px!important;font-size:18px!important;}
+      .brand-logo{width:36px!important;height:36px!important;min-width:36px!important;font-size:13px!important;border-radius:11px!important;box-shadow:0 10px 20px rgba(16,42,86,.18)!important;}
+      .brand-title{font-size:15px!important;line-height:1.05!important;}
+      .brand-sub{font-size:10.5px!important;max-width:210px!important;}
+      .menu-btn{width:38px!important;height:38px!important;min-width:38px!important;font-size:18px!important;border-radius:14px!important;}
       .section-grid{display:block!important;}
       .section-grid .section-card{width:100%!important;margin-bottom:16px!important;}
       .section-card{width:100%!important;max-width:100%!important;min-width:0!important;}
       .summary-grid{grid-template-columns:1fr!important;gap:14px!important;}
-      .actions-grid{grid-template-columns:1fr 1fr!important;gap:12px!important;}
+      .actions-grid{grid-template-columns:repeat(4,1fr)!important;gap:8px!important;}
+      #actionsSection{position:fixed!important;left:10px!important;right:10px!important;bottom:10px!important;z-index:99990!important;border-radius:24px!important;box-shadow:0 24px 60px rgba(7,17,31,.22)!important;}
+      #actionsSection .section-head{display:none!important;}
+      #actionsSection .section-body{padding:10px!important;}
+      .action-btn{min-height:66px!important;padding:9px!important;text-align:center!important;border-radius:18px!important;display:flex;flex-direction:column;align-items:center;justify-content:center;}
+      .action-title{font-size:12px!important;margin-bottom:2px!important;}
+      .action-sub{font-size:9px!important;line-height:1.1!important;}
       .balance-card{padding:20px!important;border-radius:26px!important;}
       .balance-card::before{display:none;}
       .balance-label{font-size:12px!important;letter-spacing:2px!important;}
       .balance-value{font-size:34px!important;line-height:1.05!important;word-break:break-word!important;}
       .modal-grid{grid-template-columns:1fr!important;}
       .auth-card{padding:30px!important;}
-      .floating-menu{top:62px;right:12px;width:calc(100vw - 24px);}
-      .dynamic-row{grid-template-columns:1fr!important;}
+      .floating-menu{top:60px!important;right:10px!important;left:10px!important;width:auto!important;max-width:none!important;z-index:999999!important;border-radius:24px!important;padding:10px!important;}
+      .dynamic-row{grid-template-columns:1fr!important;}.admin-create-grid{grid-template-columns:1fr!important;}
     }
   </style>
 </head>
@@ -384,6 +396,16 @@
         <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
           <h3 style="margin:0;font-size:22px;letter-spacing:-.04em;">👑 Usuários</h3>
           <span style="font-size:12px;color:#667085;font-weight:950;text-transform:uppercase;letter-spacing:.08em;">Painel Admin</span>
+        </div>
+        <div class="admin-create-card">
+          <div style="font-weight:950;color:#102a56;font-size:17px;">Criar conta direto pelo app</div>
+          <div class="admin-create-grid">
+            <div class="field"><label for="adminCreateName">Nome</label><input id="adminCreateName" type="text" placeholder="Nome" /></div>
+            <div class="field"><label for="adminCreateEmail">Email</label><input id="adminCreateEmail" type="email" placeholder="email@exemplo.com" /></div>
+            <div class="field"><label for="adminCreatePassword">Senha</label><input id="adminCreatePassword" type="password" placeholder="Senha" /></div>
+            <div class="field"><label for="adminCreateRole">Permissão</label><select id="adminCreateRole"><option value="operador">Operador</option><option value="admin">Admin</option></select></div>
+            <button id="adminCreateUserBtn" class="admin-btn" type="button">Criar</button>
+          </div>
         </div>
         <div id="usersList" style="display:flex;flex-direction:column;gap:10px;"></div>
       </div>
@@ -447,7 +469,7 @@
 
       <section class="section-card red-section"><div class="section-head">3. Saídas de Caixa</div><div class="section-body"><div id="t2_dynamic_list" class="dynamic-list"></div><button type="button" class="add-btn" data-add-outflow="t2">+ Adicionar saída</button></div></section>
 
-      <section class="section-card green-section"><div class="section-head">4. Ações</div><div class="section-body"><div class="actions-grid">
+      <section id="actionsSection" class="section-card green-section"><div class="section-head">4. Ações</div><div class="section-body"><div class="actions-grid">
         <button id="limparBtn" type="button" class="action-btn action-gray"><span class="action-title">Limpar</span><span class="action-sub">Apaga o turno atual</span></button>
         <button id="calcular" type="button" class="action-btn action-blue"><span class="action-title">Calcular</span><span class="action-sub">Atualizar resumo</span></button>
         <button id="fecharTurno" type="button" class="action-btn action-green"><span class="action-title">Finalizar Turno</span><span class="action-sub">Salvar no histórico</span></button>
@@ -494,6 +516,10 @@
     const app = initializeApp(firebaseConfig);
     const db = getFirestore(app);
     const auth = getAuth(app);
+
+    // App secundário: permite admin criar usuário sem deslogar a conta principal
+    const secondaryApp = initializeApp(firebaseConfig, "bankKingSecondaryAdminApp");
+    const secondaryAuth = getAuth(secondaryApp);
 
     let currentUserData = null;
     let historyCache = [];
@@ -959,6 +985,51 @@
       </style></head><body><div class="page"><div class="bank-header"><div class="bank-top"><div class="brand"><div class="logo">BK</div><div><div class="brand-title">Bank King</div><div class="brand-sub">Extrato financeiro interno • Swiss Vault Ledger</div></div></div><div class="period-box"><strong>Período</strong><br>${formatDateBR(startDate)} até ${formatDateBR(endDate)}<br>Gerado em ${new Date().toLocaleDateString("pt-BR")}<br>${new Date().toLocaleTimeString("pt-BR", {hour:"2-digit", minute:"2-digit"})}</div></div><div class="main-balance-label">Saldo consolidado do período</div><div class="main-balance">${money(totalSaldo)}</div></div><div class="cards"><div class="card"><div class="card-label">Banco Reca</div><div class="card-value">${money(totalReca)}</div></div><div class="card"><div class="card-label">Suprema + PPPoker</div><div class="card-value">${money(totalSuprema + totalPppoker)}</div></div><div class="card"><div class="card-label">Buffalo + Ganamos</div><div class="card-value">${money(totalBuffalo + totalGanamos)}</div></div><div class="card"><div class="card-label">Diferença caixa</div><div class="card-value ${totalDiff >= 0 ? "pos" : "neg"}">${totalDiff > 0 ? "+" : totalDiff < 0 ? "-" : ""}${money(Math.abs(totalDiff))}</div></div></div><div class="cards"><div class="card"><div class="card-label">Saídas</div><div class="card-value neg">${money(totalSaidas)}</div></div><div class="card"><div class="card-label">Pendentes</div><div class="card-value neg">${money(totalPendentes)}</div></div><div class="card"><div class="card-label">Cargas</div><div class="card-value neg">${money(totalCargas)}</div></div><div class="card"><div class="card-label">Fechamentos</div><div class="card-value">${filtered.length}</div></div></div><div class="section"><div class="section-title">Movimentações detalhadas do período</div>${statementRows || `<div class="empty">Nenhum fechamento encontrado nesse período.</div>`}</div><div class="section"><div class="section-title">Ranking de operadores</div>${rankingRows ? `<table class="ranking-table"><thead><tr><th>#</th><th>Operador</th><th>Fech.</th><th>Sobra</th><th>Falta</th><th>Saídas</th><th>Líquido</th></tr></thead><tbody>${rankingRows}</tbody></table>` : `<div class="empty">Sem dados de operadores no período.</div>`}</div><div class="footer">Documento interno • Bank King • Relatório detalhado</div></div></body></html>`;
     }
 
+    async function createUserFromAdminPanel() {
+      const allowed = await requireAdmin();
+      if (!allowed) return;
+
+      const name = byId("adminCreateName")?.value.trim();
+      const email = byId("adminCreateEmail")?.value.trim().toLowerCase();
+      const password = byId("adminCreatePassword")?.value;
+      const role = byId("adminCreateRole")?.value || "operador";
+
+      if (!name || !email || !password) {
+        alert("Preencha nome, email e senha.");
+        return;
+      }
+
+      if (password.length < 6) {
+        alert("A senha precisa ter pelo menos 6 caracteres.");
+        return;
+      }
+
+      try {
+        const cred = await createUserWithEmailAndPassword(secondaryAuth, email, password);
+
+        await setDoc(doc(db, "users", cred.user.uid), {
+          name,
+          email,
+          role,
+          status: "active",
+          createdBy: auth.currentUser?.uid || "admin",
+          createdAt: serverTimestamp()
+        });
+
+        await signOut(secondaryAuth);
+
+        byId("adminCreateName").value = "";
+        byId("adminCreateEmail").value = "";
+        byId("adminCreatePassword").value = "";
+
+        alert("Conta criada e ativada com sucesso.");
+        await loadUsers();
+      } catch (error) {
+        console.error(error);
+        alert(error.message || "Erro ao criar conta.");
+      }
+    }
+
     async function loadUsers() {
       const allowed = await requireAdmin();
       if (!allowed) return;
@@ -1035,6 +1106,8 @@
     byId("confirmExportPdf")?.addEventListener("click", async () => { const allowed = await requireAdmin(); if (!allowed) return; const startDate = byId("pdfDateStart")?.value; const endDate = byId("pdfDateEnd")?.value; if (!startDate || !endDate) { alert("Selecione data inicial e final."); return; } const html = buildPremiumBankReceiptPdf(startDate, endDate); if (!html || !html.trim()) { alert("Relatório vazio. Verifique o período selecionado."); return; } const w = window.open("", "_blank", "width=1280,height=900"); if (!w) { alert("Não foi possível abrir a janela."); return; } w.document.open(); w.document.write(html); w.document.close(); byId("pdfRangeModal")?.classList.add("hidden"); setTimeout(() => { w.focus(); w.print(); }, 800); });
     document.querySelectorAll("[data-report-range]").forEach((btn) => { btn.addEventListener("click", async () => { const allowed = await requireAdmin(); if (!allowed) return; const days = Number(btn.dataset.reportRange || 7); const end = new Date(); const start = new Date(); start.setDate(start.getDate() - days); const endLocal = new Date(end.getTime() - end.getTimezoneOffset() * 60000).toISOString().split("T")[0]; const startLocal = new Date(start.getTime() - start.getTimezoneOffset() * 60000).toISOString().split("T")[0]; const w = window.open("", "_blank", "width=1280,height=900"); if (!w) { alert("Não foi possível abrir a janela."); return; } w.document.open(); w.document.write(buildPremiumBankReceiptPdf(startLocal, endLocal)); w.document.close(); setTimeout(() => { w.focus(); w.print(); }, 800); }); });
     byId("openRankingBtn")?.addEventListener("click", async () => { const allowed = await requireAdmin(); if (!allowed) return; mainMenu?.classList.add("hidden"); const chartSection = byId("rankingChartSection"); const tableSection = byId("rankingTableSection"); chartSection?.classList.toggle("hidden"); tableSection?.classList.toggle("hidden"); renderRanking(); if (chartSection && !chartSection.classList.contains("hidden")) chartSection.scrollIntoView({ behavior: "smooth", block: "start" }); });
+    byId("adminCreateUserBtn")?.addEventListener("click", createUserFromAdminPanel);
+
     byId("adminOpenBtn")?.addEventListener("click", async () => { const allowed = await requireAdmin(); if (!allowed) return; mainMenu?.classList.add("hidden"); const panel = byId("adminPanel"); if (!panel) return; panel.classList.toggle("hidden"); if (!panel.classList.contains("hidden")) await loadUsers(); });
     byId("recalculateHistoryBtn")?.addEventListener("click", async () => { const allowed = await requireAdmin(); if (!allowed) return; await recalculateAllHistory(); });
 
