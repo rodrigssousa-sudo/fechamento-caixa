@@ -1817,15 +1817,33 @@ function renderRanking(range = rankingRange){
     return;
   }
 
-  const parseBRMoney = (v) => {
+ const parseBRMoney = (v) => {
+  return Number(
+    String(v || "0")
+      .replace(/\s/g, "")
+      .replace(/\$/g, "")
+      .replace(/\./g, "")
+      .replace(",", ".")
+  ) || 0;
+};
+
+const parseFicha = (v) => {
+  const s = String(v || "0").trim();
+
+  // Ex: 12.005,98 => 12005.98
+  if (s.includes(",")) {
     return Number(
-      String(v || "0")
-        .replace(/\s/g, "")
-        .replace(/\$/g, "")
-        .replace(/\./g, "")
-        .replace(",", ".")
+      s.replace(/\./g, "").replace(",", ".")
     ) || 0;
-  };
+  }
+
+  // Ex: 131.19 => 131.19
+  if (s.includes(".")) {
+    return Number(s) || 0;
+  }
+
+  return Number(s) || 0;
+};
 
   const val = (id) => parseBRMoney(document.getElementById(id)?.value || "");
 
