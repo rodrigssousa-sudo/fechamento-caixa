@@ -2498,16 +2498,6 @@ function startHistoryRealtimeListener() {
 // =========================
 // 👤 CONTROLE DE SESSÃO
 // =========================
-onAuthStateChanged(auth, async (user) => {
-  if (!user) {
-    console.log("USUÁRIO DESLOGADO");
-
-    document.getElementById("authScreen")?.classList.remove("hidden");
-    document.getElementById("appShell")?.classList.add("hidden");
-    document.getElementById("adminOpenBtn")?.classList.add("hidden");
-    document.getElementById("adminPanel")?.classList.add("hidden");
-    return;
-  }
 
   console.log("LOGADO:", user.email);
   console.log("UID:", user.uid);
