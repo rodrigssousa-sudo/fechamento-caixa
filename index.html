@@ -1576,18 +1576,38 @@
         .forEach(i => total += parseMoney(i.value));
       return total;
     }
-function calcularSaldo(turno) {
+function calcularSaldoBase(turno) {
   return (
     Number(turno.reca || 0) +
     Number(turno.suprema || 0) * 400 +
     Number(turno.pppoker || 0) * 400 +
     Number(turno.buffalo || 0) +
     Number(turno.ganamos || 0) -
-    Number(turno.cargaFichas || 0) -
-    Number(turno.cargaPoker || 0) -
-    Number(turno.saidas || turno.saidasTotal || 0) -
     Number(turno.pendentes || turno.pendentesTotal || 0)
   );
+}
+
+function calcularSaldoCaixa(turno) {
+  return (
+    calcularSaldoBase(turno) -
+    Number(turno.cargaFichas || 0) -
+    Number(turno.cargaPoker || 0) -
+    Number(turno.saidas || turno.saidasTotal || 0)
+  );
+}
+
+function calcularDiffReal(turnoAtual, turnoAnterior) {
+  const baseAtual = calcularSaldoBase(turnoAtual);
+  const baseAnterior = calcularSaldoBase(turnoAnterior);
+
+  const saidasAtual = Number(turnoAtual.saidas || turnoAtual.saidasTotal || 0);
+
+  return (baseAtual + saidasAtual) - baseAnterior;
+}
+
+/* compatibilidade com o código antigo */
+function calcularSaldo(turno) {
+  return calcularSaldoCaixa(turno);
 }
 
 function render() {
@@ -2399,9 +2419,14 @@ function openHistoryModal(index) {
   const item = historyCache[index];
   if (!item) return;
 
-  const turno = item.turno || {};
-  const diff = Number(item.diff || 0);
-  const saldo = item.saldo ?? calcularSaldo(turno);
+ const turno = item.turno || {};
+const previousItem = historyCache[index + 1];
+
+const saldo = calcularSaldoCaixa(turno);
+
+const diff = previousItem
+  ? calcularDiffReal(turno, previousItem.turno || {})
+  : 0;
 
   document.getElementById("historyModalTitle").textContent =
     `${formatDateBR(item.fechamentoDate || turno.dataFechamento || "")} - ${item.nomeOperador || "Sem nome"}`;
@@ -2514,11 +2539,18 @@ function renderHistory() {
   }
 
   list.innerHTML = historyCache.map((item, index) => {
-    const nome = item.nomeOperador || "Sem nome";
-    const data = formatDateBR(item.fechamentoDate || item.turno?.dataFechamento || "");
-    const banco = money(item.total || item.turno?.reca || 0);
-    const saldo = item.saldo ?? item.currentSaldoTotal ?? calcularSaldo(item.turno || {});
-    const diff = Number(item.diff || 0);
+  const nome = item.nomeOperador || "Sem nome";
+  const data = formatDateBR(item.fechamentoDate || item.turno?.dataFechamento || "");
+  const banco = money(item.total || item.turno?.reca || 0);
+
+  const turno = item.turno || {};
+  const previousItem = historyCache[index + 1];
+
+  const saldo = calcularSaldoCaixa(turno);
+
+  const diff = previousItem
+    ? calcularDiffReal(turno, previousItem.turno || {})
+    : 0;
 
     return `
       <div class="history-card" data-history-open="${index}">
@@ -2656,7 +2688,11 @@ function buildPremiumBankReceiptPdf(startDate, endDate) {
 
   filtered.forEach((item) => {
     const nome = item.nomeOperador || "Sem nome";
-    const diff = Number(item.diff || 0);
+   const previousItem = historyCache[index + 1];
+
+const diff = previousItem
+  ? calcularDiffReal(item.turno || {}, previousItem.turno || {})
+  : 0;
     const saidas = Number(item.turno?.saidasTotal || item.turno?.saidas || 0);
 
     if (!ranking[nome]) {
@@ -2680,7 +2716,11 @@ function buildPremiumBankReceiptPdf(startDate, endDate) {
     const data = formatDateBR(item.fechamentoDate || t.dataFechamento || "");
     const nome = escapeHtml(item.nomeOperador || "Sem nome");
     const saldo = calcularSaldo(t);
-    const diff = Number(item.diff || 0);
+    const previousItem = historyCache[index + 1];
+
+const diff = previousItem
+  ? calcularDiffReal(item.turno || {}, previousItem.turno || {})
+  : 0;
 
     const status = diff > 0 ? "Crédito" : diff < 0 ? "Débito" : "Neutro";
     const statusClass = diff > 0 ? "pos" : diff < 0 ? "neg" : "neutral";
