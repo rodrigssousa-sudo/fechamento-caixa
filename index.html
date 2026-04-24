@@ -2181,7 +2181,19 @@ function bindSessionEvents(){
     toggleDetailedHistory();
   });
 }
-  
+
+document.querySelectorAll("[data-chart-range]").forEach((btn) => {
+  btn.addEventListener("click", () => {
+    document.querySelectorAll("[data-chart-range]").forEach((b) => {
+      b.classList.remove("active");
+    });
+
+    btn.classList.add("active");
+
+    renderRanking(btn.dataset.chartRange);
+  });
+});
+    
 // =========================
 // 🚪 LOGOUT
 // =========================
