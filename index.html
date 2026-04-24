@@ -2311,118 +2311,120 @@ async function validateUserAccess(user) {
 
 
 // =========================
-// 🔐 LOGIN
+// 🔐 AUTH: LOGIN / REGISTRO / ABAS
 // =========================
-document.getElementById("loginForm")?.addEventListener("submit", async (e) => {
-  e.preventDefault();
+document.addEventListener("DOMContentLoaded", () => {
+  const tabLogin = document.getElementById("tabLogin");
+  const tabRegister = document.getElementById("tabRegister");
+  const tabPassword = document.getElementById("tabPassword");
 
-  const email = document.getElementById("loginEmail")?.value.trim().toLowerCase();
-  const password = document.getElementById("loginPassword")?.value;
+  const loginForm = document.getElementById("loginForm");
+  const registerForm = document.getElementById("registerForm");
+  const forgotPasswordForm = document.getElementById("forgotPasswordForm");
 
-  if (!email || !password) {
-    alert("Preencha email e senha.");
-    return;
+  function showAuthForm(formName) {
+    loginForm?.classList.add("hidden");
+    registerForm?.classList.add("hidden");
+    forgotPasswordForm?.classList.add("hidden");
+
+    tabLogin?.classList.remove("active");
+    tabRegister?.classList.remove("active");
+    tabPassword?.classList.remove("active");
+
+    if (formName === "login") {
+      loginForm?.classList.remove("hidden");
+      tabLogin?.classList.add("active");
+    }
+
+    if (formName === "register") {
+      registerForm?.classList.remove("hidden");
+      tabRegister?.classList.add("active");
+    }
+
+    if (formName === "password") {
+      forgotPasswordForm?.classList.remove("hidden");
+      tabPassword?.classList.add("active");
+    }
   }
 
-  try {
-    console.log("Tentando login:", email);
+  window.showAuthForm = showAuthForm;
 
-    const userCredential = await signInWithEmailAndPassword(auth, email, password);
-    const user = userCredential.user;
+  tabLogin?.addEventListener("click", () => showAuthForm("login"));
+  tabRegister?.addEventListener("click", () => showAuthForm("register"));
+  tabPassword?.addEventListener("click", () => showAuthForm("password"));
 
-    const allowed = await validateUserAccess(user);
-    if (!allowed) return;
+  // =========================
+  // 🔐 LOGIN
+  // =========================
+  loginForm?.addEventListener("submit", async (e) => {
+    e.preventDefault();
 
-    console.log("Login liberado:", user.email);
+    const email = document.getElementById("loginEmail")?.value.trim().toLowerCase();
+    const password = document.getElementById("loginPassword")?.value;
 
-  } catch (error) {
-    console.error("ERRO LOGIN:", error);
-    alert(error.message || "Erro ao fazer login.");
+    if (!email || !password) {
+      alert("Preencha email e senha.");
+      return;
+    }
+
+    try {
+      console.log("Tentando login:", email);
+
+      const userCredential = await signInWithEmailAndPassword(auth, email, password);
+      const user = userCredential.user;
+
+      const allowed = await validateUserAccess(user);
+      if (!allowed) return;
+
+      console.log("Login liberado:", user.email);
+
+    } catch (error) {
+      console.error("ERRO LOGIN:", error);
+      alert(error.message || "Erro ao fazer login.");
+    }
+  });
+
+  // =========================
+  // 📝 REGISTRO COMO PENDING
+  // =========================
+  async function registerUser(name, email, password) {
+    try {
+      const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+
+      await setDoc(doc(db, "users", userCredential.user.uid), {
+        name,
+        email,
+        role: "pending",
+        status: "pending",
+        createdAt: serverTimestamp()
+      });
+
+      alert("Conta criada com sucesso! Aguarde aprovação do administrador.");
+      await signOut(auth);
+
+      showAuthForm("login");
+
+    } catch (error) {
+      console.error("Erro ao registrar:", error);
+      alert(error.message || "Erro ao registrar usuário.");
+    }
   }
+
+  registerForm?.addEventListener("submit", async (e) => {
+    e.preventDefault();
+
+    const name = document.getElementById("registerName")?.value.trim();
+    const email = document.getElementById("registerEmail")?.value.trim().toLowerCase();
+    const password = document.getElementById("registerPassword")?.value;
+
+    if (!name || !email || !password) {
+      alert("Preencha nome, email e senha.");
+      return;
+    }
+
+    await registerUser(name, email, password);
+  });
 });
-
-
-// =========================
-// 📝 REGISTRO COMO PENDING
-// =========================
-async function registerUser(name, email, password) {
-  try {
-    const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-
-    await setDoc(doc(db, "users", userCredential.user.uid), {
-      name,
-      email,
-      role: "pending",
-      status: "pending",
-      createdAt: serverTimestamp()
-    });
-
-    alert("Conta criada com sucesso! Aguarde aprovação do administrador.");
-    await signOut(auth);
-
-    showAuthForm("login");
-
-  } catch (error) {
-    console.error("Erro ao registrar:", error);
-    alert(error.message || "Erro ao registrar usuário.");
-  }
-}
-
-document.getElementById("registerForm")?.addEventListener("submit", async (e) => {
-  e.preventDefault();
-
-  const name = document.getElementById("registerName")?.value.trim();
-  const email = document.getElementById("registerEmail")?.value.trim().toLowerCase();
-  const password = document.getElementById("registerPassword")?.value;
-
-  if (!name || !email || !password) {
-    alert("Preencha nome, email e senha.");
-    return;
-  }
-
-  await registerUser(name, email, password);
-});
-
-
-// =========================
-// 🔁 TROCAR ABAS LOGIN / REGISTRO / SENHA
-// =========================
-const tabLogin = document.getElementById("tabLogin");
-const tabRegister = document.getElementById("tabRegister");
-const tabPassword = document.getElementById("tabPassword");
-
-const loginForm = document.getElementById("loginForm");
-const registerForm = document.getElementById("registerForm");
-const forgotPasswordForm = document.getElementById("forgotPasswordForm");
-
-function showAuthForm(formName) {
-  loginForm?.classList.add("hidden");
-  registerForm?.classList.add("hidden");
-  forgotPasswordForm?.classList.add("hidden");
-
-  tabLogin?.classList.remove("active");
-  tabRegister?.classList.remove("active");
-  tabPassword?.classList.remove("active");
-
-  if (formName === "login") {
-    loginForm?.classList.remove("hidden");
-    tabLogin?.classList.add("active");
-  }
-
-  if (formName === "register") {
-    registerForm?.classList.remove("hidden");
-    tabRegister?.classList.add("active");
-  }
-
-  if (formName === "password") {
-    forgotPasswordForm?.classList.remove("hidden");
-    tabPassword?.classList.add("active");
-  }
-}
-
-tabLogin?.addEventListener("click", () => showAuthForm("login"));
-tabRegister?.addEventListener("click", () => showAuthForm("register"));
-tabPassword?.addEventListener("click", () => showAuthForm("password"));
 
 
 // =========================
