@@ -2085,10 +2085,13 @@ function bindSessionEvents(){
   document.getElementById("limparBtn")?.addEventListener("click", () => {
     clearTurn("t2");
   });
-
-  document.getElementById("fecharTurno")?.addEventListener("click", async () => {
-    await finalizeTurn();
-  });
+document.getElementById("fecharTurno")?.addEventListener("click", async () => {
+  if(typeof saveHistoryItem === "function"){
+    await saveHistoryItem();
+  } else {
+    alert("Função de salvar turno não encontrada.");
+  }
+});
 
   document.querySelectorAll("[data-add-pending]").forEach((btn) => {
     btn.onclick = () => {
