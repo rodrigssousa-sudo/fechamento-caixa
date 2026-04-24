@@ -3231,6 +3231,64 @@ document.addEventListener("click", (e) => {
   }
 });    
 
+    function serializeTurn(turno){
+  const getValue = (id) => parseMoneyInput(document.getElementById(id)?.value || "");
+
+  const entries = [
+    { name: "Banco Reca", value: getValue(`${turno}_banco`) },
+    { name: "Suprema (x400)", value: getValue(`${turno}_suprema`) * 400 },
+    { name: "PPPoker (x400)", value: getValue(`${turno}_pppoker`) * 400 },
+    { name: "Buffalo", value: getValue(`${turno}_buffalo`) },
+    { name: "Ganamos", value: getValue(`${turno}_ganamos`) },
+    { name: "Carga de Fichas", value: getValue(`${turno}_cargas`) },
+    { name: "Cargas F. Poker (x400)", value: getValue(`${turno}_cargas_poker`) * 400 }
+  ];
+
+  const pendings = [...document.querySelectorAll(`#${turno}_pending_list .dynamic-row`)].map((row) => {
+    const inputs = row.querySelectorAll("input");
+    return {
+      name: inputs[0]?.value || "",
+      value: parseMoneyInput(inputs[1]?.value || "")
+    };
+  });
+
+  const outflows = [...document.querySelectorAll(`#${turno}_dynamic_list .dynamic-row`)].map((row) => {
+    const inputs = row.querySelectorAll("input");
+    return {
+      name: inputs[0]?.value || "",
+      value: parseMoneyInput(inputs[1]?.value || "")
+    };
+  });
+
+  const entradasTotal = entries.reduce((acc, item) => acc + Number(item.value || 0), 0);
+  const pendentesTotal = pendings.reduce((acc, item) => acc + Number(item.value || 0), 0);
+  const saidasTotal = outflows.reduce((acc, item) => acc + Number(item.value || 0), 0);
+
+  const saldoLiquido = entradasTotal - pendentesTotal;
+
+  return {
+    nomeOperador: document.getElementById(`${turno}_nome_operador`)?.value?.trim() || "Sem nome",
+    turnoTrabalhado: document.getElementById(`${turno}_turno_trabalhado`)?.value?.trim() || "",
+    fechamentoDate: document.getElementById(`${turno}_data_fechamento`)?.value || getTodayDateInput(),
+    total: getValue(`${turno}_banco`),
+
+    currentSaldoTotal: saldoLiquido,
+    retiradaLucro: saidasTotal,
+    turnProfit: saidasTotal,
+
+    turno: {
+      dataFechamento: document.getElementById(`${turno}_data_fechamento`)?.value || getTodayDateInput(),
+      entries,
+      pendings,
+      outflows,
+      entradasTotal,
+      pendentesTotal,
+      saidasTotal,
+      saldoLiquido
+    }
+  };
+}
+
    async function finalizeTurn(){
   try {
     if(typeof serializeTurn !== "function"){
