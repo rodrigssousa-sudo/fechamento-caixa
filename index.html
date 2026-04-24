@@ -2478,23 +2478,53 @@ function startHistoryRealtimeListener() {
   });
 }
 
-
 // =========================
 // 👤 CONTROLE DE SESSÃO
 // =========================
 onAuthStateChanged(auth, async (user) => {
-  if (user) {
-    console.log("LOGADO:", user.email);
-    console.log("UID:", user.uid);
+  if (!user) {
+    console.log("USUÁRIO DESLOGADO");
 
-    const allowed = await validateUserAccess(user);
-    if (!allowed) return;
+    document.getElementById("authScreen")?.classList.remove("hidden");
+    document.getElementById("appShell")?.classList.add("hidden");
+    document.getElementById("adminOpenBtn")?.classList.add("hidden");
+    document.getElementById("adminPanel")?.classList.add("hidden");
+    return;
+  }
 
+  console.log("LOGADO:", user.email);
+  console.log("UID:", user.uid);
+
+  try {
     const userRef = doc(db, "users", user.uid);
     const snap = await getDoc(userRef);
+
+    if (!snap.exists()) {
+      alert("Usuário não autorizado.");
+      await signOut(auth);
+      return;
+    }
+
     const data = snap.data();
 
-    // 👑 CONTROLE ADMIN
+    if (data.status === "pending") {
+      alert("Sua conta está aguardando aprovação do administrador.");
+      await signOut(auth);
+      return;
+    }
+
+    if (data.status === "blocked") {
+      alert("Sua conta foi bloqueada.");
+      await signOut(auth);
+      return;
+    }
+
+    if (data.status !== "active") {
+      alert("Usuário sem status ativo.");
+      await signOut(auth);
+      return;
+    }
+
     if (data.role === "admin") {
       document.getElementById("adminOpenBtn")?.classList.remove("hidden");
     } else {
@@ -2506,7 +2536,7 @@ onAuthStateChanged(auth, async (user) => {
     document.getElementById("appShell")?.classList.remove("hidden");
 
     document.getElementById("activeUserName").textContent =
-      user.email?.split("@")[0] || "Usuário";
+      data.name || user.email?.split("@")[0] || "Usuário";
 
     document.getElementById("activeUserEmail").textContent =
       user.email || "";
@@ -2516,16 +2546,94 @@ onAuthStateChanged(auth, async (user) => {
     if (typeof render === "function") render();
     if (typeof renderRanking === "function") renderRanking();
 
-  } else {
-    console.log("USUÁRIO DESLOGADO");
-
-    document.getElementById("authScreen")?.classList.remove("hidden");
-    document.getElementById("appShell")?.classList.add("hidden");
-
-    document.getElementById("adminOpenBtn")?.classList.add("hidden");
-    document.getElementById("adminPanel")?.classList.add("hidden");
+  } catch (error) {
+    console.error("Erro ao validar sessão:", error);
+    alert("Erro ao validar acesso.");
+    await signOut(auth);
   }
 });
+
+      // =========================
+// 🔁 ABAS LOGIN / REGISTRO / SENHA
+// =========================
+const tabLogin = document.getElementById("tabLogin");
+const tabRegister = document.getElementById("tabRegister");
+const tabPassword = document.getElementById("tabPassword");
+
+const loginForm = document.getElementById("loginForm");
+const registerForm = document.getElementById("registerForm");
+const forgotPasswordForm = document.getElementById("forgotPasswordForm");
+
+function showAuthForm(formName) {
+  loginForm?.classList.add("hidden");
+  registerForm?.classList.add("hidden");
+  forgotPasswordForm?.classList.add("hidden");
+
+  tabLogin?.classList.remove("active");
+  tabRegister?.classList.remove("active");
+  tabPassword?.classList.remove("active");
+
+  if (formName === "login") {
+    loginForm?.classList.remove("hidden");
+    tabLogin?.classList.add("active");
+  }
+
+  if (formName === "register") {
+    registerForm?.classList.remove("hidden");
+    tabRegister?.classList.add("active");
+  }
+
+  if (formName === "password") {
+    forgotPasswordForm?.classList.remove("hidden");
+    tabPassword?.classList.add("active");
+  }
+}
+
+tabLogin?.addEventListener("click", () => showAuthForm("login"));
+tabRegister?.addEventListener("click", () => showAuthForm("register"));
+tabPassword?.addEventListener("click", () => showAuthForm("password"));
+
+
+// =========================
+// 📝 REGISTRO
+// =========================
+async function registerUser(name, email, password) {
+  try {
+    const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+
+    await setDoc(doc(db, "users", userCredential.user.uid), {
+      name,
+      email,
+      role: "pending",
+      status: "pending",
+      createdAt: serverTimestamp()
+    });
+
+    alert("Conta criada com sucesso! Aguarde aprovação do administrador.");
+    await signOut(auth);
+    showAuthForm("login");
+
+  } catch (error) {
+    console.error("Erro ao registrar:", error);
+    alert(error.message || "Erro ao registrar usuário.");
+  }
+}
+
+document.getElementById("registerForm")?.addEventListener("submit", async (e) => {
+  e.preventDefault();
+
+  const name = document.getElementById("registerName")?.value.trim();
+  const email = document.getElementById("registerEmail")?.value.trim().toLowerCase();
+  const password = document.getElementById("registerPassword")?.value;
+
+  if (!name || !email || !password) {
+    alert("Preencha nome, email e senha.");
+    return;
+  }
+
+  await registerUser(name, email, password);
+});
+
 // =========================
 // 🔘 FIX BOTÕES FINAIS
 // =========================
