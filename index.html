@@ -2371,7 +2371,6 @@ document.getElementById("logoutBtn")?.addEventListener("click", async () => {
   }
 });
 
-// =========================
 // 🔥 CORREÇÃO FINAL: TOPO + HISTÓRICO + MENU
 // =========================
 
@@ -2402,7 +2401,9 @@ function renderTopPreviousCards() {
   const lastTotal = calcularSaldoCaixa(last.turno || {});
   const lastReca = Number(last.total || last.turno?.reca || 0);
 
-  if (previousOperator) previousOperator.textContent = last.nomeOperador || "Sem nome";
+  if (previousOperator) {
+    previousOperator.textContent = last.nomeOperador || "Sem nome";
+  }
 
   if (previousDate) {
     previousDate.textContent = formatDateBR(
@@ -2413,32 +2414,34 @@ function renderTopPreviousCards() {
   if (previousDiff) {
     previousDiff.textContent = `${diff > 0 ? "+" : diff < 0 ? "-" : ""}${money(Math.abs(diff))}`;
     previousDiff.classList.remove("green", "red");
+
     if (diff > 0) previousDiff.classList.add("green");
     if (diff < 0) previousDiff.classList.add("red");
   }
 
-  if (previousReca) previousReca.textContent = money(lastReca);
-  if (bankValue) bankValue.textContent = money(lastTotal);
-}
   // ⚪ CARD BRANCO → TOTAL DO TURNO
-  if (previousReca) previousReca.textContent = money(lastTotal);
+  if (previousReca) {
+    previousReca.textContent = money(lastTotal);
+  }
 
   // 🔵 CARD AZUL → BANCO RECA
-  if (bankValue) bankValue.textContent = balanceVisible ? money(lastReca) : "Saldo oculto";
+  if (bankValue) {
+    bankValue.textContent = balanceVisible ? money(lastReca) : "Saldo oculto";
+  }
 }
 
 function openHistoryModal(index) {
   const item = historyCache[index];
   if (!item) return;
 
- const turno = item.turno || {};
-const previousItem = historyCache[index + 1];
+  const turno = item.turno || {};
+  const previousItem = historyCache[index + 1];
 
-const saldo = calcularSaldoCaixa(turno);
+  const saldo = calcularSaldoCaixa(turno);
 
-const diff = previousItem
-  ? calcularDiffReal(turno, previousItem.turno || {})
-  : 0;
+  const diff = previousItem
+    ? calcularDiffReal(turno, previousItem.turno || {})
+    : 0;
 
   document.getElementById("historyModalTitle").textContent =
     `${formatDateBR(item.fechamentoDate || turno.dataFechamento || "")} - ${item.nomeOperador || "Sem nome"}`;
