@@ -992,11 +992,32 @@
 
       <section class="section-card red-section"><div class="section-head">3. Saídas de Caixa</div><div class="section-body"><div id="t2_dynamic_list" class="dynamic-list"></div><button type="button" class="add-btn" data-add-outflow="t2">+ Adicionar saída</button></div></section>
 
-      <section class="section-card green-section"><div class="section-head">4. Ações</div><div class="section-body"><div class="actions-grid">
-        <button id="limparBtn" type="button" class="action-btn action-gray"><span class="action-title">Limpar</span></button>
-        <button id="calcular" type="button" class="action-btn action-blue"><span class="action-title">Calcular</span></button>
-        <button id="fecharTurno" type="button" class="action-btn action-green"><span class="action-title">Finalizar Turno</span></button>
-      </div></div></section>
+      <section class="section-card actions-section">
+  <div class="section-head actions-head">
+    <span>4. Ações</span>
+  </div>
+
+  <div class="section-body actions-body">
+    <div class="actions-grid bank-actions-grid">
+
+      <button id="limparBtn" type="button" class="bank-action-btn bank-action-light">
+        <span class="bank-action-title">Limpar</span>
+        <span class="bank-action-sub">Apagar dados</span>
+      </button>
+
+      <button id="calcular" type="button" class="bank-action-btn bank-action-light-blue">
+        <span class="bank-action-title">Calcular</span>
+        <span class="bank-action-sub">Atualizar</span>
+      </button>
+
+      <button id="fecharTurno" type="button" class="bank-action-btn bank-action-primary">
+        <span class="bank-action-title">Finalizar</span>
+        <span class="bank-action-sub">Salvar turno</span>
+      </button>
+
+    </div>
+  </div>
+</section>
 
       <section id="rankingTableSection" class="section-card blue-section hidden"><div class="section-head">Ranking operadores</div><div class="section-body"><div style="overflow:auto;"><table class="ranking-table"><thead><tr><th>Operador</th><th>Fechamentos</th><th>Sobra</th><th>Falta</th><th>Saídas</th></tr></thead><tbody id="operatorRankingBody"><tr><td colspan="5">Sem dados ainda.</td></tr></tbody></table></div></div></section>
 
