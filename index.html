@@ -732,6 +732,164 @@
     font-size:11px!important;
   }
 }
+
+/* ===== HISTÓRICO ESTILO BANCO PREMIUM ===== */
+
+.bank-history-card{
+  padding:28px!important;
+  border-radius:32px!important;
+  background:
+    linear-gradient(180deg,#ffffff,#fbfcff)!important;
+  border:1px solid rgba(10,16,32,.07)!important;
+  box-shadow:
+    0 18px 45px rgba(10,16,32,.07),
+    inset 0 1px 0 rgba(255,255,255,.95)!important;
+}
+
+.history-card-top{
+  display:flex;
+  justify-content:space-between;
+  align-items:flex-start;
+  gap:18px;
+  margin-bottom:22px;
+}
+
+.history-date{
+  font-size:14px;
+  font-weight:950;
+  color:#667085;
+  letter-spacing:.04em;
+}
+
+.history-operator{
+  margin-top:4px;
+  font-size:30px;
+  font-weight:950;
+  color:#071225;
+  letter-spacing:-.06em;
+  line-height:1;
+}
+
+.history-status{
+  padding:10px 16px;
+  border-radius:999px;
+  font-size:14px;
+  font-weight:950;
+  white-space:nowrap;
+}
+
+.history-status.positive{
+  background:#e8f8ee;
+  color:#128044;
+}
+
+.history-status.negative{
+  background:#fee2e2;
+  color:#be2633;
+}
+
+.history-status.neutral{
+  background:#f1f5f9;
+  color:#475569;
+}
+
+.history-main-numbers{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:14px;
+  margin-bottom:18px;
+}
+
+.history-main-item{
+  padding:18px 20px;
+  border-radius:24px;
+  background:#f8fafc;
+  border:1px solid rgba(10,16,32,.06);
+}
+
+.history-main-item span{
+  display:block;
+  font-size:11px;
+  font-weight:950;
+  color:#667085;
+  text-transform:uppercase;
+  letter-spacing:.11em;
+  margin-bottom:8px;
+}
+
+.history-main-item strong{
+  font-size:22px;
+  font-weight:950;
+  color:#071225;
+  letter-spacing:-.04em;
+}
+
+.history-platforms{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:10px;
+}
+
+.history-platforms div{
+  padding:14px 16px;
+  border-radius:18px;
+  background:#ffffff;
+  border:1px solid rgba(10,16,32,.06);
+}
+
+.history-platforms span{
+  display:block;
+  font-size:10px;
+  font-weight:950;
+  color:#667085;
+  text-transform:uppercase;
+  letter-spacing:.12em;
+  margin-bottom:6px;
+}
+
+.history-platforms strong{
+  display:block;
+  font-size:16px;
+  font-weight:950;
+  color:#071225;
+  letter-spacing:-.03em;
+}
+
+@media(max-width:600px){
+  .bank-history-card{
+    padding:20px!important;
+    border-radius:26px!important;
+  }
+
+  .history-card-top{
+    display:grid;
+    gap:12px;
+  }
+
+  .history-operator{
+    font-size:24px;
+  }
+
+  .history-status{
+    width:max-content;
+  }
+
+  .history-main-numbers{
+    grid-template-columns:1fr;
+  }
+
+  .history-platforms{
+    grid-template-columns:1fr 1fr;
+  }
+
+  .history-main-item strong{
+    font-size:19px;
+  }
+
+  .history-platforms strong{
+    font-size:15px;
+  }
+}
     
   </style>
 </head>
@@ -1185,17 +1343,66 @@
         const previousItem = historyCache[index + 1];
         const diff = previousItem ? calcularDiffReal(turno, previousItem.turno || {}) : 0;
         return `
-          <div class="history-card" data-history-open="${index}">
-            <div class="history-title">${data} - ${escapeHtml(nome)}</div>
-            <div class="history-meta history-meta-clean">   <span>Banco: ${money(b.reca)}</span>   <span>Saídas: ${money(b.saidas)}</span> </div>
-        <div class="history-detail-grid">
-  <div class="history-mini"><small>Suprema</small><strong>${b.supremaFichas.toLocaleString("pt-BR", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</strong></div>
-  <div class="history-mini"><small>PPPoker</small><strong>${b.pppokerFichas.toLocaleString("pt-BR", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</strong></div>
-  <div class="history-mini"><small>Buffalo</small><strong>${money(b.buffalo)}</strong></div>
-  <div class="history-mini"><small>Ganamos</small><strong>${money(b.ganamos)}</strong></div>
-  <div class="history-mini"><small>Pendentes</small><strong>${money(b.pendentes)}</strong></div>
-  <div class="history-mini"><small>Cargas</small><strong>${money(b.cargaFichas + b.cargaPoker)}</strong></div>
-</div>
+         return `
+  <div class="history-card bank-history-card" data-history-open="${index}">
+    
+    <div class="history-card-top">
+      <div>
+        <div class="history-date">${data}</div>
+        <div class="history-operator">${escapeHtml(nome)}</div>
+      </div>
+
+      <div class="history-status ${diff > 0 ? "positive" : diff < 0 ? "negative" : "neutral"}">
+        ${diff > 0 ? "+" : diff < 0 ? "-" : ""}${money(Math.abs(diff))}
+      </div>
+    </div>
+
+    <div class="history-main-numbers">
+      <div class="history-main-item">
+        <span>Banco Reca</span>
+        <strong>${money(b.reca)}</strong>
+      </div>
+
+      <div class="history-main-item">
+        <span>Saídas</span>
+        <strong class="red">${money(b.saidas)}</strong>
+      </div>
+    </div>
+
+    <div class="history-platforms">
+      <div>
+        <span>Suprema</span>
+        <strong>${b.supremaFichas.toLocaleString("pt-BR", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</strong>
+      </div>
+
+      <div>
+        <span>PPPoker</span>
+        <strong>${b.pppokerFichas.toLocaleString("pt-BR", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</strong>
+      </div>
+
+      <div>
+        <span>Buffalo</span>
+        <strong>${money(b.buffalo)}</strong>
+      </div>
+
+      <div>
+        <span>Ganamos</span>
+        <strong>${money(b.ganamos)}</strong>
+      </div>
+
+      <div>
+        <span>Pendentes</span>
+        <strong>${money(b.pendentes)}</strong>
+      </div>
+
+      <div>
+        <span>Cargas</span>
+        <strong>${money(b.cargaFichas + b.cargaPoker)}</strong>
+      </div>
+    </div>
+
+  </div>
+`;
             <div class="history-badge ${diff > 0 ? "positive" : diff < 0 ? "negative" : "neutral"}">Dif: ${diff > 0 ? "+" : diff < 0 ? "-" : ""}${money(Math.abs(diff))}</div>
           </div>`;
       }).join("");
