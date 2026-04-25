@@ -736,16 +736,12 @@
       <section class="section-card"><div class="section-head" style="display:flex;justify-content:space-between;align-items:center;"><span>Histórico</span><button id="toggleHistoryBtn" class="balance-toggle" style="background:#f8fafc;color:var(--text);border:1px solid rgba(10,16,32,.08);" type="button">Ver</button></div><div class="section-body"><div id="historyList" class="history-list hidden"></div></div></section>
     </main>
 
-    <div id="mainMenu" class="floating-menu hidden">
-      <button class="menu-item" type="button" id="openPdfCustomBtn">Relatórios PDF</button>
-      <button class="menu-item" type="button" data-report-range="7">Relatório 7 dias</button>
-      <button class="menu-item" type="button" data-report-range="15">Relatório 15 dias</button>
-      <button class="menu-item" type="button" data-report-range="30">Relatório 30 dias</button>
-      <button class="menu-item" type="button" id="openRankingBtn">Ranking operadores</button>
-      <button class="menu-item" type="button" id="adminOpenBtn">Admin</button>
-      <button class="menu-item" type="button" id="menuHistoryBtn">Histórico detalhado</button>
-      <button class="menu-item" type="button" id="recalculateHistoryBtn">Recalcular histórico</button>
-    </div>
+   <div id="mainMenu" class="floating-menu hidden">
+  <button class="menu-item" type="button" id="adminOpenBtn">Admin</button>
+  <button class="menu-item" type="button" id="openPdfCustomBtn">Relatórios PDF</button>
+  <button class="menu-item" type="button" id="openRankingBtn">Ranking operadores</button>
+  <button class="menu-item" type="button" id="recalculateHistoryBtn">Recalcular histórico</button>
+</div>
   </div>
 
   <div id="historyModal" class="modal hidden"><div class="modal-backdrop" id="historyModalBackdrop"></div><div class="modal-card"><div class="modal-head"><div><h3 id="historyModalTitle" class="modal-title">Detalhes do turno</h3><div id="historyModalSub" style="color:var(--muted);font-size:13px;margin-top:4px;font-weight:800;"></div></div><button id="closeHistoryModal" class="modal-close" type="button">Fechar</button></div><div id="historyModalBody"></div></div></div>
