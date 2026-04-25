@@ -1399,81 +1399,89 @@
     function render() { renderTopPreviousCards(); renderCompare(); renderRanking(); renderRankingTable(); }
 
     function renderHistory() {
-      const list = byId("historyList");
-      if (!list) return;
-      renderTopPreviousCards();
-      if (!historyCache.length) { list.innerHTML = `<div class="history-card">Sem histórico ainda.</div>`; return; }
-      list.innerHTML = historyCache.map((item, index) => {
-        const nome = item.nomeOperador || "Sem nome";
-        const data = formatDateBR(item.fechamentoDate || item.turno?.dataFechamento || "");
-        const turno = item.turno || {};
-        const b = getTurnoBreakdown(turno);
-        const previousItem = historyCache[index + 1];
-        const diff = previousItem ? calcularDiffReal(turno, previousItem.turno || {}) : 0;
-        return `
-  <div class="history-card bank-history-card" data-history-open="${index}">
-    
-    <div class="history-card-top">
-      <div>
-        <div class="history-date">${data}</div>
-        <div class="history-operator">${escapeHtml(nome)}</div>
-      </div>
+  const list = byId("historyList");
+  if (!list) return;
 
-      <div class="history-status ${diff > 0 ? "positive" : diff < 0 ? "negative" : "neutral"}">
-        ${diff > 0 ? "+" : diff < 0 ? "-" : ""}${money(Math.abs(diff))}
-      </div>
-    </div>
+  renderTopPreviousCards();
 
-    <div class="history-main-numbers">
-      <div class="history-main-item">
-        <span>Banco Reca</span>
-        <strong>${money(b.reca)}</strong>
-      </div>
+  if (!historyCache.length) {
+    list.innerHTML = `<div class="history-card">Sem histórico ainda.</div>`;
+    return;
+  }
 
-      <div class="history-main-item">
-        <span>Saídas</span>
-        <strong class="red">${money(b.saidas)}</strong>
-      </div>
-    </div>
+  list.innerHTML = historyCache.map((item, index) => {
+    const nome = item.nomeOperador || "Sem nome";
+    const data = formatDateBR(item.fechamentoDate || item.turno?.dataFechamento || "");
+    const turno = item.turno || {};
+    const b = getTurnoBreakdown(turno);
 
-    <div class="history-platforms">
-      <div>
-        <span>Suprema</span>
-        <strong>${b.supremaFichas.toLocaleString("pt-BR", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</strong>
-      </div>
+    const previousItem = historyCache[index + 1];
+    const diff = previousItem
+      ? calcularDiffReal(turno, previousItem.turno || {})
+      : 0;
 
-      <div>
-        <span>PPPoker</span>
-        <strong>${b.pppokerFichas.toLocaleString("pt-BR", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</strong>
-      </div>
+    return `
+      <div class="history-card bank-history-card" data-history-open="${index}">
+        
+        <div class="history-card-top">
+          <div>
+            <div class="history-date">${data}</div>
+            <div class="history-operator">${escapeHtml(nome)}</div>
+          </div>
 
-      <div>
-        <span>Buffalo</span>
-        <strong>${money(b.buffalo)}</strong>
-      </div>
+          <div class="history-status ${diff > 0 ? "positive" : diff < 0 ? "negative" : "neutral"}">
+            ${diff > 0 ? "+" : diff < 0 ? "-" : ""}${money(Math.abs(diff))}
+          </div>
+        </div>
 
-      <div>
-        <span>Ganamos</span>
-        <strong>${money(b.ganamos)}</strong>
-      </div>
+        <div class="history-main-numbers">
+          <div class="history-main-item">
+            <span>Banco Reca</span>
+            <strong>${money(b.reca)}</strong>
+          </div>
 
-      <div>
-        <span>Pendentes</span>
-        <strong>${money(b.pendentes)}</strong>
-      </div>
+          <div class="history-main-item">
+            <span>Saídas</span>
+            <strong class="red">${money(b.saidas)}</strong>
+          </div>
+        </div>
 
-      <div>
-        <span>Cargas</span>
-        <strong>${money(b.cargaFichas + b.cargaPoker)}</strong>
-      </div>
-    </div>
+        <div class="history-platforms">
+          <div>
+            <span>Suprema</span>
+            <strong>${b.supremaFichas.toLocaleString("pt-BR", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</strong>
+          </div>
 
-  </div>
-`;
-            <div class="history-badge ${diff > 0 ? "positive" : diff < 0 ? "negative" : "neutral"}">Dif: ${diff > 0 ? "+" : diff < 0 ? "-" : ""}${money(Math.abs(diff))}</div>
-          </div>`;
-      }).join("");
-    }
+          <div>
+            <span>PPPoker</span>
+            <strong>${b.pppokerFichas.toLocaleString("pt-BR", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</strong>
+          </div>
+
+          <div>
+            <span>Buffalo</span>
+            <strong>${money(b.buffalo)}</strong>
+          </div>
+
+          <div>
+            <span>Ganamos</span>
+            <strong>${money(b.ganamos)}</strong>
+          </div>
+
+          <div>
+            <span>Pendentes</span>
+            <strong>${money(b.pendentes)}</strong>
+          </div>
+
+          <div>
+            <span>Cargas</span>
+            <strong>${money(b.cargaFichas + b.cargaPoker)}</strong>
+          </div>
+        </div>
+
+      </div>
+    `;
+  }).join("");
+}
 
     function rowsTable(title, rows) {
       return `<div class="detail-section"><div class="detail-section-title">${title}</div><table class="detail-table"><thead><tr><th>Descrição</th><th>Valor</th></tr></thead><tbody>${rows}</tbody></table></div>`;
