@@ -868,8 +868,8 @@
             <div class="history-title">${data} - ${escapeHtml(nome)}</div>
             <div class="history-meta"><span>Banco: ${money(b.reca)}</span><span>Saldo: ${money(b.caixa)}</span><span>Saídas: ${money(b.saidas)}</span></div>
             <div class="history-detail-grid">
-              <div class="history-mini"><small>Suprema</small><strong>${b.supremaFichas.toLocaleString("pt-BR")} • ${money(b.supremaValor)}</strong></div>
-              <div class="history-mini"><small>PPPoker</small><strong>${b.pppokerFichas.toLocaleString("pt-BR")} • ${money(b.pppokerValor)}</strong></div>
+              <div class="history-mini"><small>Suprema</small><strong>${b.supremaFichas.toLocaleString("pt-BR", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</strong></div>
+              <div class="history-mini"><small>PPPoker</small><strong>${b.pppokerFichas.toLocaleString("pt-BR", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</strong></div>
               <div class="history-mini"><small>Buffalo</small><strong>${money(b.buffalo)}</strong></div>
               <div class="history-mini"><small>Ganamos</small><strong>${money(b.ganamos)}</strong></div>
               <div class="history-mini"><small>Pendentes</small><strong>${money(b.pendentes)}</strong></div>
