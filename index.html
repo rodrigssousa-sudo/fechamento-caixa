@@ -333,6 +333,80 @@
       .floating-menu{top:62px;right:12px;width:calc(100vw - 24px);}
       .dynamic-row{grid-template-columns:1fr!important;}
     }
+    
+    @media (max-width:600px){
+  body{
+    padding-bottom:92px;
+  }
+
+  .topbar{
+    padding:8px 10px!important;
+    border-radius:16px!important;
+  }
+
+  .brand-logo{
+    width:34px!important;
+    height:34px!important;
+    min-width:34px!important;
+    font-size:13px!important;
+    border-radius:11px!important;
+  }
+
+  .brand-title{
+    font-size:15px!important;
+  }
+
+  .brand-sub{
+    font-size:10px!important;
+  }
+
+  .menu-btn{
+    width:36px!important;
+    height:36px!important;
+    min-width:36px!important;
+    font-size:18px!important;
+  }
+
+  .green-section:has(.actions-grid){
+    position:fixed;
+    left:10px;
+    right:10px;
+    bottom:10px;
+    z-index:100;
+    border-radius:22px!important;
+    box-shadow:0 -12px 34px rgba(10,16,32,.16)!important;
+  }
+
+  .green-section:has(.actions-grid) .section-head{
+    display:none;
+  }
+
+  .green-section:has(.actions-grid) .section-body{
+    padding:8px!important;
+  }
+
+  .actions-grid{
+    grid-template-columns:repeat(4,1fr)!important;
+    gap:7px!important;
+  }
+
+  .action-btn{
+    min-height:56px!important;
+    padding:8px 6px!important;
+    border-radius:16px!important;
+    text-align:center!important;
+  }
+
+  .action-title{
+    font-size:11px!important;
+    margin:0!important;
+  }
+
+  .action-sub{
+    display:none!important;
+  }
+}
+    
   </style>
 </head>
 <body>
