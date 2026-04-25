@@ -1802,46 +1802,295 @@ function renderRanking(range = rankingRange) {
     }
 
     function buildPremiumBankReceiptPdf(startDate, endDate) {
-      const filtered = historyCache.filter((item) => { const date = item.fechamentoDate || item.turno?.dataFechamento; return date && date >= startDate && date <= endDate; });
-      const totalReca = filtered.reduce((acc, i) => acc + Number(i.turno?.reca || i.total || 0), 0);
-      const totalSaidas = filtered.reduce((acc, i) => acc + Number(i.turno?.saidasTotal || i.turno?.saidas || 0), 0);
-      const totalPendentes = filtered.reduce((acc, i) => acc + Number(i.turno?.pendentesTotal || i.turno?.pendentes || 0), 0);
-      const totalSaldo = filtered.reduce((acc, i) => acc + calcularSaldo(i.turno || {}), 0);
-      const totalDiff = filtered.reduce((acc, item, index) => { const previousItem = filtered[index + 1]; const diff = previousItem ? calcularDiffReal(item.turno || {}, previousItem.turno || {}) : 0; return acc + diff; }, 0);
-      const totalSuprema = filtered.reduce((acc, i) => acc + Number(i.turno?.suprema || 0) * 400, 0);
-      const totalPppoker = filtered.reduce((acc, i) => acc + Number(i.turno?.pppoker || 0) * 400, 0);
-      const totalBuffalo = filtered.reduce((acc, i) => acc + Number(i.turno?.buffalo || 0), 0);
-      const totalGanamos = filtered.reduce((acc, i) => acc + Number(i.turno?.ganamos || 0), 0);
-      const totalCargas = filtered.reduce((acc, i) => acc + Number(i.turno?.cargaFichas || 0) + Number(i.turno?.cargaPoker || 0), 0);
-      const ranking = {};
-      filtered.forEach((item, index) => {
-        const nome = item.nomeOperador || "Sem nome";
-        const previousItem = filtered[index + 1];
-        const diff = previousItem ? calcularDiffReal(item.turno || {}, previousItem.turno || {}) : 0;
-        const saidas = Number(item.turno?.saidasTotal || item.turno?.saidas || 0);
-        if (!ranking[nome]) ranking[nome] = { qtd: 0, sobra: 0, falta: 0, saidas: 0 };
-        ranking[nome].qtd += 1; ranking[nome].saidas += saidas;
-        if (diff > 0) ranking[nome].sobra += diff;
-        if (diff < 0) ranking[nome].falta += Math.abs(diff);
-      });
-      const statementRows = filtered.map((item, index) => {
-        const t = item.turno || {}; const b = getTurnoBreakdown(t);
-        const data = formatDateBR(item.fechamentoDate || t.dataFechamento || "");
-        const nome = escapeHtml(item.nomeOperador || "Sem nome");
-        const previousItem = filtered[index + 1];
-        const diff = previousItem ? calcularDiffReal(item.turno || {}, previousItem.turno || {}) : 0;
-        const status = diff > 0 ? "Crédito" : diff < 0 ? "Débito" : "Neutro";
-        const statusClass = diff > 0 ? "pos" : diff < 0 ? "neg" : "neutral";
-        const pendentesRows = (t.pendings || []).map(p => `<span>${escapeHtml(p.name || "Pendente")}: <b>${money(p.value)}</b></span>`).join("<br>") || "Sem pendentes";
-        const outflowsRows = (t.outflows || []).map(o => `<span>${escapeHtml(o.name || "Saída")}: <b>${money(o.value)}</b></span>`).join("<br>") || "Sem saídas";
-        return `<div class="statement-item"><div class="statement-main"><div><div class="statement-title">${nome}</div><div class="statement-sub">Fechamento #${filtered.length - index} • ${data} • ${item.operadorEmail || ""}</div></div><div class="statement-amount ${statusClass}">${diff > 0 ? "+" : diff < 0 ? "-" : ""}${money(Math.abs(diff))}<span>${status}</span></div></div><div class="statement-details"><div><small>Banco Reca</small><strong>${money(b.reca)}</strong></div><div><small>Suprema</small><strong>${b.supremaFichas.toLocaleString("pt-BR")} fichas<br>${money(b.supremaValor)}</strong></div><div><small>PPPoker</small><strong>${b.pppokerFichas.toLocaleString("pt-BR")} fichas<br>${money(b.pppokerValor)}</strong></div><div><small>Buffalo</small><strong>${money(b.buffalo)}</strong></div><div><small>Ganamos</small><strong>${money(b.ganamos)}</strong></div><div><small>Carga Fichas</small><strong>${money(b.cargaFichas)}</strong></div><div><small>Carga Poker</small><strong>${money(b.cargaPoker)}</strong></div><div><small>Pendentes</small><strong class="neg">${money(b.pendentes)}</strong></div><div><small>Saídas</small><strong class="neg">${money(b.saidas)}</strong></div><div><small>Saldo Caixa</small><strong>${money(b.caixa)}</strong></div></div><div class="detail-line"><div><b>Pagos pendentes:</b><br>${pendentesRows}</div><div><b>Saídas de caixa:</b><br>${outflowsRows}</div></div></div>`;
-      }).join("");
-      const rankingRows = Object.entries(ranking).sort((a,b)=>(b[1].sobra-b[1].falta)-(a[1].sobra-a[1].falta)).map(([nome, r], index) => `<tr><td>${index + 1}</td><td>${escapeHtml(nome)}</td><td>${r.qtd}</td><td class="pos">${money(r.sobra)}</td><td class="neg">${money(r.falta)}</td><td>${money(r.saidas)}</td><td>${money(r.sobra-r.falta)}</td></tr>`).join("");
+  const filtered = historyCache.filter((item) => {
+    const date = item.fechamentoDate || item.turno?.dataFechamento;
+    return date && date >= startDate && date <= endDate;
+  });
 
-      return `<!DOCTYPE html><html lang="pt-BR"><head><meta charset="UTF-8" /><title>Extrato Bank King</title><style>
-        *{box-sizing:border-box;}body{margin:0;padding:30px;font-family:Arial,Helvetica,sans-serif;color:#0a1020;background:#eef2f7;}.page{max-width:1060px;margin:0 auto;}.bank-header{background:radial-gradient(circle at 85% 10%,rgba(227,200,121,.25),transparent 24%),linear-gradient(135deg,#06152e,#102a56 58%,#2f6eea);color:#fff;border-radius:30px;padding:30px;margin-bottom:18px;box-shadow:0 20px 46px rgba(16,42,86,.24);border:1px solid rgba(227,200,121,.22);}.bank-top{display:flex;justify-content:space-between;gap:18px;align-items:flex-start;margin-bottom:26px;}.brand{display:flex;align-items:center;gap:14px;}.logo{width:58px;height:58px;border-radius:19px;display:flex;align-items:center;justify-content:center;background:rgba(255,255,255,.14);border:1px solid rgba(227,200,121,.26);font-weight:900;font-size:18px;}.brand-title{font-size:30px;font-weight:900;letter-spacing:-.04em;}.brand-sub{font-size:13px;opacity:.84;margin-top:4px;}.period-box{text-align:right;font-size:13px;opacity:.92;line-height:1.5;}.main-balance-label{font-size:11px;text-transform:uppercase;letter-spacing:.14em;opacity:.8;font-weight:900;margin-bottom:8px;}.main-balance{font-size:42px;font-weight:900;letter-spacing:-.06em;}.cards{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:18px;}.card{background:#fff;border:1px solid #dfe5ee;border-radius:21px;padding:18px;box-shadow:0 8px 22px rgba(10,16,32,.05);}.card-label{font-size:10px;text-transform:uppercase;letter-spacing:.08em;color:#667085;font-weight:900;margin-bottom:8px;}.card-value{font-size:20px;font-weight:900;letter-spacing:-.03em;}.section{background:#fff;border:1px solid #dfe5ee;border-radius:24px;padding:20px;margin-bottom:18px;box-shadow:0 8px 22px rgba(10,16,32,.05);}.section-title{font-size:18px;font-weight:900;margin-bottom:14px;color:#102a56;}.statement-item{border:1px solid #dfe5ee;border-radius:22px;padding:16px;margin-bottom:12px;page-break-inside:avoid;background:#fff;}.statement-main{display:flex;justify-content:space-between;align-items:flex-start;gap:14px;padding-bottom:14px;border-bottom:1px solid #e5eaf2;margin-bottom:14px;}.statement-title{font-size:17px;font-weight:900;}.statement-sub{font-size:12px;color:#667085;margin-top:4px;}.statement-amount{text-align:right;font-size:18px;font-weight:900;white-space:nowrap;}.statement-amount span{display:block;font-size:11px;margin-top:3px;color:#667085;font-weight:800;}.statement-details{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;}.statement-details div{background:#f8fafc;border-radius:14px;padding:10px;min-height:64px;}.statement-details small{display:block;color:#667085;font-size:10px;font-weight:900;text-transform:uppercase;margin-bottom:6px;}.statement-details strong{font-size:13px;font-weight:900;}.detail-line{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:12px;font-size:12px;color:#344054;}.detail-line div{background:#fbfcff;border:1px solid #e5eaf2;border-radius:14px;padding:10px;}.ranking-table{width:100%;border-collapse:collapse;font-size:13px;}.ranking-table th,.ranking-table td{padding:11px 8px;border-bottom:1px solid #e2e8f0;text-align:left;}.ranking-table th{background:#f4f7ff;color:#102a56;font-size:10px;text-transform:uppercase;letter-spacing:.06em;}.pos{color:#128044!important;}.neg{color:#be2633!important;}.neutral{color:#475569!important;}.empty{padding:24px;border-radius:18px;background:#f8fafc;color:#667085;text-align:center;border:1px dashed #cbd5e1;}.footer{color:#667085;font-size:12px;text-align:center;margin-top:20px;}@media print{body{background:#fff;padding:0;}.page{max-width:none;}.bank-header,.card,.section{box-shadow:none;}.statement-item{page-break-inside:avoid;}}
-      </style></head><body><div class="page"><div class="bank-header"><div class="bank-top"><div class="brand"><div class="logo">BK</div><div><div class="brand-title">Bank King</div><div class="brand-sub">Extrato financeiro interno • Swiss Vault Ledger</div></div></div><div class="period-box"><strong>Período</strong><br>${formatDateBR(startDate)} até ${formatDateBR(endDate)}<br>Gerado em ${new Date().toLocaleDateString("pt-BR")}<br>${new Date().toLocaleTimeString("pt-BR", {hour:"2-digit", minute:"2-digit"})}</div></div><div class="main-balance-label">Saldo consolidado do período</div><div class="main-balance">${money(totalSaldo)}</div></div><div class="cards"><div class="card"><div class="card-label">Banco Reca</div><div class="card-value">${money(totalReca)}</div></div><div class="card"><div class="card-label">Suprema + PPPoker</div><div class="card-value">${money(totalSuprema + totalPppoker)}</div></div><div class="card"><div class="card-label">Buffalo + Ganamos</div><div class="card-value">${money(totalBuffalo + totalGanamos)}</div></div><div class="card"><div class="card-label">Diferença caixa</div><div class="card-value ${totalDiff >= 0 ? "pos" : "neg"}">${totalDiff > 0 ? "+" : totalDiff < 0 ? "-" : ""}${money(Math.abs(totalDiff))}</div></div></div><div class="cards"><div class="card"><div class="card-label">Saídas</div><div class="card-value neg">${money(totalSaidas)}</div></div><div class="card"><div class="card-label">Pendentes</div><div class="card-value neg">${money(totalPendentes)}</div></div><div class="card"><div class="card-label">Cargas</div><div class="card-value neg">${money(totalCargas)}</div></div><div class="card"><div class="card-label">Fechamentos</div><div class="card-value">${filtered.length}</div></div></div><div class="section"><div class="section-title">Movimentações detalhadas do período</div>${statementRows || `<div class="empty">Nenhum fechamento encontrado nesse período.</div>`}</div><div class="section"><div class="section-title">Ranking de operadores</div>${rankingRows ? `<table class="ranking-table"><thead><tr><th>#</th><th>Operador</th><th>Fech.</th><th>Sobra</th><th>Falta</th><th>Saídas</th><th>Líquido</th></tr></thead><tbody>${rankingRows}</tbody></table>` : `<div class="empty">Sem dados de operadores no período.</div>`}</div><div class="footer">Documento interno • Bank King • Relatório detalhado</div></div></body></html>`;
-    }
+  const totalSupremaFichas = filtered.reduce((acc, i) => acc + Number(i.turno?.suprema || 0), 0);
+  const totalPppokerFichas = filtered.reduce((acc, i) => acc + Number(i.turno?.pppoker || 0), 0);
+  const totalReca = filtered.reduce((acc, i) => acc + Number(i.turno?.reca || i.total || 0), 0);
+  const totalPendentes = filtered.reduce((acc, i) => acc + Number(i.turno?.pendentesTotal || i.turno?.pendentes || 0), 0);
+
+  const rows = filtered.map((item, index) => {
+    const t = item.turno || {};
+    const data = formatDateBR(item.fechamentoDate || t.dataFechamento || "");
+    const nome = escapeHtml(item.nomeOperador || "Sem nome");
+
+    return `
+      <div class="movement">
+        <div class="movement-top">
+          <div>
+            <div class="movement-name">${nome}</div>
+            <div class="movement-date">Fechamento #${filtered.length - index} • ${data}</div>
+          </div>
+        </div>
+
+        <div class="ficha-grid">
+          <div class="ficha-card">
+            <span>Suprema</span>
+            <strong>${Number(t.suprema || 0).toLocaleString("pt-BR", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</strong>
+            <small>fichas</small>
+          </div>
+
+          <div class="ficha-card">
+            <span>PPPoker</span>
+            <strong>${Number(t.pppoker || 0).toLocaleString("pt-BR", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</strong>
+            <small>fichas</small>
+          </div>
+
+          <div class="simple-line">
+            <span>Banco Reca</span>
+            <strong>${money(t.reca || item.total || 0)}</strong>
+          </div>
+
+          <div class="simple-line">
+            <span>Pendentes</span>
+            <strong class="neg">${money(t.pendentesTotal || t.pendentes || 0)}</strong>
+          </div>
+        </div>
+      </div>
+    `;
+  }).join("");
+
+  return `
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8" />
+<title>Relatório Bank King</title>
+
+<style>
+  *{box-sizing:border-box;}
+
+  body{
+    margin:0;
+    padding:32px;
+    font-family:Arial, Helvetica, sans-serif;
+    color:#0a1020;
+    background:#f3f5f8;
+  }
+
+  .page{
+    max-width:960px;
+    margin:0 auto;
+  }
+
+  .header{
+    background:linear-gradient(135deg,#06152e,#102a56 60%,#2f6eea);
+    color:#fff;
+    border-radius:28px;
+    padding:28px;
+    margin-bottom:18px;
+  }
+
+  .brand{
+    font-size:30px;
+    font-weight:900;
+    letter-spacing:-.04em;
+  }
+
+  .sub{
+    margin-top:6px;
+    font-size:13px;
+    opacity:.82;
+  }
+
+  .period{
+    margin-top:22px;
+    font-size:13px;
+    opacity:.9;
+  }
+
+  .summary{
+    display:grid;
+    grid-template-columns:repeat(4,1fr);
+    gap:10px;
+    margin-bottom:18px;
+  }
+
+  .summary-card{
+    background:#fff;
+    border:1px solid #e5eaf2;
+    border-radius:20px;
+    padding:16px;
+  }
+
+  .summary-card span{
+    display:block;
+    font-size:10px;
+    text-transform:uppercase;
+    letter-spacing:.08em;
+    color:#667085;
+    font-weight:900;
+    margin-bottom:7px;
+  }
+
+  .summary-card strong{
+    font-size:18px;
+    font-weight:900;
+  }
+
+  .section{
+    background:#fff;
+    border:1px solid #e5eaf2;
+    border-radius:24px;
+    padding:22px;
+  }
+
+  .section-title{
+    font-size:20px;
+    font-weight:900;
+    color:#102a56;
+    margin-bottom:16px;
+  }
+
+  .movement{
+    border:1px solid #e5eaf2;
+    border-radius:22px;
+    padding:18px;
+    margin-bottom:14px;
+    page-break-inside:avoid;
+  }
+
+  .movement-top{
+    padding-bottom:14px;
+    border-bottom:1px solid #edf1f6;
+    margin-bottom:14px;
+  }
+
+  .movement-name{
+    font-size:18px;
+    font-weight:900;
+  }
+
+  .movement-date{
+    margin-top:4px;
+    font-size:12px;
+    color:#667085;
+    font-weight:700;
+  }
+
+  .ficha-grid{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:12px;
+  }
+
+  .ficha-card{
+    background:#f8fafc;
+    border-radius:18px;
+    padding:18px;
+  }
+
+  .ficha-card span,
+  .simple-line span{
+    display:block;
+    font-size:11px;
+    text-transform:uppercase;
+    letter-spacing:.09em;
+    color:#667085;
+    font-weight:900;
+    margin-bottom:8px;
+  }
+
+  .ficha-card strong{
+    display:block;
+    font-size:26px;
+    font-weight:900;
+    letter-spacing:-.04em;
+  }
+
+  .ficha-card small{
+    display:block;
+    margin-top:4px;
+    font-size:12px;
+    color:#667085;
+    font-weight:700;
+  }
+
+  .simple-line{
+    background:#fff;
+    border:1px solid #edf1f6;
+    border-radius:18px;
+    padding:16px;
+  }
+
+  .simple-line strong{
+    font-size:17px;
+    font-weight:900;
+  }
+
+  .neg{
+    color:#be2633!important;
+  }
+
+  .empty{
+    padding:24px;
+    border-radius:18px;
+    background:#f8fafc;
+    color:#667085;
+    text-align:center;
+    font-weight:800;
+  }
+
+  .footer{
+    margin-top:18px;
+    text-align:center;
+    color:#667085;
+    font-size:12px;
+  }
+
+  @media print{
+    body{background:#fff;padding:0;}
+  }
+</style>
+</head>
+
+<body>
+  <div class="page">
+    <div class="header">
+      <div class="brand">Bank King</div>
+      <div class="sub">Relatório limpo de fichas e pendentes</div>
+      <div class="period">
+        Período: ${formatDateBR(startDate)} até ${formatDateBR(endDate)}<br>
+        Gerado em ${new Date().toLocaleDateString("pt-BR")} às ${new Date().toLocaleTimeString("pt-BR", { hour:"2-digit", minute:"2-digit" })}
+      </div>
+    </div>
+
+    <div class="summary">
+      <div class="summary-card">
+        <span>Suprema total</span>
+        <strong>${totalSupremaFichas.toLocaleString("pt-BR", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</strong>
+      </div>
+
+      <div class="summary-card">
+        <span>PPPoker total</span>
+        <strong>${totalPppokerFichas.toLocaleString("pt-BR", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</strong>
+      </div>
+
+      <div class="summary-card">
+        <span>Banco Reca</span>
+        <strong>${money(totalReca)}</strong>
+      </div>
+
+      <div class="summary-card">
+        <span>Pendentes</span>
+        <strong class="neg">${money(totalPendentes)}</strong>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-title">Movimentações do período</div>
+      ${rows || `<div class="empty">Nenhum fechamento encontrado nesse período.</div>`}
+    </div>
+
+    <div class="footer">Documento interno • Bank King</div>
+  </div>
+</body>
+</html>
+`;
+}
 
 async function createInternalUser() {
   const allowed = await requireAdmin();
