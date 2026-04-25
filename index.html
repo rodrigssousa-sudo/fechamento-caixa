@@ -937,6 +937,36 @@
     min-height:56px!important;
   }
 }    
+
+    .history-simple{
+  margin-top:16px;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:12px;
+}
+
+.history-main span,
+.history-secondary span{
+  font-size:11px;
+  text-transform:uppercase;
+  letter-spacing:.5px;
+  color:#8b93a7;
+  display:block;
+  margin-bottom:4px;
+}
+
+.history-main strong{
+  font-size:20px;
+  font-weight:900;
+  color:#0a1020;
+}
+
+.history-secondary strong{
+  font-size:15px;
+  font-weight:700;
+  color:#6b7280;
+}
     
   </style>
 </head>
@@ -1420,66 +1450,36 @@
       ? calcularDiffReal(turno, previousItem.turno || {})
       : 0;
 
-    return `
-      <div class="history-card bank-history-card" data-history-open="${index}">
-        
-        <div class="history-card-top">
-          <div>
-            <div class="history-date">${data}</div>
-            <div class="history-operator">${escapeHtml(nome)}</div>
-          </div>
-
-          <div class="history-status ${diff > 0 ? "positive" : diff < 0 ? "negative" : "neutral"}">
-            ${diff > 0 ? "+" : diff < 0 ? "-" : ""}${money(Math.abs(diff))}
-          </div>
-        </div>
-
-        <div class="history-main-numbers">
-          <div class="history-main-item">
-            <span>Banco Reca</span>
-            <strong>${money(b.reca)}</strong>
-          </div>
-
-          <div class="history-main-item">
-            <span>Saídas</span>
-            <strong class="red">${money(b.saidas)}</strong>
-          </div>
-        </div>
-
-        <div class="history-platforms">
-          <div>
-            <span>Suprema</span>
-            <strong>${b.supremaFichas.toLocaleString("pt-BR", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</strong>
-          </div>
-
-          <div>
-            <span>PPPoker</span>
-            <strong>${b.pppokerFichas.toLocaleString("pt-BR", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</strong>
-          </div>
-
-          <div>
-            <span>Buffalo</span>
-            <strong>${money(b.buffalo)}</strong>
-          </div>
-
-          <div>
-            <span>Ganamos</span>
-            <strong>${money(b.ganamos)}</strong>
-          </div>
-
-          <div>
-            <span>Pendentes</span>
-            <strong>${money(b.pendentes)}</strong>
-          </div>
-
-          <div>
-            <span>Cargas</span>
-            <strong>${money(b.cargaFichas + b.cargaPoker)}</strong>
-          </div>
-        </div>
-
+  return `
+  <div class="history-card bank-history-card" data-history-open="${index}">
+    
+    <div class="history-card-top">
+      <div>
+        <div class="history-date">${data}</div>
+        <div class="history-operator">${escapeHtml(nome)}</div>
       </div>
-    `;
+
+      <div class="history-status ${diff > 0 ? "positive" : diff < 0 ? "negative" : "neutral"}">
+        ${diff > 0 ? "+" : diff < 0 ? "-" : ""}${money(Math.abs(diff))}
+      </div>
+    </div>
+
+    <div class="history-simple">
+      
+      <div class="history-main">
+        <span>Banco Reca</span>
+        <strong>${money(b.reca)}</strong>
+      </div>
+
+      <div class="history-secondary">
+        <span>Pendentes</span>
+        <strong>${money(b.pendentes)}</strong>
+      </div>
+
+    </div>
+
+  </div>
+`;
   }).join("");
 }
 
