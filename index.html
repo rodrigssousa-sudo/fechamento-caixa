@@ -861,6 +861,82 @@
     font-size:15px;
   }
 }
+
+.actions-section{
+  background:rgba(255,255,255,.96)!important;
+  border:1px solid rgba(10,16,32,.06)!important;
+  border-radius:28px!important;
+  box-shadow:0 14px 34px rgba(10,16,32,.06)!important;
+}
+
+.actions-head{
+  background:#fff!important;
+  color:#0a1020!important;
+  font-size:18px!important;
+  padding:18px 24px!important;
+}
+
+.actions-body{
+  padding:20px 24px!important;
+}
+
+.bank-actions-grid{
+  display:grid!important;
+  grid-template-columns:1fr 1fr 1.25fr!important;
+  gap:12px!important;
+}
+
+.bank-action-btn{
+  min-height:66px!important;
+  border-radius:20px!important;
+  padding:14px 18px!important;
+  text-align:left!important;
+  border:1px solid rgba(10,16,32,.07)!important;
+  box-shadow:0 8px 18px rgba(10,16,32,.04)!important;
+}
+
+.bank-action-title{
+  display:block;
+  font-size:15px;
+  font-weight:950;
+  color:#0a1020;
+}
+
+.bank-action-sub{
+  display:block;
+  margin-top:3px;
+  font-size:11px;
+  font-weight:850;
+  color:#667085;
+}
+
+.bank-action-light{
+  background:#ffffff!important;
+}
+
+.bank-action-light-blue{
+  background:#f5f8ff!important;
+}
+
+.bank-action-primary{
+  background:linear-gradient(135deg,#06152e,#2f6eea)!important;
+  border:none!important;
+}
+
+.bank-action-primary .bank-action-title,
+.bank-action-primary .bank-action-sub{
+  color:#fff!important;
+}
+
+@media(max-width:600px){
+  .bank-actions-grid{
+    grid-template-columns:1fr!important;
+  }
+
+  .bank-action-btn{
+    min-height:56px!important;
+  }
+}    
     
   </style>
 </head>
