@@ -280,7 +280,11 @@
     .history-card:hover{transform:translateY(-1px);box-shadow:var(--shadow-soft);}
     .history-title{font-size:18px;font-weight:950;margin-bottom:8px;}
     .history-meta{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;color:var(--muted);font-size:14px;font-weight:850;}
-    .history-detail-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(135px,1fr));gap:8px;margin-top:12px;}
+   .history-detail-grid{
+  display:grid;
+  grid-template-columns:repeat(3, 1fr);
+  gap:12px;
+}
     .history-mini{background:#f8fafc;border:1px solid rgba(10,16,32,.06);border-radius:14px;padding:10px;}
     .history-mini small{display:block;font-size:10px;text-transform:uppercase;letter-spacing:.07em;color:#667085;font-weight:950;margin-bottom:4px;}
     .history-mini strong{font-size:13px;font-weight:950;}
