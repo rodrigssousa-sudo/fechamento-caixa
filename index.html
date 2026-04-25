@@ -1676,8 +1676,8 @@ function renderRanking(range = rankingRange) {
       const previousItem = historyCache[index + 1];
       const b = getTurnoBreakdown(turno);
       const diff = previousItem ? calcularDiffReal(turno, previousItem.turno || {}) : 0;
-      byId("historyModalTitle").textContent = `${formatDateBR(item.fechamentoDate || turno.dataFechamento || "")} - ${item.nomeOperador || "Sem nome"}`;
-      byId("historyModalSub").textContent = `Enviado em: ${formatDateTimeBR(item.submittedAt)} • UID: ${item.operadorUid || "-"} • Email: ${item.operadorEmail || "-"}`;
+     byId("historyModalSub").innerHTML = `Enviado em: ${formatDateTimeBR(item.submittedAt)}<br>
+   <span style="font-weight:600; color:#0f172a">${item.operadorEmail || "-"}</span>`;
 
       const entriesRows = `
         <tr><td>Banco Reca</td><td>${money(b.reca)}</td></tr>
