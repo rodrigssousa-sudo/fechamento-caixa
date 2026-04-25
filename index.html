@@ -1807,46 +1807,67 @@ function renderRanking(range = rankingRange) {
     return date && date >= startDate && date <= endDate;
   });
 
-  const totalSupremaFichas = filtered.reduce((acc, i) => acc + Number(i.turno?.suprema || 0), 0);
-  const totalPppokerFichas = filtered.reduce((acc, i) => acc + Number(i.turno?.pppoker || 0), 0);
   const totalReca = filtered.reduce((acc, i) => acc + Number(i.turno?.reca || i.total || 0), 0);
   const totalPendentes = filtered.reduce((acc, i) => acc + Number(i.turno?.pendentesTotal || i.turno?.pendentes || 0), 0);
+  const totalSaidas = filtered.reduce((acc, i) => acc + Number(i.turno?.saidasTotal || i.turno?.saidas || 0), 0);
+  const totalSupremaFichas = filtered.reduce((acc, i) => acc + Number(i.turno?.suprema || 0), 0);
+  const totalPppokerFichas = filtered.reduce((acc, i) => acc + Number(i.turno?.pppoker || 0), 0);
 
-  const rows = filtered.map((item, index) => {
+  const statementRows = filtered.map((item, index) => {
     const t = item.turno || {};
+    const b = getTurnoBreakdown(t);
     const data = formatDateBR(item.fechamentoDate || t.dataFechamento || "");
     const nome = escapeHtml(item.nomeOperador || "Sem nome");
 
+    const pendentesRows = (t.pendings || [])
+      .map(p => `<div>${escapeHtml(p.name || "Pendente")} <b>${money(p.value)}</b></div>`)
+      .join("") || `<div>Sem pendentes</div>`;
+
+    const outflowsRows = (t.outflows || [])
+      .map(o => `<div>${escapeHtml(o.name || "Saída")} <b>${money(o.value)}</b></div>`)
+      .join("") || `<div>Sem saídas</div>`;
+
     return `
-      <div class="movement">
-        <div class="movement-top">
+      <div class="receipt-card">
+        <div class="receipt-top">
           <div>
-            <div class="movement-name">${nome}</div>
-            <div class="movement-date">Fechamento #${filtered.length - index} • ${data}</div>
+            <div class="receipt-name">${nome}</div>
+            <div class="receipt-sub">Fechamento #${filtered.length - index} • ${data}</div>
           </div>
         </div>
 
-        <div class="ficha-grid">
-          <div class="ficha-card">
+        <div class="ficha-row">
+          <div class="ficha-box">
             <span>Suprema</span>
             <strong>${Number(t.suprema || 0).toLocaleString("pt-BR", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</strong>
             <small>fichas</small>
           </div>
 
-          <div class="ficha-card">
+          <div class="ficha-box">
             <span>PPPoker</span>
             <strong>${Number(t.pppoker || 0).toLocaleString("pt-BR", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</strong>
             <small>fichas</small>
           </div>
+        </div>
 
-          <div class="simple-line">
-            <span>Banco Reca</span>
-            <strong>${money(t.reca || item.total || 0)}</strong>
+        <div class="receipt-grid">
+          <div><span>Banco Reca</span><b>${money(b.reca)}</b></div>
+          <div><span>Buffalo</span><b>${money(b.buffalo)}</b></div>
+          <div><span>Ganamos</span><b>${money(b.ganamos)}</b></div>
+          <div><span>Pendentes</span><b class="neg">${money(b.pendentes)}</b></div>
+          <div><span>Saídas</span><b class="neg">${money(b.saidas)}</b></div>
+          <div><span>Cargas</span><b>${money(b.cargaFichas + b.cargaPoker)}</b></div>
+        </div>
+
+        <div class="details">
+          <div>
+            <h4>Pagos pendentes</h4>
+            ${pendentesRows}
           </div>
 
-          <div class="simple-line">
-            <span>Pendentes</span>
-            <strong class="neg">${money(t.pendentesTotal || t.pendentes || 0)}</strong>
+          <div>
+            <h4>Saídas de caixa</h4>
+            ${outflowsRows}
           </div>
         </div>
       </div>
@@ -1865,23 +1886,23 @@ function renderRanking(range = rankingRange) {
 
   body{
     margin:0;
-    padding:32px;
-    font-family:Arial, Helvetica, sans-serif;
+    padding:28px;
+    font-family:Arial,Helvetica,sans-serif;
+    background:#f4f6fa;
     color:#0a1020;
-    background:#f3f5f8;
   }
 
   .page{
-    max-width:960px;
+    max-width:980px;
     margin:0 auto;
   }
 
   .header{
     background:linear-gradient(135deg,#06152e,#102a56 60%,#2f6eea);
     color:#fff;
-    border-radius:28px;
+    border-radius:26px;
     padding:28px;
-    margin-bottom:18px;
+    margin-bottom:16px;
   }
 
   .brand{
@@ -1897,37 +1918,38 @@ function renderRanking(range = rankingRange) {
   }
 
   .period{
-    margin-top:22px;
+    margin-top:20px;
     font-size:13px;
+    line-height:1.5;
     opacity:.9;
   }
 
   .summary{
     display:grid;
-    grid-template-columns:repeat(4,1fr);
+    grid-template-columns:repeat(5,1fr);
     gap:10px;
-    margin-bottom:18px;
+    margin-bottom:16px;
   }
 
   .summary-card{
     background:#fff;
     border:1px solid #e5eaf2;
-    border-radius:20px;
-    padding:16px;
+    border-radius:18px;
+    padding:14px;
   }
 
   .summary-card span{
     display:block;
     font-size:10px;
+    color:#667085;
     text-transform:uppercase;
     letter-spacing:.08em;
-    color:#667085;
     font-weight:900;
     margin-bottom:7px;
   }
 
   .summary-card strong{
-    font-size:18px;
+    font-size:16px;
     font-weight:900;
   }
 
@@ -1935,73 +1957,75 @@ function renderRanking(range = rankingRange) {
     background:#fff;
     border:1px solid #e5eaf2;
     border-radius:24px;
-    padding:22px;
+    padding:20px;
   }
 
   .section-title{
-    font-size:20px;
+    font-size:19px;
     font-weight:900;
     color:#102a56;
-    margin-bottom:16px;
+    margin-bottom:14px;
   }
 
-  .movement{
+  .receipt-card{
     border:1px solid #e5eaf2;
     border-radius:22px;
     padding:18px;
     margin-bottom:14px;
     page-break-inside:avoid;
+    background:#fff;
   }
 
-  .movement-top{
+  .receipt-top{
     padding-bottom:14px;
     border-bottom:1px solid #edf1f6;
     margin-bottom:14px;
   }
 
-  .movement-name{
+  .receipt-name{
     font-size:18px;
     font-weight:900;
   }
 
-  .movement-date{
+  .receipt-sub{
     margin-top:4px;
     font-size:12px;
     color:#667085;
     font-weight:700;
   }
 
-  .ficha-grid{
+  .ficha-row{
     display:grid;
     grid-template-columns:1fr 1fr;
     gap:12px;
+    margin-bottom:12px;
   }
 
-  .ficha-card{
+  .ficha-box{
     background:#f8fafc;
+    border:1px solid #edf1f6;
     border-radius:18px;
     padding:18px;
   }
 
-  .ficha-card span,
-  .simple-line span{
+  .ficha-box span{
     display:block;
     font-size:11px;
+    color:#667085;
     text-transform:uppercase;
     letter-spacing:.09em;
-    color:#667085;
     font-weight:900;
     margin-bottom:8px;
   }
 
-  .ficha-card strong{
+  .ficha-box strong{
     display:block;
-    font-size:26px;
+    font-size:28px;
     font-weight:900;
     letter-spacing:-.04em;
   }
 
-  .ficha-card small{
+  .ficha-box small{
     display:block;
     margin-top:4px;
     font-size:12px;
@@ -2009,16 +2033,58 @@ function renderRanking(range = rankingRange) {
     font-weight:700;
   }
 
-  .simple-line{
-    background:#fff;
-    border:1px solid #edf1f6;
-    border-radius:18px;
-    padding:16px;
+  .receipt-grid{
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:10px;
+    margin-top:8px;
   }
 
-  .simple-line strong{
-    font-size:17px;
+  .receipt-grid div{
+    border:1px solid #edf1f6;
+    border-radius:16px;
+    padding:12px;
+    background:#fff;
+  }
+
+  .receipt-grid span{
+    display:block;
+    font-size:10px;
+    color:#667085;
+    text-transform:uppercase;
+    letter-spacing:.08em;
     font-weight:900;
+    margin-bottom:6px;
+  }
+
+  .receipt-grid b{
+    font-size:14px;
+    font-weight:900;
+  }
+
+  .details{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:10px;
+    margin-top:12px;
+  }
+
+  .details > div{
+    background:#fbfcff;
+    border:1px solid #edf1f6;
+    border-radius:16px;
+    padding:12px;
+    font-size:12px;
+    color:#344054;
+    line-height:1.55;
+  }
+
+  .details h4{
+    margin:0 0 8px;
+    font-size:12px;
+    color:#102a56;
+    text-transform:uppercase;
+    letter-spacing:.06em;
   }
 
   .neg{
@@ -2026,7 +2092,7 @@ function renderRanking(range = rankingRange) {
   }
 
   .empty{
-    padding:24px;
+    padding:22px;
     border-radius:18px;
     background:#f8fafc;
     color:#667085;
@@ -2043,6 +2109,7 @@ function renderRanking(range = rankingRange) {
 
   @media print{
     body{background:#fff;padding:0;}
+    .header,.summary-card,.section,.receipt-card{box-shadow:none;}
   }
 </style>
 </head>
@@ -2051,10 +2118,10 @@ function renderRanking(range = rankingRange) {
   <div class="page">
     <div class="header">
       <div class="brand">Bank King</div>
-      <div class="sub">Relatório limpo de fichas e pendentes</div>
+      <div class="sub">Relatório interno • Fechamento de caixa</div>
       <div class="period">
         Período: ${formatDateBR(startDate)} até ${formatDateBR(endDate)}<br>
-        Gerado em ${new Date().toLocaleDateString("pt-BR")} às ${new Date().toLocaleTimeString("pt-BR", { hour:"2-digit", minute:"2-digit" })}
+        Gerado em ${new Date().toLocaleDateString("pt-BR")} às ${new Date().toLocaleTimeString("pt-BR", {hour:"2-digit", minute:"2-digit"})}
       </div>
     </div>
 
@@ -2078,11 +2145,16 @@ function renderRanking(range = rankingRange) {
         <span>Pendentes</span>
         <strong class="neg">${money(totalPendentes)}</strong>
       </div>
+
+      <div class="summary-card">
+        <span>Saídas</span>
+        <strong class="neg">${money(totalSaidas)}</strong>
+      </div>
     </div>
 
     <div class="section">
-      <div class="section-title">Movimentações do período</div>
-      ${rows || `<div class="empty">Nenhum fechamento encontrado nesse período.</div>`}
+      <div class="section-title">Movimentações detalhadas</div>
+      ${statementRows || `<div class="empty">Nenhum fechamento encontrado nesse período.</div>`}
     </div>
 
     <div class="footer">Documento interno • Bank King</div>
