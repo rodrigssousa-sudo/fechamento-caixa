@@ -2468,9 +2468,8 @@ byId("confirmExportPdf")?.addEventListener("click", async () => {
   byId("pdfRangeModal")?.classList.add("hidden");
 
   setTimeout(() => {
-    w.focus();
-    w.print();
-  }, 800);
+  w.focus();
+}, 800);
 });
 
 document.querySelectorAll("[data-report-range]").forEach((btn) => {
