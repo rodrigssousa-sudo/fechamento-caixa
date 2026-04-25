@@ -1299,21 +1299,138 @@ async function createInternalUser() {
   }
 }
     
-    async function loadUsers() {
-      const allowed = await requireAdmin();
-      if (!allowed) return;
-      const usersList = byId("usersList");
-      if (!usersList) return;
-      usersList.innerHTML = `<div style="color:#667085;font-weight:850;">Carregando usuários...</div>`;
-      try {
-        const snap = await getDocs(collection(db, "users"));
-        const users = snap.docs.map((d) => ({ id: d.id, ...d.data() }));
-        usersList.innerHTML = users.map((u) => `<div style="display:grid;grid-template-columns:1fr auto auto auto;gap:8px;align-items:center;background:#fff;border:1px solid #e5eaf2;border-radius:18px;padding:13px;"><div><div style="font-weight:950;">${escapeHtml(u.name || "Sem nome")}</div><div style="font-size:12px;color:#667085;font-weight:800;">${escapeHtml(u.email || "")}</div><div style="font-size:12px;color:#667085;font-weight:800;">Role: ${escapeHtml(u.role || "-")} • Status: ${escapeHtml(u.status || "-")}</div></div><button data-user-active="${u.id}" style="padding:10px 12px;border-radius:12px;background:#dcfce7;color:#128044;">Ativar</button><button data-user-admin="${u.id}" style="padding:10px 12px;border-radius:12px;background:#dbeafe;color:#102a56;">Admin</button><button data-user-block="${u.id}" style="padding:10px 12px;border-radius:12px;background:#fee2e2;color:#be2633;">Bloquear</button></div>`).join("") || `<div style="color:#667085;font-weight:800;">Nenhum usuário encontrado.</div>`;
-        document.querySelectorAll("[data-user-active]").forEach((btn) => { btn.onclick = async () => { await updateDoc(doc(db, "users", btn.dataset.userActive), { status: "active", role: "operador" }); await loadUsers(); }; });
-        document.querySelectorAll("[data-user-admin]").forEach((btn) => { btn.onclick = async () => { await updateDoc(doc(db, "users", btn.dataset.userAdmin), { status: "active", role: "admin" }); await loadUsers(); }; });
-        document.querySelectorAll("[data-user-block]").forEach((btn) => { btn.onclick = async () => { await updateDoc(doc(db, "users", btn.dataset.userBlock), { status: "blocked" }); await loadUsers(); }; });
-      } catch (error) { console.error(error); usersList.innerHTML = `<div style="color:#be2633;font-weight:900;">Erro ao carregar usuários. Verifique as regras do Firestore para leitura da coleção users por admin.</div>`; }
-    }
+   async function loadUsers() {
+  const allowed = await requireAdmin();
+  if (!allowed) return;
+
+  const usersList = byId("usersList");
+  if (!usersList) return;
+
+  usersList.innerHTML = `<div style="color:#667085;font-weight:850;">Carregando usuários...</div>`;
+
+  try {
+    const snap = await getDocs(collection(db, "users"));
+    const users = snap.docs.map((d) => ({
+      id: d.id,
+      ...d.data()
+    }));
+
+    usersList.innerHTML = users.map((u) => `
+      <div style="
+        display:grid;
+        grid-template-columns:1fr auto auto auto auto;
+        gap:8px;
+        align-items:center;
+        background:#fff;
+        border:1px solid #e5eaf2;
+        border-radius:18px;
+        padding:13px;
+      ">
+        <div>
+          <div style="font-weight:950;">
+            ${escapeHtml(u.name || "Sem nome")}
+          </div>
+
+          <div style="font-size:12px;color:#667085;font-weight:800;">
+            ${escapeHtml(u.email || "Sem email")}
+          </div>
+
+          <div style="font-size:12px;color:#667085;font-weight:800;">
+            Role: ${escapeHtml(u.role || "-")} • Status: ${escapeHtml(u.status || "-")}
+          </div>
+        </div>
+
+        <button data-user-active="${u.id}" style="
+          padding:10px 12px;
+          border-radius:12px;
+          background:#dcfce7;
+          color:#128044;
+          font-weight:950;
+        ">Ativar</button>
+
+        <button data-user-admin="${u.id}" style="
+          padding:10px 12px;
+          border-radius:12px;
+          background:#dbeafe;
+          color:#102a56;
+          font-weight:950;
+        ">Admin</button>
+
+        <button data-user-block="${u.id}" style="
+          padding:10px 12px;
+          border-radius:12px;
+          background:#fee2e2;
+          color:#be2633;
+          font-weight:950;
+        ">Bloquear</button>
+
+        <button data-user-delete="${u.id}" style="
+          padding:10px 12px;
+          border-radius:12px;
+          background:#111827;
+          color:#fff;
+          font-weight:950;
+        ">Excluir</button>
+      </div>
+    `).join("") || `<div style="color:#667085;font-weight:800;">Nenhum usuário encontrado.</div>`;
+
+    document.querySelectorAll("[data-user-active]").forEach((btn) => {
+      btn.onclick = async () => {
+        await updateDoc(doc(db, "users", btn.dataset.userActive), {
+          status: "active",
+          role: "operador"
+        });
+
+        alert("Usuário ativado como operador.");
+        await loadUsers();
+      };
+    });
+
+    document.querySelectorAll("[data-user-admin]").forEach((btn) => {
+      btn.onclick = async () => {
+        await updateDoc(doc(db, "users", btn.dataset.userAdmin), {
+          status: "active",
+          role: "admin"
+        });
+
+        alert("Usuário ativado como admin.");
+        await loadUsers();
+      };
+    });
+
+    document.querySelectorAll("[data-user-block]").forEach((btn) => {
+      btn.onclick = async () => {
+        await updateDoc(doc(db, "users", btn.dataset.userBlock), {
+          status: "blocked"
+        });
+
+        alert("Usuário bloqueado.");
+        await loadUsers();
+      };
+    });
+
+    document.querySelectorAll("[data-user-delete]").forEach((btn) => {
+      btn.onclick = async () => {
+        const userId = btn.dataset.userDelete;
+
+        if (!confirm("Tem certeza que deseja excluir este usuário do painel?")) return;
+
+        await deleteDoc(doc(db, "users", userId));
+
+        alert("Usuário removido do Firestore. Ele não terá mais acesso ao sistema.");
+        await loadUsers();
+      };
+    });
+
+  } catch (error) {
+    console.error("Erro ao carregar usuários:", error);
+    usersList.innerHTML = `
+      <div style="color:#be2633;font-weight:900;">
+        Erro ao carregar usuários. Verifique se sua conta está como admin e se as regras do Firestore permitem editar users.
+      </div>
+    `;
+  }
+}
 
     async function recalculateAllHistory() {
       const allowed = await requireAdmin();
