@@ -459,6 +459,22 @@
           <h3 style="margin:0;font-size:22px;letter-spacing:-.04em;">👑 Usuários</h3>
           <span style="font-size:12px;color:#667085;font-weight:950;text-transform:uppercase;letter-spacing:.08em;">Painel Admin</span>
         </div>
+        <div style="display:grid;gap:10px;margin-bottom:16px;background:#f8fafc;border:1px solid #e5eaf2;border-radius:18px;padding:14px;">
+  <div style="font-weight:950;color:#102a56;">Criar usuário interno</div>
+
+  <input id="adminCreateName" type="text" placeholder="Nome do usuário" />
+  <input id="adminCreateEmail" type="email" placeholder="Email do usuário" />
+  <input id="adminCreatePassword" type="password" placeholder="Senha inicial" />
+
+  <select id="adminCreateRole" style="height:54px;border-radius:18px;border:1px solid rgba(10,16,32,.10);padding:0 14px;font-weight:900;">
+    <option value="operador">Operador</option>
+    <option value="admin">Admin</option>
+  </select>
+
+  <button id="adminCreateUserBtn" type="button" class="auth-submit" style="height:56px;">
+    Criar usuário
+  </button>
+</div>
         <div id="usersList" style="display:flex;flex-direction:column;gap:10px;"></div>
       </div>
 
@@ -552,7 +568,7 @@
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
   <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-app.js";
+   import { initializeApp, deleteApp } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-app.js";
     import { getFirestore, collection, addDoc, getDocs, deleteDoc, doc, updateDoc, setDoc, getDoc, onSnapshot, query, limit, serverTimestamp } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-firestore.js";
     import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, onAuthStateChanged, sendPasswordResetEmail } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-auth.js";
 
@@ -1033,6 +1049,61 @@
       </style></head><body><div class="page"><div class="bank-header"><div class="bank-top"><div class="brand"><div class="logo">BK</div><div><div class="brand-title">Bank King</div><div class="brand-sub">Extrato financeiro interno • Swiss Vault Ledger</div></div></div><div class="period-box"><strong>Período</strong><br>${formatDateBR(startDate)} até ${formatDateBR(endDate)}<br>Gerado em ${new Date().toLocaleDateString("pt-BR")}<br>${new Date().toLocaleTimeString("pt-BR", {hour:"2-digit", minute:"2-digit"})}</div></div><div class="main-balance-label">Saldo consolidado do período</div><div class="main-balance">${money(totalSaldo)}</div></div><div class="cards"><div class="card"><div class="card-label">Banco Reca</div><div class="card-value">${money(totalReca)}</div></div><div class="card"><div class="card-label">Suprema + PPPoker</div><div class="card-value">${money(totalSuprema + totalPppoker)}</div></div><div class="card"><div class="card-label">Buffalo + Ganamos</div><div class="card-value">${money(totalBuffalo + totalGanamos)}</div></div><div class="card"><div class="card-label">Diferença caixa</div><div class="card-value ${totalDiff >= 0 ? "pos" : "neg"}">${totalDiff > 0 ? "+" : totalDiff < 0 ? "-" : ""}${money(Math.abs(totalDiff))}</div></div></div><div class="cards"><div class="card"><div class="card-label">Saídas</div><div class="card-value neg">${money(totalSaidas)}</div></div><div class="card"><div class="card-label">Pendentes</div><div class="card-value neg">${money(totalPendentes)}</div></div><div class="card"><div class="card-label">Cargas</div><div class="card-value neg">${money(totalCargas)}</div></div><div class="card"><div class="card-label">Fechamentos</div><div class="card-value">${filtered.length}</div></div></div><div class="section"><div class="section-title">Movimentações detalhadas do período</div>${statementRows || `<div class="empty">Nenhum fechamento encontrado nesse período.</div>`}</div><div class="section"><div class="section-title">Ranking de operadores</div>${rankingRows ? `<table class="ranking-table"><thead><tr><th>#</th><th>Operador</th><th>Fech.</th><th>Sobra</th><th>Falta</th><th>Saídas</th><th>Líquido</th></tr></thead><tbody>${rankingRows}</tbody></table>` : `<div class="empty">Sem dados de operadores no período.</div>`}</div><div class="footer">Documento interno • Bank King • Relatório detalhado</div></div></body></html>`;
     }
 
+async function createInternalUser() {
+  const allowed = await requireAdmin();
+  if (!allowed) return;
+
+  const name = byId("adminCreateName")?.value.trim();
+  const email = byId("adminCreateEmail")?.value.trim().toLowerCase();
+  const password = byId("adminCreatePassword")?.value;
+  const role = byId("adminCreateRole")?.value || "operador";
+
+  if (!name || !email || !password) {
+    alert("Preencha nome, email e senha.");
+    return;
+  }
+
+  if (password.length < 6) {
+    alert("A senha precisa ter pelo menos 6 caracteres.");
+    return;
+  }
+
+  try {
+    const secondaryApp = initializeApp(firebaseConfig, `secondary-${Date.now()}`);
+    const secondaryAuth = getAuth(secondaryApp);
+
+    const userCredential = await createUserWithEmailAndPassword(
+      secondaryAuth,
+      email,
+      password
+    );
+
+    await setDoc(doc(db, "users", userCredential.user.uid), {
+      name,
+      email,
+      role,
+      status: "active",
+      createdBy: auth.currentUser?.uid || null,
+      createdAt: serverTimestamp()
+    });
+
+    await signOut(secondaryAuth);
+    await deleteApp(secondaryApp);
+
+    byId("adminCreateName").value = "";
+    byId("adminCreateEmail").value = "";
+    byId("adminCreatePassword").value = "";
+    byId("adminCreateRole").value = "operador";
+
+    alert("Usuário criado com sucesso.");
+    await loadUsers();
+
+  } catch (error) {
+    console.error("Erro ao criar usuário interno:", error);
+    alert(error.message || "Erro ao criar usuário.");
+  }
+}
+    
     async function loadUsers() {
       const allowed = await requireAdmin();
       if (!allowed) return;
@@ -1103,14 +1174,157 @@
     byId("closeHistoryModal")?.addEventListener("click", () => byId("historyModal")?.classList.add("hidden"));
     byId("historyModalBackdrop")?.addEventListener("click", () => byId("historyModal")?.classList.add("hidden"));
 
-    byId("openPdfCustomBtn")?.addEventListener("click", async () => { const allowed = await requireAdmin(); if (!allowed) return; mainMenu?.classList.add("hidden"); const today = getTodayDateInput(); const start = byId("pdfDateStart"), end = byId("pdfDateEnd"); if (end) end.value = today; const d = new Date(); d.setDate(d.getDate() - 7); const local = new Date(d.getTime() - d.getTimezoneOffset() * 60000); if (start) start.value = local.toISOString().split("T")[0]; byId("pdfRangeModal")?.classList.remove("hidden"); });
-    byId("closePdfRangeModal")?.addEventListener("click", () => byId("pdfRangeModal")?.classList.add("hidden"));
-    byId("pdfRangeBackdrop")?.addEventListener("click", () => byId("pdfRangeModal")?.classList.add("hidden"));
-    byId("confirmExportPdf")?.addEventListener("click", async () => { const allowed = await requireAdmin(); if (!allowed) return; const startDate = byId("pdfDateStart")?.value; const endDate = byId("pdfDateEnd")?.value; if (!startDate || !endDate) { alert("Selecione data inicial e final."); return; } const html = buildPremiumBankReceiptPdf(startDate, endDate); if (!html || !html.trim()) { alert("Relatório vazio. Verifique o período selecionado."); return; } const w = window.open("", "_blank", "width=1280,height=900"); if (!w) { alert("Não foi possível abrir a janela."); return; } w.document.open(); w.document.write(html); w.document.close(); byId("pdfRangeModal")?.classList.add("hidden"); setTimeout(() => { w.focus(); w.print(); }, 800); });
-    document.querySelectorAll("[data-report-range]").forEach((btn) => { btn.addEventListener("click", async () => { const allowed = await requireAdmin(); if (!allowed) return; const days = Number(btn.dataset.reportRange || 7); const end = new Date(); const start = new Date(); start.setDate(start.getDate() - days); const endLocal = new Date(end.getTime() - end.getTimezoneOffset() * 60000).toISOString().split("T")[0]; const startLocal = new Date(start.getTime() - start.getTimezoneOffset() * 60000).toISOString().split("T")[0]; const w = window.open("", "_blank", "width=1280,height=900"); if (!w) { alert("Não foi possível abrir a janela."); return; } w.document.open(); w.document.write(buildPremiumBankReceiptPdf(startLocal, endLocal)); w.document.close(); setTimeout(() => { w.focus(); w.print(); }, 800); }); });
-    byId("openRankingBtn")?.addEventListener("click", async () => { const allowed = await requireAdmin(); if (!allowed) return; mainMenu?.classList.add("hidden"); const chartSection = byId("rankingChartSection"); const tableSection = byId("rankingTableSection"); chartSection?.classList.toggle("hidden"); tableSection?.classList.toggle("hidden"); renderRanking(); if (chartSection && !chartSection.classList.contains("hidden")) chartSection.scrollIntoView({ behavior: "smooth", block: "start" }); });
-    byId("adminOpenBtn")?.addEventListener("click", async () => { const allowed = await requireAdmin(); if (!allowed) return; mainMenu?.classList.add("hidden"); const panel = byId("adminPanel"); if (!panel) return; panel.classList.toggle("hidden"); if (!panel.classList.contains("hidden")) await loadUsers(); });
-    byId("recalculateHistoryBtn")?.addEventListener("click", async () => { const allowed = await requireAdmin(); if (!allowed) return; await recalculateAllHistory(); });
+   byId("openPdfCustomBtn")?.addEventListener("click", async () => {
+  const allowed = await requireAdmin();
+  if (!allowed) return;
+
+  mainMenu?.classList.add("hidden");
+
+  const today = getTodayDateInput();
+  const start = byId("pdfDateStart");
+  const end = byId("pdfDateEnd");
+
+  if (end) end.value = today;
+
+  const d = new Date();
+  d.setDate(d.getDate() - 7);
+
+  const local = new Date(d.getTime() - d.getTimezoneOffset() * 60000);
+  if (start) start.value = local.toISOString().split("T")[0];
+
+  byId("pdfRangeModal")?.classList.remove("hidden");
+});
+
+byId("closePdfRangeModal")?.addEventListener("click", () => {
+  byId("pdfRangeModal")?.classList.add("hidden");
+});
+
+byId("pdfRangeBackdrop")?.addEventListener("click", () => {
+  byId("pdfRangeModal")?.classList.add("hidden");
+});
+
+byId("confirmExportPdf")?.addEventListener("click", async () => {
+  const allowed = await requireAdmin();
+  if (!allowed) return;
+
+  const startDate = byId("pdfDateStart")?.value;
+  const endDate = byId("pdfDateEnd")?.value;
+
+  if (!startDate || !endDate) {
+    alert("Selecione data inicial e final.");
+    return;
+  }
+
+  const html = buildPremiumBankReceiptPdf(startDate, endDate);
+
+  if (!html || !html.trim()) {
+    alert("Relatório vazio. Verifique o período selecionado.");
+    return;
+  }
+
+  const w = window.open("", "_blank", "width=1280,height=900");
+
+  if (!w) {
+    alert("Não foi possível abrir a janela.");
+    return;
+  }
+
+  w.document.open();
+  w.document.write(html);
+  w.document.close();
+
+  byId("pdfRangeModal")?.classList.add("hidden");
+
+  setTimeout(() => {
+    w.focus();
+    w.print();
+  }, 800);
+});
+
+document.querySelectorAll("[data-report-range]").forEach((btn) => {
+  btn.addEventListener("click", async () => {
+    const allowed = await requireAdmin();
+    if (!allowed) return;
+
+    const days = Number(btn.dataset.reportRange || 7);
+
+    const end = new Date();
+    const start = new Date();
+    start.setDate(start.getDate() - days);
+
+    const endLocal = new Date(end.getTime() - end.getTimezoneOffset() * 60000)
+      .toISOString()
+      .split("T")[0];
+
+    const startLocal = new Date(start.getTime() - start.getTimezoneOffset() * 60000)
+      .toISOString()
+      .split("T")[0];
+
+    const w = window.open("", "_blank", "width=1280,height=900");
+
+    if (!w) {
+      alert("Não foi possível abrir a janela.");
+      return;
+    }
+
+    w.document.open();
+    w.document.write(buildPremiumBankReceiptPdf(startLocal, endLocal));
+    w.document.close();
+
+    setTimeout(() => {
+      w.focus();
+      w.print();
+    }, 800);
+  });
+});
+
+byId("openRankingBtn")?.addEventListener("click", async () => {
+  const allowed = await requireAdmin();
+  if (!allowed) return;
+
+  mainMenu?.classList.add("hidden");
+
+  const chartSection = byId("rankingChartSection");
+  const tableSection = byId("rankingTableSection");
+
+  chartSection?.classList.toggle("hidden");
+  tableSection?.classList.toggle("hidden");
+
+  renderRanking();
+
+  if (chartSection && !chartSection.classList.contains("hidden")) {
+    chartSection.scrollIntoView({
+      behavior: "smooth",
+      block: "start"
+    });
+  }
+});
+
+byId("adminOpenBtn")?.addEventListener("click", async () => {
+  const allowed = await requireAdmin();
+  if (!allowed) return;
+
+  mainMenu?.classList.add("hidden");
+
+  const panel = byId("adminPanel");
+  if (!panel) return;
+
+  panel.classList.toggle("hidden");
+
+  if (!panel.classList.contains("hidden")) {
+    await loadUsers();
+  }
+});
+
+/* ✅ CRIAR USUÁRIO INTERNO PELO PAINEL ADMIN */
+byId("adminCreateUserBtn")?.addEventListener("click", createInternalUser);
+
+byId("recalculateHistoryBtn")?.addEventListener("click", async () => {
+  const allowed = await requireAdmin();
+  if (!allowed) return;
+
+  await recalculateAllHistory();
+});
 
     initAuthEvents();
   </script>
