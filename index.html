@@ -1130,6 +1130,68 @@
   }
 }
     
+    .profit-summary{
+  background:#e8f8ee;
+  border:1px solid #ccefd8;
+  border-radius:24px;
+  padding:18px;
+  margin-bottom:16px;
+}
+
+.profit-head span{
+  display:block;
+  font-size:11px;
+  color:#128044;
+  text-transform:uppercase;
+  letter-spacing:.09em;
+  font-weight:900;
+  margin-bottom:6px;
+}
+
+.profit-head strong{
+  display:block;
+  font-size:28px;
+  font-weight:900;
+  color:#128044;
+}
+
+.profit-details{
+  margin-top:12px;
+  display:grid;
+  gap:8px;
+}
+
+.profit-row{
+  display:flex;
+  justify-content:space-between;
+  gap:12px;
+  background:#fff;
+  border:1px solid #d8f3df;
+  border-radius:16px;
+  padding:12px;
+}
+
+.profit-row strong{
+  display:block;
+  font-size:13px;
+  color:#0a1020;
+}
+
+.profit-row span{
+  display:block;
+  margin-top:3px;
+  font-size:11px;
+  color:#667085;
+  font-weight:700;
+}
+
+.profit-row b{
+  color:#128044;
+  font-size:14px;
+  font-weight:900;
+  white-space:nowrap;
+}
+    
   </style>
 </head>
 <body>
@@ -1839,6 +1901,35 @@ function buildPremiumBankReceiptPdf(startDate, endDate) {
     return date && date >= startDate && date <= endDate;
   });
 
+  const allOutflows = [];
+
+  filtered.forEach((item) => {
+    const t = item.turno || {};
+    const operador = item.nomeOperador || "Sem nome";
+    const data = formatDateBR(item.fechamentoDate || t.dataFechamento || "");
+
+    (t.outflows || []).forEach((o) => {
+      allOutflows.push({
+        name: o.name || "Saída",
+        value: Number(o.value || 0),
+        operador,
+        data
+      });
+    });
+  });
+
+  const totalLucroRealizado = allOutflows.reduce((acc, o) => acc + o.value, 0);
+
+  const lucroRows = allOutflows.map((o) => `
+    <div class="profit-row">
+      <div>
+        <strong>${escapeHtml(o.name)}</strong>
+        <span>${escapeHtml(o.operador)} • ${o.data}</span>
+      </div>
+      <b>${money(o.value)}</b>
+    </div>
+  `).join("") || `<div class="empty-line">Sem saídas de caixa no período</div>`;
+
   const rows = filtered.map((item, index) => {
     const t = item.turno || {};
     const b = getTurnoBreakdown(t);
@@ -2022,6 +2113,68 @@ function buildPremiumBankReceiptPdf(startDate, endDate) {
     line-height:1.5;
   }
 
+  .profit-summary{
+    background:#e8f8ee;
+    border:1px solid #ccefd8;
+    border-radius:24px;
+    padding:18px;
+    margin-bottom:16px;
+  }
+
+  .profit-head span{
+    display:block;
+    font-size:11px;
+    color:#128044;
+    text-transform:uppercase;
+    letter-spacing:.09em;
+    font-weight:900;
+    margin-bottom:6px;
+  }
+
+  .profit-head strong{
+    display:block;
+    font-size:28px;
+    font-weight:900;
+    color:#128044;
+  }
+
+  .profit-details{
+    margin-top:12px;
+    display:grid;
+    gap:8px;
+  }
+
+  .profit-row{
+    display:flex;
+    justify-content:space-between;
+    gap:12px;
+    background:#fff;
+    border:1px solid #d8f3df;
+    border-radius:16px;
+    padding:12px;
+  }
+
+  .profit-row strong{
+    display:block;
+    font-size:13px;
+    color:#0a1020;
+  }
+
+  .profit-row span{
+    display:block;
+    margin-top:3px;
+    font-size:11px;
+    color:#667085;
+    font-weight:700;
+  }
+
+  .profit-row b{
+    color:#128044;
+    font-size:14px;
+    font-weight:900;
+    white-space:nowrap;
+  }
+
   .receipt-card{
     background:#fff;
     border:1px solid #e5eaf2;
@@ -2031,9 +2184,7 @@ function buildPremiumBankReceiptPdf(startDate, endDate) {
     page-break-inside:avoid;
   }
 
-  .receipt-top{
-    margin-bottom:14px;
-  }
+  .receipt-top{margin-bottom:14px;}
 
   .receipt-date{
     font-size:12px;
@@ -2080,22 +2231,9 @@ function buildPremiumBankReceiptPdf(startDate, endDate) {
     letter-spacing:-.04em;
   }
 
-  .diff-box.positive{
-    background:#e8f8ee;
-    border-color:#ccefd8;
-    color:#128044;
-  }
-
-  .diff-box.negative{
-    background:#fee2e2;
-    border-color:#ffd0d0;
-    color:#be2633;
-  }
-
-  .diff-box.neutral{
-    background:#f1f5f9;
-    color:#475569;
-  }
+  .diff-box.positive{background:#e8f8ee;border-color:#ccefd8;color:#128044;}
+  .diff-box.negative{background:#fee2e2;border-color:#ffd0d0;color:#be2633;}
+  .diff-box.neutral{background:#f1f5f9;color:#475569;}
 
   .bank-columns{
     display:grid;
@@ -2140,17 +2278,8 @@ function buildPremiumBankReceiptPdf(startDate, endDate) {
     font-weight:900;
   }
 
-  .red-soft{
-    background:#fff1f2;
-    border:1px solid #ffe1e5;
-    color:#be2633;
-  }
-
-  .amber-soft{
-    background:#fff8e7;
-    border:1px solid #ffedbd;
-    color:#9a6a14;
-  }
+  .red-soft{background:#fff1f2;border:1px solid #ffe1e5;color:#be2633;}
+  .amber-soft{background:#fff8e7;border:1px solid #ffedbd;color:#9a6a14;}
 
   .detail-box{
     background:#fff;
@@ -2177,19 +2306,9 @@ function buildPremiumBankReceiptPdf(startDate, endDate) {
     font-size:12px;
   }
 
-  .detail-row:last-child{
-    border-bottom:none;
-  }
-
-  .detail-row span{
-    color:#334155;
-    font-weight:700;
-  }
-
-  .detail-row strong{
-    font-weight:900;
-    white-space:nowrap;
-  }
+  .detail-row:last-child{border-bottom:none;}
+  .detail-row span{color:#334155;font-weight:700;}
+  .detail-row strong{font-weight:900;white-space:nowrap;}
 
   .platform-row{
     background:#fff;
@@ -2223,21 +2342,10 @@ function buildPremiumBankReceiptPdf(startDate, endDate) {
     font-weight:800;
   }
 
-  .up{
-    color:#128044;
-  }
-
-  .down{
-    color:#be2633;
-  }
-
-  .same{
-    color:#64748b;
-  }
-
-  .negative-text{
-    color:#be2633;
-  }
+  .up{color:#128044;}
+  .down{color:#be2633;}
+  .same{color:#64748b;}
+  .negative-text{color:#be2633;}
 
   .empty-line{
     color:#667085;
@@ -2254,14 +2362,8 @@ function buildPremiumBankReceiptPdf(startDate, endDate) {
   }
 
   @media print{
-    body{
-      background:#fff;
-      padding:0;
-    }
-
-    .receipt-card{
-      page-break-inside:avoid;
-    }
+    body{background:#fff;padding:0;}
+    .receipt-card{page-break-inside:avoid;}
   }
 </style>
 </head>
@@ -2273,6 +2375,17 @@ function buildPremiumBankReceiptPdf(startDate, endDate) {
       <div class="period">
         Relatório interno • ${formatDateBR(startDate)} até ${formatDateBR(endDate)}<br>
         Gerado em ${new Date().toLocaleDateString("pt-BR")} às ${new Date().toLocaleTimeString("pt-BR", { hour:"2-digit", minute:"2-digit" })}
+      </div>
+    </div>
+
+    <div class="profit-summary">
+      <div class="profit-head">
+        <span>Lucro realizado</span>
+        <strong>${money(totalLucroRealizado)}</strong>
+      </div>
+
+      <div class="profit-details">
+        ${lucroRows}
       </div>
     </div>
 
