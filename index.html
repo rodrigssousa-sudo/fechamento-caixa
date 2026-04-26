@@ -1557,7 +1557,7 @@
 
       <div>
         <div class="goal-label">Meta mensal</div>
-        <input id="monthlyGoalInput" class="goal-input" type="text" inputmode="numeric" placeholder="0,00">
+        <input id="monthlyGoalInput" class="goal-input" type="text" inputmode="numeric" placeholder="Ex: 4000000000">
       </div>
     </div>
 
@@ -3737,6 +3737,11 @@ async function createInternalUser() {
     ["t2_banco", "t2_suprema", "t2_pppoker", "t2_buffalo", "t2_ganamos", "t2_cargas", "t2_cargas_poker"].forEach((id) => { const input = byId(id); if (input) { attachMoneyMask(input); input.addEventListener("input", render); } });
     byId("t2_nome_operador")?.addEventListener("input", render);
     byId("t2_data_fechamento")?.addEventListener("input", render);
+    byId("monthlyGoalInput")?.addEventListener("input", () => {
+
+  renderMonthlyGoalChart();
+
+});
     document.querySelectorAll("[data-add-pending]").forEach((btn) => { btn.onclick = () => createPendingRow(btn.dataset.addPending); });
     document.querySelectorAll("[data-add-outflow]").forEach((btn) => { btn.onclick = () => createDynamicRow(btn.dataset.addOutflow); });
     document.querySelectorAll("[data-chart-range]").forEach((btn) => { btn.addEventListener("click", () => { document.querySelectorAll("[data-chart-range]").forEach((b) => b.classList.remove("active")); btn.classList.add("active"); renderRanking(btn.dataset.chartRange); }); });
