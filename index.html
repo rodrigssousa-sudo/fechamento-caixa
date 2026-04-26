@@ -2646,6 +2646,7 @@ const item = {
   submittedAt: originalItem?.submittedAt || Date.now()
 };
 
+// 🔥 MODO EDIÇÃO
 if (idEmEdicao) {
   await updateDoc(doc(db, "history", idEmEdicao), {
     ...item,
@@ -2658,35 +2659,32 @@ if (idEmEdicao) {
 
   await recalcAllHistory();
 
-alert("Histórico atualizado com sucesso.");
+  showToast("Histórico atualizado com sucesso.", "success");
 
-editingTurnId = null;
-window.editingTurnId = null;
+  byId("historyModal")?.classList.add("hidden");
 
-byId("historyModal")?.classList.add("hidden");
+  byId("fecharTurno").innerHTML = `
+    <span class="bank-action-title">Finalizar</span>
+    <span class="bank-action-sub">Salvar turno</span>
+  `;
 
-byId("fecharTurno").innerHTML = `
-  <span class="bank-action-title">Finalizar</span>
-  <span class="bank-action-sub">Salvar turno</span>
-`;
+  clearTurn("t2");
+  render();
 
-clearTurn("t2");
-render();
+  return;
+}
 
-return;
+// 🔥 NOVO TURNO
 await addDoc(collection(db, "history"), item);
 
-showToast("Turno salvo", "success");
+showToast("Turno salvo com sucesso.", "success");
 
-// 🔥 limpa formulário
 clearTurn("t2");
-
-// 🔥 atualiza tela
 render();
 
 } catch (error) {
   console.error("Erro ao salvar turno:", error);
-  alert(error.message || "Erro ao salvar turno.");
+  showToast(error.message || "Erro ao salvar turno.", "error");
 }
 }
 
