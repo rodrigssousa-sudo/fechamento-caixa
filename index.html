@@ -2199,14 +2199,14 @@ async function saveTurn() {
       return;
     }
 
-    if (userData.role !== "admin" && userData.role !== "operador") {
-      alert("Acesso negado.");
-      return;
-    }
+   if (!["admin", "supervisor", "operador"].includes(userData.role)) {
+  alert("Acesso negado.");
+  return;
+}
 
     if (editingTurnId || window.editingTurnId) {
       if (userData.role !== "admin") {
-        alert("Somente ADMIN pode editar histórico.");
+        alert("Edição negada.");
         return;
       }
     }
@@ -3151,8 +3151,13 @@ async function createInternalUser() {
 }
     
    async function loadUsers() {
-  const allowed = await requireAdmin();
-  if (!allowed) return;
+  const isAdmin = currentUserData?.role === "admin";
+  const isSupervisor = currentUserData?.role === "supervisor";
+
+  if (!isAdmin && !isSupervisor) {
+    alert("Sem permissão para ver usuários.");
+    return;
+  }
 
   const usersList = byId("usersList");
   if (!usersList) return;
@@ -3161,6 +3166,7 @@ async function createInternalUser() {
 
   try {
     const snap = await getDocs(collection(db, "users"));
+
     const users = snap.docs.map((d) => ({
       id: d.id,
       ...d.data()
@@ -3169,7 +3175,7 @@ async function createInternalUser() {
     usersList.innerHTML = users.map((u) => `
       <div style="
         display:grid;
-        grid-template-columns:1fr auto auto auto auto;
+        grid-template-columns:${isAdmin ? "1fr auto auto auto auto auto" : "1fr"};
         gap:8px;
         align-items:center;
         background:#fff;
@@ -3191,39 +3197,31 @@ async function createInternalUser() {
           </div>
         </div>
 
-        <button data-user-active="${u.id}" style="
-          padding:10px 12px;
-          border-radius:12px;
-          background:#dcfce7;
-          color:#128044;
-          font-weight:950;
-        ">Ativar</button>
+        ${isAdmin ? `
+          <button data-user-active="${u.id}" style="padding:10px 12px;border-radius:12px;background:#dcfce7;color:#128044;font-weight:950;">
+            Operador
+          </button>
 
-        <button data-user-admin="${u.id}" style="
-          padding:10px 12px;
-          border-radius:12px;
-          background:#dbeafe;
-          color:#102a56;
-          font-weight:950;
-        ">Admin</button>
+          <button data-user-supervisor="${u.id}" style="padding:10px 12px;border-radius:12px;background:#e0f2fe;color:#0369a1;font-weight:950;">
+            Supervisor
+          </button>
 
-        <button data-user-block="${u.id}" style="
-          padding:10px 12px;
-          border-radius:12px;
-          background:#fee2e2;
-          color:#be2633;
-          font-weight:950;
-        ">Bloquear</button>
+          <button data-user-admin="${u.id}" style="padding:10px 12px;border-radius:12px;background:#dbeafe;color:#102a56;font-weight:950;">
+            Admin
+          </button>
 
-        <button data-user-delete="${u.id}" style="
-          padding:10px 12px;
-          border-radius:12px;
-          background:#111827;
-          color:#fff;
-          font-weight:950;
-        ">Excluir</button>
+          <button data-user-block="${u.id}" style="padding:10px 12px;border-radius:12px;background:#fee2e2;color:#be2633;font-weight:950;">
+            Bloquear
+          </button>
+
+          <button data-user-delete="${u.id}" style="padding:10px 12px;border-radius:12px;background:#111827;color:#fff;font-weight:950;">
+            Excluir
+          </button>
+        ` : ""}
       </div>
     `).join("") || `<div style="color:#667085;font-weight:800;">Nenhum usuário encontrado.</div>`;
+
+    if (!isAdmin) return;
 
     document.querySelectorAll("[data-user-active]").forEach((btn) => {
       btn.onclick = async () => {
@@ -3233,6 +3231,18 @@ async function createInternalUser() {
         });
 
         alert("Usuário ativado como operador.");
+        await loadUsers();
+      };
+    });
+
+    document.querySelectorAll("[data-user-supervisor]").forEach((btn) => {
+      btn.onclick = async () => {
+        await updateDoc(doc(db, "users", btn.dataset.userSupervisor), {
+          status: "active",
+          role: "supervisor"
+        });
+
+        alert("Usuário ativado como supervisor.");
         await loadUsers();
       };
     });
@@ -3275,9 +3285,10 @@ async function createInternalUser() {
 
   } catch (error) {
     console.error("Erro ao carregar usuários:", error);
+
     usersList.innerHTML = `
       <div style="color:#be2633;font-weight:900;">
-        Erro ao carregar usuários. Verifique se sua conta está como admin e se as regras do Firestore permitem editar users.
+        Erro ao carregar usuários. Verifique se sua conta tem permissão para listar usuários.
       </div>
     `;
   }
