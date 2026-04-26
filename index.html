@@ -920,10 +920,10 @@
   }
 }
 
-   @media(max-width:600px){
+@media(max-width:600px){
 
   body{
-    padding-bottom:90px!important;
+    padding-bottom:80px!important;
   }
 
   .actions-section{
@@ -937,10 +937,10 @@
     backdrop-filter:blur(18px)!important;
     -webkit-backdrop-filter:blur(18px)!important;
 
-    border-radius:22px!important;
-    padding:6px!important;
+    border-radius:20px!important;
+    padding:4px 6px!important;
 
-    box-shadow:0 -12px 30px rgba(10,16,32,.18)!important;
+    box-shadow:0 -10px 26px rgba(10,16,32,.16)!important;
     border:1px solid rgba(255,255,255,.9)!important;
   }
 
@@ -958,9 +958,9 @@
   }
 
   .bank-action-btn{
-    min-height:52px!important;
-    border-radius:16px!important;
-    padding:6px!important;
+    min-height:44px!important;
+    border-radius:14px!important;
+    padding:4px!important;
 
     display:flex!important;
     align-items:center!important;
@@ -971,18 +971,37 @@
     box-shadow:none!important;
   }
 
+  /* TEXTO LIMPO PREMIUM */
   .bank-action-title{
-    font-size:12px!important;
+    font-size:11px!important;
     line-height:1!important;
+    font-weight:900!important;
+    color:#0a1020!important;
+  }
+
+  /* BOTÕES CLAROS */
+  .bank-action-light,
+  .bank-action-light-blue{
+    background:#f1f5f9!important;
+  }
+
+  .bank-action-light .bank-action-title,
+  .bank-action-light-blue .bank-action-title{
+    color:#0a1020!important;
   }
 
   .bank-action-sub{
     display:none!important;
   }
 
+  /* BOTÃO FINALIZAR DESTACADO */
   .bank-action-primary{
     background:linear-gradient(135deg,#06152e,#2f6eea)!important;
-    font-size:13px!important;
+  }
+
+  .bank-action-primary .bank-action-title{
+    color:#fff!important;
+    text-shadow:0 1px 2px rgba(0,0,0,.25);
   }
 }
 
