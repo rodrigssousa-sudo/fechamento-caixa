@@ -2060,24 +2060,48 @@ function renderMonthlyGoalChart() {
     type: "bar",
     data: {
       labels: dailyTotals.map((_, i) => String(i + 1)),
-      datasets: [{
-        label: "Retiradas",
-        data: dailyTotals,
-        borderRadius: 8
-      }]
+     datasets: [{
+  label: "Retiradas",
+  data: dailyTotals,
+  backgroundColor: "#51b56a",
+  borderRadius: 2,
+  barPercentage: 0.7,
+  categoryPercentage: 0.7
+}]
     },
-    options: {
-      responsive: true,
-      maintainAspectRatio: false,
-      plugins: { legend: { display: false } },
-      scales: {
-        y: {
-          ticks: {
-            callback: (value) => money(value)
-          }
-        }
+   options: {
+  responsive: true,
+  maintainAspectRatio: false,
+  plugins: {
+    legend: { display: false },
+    tooltip: {
+      callbacks: {
+        label: (ctx) => money(ctx.raw)
       }
     }
+  },
+  scales: {
+    x: {
+      grid: { display: false },
+      ticks: {
+        color: "#51b56a",
+        font: { weight: "800", size: 11 }
+      }
+    },
+    y: {
+      beginAtZero: true,
+      grid: {
+        color: "rgba(81,181,106,.20)",
+        borderDash: [4, 4]
+      },
+      ticks: {
+        color: "#51b56a",
+        font: { weight: "800", size: 11 },
+        callback: (value) => money(value)
+      }
+    }
+  }
+}
   });
 
   monthlyGoalDoughnutChart = new Chart(doughnutCanvas, {
