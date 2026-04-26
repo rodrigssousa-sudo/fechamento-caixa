@@ -1441,6 +1441,13 @@
   margin:auto;
   position:relative;
 }
+
+      .goal-header{
+  margin:2px 0 12px;
+  font-size:16px;
+  font-weight:950;
+  color:#102a56;
+}
       
   </style>
 </head>
@@ -1533,8 +1540,8 @@
         </div>
       </section>
 
-      <section id="monthlyGoalSection" class="section-card blue-section hidden">
-  <div class="section-head">Meta mensal da empresa</div>
+    <section id="monthlyGoalSection" class="section-card blue-section hidden">
+  <div class="section-head">Meta mensal</div>
 
   <div class="section-body">
     <div class="goal-top">
@@ -1549,21 +1556,22 @@
       </div>
     </div>
 
-    <div class="goal-chart-grid">
-      <div class="goal-chart-box">
-        <div class="goal-chart-title">Retiradas por dia</div>
-        <div style="height:240px; max-height:240px;">
-  <canvas id="monthlyWithdrawBarChart"></canvas>
-</div>
+    <div class="goal-header">
+      <strong>Desempenho mensal</strong>
+    </div>
 
-      <div class="goal-chart-box small">
-  <div class="goal-chart-title">Falta para meta</div>
-  <div class="donut-wrapper">
-    <canvas id="monthlyGoalDoughnutChart"></canvas>
-  </div>
+    <div class="goal-row">
+      <div class="goal-donut">
+        <div class="donut-wrapper">
+          <canvas id="monthlyGoalDoughnutChart"></canvas>
+        </div>
 
-  <div id="monthlyGoalStatus" class="goal-status">Meta não definida</div>
-</div>
+        <div id="monthlyGoalStatus" class="goal-status"></div>
+      </div>
+
+      <div class="goal-bar">
+        <canvas id="monthlyWithdrawBarChart"></canvas>
+      </div>
     </div>
   </div>
 </section>
