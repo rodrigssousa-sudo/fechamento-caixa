@@ -2418,15 +2418,24 @@ if (idEmEdicao) {
 
   await recalcAllHistory();
 
-  alert("Histórico atualizado com sucesso.");
-  location.reload();
-  return;
+  showToast("Histórico atualizado com sucesso.", "success");
+
+byId("historyModal")?.classList.add("hidden");
+
+render();
+renderMonthlyGoalChart();
+
+return;
 }
 
 await addDoc(collection(db, "history"), item);
 
-alert("Turno salvo");
-location.reload();
+showToast("Turno salvo com sucesso.", "success");
+
+clearTurn("t2");
+
+render();
+renderMonthlyGoalChart();
 
 } catch (error) {
   console.error("Erro ao salvar turno:", error);
