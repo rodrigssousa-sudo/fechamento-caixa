@@ -1369,20 +1369,14 @@
   max-height:260px!important;
 }
 
-.goal-chart-box.small{
-  height:260px!important;
-  display:flex;
-  align-items:center;
-  justify-content:center;
+.goal-chart-box{
+  height:240px!important;
+  max-height:240px!important;
+  overflow:hidden;
 }
 
 .goal-chart-title{
   display:none;
-}
-
-#monthlyWithdrawBarChart{
-  width:100%!important;
-  height:220px!important;
 }
 
 #monthlyGoalDoughnutChart{
@@ -1549,8 +1543,9 @@
     <div class="goal-chart-grid">
       <div class="goal-chart-box">
         <div class="goal-chart-title">Retiradas por dia</div>
-        <canvas id="monthlyWithdrawBarChart"></canvas>
-      </div>
+        <div style="height:240px; max-height:240px;">
+  <canvas id="monthlyWithdrawBarChart"></canvas>
+</div>
 
       <div class="goal-chart-box small">
         <div class="goal-chart-title">Falta para meta</div>
