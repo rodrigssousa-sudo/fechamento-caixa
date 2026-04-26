@@ -2099,6 +2099,21 @@ function setInputValue(id, value) {
   }
 }
 
+async function requireReportsAccess() {
+  const data = currentUserData || await getCurrentUserData();
+
+  const allowed =
+    data?.role === "admin" ||
+    data?.role === "supervisor";
+
+  if (!allowed) {
+    alert("Acesso permitido apenas para administradores ou supervisores.");
+    return false;
+  }
+
+  return true;
+}
+
 async function editTurn(id) {
   const allowed = await requireAdmin();
   if (!allowed) return;
