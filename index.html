@@ -1306,154 +1306,8 @@
   font-weight:900;
   padding:0 12px;
   outline:none;
-
-#monthlyGoalSection{
-  border-radius:24px!important;
-  overflow:hidden!important;
-  background:#ffffff!important;
-  border:1px solid rgba(10,16,32,.08)!important;
-  box-shadow:0 14px 34px rgba(10,16,32,.07)!important;
 }
-
-#monthlyGoalSection .section-head{
-  background:#51b56a!important;
-  color:#ffffff!important;
-  text-align:center!important;
-  justify-content:center!important;
-  font-size:18px!important;
-  font-weight:950!important;
-  padding:12px 18px!important;
-}
-
-.goal-top{
-  display:grid;
-  grid-template-columns:1fr 1fr;
-  gap:12px;
-  margin-bottom:14px;
-}
-
-.goal-label{
-  font-size:11px;
-  color:#667085;
-  font-weight:950;
-  text-transform:uppercase;
-  letter-spacing:.08em;
-  margin-bottom:6px;
-}
-
-.goal-value{
-  font-size:22px;
-  font-weight:950;
-  color:#51b56a;
-}
-
-.goal-input{
-  min-height:44px!important;
-  border-radius:14px!important;
-  font-size:16px!important;
-}
-
-.goal-chart-grid{
-  display:grid;
-  grid-template-columns:2fr .9fr;
-  gap:16px;
-  align-items:center;
-}
-
-.goal-chart-box{
-  background:#fff;
-  border:none!important;
-  border-radius:18px;
-  padding:8px 10px;
-  height:260px!important;
-  max-height:260px!important;
-}
-
-.goal-chart-box{
-  height:240px!important;
-  max-height:240px!important;
-  overflow:hidden;
-}
-
-.goal-chart-title{
-  display:none;
-}
-
-#monthlyGoalDoughnutChart{
-  width:170px!important;
-  height:170px!important;
-}
-
-.goal-status{
-  margin-top:8px;
-  font-size:13px;
-  font-weight:950;
-  color:#51b56a;
-  text-align:center;
-}
-
- .toast{
-  position:fixed;
-  left:50%;
-  bottom:24px;
-  transform:translateX(-50%) translateY(20px);
-  z-index:99999;
-
-  background:#06152e;
-  color:#fff;
-
-  padding:14px 18px;
-  border-radius:16px;
-  font-weight:900;
-
-  box-shadow:0 18px 40px rgba(10,16,32,.22);
-
-  opacity:0;
-  transition:all .35s ease;
-}
-
-/* 🔥 animação */
-.toast.show{
-  opacity:1;
-  transform:translateX(-50%) translateY(0);
-}
-
-/* cores */
-.toast.success{
-  background:#128044;
-}
-
-.toast.error{
-  background:#be2633;
-}
-
-      .goal-header{
-  margin:2px 0 12px;
-  font-size:16px;
-  font-weight:950;
-  color:#102a56;
-}
-
-.goal-row{
-  display:grid;
-  grid-template-columns:160px 1fr !important;
-  gap:16px;
-  align-items:center;
-}
-
-.goal-bar{
-  height:180px;
-}
-
-.goal-bar canvas{
-  height:100% !important;
-}
-
-.donut-wrapper{
-  width:140px;
-  height:140px;
-}
-      
+    
   </style>
 </head>
 <body>
@@ -1538,48 +1392,12 @@
 
       <section class="main-card main-card-pad">
         <div class="summary-grid">
-          <div class="summary-box"><div class="summary-box-label">Operador anterior</div><div id="previousOperator" class="summary-box-value">-</div></div>
+          <div class="summary-box"><div class="summary-box-label">Turno anterior</div><div id="previousOperator" class="summary-box-value">-</div></div>
           <div class="summary-box"><div class="summary-box-label">Último fechamento</div><div id="previousDate" class="summary-box-value">-</div></div>
           <div class="summary-box"><div class="summary-box-label">Diferença Caixa</div><div id="previousDiff" class="summary-box-value">$ 0,00</div></div>
-          <div class="summary-box"><div class="summary-box-label">Saldo Turno Anterior</div><div id="previousReca" class="summary-box-value green">$ 0,00</div></div>
+          <div class="summary-box"><div class="summary-box-label">Turno Anterior</div><div id="previousReca" class="summary-box-value green">$ 0,00</div></div>
         </div>
       </section>
-
-    <section id="monthlyGoalSection" class="section-card blue-section hidden">
-  <div class="section-head">Meta mensal</div>
-
-  <div class="section-body">
-    <div class="goal-top">
-      <div>
-        <div class="goal-label">Retiradas no mês</div>
-        <div id="monthlyWithdrawTotal" class="goal-value">$ 0,00</div>
-      </div>
-
-      <div>
-        <div class="goal-label">Meta mensal</div>
-        <input id="monthlyGoalInput" class="goal-input" type="text" inputmode="numeric" placeholder="Ex: 4000000000">
-      </div>
-    </div>
-
-    <div class="goal-header">
-      <strong>Desempenho mensal</strong>
-    </div>
-
-    <div class="goal-row">
-      <div class="goal-donut">
-        <div class="donut-wrapper">
-          <canvas id="monthlyGoalDoughnutChart"></canvas>
-        </div>
-
-        <div id="monthlyGoalStatus" class="goal-status"></div>
-      </div>
-
-      <div class="goal-bar">
-        <canvas id="monthlyWithdrawBarChart"></canvas>
-      </div>
-    </div>
-  </div>
-</section>
 
       <section class="section-card green-section">
         <div class="section-head">Comparativo das fichas</div>
@@ -1693,8 +1511,6 @@
     let historyListenerStarted = false;
     let rankingChart = null;
     let rankingRange = "day";
-    let monthlyWithdrawBarChart = null;
-let monthlyGoalDoughnutChart = null;
 
     const byId = (id) => document.getElementById(id);
     const authScreen = byId("authScreen");
@@ -1738,32 +1554,13 @@ let monthlyGoalDoughnutChart = null;
       return Number.isFinite(number) ? number : 0;
     }
 
-   function parseFicha(value) {
-  const s = String(value || "0").trim();
-  if (s.includes(",")) return Number(s.replace(/\./g, "").replace(",", ".")) || 0;
-  if (s.includes(".")) return Number(s) || 0;
-  return Number(s) || 0;
-}
+    function parseFicha(value) {
+      const s = String(value || "0").trim();
+      if (s.includes(",")) return Number(s.replace(/\./g, "").replace(",", ".")) || 0;
+      if (s.includes(".")) return Number(s) || 0;
+      return Number(s) || 0;
+    }
 
-// 🔥 COLE AQUI
-function showToast(message, type = "success") {
-  const toast = byId("toast");
-  if (!toast) return alert(message);
-
-  toast.textContent = message;
-  toast.className = `toast ${type}`;
-
-  // força render antes de animar
-  requestAnimationFrame(() => {
-    toast.classList.add("show");
-  });
-
-  setTimeout(() => {
-    toast.classList.remove("show");
-  }, 2600);
-}
-
-    
     function attachMoneyMask(input) {
       if (!input || input.dataset.maskAttached === "true") return;
       input.dataset.maskAttached = "true";
@@ -1798,66 +1595,49 @@ function showToast(message, type = "success") {
       return data?.role === "admin" && data?.status === "active";
     }
 
-async function requireAdmin() {
-  const allowed = await isCurrentUserAdmin();
-  if (!allowed) {
-    alert("Acesso permitido apenas para admin.");
-    return false;
-  }
-  return true;
-}
+    async function requireAdmin() {
+      const allowed = await isCurrentUserAdmin();
+      if (!allowed) {
+        alert("Acesso permitido apenas para admin.");
+        return false;
+      }
+      return true;
+    }
 
-function canViewReports() {
-  return currentUserData?.role === "admin" || currentUserData?.role === "supervisor";
-}
-
-function canViewUsers() {
-  return currentUserData?.role === "admin" || currentUserData?.role === "supervisor";
-}
-
-async function requireReportsAccess() {
-  if (!canViewReports()) {
-    alert("Sem permissão para acessar relatórios.");
-    return false;
-  }
-  return true;
-}
-
-async function requireUsersAccess() {
-  if (!canViewUsers()) {
-    alert("Sem permissão para ver usuários.");
-    return false;
-  }
-  return true;
-}
-
-function applyPermissions(userData) {
+   function applyPermissions(userData) {
   const isAdmin = userData?.role === "admin";
   const isSupervisor = userData?.role === "supervisor";
   const isOperator = userData?.role === "operador";
 
   const canOperate = isAdmin || isSupervisor || isOperator;
-  const canViewReportsRole = isAdmin || isSupervisor;
-  const canViewUsersRole = isAdmin || isSupervisor;
+  const canViewReports = isAdmin || isSupervisor;
+  const canViewUsers = isAdmin || isSupervisor;
   const canManage = isAdmin;
 
-  byId("adminOpenBtn")?.classList.toggle("hidden", !canViewUsersRole);
+  // Admin / Supervisor podem abrir painel de usuários
+  byId("adminOpenBtn")?.classList.toggle("hidden", !canViewUsers);
+
+  // Somente admin pode recalcular
   byId("recalculateHistoryBtn")?.classList.toggle("hidden", !canManage);
 
-  byId("openRankingBtn")?.classList.toggle("hidden", !canViewReportsRole);
-  byId("openPdfCustomBtn")?.classList.toggle("hidden", !canViewReportsRole);
-  byId("menuHistoryBtn")?.classList.toggle("hidden", !canViewReportsRole);
+  // Admin / Supervisor podem ver ranking e relatórios
+  byId("openRankingBtn")?.classList.toggle("hidden", !canViewReports);
+  byId("openPdfCustomBtn")?.classList.toggle("hidden", !canViewReports);
 
-  byId("monthlyGoalSection")?.classList.toggle("hidden", !canViewReportsRole);
+  // Se existir esse botão, admin/supervisor podem ver
+  byId("menuHistoryBtn")?.classList.toggle("hidden", !canViewReports);
 
+  // Sempre começa fechado
   byId("rankingChartSection")?.classList.add("hidden");
   byId("rankingTableSection")?.classList.add("hidden");
   byId("adminPanel")?.classList.add("hidden");
 
+  // Botões de relatório rápido, caso existam
   document.querySelectorAll("[data-report-range]").forEach((btn) => {
-    btn.classList.toggle("hidden", !canViewReportsRole);
+    btn.classList.toggle("hidden", !canViewReports);
   });
 
+  // Admin, supervisor e operador podem finalizar turno
   byId("fecharTurno")?.classList.toggle("hidden", !canOperate);
 
   if (byId("activeUserRole")) {
@@ -2023,143 +1803,6 @@ function renderRanking(range = rankingRange) {
   renderRankingTable();
 }
 
-function renderMonthlyGoalChart() {
-  const section = byId("monthlyGoalSection");
-  if (!section) return;
-
-  const canView = currentUserData?.role === "admin" || currentUserData?.role === "supervisor";
-  section.classList.toggle("hidden", !canView);
-  if (!canView) return;
-
-  const now = new Date();
-  const year = now.getFullYear();
-  const month = now.getMonth();
-  const daysInMonth = new Date(year, month + 1, 0).getDate();
-
-  const dailyTotals = Array.from({ length: daysInMonth }, () => 0);
-  let totalWithdraw = 0;
-
-  historyCache.forEach((item) => {
-    const t = item.turno || {};
-    const dateStr = item.fechamentoDate || t.dataFechamento;
-    if (!dateStr) return;
-
-    const d = new Date(`${dateStr}T12:00:00`);
-    if (d.getFullYear() !== year || d.getMonth() !== month) return;
-
-    const dayIndex = d.getDate() - 1;
-
-    (t.outflows || []).forEach((o) => {
-      if (o.type === "lucro") {
-        const value = Number(o.value || 0);
-        dailyTotals[dayIndex] += value;
-        totalWithdraw += value;
-      }
-    });
-  });
-
-  byId("monthlyWithdrawTotal").textContent = money(totalWithdraw);
-
-  const goal = parseMoney(byId("monthlyGoalInput")?.value || "");
-  const remaining = Math.max(goal - totalWithdraw, 0);
-  const completed = goal > 0 ? Math.min(totalWithdraw, goal) : 0;
-
-  byId("monthlyGoalStatus").textContent = goal
-    ? `Faltam ${money(remaining)} para a meta`
-    : "Digite uma meta mensal";
-
-  const barCanvas = byId("monthlyWithdrawBarChart");
-  const doughnutCanvas = byId("monthlyGoalDoughnutChart");
-
-  if (!barCanvas || !doughnutCanvas) return;
-
-  if (monthlyWithdrawBarChart) monthlyWithdrawBarChart.destroy();
-  if (monthlyGoalDoughnutChart) monthlyGoalDoughnutChart.destroy();
-
-  monthlyWithdrawBarChart = new Chart(barCanvas, {
-    type: "bar",
-    data: {
-      labels: dailyTotals.map((_, i) => String(i + 1)),
-    datasets: [{
-  label: "Retiradas",
-  data: dailyTotals,
-  backgroundColor: (ctx) => {
-    const chart = ctx.chart;
-    const {ctx: canvas, chartArea} = chart;
-
-    if (!chartArea) return "#51b56a";
-
-    const gradient = canvas.createLinearGradient(
-      0,
-      chartArea.bottom,
-      0,
-      chartArea.top
-    );
-
-    gradient.addColorStop(0, "#2f8f4e");
-    gradient.addColorStop(1, "#6ee7a2");
-
-    return gradient;
-  },
-  borderRadius: 2,
-  barPercentage: 0.7,
-  categoryPercentage: 0.7
-}]
-    },
-   options: {
-  responsive: true,
-  maintainAspectRatio: false,
-  plugins: {
-    legend: { display: false },
-    tooltip: {
-      callbacks: {
-        label: (ctx) => money(ctx.raw)
-      }
-    }
-  },
-  scales: {
-    x: {
-      grid: { display: false },
-      ticks: {
-        color: "#51b56a",
-        font: { weight: "800", size: 11 }
-      }
-    },
-    y: {
-      beginAtZero: true,
-      grid: {
-        color: "rgba(81,181,106,.20)",
-        borderDash: [4, 4]
-      },
-      ticks: {
-        color: "#51b56a",
-        font: { weight: "800", size: 11 },
-        callback: (value) => money(value)
-      }
-    }
-  }
-}
-  });
-
-  monthlyGoalDoughnutChart = new Chart(doughnutCanvas, {
-    type: "doughnut",
-    data: {
-      labels: ["Realizado", "Falta"],
-      datasets: [{
-        data: goal > 0 ? [completed, remaining] : [0, 1]
-      }]
-    },
-    options: {
-      responsive: true,
-      maintainAspectRatio: false,
-      cutout: "72%",
-      plugins: {
-        legend: { position: "bottom" }
-      }
-    }
-  });
-}
-    
     function renderRankingTable() {
       const body = byId("operatorRankingBody");
       if (!body) return;
@@ -2224,7 +1867,7 @@ function renderMonthlyGoalChart() {
       byId("bankValue").textContent = balanceVisible ? money(lastReca) : "Saldo oculto";
     }
 
-    function render() {   renderTopPreviousCards();   renderCompare();   renderRanking();   renderRankingTable();   renderMonthlyGoalChart(); }
+    function render() { renderTopPreviousCards(); renderCompare(); renderRanking(); renderRankingTable(); }
 
     function renderHistory() {
   const list = byId("historyList");
@@ -2374,7 +2017,7 @@ ${currentUserData?.role === "admin" ? `
 ` : ""}`;
 
 byId("editHistoryBtn")?.addEventListener("click", async () => {
-  const allowed = await requireReportsAccess();
+  const allowed = await requireAdmin();
   if (!allowed) return;
 
   await editTurn(item.id);
@@ -2723,7 +2366,6 @@ const item = {
   submittedAt: originalItem?.submittedAt || Date.now()
 };
 
-// 🔥 MODO EDIÇÃO
 if (idEmEdicao) {
   await updateDoc(doc(db, "history", idEmEdicao), {
     ...item,
@@ -2736,32 +2378,19 @@ if (idEmEdicao) {
 
   await recalcAllHistory();
 
-  showToast("Histórico atualizado com sucesso.", "success");
-
-  byId("historyModal")?.classList.add("hidden");
-
-  byId("fecharTurno").innerHTML = `
-    <span class="bank-action-title">Finalizar</span>
-    <span class="bank-action-sub">Salvar turno</span>
-  `;
-
-  clearTurn("t2");
-  render();
-
+  alert("Histórico atualizado com sucesso.");
+  location.reload();
   return;
 }
 
-// 🔥 NOVO TURNO
 await addDoc(collection(db, "history"), item);
 
-showToast("Turno salvo com sucesso.", "success");
-
-clearTurn("t2");
-render();
+alert("Turno salvo");
+location.reload();
 
 } catch (error) {
   console.error("Erro ao salvar turno:", error);
-  showToast(error.message || "Erro ao salvar turno.", "error");
+  alert(error.message || "Erro ao salvar turno.");
 }
 }
 
@@ -3461,8 +3090,6 @@ function buildPremiumBankReceiptPdf(startDate, endDate) {
 
 <button class="print-btn" onclick="window.print()">Salvar / Exportar PDF</button>
 
-<div id="toast" class="toast hidden"></div>
-
 </body>
 </html>
 `;
@@ -3692,44 +3319,10 @@ async function createInternalUser() {
     }
 
     onAuthStateChanged(auth, async (user) => {
-  if (!user) {
-    currentUserData = null;
-    authScreen?.classList.remove("hidden");
-    appShell?.classList.add("hidden");
-    byId("adminOpenBtn")?.classList.add("hidden");
-    byId("adminPanel")?.classList.add("hidden");
-    return;
-  }
-
-  try {
-    const allowed = await validateUserAccess(user);
-    if (!allowed) return;
-
-    authScreen?.classList.add("hidden");
-    appShell?.classList.remove("hidden");
-
-    byId("activeUserName").textContent =
-      currentUserData.name || user.email?.split("@")[0] || "Usuário";
-
-    byId("activeUserEmail").textContent = user.email || "";
-
-    applyPermissions(currentUserData);
-
-    startHistoryRealtimeListener();
-
-    render();
-
-    // 🔥 ADICIONAR AQUI (PONTO 5)
-    setTimeout(() => {
-      renderMonthlyGoalChart();
-    }, 200);
-
-  } catch (error) {
-    console.error("Erro ao validar sessão:", error);
-    alert("Erro ao validar acesso.");
-    await signOut(auth);
-  }
-});
+      if (!user) { currentUserData = null; authScreen?.classList.remove("hidden"); appShell?.classList.add("hidden"); byId("adminOpenBtn")?.classList.add("hidden"); byId("adminPanel")?.classList.add("hidden"); return; }
+      try { const allowed = await validateUserAccess(user); if (!allowed) return; authScreen?.classList.add("hidden"); appShell?.classList.remove("hidden"); byId("activeUserName").textContent = currentUserData.name || user.email?.split("@")[0] || "Usuário"; byId("activeUserEmail").textContent = user.email || ""; applyPermissions(currentUserData); startHistoryRealtimeListener(); render(); }
+      catch (error) { console.error("Erro ao validar sessão:", error); alert("Erro ao validar acesso."); await signOut(auth); }
+    });
 
     byId("fecharTurno")?.addEventListener("click", saveTurn);
     byId("calcular")?.addEventListener("click", render);
@@ -3737,11 +3330,6 @@ async function createInternalUser() {
     ["t2_banco", "t2_suprema", "t2_pppoker", "t2_buffalo", "t2_ganamos", "t2_cargas", "t2_cargas_poker"].forEach((id) => { const input = byId(id); if (input) { attachMoneyMask(input); input.addEventListener("input", render); } });
     byId("t2_nome_operador")?.addEventListener("input", render);
     byId("t2_data_fechamento")?.addEventListener("input", render);
-    byId("monthlyGoalInput")?.addEventListener("input", () => {
-
-  renderMonthlyGoalChart();
-
-});
     document.querySelectorAll("[data-add-pending]").forEach((btn) => { btn.onclick = () => createPendingRow(btn.dataset.addPending); });
     document.querySelectorAll("[data-add-outflow]").forEach((btn) => { btn.onclick = () => createDynamicRow(btn.dataset.addOutflow); });
     document.querySelectorAll("[data-chart-range]").forEach((btn) => { btn.addEventListener("click", () => { document.querySelectorAll("[data-chart-range]").forEach((b) => b.classList.remove("active")); btn.classList.add("active"); renderRanking(btn.dataset.chartRange); }); });
@@ -3760,8 +3348,8 @@ async function createInternalUser() {
     byId("closeHistoryModal")?.addEventListener("click", () => byId("historyModal")?.classList.add("hidden"));
     byId("historyModalBackdrop")?.addEventListener("click", () => byId("historyModal")?.classList.add("hidden"));
 
-  byId("openPdfCustomBtn")?.addEventListener("click", async () => {
-  const allowed = await requireReportsAccess();
+   byId("openPdfCustomBtn")?.addEventListener("click", async () => {
+  const allowed = await requireAdmin();
   if (!allowed) return;
 
   mainMenu?.classList.add("hidden");
@@ -3790,7 +3378,7 @@ byId("pdfRangeBackdrop")?.addEventListener("click", () => {
 });
 
 byId("confirmExportPdf")?.addEventListener("click", async () => {
-  const allowed = await requireReportsAccess();
+  const allowed = await requireAdmin();
   if (!allowed) return;
 
   const startDate = byId("pdfDateStart")?.value;
@@ -3854,7 +3442,7 @@ byId("confirmExportPdf")?.addEventListener("click", async () => {
 
 document.querySelectorAll("[data-report-range]").forEach((btn) => {
   btn.addEventListener("click", async () => {
-    const allowed = await requireReportsAccess();
+    const allowed = await requireAdmin();
     if (!allowed) return;
 
     const days = Number(btn.dataset.reportRange || 7);
@@ -3890,7 +3478,7 @@ document.querySelectorAll("[data-report-range]").forEach((btn) => {
 });
 
 byId("openRankingBtn")?.addEventListener("click", async () => {
-  const allowed = await requireReportsAccess();
+  const allowed = await requireAdmin();
   if (!allowed) return;
 
   mainMenu?.classList.add("hidden");
@@ -3912,7 +3500,7 @@ byId("openRankingBtn")?.addEventListener("click", async () => {
 });
 
 byId("adminOpenBtn")?.addEventListener("click", async () => {
-  const allowed = await requireUsersAccess();
+  const allowed = await requireAdmin();
   if (!allowed) return;
 
   mainMenu?.classList.add("hidden");
@@ -3928,7 +3516,7 @@ byId("adminOpenBtn")?.addEventListener("click", async () => {
 });
 
 /* ✅ CRIAR USUÁRIO INTERNO PELO PAINEL ADMIN */
-byId("adminCreateUserBtn")?.addEventListener("click", async () => {   const allowed = await requireAdmin();   if (!allowed) return;    await createInternalUser(); });
+byId("adminCreateUserBtn")?.addEventListener("click", createInternalUser);
 
 byId("recalculateHistoryBtn")?.addEventListener("click", async () => {
   const allowed = await requireAdmin();
@@ -3939,7 +3527,5 @@ byId("recalculateHistoryBtn")?.addEventListener("click", async () => {
 
     initAuthEvents();
   </script>
-<div id="toast" class="toast hidden"></div>
-  
 </body>
 </html>
