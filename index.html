@@ -952,8 +952,10 @@
     padding:0!important;
   }
 
+  /* 🔥 FINALIZAR OCUPA 50% */
   .bank-actions-grid{
-    grid-template-columns:1fr 1fr 1.4fr!important;
+    display:grid!important;
+    grid-template-columns:1fr 1fr 2fr!important;
     gap:6px!important;
   }
 
@@ -971,7 +973,7 @@
     box-shadow:none!important;
   }
 
-  /* TEXTO LIMPO PREMIUM */
+  /* TEXTO LIMPO */
   .bank-action-title{
     font-size:11px!important;
     line-height:1!important;
@@ -979,7 +981,7 @@
     color:#0a1020!important;
   }
 
-  /* BOTÕES CLAROS */
+  /* BOTÕES SECUNDÁRIOS */
   .bank-action-light,
   .bank-action-light-blue{
     background:#f1f5f9!important;
@@ -994,14 +996,22 @@
     display:none!important;
   }
 
-  /* BOTÃO FINALIZAR DESTACADO */
+  /* 🔵 BOTÃO PRINCIPAL (FINALIZAR) */
   .bank-action-primary{
     background:linear-gradient(135deg,#06152e,#2f6eea)!important;
+    border-radius:16px!important;
+
+    display:flex!important;
+    align-items:center!important;
+    justify-content:center!important;
+
+    box-shadow:0 6px 18px rgba(47,110,234,.35)!important;
   }
 
   .bank-action-primary .bank-action-title{
-    color:#fff!important;
+    color:#ffffff!important;
     text-shadow:0 1px 2px rgba(0,0,0,.25);
+    font-size:12px!important;
   }
 }
 
