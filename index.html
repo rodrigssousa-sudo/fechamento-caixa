@@ -1681,8 +1681,21 @@ function renderRanking(range = rankingRange) {
 
       const entriesRows = `
         <tr><td>Banco Reca</td><td>${money(b.reca)}</td></tr>
-        <tr><td>Suprema (${b.supremaFichas.toLocaleString("pt-BR")} x400)</td><td>${money(b.supremaValor)}</td></tr>
-        <tr><td>PPPoker (${b.pppokerFichas.toLocaleString("pt-BR")} x400)</td><td>${money(b.pppokerValor)}</td></tr>
+       <tr>
+  <td>Suprema</td>
+  <td>${b.supremaFichas.toLocaleString("pt-BR", {
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2
+  })} fichas</td>
+</tr>
+
+<tr>
+  <td>PPPoker</td>
+  <td>${b.pppokerFichas.toLocaleString("pt-BR", {
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2
+  })} fichas</td>
+</tr>
         <tr><td>Buffalo</td><td>${money(b.buffalo)}</td></tr>
         <tr><td>Ganamos</td><td>${money(b.ganamos)}</td></tr>`;
       const discountRows = `
