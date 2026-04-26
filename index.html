@@ -1307,6 +1307,46 @@
   padding:0 12px;
   outline:none;
 }
+
+  @media(max-width:600px){
+
+  #adminPanel{
+    padding:18px!important;
+    margin:0 10px 120px!important;
+    border-radius:26px!important;
+    overflow:hidden!important;
+  }
+
+  #usersList{
+    width:100%!important;
+    overflow:hidden!important;
+    display:grid!important;
+    gap:12px!important;
+  }
+
+  #usersList > div{
+    grid-template-columns:1fr!important;
+    width:100%!important;
+    max-width:100%!important;
+    overflow:hidden!important;
+  }
+
+  #usersList button{
+    width:100%!important;
+    min-height:48px!important;
+    margin-top:4px!important;
+  }
+
+  #adminPanel input,
+  #adminPanel select,
+  #adminPanel button{
+    max-width:100%!important;
+  }
+
+  #adminCreateUserBtn{
+    width:100%!important;
+  }
+}
     
   </style>
 </head>
