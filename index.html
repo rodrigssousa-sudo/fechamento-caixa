@@ -1387,6 +1387,40 @@
     grid-template-columns:1fr;
   }
 }
+
+ .toast{
+  position:fixed;
+  left:50%;
+  bottom:24px;
+  transform:translateX(-50%) translateY(20px);
+  z-index:99999;
+
+  background:#06152e;
+  color:#fff;
+
+  padding:14px 18px;
+  border-radius:16px;
+  font-weight:900;
+
+  box-shadow:0 18px 40px rgba(10,16,32,.22);
+
+  opacity:0;
+  transition:all .35s ease;
+}
+
+/* 🔥 animação */
+.toast.show{
+  opacity:1;
+  transform:translateX(-50%) translateY(0);
+}
+
+/* cores */
+.toast.success{
+  background:#128044;
+}
+
+.toast.error{
+  background:#be2633;
 }
     
   </style>
@@ -1668,13 +1702,32 @@ let monthlyGoalDoughnutChart = null;
       return Number.isFinite(number) ? number : 0;
     }
 
-    function parseFicha(value) {
-      const s = String(value || "0").trim();
-      if (s.includes(",")) return Number(s.replace(/\./g, "").replace(",", ".")) || 0;
-      if (s.includes(".")) return Number(s) || 0;
-      return Number(s) || 0;
-    }
+   function parseFicha(value) {
+  const s = String(value || "0").trim();
+  if (s.includes(",")) return Number(s.replace(/\./g, "").replace(",", ".")) || 0;
+  if (s.includes(".")) return Number(s) || 0;
+  return Number(s) || 0;
+}
 
+// 🔥 COLE AQUI
+function showToast(message, type = "success") {
+  const toast = byId("toast");
+  if (!toast) return alert(message);
+
+  toast.textContent = message;
+  toast.className = `toast ${type}`;
+
+  // força render antes de animar
+  requestAnimationFrame(() => {
+    toast.classList.add("show");
+  });
+
+  setTimeout(() => {
+    toast.classList.remove("show");
+  }, 2600);
+}
+
+    
     function attachMoneyMask(input) {
       if (!input || input.dataset.maskAttached === "true") return;
       input.dataset.maskAttached = "true";
@@ -2623,7 +2676,7 @@ render();
 return;
 await addDoc(collection(db, "history"), item);
 
-alert("Turno salvo");
+showToast("Turno salvo", "success");
 
 // 🔥 limpa formulário
 clearTurn("t2");
@@ -3333,6 +3386,8 @@ function buildPremiumBankReceiptPdf(startDate, endDate) {
 
 <button class="print-btn" onclick="window.print()">Salvar / Exportar PDF</button>
 
+<div id="toast" class="toast hidden"></div>
+
 </body>
 </html>
 `;
@@ -3804,5 +3859,7 @@ byId("recalculateHistoryBtn")?.addEventListener("click", async () => {
 
     initAuthEvents();
   </script>
+<div id="toast" class="toast hidden"></div>
+  
 </body>
 </html>
