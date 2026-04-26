@@ -1307,8 +1307,25 @@
   padding:0 12px;
   outline:none;
 
+#monthlyGoalSection{
+  border-radius:24px!important;
+  overflow:hidden!important;
+  background:#ffffff!important;
+  border:1px solid rgba(10,16,32,.08)!important;
+  box-shadow:0 14px 34px rgba(10,16,32,.07)!important;
+}
 
-      .goal-top{
+#monthlyGoalSection .section-head{
+  background:#51b56a!important;
+  color:#ffffff!important;
+  text-align:center!important;
+  justify-content:center!important;
+  font-size:18px!important;
+  font-weight:950!important;
+  padding:12px 18px!important;
+}
+
+.goal-top{
   display:grid;
   grid-template-columns:1fr 1fr;
   gap:12px;
@@ -1325,64 +1342,63 @@
 }
 
 .goal-value{
-  font-size:24px;
+  font-size:22px;
   font-weight:950;
-  color:#102a56;
+  color:#51b56a;
 }
 
 .goal-input{
-  min-height:48px!important;
-  border-radius:16px!important;
-  font-size:18px!important;
+  min-height:44px!important;
+  border-radius:14px!important;
+  font-size:16px!important;
 }
 
 .goal-chart-grid{
   display:grid;
-  grid-template-columns:2fr 1fr;
-  gap:14px;
+  grid-template-columns:2fr .9fr;
+  gap:16px;
+  align-items:center;
 }
 
 .goal-chart-box{
   background:#fff;
-  border:1px solid rgba(10,16,32,.08);
-  border-radius:22px;
-  padding:14px;
+  border:none!important;
+  border-radius:18px;
+  padding:8px 10px;
+  height:260px!important;
+  max-height:260px!important;
 }
 
 .goal-chart-box.small{
+  height:260px!important;
   display:flex;
-  flex-direction:column;
   align-items:center;
   justify-content:center;
 }
 
 .goal-chart-title{
-  font-size:13px;
-  font-weight:950;
-  color:#102a56;
-  margin-bottom:10px;
+  display:none;
 }
 
 #monthlyWithdrawBarChart{
   width:100%!important;
-  height:260px!important;
+  height:220px!important;
 }
 
 #monthlyGoalDoughnutChart{
-  width:180px!important;
-  height:180px!important;
+  width:170px!important;
+  height:170px!important;
 }
 
 .goal-status{
-  margin-top:10px;
+  margin-top:8px;
   font-size:13px;
   font-weight:950;
-  color:#667085;
+  color:#51b56a;
   text-align:center;
 }
 
 @media(max-width:700px){
-  .goal-top,
   .goal-chart-grid{
     grid-template-columns:1fr;
   }
