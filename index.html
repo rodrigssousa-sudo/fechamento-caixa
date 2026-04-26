@@ -2253,53 +2253,59 @@ function buildPremiumBankReceiptPdf(startDate, endDate) {
     margin:0 auto;
   }
 
-  .header{
-    display:flex;
-    justify-content:space-between;
-    align-items:flex-start;
-    gap:18px;
-    padding:20px 0 18px;
-    border-bottom:1px solid #e5eaf2;
-    margin-bottom:16px;
-  }
+.header{
+  background:linear-gradient(135deg,#0b1f4d,#163a8a);
+  color:#fff;
+  border-radius:18px;
+  padding:18px 20px;
 
-  .brand-wrap{
-    display:flex;
-    align-items:center;
-    gap:14px;
-  }
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
 
-  .bk-logo{
-    font-size:54px;
-    font-weight:950;
-    letter-spacing:-.09em;
-    color:#0a1020;
-    line-height:.9;
-  }
+  margin-bottom:14px;
+}
 
-  .brand-name{
-    font-size:28px;
-    font-weight:950;
-    color:#0a1020;
-    letter-spacing:-.05em;
-  }
+/* lado esquerdo */
+.header-left{
+  display:flex;
+  align-items:center;
+  gap:12px;
+}
 
-  .brand-sub{
-    margin-top:3px;
-    font-size:13px;
-    color:#475569;
-    font-weight:800;
-    text-transform:uppercase;
-    letter-spacing:.04em;
-  }
+.logo{
+  width:44px;
+  height:44px;
+  border-radius:12px;
+  background:rgba(255,255,255,0.1);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-weight:900;
+  font-size:18px;
+  letter-spacing:.5px;
+}
 
-  .header-info{
-    text-align:right;
-    font-size:13px;
-    color:#334155;
-    line-height:1.6;
-    font-weight:800;
-  }
+.brand strong{
+  display:block;
+  font-size:16px;
+  font-weight:900;
+}
+
+.brand span{
+  font-size:10px;
+  opacity:.7;
+  letter-spacing:.06em;
+  text-transform:uppercase;
+}
+
+/* lado direito */
+.header-right{
+  text-align:right;
+  font-size:11px;
+  line-height:1.4;
+  opacity:.85;
+}
 
   .kpi-grid{
     display:grid;
@@ -2613,20 +2619,20 @@ function buildPremiumBankReceiptPdf(startDate, endDate) {
 <body>
 <div class="page">
 
-  <div class="header">
-    <div class="brand-wrap">
-      <div class="bk-logo">BK</div>
-      <div>
-        <div class="brand-name">BANK KING</div>
-        <div class="brand-sub">Comprovante bancário</div>
-      </div>
-    </div>
-
-    <div class="header-info">
-      Período: ${formatDateBR(startDate)} até ${formatDateBR(endDate)}<br>
-      Gerado em: ${new Date().toLocaleDateString("pt-BR")} às ${new Date().toLocaleTimeString("pt-BR", { hour:"2-digit", minute:"2-digit" })}
+ <div class="header">
+  <div class="header-left">
+    <div class="logo">BK</div>
+    <div class="brand">
+      <strong>Bank King</strong>
+      <span>Comprovante Bancário</span>
     </div>
   </div>
+
+  <div class="header-right">
+    <div>Período: ${formatDateBR(startDate)} até ${formatDateBR(endDate)}</div>
+    <div>Gerado em: ${new Date().toLocaleDateString("pt-BR")} às ${new Date().toLocaleTimeString("pt-BR", { hour:"2-digit", minute:"2-digit" })}</div>
+  </div>
+</div>
 
   <div class="kpi-grid">
     <div class="kpi-card reca">
