@@ -1361,7 +1361,7 @@
           <span style="font-size:12px;color:#667085;font-weight:950;text-transform:uppercase;letter-spacing:.08em;">Painel Admin</span>
         </div>
         <div style="display:grid;gap:10px;margin-bottom:16px;background:#f8fafc;border:1px solid #e5eaf2;border-radius:18px;padding:14px;">
-  <div style="font-weight:950;color:#102a56;">Criar usuário interno</div>
+  <div style="font-weight:950;color:#102a56;">Criar usuário</div>
 
   <input id="adminCreateName" type="text" placeholder="Nome do usuário" />
   <input id="adminCreateEmail" type="email" placeholder="Email do usuário" />
@@ -1425,11 +1425,11 @@
             <div class="field"><label for="t2_nome_operador">Operador</label><input id="t2_nome_operador" type="text" placeholder="Ex.: Igor T" /></div>
             <div class="field"><label for="t2_data_fechamento">Data do fechamento</label><input id="t2_data_fechamento" type="date" /></div>
             <div class="field"><label for="t2_banco">Banco Reca</label><input id="t2_banco" type="text" inputmode="numeric" placeholder="0,00" /></div>
-            <div class="field"><label for="t2_suprema">Suprema (x400)</label><input id="t2_suprema" type="text" inputmode="numeric" placeholder="0,00" /></div>
-            <div class="field"><label for="t2_pppoker">PPPoker</label><input id="t2_pppoker" type="text" inputmode="numeric" placeholder="0,00" /></div>
+            <div class="field"><label for="t2_suprema">Suprema Fichas</label><input id="t2_suprema" type="text" inputmode="numeric" placeholder="0,00" /></div>
+            <div class="field"><label for="t2_pppoker">PPPoker Fichas</label><input id="t2_pppoker" type="text" inputmode="numeric" placeholder="0,00" /></div>
             <div class="field"><label for="t2_buffalo">Buffalo</label><input id="t2_buffalo" type="text" inputmode="numeric" placeholder="0,00" /></div>
             <div class="field"><label for="t2_ganamos">Ganamos</label><input id="t2_ganamos" type="text" inputmode="numeric" placeholder="0,00" /></div>
-            <div class="field"><label for="t2_cargas">Carga de Fichas</label><input id="t2_cargas" type="text" inputmode="numeric" placeholder="0,00" /></div>
+            <div class="field"><label for="t2_cargas">Carga Casino</label><input id="t2_cargas" type="text" inputmode="numeric" placeholder="0,00" /></div>
             <div class="field"><label for="t2_cargas_poker">Carga Poker</label><input id="t2_cargas_poker" type="text" inputmode="numeric" placeholder="0,00" /></div>
           </div>
         </section>
@@ -1922,16 +1922,60 @@ function renderRanking(range = rankingRange) {
         ${rowsTable("Entradas e plataformas", entriesRows)}
         ${rowsTable("Descontos, pendentes e saídas", discountRows)}
         ${rowsTable("Pagos pendentes detalhados", pendingRows)}
-        ${rowsTable("Saídas de caixa detalhadas", outflowRows)}
-        <div style="margin-top:18px;"><button id="deleteHistoryBtn" style="width:100%;padding:15px;border-radius:16px;border:none;background:#fee2e2;color:#be2633;font-weight:950;cursor:pointer;">Excluir histórico</button></div>`;
+      ${rowsTable("Saídas de caixa detalhadas", outflowRows)}
 
-      byId("deleteHistoryBtn")?.addEventListener("click", async () => {
-        const allowed = await requireAdmin();
-        if (!allowed) return;
-        if (!confirm("Tem certeza que deseja excluir?")) return;
-        try { await deleteDoc(doc(db, "history", item.id)); alert("Excluído com sucesso"); byId("historyModal")?.classList.add("hidden"); }
-        catch (err) { console.error(err); alert("Erro ao excluir"); }
-      });
+${currentUserData?.role === "admin" ? `
+  <div style="margin-top:18px;display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+    <button id="editHistoryBtn" type="button" style="
+      width:100%;
+      padding:15px;
+      border-radius:16px;
+      border:none;
+      background:#eef4ff;
+      color:#102a56;
+      font-weight:950;
+      cursor:pointer;
+    ">
+      Editar histórico
+    </button>
+
+    <button id="deleteHistoryBtn" type="button" style="
+      width:100%;
+      padding:15px;
+      border-radius:16px;
+      border:none;
+      background:#fee2e2;
+      color:#be2633;
+      font-weight:950;
+      cursor:pointer;
+    ">
+      Excluir histórico
+    </button>
+  </div>
+` : ""}`;
+
+byId("editHistoryBtn")?.addEventListener("click", async () => {
+  const allowed = await requireAdmin();
+  if (!allowed) return;
+
+  await editTurn(item.id);
+  byId("historyModal")?.classList.add("hidden");
+});
+
+byId("deleteHistoryBtn")?.addEventListener("click", async () => {
+  const allowed = await requireAdmin();
+  if (!allowed) return;
+  if (!confirm("Tem certeza que deseja excluir?")) return;
+
+  try {
+    await deleteDoc(doc(db, "history", item.id));
+    alert("Excluído com sucesso");
+    byId("historyModal")?.classList.add("hidden");
+  } catch (err) {
+    console.error(err);
+    alert("Erro ao excluir");
+  }
+});
       byId("historyModal")?.classList.remove("hidden");
     }
 
