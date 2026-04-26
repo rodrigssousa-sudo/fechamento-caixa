@@ -2590,6 +2590,32 @@ byId("confirmExportPdf")?.addEventListener("click", async () => {
 
   setTimeout(() => {
   w.focus();
+
+  const printBtn = w.document.createElement("button");
+  printBtn.innerText = "Salvar / Exportar PDF";
+  printBtn.style.cssText = `
+    position:fixed;
+    right:16px;
+    bottom:16px;
+    z-index:9999;
+    padding:14px 18px;
+    border-radius:16px;
+    border:none;
+    background:#06152e;
+    color:white;
+    font-weight:900;
+    box-shadow:0 10px 25px rgba(0,0,0,.25);
+  `;
+
+  printBtn.onclick = () => {
+    printBtn.style.display = "none";
+    w.print();
+    setTimeout(() => {
+      printBtn.style.display = "block";
+    }, 1200);
+  };
+
+  w.document.body.appendChild(printBtn);
 }, 800);
 });
 
