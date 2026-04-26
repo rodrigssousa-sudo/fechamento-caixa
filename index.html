@@ -1022,70 +1022,101 @@
     padding:0!important;
   }
 
-  /* 🔥 FINALIZAR OCUPA 50% */
+ /* ===== BARRA DE AÇÕES PREMIUM - DESKTOP + MOBILE ===== */
+
+.bank-actions-grid{
+  display:flex!important;
+  align-items:center!important;
+  gap:10px!important;
+  width:100%!important;
+}
+
+.bank-action-btn{
+  flex:1!important;
+  min-height:50px!important;
+  border-radius:16px!important;
+  padding:0 14px!important;
+
+  display:flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+
+  text-align:center!important;
+  border:1px solid rgba(10,16,32,.07)!important;
+  background:#f1f5f9!important;
+  box-shadow:0 8px 18px rgba(10,16,32,.04)!important;
+}
+
+.bank-action-primary{
+  flex:2!important;
+  background:linear-gradient(135deg,#06152e,#2f6eea)!important;
+  border:none!important;
+  box-shadow:0 8px 20px rgba(47,110,234,.26)!important;
+}
+
+.bank-action-title{
+  font-size:14px!important;
+  line-height:1!important;
+  font-weight:950!important;
+  color:#0a1020!important;
+  white-space:nowrap!important;
+}
+
+.bank-action-sub{
+  display:none!important;
+}
+
+.bank-action-light,
+.bank-action-light-blue{
+  background:#f1f5f9!important;
+}
+
+.bank-action-light .bank-action-title,
+.bank-action-light-blue .bank-action-title{
+  color:#0a1020!important;
+}
+
+.bank-action-primary .bank-action-title{
+  color:#ffffff!important;
+  font-size:14px!important;
+  text-shadow:0 1px 2px rgba(0,0,0,.25);
+}
+
+.bank-action-btn:hover{
+  transform:translateY(-1px)!important;
+}
+
+/* ===== MOBILE ===== */
+@media(max-width:600px){
+
   .bank-actions-grid{
-    display:grid!important;
-    grid-template-columns:1fr 1fr 2fr!important;
+    display:flex!important;
     gap:6px!important;
   }
 
   .bank-action-btn{
     min-height:44px!important;
     border-radius:14px!important;
-    padding:4px!important;
-
-    display:flex!important;
-    align-items:center!important;
-    justify-content:center!important;
-    flex-direction:column!important;
-
-    text-align:center!important;
+    padding:0 8px!important;
     box-shadow:none!important;
   }
 
-  /* TEXTO LIMPO */
+  .bank-action-primary{
+    flex:2!important;
+  }
+
   .bank-action-title{
     font-size:11px!important;
-    line-height:1!important;
-    font-weight:900!important;
-    color:#0a1020!important;
-  }
-
-  /* BOTÕES SECUNDÁRIOS */
-  .bank-action-light,
-  .bank-action-light-blue{
-    background:#f1f5f9!important;
-  }
-
-  .bank-action-light .bank-action-title,
-  .bank-action-light-blue .bank-action-title{
-    color:#0a1020!important;
-  }
-
-  .bank-action-sub{
-    display:none!important;
-  }
-
-  /* 🔵 BOTÃO PRINCIPAL (FINALIZAR) */
-  .bank-action-primary{
-    background:linear-gradient(135deg,#06152e,#2f6eea)!important;
-    border-radius:16px!important;
-
-    display:flex!important;
-    align-items:center!important;
-    justify-content:center!important;
-
-    box-shadow:0 6px 18px rgba(47,110,234,.35)!important;
   }
 
   .bank-action-primary .bank-action-title{
-    color:#ffffff!important;
-    text-shadow:0 1px 2px rgba(0,0,0,.25);
     font-size:12px!important;
   }
 }
 
-    .history-simple{
+/* ===== HISTÓRICO SIMPLES ===== */
+
+.history-simple{
   margin-top:16px;
   display:flex;
   justify-content:space-between;
@@ -1114,6 +1145,8 @@
   font-weight:700;
   color:#6b7280;
 }
+
+/* ===== RANKING SIMPLES ===== */
 
 .ranking-simple-list{
   display:grid;
