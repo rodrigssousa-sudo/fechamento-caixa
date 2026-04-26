@@ -1833,75 +1833,96 @@ function renderRanking(range = rankingRange) {
       }, (error) => console.error("Erro ao carregar histórico:", error));
     }
 
-    function buildPremiumBankReceiptPdf(startDate, endDate) {
+function buildPremiumBankReceiptPdf(startDate, endDate) {
   const filtered = historyCache.filter((item) => {
     const date = item.fechamentoDate || item.turno?.dataFechamento;
     return date && date >= startDate && date <= endDate;
   });
 
-  const totalReca = filtered.reduce((acc, i) => acc + Number(i.turno?.reca || i.total || 0), 0);
-  const totalPendentes = filtered.reduce((acc, i) => acc + Number(i.turno?.pendentesTotal || i.turno?.pendentes || 0), 0);
-  const totalSaidas = filtered.reduce((acc, i) => acc + Number(i.turno?.saidasTotal || i.turno?.saidas || 0), 0);
-  const totalSupremaFichas = filtered.reduce((acc, i) => acc + Number(i.turno?.suprema || 0), 0);
-  const totalPppokerFichas = filtered.reduce((acc, i) => acc + Number(i.turno?.pppoker || 0), 0);
-
   const statementRows = filtered.map((item, index) => {
     const t = item.turno || {};
     const b = getTurnoBreakdown(t);
+
     const data = formatDateBR(item.fechamentoDate || t.dataFechamento || "");
     const nome = escapeHtml(item.nomeOperador || "Sem nome");
 
-    const pendentesRows = (t.pendings || [])
-      .map(p => `<div>${escapeHtml(p.name || "Pendente")} <b>${money(p.value)}</b></div>`)
-      .join("") || `<div>Sem pendentes</div>`;
+    const previousItem = filtered[index + 1];
+    const diff = previousItem ? calcularDiffReal(t, previousItem.turno || {}) : 0;
 
-    const outflowsRows = (t.outflows || [])
-      .map(o => `<div>${escapeHtml(o.name || "Saída")} <b>${money(o.value)}</b></div>`)
-      .join("") || `<div>Sem saídas</div>`;
+    const diffClass = diff > 0 ? "positive" : diff < 0 ? "negative" : "neutral";
+    const diffSign = diff > 0 ? "+" : diff < 0 ? "-" : "";
 
     return `
-      <div class="receipt-card">
-        <div class="receipt-top">
+      <div class="history-card">
+
+        <div class="top">
           <div>
-            <div class="receipt-name">${nome}</div>
-            <div class="receipt-sub">Fechamento #${filtered.length - index} • ${data}</div>
+            <div class="date">${data}</div>
+            <div class="name">${nome}</div>
+          </div>
+
+          <div class="diff ${diffClass}">
+            ${diffSign}${money(Math.abs(diff))}
           </div>
         </div>
 
-        <div class="ficha-row">
-          <div class="ficha-box">
+        <div class="main-grid">
+          <div class="main-box">
+            <span>Saldo Reca</span>
+            <strong>${money(b.reca)}</strong>
+          </div>
+
+          <div class="main-box danger">
+            <span>Saídas de Caixa</span>
+            <strong>${money(b.saidas)}</strong>
+          </div>
+
+          <div class="main-box ${diffClass}">
+            <span>Diferença Caixa</span>
+            <strong>${diffSign}${money(Math.abs(diff))}</strong>
+          </div>
+        </div>
+
+        <div class="platforms">
+          <div>
             <span>Suprema</span>
-            <strong>${Number(t.suprema || 0).toLocaleString("pt-BR", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</strong>
+            <strong>${Number(t.suprema || 0).toLocaleString("pt-BR", {
+              minimumFractionDigits: 2,
+              maximumFractionDigits: 2
+            })}</strong>
             <small>fichas</small>
           </div>
 
-          <div class="ficha-box">
+          <div>
             <span>PPPoker</span>
-            <strong>${Number(t.pppoker || 0).toLocaleString("pt-BR", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</strong>
+            <strong>${Number(t.pppoker || 0).toLocaleString("pt-BR", {
+              minimumFractionDigits: 2,
+              maximumFractionDigits: 2
+            })}</strong>
             <small>fichas</small>
           </div>
-        </div>
 
-        <div class="receipt-grid">
-          <div><span>Banco Reca</span><b>${money(b.reca)}</b></div>
-          <div><span>Buffalo</span><b>${money(b.buffalo)}</b></div>
-          <div><span>Ganamos</span><b>${money(b.ganamos)}</b></div>
-          <div><span>Pendentes</span><b class="neg">${money(b.pendentes)}</b></div>
-          <div><span>Saídas</span><b class="neg">${money(b.saidas)}</b></div>
-          <div><span>Cargas</span><b>${money(b.cargaFichas + b.cargaPoker)}</b></div>
-        </div>
-
-        <div class="details">
           <div>
-            <h4>Pagos pendentes</h4>
-            ${pendentesRows}
+            <span>Pendentes</span>
+            <strong class="neg">${money(b.pendentes)}</strong>
           </div>
 
           <div>
-            <h4>Saídas de caixa</h4>
-            ${outflowsRows}
+            <span>Buffalo</span>
+            <strong>${money(b.buffalo)}</strong>
+          </div>
+
+          <div>
+            <span>Ganamos</span>
+            <strong>${money(b.ganamos)}</strong>
+          </div>
+
+          <div>
+            <span>Cargas</span>
+            <strong>${money(b.cargaFichas + b.cargaPoker)}</strong>
           </div>
         </div>
+
       </div>
     `;
   }).join("");
@@ -1911,286 +1932,217 @@ function renderRanking(range = rankingRange) {
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8" />
-<title>Relatório Bank King</title>
+<title>Bank King</title>
 
 <style>
-  *{box-sizing:border-box;}
+body{
+  margin:0;
+  padding:24px;
+  font-family:Arial,Helvetica,sans-serif;
+  background:#f4f6fa;
+  color:#0a1020;
+}
 
+.page{
+  max-width:920px;
+  margin:auto;
+}
+
+.header{
+  background:linear-gradient(135deg,#06152e,#102a56 58%,#2f6eea);
+  color:#fff;
+  padding:24px;
+  border-radius:24px;
+  margin-bottom:16px;
+}
+
+.header strong{
+  font-size:28px;
+  font-weight:900;
+}
+
+.period{
+  margin-top:10px;
+  font-size:13px;
+  opacity:.85;
+}
+
+.history-card{
+  background:#fff;
+  border-radius:24px;
+  padding:18px;
+  margin-bottom:14px;
+  border:1px solid #e5eaf2;
+  page-break-inside:avoid;
+}
+
+.top{
+  display:flex;
+  justify-content:space-between;
+  align-items:flex-start;
+  gap:12px;
+  margin-bottom:16px;
+}
+
+.date{
+  font-size:12px;
+  color:#667085;
+  font-weight:800;
+}
+
+.name{
+  margin-top:4px;
+  font-size:22px;
+  font-weight:900;
+  letter-spacing:-.04em;
+}
+
+.diff{
+  padding:9px 14px;
+  border-radius:999px;
+  font-weight:900;
+  font-size:14px;
+  white-space:nowrap;
+}
+
+.positive{
+  background:#e8f8ee!important;
+  color:#128044!important;
+}
+
+.negative{
+  background:#fee2e2!important;
+  color:#be2633!important;
+}
+
+.neutral{
+  background:#f1f5f9!important;
+  color:#475569!important;
+}
+
+.main-grid{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:10px;
+  margin-bottom:14px;
+}
+
+.main-box{
+  background:#f8fafc;
+  border:1px solid #edf1f6;
+  border-radius:18px;
+  padding:14px;
+}
+
+.main-box span{
+  display:block;
+  font-size:10px;
+  color:#667085;
+  text-transform:uppercase;
+  letter-spacing:.08em;
+  font-weight:900;
+  margin-bottom:7px;
+}
+
+.main-box strong{
+  display:block;
+  font-size:18px;
+  font-weight:900;
+}
+
+.main-box.danger{
+  background:#fff5f5;
+  color:#be2633;
+}
+
+.platforms{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:10px;
+}
+
+.platforms div{
+  background:#fff;
+  border:1px solid #edf1f6;
+  border-radius:16px;
+  padding:12px;
+}
+
+.platforms span{
+  display:block;
+  font-size:10px;
+  color:#667085;
+  text-transform:uppercase;
+  letter-spacing:.08em;
+  font-weight:900;
+  margin-bottom:6px;
+}
+
+.platforms strong{
+  display:block;
+  font-size:15px;
+  font-weight:900;
+}
+
+.platforms small{
+  display:block;
+  margin-top:3px;
+  font-size:11px;
+  color:#667085;
+  font-weight:700;
+}
+
+.neg{
+  color:#be2633!important;
+}
+
+.empty{
+  background:#fff;
+  border:1px dashed #cbd5e1;
+  border-radius:18px;
+  padding:24px;
+  text-align:center;
+  color:#667085;
+  font-weight:800;
+}
+
+.footer{
+  margin-top:18px;
+  text-align:center;
+  font-size:12px;
+  color:#667085;
+}
+
+@media print{
   body{
-    margin:0;
-    padding:28px;
-    font-family:Arial,Helvetica,sans-serif;
-    background:#f4f6fa;
-    color:#0a1020;
-  }
-
-  .page{
-    max-width:980px;
-    margin:0 auto;
-  }
-
-  .header{
-    background:linear-gradient(135deg,#06152e,#102a56 60%,#2f6eea);
-    color:#fff;
-    border-radius:26px;
-    padding:28px;
-    margin-bottom:16px;
-  }
-
-  .brand{
-    font-size:30px;
-    font-weight:900;
-    letter-spacing:-.04em;
-  }
-
-  .sub{
-    margin-top:6px;
-    font-size:13px;
-    opacity:.82;
-  }
-
-  .period{
-    margin-top:20px;
-    font-size:13px;
-    line-height:1.5;
-    opacity:.9;
-  }
-
-  .summary{
-    display:grid;
-    grid-template-columns:repeat(5,1fr);
-    gap:10px;
-    margin-bottom:16px;
-  }
-
-  .summary-card{
     background:#fff;
-    border:1px solid #e5eaf2;
-    border-radius:18px;
-    padding:14px;
+    padding:0;
   }
 
-  .summary-card span{
-    display:block;
-    font-size:10px;
-    color:#667085;
-    text-transform:uppercase;
-    letter-spacing:.08em;
-    font-weight:900;
-    margin-bottom:7px;
-  }
-
-  .summary-card strong{
-    font-size:16px;
-    font-weight:900;
-  }
-
-  .section{
-    background:#fff;
-    border:1px solid #e5eaf2;
-    border-radius:24px;
-    padding:20px;
-  }
-
-  .section-title{
-    font-size:19px;
-    font-weight:900;
-    color:#102a56;
-    margin-bottom:14px;
-  }
-
-  .receipt-card{
-    border:1px solid #e5eaf2;
-    border-radius:22px;
-    padding:18px;
-    margin-bottom:14px;
+  .history-card{
     page-break-inside:avoid;
-    background:#fff;
   }
-
-  .receipt-top{
-    padding-bottom:14px;
-    border-bottom:1px solid #edf1f6;
-    margin-bottom:14px;
-  }
-
-  .receipt-name{
-    font-size:18px;
-    font-weight:900;
-  }
-
-  .receipt-sub{
-    margin-top:4px;
-    font-size:12px;
-    color:#667085;
-    font-weight:700;
-  }
-
-  .ficha-row{
-    display:grid;
-    grid-template-columns:1fr 1fr;
-    gap:12px;
-    margin-bottom:12px;
-  }
-
-  .ficha-box{
-    background:#f8fafc;
-    border:1px solid #edf1f6;
-    border-radius:18px;
-    padding:18px;
-  }
-
-  .ficha-box span{
-    display:block;
-    font-size:11px;
-    color:#667085;
-    text-transform:uppercase;
-    letter-spacing:.09em;
-    font-weight:900;
-    margin-bottom:8px;
-  }
-
-  .ficha-box strong{
-    display:block;
-    font-size:28px;
-    font-weight:900;
-    letter-spacing:-.04em;
-  }
-
-  .ficha-box small{
-    display:block;
-    margin-top:4px;
-    font-size:12px;
-    color:#667085;
-    font-weight:700;
-  }
-
-  .receipt-grid{
-    display:grid;
-    grid-template-columns:repeat(3,1fr);
-    gap:10px;
-    margin-top:8px;
-  }
-
-  .receipt-grid div{
-    border:1px solid #edf1f6;
-    border-radius:16px;
-    padding:12px;
-    background:#fff;
-  }
-
-  .receipt-grid span{
-    display:block;
-    font-size:10px;
-    color:#667085;
-    text-transform:uppercase;
-    letter-spacing:.08em;
-    font-weight:900;
-    margin-bottom:6px;
-  }
-
-  .receipt-grid b{
-    font-size:14px;
-    font-weight:900;
-  }
-
-  .details{
-    display:grid;
-    grid-template-columns:1fr 1fr;
-    gap:10px;
-    margin-top:12px;
-  }
-
-  .details > div{
-    background:#fbfcff;
-    border:1px solid #edf1f6;
-    border-radius:16px;
-    padding:12px;
-    font-size:12px;
-    color:#344054;
-    line-height:1.55;
-  }
-
-  .details h4{
-    margin:0 0 8px;
-    font-size:12px;
-    color:#102a56;
-    text-transform:uppercase;
-    letter-spacing:.06em;
-  }
-
-  .neg{
-    color:#be2633!important;
-  }
-
-  .empty{
-    padding:22px;
-    border-radius:18px;
-    background:#f8fafc;
-    color:#667085;
-    text-align:center;
-    font-weight:800;
-  }
-
-  .footer{
-    margin-top:18px;
-    text-align:center;
-    color:#667085;
-    font-size:12px;
-  }
-
-  @media print{
-    body{background:#fff;padding:0;}
-    .header,.summary-card,.section,.receipt-card{box-shadow:none;}
-  }
+}
 </style>
 </head>
 
 <body>
-  <div class="page">
-    <div class="header">
-      <div class="brand">Bank King</div>
-      <div class="sub">Relatório interno • Fechamento de caixa</div>
-      <div class="period">
-        Período: ${formatDateBR(startDate)} até ${formatDateBR(endDate)}<br>
-        Gerado em ${new Date().toLocaleDateString("pt-BR")} às ${new Date().toLocaleTimeString("pt-BR", {hour:"2-digit", minute:"2-digit"})}
-      </div>
+<div class="page">
+
+  <div class="header">
+    <strong>Bank King</strong>
+    <div class="period">
+      Relatório interno • ${formatDateBR(startDate)} até ${formatDateBR(endDate)}
     </div>
-
-    <div class="summary">
-      <div class="summary-card">
-        <span>Suprema total</span>
-        <strong>${totalSupremaFichas.toLocaleString("pt-BR", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</strong>
-      </div>
-
-      <div class="summary-card">
-        <span>PPPoker total</span>
-        <strong>${totalPppokerFichas.toLocaleString("pt-BR", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</strong>
-      </div>
-
-      <div class="summary-card">
-        <span>Banco Reca</span>
-        <strong>${money(totalReca)}</strong>
-      </div>
-
-      <div class="summary-card">
-        <span>Pendentes</span>
-        <strong class="neg">${money(totalPendentes)}</strong>
-      </div>
-
-      <div class="summary-card">
-        <span>Saídas</span>
-        <strong class="neg">${money(totalSaidas)}</strong>
-      </div>
-    </div>
-
-    <div class="section">
-      <div class="section-title">Movimentações detalhadas</div>
-      ${statementRows || `<div class="empty">Nenhum fechamento encontrado nesse período.</div>`}
-    </div>
-
-    <div class="footer">Documento interno • Bank King</div>
   </div>
+
+  ${statementRows || `<div class="empty">Nenhum fechamento encontrado nesse período.</div>`}
+
+  <div class="footer">
+    Documento interno • Bank King
+  </div>
+
+</div>
 </body>
 </html>
 `;
