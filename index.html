@@ -1192,6 +1192,19 @@
   white-space:nowrap;
 }
     
+    .outflow-type{
+  width:100%;
+  min-height:52px;
+  border-radius:16px;
+  border:1px solid rgba(10,16,32,.10);
+  background:#fff;
+  color:#0a1020;
+  font-size:13px;
+  font-weight:900;
+  padding:0 12px;
+  outline:none;
+}
+    
   </style>
 </head>
 <body>
@@ -1820,38 +1833,176 @@ function renderRanking(range = rankingRange) {
     }
 
     async function saveTurn() {
-      const userData = currentUserData || await getCurrentUserData();
-      if (!userData || userData.status !== "active") { alert("Usuário sem permissão."); return; }
-      if (userData.role !== "admin" && userData.role !== "operador") { alert("Acesso negado."); return; }
-      const nome = byId("t2_nome_operador")?.value.trim();
-      if (!nome) { alert("Operador obrigatório"); return; }
-      const valMoney = (id) => parseMoney(byId(id)?.value || "");
-      const valFicha = (id) => parseFicha(byId(id)?.value || "");
-      const reca = valMoney("t2_banco");
-      const suprema = valFicha("t2_suprema");
-      const pppoker = valFicha("t2_pppoker");
-      const buffalo = valMoney("t2_buffalo");
-      const ganamos = valMoney("t2_ganamos");
-      const cargaFichas = valMoney("t2_cargas");
-      const cargaPokerRaw = valFicha("t2_cargas_poker");
-      const cargaPoker = cargaPokerRaw * 400;
-      const pendings = [...document.querySelectorAll("#t2_pending_list .dynamic-row")].map((row) => { const inputs = row.querySelectorAll("input"); return { name: inputs[0]?.value || "", value: parseMoney(inputs[1]?.value || "") }; }).filter(item => item.name || item.value);
-      const outflows = [...document.querySelectorAll("#t2_dynamic_list .dynamic-row")].map((row) => { const inputs = row.querySelectorAll("input"); return { name: inputs[0]?.value || "", value: parseMoney(inputs[1]?.value || "") }; }).filter(item => item.name || item.value);
-      const entradasTotal = reca + (suprema * 400) + (pppoker * 400) + buffalo + ganamos - cargaFichas - cargaPoker;
-      const pendentesTotal = pendings.reduce((acc, item) => acc + item.value, 0);
-      const saidasTotal = outflows.reduce((acc, item) => acc + item.value, 0);
-      const saldoLiquido = entradasTotal - pendentesTotal;
-      const entries = [
-        { name: "Banco Reca", value: reca }, { name: "Suprema (x400)", value: suprema * 400 }, { name: "PPPoker (x400)", value: pppoker * 400 }, { name: "Buffalo", value: buffalo }, { name: "Ganamos", value: ganamos }, { name: "Carga de Fichas", value: cargaFichas }, { name: "Cargas F. Poker (x400)", value: cargaPoker }
-      ];
-      const turno = { reca, suprema, pppoker, buffalo, ganamos, cargaFichas, cargaPoker, dataFechamento: byId("t2_data_fechamento")?.value || getTodayDateInput(), entries, pendings, outflows, entradasTotal, pendentesTotal, saidasTotal, saldoLiquido };
-      let diff = 0;
-      if (historyCache.length) { const previous = historyCache[0]; const previousSaldo = calcularSaldo(previous.turno || {}); diff = (saldoLiquido + saidasTotal) - previousSaldo; }
-      const item = { nomeOperador: nome, operadorUid: userData.uid, operadorEmail: userData.email, fechamentoDate: turno.dataFechamento, total: reca, saldo: saldoLiquido, currentSaldoTotal: saldoLiquido, retiradaLucro: saidasTotal, turnProfit: saidasTotal, diff, bankVariation: diff, turno, submittedAt: Date.now() };
-      await addDoc(collection(db, "history"), item);
-      alert("Turno salvo");
-      location.reload();
+  try {
+    const userData = currentUserData || await getCurrentUserData();
+
+    if (!userData || userData.status !== "active") {
+      alert("Usuário sem permissão.");
+      return;
     }
+
+    if (userData.role !== "admin" && userData.role !== "operador") {
+      alert("Acesso negado.");
+      return;
+    }
+
+    const nome = byId("t2_nome_operador")?.value.trim();
+
+    if (!nome) {
+      alert("Operador obrigatório");
+      return;
+    }
+
+    const valMoney = (id) => parseMoney(byId(id)?.value || "");
+    const valFicha = (id) => parseFicha(byId(id)?.value || "");
+
+    const reca = valMoney("t2_banco");
+    const suprema = valFicha("t2_suprema");
+    const pppoker = valFicha("t2_pppoker");
+    const buffalo = valMoney("t2_buffalo");
+    const ganamos = valMoney("t2_ganamos");
+    const cargaFichas = valMoney("t2_cargas");
+    const cargaPokerRaw = valFicha("t2_cargas_poker");
+    const cargaPoker = cargaPokerRaw * 400;
+
+    const pendings = [...document.querySelectorAll("#t2_pending_list .dynamic-row")]
+      .map((row, index) => {
+        const inputs = row.querySelectorAll("input");
+
+        const name = inputs[0]?.value.trim() || "";
+        const value = parseMoney(inputs[1]?.value || "");
+
+        if ((name || value) && !name) {
+          throw new Error(`Nome obrigatório no pendente ${index + 1}`);
+        }
+
+        if ((name || value) && !value) {
+          throw new Error(`Valor obrigatório no pendente ${index + 1}`);
+        }
+
+        return {
+          name,
+          value
+        };
+      })
+      .filter(item => item.name || item.value);
+
+    const outflows = [...document.querySelectorAll("#t2_dynamic_list .dynamic-row")]
+      .map((row, index) => {
+        const inputs = row.querySelectorAll("input");
+        const select = row.querySelector("select");
+
+        const name = inputs[0]?.value.trim() || "";
+        const value = parseMoney(inputs[1]?.value || "");
+        const type = select?.value || "";
+
+        if ((name || value) && !name) {
+          throw new Error(`Nome obrigatório na saída ${index + 1}`);
+        }
+
+        if ((name || value) && !value) {
+          throw new Error(`Valor obrigatório na saída ${index + 1}`);
+        }
+
+        if ((name || value) && !type) {
+          throw new Error(`Selecione o tipo da saída ${index + 1}`);
+        }
+
+        return {
+          name,
+          value,
+          type
+        };
+      })
+      .filter(item => item.name || item.value);
+
+    const entradasTotal =
+      reca +
+      (suprema * 400) +
+      (pppoker * 400) +
+      buffalo +
+      ganamos -
+      cargaFichas -
+      cargaPoker;
+
+    const pendentesTotal = pendings.reduce((acc, item) => acc + Number(item.value || 0), 0);
+    const saidasTotal = outflows.reduce((acc, item) => acc + Number(item.value || 0), 0);
+    const lucroRealizadoTotal = outflows
+      .filter(item => item.type === "lucro")
+      .reduce((acc, item) => acc + Number(item.value || 0), 0);
+
+    const gastosOperacionaisTotal = outflows
+      .filter(item => item.type === "operacional")
+      .reduce((acc, item) => acc + Number(item.value || 0), 0);
+
+    const saldoLiquido = entradasTotal - pendentesTotal;
+
+    const entries = [
+      { name: "Banco Reca", value: reca },
+      { name: "Suprema (x400)", value: suprema * 400 },
+      { name: "PPPoker (x400)", value: pppoker * 400 },
+      { name: "Buffalo", value: buffalo },
+      { name: "Ganamos", value: ganamos },
+      { name: "Carga de Fichas", value: cargaFichas },
+      { name: "Cargas F. Poker (x400)", value: cargaPoker }
+    ];
+
+    const turno = {
+      reca,
+      suprema,
+      pppoker,
+      buffalo,
+      ganamos,
+      cargaFichas,
+      cargaPoker,
+      dataFechamento: byId("t2_data_fechamento")?.value || getTodayDateInput(),
+      entries,
+      pendings,
+      outflows,
+      entradasTotal,
+      pendentesTotal,
+      saidasTotal,
+      lucroRealizadoTotal,
+      gastosOperacionaisTotal,
+      saldoLiquido
+    };
+
+    let diff = 0;
+
+    if (historyCache.length) {
+      const previous = historyCache[0];
+      const previousSaldo = calcularSaldo(previous.turno || {});
+      diff = (saldoLiquido + saidasTotal) - previousSaldo;
+    }
+
+    const item = {
+      nomeOperador: nome,
+      operadorUid: userData.uid,
+      operadorEmail: userData.email,
+      fechamentoDate: turno.dataFechamento,
+      total: reca,
+      saldo: saldoLiquido,
+      currentSaldoTotal: saldoLiquido,
+      retiradaLucro: saidasTotal,
+      turnProfit: saidasTotal,
+      lucroRealizadoTotal,
+      gastosOperacionaisTotal,
+      diff,
+      bankVariation: diff,
+      turno,
+      submittedAt: Date.now()
+    };
+
+    await addDoc(collection(db, "history"), item);
+
+    alert("Turno salvo");
+    location.reload();
+
+  } catch (error) {
+    console.error("Erro ao salvar turno:", error);
+    alert(error.message || "Erro ao salvar turno.");
+  }
+}
 
     function clearTurn(turno) {
       [`${turno}_nome_operador`,`${turno}_data_fechamento`,`${turno}_banco`,`${turno}_suprema`,`${turno}_pppoker`,`${turno}_buffalo`,`${turno}_ganamos`,`${turno}_cargas`,`${turno}_cargas_poker`].forEach((id) => { const el = byId(id); if (el) { el.value = ""; if (el.dataset) el.dataset.raw = ""; } });
@@ -1861,24 +2012,52 @@ function renderRanking(range = rankingRange) {
     }
 
     function createPendingRow(turno) {
-      const list = byId(`${turno}_pending_list`);
-      if (!list) return;
-      const row = document.createElement("div");
-      row.className = "dynamic-row";
-      row.innerHTML = `<input type="text" placeholder="Nome do pendente"><input type="text" inputmode="numeric" placeholder="0,00"><button type="button" class="remove-row-btn">×</button>`;
-      row.querySelector(".remove-row-btn").onclick = () => { row.remove(); render(); };
-      list.appendChild(row);
-    }
+  const list = byId(`${turno}_pending_list`);
+  if (!list) return;
 
-    function createDynamicRow(turno) {
-      const list = byId(`${turno}_dynamic_list`);
-      if (!list) return;
-      const row = document.createElement("div");
-      row.className = "dynamic-row";
-      row.innerHTML = `<input type="text" placeholder="Nome da saída"><input type="text" inputmode="numeric" placeholder="0,00"><button type="button" class="remove-row-btn">×</button>`;
-      row.querySelector(".remove-row-btn").onclick = () => { row.remove(); render(); };
-      list.appendChild(row);
-    }
+  const row = document.createElement("div");
+  row.className = "dynamic-row";
+
+  row.innerHTML = `
+    <input type="text" placeholder="Nome do pendente">
+    <input type="text" inputmode="numeric" placeholder="0,00">
+    <button type="button" class="remove-row-btn">×</button>
+  `;
+
+  row.querySelector(".remove-row-btn").onclick = () => {
+    row.remove();
+    render();
+  };
+
+  list.appendChild(row);
+}
+
+function createDynamicRow(turno) {
+  const list = byId(`${turno}_dynamic_list`);
+  if (!list) return;
+
+  const row = document.createElement("div");
+  row.className = "dynamic-row";
+
+  row.innerHTML = `
+    <input type="text" placeholder="Nome da saída">
+    <input type="text" inputmode="numeric" placeholder="0,00">
+
+    <select class="outflow-type">
+      <option value="operacional">Gasto operacional</option>
+      <option value="lucro">Lucro realizado</option>
+    </select>
+
+    <button type="button" class="remove-row-btn">×</button>
+  `;
+
+  row.querySelector(".remove-row-btn").onclick = () => {
+    row.remove();
+    render();
+  };
+
+  list.appendChild(row);
+}
 
     function startHistoryRealtimeListener() {
       if (historyListenerStarted) return;
