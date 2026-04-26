@@ -2080,34 +2080,47 @@ function buildPremiumBankReceiptPdf(startDate, endDate) {
     return date && date >= startDate && date <= endDate;
   });
 
-  const allOutflows = [];
+  let totalLucroRealizado = 0;
+  let totalGastos = 0;
+
+  const lucroRows = [];
+  const gastoRows = [];
 
   filtered.forEach((item) => {
-    const t = item.turno || {};
     const operador = item.nomeOperador || "Sem nome";
-    const data = formatDateBR(item.fechamentoDate || t.dataFechamento || "");
+    const data = formatDateBR(item.fechamentoDate || item.turno?.dataFechamento || "");
+    const outflows = item.turno?.outflows || [];
 
-    (t.outflows || []).forEach((o) => {
-      allOutflows.push({
-        name: o.name || "Saída",
-        value: Number(o.value || 0),
-        operador,
-        data
-      });
+    outflows.forEach((o) => {
+      const value = Number(o.value || 0);
+
+      if (o.type === "lucro") {
+        totalLucroRealizado += value;
+
+        lucroRows.push(`
+          <div class="profit-row">
+            <div>
+              <strong>${escapeHtml(o.name)}</strong>
+              <span>${escapeHtml(operador)} • ${data}</span>
+            </div>
+            <b>${money(value)}</b>
+          </div>
+        `);
+      } else {
+        totalGastos += value;
+
+        gastoRows.push(`
+          <div class="profit-row">
+            <div>
+              <strong>${escapeHtml(o.name)}</strong>
+              <span>${escapeHtml(operador)} • ${data}</span>
+            </div>
+            <b class="negative-text">${money(value)}</b>
+          </div>
+        `);
+      }
     });
   });
-
-  const totalLucroRealizado = allOutflows.reduce((acc, o) => acc + o.value, 0);
-
-  const lucroRows = allOutflows.map((o) => `
-    <div class="profit-row">
-      <div>
-        <strong>${escapeHtml(o.name)}</strong>
-        <span>${escapeHtml(o.operador)} • ${o.data}</span>
-      </div>
-      <b>${money(o.value)}</b>
-    </div>
-  `).join("") || `<div class="empty-line">Sem saídas de caixa no período</div>`;
 
   const rows = filtered.map((item, index) => {
     const t = item.turno || {};
@@ -2116,60 +2129,20 @@ function buildPremiumBankReceiptPdf(startDate, endDate) {
     const previousItem = filtered[index + 1];
     const previousTurno = previousItem?.turno || {};
 
-    const prevSuprema = Number(previousTurno.suprema || 0);
-    const prevPppoker = Number(previousTurno.pppoker || 0);
-    const prevBuffalo = Number(previousTurno.buffalo || 0);
-    const prevGanamos = Number(previousTurno.ganamos || 0);
-
-    const supremaDiff = Number(t.suprema || 0) - prevSuprema;
-    const pppokerDiff = Number(t.pppoker || 0) - prevPppoker;
-    const buffaloDiff = Number(t.buffalo || 0) - prevBuffalo;
-    const ganamosDiff = Number(t.ganamos || 0) - prevGanamos;
-
     const diff = previousItem ? calcularDiffReal(t, previousTurno) : 0;
 
     const diffClass = diff > 0 ? "positive" : diff < 0 ? "negative" : "neutral";
     const diffSignal = diff > 0 ? "+" : diff < 0 ? "-" : "";
 
-    const fichaCompare = (value) => {
-      const signal = value > 0 ? "+" : value < 0 ? "-" : "";
-      const cls = value > 0 ? "up" : value < 0 ? "down" : "same";
-      return `<small class="${cls}">(${signal}${Math.abs(value).toLocaleString("pt-BR", {
-        minimumFractionDigits: 2,
-        maximumFractionDigits: 2
-      })} fichas)</small>`;
-    };
-
-    const moneyCompare = (value) => {
-      const signal = value > 0 ? "+" : value < 0 ? "-" : "";
-      const cls = value > 0 ? "up" : value < 0 ? "down" : "same";
-      return `<small class="${cls}">(${signal}${money(Math.abs(value))})</small>`;
-    };
-
-    const pendentesRows = (t.pendings || [])
-      .map(p => `
-        <div class="detail-row">
-          <span>${escapeHtml(p.name || "Pendente")}</span>
-          <strong class="negative-text">${money(p.value)}</strong>
-        </div>
-      `)
-      .join("") || `<div class="empty-line">Sem pendentes</div>`;
-
-    const saidasRows = (t.outflows || [])
-      .map(o => `
-        <div class="detail-row">
-          <span>${escapeHtml(o.name || "Saída")}</span>
-          <strong class="negative-text">${money(o.value)}</strong>
-        </div>
-      `)
-      .join("") || `<div class="empty-line">Sem saídas</div>`;
-
     return `
       <div class="receipt-card">
+
         <div class="receipt-top">
-          <div>
-            <div class="receipt-date">${formatDateBR(item.fechamentoDate || t.dataFechamento || "")}</div>
-            <div class="receipt-name">${escapeHtml(item.nomeOperador || "Sem nome")}</div>
+          <div class="receipt-date">
+            ${formatDateBR(item.fechamentoDate || t.dataFechamento || "")}
+          </div>
+          <div class="receipt-name">
+            ${escapeHtml(item.nomeOperador || "Sem nome")}
           </div>
         </div>
 
@@ -2186,27 +2159,18 @@ function buildPremiumBankReceiptPdf(startDate, endDate) {
         </div>
 
         <div class="bank-columns">
+          
           <div class="bank-column">
-            <div class="column-title">Caixa e pendentes</div>
+            <div class="column-title">Caixa</div>
 
             <div class="highlight-box red-soft">
-              <span>Saídas de Caixa</span>
+              <span>Saídas</span>
               <strong>${money(b.saidas)}</strong>
-            </div>
-
-            <div class="detail-box">
-              <h4>Saídas detalhadas</h4>
-              ${saidasRows}
             </div>
 
             <div class="highlight-box amber-soft">
               <span>Pendentes</span>
               <strong>${money(b.pendentes)}</strong>
-            </div>
-
-            <div class="detail-box">
-              <h4>Pendentes detalhados</h4>
-              ${pendentesRows}
             </div>
           </div>
 
@@ -2215,35 +2179,28 @@ function buildPremiumBankReceiptPdf(startDate, endDate) {
 
             <div class="platform-row">
               <span>Suprema</span>
-              <strong>${Number(t.suprema || 0).toLocaleString("pt-BR", {
-                minimumFractionDigits: 2,
-                maximumFractionDigits: 2
-              })} fichas</strong>
-              ${previousItem ? fichaCompare(supremaDiff) : `<small class="same">(sem comparativo)</small>`}
+              <strong>${Number(t.suprema || 0).toLocaleString("pt-BR")} fichas</strong>
             </div>
 
             <div class="platform-row">
               <span>PPPoker</span>
-              <strong>${Number(t.pppoker || 0).toLocaleString("pt-BR", {
-                minimumFractionDigits: 2,
-                maximumFractionDigits: 2
-              })} fichas</strong>
-              ${previousItem ? fichaCompare(pppokerDiff) : `<small class="same">(sem comparativo)</small>`}
+              <strong>${Number(t.pppoker || 0).toLocaleString("pt-BR")} fichas</strong>
             </div>
 
             <div class="platform-row">
               <span>Buffalo</span>
               <strong>${money(b.buffalo)}</strong>
-              ${previousItem ? moneyCompare(buffaloDiff) : `<small class="same">(sem comparativo)</small>`}
             </div>
 
             <div class="platform-row">
               <span>Ganamos</span>
               <strong>${money(b.ganamos)}</strong>
-              ${previousItem ? moneyCompare(ganamosDiff) : `<small class="same">(sem comparativo)</small>`}
             </div>
+
           </div>
+
         </div>
+
       </div>
     `;
   }).join("");
@@ -2256,322 +2213,41 @@ function buildPremiumBankReceiptPdf(startDate, endDate) {
 <title>Relatório Bank King</title>
 
 <style>
-  *{box-sizing:border-box;}
-
-  body{
-    margin:0;
-    padding:26px;
-    font-family:Arial,Helvetica,sans-serif;
-    background:#f4f6fa;
-    color:#0a1020;
-  }
-
-  .page{
-    max-width:980px;
-    margin:0 auto;
-  }
-
-  .header{
-    background:linear-gradient(135deg,#06152e,#102a56 58%,#2f6eea);
-    color:#fff;
-    border-radius:26px;
-    padding:26px;
-    margin-bottom:16px;
-  }
-
-  .brand{
-    font-size:30px;
-    font-weight:900;
-    letter-spacing:-.04em;
-  }
-
-  .period{
-    margin-top:8px;
-    font-size:13px;
-    opacity:.86;
-    line-height:1.5;
-  }
-
-  .profit-summary{
-    background:#e8f8ee;
-    border:1px solid #ccefd8;
-    border-radius:24px;
-    padding:18px;
-    margin-bottom:16px;
-  }
-
-  .profit-head span{
-    display:block;
-    font-size:11px;
-    color:#128044;
-    text-transform:uppercase;
-    letter-spacing:.09em;
-    font-weight:900;
-    margin-bottom:6px;
-  }
-
-  .profit-head strong{
-    display:block;
-    font-size:28px;
-    font-weight:900;
-    color:#128044;
-  }
-
-  .profit-details{
-    margin-top:12px;
-    display:grid;
-    gap:8px;
-  }
-
-  .profit-row{
-    display:flex;
-    justify-content:space-between;
-    gap:12px;
-    background:#fff;
-    border:1px solid #d8f3df;
-    border-radius:16px;
-    padding:12px;
-  }
-
-  .profit-row strong{
-    display:block;
-    font-size:13px;
-    color:#0a1020;
-  }
-
-  .profit-row span{
-    display:block;
-    margin-top:3px;
-    font-size:11px;
-    color:#667085;
-    font-weight:700;
-  }
-
-  .profit-row b{
-    color:#128044;
-    font-size:14px;
-    font-weight:900;
-    white-space:nowrap;
-  }
-
-  .receipt-card{
-    background:#fff;
-    border:1px solid #e5eaf2;
-    border-radius:26px;
-    padding:20px;
-    margin-bottom:16px;
-    page-break-inside:avoid;
-  }
-
-  .receipt-top{margin-bottom:14px;}
-
-  .receipt-date{
-    font-size:12px;
-    color:#667085;
-    font-weight:900;
-    text-transform:uppercase;
-    letter-spacing:.06em;
-  }
-
-  .receipt-name{
-    margin-top:4px;
-    font-size:24px;
-    font-weight:900;
-    letter-spacing:-.05em;
-  }
-
-  .hero-grid{
-    display:grid;
-    grid-template-columns:1fr 1fr;
-    gap:12px;
-    margin-bottom:16px;
-  }
-
-  .hero-box{
-    background:#f8fafc;
-    border:1px solid #edf1f6;
-    border-radius:20px;
-    padding:18px;
-  }
-
-  .hero-box span{
-    display:block;
-    font-size:10px;
-    color:#667085;
-    text-transform:uppercase;
-    letter-spacing:.09em;
-    font-weight:900;
-    margin-bottom:8px;
-  }
-
-  .hero-box strong{
-    font-size:24px;
-    font-weight:900;
-    letter-spacing:-.04em;
-  }
-
-  .diff-box.positive{background:#e8f8ee;border-color:#ccefd8;color:#128044;}
-  .diff-box.negative{background:#fee2e2;border-color:#ffd0d0;color:#be2633;}
-  .diff-box.neutral{background:#f1f5f9;color:#475569;}
-
-  .bank-columns{
-    display:grid;
-    grid-template-columns:1fr 1fr;
-    gap:14px;
-  }
-
-  .bank-column{
-    border:1px solid #edf1f6;
-    border-radius:22px;
-    padding:14px;
-    background:#fbfcff;
-  }
-
-  .column-title{
-    font-size:13px;
-    font-weight:900;
-    color:#102a56;
-    margin-bottom:12px;
-    text-transform:uppercase;
-    letter-spacing:.06em;
-  }
-
-  .highlight-box{
-    border-radius:18px;
-    padding:14px;
-    margin-bottom:10px;
-  }
-
-  .highlight-box span{
-    display:block;
-    font-size:10px;
-    color:#667085;
-    text-transform:uppercase;
-    font-weight:900;
-    letter-spacing:.08em;
-    margin-bottom:6px;
-  }
-
-  .highlight-box strong{
-    font-size:20px;
-    font-weight:900;
-  }
-
-  .red-soft{background:#fff1f2;border:1px solid #ffe1e5;color:#be2633;}
-  .amber-soft{background:#fff8e7;border:1px solid #ffedbd;color:#9a6a14;}
-
-  .detail-box{
-    background:#fff;
-    border:1px solid #edf1f6;
-    border-radius:16px;
-    padding:12px;
-    margin-bottom:12px;
-  }
-
-  .detail-box h4{
-    margin:0 0 8px;
-    font-size:11px;
-    color:#667085;
-    text-transform:uppercase;
-    letter-spacing:.07em;
-  }
-
-  .detail-row{
-    display:flex;
-    justify-content:space-between;
-    gap:10px;
-    padding:7px 0;
-    border-bottom:1px solid #f1f5f9;
-    font-size:12px;
-  }
-
-  .detail-row:last-child{border-bottom:none;}
-  .detail-row span{color:#334155;font-weight:700;}
-  .detail-row strong{font-weight:900;white-space:nowrap;}
-
-  .platform-row{
-    background:#fff;
-    border:1px solid #edf1f6;
-    border-radius:18px;
-    padding:14px;
-    margin-bottom:10px;
-  }
-
-  .platform-row span{
-    display:block;
-    font-size:10px;
-    color:#667085;
-    text-transform:uppercase;
-    letter-spacing:.08em;
-    font-weight:900;
-    margin-bottom:6px;
-  }
-
-  .platform-row strong{
-    display:block;
-    font-size:18px;
-    font-weight:900;
-    letter-spacing:-.03em;
-  }
-
-  .platform-row small{
-    display:block;
-    margin-top:5px;
-    font-size:11px;
-    font-weight:800;
-  }
-
-  .up{color:#128044;}
-  .down{color:#be2633;}
-  .same{color:#64748b;}
-  .negative-text{color:#be2633;}
-
-  .empty-line{
-    color:#667085;
-    font-size:12px;
-    font-weight:700;
-    padding:6px 0;
-  }
-
-  .footer{
-    margin-top:18px;
-    text-align:center;
-    font-size:12px;
-    color:#667085;
-  }
-
-  @media print{
-    body{background:#fff;padding:0;}
-    .receipt-card{page-break-inside:avoid;}
-  }
+body{font-family:Arial;padding:20px;background:#f4f6fa;}
+.header{background:#102a56;color:#fff;padding:20px;border-radius:20px;}
+.profit-summary{background:#e8f8ee;border-radius:20px;padding:16px;margin:16px 0;}
+.profit-summary.red{background:#fee2e2;}
+.profit-row{display:flex;justify-content:space-between;padding:10px;border-radius:10px;background:#fff;margin-bottom:6px;}
+.negative-text{color:#be2633;}
+.receipt-card{background:#fff;padding:16px;border-radius:20px;margin-bottom:12px;}
+.hero-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+.hero-box{background:#f1f5f9;padding:12px;border-radius:12px;}
+.diff-box.positive{color:#128044;}
+.diff-box.negative{color:#be2633;}
+.bank-columns{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:10px;}
+.platform-row{background:#fff;padding:10px;border-radius:10px;margin-bottom:6px;}
 </style>
 </head>
 
 <body>
-  <div class="page">
-    <div class="header">
-      <div class="brand">Bank King</div>
-      <div class="period">
-        Relatório interno • ${formatDateBR(startDate)} até ${formatDateBR(endDate)}<br>
-        Gerado em ${new Date().toLocaleDateString("pt-BR")} às ${new Date().toLocaleTimeString("pt-BR", { hour:"2-digit", minute:"2-digit" })}
-      </div>
-    </div>
 
-    <div class="profit-summary">
-      <div class="profit-head">
-        <span>Lucro realizado</span>
-        <strong>${money(totalLucroRealizado)}</strong>
-      </div>
+<div class="header">
+  <h2>Bank King</h2>
+  <p>${formatDateBR(startDate)} até ${formatDateBR(endDate)}</p>
+</div>
 
-      <div class="profit-details">
-        ${lucroRows}
-      </div>
-    </div>
+<div class="profit-summary">
+  <strong>Lucro realizado: ${money(totalLucroRealizado)}</strong>
+  ${lucroRows.join("")}
+</div>
 
-    ${rows || `<div class="receipt-card">Nenhum fechamento encontrado nesse período.</div>`}
+<div class="profit-summary red">
+  <strong>Gastos operacionais: ${money(totalGastos)}</strong>
+  ${gastoRows.join("")}
+</div>
 
-    <div class="footer">Documento interno • Bank King</div>
-  </div>
+${rows}
+
 </body>
 </html>
 `;
