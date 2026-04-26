@@ -3404,7 +3404,7 @@ async function createInternalUser() {
     byId("historyModalBackdrop")?.addEventListener("click", () => byId("historyModal")?.classList.add("hidden"));
 
    byId("openPdfCustomBtn")?.addEventListener("click", async () => {
-  const allowed = await requireAdmin();
+  const allowed = await requireReportsAccess();
   if (!allowed) return;
 
   mainMenu?.classList.add("hidden");
@@ -3433,7 +3433,7 @@ byId("pdfRangeBackdrop")?.addEventListener("click", () => {
 });
 
 byId("confirmExportPdf")?.addEventListener("click", async () => {
-  const allowed = await requireAdmin();
+  const allowed = await requireReportsAccess();
   if (!allowed) return;
 
   const startDate = byId("pdfDateStart")?.value;
@@ -3497,7 +3497,7 @@ byId("confirmExportPdf")?.addEventListener("click", async () => {
 
 document.querySelectorAll("[data-report-range]").forEach((btn) => {
   btn.addEventListener("click", async () => {
-    const allowed = await requireAdmin();
+    const allowed = await requireReportsAccess();
     if (!allowed) return;
 
     const days = Number(btn.dataset.reportRange || 7);
@@ -3533,9 +3533,8 @@ document.querySelectorAll("[data-report-range]").forEach((btn) => {
 });
 
 byId("openRankingBtn")?.addEventListener("click", async () => {
-  const allowed = await requireAdmin();
+  const allowed = await requireReportsAccess();
   if (!allowed) return;
-
   mainMenu?.classList.add("hidden");
 
   const chartSection = byId("rankingChartSection");
