@@ -1604,34 +1604,96 @@
       return true;
     }
 
-    function applyPermissions(userData) {
-      const isAdmin = userData?.role === "admin";
-      const isOperator = userData?.role === "operador";
-      byId("adminOpenBtn")?.classList.toggle("hidden", !isAdmin);
-      byId("recalculateHistoryBtn")?.classList.toggle("hidden", !isAdmin);
-      byId("openRankingBtn")?.classList.toggle("hidden", !isAdmin);
-      byId("openPdfCustomBtn")?.classList.toggle("hidden", !isAdmin);
-      byId("menuHistoryBtn")?.classList.toggle("hidden", !isAdmin);
-      byId("rankingChartSection")?.classList.add("hidden");
-      byId("rankingTableSection")?.classList.add("hidden");
-      byId("adminPanel")?.classList.add("hidden");
-      document.querySelectorAll("[data-report-range]").forEach((btn) => btn.classList.toggle("hidden", !isAdmin));
-      byId("fecharTurno")?.classList.toggle("hidden", !(isAdmin || isOperator));
-      if (byId("activeUserRole")) byId("activeUserRole").textContent = isAdmin ? "ADMIN" : isOperator ? "OPERADOR" : "SEM PERMISSÃO";
-    }
+   function applyPermissions(userData) {
+  const isAdmin = userData?.role === "admin";
+  const isSupervisor = userData?.role === "supervisor";
+  const isOperator = userData?.role === "operador";
 
-    async function validateUserAccess(user) {
-      const snap = await getDoc(doc(db, "users", user.uid));
-      if (!snap.exists()) { alert("Usuário não autorizado."); await signOut(auth); return false; }
-      const data = snap.data();
-      if (data.status === "pending") { alert("Sua conta está aguardando aprovação do administrador."); await signOut(auth); return false; }
-      if (data.status === "blocked") { alert("Sua conta foi bloqueada."); await signOut(auth); return false; }
-      if (data.status !== "active") { alert("Usuário sem status ativo."); await signOut(auth); return false; }
-      if (data.role !== "admin" && data.role !== "operador") { alert("Usuário sem permissão definida."); await signOut(auth); return false; }
-      currentUserData = { uid: user.uid, email: user.email, ...data };
-      return true;
-    }
+  const canOperate = isAdmin || isSupervisor || isOperator;
+  const canViewReports = isAdmin || isSupervisor;
+  const canViewUsers = isAdmin || isSupervisor;
+  const canManage = isAdmin;
 
+  // Admin / Supervisor podem abrir painel de usuários
+  byId("adminOpenBtn")?.classList.toggle("hidden", !canViewUsers);
+
+  // Somente admin pode recalcular
+  byId("recalculateHistoryBtn")?.classList.toggle("hidden", !canManage);
+
+  // Admin / Supervisor podem ver ranking e relatórios
+  byId("openRankingBtn")?.classList.toggle("hidden", !canViewReports);
+  byId("openPdfCustomBtn")?.classList.toggle("hidden", !canViewReports);
+
+  // Se existir esse botão, admin/supervisor podem ver
+  byId("menuHistoryBtn")?.classList.toggle("hidden", !canViewReports);
+
+  // Sempre começa fechado
+  byId("rankingChartSection")?.classList.add("hidden");
+  byId("rankingTableSection")?.classList.add("hidden");
+  byId("adminPanel")?.classList.add("hidden");
+
+  // Botões de relatório rápido, caso existam
+  document.querySelectorAll("[data-report-range]").forEach((btn) => {
+    btn.classList.toggle("hidden", !canViewReports);
+  });
+
+  // Admin, supervisor e operador podem finalizar turno
+  byId("fecharTurno")?.classList.toggle("hidden", !canOperate);
+
+  if (byId("activeUserRole")) {
+    byId("activeUserRole").textContent =
+      isAdmin ? "ADMIN" :
+      isSupervisor ? "SUPERVISOR" :
+      isOperator ? "OPERADOR" :
+      "SEM PERMISSÃO";
+  }
+}
+
+async function validateUserAccess(user) {
+  const snap = await getDoc(doc(db, "users", user.uid));
+
+  if (!snap.exists()) {
+    alert("Usuário não autorizado.");
+    await signOut(auth);
+    return false;
+  }
+
+  const data = snap.data();
+
+  if (data.status === "pending") {
+    alert("Sua conta está aguardando aprovação do administrador.");
+    await signOut(auth);
+    return false;
+  }
+
+  if (data.status === "blocked") {
+    alert("Sua conta foi bloqueada.");
+    await signOut(auth);
+    return false;
+  }
+
+  if (data.status !== "active") {
+    alert("Usuário sem status ativo.");
+    await signOut(auth);
+    return false;
+  }
+
+  const allowedRoles = ["admin", "supervisor", "operador"];
+
+  if (!allowedRoles.includes(data.role)) {
+    alert("Usuário sem permissão definida.");
+    await signOut(auth);
+    return false;
+  }
+
+  currentUserData = {
+    uid: user.uid,
+    email: user.email,
+    ...data
+  };
+
+  return true;
+}
     function calcularSaldoBase(turno) {
       return Number(turno.reca || 0) + Number(turno.suprema || 0) * 400 + Number(turno.pppoker || 0) * 400 + Number(turno.buffalo || 0) + Number(turno.ganamos || 0) - Number(turno.pendentes || turno.pendentesTotal || 0);
     }
