@@ -2271,60 +2271,65 @@ async function saveTurn() {
       saldoLiquido
     };
 
-    let diff = 0;
+let diff = 0;
 
-    if (historyCache.length && !(editingTurnId || window.editingTurnId)) {
-      const previous = historyCache[0];
-      const previousSaldo = calcularSaldo(previous.turno || {});
-      diff = (saldoLiquido + saidasTotal) - previousSaldo;
-    }
+const idEmEdicao = editingTurnId || window.editingTurnId;
+const originalItem = idEmEdicao
+  ? historyCache.find(h => h.id === idEmEdicao)
+  : null;
 
-    const item = {
-      nomeOperador: nome,
-      operadorUid: userData.uid,
-      operadorEmail: userData.email,
-      fechamentoDate: turno.dataFechamento,
-      total: reca,
-      saldo: saldoLiquido,
-      currentSaldoTotal: saldoLiquido,
-      retiradaLucro: saidasTotal,
-      turnProfit: saidasTotal,
-      lucroRealizadoTotal,
-      gastosOperacionaisTotal,
-      diff,
-      bankVariation: diff,
-      turno,
-      submittedAt: Date.now()
-    };
+if (historyCache.length && !idEmEdicao) {
+  const previous = historyCache[0];
+  const previousSaldo = calcularSaldo(previous.turno || {});
+  diff = (saldoLiquido + saidasTotal) - previousSaldo;
+}
 
-    if (editingTurnId || window.editingTurnId) {
-      const idToUpdate = editingTurnId || window.editingTurnId;
+const item = {
+  nomeOperador: nome,
+  operadorUid: userData.uid,
+  operadorEmail: userData.email,
+  fechamentoDate: turno.dataFechamento,
+  total: reca,
+  saldo: saldoLiquido,
+  currentSaldoTotal: saldoLiquido,
+  retiradaLucro: saidasTotal,
+  turnProfit: saidasTotal,
+  lucroRealizadoTotal,
+  gastosOperacionaisTotal,
+  diff,
+  bankVariation: diff,
+  turno,
 
-      await updateDoc(doc(db, "history", idToUpdate), {
-        ...item,
-        editedAt: Date.now(),
-        editedBy: userData.email || userData.uid
-      });
+  // mantém a posição original no histórico quando for edição
+  submittedAt: originalItem?.submittedAt || Date.now()
+};
 
-      editingTurnId = null;
-      window.editingTurnId = null;
+if (idEmEdicao) {
+  await updateDoc(doc(db, "history", idEmEdicao), {
+    ...item,
+    editedAt: Date.now(),
+    editedBy: userData.email || userData.uid
+  });
 
-      await recalcAllHistory();
+  editingTurnId = null;
+  window.editingTurnId = null;
 
-      alert("Histórico atualizado com sucesso.");
-      location.reload();
-      return;
-    }
+  await recalcAllHistory();
 
-    await addDoc(collection(db, "history"), item);
+  alert("Histórico atualizado com sucesso.");
+  location.reload();
+  return;
+}
 
-    alert("Turno salvo");
-    location.reload();
+await addDoc(collection(db, "history"), item);
 
-  } catch (error) {
-    console.error("Erro ao salvar turno:", error);
-    alert(error.message || "Erro ao salvar turno.");
-  }
+alert("Turno salvo");
+location.reload();
+
+} catch (error) {
+  console.error("Erro ao salvar turno:", error);
+  alert(error.message || "Erro ao salvar turno.");
+}
 }
 
 function clearTurn(turno) {
