@@ -1979,7 +1979,156 @@ byId("deleteHistoryBtn")?.addEventListener("click", async () => {
       byId("historyModal")?.classList.remove("hidden");
     }
 
-    async function saveTurn() {
+let editingTurnId = null;
+
+function setInputValue(id, value) {
+  const input = byId(id);
+  if (!input) return;
+
+  const numberValue = Number(value || 0);
+
+  input.value = numberValue.toLocaleString("pt-BR", {
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2
+  });
+
+  if (input.dataset) {
+    input.dataset.raw = String(Math.round(numberValue * 100));
+  }
+}
+
+async function editTurn(id) {
+  const allowed = await requireAdmin();
+  if (!allowed) return;
+
+  const item = historyCache.find(h => h.id === id);
+
+  if (!item) {
+    alert("Histórico não encontrado.");
+    return;
+  }
+
+  const t = item.turno || {};
+
+  editingTurnId = id;
+  window.editingTurnId = id;
+
+  byId("t2_nome_operador").value = item.nomeOperador || "";
+  byId("t2_data_fechamento").value = item.fechamentoDate || t.dataFechamento || getTodayDateInput();
+
+  setInputValue("t2_banco", t.reca);
+  setInputValue("t2_buffalo", t.buffalo);
+  setInputValue("t2_ganamos", t.ganamos);
+  setInputValue("t2_cargas", t.cargaFichas);
+
+  byId("t2_suprema").value = Number(t.suprema || 0).toLocaleString("pt-BR", {
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2
+  });
+
+  byId("t2_pppoker").value = Number(t.pppoker || 0).toLocaleString("pt-BR", {
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2
+  });
+
+  const cargaPokerFichas = Number(t.cargaPoker || 0) / 400;
+
+  byId("t2_cargas_poker").value = cargaPokerFichas.toLocaleString("pt-BR", {
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2
+  });
+
+  const pendingList = byId("t2_pending_list");
+  const outflowList = byId("t2_dynamic_list");
+
+  if (pendingList) pendingList.innerHTML = "";
+  if (outflowList) outflowList.innerHTML = "";
+
+  (t.pendings || []).forEach(p => {
+    createPendingRow("t2");
+
+    const row = pendingList.lastElementChild;
+    const inputs = row.querySelectorAll("input");
+
+    inputs[0].value = p.name || "";
+    inputs[1].value = Number(p.value || 0).toLocaleString("pt-BR", {
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2
+    });
+  });
+
+  (t.outflows || []).forEach(o => {
+    createDynamicRow("t2");
+
+    const row = outflowList.lastElementChild;
+    const inputs = row.querySelectorAll("input");
+    const select = row.querySelector("select");
+
+    inputs[0].value = o.name || "";
+    inputs[1].value = Number(o.value || 0).toLocaleString("pt-BR", {
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2
+    });
+
+    if (select) {
+      select.value = o.type || "operacional";
+    }
+  });
+
+  byId("fecharTurno").innerHTML = `
+    <span class="bank-action-title">Salvar edição</span>
+    <span class="bank-action-sub">Atualizar turno</span>
+  `;
+
+  alert("Modo edição ativado. Altere os dados e clique em Salvar edição.");
+  window.scrollTo({ top: 0, behavior: "smooth" });
+}
+
+async function recalcAllHistory() {
+  const snap = await getDocs(collection(db, "history"));
+
+  const docs = snap.docs
+    .map(d => ({ id: d.id, ...d.data() }))
+    .sort((a, b) => {
+      const dateA =
+        a.submittedAt?.toDate?.()?.getTime?.() ||
+        Number(a.submittedAt) ||
+        new Date(a.fechamentoDate || a.turno?.dataFechamento || 0).getTime();
+
+      const dateB =
+        b.submittedAt?.toDate?.()?.getTime?.() ||
+        Number(b.submittedAt) ||
+        new Date(b.fechamentoDate || b.turno?.dataFechamento || 0).getTime();
+
+      return dateB - dateA;
+    });
+
+  for (let i = 0; i < docs.length; i++) {
+    const current = docs[i];
+    const previous = docs[i + 1];
+
+    const turnoAtual = current.turno || {};
+    const turnoAnterior = previous ? previous.turno || {} : null;
+
+    const b = getTurnoBreakdown(turnoAtual);
+
+    let diff = 0;
+
+    if (turnoAnterior) {
+      diff = calcularDiffReal(turnoAtual, turnoAnterior);
+    }
+
+    await updateDoc(doc(db, "history", current.id), {
+      saldo: b.caixa,
+      currentSaldoTotal: b.caixa,
+      diff,
+      bankVariation: diff,
+      recalculatedAt: Date.now()
+    });
+  }
+}
+
+async function saveTurn() {
   try {
     const userData = currentUserData || await getCurrentUserData();
 
@@ -1991,6 +2140,13 @@ byId("deleteHistoryBtn")?.addEventListener("click", async () => {
     if (userData.role !== "admin" && userData.role !== "operador") {
       alert("Acesso negado.");
       return;
+    }
+
+    if (editingTurnId || window.editingTurnId) {
+      if (userData.role !== "admin") {
+        alert("Somente ADMIN pode editar histórico.");
+        return;
+      }
     }
 
     const nome = byId("t2_nome_operador")?.value.trim();
@@ -2074,6 +2230,7 @@ byId("deleteHistoryBtn")?.addEventListener("click", async () => {
 
     const pendentesTotal = pendings.reduce((acc, item) => acc + Number(item.value || 0), 0);
     const saidasTotal = outflows.reduce((acc, item) => acc + Number(item.value || 0), 0);
+
     const lucroRealizadoTotal = outflows
       .filter(item => item.type === "lucro")
       .reduce((acc, item) => acc + Number(item.value || 0), 0);
@@ -2116,7 +2273,7 @@ byId("deleteHistoryBtn")?.addEventListener("click", async () => {
 
     let diff = 0;
 
-    if (historyCache.length) {
+    if (historyCache.length && !(editingTurnId || window.editingTurnId)) {
       const previous = historyCache[0];
       const previousSaldo = calcularSaldo(previous.turno || {});
       diff = (saldoLiquido + saidasTotal) - previousSaldo;
@@ -2140,6 +2297,25 @@ byId("deleteHistoryBtn")?.addEventListener("click", async () => {
       submittedAt: Date.now()
     };
 
+    if (editingTurnId || window.editingTurnId) {
+      const idToUpdate = editingTurnId || window.editingTurnId;
+
+      await updateDoc(doc(db, "history", idToUpdate), {
+        ...item,
+        editedAt: Date.now(),
+        editedBy: userData.email || userData.uid
+      });
+
+      editingTurnId = null;
+      window.editingTurnId = null;
+
+      await recalcAllHistory();
+
+      alert("Histórico atualizado com sucesso.");
+      location.reload();
+      return;
+    }
+
     await addDoc(collection(db, "history"), item);
 
     alert("Turno salvo");
@@ -2151,14 +2327,30 @@ byId("deleteHistoryBtn")?.addEventListener("click", async () => {
   }
 }
 
-    function clearTurn(turno) {
-      [`${turno}_nome_operador`,`${turno}_data_fechamento`,`${turno}_banco`,`${turno}_suprema`,`${turno}_pppoker`,`${turno}_buffalo`,`${turno}_ganamos`,`${turno}_cargas`,`${turno}_cargas_poker`].forEach((id) => { const el = byId(id); if (el) { el.value = ""; if (el.dataset) el.dataset.raw = ""; } });
-      byId(`${turno}_pending_list`).innerHTML = "";
-      byId(`${turno}_dynamic_list`).innerHTML = "";
-      render();
+function clearTurn(turno) {
+  [`${turno}_nome_operador`,`${turno}_data_fechamento`,`${turno}_banco`,`${turno}_suprema`,`${turno}_pppoker`,`${turno}_buffalo`,`${turno}_ganamos`,`${turno}_cargas`,`${turno}_cargas_poker`].forEach((id) => {
+    const el = byId(id);
+    if (el) {
+      el.value = "";
+      if (el.dataset) el.dataset.raw = "";
     }
+  });
 
-    function createPendingRow(turno) {
+  byId(`${turno}_pending_list`).innerHTML = "";
+  byId(`${turno}_dynamic_list`).innerHTML = "";
+
+  editingTurnId = null;
+  window.editingTurnId = null;
+
+  byId("fecharTurno").innerHTML = `
+    <span class="bank-action-title">Finalizar</span>
+    <span class="bank-action-sub">Salvar turno</span>
+  `;
+
+  render();
+}
+
+function createPendingRow(turno) {
   const list = byId(`${turno}_pending_list`);
   if (!list) return;
 
@@ -2191,6 +2383,7 @@ function createDynamicRow(turno) {
     <input type="text" inputmode="numeric" placeholder="0,00">
 
     <select class="outflow-type">
+      <option value="">Tipo da saída</option>
       <option value="operacional">Gasto operacional</option>
       <option value="lucro">Retirada</option>
     </select>
