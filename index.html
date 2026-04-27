@@ -4291,6 +4291,27 @@ document.addEventListener("DOMContentLoaded", () => {
 </script>
 
 <script>
+let deferredPrompt;
+
+window.addEventListener("beforeinstallprompt", (e) => {
+  e.preventDefault();
+  deferredPrompt = e;
+
+  const btn = document.getElementById("installAppBtn");
+  if (btn) btn.style.display = "block";
+});
+
+document.addEventListener("click", async (e) => {
+  if (e.target?.id !== "installAppBtn") return;
+  if (!deferredPrompt) return;
+
+  deferredPrompt.prompt();
+  await deferredPrompt.userChoice;
+
+  deferredPrompt = null;
+  e.target.style.display = "none";
+});
+
 if ("serviceWorker" in navigator) {
   window.addEventListener("load", () => {
     navigator.serviceWorker.register("/service-worker.js")
@@ -4299,6 +4320,22 @@ if ("serviceWorker" in navigator) {
   });
 }
 </script>
+
+<button id="installAppBtn" style="
+  position:fixed;
+  bottom:20px;
+  right:20px;
+  z-index:9999;
+  padding:14px 18px;
+  border-radius:16px;
+  background:#06152e;
+  color:#fff;
+  font-weight:900;
+  border:none;
+  display:none;
+">
+  Instalar App
+</button>
 
 </body>
 </html>
