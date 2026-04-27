@@ -1474,6 +1474,107 @@
     font-size:12px;
   }
 }
+
+/* ===== META MENSAL (ESTILO BANCO) ===== */
+
+#monthlyGoalCard{
+  border-radius:30px!important;
+  background:rgba(255,255,255,.94)!important;
+  border:1px solid rgba(10,16,32,.06)!important;
+  box-shadow:0 18px 40px rgba(10,16,32,.06)!important;
+}
+
+.goal-top{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:16px;
+}
+
+.goal-label{
+  font-size:11px;
+  text-transform:uppercase;
+  letter-spacing:.08em;
+  color:#667085;
+  font-weight:900;
+  margin-bottom:6px;
+}
+
+.goal-value{
+  font-size:28px;
+  font-weight:950;
+  letter-spacing:-.04em;
+  color:#0a1020;
+}
+
+/* ===== BARRA ===== */
+
+.goal-bar-wrapper{
+  margin-top:18px;
+}
+
+.goal-bar-track{
+  width:100%;
+  height:14px;
+  border-radius:999px;
+  background:#edf1f6;
+  overflow:hidden;
+  box-shadow:inset 0 1px 2px rgba(10,16,32,.06);
+}
+
+.goal-bar-fill{
+  height:100%;
+  width:0%;
+  border-radius:999px;
+  background:linear-gradient(90deg,#06152e,#2f6eea);
+  transition:width .6s ease;
+}
+
+/* ===== STATUS ===== */
+
+.goal-status{
+  margin-top:14px;
+  font-size:13px;
+  font-weight:900;
+  color:#667085;
+}
+
+/* ===== QUANDO ATINGE META ===== */
+
+.goal-bar-fill.success{
+  background:linear-gradient(90deg,#128044,#22c55e);
+}
+
+.goal-bar-fill.danger{
+  background:linear-gradient(90deg,#be2633,#ff4d4f);
+}
+
+/* ===== MOBILE ===== */
+
+@media(max-width:600px){
+
+  #monthlyGoalCard{
+    border-radius:24px!important;
+  }
+
+  .goal-value{
+    font-size:22px;
+  }
+
+  .goal-top{
+    flex-direction:column;
+    align-items:flex-start;
+    gap:10px;
+  }
+
+  .goal-bar-track{
+    height:12px;
+  }
+
+  .goal-status{
+    font-size:12px;
+  }
+}
   
   </style>
 </head>
@@ -1554,6 +1655,41 @@
         </div>
         <button id="logoutBtn" class="logout-btn" type="button">Sair</button>
       </section>
+
+      <section id="monthlyGoalCard" class="section-card hidden">
+
+  <div class="section-head">
+    Meta mensal
+  </div>
+
+  <div class="section-body">
+
+    <div class="goal-top">
+      <div>
+        <div class="goal-label">Realizado</div>
+        <div id="goalCurrent" class="goal-value">$ 0,00</div>
+      </div>
+
+      <div>
+        <div class="goal-label">Meta</div>
+        <div id="goalTarget" class="goal-value">$ 40.000.000</div>
+      </div>
+    </div>
+
+    <!-- BARRA -->
+    <div class="goal-bar-wrapper">
+      <div class="goal-bar-track">
+        <div id="goalBarFill" class="goal-bar-fill"></div>
+      </div>
+    </div>
+
+    <!-- STATUS -->
+    <div id="goalStatus" class="goal-status">
+      Carregando...
+    </div>
+
+  </div>
+</section>
 
       <section class="balance-card"><div><div class="balance-label">Saldo Reca</div><div id="bankValue" class="balance-value">$ 0,00</div></div></section>
 
@@ -2049,6 +2185,76 @@ function renderRanking(range = rankingRange) {
       byId("bankValue").textContent = balanceVisible ? money(lastReca) : "Saldo oculto";
     }
 
+const MONTHLY_GOAL_TARGET = 40000000;
+
+function renderMonthlyGoalCard() {
+  const card = byId("monthlyGoalCard");
+  if (!card) return;
+
+  const canView =
+    currentUserData?.role === "admin" ||
+    currentUserData?.role === "supervisor";
+
+  card.classList.toggle("hidden", !canView);
+
+  if (!canView) return;
+
+  const now = new Date();
+  const currentYear = now.getFullYear();
+  const currentMonth = now.getMonth();
+
+  let totalRealizado = 0;
+
+  historyCache.forEach((item) => {
+    const t = item.turno || {};
+    const dateStr = item.fechamentoDate || t.dataFechamento;
+
+    if (!dateStr) return;
+
+    const itemDate = new Date(`${dateStr}T12:00:00`);
+
+    if (
+      itemDate.getFullYear() !== currentYear ||
+      itemDate.getMonth() !== currentMonth
+    ) {
+      return;
+    }
+
+    (t.outflows || []).forEach((o) => {
+      if (o.type === "lucro") {
+        totalRealizado += Number(o.value || 0);
+      }
+    });
+  });
+
+  const percent = Math.min((totalRealizado / MONTHLY_GOAL_TARGET) * 100, 100);
+  const restante = Math.max(MONTHLY_GOAL_TARGET - totalRealizado, 0);
+
+  byId("goalCurrent").textContent = money(totalRealizado);
+  byId("goalTarget").textContent = money(MONTHLY_GOAL_TARGET);
+
+  const fill = byId("goalBarFill");
+  const status = byId("goalStatus");
+
+  if (fill) {
+    fill.style.width = `${percent}%`;
+    fill.classList.remove("success", "danger");
+
+    if (percent >= 100) {
+      fill.classList.add("success");
+    } else if (percent < 35) {
+      fill.classList.add("danger");
+    }
+  }
+
+  if (status) {
+    status.textContent =
+      percent >= 100
+        ? `Meta batida • ${percent.toFixed(1)}% realizado`
+        : `Faltam ${money(restante)} • ${percent.toFixed(1)}% realizado`;
+  }
+}
+    
     function render() { renderTopPreviousCards(); renderCompare(); renderRanking(); renderRankingTable(); }
 
     function renderHistory() {
@@ -2591,7 +2797,7 @@ location.reload();
 }
 }
 
-function clearTurn(turno) {
+function clearTurn(turno) {renderTopPreviousCards
   [`${turno}_nome_operador`,`${turno}_data_fechamento`,`${turno}_banco`,`${turno}_suprema`,`${turno}_pppoker`,`${turno}_buffalo`,`${turno}_ganamos`,`${turno}_cargas`,`${turno}_cargas_poker`].forEach((id) => {
     const el = byId(id);
     if (el) {
