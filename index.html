@@ -1347,7 +1347,134 @@
     width:100%!important;
   }
 }
-    
+
+/* ===== RANKING HORIZONTAL PREMIUM ===== */
+
+.ranking-simple-list{
+  display:grid!important;
+  gap:0!important;
+  background:#fff;
+  border-radius:26px;
+  overflow:hidden;
+}
+
+.ranking-bar-card{
+  display:grid;
+  grid-template-columns:48px 1fr 150px;
+  gap:18px;
+  align-items:center;
+  padding:20px 22px;
+  border-bottom:1px solid rgba(10,16,32,.07);
+}
+
+.ranking-bar-card:last-child{
+  border-bottom:none;
+}
+
+.ranking-bar-pos{
+  font-size:24px;
+  font-weight:950;
+  color:#0a1020;
+  text-align:center;
+}
+
+.ranking-bar-info{
+  display:grid;
+  gap:10px;
+  min-width:0;
+}
+
+.ranking-bar-top{
+  display:flex;
+  align-items:baseline;
+  gap:8px;
+  flex-wrap:wrap;
+}
+
+.ranking-bar-top strong{
+  font-size:17px;
+  font-weight:950;
+  color:#0a1020;
+}
+
+.ranking-bar-top span{
+  font-size:13px;
+  color:#667085;
+  font-weight:800;
+}
+
+.ranking-bar-track{
+  width:100%;
+  height:14px;
+  border-radius:999px;
+  background:#edf1f6;
+  overflow:hidden;
+  box-shadow:inset 0 1px 2px rgba(10,16,32,.06);
+}
+
+.ranking-bar-fill{
+  height:100%;
+  border-radius:999px;
+  transition:width .35s ease;
+}
+
+.ranking-bar-fill.negative{
+  background:linear-gradient(90deg,#be2633,#ff4757);
+}
+
+.ranking-bar-fill.positive{
+  background:linear-gradient(90deg,#128044,#24c36b);
+}
+
+.ranking-bar-fill.neutral{
+  background:#94a3b8;
+}
+
+.ranking-bar-value{
+  font-size:16px;
+  font-weight:950;
+  text-align:right;
+  white-space:nowrap;
+}
+
+.ranking-bar-value.negative{
+  color:#be2633;
+}
+
+.ranking-bar-value.positive{
+  color:#128044;
+}
+
+.ranking-bar-value.neutral{
+  color:#64748b;
+}
+
+@media(max-width:700px){
+  .ranking-bar-card{
+    grid-template-columns:34px 1fr;
+    gap:12px;
+    padding:16px;
+  }
+
+  .ranking-bar-value{
+    grid-column:2;
+    text-align:left;
+    font-size:14px;
+  }
+
+  .ranking-bar-pos{
+    font-size:20px;
+  }
+
+  .ranking-bar-top strong{
+    font-size:15px;
+  }
+
+  .ranking-bar-top span{
+    font-size:12px;
+  }
+}
+  
   </style>
 </head>
 <body>
@@ -1816,27 +1943,45 @@ function renderRanking(range = rankingRange) {
     ranking[nome].saidas += saidas;
   });
 
-  const rows = Object.entries(ranking)
-    .sort((a, b) => b[1].diff - a[1].diff)
-    .map(([nome, r], index) => {
-      const positive = r.diff >= 0;
+  const list = Object.entries(ranking)
+    .map(([nome, r]) => ({
+      nome,
+      ...r,
+      absDiff: Math.abs(r.diff)
+    }))
+    .sort((a, b) => b.absDiff - a.absDiff);
 
-      return `
-        <div class="ranking-simple-card">
-          <div class="ranking-position">${index + 1}</div>
+  const maxDiff = Math.max(...list.map(r => r.absDiff), 1);
 
-          <div class="ranking-info">
-            <strong>${escapeHtml(nome)}</strong>
+  const rows = list.map((r, index) => {
+    const percent = Math.max((r.absDiff / maxDiff) * 100, 4);
+    const isNegative = r.diff < 0;
+    const isPositive = r.diff > 0;
+
+    return `
+      <div class="ranking-bar-card">
+        <div class="ranking-bar-pos">${index + 1}</div>
+
+        <div class="ranking-bar-info">
+          <div class="ranking-bar-top">
+            <strong>${escapeHtml(r.nome)}</strong>
             <span>${r.qtd} fechamento${r.qtd > 1 ? "s" : ""} • Saídas ${money(r.saidas)}</span>
           </div>
 
-          <div class="ranking-value ${positive ? "positive" : "negative"}">
-            ${positive ? "+" : "-"}${money(Math.abs(r.diff))}
+          <div class="ranking-bar-track">
+            <div 
+              class="ranking-bar-fill ${isNegative ? "negative" : isPositive ? "positive" : "neutral"}" 
+              style="width:${percent}%"
+            ></div>
           </div>
         </div>
-      `;
-    })
-    .join("");
+
+        <div class="ranking-bar-value ${isNegative ? "negative" : isPositive ? "positive" : "neutral"}">
+          ${isPositive ? "+" : isNegative ? "-" : ""}${money(r.absDiff)}
+        </div>
+      </div>
+    `;
+  }).join("");
 
   container.innerHTML = rows || `<div class="ranking-empty">Sem dados para este período.</div>`;
 
