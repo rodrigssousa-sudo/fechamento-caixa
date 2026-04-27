@@ -1614,6 +1614,11 @@
   background:linear-gradient(90deg,#128044,#22c55e,#7ee787)!important;
   transition:width .6s ease!important;
 }
+
+  #goalBarFill{
+  width: 0%;
+  min-width: 6px; /* 👈 evita sumir completamente */
+}
   
   </style>
 </head>
@@ -2281,7 +2286,9 @@ function renderMonthlyGoalCard() {
   const status = byId("goalStatus");
 
   if (fill) {
-    fill.style.width = `${percent}%`;
+    fill.style.width = "0%";
+fill.offsetHeight;
+fill.style.width = `${percent}%`;
     fill.classList.remove("success", "danger");
 
     if (totalRealizado > 0) {
