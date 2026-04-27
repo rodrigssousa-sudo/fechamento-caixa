@@ -1647,189 +1647,6 @@
   background:linear-gradient(90deg,#16a34a,#22c55e,#4ade80) !important;
   border-radius:999px !important;
 }
-
-/* CONTAINER DO MENU */
-.admin-menu{
-  backdrop-filter: blur(20px);
-  background: rgba(255,255,255,0.75);
-  border-radius: 26px;
-  padding: 14px;
-  box-shadow: 0 20px 60px rgba(0,0,0,0.12);
-}
-
-/* CADA ITEM */
-.admin-menu-item{
-  display:flex;
-  align-items:center;
-  gap:14px;
-  padding:16px 18px;
-  border-radius:18px;
-  font-weight:600;
-  font-size:16px;
-  color:#0f172a;
-  cursor:pointer;
-  transition: all .25s ease;
-
-  background: linear-gradient(180deg, #ffffff, #f3f4f6);
-  border:1px solid rgba(0,0,0,0.04);
-}
-
-/* HOVER */
-.admin-menu-item:hover{
-  transform: translateY(-2px);
-  box-shadow: 0 10px 25px rgba(0,0,0,0.08);
-}
-
-/* CLICK */
-.admin-menu-item:active{
-  transform: scale(0.98);
-}
-
-/* BOLINHA (ICONE) */
-.admin-menu-dot{
-  width:12px;
-  height:12px;
-  border-radius:50%;
-  background: linear-gradient(135deg,#d4af37,#facc15);
-  box-shadow: 0 0 10px rgba(212,175,55,.5);
-}
-
-/* VARIAÇÃO POR TIPO (opcional) */
-.admin-menu-item.pdf .admin-menu-dot{
-  background: linear-gradient(135deg,#3b82f6,#60a5fa);
-}
-
-.admin-menu-item.rank .admin-menu-dot{
-  background: linear-gradient(135deg,#22c55e,#4ade80);
-}
-
-.admin-menu-item.warning .admin-menu-dot{
-  background: linear-gradient(135deg,#ef4444,#f87171);
-}
-
-  /* ===== RANKING HORIZONTAL PREMIUM ===== */
-
-.ranking-simple-list{
-  display:grid!important;
-  gap:0!important;
-  background:#fff;
-  border-radius:26px;
-  overflow:hidden;
-}
-
-.ranking-bar-card{
-  display:grid;
-  grid-template-columns:48px 1fr;
-  gap:18px;
-  align-items:center;
-  padding:20px 22px;
-  border-bottom:1px solid rgba(10,16,32,.07);
-}
-
-.ranking-bar-card:last-child{
-  border-bottom:none;
-}
-
-.ranking-bar-pos{
-  font-size:24px;
-  font-weight:950;
-  color:#0a1020;
-  text-align:center;
-}
-
-.ranking-bar-info{
-  display:grid;
-  gap:10px;
-  min-width:0;
-}
-
-.ranking-bar-top{
-  display:flex;
-  align-items:baseline;
-  gap:8px;
-  flex-wrap:wrap;
-}
-
-.ranking-bar-top strong{
-  font-size:17px;
-  font-weight:950;
-  color:#0a1020;
-}
-
-.ranking-bar-top span{
-  font-size:13px;
-  color:#667085;
-  font-weight:800;
-}
-
-.ranking-bar-track{
-  width:100%;
-  height:14px;
-  border-radius:999px;
-  background:#edf1f6;
-  overflow:hidden;
-  box-shadow:inset 0 1px 2px rgba(10,16,32,.06);
-}
-
-.ranking-bar-fill{
-  height:100%;
-  border-radius:999px;
-  transition:width .35s ease;
-}
-
-.ranking-bar-fill.negative{
-  background:linear-gradient(90deg,#be2633,#ff4757);
-}
-
-.ranking-bar-fill.positive{
-  background:linear-gradient(90deg,#128044,#24c36b);
-}
-
-.ranking-bar-fill.neutral{
-  background:#94a3b8;
-}
-
-.ranking-bar-value{
-  font-size:18px;
-  font-weight:950;
-  white-space:nowrap;
-}
-
-.ranking-bar-value.negative{
-  color:#be2633;
-}
-
-.ranking-bar-value.positive{
-  color:#128044;
-}
-
-.ranking-bar-value.neutral{
-  color:#64748b;
-}
-
-@media(max-width:700px){
-  .ranking-bar-card{
-    grid-template-columns:34px 1fr;
-    gap:12px;
-    padding:16px;
-  }
-
-  .ranking-bar-pos{
-    font-size:20px;
-  }
-
-  .ranking-bar-top strong{
-    font-size:15px;
-  }
-
-  .ranking-bar-top span{
-    font-size:12px;
-  }
-
-  .ranking-bar-value{
-    font-size:15px;
-  }
-}
   
   </style>
 </head>
@@ -2012,28 +1829,11 @@
       <section class="section-card"><div class="section-head" style="display:flex;justify-content:space-between;align-items:center;"><span>Histórico</span><button id="toggleHistoryBtn" class="balance-toggle" style="background:#f8fafc;color:var(--text);border:1px solid rgba(10,16,32,.08);" type="button">Ver</button></div><div class="section-body"><div id="historyList" class="history-list hidden"></div></div></section>
     </main>
 
-  <div id="mainMenu" class="floating-menu admin-menu hidden">
-
-  <button class="admin-menu-item" type="button" id="adminOpenBtn">
-    <span class="admin-menu-dot"></span>
-    <span>Admin</span>
-  </button>
-
-  <button class="admin-menu-item pdf" type="button" id="openPdfCustomBtn">
-    <span class="admin-menu-dot"></span>
-    <span>Relatórios PDF</span>
-  </button>
-
-  <button class="admin-menu-item rank" type="button" id="openRankingBtn">
-    <span class="admin-menu-dot"></span>
-    <span>Ranking operadores</span>
-  </button>
-
-  <button class="admin-menu-item warning" type="button" id="recalculateHistoryBtn">
-    <span class="admin-menu-dot"></span>
-    <span>Recalcular histórico</span>
-  </button>
-
+   <div id="mainMenu" class="floating-menu hidden">
+  <button class="menu-item" type="button" id="adminOpenBtn">Admin</button>
+  <button class="menu-item" type="button" id="openPdfCustomBtn">Relatórios PDF</button>
+  <button class="menu-item" type="button" id="openRankingBtn">Ranking operadores</button>
+  <button class="menu-item" type="button" id="recalculateHistoryBtn">Recalcular histórico</button>
 </div>
   </div>
 
@@ -2319,23 +2119,25 @@ function renderRanking(range = rankingRange) {
 
     const nome = item.nomeOperador || "Sem nome";
     const diff = calcularDiffReal(item.turno || {}, previousItem.turno || {});
+    const saidas = Number(item.turno?.saidasTotal || item.turno?.saidas || 0);
 
     if (!ranking[nome]) {
       ranking[nome] = {
         qtd: 0,
-        diff: 0
+        diff: 0,
+        saidas: 0
       };
     }
 
     ranking[nome].qtd += 1;
     ranking[nome].diff += diff;
+    ranking[nome].saidas += saidas;
   });
 
   const list = Object.entries(ranking)
     .map(([nome, r]) => ({
       nome,
-      qtd: r.qtd,
-      diff: r.diff,
+      ...r,
       absDiff: Math.abs(r.diff)
     }))
     .sort((a, b) => b.absDiff - a.absDiff);
@@ -2354,25 +2156,26 @@ function renderRanking(range = rankingRange) {
         <div class="ranking-bar-info">
           <div class="ranking-bar-top">
             <strong>${escapeHtml(r.nome)}</strong>
-            <span>${r.qtd} fechamento${r.qtd > 1 ? "s" : ""}</span>
+            <span style="opacity:.6; font-weight:600;">   ${r.qtd} fechamento${r.qtd > 1 ? "s" : ""} </span>
           </div>
 
           <div class="ranking-bar-track">
             <div 
-              class="ranking-bar-fill ${isNegative ? "negative" : isPositive ? "positive" : "neutral"}"
+              class="ranking-bar-fill ${isNegative ? "negative" : isPositive ? "positive" : "neutral"}" 
               style="width:${percent}%"
             ></div>
           </div>
+        </div>
 
-          <div class="ranking-bar-value ${isNegative ? "negative" : isPositive ? "positive" : "neutral"}">
-            ${isPositive ? "+" : isNegative ? "-" : ""}${money(r.absDiff)}
-          </div>
+        <div class="ranking-bar-value ${isNegative ? "negative" : isPositive ? "positive" : "neutral"}">
+          ${isPositive ? "+" : isNegative ? "-" : ""}${money(r.absDiff)}
         </div>
       </div>
     `;
   }).join("");
 
   container.innerHTML = rows || `<div class="ranking-empty">Sem dados para este período.</div>`;
+
 }
 
     function renderRankingTable() {
