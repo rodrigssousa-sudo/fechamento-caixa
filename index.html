@@ -2181,7 +2181,6 @@ function renderMonthlyGoalCard() {
     currentUserData?.role === "supervisor";
 
   card.classList.toggle("hidden", !canView);
-
   if (!canView) return;
 
   const now = new Date();
@@ -2193,7 +2192,6 @@ function renderMonthlyGoalCard() {
   historyCache.forEach((item) => {
     const t = item.turno || {};
     const dateStr = item.fechamentoDate || t.dataFechamento;
-
     if (!dateStr) return;
 
     const itemDate = new Date(`${dateStr}T12:00:00`);
@@ -2201,21 +2199,35 @@ function renderMonthlyGoalCard() {
     if (
       itemDate.getFullYear() !== currentYear ||
       itemDate.getMonth() !== currentMonth
-    ) {
-      return;
+    ) return;
+
+    let totalDoTurno = 0;
+
+    (t.outflows || []).forEach((o) => {
+      const tipo = String(o.type || "")
+        .toLowerCase()
+        .normalize("NFD")
+        .replace(/[\u0300-\u036f]/g, "");
+
+      if (
+        tipo === "lucro" ||
+        tipo === "retirada" ||
+        tipo === "retiradas"
+      ) {
+        totalDoTurno += Number(o.value || 0);
+      }
+    });
+
+    // fallback para fechamentos antigos
+    if (!totalDoTurno) {
+      totalDoTurno += Number(
+        t.lucroRealizadoTotal ||
+        item.lucroRealizadoTotal ||
+        0
+      );
     }
 
-  (t.outflows || []).forEach((o) => {
-  const tipo = String(o.type || "").toLowerCase();
-
-  if (
-    tipo === "lucro" ||
-    tipo === "retirada" ||
-    tipo === "retiradas"
-  ) {
-    totalRealizado += Number(o.value || 0);
-  }
-});
+    totalRealizado += totalDoTurno;
   });
 
   const percent = Math.min((totalRealizado / MONTHLY_GOAL_TARGET) * 100, 100);
@@ -2228,11 +2240,8 @@ function renderMonthlyGoalCard() {
     fill.style.width = `${percent}%`;
     fill.classList.remove("success", "danger");
 
-    if (percent >= 100) {
-      fill.classList.add("success");
-    } else if (percent < 35) {
-      fill.classList.add("danger");
-    }
+    if (percent >= 100) fill.classList.add("success");
+    else if (percent < 35) fill.classList.add("danger");
   }
 
   if (status) {
