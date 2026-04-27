@@ -2199,7 +2199,9 @@ function renderMonthlyGoalCard() {
     if (
       itemDate.getFullYear() !== currentYear ||
       itemDate.getMonth() !== currentMonth
-    ) return;
+    ) {
+      return;
+    }
 
     let totalDoTurno = 0;
 
@@ -2218,7 +2220,6 @@ function renderMonthlyGoalCard() {
       }
     });
 
-    // fallback para fechamentos antigos
     if (!totalDoTurno) {
       totalDoTurno += Number(
         t.lucroRealizadoTotal ||
@@ -2240,24 +2241,21 @@ function renderMonthlyGoalCard() {
     fill.style.width = `${percent}%`;
     fill.classList.remove("success", "danger");
 
-   fill.classList.remove("success", "danger");
+    if (totalRealizado > 0) {
+      fill.classList.add("success");
+    }
 
-// lucro sempre positivo = bom
-if (totalRealizado > 0) {
-  fill.classList.add("success");
-}
-
-// opcional: só fica vermelho se for negativo (prejuízo)
-if (totalRealizado < 0) {
-  fill.classList.add("danger");
-}
+    if (totalRealizado < 0) {
+      fill.classList.add("danger");
+    }
   }
 
- if (status) {
-  if (percent >= 100) {
-    status.textContent = `Meta batida 🔥 • ${percent.toFixed(0)}%`;
-  } else {
-    status.textContent = `${percent.toFixed(0)}% concluído • faltam ${money(restante)}`;
+  if (status) {
+    if (percent >= 100) {
+      status.textContent = `Meta batida 🔥 • ${percent.toFixed(0)}%`;
+    } else {
+      status.textContent = `${percent.toFixed(0)}% concluído • faltam ${money(restante)}`;
+    }
   }
 }
     
