@@ -2221,9 +2221,6 @@ function renderMonthlyGoalCard() {
   const percent = Math.min((totalRealizado / MONTHLY_GOAL_TARGET) * 100, 100);
   const restante = Math.max(MONTHLY_GOAL_TARGET - totalRealizado, 0);
 
-  byId("goalCurrent").textContent = money(totalRealizado);
-  byId("goalTarget").textContent = money(MONTHLY_GOAL_TARGET);
-
   const fill = byId("goalBarFill");
   const status = byId("goalStatus");
 
