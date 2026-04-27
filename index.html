@@ -4105,8 +4105,31 @@ byId("adminOpenBtn")?.addEventListener("click", async () => {
   }
 });
 
+function enableSmartMoneyInput(id) {
+  const input = document.getElementById(id);
+  if (!input) return;
+
+  input.addEventListener("focus", () => {
+    setTimeout(() => input.select(), 50);
+  });
+
+  input.addEventListener("click", () => {
+    input.select();
+  });
+}
+
 /* ✅ CRIAR USUÁRIO INTERNO PELO PAINEL ADMIN */
 document.addEventListener("DOMContentLoaded", () => {
+
+  [
+    "t2_banco",
+    "t2_suprema",
+    "t2_pppoker",
+    "t2_buffalo",
+    "t2_ganamos",
+    "t2_cargas",
+    "t2_cargas_poker"
+  ].forEach(enableSmartMoneyInput);
 
   byId("adminCreateUserBtn")?.addEventListener("click", createInternalUser);
 
@@ -4120,7 +4143,7 @@ document.addEventListener("DOMContentLoaded", () => {
   initAuthEvents();
 
 });
+
   </script>
 </body>
 </html>
-
