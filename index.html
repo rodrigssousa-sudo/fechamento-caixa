@@ -2135,11 +2135,13 @@
 
     async function requireAdmin() {
       const allowed = await isCurrentUserAdmin();
-if (!allowed) {
-  showToast("Acesso permitido apenas para admin", "error");
-  return false;
-}
-return true;
+      if (!allowed) {
+        alert("Acesso permitido apenas para admin.");
+        return false;
+      }
+      return true;
+    }
+
    function applyPermissions(userData) {
   const isAdmin = userData?.role === "admin";
   const isSupervisor = userData?.role === "supervisor";
@@ -2188,20 +2190,19 @@ return true;
 async function validateUserAccess(user) {
   const snap = await getDoc(doc(db, "users", user.uid));
 
-if (!snap.exists()) {
-  showToast("Usuário não autorizado", "error");
-  await signOut(auth);
-  return false;
-}
+  if (!snap.exists()) {
+    alert("Usuário não autorizado.");
+    await signOut(auth);
+    return false;
+  }
+
   const data = snap.data();
 
   if (data.status === "pending") {
-  showToast("Conta aguardando aprovação do administrador", "error");
-  setTimeout(async () => {
+    alert("Sua conta está aguardando aprovação do administrador.");
     await signOut(auth);
-  }, 1200);
-  return false;
-}
+    return false;
+  }
 
   if (data.status === "blocked") {
     alert("Sua conta foi bloqueada.");
@@ -2217,15 +2218,12 @@ if (!snap.exists()) {
 
   const allowedRoles = ["admin", "supervisor", "operador"];
 
-if (!allowedRoles.includes(data.role)) {
-  showToast("Usuário sem permissão definida", "error");
-
-  setTimeout(async () => {
+  if (!allowedRoles.includes(data.role)) {
+    alert("Usuário sem permissão definida.");
     await signOut(auth);
-  }, 1200);
+    return false;
+  }
 
-  return false;
-}
   currentUserData = {
     uid: user.uid,
     email: user.email,
@@ -2703,12 +2701,13 @@ async function requireReportsAccess() {
     data?.role === "admin" ||
     data?.role === "supervisor";
 
-if (!allowed) {
-  showToast("Acesso permitido apenas para administradores ou supervisores", "error");
-  return false;
-}
+  if (!allowed) {
+    alert("Acesso permitido apenas para administradores ou supervisores.");
+    return false;
+  }
 
-return true;
+  return true;
+}
 
 async function editTurn(id) {
   const allowed = await requireAdmin();
@@ -2793,7 +2792,7 @@ async function editTurn(id) {
     <span class="bank-action-sub">Atualizar turno</span>
   `;
 
-  showToast("Modo edição ativado. Altere os dados e clique em Salvar edição.", "success");
+  alert("Modo edição ativado. Altere os dados e clique em Salvar edição.");
   window.scrollTo({ top: 0, behavior: "smooth" });
 }
 
@@ -2872,11 +2871,11 @@ setFinalizarLoading(
 
     const nome = byId("t2_nome_operador")?.value.trim();
 
-if (!nome) {
-  showToast("Informe o nome do operador", "error");
-  byId("t2_nome_operador")?.focus(); // já joga o cursor pro campo
-  return;
-}
+    if (!nome) {
+      alert("Operador obrigatório");
+      return;
+    }
+
     const valMoney = (id) => parseMoney(byId(id)?.value || "");
     const valFicha = (id) => parseFicha(byId(id)?.value || "");
 
@@ -3706,49 +3705,6 @@ function buildPremiumBankReceiptPdf(startDate, endDate) {
     .print-btn{display:none!important;}
     .receipt-card{page-break-inside:avoid;}
   }
-
-.ck-toast{
-  position:fixed;
-  left:50%;
-  bottom:26px;
-  transform:translateX(-50%) translateY(20px);
-  z-index:99999;
-
-  max-width:90vw;
-  padding:14px 18px;
-
-  border-radius:18px;
-  font-size:14px;
-  font-weight:900;
-  letter-spacing:-.02em;
-
-  color:#fff;
-
-  background:linear-gradient(135deg,#06152e,#102a56);
-
-  box-shadow:
-    0 18px 45px rgba(10,16,32,.25),
-    inset 0 1px 0 rgba(255,255,255,.15);
-
-  opacity:0;
-  transition:all .25s ease;
-}
-
-/* aparecer */
-.ck-toast.show{
-  opacity:1;
-  transform:translateX(-50%) translateY(0);
-}
-
-/* tipos */
-.ck-toast.success{
-  background:linear-gradient(135deg,#128044,#22c55e);
-}
-
-.ck-toast.error{
-  background:linear-gradient(135deg,#be2633,#ff4d4f);
-}
-
 </style>
 </head>
 
@@ -4142,9 +4098,9 @@ byId("confirmExportPdf")?.addEventListener("click", async () => {
   const endDate = byId("pdfDateEnd")?.value;
 
   if (!startDate || !endDate) {
-  showToast("Selecione data inicial e final", "error");
-  return;
-}
+    alert("Selecione data inicial e final.");
+    return;
+  }
 
   const html = buildPremiumBankReceiptPdf(startDate, endDate);
 
@@ -4255,25 +4211,66 @@ byId("openRankingBtn")?.addEventListener("click", async () => {
   }
 });
 
-function showToast(message, type = "success") {
-  const toast = document.createElement("div");
+byId("adminOpenBtn")?.addEventListener("click", async () => {
+  const allowed = await requireAdmin();
+  if (!allowed) return;
 
-  toast.className = `ck-toast ${type}`;
-  toast.textContent = message;
+  mainMenu?.classList.add("hidden");
 
-  document.body.appendChild(toast);
+  const panel = byId("adminPanel");
+  if (!panel) return;
 
-  requestAnimationFrame(() => {
-    toast.classList.add("show");
+  panel.classList.toggle("hidden");
+
+  if (!panel.classList.contains("hidden")) {
+    await loadUsers();
+  }
+});
+
+function enableSmartMoneyInput(id) {
+  const input = document.getElementById(id);
+  if (!input) return;
+
+  input.addEventListener("focus", () => {
+    setTimeout(() => input.select(), 50);
   });
 
-  setTimeout(() => {
-    toast.classList.remove("show");
-    setTimeout(() => toast.remove(), 300);
-  }, 2600);
-}
+  input.addEventListener("click", () => {
+    input.select();
+  });
 
+  input.addEventListener("blur", () => {
+    delete input.dataset.edited;
+  });
+
+  // 🔥 TRATAMENTO DE COLAR (AQUI ESTÁ O OURO)
+  input.addEventListener("paste", (e) => {
+    e.preventDefault();
+
+    let text = (e.clipboardData || window.clipboardData).getData("text");
+
+    // remove tudo que não for número
+    let numeric = text.replace(/\D/g, "");
+
+    if (!numeric) {
+      input.value = "";
+      return;
+    }
+
+    // transforma em número com centavos
+    let value = (parseInt(numeric, 10) / 100).toFixed(2);
+
+    // formata BR
+    value = value
+      .replace(".", ",")
+      .replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+
+    input.value = value;
+  });
+}
+/* ✅ CRIAR USUÁRIO INTERNO PELO PAINEL ADMIN */
 document.addEventListener("DOMContentLoaded", () => {
+
   [
     "t2_banco",
     "t2_suprema",
@@ -4283,22 +4280,6 @@ document.addEventListener("DOMContentLoaded", () => {
     "t2_cargas",
     "t2_cargas_poker"
   ].forEach(enableSmartMoneyInput);
-
-  byId("adminOpenBtn")?.addEventListener("click", async () => {
-    const allowed = await requireAdmin();
-    if (!allowed) return;
-
-    closeMenu?.();
-
-    const panel = byId("adminPanel");
-    if (!panel) return;
-
-    panel.classList.toggle("hidden");
-
-    if (!panel.classList.contains("hidden")) {
-      await loadUsers();
-    }
-  });
 
   byId("adminCreateUserBtn")?.addEventListener("click", createInternalUser);
 
@@ -4310,7 +4291,9 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 
   initAuthEvents();
+
 });
-</script>
+
+  </script>
 </body>
 </html>
