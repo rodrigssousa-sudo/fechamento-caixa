@@ -2199,6 +2199,8 @@ function renderMonthlyGoalCard() {
   const now = new Date();
   const currentYear = now.getFullYear();
   const currentMonth = now.getMonth();
+  const today = now.getDate();
+  const daysInMonth = new Date(currentYear, currentMonth + 1, 0).getDate();
 
   let totalRealizado = 0;
 
@@ -2214,56 +2216,40 @@ function renderMonthlyGoalCard() {
       itemDate.getMonth() !== currentMonth
     ) return;
 
-  let totalDoTurno = 0;
+    let totalDoTurno = 0;
 
-// 1. Soma saídas diretas (mais confiável no teu sistema)
-totalDoTurno += Number(t.saidasTotal || t.saidas || 0);
+    (t.outflows || []).forEach((o) => {
+      const tipo = String(o.type || "")
+        .toLowerCase()
+        .normalize("NFD")
+        .replace(/[\u0300-\u036f]/g, "");
 
-// 2. Soma outflows detalhados (caso existam separados)
-(t.outflows || []).forEach((o) => {
-  const tipo = String(o.type || o.tipo || o.category || "")
-    .toLowerCase()
-    .normalize("NFD")
-    .replace(/[\u0300-\u036f]/g, "");
+      if (
+        tipo === "lucro" ||
+        tipo === "retirada" ||
+        tipo === "retiradas"
+      ) {
+        totalDoTurno += Number(o.value || 0);
+      }
+    });
 
-  const nome = String(o.name || o.nome || "")
-    .toLowerCase()
-    .normalize("NFD")
-    .replace(/[\u0300-\u036f]/g, "");
-
-  const isLucro =
-    tipo.includes("lucro") ||
-    tipo.includes("retirada") ||
-    nome.includes("lucro") ||
-    nome.includes("retirada");
-
-  const isGasto =
-    tipo.includes("operacional") ||
-    tipo.includes("gasto") ||
-    nome.includes("gasto") ||
-    nome.includes("despesa");
-
-  if (isLucro && !isGasto) {
-    lucroDoTurno += Number(o.value || o.valor || 0);
-  }
-});
-
-    // fallback para fechamentos antigos
-   if (!lucroDoTurno) {
-  lucroDoTurno += Number(
-    t.lucroRealizadoTotal ||
-    item.lucroRealizadoTotal ||
-    item.retiradaLucro ||
-    item.turnProfit ||
-    0
-  );
-}
+    if (!totalDoTurno) {
+      totalDoTurno += Number(
+        t.lucroRealizadoTotal ||
+        item.lucroRealizadoTotal ||
+        0
+      );
+    }
 
     totalRealizado += totalDoTurno;
   });
 
   const percent = Math.min((totalRealizado / MONTHLY_GOAL_TARGET) * 100, 100);
   const restante = Math.max(MONTHLY_GOAL_TARGET - totalRealizado, 0);
+
+  const mediaDiaria = today > 0 ? totalRealizado / today : 0;
+  const projecaoMes = mediaDiaria * daysInMonth;
+  const percentProjetado = (projecaoMes / MONTHLY_GOAL_TARGET) * 100;
 
   const fill = byId("goalBarFill");
   const status = byId("goalStatus");
@@ -2272,15 +2258,21 @@ totalDoTurno += Number(t.saidasTotal || t.saidas || 0);
     fill.style.width = `${percent}%`;
     fill.classList.remove("success", "danger");
 
-    if (percent >= 100) fill.classList.add("success");
-    else if (percent < 35) fill.classList.add("danger");
+    if (totalRealizado > 0) {
+      fill.classList.add("success");
+    }
+
+    if (totalRealizado < 0) {
+      fill.classList.add("danger");
+    }
   }
 
   if (status) {
-    status.textContent =
+    status.innerHTML =
       percent >= 100
-        ? `Meta batida • ${percent.toFixed(1)}% realizado`
-        : `Faltam ${money(restante)} • ${percent.toFixed(1)}% realizado`;
+        ? `Meta batida 🔥 • ${percent.toFixed(0)}%`
+        : `${percent.toFixed(0)}% concluído • faltam ${money(restante)}<br>
+           <small>Projeção mensal: ${money(projecaoMes)} • ${percentProjetado.toFixed(0)}%</small>`;
   }
 }
     
