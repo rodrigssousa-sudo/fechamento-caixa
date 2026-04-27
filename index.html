@@ -4174,7 +4174,8 @@ byId("confirmExportPdf")?.addEventListener("click", async () => {
     return;
   }
 
- function openPdfReport(startDate, endDate) {
+// 1. Mantive a função openPdfReport (agora fechada corretamente)
+function openPdfReport(startDate, endDate) {
   const html = buildPremiumBankReceiptPdf(startDate, endDate);
 
   if (!html || !html.trim()) {
@@ -4212,6 +4213,7 @@ byId("confirmExportPdf")?.addEventListener("click", async () => {
   }, 600);
 }
 
+// 2. Unifiquei o evento do botão confirmExportPdf
 byId("confirmExportPdf")?.addEventListener("click", async () => {
   const allowed = await requireReportsAccess();
   if (!allowed) return;
@@ -4224,11 +4226,12 @@ byId("confirmExportPdf")?.addEventListener("click", async () => {
     return;
   }
 
+  // Fecha o modal e gera o PDF
   byId("pdfRangeModal")?.classList.add("hidden");
-
   openPdfReport(startDate, endDate);
 });
 
+// 3. Eventos de range (7 dias, etc)
 document.querySelectorAll("[data-report-range]").forEach((btn) => {
   btn.addEventListener("click", async () => {
     const allowed = await requireReportsAccess();
@@ -4251,9 +4254,12 @@ document.querySelectorAll("[data-report-range]").forEach((btn) => {
     openPdfReport(startLocal, endLocal);
   });
 });
+
+// 4. Botão de Ranking
 byId("openRankingBtn")?.addEventListener("click", async () => {
   const allowed = await requireReportsAccess();
   if (!allowed) return;
+  
   mainMenu?.classList.add("hidden");
 
   const chartSection = byId("rankingChartSection");
@@ -4263,6 +4269,7 @@ byId("openRankingBtn")?.addEventListener("click", async () => {
   tableSection?.classList.toggle("hidden");
 
   renderRanking();
+}); // Fechamento que faltava aqui
 
   if (chartSection && !chartSection.classList.contains("hidden")) {
     chartSection.scrollIntoView({
