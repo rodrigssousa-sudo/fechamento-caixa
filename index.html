@@ -2240,15 +2240,24 @@ function renderMonthlyGoalCard() {
     fill.style.width = `${percent}%`;
     fill.classList.remove("success", "danger");
 
-    if (percent >= 100) fill.classList.add("success");
-    else if (percent < 35) fill.classList.add("danger");
+   fill.classList.remove("success", "danger");
+
+// lucro sempre positivo = bom
+if (totalRealizado > 0) {
+  fill.classList.add("success");
+}
+
+// opcional: só fica vermelho se for negativo (prejuízo)
+if (totalRealizado < 0) {
+  fill.classList.add("danger");
+}
   }
 
-  if (status) {
-    status.textContent =
-      percent >= 100
-        ? `Meta batida • ${percent.toFixed(1)}% realizado`
-        : `Faltam ${money(restante)} • ${percent.toFixed(1)}% realizado`;
+ if (status) {
+  if (percent >= 100) {
+    status.textContent = `Meta batida 🔥 • ${percent.toFixed(0)}%`;
+  } else {
+    status.textContent = `${percent.toFixed(0)}% concluído • faltam ${money(restante)}`;
   }
 }
     
