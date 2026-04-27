@@ -1812,77 +1812,6 @@
     font-size:15px!important;
   }
 }
-
-.splash-screen{
-  position:fixed;
-  inset:0;
-  z-index:999999;
-  background:
-    radial-gradient(circle at 50% 20%, rgba(199,164,90,.22), transparent 28%),
-    linear-gradient(135deg,#06152e,#102a56 55%,#06152e);
-  display:flex;
-  flex-direction:column;
-  align-items:center;
-  justify-content:center;
-  color:#fff;
-  transition:opacity .45s ease, visibility .45s ease;
-}
-
-.splash-screen.hide{
-  opacity:0;
-  visibility:hidden;
-}
-
-.splash-logo{
-  width:86px;
-  height:86px;
-  border-radius:26px;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  font-size:30px;
-  font-weight:950;
-  background:linear-gradient(135deg,#e8cf88,#c7a45a);
-  color:#06152e;
-  box-shadow:0 22px 50px rgba(0,0,0,.28);
-}
-
-.splash-title{
-  margin-top:20px;
-  font-size:30px;
-  font-weight:950;
-}
-
-.splash-sub{
-  margin-top:6px;
-  font-size:13px;
-  opacity:.75;
-  font-weight:800;
-}
-
-.splash-loader{
-  margin-top:26px;
-  width:120px;
-  height:5px;
-  border-radius:999px;
-  overflow:hidden;
-  background:rgba(255,255,255,.18);
-}
-
-.splash-loader::before{
-  content:"";
-  display:block;
-  width:45%;
-  height:100%;
-  border-radius:999px;
-  background:linear-gradient(90deg,#c7a45a,#fff);
-  animation:splashMove 1.1s infinite ease-in-out;
-}
-
-@keyframes splashMove{
-  0%{transform:translateX(-120%);}
-  100%{transform:translateX(260%);}
-}    
   
 </style>
 
@@ -3200,6 +3129,53 @@ function createPendingRow(turno) {
   list.appendChild(row);
 }
 
+function createDynamicRow(turno) {
+  const list = byId(`${turno}_dynamic_list`);
+  if (!list) return;
+
+  const row = document.createElement("div");
+  row.className = "dynamic-row";
+
+  row.innerHTML = `
+    <input type="text" placeholder="Nome da saída">
+    <input type="text" inputmode="numeric" placeholder="0,00">
+
+    <select class="outflow-type">
+      <option value="">Tipo da saída</option>
+      <option value="operacional">Gasto operacional</option>
+      <option value="lucro">Retirada</option>
+    </select>
+
+    <button type="button" class="remove-row-btn">×</button>
+  `;
+
+  row.querySelector(".remove-row-btn").onclick = () => {
+    row.remove();
+    render();
+  };
+
+  list.appendChild(row);
+}
+
+    function startHistoryRealtimeListener() {
+      if (historyListenerStarted) return;
+      historyListenerStarted = true;
+      const qHistory = query(collection(db, "history"), limit(150));
+      historyUnsubscribe = onSnapshot(qHistory, (snapshot) => {
+        historyCache = snapshot.docs.map((docItem) => ({ id: docItem.id, ...docItem.data() }));
+        historyCache.sort((a, b) => {
+          const dateA = a.submittedAt?.toDate?.()?.getTime?.() || Number(a.submittedAt) || new Date(a.fechamentoDate || a.turno?.dataFechamento || 0).getTime();
+          const dateB = b.submittedAt?.toDate?.()?.getTime?.() || Number(b.submittedAt) || new Date(b.fechamentoDate || b.turno?.dataFechamento || 0).getTime();
+          return dateB - dateA;
+        });
+        renderHistory(); 
+renderCompare(); 
+renderRanking(); 
+renderTopPreviousCards();
+renderMonthlyGoalCard();
+      }, (error) => console.error("Erro ao carregar histórico:", error));
+    }
+
 function buildPremiumBankReceiptPdf(startDate, endDate) {
   const filtered = historyCache.filter((item) => {
     const date = item.fechamentoDate || item.turno?.dataFechamento;
@@ -3214,10 +3190,10 @@ function buildPremiumBankReceiptPdf(startDate, endDate) {
   const lucroRows = [];
   const gastoRows = [];
 
-  // 1. Processamento de dados e cálculos
   filtered.forEach((item, index) => {
     const t = item.turno || {};
     const b = getTurnoBreakdown(t);
+
     totalRecaPeriodo += Number(b.reca || 0);
 
     const previousItem = filtered[index + 1];
@@ -3231,101 +3207,571 @@ function buildPremiumBankReceiptPdf(startDate, endDate) {
 
     outflows.forEach((o) => {
       const value = Number(o.value || 0);
-      const rowHtml = `
-        <div class="profit-row">
-          <div>
-            <strong>${escapeHtml(o.name || (o.type === "lucro" ? "Lucro realizado" : "Gasto operacional"))}</strong>
-            <span>${escapeHtml(operador)} • ${data}</span>
-          </div>
-          <b class="${o.type === "lucro" ? "" : "negative-text"}">${money(value)}</b>
-        </div>`;
-      
+
       if (o.type === "lucro") {
         totalLucroRealizado += value;
-        lucroRows.push(rowHtml);
+
+        lucroRows.push(`
+          <div class="profit-row">
+            <div>
+              <strong>${escapeHtml(o.name || "Lucro realizado")}</strong>
+              <span>${escapeHtml(operador)} • ${data}</span>
+            </div>
+            <b>${money(value)}</b>
+          </div>
+        `);
       } else {
         totalGastos += value;
-        gastoRows.push(rowHtml);
+
+        gastoRows.push(`
+          <div class="profit-row">
+            <div>
+              <strong>${escapeHtml(o.name || "Gasto operacional")}</strong>
+              <span>${escapeHtml(operador)} • ${data}</span>
+            </div>
+            <b class="negative-text">${money(value)}</b>
+          </div>
+        `);
       }
     });
   });
 
-  const alertaTexto = totalLucroRealizado > totalGastos ? "Resultado positivo" : "Gastos acima do lucro";
-  const alertaClass = totalLucroRealizado > totalGastos ? "alert-success" : "alert-danger";
+  const lucroLiquido = totalLucroRealizado - totalGastos;
 
-  // 2. Geração das linhas de fechamento individuais
+  let alertaTexto = "Operação estável";
+  let alertaClass = "alert-ok";
+
+  if (totalGastos > totalLucroRealizado) {
+    alertaTexto = "Gastos acima do lucro";
+    alertaClass = "alert-danger";
+  }
+
+  if (totalLucroRealizado > totalGastos) {
+    alertaTexto = "Resultado positivo";
+    alertaClass = "alert-success";
+  }
+
   const rows = filtered.map((item, index) => {
     const t = item.turno || {};
     const b = getTurnoBreakdown(t);
+
     const previousItem = filtered[index + 1];
-    const diff = previousItem ? calcularDiffReal(t, previousItem.turno || {}) : 0;
+    const previousTurno = previousItem?.turno || {};
+
+    const diff = previousItem ? calcularDiffReal(t, previousTurno) : 0;
+
     const diffClass = diff > 0 ? "positive" : diff < 0 ? "negative" : "neutral";
+    const diffSignal = diff > 0 ? "+" : diff < 0 ? "-" : "";
 
     return `
       <div class="receipt-card">
+
         <div class="turn-header">
           <div>
             <span>${formatDateBR(item.fechamentoDate || t.dataFechamento || "")}</span>
             <strong>${escapeHtml(item.nomeOperador || "Sem nome")}</strong>
           </div>
+
           <div class="turn-diff ${diffClass}">
-            Diferença: ${money(diff)}
+            Diferença de Caixa&nbsp; ${diffSignal}${money(Math.abs(diff))}
           </div>
         </div>
+
         <div class="receipt-grid">
-           <p style="padding:10px; font-size:12px; color:#666;">Resumo de caixa processado para este turno.</p>
+          <div class="receipt-column">
+            <div class="column-title green-title">Caixa</div>
+
+            <div class="line-row">
+              <span>Saldo Reca</span>
+              <strong>${money(b.reca)}</strong>
+            </div>
+
+            <div class="line-row">
+              <span>Saídas</span>
+              <strong class="negative-text">${money(b.saidas)}</strong>
+            </div>
+
+            <div class="line-row">
+              <span>Pendentes</span>
+              <strong>${money(b.pendentes)}</strong>
+            </div>
+          </div>
+
+          <div class="receipt-column">
+            <div class="column-title blue-title">Plataformas</div>
+
+            <div class="line-row">
+              <span>Suprema</span>
+              <strong>${Number(t.suprema || 0).toLocaleString("pt-BR", {
+                minimumFractionDigits: 2,
+                maximumFractionDigits: 2
+              })} fichas</strong>
+            </div>
+
+            <div class="line-row">
+              <span>PPPoker</span>
+              <strong>${Number(t.pppoker || 0).toLocaleString("pt-BR", {
+                minimumFractionDigits: 2,
+                maximumFractionDigits: 2
+              })} fichas</strong>
+            </div>
+
+            <div class="line-row">
+              <span>Buffalo</span>
+              <strong>${money(b.buffalo)}</strong>
+            </div>
+
+            <div class="line-row">
+              <span>Ganamos</span>
+              <strong>${money(b.ganamos)}</strong>
+            </div>
+          </div>
         </div>
-      </div>`;
+
+      </div>
+    `;
   }).join("");
 
-  // 3. O ÚNICO RETURN da função
   return `
-<!DOCTYPE html>
-<html lang="pt-br">
-<head>
-    <meta charset="UTF-8">
-    <title>Relatório Bank King</title>
-    <style>
-        body { font-family: sans-serif; background: #f4f7f6; padding: 20px; color: #333; }
-        .header { background: linear-gradient(135deg,#0b1f4d,#163a8a); color: #fff; padding: 20px; border-radius: 12px; margin-bottom: 20px; }
-        .kpi-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin: 20px 0; }
-        .kpi-card { background: #fff; padding: 15px; border-radius: 12px; border: 1px solid #e5eaf2; box-shadow: 0 4px 6px rgba(0,0,0,0.05); }
-        .kpi-card span { display: block; font-size: 10px; text-transform: uppercase; color: #667085; font-weight: 800; }
-        .kpi-card strong { font-size: 18px; display: block; margin-top: 5px; }
-        .profit-row { display: flex; justify-content: space-between; align-items: center; background: #fff; padding: 10px; border-bottom: 1px solid #eee; }
-        .profit-row span { font-size: 11px; color: #666; display: block; }
-        .negative-text { color: #be2633; }
-        .alert-success { border-left: 5px solid #128044; background: #e8f8ee; }
-        .alert-danger { border-left: 5px solid #be2633; background: #fee2e2; }
-        .receipt-card { background: #fff; border-radius: 12px; margin-top: 15px; border: 1px solid #ddd; overflow: hidden; }
-        .turn-header { background: #f8fafc; padding: 10px 15px; display: flex; justify-content: space-between; border-bottom: 1px solid #eee; }
-        .print-btn { background: #0b1f4d; color: #fff; padding: 12px 25px; border: none; border-radius: 8px; cursor: pointer; position: fixed; bottom: 20px; right: 20px; font-weight: bold; }
-        @media print { .print-btn { display: none; } }
-    </style>
+email
+  .page{
+    max-width:980px;
+    margin:0 auto;
+  }
+
+.header{
+  background:linear-gradient(135deg,#0b1f4d,#163a8a);
+  color:#fff;
+  border-radius:18px;
+  padding:18px 20px;
+
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+
+  margin-bottom:14px;
+}
+
+/* lado esquerdo */
+.header-left{
+  display:flex;
+  align-items:center;
+  gap:12px;
+}
+
+.logo{
+  width:44px;
+  height:44px;
+  border-radius:12px;
+  background:rgba(255,255,255,0.1);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-weight:900;
+  font-size:18px;
+  letter-spacing:.5px;
+}
+
+.brand strong{
+  display:block;
+  font-size:16px;
+  font-weight:900;
+}
+
+.brand span{
+  font-size:10px;
+  opacity:.7;
+  letter-spacing:.06em;
+  text-transform:uppercase;
+}
+
+/* lado direito */
+.header-right{
+  text-align:right;
+  font-size:11px;
+  line-height:1.4;
+  opacity:.85;
+}
+
+  .kpi-grid{
+    display:grid;
+    grid-template-columns:repeat(4,1fr);
+    gap:10px;
+    margin-bottom:14px;
+  }
+
+  .kpi-card{
+    background:#fff;
+    border:1px solid #e5eaf2;
+    border-radius:18px;
+    padding:14px;
+    box-shadow:0 8px 18px rgba(10,16,32,.035);
+  }
+
+  .kpi-card span{
+    display:block;
+    font-size:10px;
+    text-transform:uppercase;
+    letter-spacing:.08em;
+    font-weight:900;
+    color:#667085;
+    margin-bottom:7px;
+  }
+
+  .kpi-card strong{
+    display:block;
+    font-size:20px;
+    font-weight:950;
+    letter-spacing:-.04em;
+  }
+
+  .kpi-card.reca strong{color:#0a1020;}
+  .kpi-card.diff.positive strong{color:#128044;}
+  .kpi-card.diff.negative strong{color:#be2633;}
+  .kpi-card.lucro strong{color:#128044;}
+  .kpi-card.gasto strong{color:#be2633;}
+
+  .alert-success{
+    background:#e8f8ee;
+    border-color:#ccefd8;
+  }
+
+  .alert-success strong,
+  .alert-success span{
+    color:#128044;
+  }
+
+  .alert-danger{
+    background:#fee2e2;
+    border-color:#ffd0d0;
+  }
+
+  .alert-danger strong,
+  .alert-danger span{
+    color:#be2633;
+  }
+
+  .alert-ok{
+    background:#f8fafc;
+  }
+
+  .profit-columns{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:12px;
+    margin-bottom:16px;
+  }
+
+  .profit-summary{
+    background:#ecfdf5;
+    border:1px solid #bbf7d0;
+    border-radius:20px;
+    padding:14px;
+  }
+
+  .profit-summary.red{
+    background:#fff1f2;
+    border-color:#fecdd3;
+  }
+
+  .profit-title{
+    font-size:12px;
+    text-transform:uppercase;
+    letter-spacing:.07em;
+    font-weight:950;
+    margin-bottom:8px;
+  }
+
+  .profit-title.green{color:#128044;}
+  .profit-title.red{color:#be2633;}
+
+  .profit-total{
+    font-size:22px;
+    font-weight:950;
+    margin-bottom:10px;
+  }
+
+  .profit-total.green{color:#128044;}
+  .profit-total.red{color:#be2633;}
+
+  .profit-row{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    gap:10px;
+    background:#fff;
+    border:1px solid rgba(10,16,32,.06);
+    border-radius:14px;
+    padding:10px 12px;
+    margin-top:6px;
+  }
+
+  .profit-row strong{
+    display:block;
+    font-size:13px;
+    color:#0a1020;
+  }
+
+  .profit-row span{
+    display:block;
+    margin-top:3px;
+    font-size:11px;
+    color:#667085;
+    font-weight:700;
+  }
+
+  .profit-row b{
+    font-size:13px;
+    font-weight:950;
+    color:#128044;
+    white-space:nowrap;
+  }
+
+  .section-title{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    margin:18px 0 10px;
+    color:#102a56;
+    font-size:15px;
+    font-weight:950;
+    text-transform:uppercase;
+    letter-spacing:.04em;
+  }
+
+  .section-title::after{
+    content:"";
+    height:1px;
+    background:#dbe3ef;
+    flex:1;
+  }
+
+  .receipt-card{
+    background:#fff;
+    border:1px solid #dfe7f2;
+    border-radius:20px;
+    margin-bottom:12px;
+    overflow:hidden;
+    box-shadow:0 8px 20px rgba(10,16,32,.035);
+    page-break-inside:avoid;
+  }
+
+  .turn-header{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    gap:14px;
+    padding:14px 16px;
+    border-bottom:1px solid #e8eef6;
+    background:#f8fafc;
+  }
+
+  .turn-header span{
+    display:inline-block;
+    color:#475569;
+    font-size:13px;
+    font-weight:900;
+    margin-right:10px;
+  }
+
+  .turn-header strong{
+    font-size:16px;
+    color:#0a1020;
+    font-weight:950;
+  }
+
+  .turn-diff{
+    font-size:13px;
+    font-weight:950;
+    white-space:nowrap;
+  }
+
+  .turn-diff.positive{color:#128044;}
+  .turn-diff.negative{color:#be2633;}
+  .turn-diff.neutral{color:#64748b;}
+
+  .receipt-grid{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:0;
+    padding:14px 16px;
+  }
+
+  .receipt-column{
+    padding:0 16px 0 0;
+  }
+
+  .receipt-column + .receipt-column{
+    border-left:1px solid #dfe7f2;
+    padding:0 0 0 16px;
+  }
+
+  .column-title{
+    font-size:12px;
+    font-weight:950;
+    text-transform:uppercase;
+    letter-spacing:.07em;
+    margin-bottom:10px;
+  }
+
+  .green-title{color:#128044;}
+  .blue-title{color:#2f6eea;}
+
+  .line-row{
+    display:flex;
+    justify-content:space-between;
+    gap:12px;
+    padding:6px 0;
+    font-size:13px;
+  }
+
+  .line-row span{
+    color:#334155;
+    font-weight:750;
+  }
+
+  .line-row strong{
+    color:#0a1020;
+    font-weight:950;
+    white-space:nowrap;
+  }
+
+  .negative-text{
+    color:#be2633!important;
+  }
+
+  .empty-line{
+    background:#fff;
+    border:1px dashed #cbd5e1;
+    border-radius:14px;
+    padding:12px;
+    color:#667085;
+    font-weight:800;
+    font-size:12px;
+  }
+
+  .footer{
+    margin-top:18px;
+    padding:14px 0;
+    border-top:1px solid #e5eaf2;
+    display:flex;
+    justify-content:space-between;
+    gap:12px;
+    color:#475569;
+    font-size:12px;
+    font-weight:800;
+  }
+
+  .print-btn{
+    position:fixed;
+    right:16px;
+    bottom:16px;
+    z-index:9999;
+    padding:13px 18px;
+    border-radius:16px;
+    border:1px solid #cbd5e1;
+    background:#ffffff;
+    color:#102a56;
+    font-weight:950;
+    box-shadow:0 10px 25px rgba(0,0,0,.18);
+  }
+
+  @media(max-width:700px){
+    body{padding:16px;}
+    .header{display:block;}
+    .header-info{text-align:left;margin-top:12px;}
+    .kpi-grid{grid-template-columns:1fr 1fr;}
+    .profit-columns{grid-template-columns:1fr;}
+    .receipt-grid{grid-template-columns:1fr;}
+    .receipt-column + .receipt-column{
+      border-left:none;
+      border-top:1px solid #dfe7f2;
+      padding:14px 0 0;
+      margin-top:12px;
+    }
+    .receipt-column{padding:0;}
+    .turn-header{align-items:flex-start;display:grid;}
+    .turn-diff{white-space:normal;}
+  }
+
+  @media print{
+    body{background:#fff;padding:0;}
+    .print-btn{display:none!important;}
+    .receipt-card{page-break-inside:avoid;}
+  }
+</style>
 </head>
+
 <body>
-    <div class="header">
-        <h1>Bank King - Relatório Detalhado</h1>
-        <p>Período: ${formatDateBR(startDate)} até ${formatDateBR(endDate)}</p>
+<div class="page">
+
+ <div class="header">
+  <div class="header-left">
+    <div class="logo">BK</div>
+    <div class="brand">
+      <strong>Bank King</strong>
+      <span>Relatório Detalhado</span>
+    </div>
+  </div>
+
+  <div class="header-right">
+    <div>Período: ${formatDateBR(startDate)} até ${formatDateBR(endDate)}</div>
+    <div>Gerado em: ${new Date().toLocaleDateString("pt-BR")} às ${new Date().toLocaleTimeString("pt-BR", { hour:"2-digit", minute:"2-digit" })}</div>
+  </div>
+</div>
+
+  <div class="kpi-grid">
+    <div class="kpi-card reca">
+      <span>Saldo Reca</span>
+      <strong>${money(totalRecaPeriodo)}</strong>
     </div>
 
-    <div class="kpi-grid">
-        <div class="kpi-card"><span>Saldo Reca</span><strong>${money(totalRecaPeriodo)}</strong></div>
-        <div class="kpi-card"><span>Diferença Total</span><strong>${money(diffTotal)}</strong></div>
-        <div class="kpi-card"><span>Lucro Bruto</span><strong>${money(totalLucroRealizado)}</strong></div>
-        <div class="kpi-card ${alertaClass}"><span>Status</span><strong>${alertaTexto}</strong></div>
+    <div class="kpi-card diff ${diffTotal >= 0 ? "positive" : "negative"}">
+      <span>Diferença Caixa</span>
+      <strong>${diffTotal >= 0 ? "+" : "-"}${money(Math.abs(diffTotal))}</strong>
     </div>
 
-    <h3>Detalhamento de Fluxo</h3>
-    ${lucroRows.join('')}
-    ${gastoRows.join('')}
+    <div class="kpi-card lucro">
+      <span>Lucro Realizado</span>
+      <strong>${money(totalLucroRealizado)}</strong>
+    </div>
 
-    <h3>Histórico de Fechamentos</h3>
-    ${rows || '<p>Nenhum registro individual.</p>'}
+    <div class="kpi-card ${alertaClass}">
+      <span>Status</span>
+      <strong>${alertaTexto}</strong>
+    </div>
+  </div>
 
-    <button class="print-btn" onclick="window.print()">Imprimir / PDF</button>
+  <div class="profit-columns">
+    <div class="profit-summary">
+      <div class="profit-title green">Lucro realizado</div>
+      <div class="profit-total green">${money(totalLucroRealizado)}</div>
+      ${lucroRows.join("") || `<div class="empty-line">Sem lucro registrado no período.</div>`}
+    </div>
+
+    <div class="profit-summary red">
+      <div class="profit-title red">Gastos operacionais</div>
+      <div class="profit-total red">${money(totalGastos)}</div>
+      ${gastoRows.join("") || `<div class="empty-line">Sem gastos registrados no período.</div>`}
+    </div>
+  </div>
+
+  <div class="section-title">Fechamentos do período</div>
+
+  ${rows || `<div class="receipt-card" style="padding:18px;">Nenhum fechamento encontrado nesse período.</div>`}
+
+  <div class="footer">
+    <span>Controle • Transparência • Resultados</span>
+    <span>Documento interno • Bank King</span>
+  </div>
+
+</div>
+
+<button class="print-btn" onclick="window.print()">Salvar / Exportar PDF</button>
+
 </body>
-</html>`;
+</html>
+`;
 }
 
 async function createInternalUser() {
@@ -3650,19 +4096,17 @@ byId("confirmExportPdf")?.addEventListener("click", async () => {
     return;
   }
 
-// 1. Mantive a função openPdfReport (agora fechada corretamente)
-function openPdfReport(startDate, endDate) {
   const html = buildPremiumBankReceiptPdf(startDate, endDate);
 
   if (!html || !html.trim()) {
-    showToast("Relatório vazio. Verifique o período selecionado.", "error");
+    alert("Relatório vazio. Verifique o período selecionado.");
     return;
   }
 
   const w = window.open("", "_blank", "width=1280,height=900");
 
   if (!w) {
-    showToast("Não foi possível abrir a janela do relatório.", "error");
+    alert("Não foi possível abrir a janela.");
     return;
   }
 
@@ -3670,44 +4114,39 @@ function openPdfReport(startDate, endDate) {
   w.document.write(html);
   w.document.close();
 
-  setTimeout(() => {
-    w.focus();
-
-    const printBtn = w.document.createElement("button");
-    printBtn.innerText = "Salvar / Exportar PDF";
-    printBtn.className = "print-btn";
-    printBtn.onclick = () => {
-      printBtn.style.display = "none";
-      w.print();
-
-      setTimeout(() => {
-        printBtn.style.display = "block";
-      }, 1200);
-    };
-
-    w.document.body.appendChild(printBtn);
-  }, 600);
-}
-
-// 2. Unifiquei o evento do botão confirmExportPdf
-byId("confirmExportPdf")?.addEventListener("click", async () => {
-  const allowed = await requireReportsAccess();
-  if (!allowed) return;
-
-  const startDate = byId("pdfDateStart")?.value;
-  const endDate = byId("pdfDateEnd")?.value;
-
-  if (!startDate || !endDate) {
-    showToast("Selecione data inicial e final", "error");
-    return;
-  }
-
-  // Fecha o modal e gera o PDF
   byId("pdfRangeModal")?.classList.add("hidden");
-  openPdfReport(startDate, endDate);
+
+  setTimeout(() => {
+  w.focus();
+
+  const printBtn = w.document.createElement("button");
+  printBtn.innerText = "Salvar / Exportar PDF";
+  printBtn.style.cssText = `
+    position:fixed;
+    right:16px;
+    bottom:16px;
+    z-index:9999;
+    padding:14px 18px;
+    border-radius:16px;
+    border:none;
+    background:#06152e;
+    color:white;
+    font-weight:900;
+    box-shadow:0 10px 25px rgba(0,0,0,.25);
+  `;
+
+  printBtn.onclick = () => {
+    printBtn.style.display = "none";
+    w.print();
+    setTimeout(() => {
+      printBtn.style.display = "block";
+    }, 1200);
+  };
+
+  w.document.body.appendChild(printBtn);
+}, 800);
 });
 
-// 3. Eventos de range (7 dias, etc)
 document.querySelectorAll("[data-report-range]").forEach((btn) => {
   btn.addEventListener("click", async () => {
     const allowed = await requireReportsAccess();
@@ -3727,15 +4166,27 @@ document.querySelectorAll("[data-report-range]").forEach((btn) => {
       .toISOString()
       .split("T")[0];
 
-    openPdfReport(startLocal, endLocal);
+    const w = window.open("", "_blank", "width=1280,height=900");
+
+    if (!w) {
+      alert("Não foi possível abrir a janela.");
+      return;
+    }
+
+    w.document.open();
+    w.document.write(buildPremiumBankReceiptPdf(startLocal, endLocal));
+    w.document.close();
+
+    setTimeout(() => {
+      w.focus();
+      w.print();
+    }, 800);
   });
 });
 
-// 4. Botão de Ranking
 byId("openRankingBtn")?.addEventListener("click", async () => {
   const allowed = await requireReportsAccess();
   if (!allowed) return;
-  
   mainMenu?.classList.add("hidden");
 
   const chartSection = byId("rankingChartSection");
@@ -3745,7 +4196,6 @@ byId("openRankingBtn")?.addEventListener("click", async () => {
   tableSection?.classList.toggle("hidden");
 
   renderRanking();
-}); // Fechamento que faltava aqui
 
   if (chartSection && !chartSection.classList.contains("hidden")) {
     chartSection.scrollIntoView({
@@ -3838,42 +4288,9 @@ document.addEventListener("DOMContentLoaded", () => {
 
 });
 
-    function hideSplashScreen() {
-  const splash = document.getElementById("splashScreen");
-  if (!splash) return;
-
-  setTimeout(() => {
-    splash.classList.add("hide");
-    setTimeout(() => splash.remove(), 600);
-  }, 900);
-}
-
-window.addEventListener("load", hideSplashScreen);
-
 </script>
 
 <script>
-let deferredPrompt;
-
-window.addEventListener("beforeinstallprompt", (e) => {
-  e.preventDefault();
-  deferredPrompt = e;
-
-  const btn = document.getElementById("installAppBtn");
-  if (btn) btn.style.display = "block";
-});
-
-document.addEventListener("click", async (e) => {
-  if (e.target?.id !== "installAppBtn") return;
-  if (!deferredPrompt) return;
-
-  deferredPrompt.prompt();
-  await deferredPrompt.userChoice;
-
-  deferredPrompt = null;
-  e.target.style.display = "none";
-});
-
 if ("serviceWorker" in navigator) {
   window.addEventListener("load", () => {
     navigator.serviceWorker.register("/service-worker.js")
@@ -3882,22 +4299,6 @@ if ("serviceWorker" in navigator) {
   });
 }
 </script>
-
-<button id="installAppBtn" style="
-  position:fixed;
-  bottom:20px;
-  right:20px;
-  z-index:9999;
-  padding:14px 18px;
-  border-radius:16px;
-  background:#06152e;
-  color:#fff;
-  font-weight:900;
-  border:none;
-  display:none;
-">
-  Instalar App
-</button>
 
 </body>
 </html>
