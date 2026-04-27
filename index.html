@@ -4174,17 +4174,18 @@ byId("confirmExportPdf")?.addEventListener("click", async () => {
     return;
   }
 
+ function openPdfReport(startDate, endDate) {
   const html = buildPremiumBankReceiptPdf(startDate, endDate);
 
   if (!html || !html.trim()) {
-    alert("Relatório vazio. Verifique o período selecionado.");
+    showToast("Relatório vazio. Verifique o período selecionado.", "error");
     return;
   }
 
   const w = window.open("", "_blank", "width=1280,height=900");
 
   if (!w) {
-    alert("Não foi possível abrir a janela.");
+    showToast("Não foi possível abrir a janela do relatório.", "error");
     return;
   }
 
@@ -4192,37 +4193,40 @@ byId("confirmExportPdf")?.addEventListener("click", async () => {
   w.document.write(html);
   w.document.close();
 
+  setTimeout(() => {
+    w.focus();
+
+    const printBtn = w.document.createElement("button");
+    printBtn.innerText = "Salvar / Exportar PDF";
+    printBtn.className = "print-btn";
+    printBtn.onclick = () => {
+      printBtn.style.display = "none";
+      w.print();
+
+      setTimeout(() => {
+        printBtn.style.display = "block";
+      }, 1200);
+    };
+
+    w.document.body.appendChild(printBtn);
+  }, 600);
+}
+
+byId("confirmExportPdf")?.addEventListener("click", async () => {
+  const allowed = await requireReportsAccess();
+  if (!allowed) return;
+
+  const startDate = byId("pdfDateStart")?.value;
+  const endDate = byId("pdfDateEnd")?.value;
+
+  if (!startDate || !endDate) {
+    showToast("Selecione data inicial e final", "error");
+    return;
+  }
+
   byId("pdfRangeModal")?.classList.add("hidden");
 
-  setTimeout(() => {
-  w.focus();
-
-  const printBtn = w.document.createElement("button");
-  printBtn.innerText = "Salvar / Exportar PDF";
-  printBtn.style.cssText = `
-    position:fixed;
-    right:16px;
-    bottom:16px;
-    z-index:9999;
-    padding:14px 18px;
-    border-radius:16px;
-    border:none;
-    background:#06152e;
-    color:white;
-    font-weight:900;
-    box-shadow:0 10px 25px rgba(0,0,0,.25);
-  `;
-
-  printBtn.onclick = () => {
-    printBtn.style.display = "none";
-    w.print();
-    setTimeout(() => {
-      printBtn.style.display = "block";
-    }, 1200);
-  };
-
-  w.document.body.appendChild(printBtn);
-}, 800);
+  openPdfReport(startDate, endDate);
 });
 
 document.querySelectorAll("[data-report-range]").forEach((btn) => {
@@ -4244,24 +4248,9 @@ document.querySelectorAll("[data-report-range]").forEach((btn) => {
       .toISOString()
       .split("T")[0];
 
-    const w = window.open("", "_blank", "width=1280,height=900");
-
-    if (!w) {
-      alert("Não foi possível abrir a janela.");
-      return;
-    }
-
-    w.document.open();
-    w.document.write(buildPremiumBankReceiptPdf(startLocal, endLocal));
-    w.document.close();
-
-    setTimeout(() => {
-      w.focus();
-      w.print();
-    }, 800);
+    openPdfReport(startLocal, endLocal);
   });
 });
-
 byId("openRankingBtn")?.addEventListener("click", async () => {
   const allowed = await requireReportsAccess();
   if (!allowed) return;
