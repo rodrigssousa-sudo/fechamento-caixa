@@ -3200,53 +3200,6 @@ function createPendingRow(turno) {
   list.appendChild(row);
 }
 
-function createDynamicRow(turno) {
-  const list = byId(`${turno}_dynamic_list`);
-  if (!list) return;
-
-  const row = document.createElement("div");
-  row.className = "dynamic-row";
-
-  row.innerHTML = `
-    <input type="text" placeholder="Nome da saída">
-    <input type="text" inputmode="numeric" placeholder="0,00">
-
-    <select class="outflow-type">
-      <option value="">Tipo da saída</option>
-      <option value="operacional">Gasto operacional</option>
-      <option value="lucro">Retirada</option>
-    </select>
-
-    <button type="button" class="remove-row-btn">×</button>
-  `;
-
-  row.querySelector(".remove-row-btn").onclick = () => {
-    row.remove();
-    render();
-  };
-
-  list.appendChild(row);
-}
-
-    function startHistoryRealtimeListener() {
-      if (historyListenerStarted) return;
-      historyListenerStarted = true;
-      const qHistory = query(collection(db, "history"), limit(150));
-      historyUnsubscribe = onSnapshot(qHistory, (snapshot) => {
-        historyCache = snapshot.docs.map((docItem) => ({ id: docItem.id, ...docItem.data() }));
-        historyCache.sort((a, b) => {
-          const dateA = a.submittedAt?.toDate?.()?.getTime?.() || Number(a.submittedAt) || new Date(a.fechamentoDate || a.turno?.dataFechamento || 0).getTime();
-          const dateB = b.submittedAt?.toDate?.()?.getTime?.() || Number(b.submittedAt) || new Date(b.fechamentoDate || b.turno?.dataFechamento || 0).getTime();
-          return dateB - dateA;
-        });
-        renderHistory(); 
-renderCompare(); 
-renderRanking(); 
-renderTopPreviousCards();
-renderMonthlyGoalCard();
-      }, (error) => console.error("Erro ao carregar histórico:", error));
-    }
-
 function buildPremiumBankReceiptPdf(startDate, endDate) {
   const filtered = historyCache.filter((item) => {
     const date = item.fechamentoDate || item.turno?.dataFechamento;
@@ -3261,6 +3214,7 @@ function buildPremiumBankReceiptPdf(startDate, endDate) {
   const lucroRows = [];
   const gastoRows = [];
 
+  // 1. Processamento de dados e cálculos
   filtered.forEach((item, index) => {
     const t = item.turno || {};
     const b = getTurnoBreakdown(t);
@@ -3277,84 +3231,29 @@ function buildPremiumBankReceiptPdf(startDate, endDate) {
 
     outflows.forEach((o) => {
       const value = Number(o.value || 0);
+      const rowHtml = `
+        <div class="profit-row">
+          <div>
+            <strong>${escapeHtml(o.name || (o.type === "lucro" ? "Lucro realizado" : "Gasto operacional"))}</strong>
+            <span>${escapeHtml(operador)} • ${data}</span>
+          </div>
+          <b class="${o.type === "lucro" ? "" : "negative-text"}">${money(value)}</b>
+        </div>`;
+      
       if (o.type === "lucro") {
         totalLucroRealizado += value;
-        lucroRows.push(`
-          <div class="profit-row">
-            <div>
-              <strong>${escapeHtml(o.name || "Lucro realizado")}</strong>
-              <span>${escapeHtml(operador)} • ${data}</span>
-            </div>
-            <b>${money(value)}</b>
-          </div>
-        `);
+        lucroRows.push(rowHtml);
       } else {
         totalGastos += value;
-        gastoRows.push(`
-          <div class="profit-row">
-            <div>
-              <strong>${escapeHtml(o.name || "Gasto operacional")}</strong>
-              <span>${escapeHtml(operador)} • ${data}</span>
-            </div>
-            <b class="negative-text">${money(value)}</b>
-          </div>
-        `);
+        gastoRows.push(rowHtml);
       }
     });
   });
 
-  // --- A MÁGICA PARA CORRIGIR O ERRO DA FOTO COMEÇA AQUI ---
-  
-  const statusLucro = (totalLucroRealizado - totalGastos) >= 0 ? "Lucro positivo" : "Gastos acima do lucro";
-
-  return `
-    <!DOCTYPE html>
-    <html lang="pt-br">
-    <head>
-      <meta charset="UTF-8">
-      <title>Relatório Bank King</title>
-      <style>
-        /* AQUI VAI O SEU CSS QUE ESTAVA APARECENDO COMO TEXTO */
-        body { font-family: sans-serif; padding: 20px; background: #f4f7f6; color: #333; }
-        .header { background: linear-gradient(135deg,#0b1f4d,#163a8a); color: #fff; padding: 20px; border-radius: 12px; margin-bottom: 20px; }
-        .profit-row { display: flex; justify-content: space-between; align-items: center; background: #fff; padding: 10px; border-bottom: 1px solid #eee; }
-        .profit-row span { font-size: 11px; color: #666; display: block; }
-        .negative-text { color: #be2633; }
-        .summary-card { background: #fff; padding: 15px; border-radius: 12px; margin-bottom: 20px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
-        .print-btn { background: #0b1f4d; color: #fff; padding: 10px 20px; border: none; border-radius: 8px; cursor: pointer; margin-top: 20px; }
-        @media print { .print-btn { display: none; } }
-      </style>
-    </head>
-    <body>
-      <div class="header">
-        <h1>Bank King</h1>
-        <p>Relatório Detalhado: ${formatDateBR(startDate)} até ${formatDateBR(endDate)}</p>
-        <p>Gerado em: ${new Date().toLocaleString('pt-BR')}</p>
-      </div>
-
-      <div class="summary-card">
-        <p><strong>Saldo Reca:</strong> ${money(totalRecaPeriodo)}</p>
-        <p><strong>Diferença Caixa:</strong> ${money(diffTotal)}</p>
-        <p><strong>Lucro Realizado:</strong> ${money(totalLucroRealizado)}</p>
-        <p><strong>Total Gastos:</strong> ${money(totalGastos)}</p>
-        <hr>
-        <p><strong>Status:</strong> ${statusLucro}</p>
-      </div>
-
-      <h3>Detalhamento de Lucros</h3>
-      ${lucroRows.join('') || '<p>Nenhum lucro registrado no período.</p>'}
-
-      <h3>Detalhamento de Gastos</h3>
-      ${gastoRows.join('') || '<p>Nenhum gasto registrado no período.</p>'}
-    </body>
-    </html>
-  `;
-}
-  // ... (código de cálculo acima)
-
   const alertaTexto = totalLucroRealizado > totalGastos ? "Resultado positivo" : "Gastos acima do lucro";
   const alertaClass = totalLucroRealizado > totalGastos ? "alert-success" : "alert-danger";
 
+  // 2. Geração das linhas de fechamento individuais
   const rows = filtered.map((item, index) => {
     const t = item.turno || {};
     const b = getTurnoBreakdown(t);
@@ -3374,46 +3273,59 @@ function buildPremiumBankReceiptPdf(startDate, endDate) {
           </div>
         </div>
         <div class="receipt-grid">
-           </div>
+           <p style="padding:10px; font-size:12px; color:#666;">Resumo de caixa processado para este turno.</p>
+        </div>
       </div>`;
   }).join("");
 
-  // O ERRO ESTAVA AQUI: A função deve retornar a string de HTML completa
+  // 3. O ÚNICO RETURN da função
   return `
 <!DOCTYPE html>
-<html>
+<html lang="pt-br">
 <head>
     <meta charset="UTF-8">
+    <title>Relatório Bank King</title>
     <style>
-        /* O CSS deve estar obrigatoriamente dentro da tag <style> */
-        body { font-family: sans-serif; background: #f4f7f6; padding: 20px; }
-        .header { background: #0b1f4d; color: #fff; padding: 20px; border-radius: 12px; }
+        body { font-family: sans-serif; background: #f4f7f6; padding: 20px; color: #333; }
+        .header { background: linear-gradient(135deg,#0b1f4d,#163a8a); color: #fff; padding: 20px; border-radius: 12px; margin-bottom: 20px; }
         .kpi-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin: 20px 0; }
-        .kpi-card { background: #fff; padding: 15px; border-radius: 12px; border: 1px solid #ddd; }
+        .kpi-card { background: #fff; padding: 15px; border-radius: 12px; border: 1px solid #e5eaf2; box-shadow: 0 4px 6px rgba(0,0,0,0.05); }
+        .kpi-card span { display: block; font-size: 10px; text-transform: uppercase; color: #667085; font-weight: 800; }
+        .kpi-card strong { font-size: 18px; display: block; margin-top: 5px; }
+        .profit-row { display: flex; justify-content: space-between; align-items: center; background: #fff; padding: 10px; border-bottom: 1px solid #eee; }
+        .profit-row span { font-size: 11px; color: #666; display: block; }
+        .negative-text { color: #be2633; }
         .alert-success { border-left: 5px solid #128044; background: #e8f8ee; }
         .alert-danger { border-left: 5px solid #be2633; background: #fee2e2; }
-        /* Adicione o restante do seu CSS aqui */
+        .receipt-card { background: #fff; border-radius: 12px; margin-top: 15px; border: 1px solid #ddd; overflow: hidden; }
+        .turn-header { background: #f8fafc; padding: 10px 15px; display: flex; justify-content: space-between; border-bottom: 1px solid #eee; }
+        .print-btn { background: #0b1f4d; color: #fff; padding: 12px 25px; border: none; border-radius: 8px; cursor: pointer; position: fixed; bottom: 20px; right: 20px; font-weight: bold; }
+        @media print { .print-btn { display: none; } }
     </style>
 </head>
 <body>
     <div class="header">
-        <h1>Bank King - Relatório</h1>
-        <p>Período: ${formatDateBR(startDate)} a ${formatDateBR(endDate)}</p>
+        <h1>Bank King - Relatório Detalhado</h1>
+        <p>Período: ${formatDateBR(startDate)} até ${formatDateBR(endDate)}</p>
     </div>
 
     <div class="kpi-grid">
         <div class="kpi-card"><span>Saldo Reca</span><strong>${money(totalRecaPeriodo)}</strong></div>
-        <div class="kpi-card"><span>Lucro</span><strong>${money(totalLucroRealizado)}</strong></div>
+        <div class="kpi-card"><span>Diferença Total</span><strong>${money(diffTotal)}</strong></div>
+        <div class="kpi-card"><span>Lucro Bruto</span><strong>${money(totalLucroRealizado)}</strong></div>
         <div class="kpi-card ${alertaClass}"><span>Status</span><strong>${alertaTexto}</strong></div>
     </div>
 
-    ${rows}
+    <h3>Detalhamento de Fluxo</h3>
+    ${lucroRows.join('')}
+    ${gastoRows.join('')}
 
-    <button class="print-btn" onclick="window.print()">Imprimir Relatório</button>
+    <h3>Histórico de Fechamentos</h3>
+    ${rows || '<p>Nenhum registro individual.</p>'}
+
+    <button class="print-btn" onclick="window.print()">Imprimir / PDF</button>
 </body>
 </html>`;
-} // ESTA CHAVE FECHA A FUNÇÃO buildPremiumBankReceiptPdf
-`;
 }
 
 async function createInternalUser() {
