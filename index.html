@@ -2220,11 +2220,17 @@ function renderMonthlyGoalCard() {
       return;
     }
 
-    (t.outflows || []).forEach((o) => {
-      if (o.type === "lucro") {
-        totalRealizado += Number(o.value || 0);
-      }
-    });
+  (t.outflows || []).forEach((o) => {
+  const tipo = String(o.type || "").toLowerCase();
+
+  if (
+    tipo === "lucro" ||
+    tipo === "retirada" ||
+    tipo === "retiradas"
+  ) {
+    totalRealizado += Number(o.value || 0);
+  }
+});
   });
 
   const percent = Math.min((totalRealizado / MONTHLY_GOAL_TARGET) * 100, 100);
