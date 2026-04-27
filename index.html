@@ -1633,8 +1633,6 @@
   </div>
 </section>
 
-      <section id="rankingTableSection" class="section-card blue-section hidden"><div class="section-head">Ranking operadores</div><div class="section-body"><div style="overflow:auto;"><table class="ranking-table"><thead><tr><th>Operador</th><th>Fechamentos</th><th>Sobra</th><th>Falta</th><th>Saídas</th></tr></thead><tbody id="operatorRankingBody"><tr><td colspan="5">Sem dados ainda.</td></tr></tbody></table></div></div></section>
-
       <section class="section-card"><div class="section-head" style="display:flex;justify-content:space-between;align-items:center;"><span>Histórico</span><button id="toggleHistoryBtn" class="balance-toggle" style="background:#f8fafc;color:var(--text);border:1px solid rgba(10,16,32,.08);" type="button">Ver</button></div><div class="section-body"><div id="historyList" class="history-list hidden"></div></div></section>
     </main>
 
@@ -1985,7 +1983,6 @@ function renderRanking(range = rankingRange) {
 
   container.innerHTML = rows || `<div class="ranking-empty">Sem dados para este período.</div>`;
 
-  renderRankingTable();
 }
 
     function renderRankingTable() {
