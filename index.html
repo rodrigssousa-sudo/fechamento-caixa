@@ -1986,6 +1986,7 @@
     let historyListenerStarted = false;
     let rankingChart = null;
     let rankingRange = "day";
+    let saveInProgress = false;
 
     const byId = (id) => document.getElementById(id);
     const authScreen = byId("authScreen");
@@ -2779,6 +2780,14 @@ async function recalcAllHistory() {
 
 async function saveTurn() {
   try {
+if (saveInProgress) return;
+
+saveInProgress = true;
+
+setFinalizarLoading(
+  true,
+  editingTurnId || window.editingTurnId ? "Salvando edição" : "Finalizando"
+);
     const userData = currentUserData || await getCurrentUserData();
 
     if (!userData || userData.status !== "active") {
@@ -2954,33 +2963,56 @@ const item = {
 };
 
 if (idEmEdicao) {
-  await updateDoc(doc(db, "history", idEmEdicao), {
-    ...item,
-    editedAt: Date.now(),
-    editedBy: userData.email || userData.uid
-  });
+await updateDoc(doc(db, "history", idEmEdicao), {
+  ...item,
+  editedAt: Date.now(),
+  editedBy: userData.email || userData.uid
+});
 
-  editingTurnId = null;
-  window.editingTurnId = null;
+await recalcAllHistory();
 
-  await recalcAllHistory();
+editingTurnId = null;
+window.editingTurnId = null;
 
-  alert("Histórico atualizado com sucesso.");
-  location.reload();
-  return;
+showToast("Histórico atualizado com sucesso.", "success");
+
+clearTurn("t2");
+
+render();
+renderHistory();
+renderTopPreviousCards();
+renderMonthlyGoalCard();
+
+saveInProgress = false;
+setFinalizarLoading(false);
+
+return;
 }
-
 await addDoc(collection(db, "history"), item);
 
-alert("Turno salvo");
-location.reload();
+showToast("Turno salvo com sucesso.", "success");
+
+// limpa campos (se já tiver função)
+clearTurn("t2");
+
+// re-renderiza tudo sem reload
+render();
+renderHistory();
+renderTopPreviousCards();
+renderMonthlyGoalCard();
+
+// libera botão
+saveInProgress = false;
+setFinalizarLoading(false);
 
 } catch (error) {
   console.error("Erro ao salvar turno:", error);
   alert(error.message || "Erro ao salvar turno.");
-}
-}
 
+  saveInProgress = false;
+  setFinalizarLoading(false);
+}
+}
 function clearTurn(turno) {renderTopPreviousCards
   [`${turno}_nome_operador`,`${turno}_data_fechamento`,`${turno}_banco`,`${turno}_suprema`,`${turno}_pppoker`,`${turno}_buffalo`,`${turno}_ganamos`,`${turno}_cargas`,`${turno}_cargas_poker`].forEach((id) => {
     const el = byId(id);
@@ -4115,6 +4147,11 @@ function enableSmartMoneyInput(id) {
 
   input.addEventListener("click", () => {
     input.select();
+  });
+
+  // 👇 limpa estado quando sai
+  input.addEventListener("blur", () => {
+    delete input.dataset.edited;
   });
 }
 
