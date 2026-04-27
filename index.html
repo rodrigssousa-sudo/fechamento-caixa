@@ -1619,6 +1619,34 @@
   width: 0%;
   min-width: 6px; /* 👈 evita sumir completamente */
 }
+
+  /* ===== FIX DEFINITIVO BARRA META ===== */
+
+#monthlyGoalCard .goal-bar-wrapper{
+  display:block !important;
+  width:100% !important;
+  height:auto !important;
+  margin-top:20px !important;
+}
+
+#monthlyGoalCard .goal-bar-track{
+  display:block !important;
+  width:100% !important;
+  height:18px !important;
+  min-height:18px !important;
+  background:#e5e7eb !important;
+  border-radius:999px !important;
+  overflow:hidden !important;
+}
+
+#goalBarFill{
+  display:block !important;
+  height:18px !important;
+  min-height:18px !important;
+  width:10% !important; /* 👈 TEMP pra garantir visual */
+  background:linear-gradient(90deg,#16a34a,#22c55e,#4ade80) !important;
+  border-radius:999px !important;
+}
   
   </style>
 </head>
