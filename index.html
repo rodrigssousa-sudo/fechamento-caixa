@@ -1647,6 +1647,121 @@
   background:linear-gradient(90deg,#16a34a,#22c55e,#4ade80) !important;
   border-radius:999px !important;
 }
+
+  /* ===== RANKING HORIZONTAL EM BARRAS ===== */
+
+#rankingSimpleList{
+  display:grid!important;
+  gap:0!important;
+  background:#fff!important;
+  border-radius:26px!important;
+  overflow:hidden!important;
+}
+
+.ranking-bar-card{
+  display:grid!important;
+  grid-template-columns:48px 1fr 170px!important;
+  gap:18px!important;
+  align-items:center!important;
+  padding:22px!important;
+  border-bottom:1px solid rgba(10,16,32,.07)!important;
+}
+
+.ranking-bar-card:last-child{
+  border-bottom:none!important;
+}
+
+.ranking-bar-pos{
+  font-size:26px!important;
+  font-weight:950!important;
+  color:#0a1020!important;
+  text-align:center!important;
+}
+
+.ranking-bar-info{
+  display:grid!important;
+  gap:10px!important;
+  min-width:0!important;
+}
+
+.ranking-bar-top{
+  display:flex!important;
+  align-items:center!important;
+  gap:8px!important;
+  flex-wrap:wrap!important;
+}
+
+.ranking-bar-top strong{
+  font-size:18px!important;
+  font-weight:950!important;
+  color:#0a1020!important;
+}
+
+.ranking-bar-top span{
+  font-size:13px!important;
+  color:#667085!important;
+  font-weight:800!important;
+}
+
+.ranking-bar-track{
+  width:100%!important;
+  height:15px!important;
+  border-radius:999px!important;
+  background:#edf1f6!important;
+  overflow:hidden!important;
+}
+
+.ranking-bar-fill{
+  display:block!important;
+  height:100%!important;
+  min-width:8px!important;
+  border-radius:999px!important;
+}
+
+.ranking-bar-fill.negative{
+  background:linear-gradient(90deg,#be2633,#ff4757)!important;
+}
+
+.ranking-bar-fill.positive{
+  background:linear-gradient(90deg,#128044,#24c36b)!important;
+}
+
+.ranking-bar-fill.neutral{
+  background:#94a3b8!important;
+}
+
+.ranking-bar-value{
+  font-size:17px!important;
+  font-weight:950!important;
+  text-align:right!important;
+  white-space:nowrap!important;
+}
+
+.ranking-bar-value.negative{
+  color:#be2633!important;
+}
+
+.ranking-bar-value.positive{
+  color:#128044!important;
+}
+
+.ranking-bar-value.neutral{
+  color:#64748b!important;
+}
+
+@media(max-width:700px){
+  .ranking-bar-card{
+    grid-template-columns:34px 1fr!important;
+    gap:12px!important;
+    padding:16px!important;
+  }
+
+  .ranking-bar-value{
+    grid-column:2!important;
+    text-align:left!important;
+    font-size:15px!important;
+  }
+}
   
   </style>
 </head>
