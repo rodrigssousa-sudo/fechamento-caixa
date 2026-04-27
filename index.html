@@ -2906,7 +2906,11 @@ function createDynamicRow(turno) {
           const dateB = b.submittedAt?.toDate?.()?.getTime?.() || Number(b.submittedAt) || new Date(b.fechamentoDate || b.turno?.dataFechamento || 0).getTime();
           return dateB - dateA;
         });
-        renderHistory(); renderCompare(); renderRanking(); renderTopPreviousCards();
+        renderHistory(); 
+renderCompare(); 
+renderRanking(); 
+renderTopPreviousCards();
+renderMonthlyGoalCard();
       }, (error) => console.error("Erro ao carregar histórico:", error));
     }
 
