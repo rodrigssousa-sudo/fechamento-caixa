@@ -2267,13 +2267,13 @@ function renderMonthlyGoalCard() {
     }
   }
 
-  if (status) {
-    status.innerHTML =
-      percent >= 100
-        ? `Meta batida 🔥 • ${percent.toFixed(0)}%`
-        : `${percent.toFixed(0)}% concluído • faltam ${money(restante)}<br>
-           <small>Projeção mensal: ${money(projecaoMes)} • ${percentProjetado.toFixed(0)}%</small>`;
-  }
+ if (status) {
+  status.innerHTML =
+    percent >= 100
+      ? `Meta batida 🔥 • ${money(totalRealizado)} realizado • ${percent.toFixed(0)}%`
+      : `${money(totalRealizado)} realizado • faltam ${money(restante)}<br>
+         <small>Projeção mensal: ${money(projecaoMes)} • ${percentProjetado.toFixed(0)}%</small>`;
+}
 }
     
     function render() {
