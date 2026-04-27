@@ -4271,92 +4271,84 @@ byId("adminOpenBtn")?.addEventListener("click", async () => {
   }
 });
 
-function enableSmartMoneyInput(id) {
-  const input = document.getElementById(id);
-  if (!input) return;
+<script>
+  function enableSmartMoneyInput(id) {
+    const input = document.getElementById(id);
+    if (!input) return;
 
-  input.addEventListener("focus", () => {
-    setTimeout(() => input.select(), 50);
+    input.addEventListener("focus", () => {
+      setTimeout(() => input.select(), 50);
+    });
+
+    input.addEventListener("click", () => {
+      input.select();
+    });
+
+    input.addEventListener("blur", () => {
+      delete input.dataset.edited;
+    });
+
+    input.addEventListener("paste", (e) => {
+      e.preventDefault();
+
+      const text = (e.clipboardData || window.clipboardData).getData("text");
+      const numeric = text.replace(/\D/g, "");
+
+      if (!numeric) {
+        input.value = "";
+        return;
+      }
+
+      let value = (parseInt(numeric, 10) / 100).toFixed(2);
+
+      value = value
+        .replace(".", ",")
+        .replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+
+      input.value = value;
+    });
+  }
+
+  function showToast(message, type = "success") {
+    const toast = document.createElement("div");
+
+    toast.className = `ck-toast ${type}`;
+    toast.textContent = message;
+
+    document.body.appendChild(toast);
+
+    requestAnimationFrame(() => {
+      toast.classList.add("show");
+    });
+
+    setTimeout(() => {
+      toast.classList.remove("show");
+      setTimeout(() => toast.remove(), 300);
+    }, 2600);
+  }
+
+  document.addEventListener("DOMContentLoaded", () => {
+    [
+      "t2_banco",
+      "t2_suprema",
+      "t2_pppoker",
+      "t2_buffalo",
+      "t2_ganamos",
+      "t2_cargas",
+      "t2_cargas_poker"
+    ].forEach(enableSmartMoneyInput);
+
+    byId("adminCreateUserBtn")?.addEventListener("click", createInternalUser);
+
+    byId("recalculateHistoryBtn")?.addEventListener("click", async () => {
+      const allowed = await requireAdmin();
+      if (!allowed) return;
+
+      await recalculateAllHistory();
+    });
+
+    initAuthEvents();
   });
-
-  input.addEventListener("click", () => {
-    input.select();
-  });
-
-  input.addEventListener("blur", () => {
-    delete input.dataset.edited;
-  });
-
-  // 🔥 TRATAMENTO DE COLAR (AQUI ESTÁ O OURO)
-  input.addEventListener("paste", (e) => {
-    e.preventDefault();
-
-    let text = (e.clipboardData || window.clipboardData).getData("text");
-
-    // remove tudo que não for número
-    let numeric = text.replace(/\D/g, "");
-
-    if (!numeric) {
-      input.value = "";
-      return;
-    }
-
-    // transforma em número com centavos
-    let value = (parseInt(numeric, 10) / 100).toFixed(2);
-
-    // formata BR
-    value = value
-      .replace(".", ",")
-      .replace(/\B(?=(\d{3})+(?!\d))/g, ".");
-
-    input.value = value;
-  });
-}
-/* ✅ CRIAR USUÁRIO INTERNO PELO PAINEL ADMIN */
-document.addEventListener("DOMContentLoaded", () => {
-
-  [
-    "t2_banco",
-    "t2_suprema",
-    "t2_pppoker",
-    "t2_buffalo",
-    "t2_ganamos",
-    "t2_cargas",
-    "t2_cargas_poker"
-  ].forEach(enableSmartMoneyInput);
-
-  byId("adminCreateUserBtn")?.addEventListener("click", createInternalUser);
-
-  byId("recalculateHistoryBtn")?.addEventListener("click", async () => {
-    const allowed = await requireAdmin();
-    if (!allowed) return;
-
-    await recalculateAllHistory();
-  });
-
-  initAuthEvents();
-
-});
-
-/* 🔥 COLE AQUI (FORA DO DOMContentLoaded) */
-function showToast(message, type = "success") {
-  const toast = document.createElement("div");
-
-  toast.className = `ck-toast ${type}`;
-  toast.textContent = message;
-
-  document.body.appendChild(toast);
-
-  requestAnimationFrame(() => {
-    toast.classList.add("show");
-  });
-
-  setTimeout(() => {
-    toast.classList.remove("show");
-    setTimeout(() => toast.remove(), 300);
-  }, 2600);
-}
-
 </script>
 </body>
 </html>
