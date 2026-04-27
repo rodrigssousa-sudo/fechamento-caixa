@@ -4149,12 +4149,35 @@ function enableSmartMoneyInput(id) {
     input.select();
   });
 
-  // 👇 limpa estado quando sai
   input.addEventListener("blur", () => {
     delete input.dataset.edited;
   });
-}
 
+  // 🔥 TRATAMENTO DE COLAR (AQUI ESTÁ O OURO)
+  input.addEventListener("paste", (e) => {
+    e.preventDefault();
+
+    let text = (e.clipboardData || window.clipboardData).getData("text");
+
+    // remove tudo que não for número
+    let numeric = text.replace(/\D/g, "");
+
+    if (!numeric) {
+      input.value = "";
+      return;
+    }
+
+    // transforma em número com centavos
+    let value = (parseInt(numeric, 10) / 100).toFixed(2);
+
+    // formata BR
+    value = value
+      .replace(".", ",")
+      .replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+
+    input.value = value;
+  });
+}
 /* ✅ CRIAR USUÁRIO INTERNO PELO PAINEL ADMIN */
 document.addEventListener("DOMContentLoaded", () => {
 
