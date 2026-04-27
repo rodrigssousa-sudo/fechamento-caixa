@@ -1706,6 +1706,130 @@
 .admin-menu-item.warning .admin-menu-dot{
   background: linear-gradient(135deg,#ef4444,#f87171);
 }
+
+  /* ===== RANKING HORIZONTAL PREMIUM ===== */
+
+.ranking-simple-list{
+  display:grid!important;
+  gap:0!important;
+  background:#fff;
+  border-radius:26px;
+  overflow:hidden;
+}
+
+.ranking-bar-card{
+  display:grid;
+  grid-template-columns:48px 1fr;
+  gap:18px;
+  align-items:center;
+  padding:20px 22px;
+  border-bottom:1px solid rgba(10,16,32,.07);
+}
+
+.ranking-bar-card:last-child{
+  border-bottom:none;
+}
+
+.ranking-bar-pos{
+  font-size:24px;
+  font-weight:950;
+  color:#0a1020;
+  text-align:center;
+}
+
+.ranking-bar-info{
+  display:grid;
+  gap:10px;
+  min-width:0;
+}
+
+.ranking-bar-top{
+  display:flex;
+  align-items:baseline;
+  gap:8px;
+  flex-wrap:wrap;
+}
+
+.ranking-bar-top strong{
+  font-size:17px;
+  font-weight:950;
+  color:#0a1020;
+}
+
+.ranking-bar-top span{
+  font-size:13px;
+  color:#667085;
+  font-weight:800;
+}
+
+.ranking-bar-track{
+  width:100%;
+  height:14px;
+  border-radius:999px;
+  background:#edf1f6;
+  overflow:hidden;
+  box-shadow:inset 0 1px 2px rgba(10,16,32,.06);
+}
+
+.ranking-bar-fill{
+  height:100%;
+  border-radius:999px;
+  transition:width .35s ease;
+}
+
+.ranking-bar-fill.negative{
+  background:linear-gradient(90deg,#be2633,#ff4757);
+}
+
+.ranking-bar-fill.positive{
+  background:linear-gradient(90deg,#128044,#24c36b);
+}
+
+.ranking-bar-fill.neutral{
+  background:#94a3b8;
+}
+
+.ranking-bar-value{
+  font-size:18px;
+  font-weight:950;
+  white-space:nowrap;
+}
+
+.ranking-bar-value.negative{
+  color:#be2633;
+}
+
+.ranking-bar-value.positive{
+  color:#128044;
+}
+
+.ranking-bar-value.neutral{
+  color:#64748b;
+}
+
+@media(max-width:700px){
+  .ranking-bar-card{
+    grid-template-columns:34px 1fr;
+    gap:12px;
+    padding:16px;
+  }
+
+  .ranking-bar-pos{
+    font-size:20px;
+  }
+
+  .ranking-bar-top strong{
+    font-size:15px;
+  }
+
+  .ranking-bar-top span{
+    font-size:12px;
+  }
+
+  .ranking-bar-value{
+    font-size:15px;
+  }
+}
   
   </style>
 </head>
@@ -2195,25 +2319,23 @@ function renderRanking(range = rankingRange) {
 
     const nome = item.nomeOperador || "Sem nome";
     const diff = calcularDiffReal(item.turno || {}, previousItem.turno || {});
-    const saidas = Number(item.turno?.saidasTotal || item.turno?.saidas || 0);
 
     if (!ranking[nome]) {
       ranking[nome] = {
         qtd: 0,
-        diff: 0,
-        saidas: 0
+        diff: 0
       };
     }
 
     ranking[nome].qtd += 1;
     ranking[nome].diff += diff;
-    ranking[nome].saidas += saidas;
   });
 
   const list = Object.entries(ranking)
     .map(([nome, r]) => ({
       nome,
-      ...r,
+      qtd: r.qtd,
+      diff: r.diff,
       absDiff: Math.abs(r.diff)
     }))
     .sort((a, b) => b.absDiff - a.absDiff);
@@ -2232,26 +2354,25 @@ function renderRanking(range = rankingRange) {
         <div class="ranking-bar-info">
           <div class="ranking-bar-top">
             <strong>${escapeHtml(r.nome)}</strong>
-            <span style="opacity:.6; font-weight:600;">   ${r.qtd} fechamento${r.qtd > 1 ? "s" : ""} </span>
+            <span>${r.qtd} fechamento${r.qtd > 1 ? "s" : ""}</span>
           </div>
 
           <div class="ranking-bar-track">
             <div 
-              class="ranking-bar-fill ${isNegative ? "negative" : isPositive ? "positive" : "neutral"}" 
+              class="ranking-bar-fill ${isNegative ? "negative" : isPositive ? "positive" : "neutral"}"
               style="width:${percent}%"
             ></div>
           </div>
-        </div>
 
-        <div class="ranking-bar-value ${isNegative ? "negative" : isPositive ? "positive" : "neutral"}">
-          ${isPositive ? "+" : isNegative ? "-" : ""}${money(r.absDiff)}
+          <div class="ranking-bar-value ${isNegative ? "negative" : isPositive ? "positive" : "neutral"}">
+            ${isPositive ? "+" : isNegative ? "-" : ""}${money(r.absDiff)}
+          </div>
         </div>
       </div>
     `;
   }).join("");
 
   container.innerHTML = rows || `<div class="ranking-empty">Sem dados para este período.</div>`;
-
 }
 
     function renderRankingTable() {
