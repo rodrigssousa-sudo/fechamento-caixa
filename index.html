@@ -369,74 +369,65 @@
 
 .floating-menu{
   position:fixed;
-  top:82px;
-  right:18px;
+  top:72px;
+  right:16px;
   z-index:120;
-  width:380px;
+  width:310px;
   max-width:calc(100vw - 28px);
-  background:rgba(255,255,255,.82)!important;
-  backdrop-filter:blur(26px);
-  -webkit-backdrop-filter:blur(26px);
-  border-radius:30px;
-  padding:14px;
-  box-shadow:
-    0 26px 70px rgba(10,16,32,.16),
-    0 8px 24px rgba(10,16,32,.07);
-  border:1px solid rgba(255,255,255,.95);
+  background:rgba(255,255,255,.90)!important;
+  backdrop-filter:blur(22px);
+  -webkit-backdrop-filter:blur(22px);
+  border-radius:24px;
+  padding:10px;
+  box-shadow:0 18px 45px rgba(10,16,32,.14);
+  border:1px solid rgba(255,255,255,.92);
   display:grid;
-  gap:12px;
+  gap:8px;
 }
 
 .menu-item{
   width:100%;
-  min-height:72px;
-  border-radius:22px;
+  min-height:54px;
+  border-radius:17px;
   border:1px solid rgba(10,16,32,.06);
   background:linear-gradient(180deg,#ffffff,#f8fafc);
   color:#071225;
-  padding:12px 16px;
+  padding:9px 12px;
   cursor:pointer;
   display:flex;
   align-items:center;
   justify-content:space-between;
-  gap:14px;
-  box-shadow:
-    0 10px 26px rgba(10,16,32,.055),
-    inset 0 1px 0 rgba(255,255,255,.9);
+  gap:10px;
+  box-shadow:0 6px 16px rgba(10,16,32,.045);
   transition:all .18s ease;
   text-align:left;
+  font-size:14px;
+  font-weight:950;
+  letter-spacing:-.03em;
 }
 
 .menu-item::before{
   content:"";
-  width:46px;
-  height:46px;
-  min-width:46px;
-  border-radius:16px;
+  width:32px;
+  height:32px;
+  min-width:32px;
+  border-radius:12px;
   background:linear-gradient(135deg,#f6e7b8,#c7a45a);
-  box-shadow:0 10px 22px rgba(199,164,90,.22);
+  box-shadow:0 6px 14px rgba(199,164,90,.20);
 }
 
 .menu-item::after{
   content:"›";
-  font-size:28px;
+  font-size:23px;
   font-weight:900;
   color:#94a3b8;
   margin-left:auto;
 }
 
-.menu-item{
-  font-size:17px;
-  font-weight:950;
-  letter-spacing:-.035em;
-}
-
 .menu-item:hover{
-  transform:translateY(-2px);
+  transform:translateY(-1px);
   background:linear-gradient(135deg,#06152e,#102a56);
   color:#fff;
-  border-color:rgba(199,164,90,.22);
-  box-shadow:0 18px 36px rgba(16,42,86,.22);
 }
 
 .menu-item:hover::before{
@@ -447,32 +438,28 @@
   color:#fff;
 }
 
-@media (max-width:600px){
+@media(max-width:600px){
   .floating-menu{
-    top:62px!important;
+    top:58px!important;
     right:10px!important;
-    width:320px!important;
-    max-width:calc(100vw - 20px)!important;
-    border-radius:28px!important;
-    padding:12px!important;
-    gap:10px!important;
+    width:280px!important;
+    border-radius:22px!important;
+    padding:9px!important;
   }
 
   .menu-item{
-    min-height:64px!important;
-    border-radius:20px!important;
-    font-size:15px!important;
-    padding:10px 14px!important;
+    min-height:50px!important;
+    border-radius:16px!important;
+    font-size:13px!important;
   }
 
   .menu-item::before{
-    width:38px!important;
-    height:38px!important;
-    min-width:38px!important;
-    border-radius:14px!important;
+    width:28px!important;
+    height:28px!important;
+    min-width:28px!important;
+    border-radius:10px!important;
   }
 }
-
 /* estado inicial só quando estiver hidden */
 .floating-menu.hidden{
   opacity:0;
@@ -501,6 +488,22 @@
   transition:all .18s ease;
 }
 
+.menu-backdrop{
+  position:fixed;
+  inset:0;
+  background:rgba(10,16,32,.25);
+  backdrop-filter:blur(4px);
+  z-index:110;
+
+  opacity:0;
+  pointer-events:none;
+  transition:.18s ease;
+}
+
+.menu-backdrop.show{
+  opacity:1;
+  pointer-events:auto;
+}
 
     .modal{position:fixed;inset:0;z-index:200;display:flex;align-items:flex-end;justify-content:center;}
     .modal-backdrop{position:absolute;inset:0;background:rgba(10,16,32,.42);backdrop-filter:blur(8px);}
@@ -1991,15 +1994,29 @@
       <section class="section-card"><div class="section-head" style="display:flex;justify-content:space-between;align-items:center;"><span>Histórico</span><button id="toggleHistoryBtn" class="balance-toggle" style="background:#f8fafc;color:var(--text);border:1px solid rgba(10,16,32,.08);" type="button">Ver</button></div><div class="section-body"><div id="historyList" class="history-list hidden"></div></div></section>
     </main>
 
-   <div id="mainMenu" class="floating-menu hidden">
+<div id="mainMenu" class="floating-menu hidden">
   <button class="menu-item" type="button" id="adminOpenBtn">Admin</button>
   <button class="menu-item" type="button" id="openPdfCustomBtn">Relatórios PDF</button>
   <button class="menu-item" type="button" id="openRankingBtn">Ranking operadores</button>
   <button class="menu-item" type="button" id="recalculateHistoryBtn">Recalcular histórico</button>
 </div>
-  </div>
 
-  <div id="historyModal" class="modal hidden"><div class="modal-backdrop" id="historyModalBackdrop"></div><div class="modal-card"><div class="modal-head"><div><h3 id="historyModalTitle" class="modal-title">Detalhes do turno</h3><div id="historyModalSub" style="color:var(--muted);font-size:13px;margin-top:4px;font-weight:800;"></div></div><button id="closeHistoryModal" class="modal-close" type="button">Fechar</button></div><div id="historyModalBody"></div></div></div>
+<div id="menuBackdrop" class="menu-backdrop"></div>
+</div>
+
+<div id="historyModal" class="modal hidden">
+  <div class="modal-backdrop" id="historyModalBackdrop"></div>
+  <div class="modal-card">
+    <div class="modal-head">
+      <div>
+        <h3 id="historyModalTitle" class="modal-title">Detalhes do turno</h3>
+        <div id="historyModalSub" style="color:var(--muted);font-size:13px;margin-top:4px;font-weight:800;"></div>
+      </div>
+      <button id="closeHistoryModal" class="modal-close" type="button">Fechar</button>
+    </div>
+    <div id="historyModalBody"></div>
+  </div>
+</div>
 
   <div id="pdfRangeModal" class="modal hidden"><div class="modal-backdrop" id="pdfRangeBackdrop"></div><div class="modal-card" style="max-width:540px;"><div class="modal-head"><div><h3 class="modal-title">Relatório PDF</h3><div style="color:var(--muted);font-size:13px;margin-top:4px;font-weight:800;">Escolha o período</div></div><button id="closePdfRangeModal" class="modal-close" type="button">Fechar</button></div><div style="display:grid;gap:14px;"><div class="field"><label for="pdfDateStart">Data inicial</label><input id="pdfDateStart" type="date" /></div><div class="field"><label for="pdfDateEnd">Data final</label><input id="pdfDateEnd" type="date" /></div><button id="confirmExportPdf" class="auth-submit" type="button">Gerar PDF</button></div></div></div>
 
@@ -4005,44 +4022,38 @@ async function createInternalUser() {
 
 const menuToggle = byId("menuToggle");
 const mainMenu = byId("mainMenu");
+const backdrop = byId("menuBackdrop");
 
-function closeMenu() {
+function closeMenu(){
   mainMenu?.classList.add("hidden");
   mainMenu?.classList.remove("show");
+  backdrop?.classList.remove("show");
 }
 
-function openMenu() {
+function openMenu(){
   mainMenu?.classList.remove("hidden");
 
-  requestAnimationFrame(() => {
+  requestAnimationFrame(()=>{
     mainMenu?.classList.add("show");
+    backdrop?.classList.add("show");
   });
 }
 
-function toggleMenu() {
-  if (!mainMenu) return;
-
-  if (mainMenu.classList.contains("hidden")) {
+function toggleMenu(){
+  if(mainMenu.classList.contains("hidden")){
     openMenu();
-  } else {
+  }else{
     closeMenu();
   }
 }
 
-menuToggle?.addEventListener("click", (e) => {
+menuToggle?.addEventListener("click",(e)=>{
   e.preventDefault();
   e.stopPropagation();
   toggleMenu();
 });
 
-mainMenu?.addEventListener("click", (e) => {
-  e.stopPropagation();
-});
-
-document.addEventListener("click", () => {
-  closeMenu();
-});
-
+backdrop?.addEventListener("click", closeMenu);
     byId("openDetailedHistoryBtn")?.addEventListener("click", () => { historyVisible = true; byId("historyList")?.classList.remove("hidden"); byId("toggleHistoryBtn").textContent = "Ocultar"; renderHistory(); setTimeout(() => byId("historyList")?.scrollIntoView({ behavior: "smooth", block: "start" }), 100); });
     byId("toggleHistoryBtn")?.addEventListener("click", () => { historyVisible = !historyVisible; byId("historyList")?.classList.toggle("hidden", !historyVisible); byId("toggleHistoryBtn").textContent = historyVisible ? "Ocultar" : "Ver"; if (historyVisible) renderHistory(); });
     byId("menuHistoryBtn")?.addEventListener("click", async () => { const allowed = await requireAdmin(); if (!allowed) return; mainMenu?.classList.add("hidden"); historyVisible = true; byId("historyList")?.classList.remove("hidden"); byId("toggleHistoryBtn").textContent = "Ocultar"; renderHistory(); setTimeout(() => byId("historyList")?.scrollIntoView({ behavior: "smooth", block: "start" }), 100); });
