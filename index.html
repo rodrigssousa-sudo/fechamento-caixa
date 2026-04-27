@@ -2255,7 +2255,12 @@ function renderMonthlyGoalCard() {
   }
 }
     
-    function render() { renderTopPreviousCards(); renderCompare(); renderRanking(); renderRankingTable(); }
+    function render() {
+  renderTopPreviousCards();
+  renderCompare();
+  renderRanking();
+  renderMonthlyGoalCard();
+}
 
     function renderHistory() {
   const list = byId("historyList");
