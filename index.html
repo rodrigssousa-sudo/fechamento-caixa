@@ -3264,7 +3264,6 @@ function buildPremiumBankReceiptPdf(startDate, endDate) {
   filtered.forEach((item, index) => {
     const t = item.turno || {};
     const b = getTurnoBreakdown(t);
-
     totalRecaPeriodo += Number(b.reca || 0);
 
     const previousItem = filtered[index + 1];
@@ -3278,10 +3277,8 @@ function buildPremiumBankReceiptPdf(startDate, endDate) {
 
     outflows.forEach((o) => {
       const value = Number(o.value || 0);
-
       if (o.type === "lucro") {
         totalLucroRealizado += value;
-
         lucroRows.push(`
           <div class="profit-row">
             <div>
@@ -3293,7 +3290,6 @@ function buildPremiumBankReceiptPdf(startDate, endDate) {
         `);
       } else {
         totalGastos += value;
-
         gastoRows.push(`
           <div class="profit-row">
             <div>
@@ -3307,6 +3303,53 @@ function buildPremiumBankReceiptPdf(startDate, endDate) {
     });
   });
 
+  // --- A MÁGICA PARA CORRIGIR O ERRO DA FOTO COMEÇA AQUI ---
+  
+  const statusLucro = (totalLucroRealizado - totalGastos) >= 0 ? "Lucro positivo" : "Gastos acima do lucro";
+
+  return `
+    <!DOCTYPE html>
+    <html lang="pt-br">
+    <head>
+      <meta charset="UTF-8">
+      <title>Relatório Bank King</title>
+      <style>
+        /* AQUI VAI O SEU CSS QUE ESTAVA APARECENDO COMO TEXTO */
+        body { font-family: sans-serif; padding: 20px; background: #f4f7f6; color: #333; }
+        .header { background: linear-gradient(135deg,#0b1f4d,#163a8a); color: #fff; padding: 20px; border-radius: 12px; margin-bottom: 20px; }
+        .profit-row { display: flex; justify-content: space-between; align-items: center; background: #fff; padding: 10px; border-bottom: 1px solid #eee; }
+        .profit-row span { font-size: 11px; color: #666; display: block; }
+        .negative-text { color: #be2633; }
+        .summary-card { background: #fff; padding: 15px; border-radius: 12px; margin-bottom: 20px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
+        .print-btn { background: #0b1f4d; color: #fff; padding: 10px 20px; border: none; border-radius: 8px; cursor: pointer; margin-top: 20px; }
+        @media print { .print-btn { display: none; } }
+      </style>
+    </head>
+    <body>
+      <div class="header">
+        <h1>Bank King</h1>
+        <p>Relatório Detalhado: ${formatDateBR(startDate)} até ${formatDateBR(endDate)}</p>
+        <p>Gerado em: ${new Date().toLocaleString('pt-BR')}</p>
+      </div>
+
+      <div class="summary-card">
+        <p><strong>Saldo Reca:</strong> ${money(totalRecaPeriodo)}</p>
+        <p><strong>Diferença Caixa:</strong> ${money(diffTotal)}</p>
+        <p><strong>Lucro Realizado:</strong> ${money(totalLucroRealizado)}</p>
+        <p><strong>Total Gastos:</strong> ${money(totalGastos)}</p>
+        <hr>
+        <p><strong>Status:</strong> ${statusLucro}</p>
+      </div>
+
+      <h3>Detalhamento de Lucros</h3>
+      ${lucroRows.join('') || '<p>Nenhum lucro registrado no período.</p>'}
+
+      <h3>Detalhamento de Gastos</h3>
+      ${gastoRows.join('') || '<p>Nenhum gasto registrado no período.</p>'}
+    </body>
+    </html>
+  `;
+}
   const lucroLiquido = totalLucroRealizado - totalGastos;
 
   let alertaTexto = "Operação estável";
