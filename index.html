@@ -1575,6 +1575,19 @@
     font-size:12px;
   }
 }
+
+  .goal-status small{
+  display:block;
+  margin-top:6px;
+  font-size:12px;
+  font-weight:800;
+  color:#667085;
+}
+
+.goal-bar-fill.success{
+  background:linear-gradient(90deg,#128044,#22c55e,#7ee787)!important;
+  box-shadow:0 0 18px rgba(34,197,94,.28);
+}
   
   </style>
 </head>
@@ -2186,8 +2199,11 @@ function renderMonthlyGoalCard() {
   const now = new Date();
   const currentYear = now.getFullYear();
   const currentMonth = now.getMonth();
+  const today = now.getDate();
 
-  let totalRealizado = 0;
+  const daysInMonth = new Date(currentYear, currentMonth + 1, 0).getDate();
+
+  let totalLucroRealizado = 0;
 
   historyCache.forEach((item) => {
     const t = item.turno || {};
@@ -2203,28 +2219,42 @@ function renderMonthlyGoalCard() {
       return;
     }
 
-    let totalDoTurno = 0;
+    let lucroDoTurno = 0;
 
-// 1. Soma saídas diretas (mais confiável no teu sistema)
-totalDoTurno += Number(t.saidasTotal || t.saidas || 0);
+    (t.outflows || []).forEach((o) => {
+      const tipo = String(o.type || "")
+        .toLowerCase()
+        .normalize("NFD")
+        .replace(/[\u0300-\u036f]/g, "");
 
-// 2. Soma outflows detalhados (caso existam separados)
-(t.outflows || []).forEach((o) => {
-  totalDoTurno += Number(o.value || 0);
-});
+      if (
+        tipo === "lucro" ||
+        tipo === "retirada" ||
+        tipo === "retiradas"
+      ) {
+        lucroDoTurno += Number(o.value || 0);
+      }
+    });
 
-// 3. Soma campo de lucro já calculado (backup)
-totalDoTurno += Number(
-  t.lucroRealizadoTotal ||
-  item.lucroRealizadoTotal ||
-  0
-);
+    // Backup para turnos antigos que já tinham total salvo
+    if (!lucroDoTurno) {
+      lucroDoTurno += Number(
+        t.lucroRealizadoTotal ||
+        item.lucroRealizadoTotal ||
+        0
+      );
+    }
 
-    totalRealizado += totalDoTurno;
+    totalLucroRealizado += lucroDoTurno;
   });
 
-  const percent = Math.min((totalRealizado / MONTHLY_GOAL_TARGET) * 100, 100);
-  const restante = Math.max(MONTHLY_GOAL_TARGET - totalRealizado, 0);
+  const percent = Math.min((totalLucroRealizado / MONTHLY_GOAL_TARGET) * 100, 100);
+  const restante = Math.max(MONTHLY_GOAL_TARGET - totalLucroRealizado, 0);
+
+  // Projeção mensal
+  const mediaDiaria = today > 0 ? totalLucroRealizado / today : 0;
+  const projecaoMes = mediaDiaria * daysInMonth;
+  const percentProjetado = (projecaoMes / MONTHLY_GOAL_TARGET) * 100;
 
   const fill = byId("goalBarFill");
   const status = byId("goalStatus");
@@ -2233,20 +2263,23 @@ totalDoTurno += Number(
     fill.style.width = `${percent}%`;
     fill.classList.remove("success", "danger");
 
-    if (totalRealizado > 0) {
+    if (totalLucroRealizado > 0) {
       fill.classList.add("success");
     }
 
-    if (totalRealizado < 0) {
+    if (totalLucroRealizado < 0) {
       fill.classList.add("danger");
     }
   }
 
   if (status) {
     if (percent >= 100) {
-      status.textContent = `Meta batida 🔥 • ${percent.toFixed(0)}%`;
+      status.innerHTML = `Meta batida 🔥 • ${percent.toFixed(0)}%`;
     } else {
-      status.textContent = `${percent.toFixed(0)}% concluído • faltam ${money(restante)}`;
+      status.innerHTML = `
+        ${percent.toFixed(0)}% concluído • faltam ${money(restante)}<br>
+        <small>Projeção mensal: ${money(projecaoMes)} • ${percentProjetado.toFixed(0)}%</small>
+      `;
     }
   }
 }
