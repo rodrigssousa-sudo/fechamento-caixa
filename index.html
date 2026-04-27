@@ -1813,7 +1813,17 @@
   }
 }
   
-  </style>
+</style>
+
+<!-- PWA -->
+<link rel="manifest" href="/manifest.json">
+<meta name="theme-color" content="#06152e">
+
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Bank King">
+
+<link rel="apple-touch-icon" href="/icon-192.png">
+
 </head>
 <body>
 
@@ -3323,23 +3333,7 @@ function buildPremiumBankReceiptPdf(startDate, endDate) {
   }).join("");
 
   return `
-<!DOCTYPE html>
-<html lang="pt-BR">
-<head>
-<meta charset="UTF-8" />
-<title>Relatório Bank King</title>
-
-<style>
-  *{box-sizing:border-box;}
-
-  body{
-    margin:0;
-    padding:22px;
-    font-family:Arial,Helvetica,sans-serif;
-    background:#ffffff;
-    color:#0a1020;
-  }
-
+email
   .page{
     max-width:980px;
     margin:0 auto;
@@ -4294,6 +4288,17 @@ document.addEventListener("DOMContentLoaded", () => {
 
 });
 
-  </script>
+</script>
+
+<script>
+if ("serviceWorker" in navigator) {
+  window.addEventListener("load", () => {
+    navigator.serviceWorker.register("/service-worker.js")
+      .then(() => console.log("PWA ativo"))
+      .catch((error) => console.error("Erro no PWA:", error));
+  });
+}
+</script>
+
 </body>
 </html>
