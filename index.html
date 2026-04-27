@@ -1888,11 +1888,28 @@
       <section class="section-card"><div class="section-head" style="display:flex;justify-content:space-between;align-items:center;"><span>Histórico</span><button id="toggleHistoryBtn" class="balance-toggle" style="background:#f8fafc;color:var(--text);border:1px solid rgba(10,16,32,.08);" type="button">Ver</button></div><div class="section-body"><div id="historyList" class="history-list hidden"></div></div></section>
     </main>
 
-   <div id="mainMenu" class="floating-menu hidden">
-  <button class="menu-item" type="button" id="adminOpenBtn">Admin</button>
-  <button class="menu-item" type="button" id="openPdfCustomBtn">Relatórios PDF</button>
-  <button class="menu-item" type="button" id="openRankingBtn">Ranking operadores</button>
-  <button class="menu-item" type="button" id="recalculateHistoryBtn">Recalcular histórico</button>
+  <div id="mainMenu" class="floating-menu admin-menu hidden">
+
+  <button class="admin-menu-item" type="button" id="adminOpenBtn">
+    <span class="admin-menu-dot"></span>
+    <span>Admin</span>
+  </button>
+
+  <button class="admin-menu-item pdf" type="button" id="openPdfCustomBtn">
+    <span class="admin-menu-dot"></span>
+    <span>Relatórios PDF</span>
+  </button>
+
+  <button class="admin-menu-item rank" type="button" id="openRankingBtn">
+    <span class="admin-menu-dot"></span>
+    <span>Ranking operadores</span>
+  </button>
+
+  <button class="admin-menu-item warning" type="button" id="recalculateHistoryBtn">
+    <span class="admin-menu-dot"></span>
+    <span>Recalcular histórico</span>
+  </button>
+
 </div>
   </div>
 
