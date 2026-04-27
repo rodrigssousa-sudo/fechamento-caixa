@@ -2214,31 +2214,50 @@ function renderMonthlyGoalCard() {
       itemDate.getMonth() !== currentMonth
     ) return;
 
-    let totalDoTurno = 0;
+  let totalDoTurno = 0;
 
-    (t.outflows || []).forEach((o) => {
-      const tipo = String(o.type || "")
-        .toLowerCase()
-        .normalize("NFD")
-        .replace(/[\u0300-\u036f]/g, "");
+// 1. Soma saídas diretas (mais confiável no teu sistema)
+totalDoTurno += Number(t.saidasTotal || t.saidas || 0);
 
-      if (
-        tipo === "lucro" ||
-        tipo === "retirada" ||
-        tipo === "retiradas"
-      ) {
-        totalDoTurno += Number(o.value || 0);
-      }
-    });
+// 2. Soma outflows detalhados (caso existam separados)
+(t.outflows || []).forEach((o) => {
+  const tipo = String(o.type || o.tipo || o.category || "")
+    .toLowerCase()
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "");
+
+  const nome = String(o.name || o.nome || "")
+    .toLowerCase()
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "");
+
+  const isLucro =
+    tipo.includes("lucro") ||
+    tipo.includes("retirada") ||
+    nome.includes("lucro") ||
+    nome.includes("retirada");
+
+  const isGasto =
+    tipo.includes("operacional") ||
+    tipo.includes("gasto") ||
+    nome.includes("gasto") ||
+    nome.includes("despesa");
+
+  if (isLucro && !isGasto) {
+    lucroDoTurno += Number(o.value || o.valor || 0);
+  }
+});
 
     // fallback para fechamentos antigos
-    if (!totalDoTurno) {
-      totalDoTurno += Number(
-        t.lucroRealizadoTotal ||
-        item.lucroRealizadoTotal ||
-        0
-      );
-    }
+   if (!lucroDoTurno) {
+  lucroDoTurno += Number(
+    t.lucroRealizadoTotal ||
+    item.lucroRealizadoTotal ||
+    item.retiradaLucro ||
+    item.turnProfit ||
+    0
+  );
+}
 
     totalRealizado += totalDoTurno;
   });
