@@ -2868,15 +2868,34 @@ if (idEmEdicao) {
 
   await recalcAllHistory();
 
-  alert("Histórico atualizado com sucesso.");
-  location.reload();
-  return;
-}
+alert("Histórico atualizado com sucesso.");
 
-await addDoc(collection(db, "history"), item);
+editingTurnId = null;
+window.editingTurnId = null;
 
-alert("Turno salvo");
-location.reload();
+byId("historyModal")?.classList.add("hidden");
+
+render();
+renderHistory();
+renderTopPreviousCards();
+renderMonthlyGoalCard();
+
+return;
+
+showToast("Histórico atualizado com sucesso.", "success");
+
+editingTurnId = null;
+window.editingTurnId = null;
+
+byId("historyModal")?.classList.add("hidden");
+
+// atualiza tudo sem reload
+render();
+renderHistory();
+renderTopPreviousCards();
+renderMonthlyGoalCard();
+
+return;
 
 } catch (error) {
   console.error("Erro ao salvar turno:", error);
