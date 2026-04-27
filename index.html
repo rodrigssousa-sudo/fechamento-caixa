@@ -2177,26 +2177,7 @@ function renderRanking(range = rankingRange) {
   container.innerHTML = rows || `<div class="ranking-empty">Sem dados para este período.</div>`;
   
 }
-    function renderRankingTable() {
-      const body = byId("operatorRankingBody");
-      if (!body) return;
-      const ranking = {};
-      historyCache.forEach((item, index) => {
-        const previousItem = historyCache[index + 1];
-        if (!previousItem) return;
-        const nome = item.nomeOperador || "Sem nome";
-        const diff = calcularDiffReal(item.turno || {}, previousItem.turno || {});
-        const saidas = Number(item.turno?.saidasTotal || item.turno?.saidas || 0);
-        if (!ranking[nome]) ranking[nome] = { qtd: 0, sobra: 0, falta: 0, saidas: 0 };
-        ranking[nome].qtd += 1;
-        ranking[nome].saidas += saidas;
-        if (diff > 0) ranking[nome].sobra += diff;
-        if (diff < 0) ranking[nome].falta += Math.abs(diff);
-      });
-      const rows = Object.entries(ranking).sort((a, b) => (b[1].sobra - b[1].falta) - (a[1].sobra - a[1].falta)).map(([nome, r]) => `<tr><td>${escapeHtml(nome)}</td><td>${r.qtd}</td><td class="green">${money(r.sobra)}</td><td class="red">${money(r.falta)}</td><td>${money(r.saidas)}</td></tr>`).join("");
-      body.innerHTML = rows || `<tr><td colspan="5">Sem dados ainda.</td></tr>`;
-    }
-
+    
     function renderCompare() {
       if (historyCache.length < 2) return;
       const current = historyCache[0].turno || {};
