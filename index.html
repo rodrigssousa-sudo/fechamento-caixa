@@ -2863,43 +2863,37 @@ if (idEmEdicao) {
     editedBy: userData.email || userData.uid
   });
 
+  await recalcAllHistory();
+
   editingTurnId = null;
   window.editingTurnId = null;
 
-  await recalcAllHistory();
+  byId("historyModal")?.classList.add("hidden");
 
-alert("Histórico atualizado com sucesso.");
+  showToast("Histórico atualizado com sucesso.", "success");
 
-editingTurnId = null;
-window.editingTurnId = null;
+  clearTurn("t2");
+  render();
+  renderHistory();
+  renderTopPreviousCards();
+  renderMonthlyGoalCard();
 
-byId("historyModal")?.classList.add("hidden");
+  return;
+}
 
+await addDoc(collection(db, "history"), item);
+
+showToast("Turno salvo com sucesso.", "success");
+
+clearTurn("t2");
 render();
 renderHistory();
 renderTopPreviousCards();
 renderMonthlyGoalCard();
-
-return;
-
-showToast("Histórico atualizado com sucesso.", "success");
-
-editingTurnId = null;
-window.editingTurnId = null;
-
-byId("historyModal")?.classList.add("hidden");
-
-// atualiza tudo sem reload
-render();
-renderHistory();
-renderTopPreviousCards();
-renderMonthlyGoalCard();
-
-return;
 
 } catch (error) {
   console.error("Erro ao salvar turno:", error);
-  alert(error.message || "Erro ao salvar turno.");
+  showToast(error.message || "Erro ao salvar turno.", "error");
 }
 }
 
