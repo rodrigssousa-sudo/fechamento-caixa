@@ -4255,45 +4255,6 @@ byId("openRankingBtn")?.addEventListener("click", async () => {
   }
 });
 
-function enableSmartMoneyInput(id) {
-  const input = document.getElementById(id);
-  if (!input) return;
-
-  input.addEventListener("focus", () => {
-    setTimeout(() => input.select(), 50);
-  });
-
-  input.addEventListener("click", () => {
-    input.select();
-  });
-
-  input.addEventListener("blur", () => {
-    delete input.dataset.edited;
-  });
-
-  input.addEventListener("paste", (e) => {
-    e.preventDefault();
-
-    const text = (e.clipboardData || window.clipboardData).getData("text");
-    const numeric = text.replace(/\D/g, "");
-
-    if (!numeric) {
-      input.value = "";
-      return;
-    }
-
-    let value = (parseInt(numeric, 10) / 100).toFixed(2);
-
-    value = value
-      .replace(".", ",")
-      .replace(/\B(?=(\d{3})+(?!\d))/g, ".");
-
-    input.value = value;
-
-    render();
-  });
-}
-
 function showToast(message, type = "success") {
   const toast = document.createElement("div");
 
