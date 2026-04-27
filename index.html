@@ -2199,11 +2199,8 @@ function renderMonthlyGoalCard() {
   const now = new Date();
   const currentYear = now.getFullYear();
   const currentMonth = now.getMonth();
-  const today = now.getDate();
 
-  const daysInMonth = new Date(currentYear, currentMonth + 1, 0).getDate();
-
-  let totalLucroRealizado = 0;
+  let totalRealizado = 0;
 
   historyCache.forEach((item) => {
     const t = item.turno || {};
@@ -2215,11 +2212,9 @@ function renderMonthlyGoalCard() {
     if (
       itemDate.getFullYear() !== currentYear ||
       itemDate.getMonth() !== currentMonth
-    ) {
-      return;
-    }
+    ) return;
 
-    let lucroDoTurno = 0;
+    let totalDoTurno = 0;
 
     (t.outflows || []).forEach((o) => {
       const tipo = String(o.type || "")
@@ -2232,29 +2227,24 @@ function renderMonthlyGoalCard() {
         tipo === "retirada" ||
         tipo === "retiradas"
       ) {
-        lucroDoTurno += Number(o.value || 0);
+        totalDoTurno += Number(o.value || 0);
       }
     });
 
-    // Backup para turnos antigos que já tinham total salvo
-    if (!lucroDoTurno) {
-      lucroDoTurno += Number(
+    // fallback para fechamentos antigos
+    if (!totalDoTurno) {
+      totalDoTurno += Number(
         t.lucroRealizadoTotal ||
         item.lucroRealizadoTotal ||
         0
       );
     }
 
-    totalLucroRealizado += lucroDoTurno;
+    totalRealizado += totalDoTurno;
   });
 
-  const percent = Math.min((totalLucroRealizado / MONTHLY_GOAL_TARGET) * 100, 100);
-  const restante = Math.max(MONTHLY_GOAL_TARGET - totalLucroRealizado, 0);
-
-  // Projeção mensal
-  const mediaDiaria = today > 0 ? totalLucroRealizado / today : 0;
-  const projecaoMes = mediaDiaria * daysInMonth;
-  const percentProjetado = (projecaoMes / MONTHLY_GOAL_TARGET) * 100;
+  const percent = Math.min((totalRealizado / MONTHLY_GOAL_TARGET) * 100, 100);
+  const restante = Math.max(MONTHLY_GOAL_TARGET - totalRealizado, 0);
 
   const fill = byId("goalBarFill");
   const status = byId("goalStatus");
@@ -2263,24 +2253,15 @@ function renderMonthlyGoalCard() {
     fill.style.width = `${percent}%`;
     fill.classList.remove("success", "danger");
 
-    if (totalLucroRealizado > 0) {
-      fill.classList.add("success");
-    }
-
-    if (totalLucroRealizado < 0) {
-      fill.classList.add("danger");
-    }
+    if (percent >= 100) fill.classList.add("success");
+    else if (percent < 35) fill.classList.add("danger");
   }
 
   if (status) {
-    if (percent >= 100) {
-      status.innerHTML = `Meta batida 🔥 • ${percent.toFixed(0)}%`;
-    } else {
-      status.innerHTML = `
-        ${percent.toFixed(0)}% concluído • faltam ${money(restante)}<br>
-        <small>Projeção mensal: ${money(projecaoMes)} • ${percentProjetado.toFixed(0)}%</small>
-      `;
-    }
+    status.textContent =
+      percent >= 100
+        ? `Meta batida • ${percent.toFixed(1)}% realizado`
+        : `Faltam ${money(restante)} • ${percent.toFixed(1)}% realizado`;
   }
 }
     
