@@ -4726,12 +4726,17 @@ menuToggle?.addEventListener("click",(e)=>{
 
 backdrop?.addEventListener("click", closeMenu);
 
-/* ✅ HISTÓRICO — SISTEMA ÚNICO */
-const historySection = byId("historySection");
-const historyText = byId("historyEyeText");
+// ===== HISTÓRICO =====
+const historySection = document.getElementById("historySection");
+const historyText = document.getElementById("historyEyeText");
+const historyList = document.getElementById("historyList");
+const toggleBtn = document.getElementById("toggleHistoryBtn");
 
 function setHistoryVisible(show) {
-  if (!historySection) return;
+  if (!historySection) {
+    console.log("❌ historySection não encontrado");
+    return;
+  }
 
   historySection.classList.toggle("history-hidden", !show);
 
@@ -4740,15 +4745,19 @@ function setHistoryVisible(show) {
   }
 
   if (show) {
-    byId("historyList")?.classList.remove("hidden");
+    historyList?.classList.remove("hidden");
 
     if (typeof renderHistory === "function") {
       renderHistory();
+    } else {
+      console.log("❌ renderHistory não existe");
     }
   }
 }
 
-byId("toggleHistoryBtn")?.addEventListener("click", () => {
+toggleBtn?.addEventListener("click", () => {
+  console.log("🟢 Clique no histórico");
+
   const isHidden = historySection?.classList.contains("history-hidden");
   setHistoryVisible(isHidden);
 });
