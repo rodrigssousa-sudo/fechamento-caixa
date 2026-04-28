@@ -2090,13 +2090,14 @@ select:focus,
     </div>
   </div>
 
-  <nav class="sidebar-nav">
-    <button type="button" class="sidebar-item" id="sideHomeBtn">Início</button>
-    <button type="button" class="sidebar-item" id="sideHistoryBtn">Histórico</button>
-    <button type="button" class="sidebar-item" id="sideRankingBtn">Ranking</button>
-    <button type="button" class="sidebar-item" id="sidePdfBtn">Relatórios PDF</button>
-    <button type="button" class="sidebar-item" id="sideAdminBtn">Admin</button>
-  </nav>
+ <nav class="sidebar-nav">
+  <button type="button" class="sidebar-item" id="sideHomeBtn">Início</button>
+  <button type="button" class="sidebar-item" id="sideHistoryBtn">Histórico</button>
+  <button type="button" class="sidebar-item" id="sideGoalBtn">Meta mensal</button>
+  <button type="button" class="sidebar-item" id="sideRankingBtn">Ranking</button>
+  <button type="button" class="sidebar-item" id="sidePdfBtn">Relatórios PDF</button>
+  <button type="button" class="sidebar-item" id="sideAdminBtn">Admin</button>
+</nav>
 
   <div class="sidebar-bottom">
     <button type="button" class="sidebar-item muted" id="sideLogoutBtn">Sair</button>
@@ -2144,30 +2145,6 @@ select:focus,
 
       <div id="usersList" class="admin-users-list"></div>
     </div>
-
-    <section class="user-card">
-      <div class="user-info">
-        <div id="activeUserName" class="user-name">Usuário</div>
-        <div id="activeUserEmail" class="user-email">email@exemplo.com</div>
-        <div id="activeUserRole"></div>
-      </div>
-
-      <button id="logoutBtn" class="logout-btn" type="button">Sair</button>
-    </section>
-
-    <section id="monthlyGoalCard" class="section-card hidden">
-      <div class="section-head">Meta mensal</div>
-
-      <div class="section-body">
-        <div class="goal-bar-wrapper">
-          <div class="goal-bar-track">
-            <div id="goalBarFill" class="goal-bar-fill"></div>
-          </div>
-        </div>
-
-        <div id="goalStatus" class="goal-status">Carregando...</div>
-      </div>
-    </section>
 
     <section class="balance-card">
       <div>
@@ -2381,6 +2358,33 @@ select:focus,
     </div>
 
     <div id="historyModalBody"></div>
+  </div>
+</div>
+
+ <div id="goalModal" class="modal hidden">
+  <div class="modal-backdrop" id="goalModalBackdrop"></div>
+
+  <div class="modal-card" style="max-width:620px;">
+    <div class="modal-head">
+      <div>
+        <h3 class="modal-title">Meta mensal</h3>
+        <div style="color:var(--muted);font-size:13px;margin-top:4px;font-weight:800;">
+          Progresso do mês atual
+        </div>
+      </div>
+
+      <button id="closeGoalModal" class="modal-close" type="button">Fechar</button>
+    </div>
+
+    <div class="goal-bar-wrapper">
+      <div class="goal-bar-track">
+        <div id="goalBarFill" class="goal-bar-fill"></div>
+      </div>
+    </div>
+
+    <div id="goalStatus" class="goal-status">
+      Carregando...
+    </div>
   </div>
 </div>
 
@@ -2857,15 +2861,18 @@ function renderRanking(range = rankingRange) {
 const MONTHLY_GOAL_TARGET = 40000000;
 
 function renderMonthlyGoalCard() {
-  const card = byId("monthlyGoalCard");
-  if (!card) return;
+  const fill = byId("goalBarFill");
+const status = byId("goalStatus");
+if (!fill || !status) return;
 
   const canView =
     currentUserData?.role === "admin" ||
     currentUserData?.role === "supervisor";
 
-  card.classList.toggle("hidden", !canView);
-  if (!canView) return;
+  if (!canView) {
+  status.innerHTML = "Acesso permitido apenas para admin ou supervisor.";
+  return;
+}
 
   const now = new Date();
   const currentYear = now.getFullYear();
@@ -4643,6 +4650,24 @@ async function createInternalUser() {
       "Usuário";
 
     const userEmail = user.email || "";
+
+   byId("sideGoalBtn")?.addEventListener("click", () => {
+  closeBkSidebar?.();
+
+  if (typeof renderMonthlyGoalCard === "function") {
+    renderMonthlyGoalCard();
+  }
+
+  byId("goalModal")?.classList.remove("hidden");
+});
+
+byId("closeGoalModal")?.addEventListener("click", () => {
+  byId("goalModal")?.classList.add("hidden");
+});
+
+byId("goalModalBackdrop")?.addEventListener("click", () => {
+  byId("goalModal")?.classList.add("hidden");
+});
 
     /* ===== HEADER ===== */
     byId("activeUserName").textContent = userName;
