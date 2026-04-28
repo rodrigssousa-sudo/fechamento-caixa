@@ -2123,6 +2123,53 @@ select:focus{
 .balance-toggle.active::after{
   transform:translateX(20px);
 }
+
+.history-head{
+  display:flex!important;
+  align-items:center!important;
+  justify-content:space-between!important;
+  gap:14px!important;
+}
+
+.history-head span{
+  flex:1!important;
+}
+
+.history-view-btn{
+  min-width:82px!important;
+  height:42px!important;
+  padding:0 20px!important;
+  border-radius:999px!important;
+  border:1px solid rgba(0,107,255,.14)!important;
+  background:linear-gradient(135deg,#003dcc,#006bff)!important;
+  color:#fff!important;
+  display:flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+  font-size:13px!important;
+  font-weight:950!important;
+  box-shadow:0 10px 22px rgba(0,107,255,.22)!important;
+}
+
+#historySection:not(.history-hidden) .history-view-btn{
+  background:#eef4ff!important;
+  color:#003dcc!important;
+  box-shadow:0 6px 14px rgba(0,64,160,.08)!important;
+}
+
+.history-body{
+  max-height:1400px;
+  opacity:1;
+  overflow:hidden;
+  transition:max-height .28s ease, opacity .22s ease, padding .22s ease;
+}
+
+#historySection.history-hidden .history-body{
+  max-height:0!important;
+  opacity:0!important;
+  padding-top:0!important;
+  padding-bottom:0!important;
+}
  
 </style>
 
@@ -2316,8 +2363,19 @@ select:focus{
   </div>
 </section>
 
-      <section class="section-card"><div class="section-head" style="display:flex;justify-content:space-between;align-items:center;"><span>Histórico</span><button id="toggleHistoryBtn" class="balance-toggle" style="background:#f8fafc;color:var(--text);border:1px solid rgba(10,16,32,.08);" type="button">Ver</button></div><div class="section-body"><div id="historyList" class="history-list hidden"></div></div></section>
-    </main>
+    <section id="historySection" class="section-card history-hidden">
+  <div class="section-head history-head">
+    <span>Histórico</span>
+
+    <button id="toggleHistoryBtn" class="history-view-btn" type="button">
+      <span id="historyEyeText">Ver</span>
+    </button>
+  </div>
+
+  <div class="section-body history-body">
+    <div id="historyList" class="history-list"></div>
+  </div>
+</section>
 
 <div id="mainMenu" class="floating-menu hidden">
   <button class="menu-item" type="button" id="adminOpenBtn">Admin</button>
