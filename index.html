@@ -2301,6 +2301,33 @@ select:focus{
   padding-bottom:0!important;
   overflow:hidden!important;
 }
+
+ .history-body{
+  max-height:1400px;
+  opacity:1;
+  overflow:hidden;
+  transition:max-height .28s ease, opacity .22s ease, padding .22s ease;
+}
+
+.history-hidden .history-body{
+  max-height:0!important;
+  opacity:0!important;
+  padding-top:0!important;
+  padding-bottom:0!important;
+}
+
+ .section-collapsed{
+  max-height:0!important;
+  opacity:0!important;
+  overflow:hidden!important;
+  transition:.25s ease;
+}
+
+.section-expanded{
+  max-height:1200px;
+  opacity:1;
+  transition:.25s ease;
+}
  
 </style>
 
@@ -2511,7 +2538,7 @@ select:focus{
   </div>
 </section>
 
-   <section id="historySection" class="section-card history-hidden">
+  <section id="historySection" class="section-card history-hidden">
   <div class="section-head">
     <span>Histórico</span>
 
@@ -4704,10 +4731,7 @@ const historySection = byId("historySection");
 const historyText = byId("historyEyeText");
 
 function setHistoryVisible(show) {
-  if (!historySection) {
-    console.log("historySection não encontrado");
-    return;
-  }
+  if (!historySection) return;
 
   historySection.classList.toggle("history-hidden", !show);
 
@@ -4715,29 +4739,18 @@ function setHistoryVisible(show) {
     historyText.textContent = show ? "Ocultar" : "Ver";
   }
 
-  if (show && typeof renderHistory === "function") {
-    renderHistory();
+  if (show) {
+    byId("historyList")?.classList.remove("hidden");
+
+    if (typeof renderHistory === "function") {
+      renderHistory();
+    }
   }
 }
 
 byId("toggleHistoryBtn")?.addEventListener("click", () => {
   const isHidden = historySection?.classList.contains("history-hidden");
   setHistoryVisible(isHidden);
-});
-
-byId("menuHistoryBtn")?.addEventListener("click", async () => {
-  const allowed = await requireAdmin();
-  if (!allowed) return;
-
-  mainMenu?.classList.add("hidden");
-  setHistoryVisible(true);
-
-  setTimeout(() => {
-    byId("historyList")?.scrollIntoView({
-      behavior: "smooth",
-      block: "start"
-    });
-  }, 100);
 });
 
 /* ✅ ABRIR MODAL DO HISTÓRICO */
@@ -4895,8 +4908,10 @@ byId("openRankingBtn")?.addEventListener("click", async () => {
   const chartSection = byId("rankingChartSection");
   const tableSection = byId("rankingTableSection");
 
-  chartSection?.classList.toggle("hidden");
-  tableSection?.classList.toggle("hidden");
+  const isHidden = chartSection?.classList.contains("section-collapsed");
+
+chartSection?.classList.toggle("section-collapsed", !isHidden);
+tableSection?.classList.toggle("section-collapsed", !isHidden);
 
   renderRanking();
 
