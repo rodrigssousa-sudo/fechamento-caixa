@@ -2124,8 +2124,8 @@ select:focus{
   transform:translateX(20px);
 }
 
- /* =========================================================
-   COMPARATIVO OCULTO — BOTÃO OLHO PREMIUM
+/* =========================================================
+   COMPARATIVO OCULTO — BOTÃO VER / OCULTAR
 ========================================================= */
 
 .compare-head{
@@ -2136,110 +2136,29 @@ select:focus{
 }
 
 .compare-eye-btn{
-  min-height:40px!important;
-  padding:0 14px!important;
-  border-radius:999px!important;
-
-  background:#eaf2ff!important;
-  color:#003dcc!important;
-
-  border:1px solid rgba(0,107,255,.14)!important;
-  box-shadow:0 8px 18px rgba(0,64,160,.08)!important;
-
-  display:flex!important;
-  align-items:center!important;
-  gap:8px!important;
-
-  font-size:13px!important;
-  font-weight:950!important;
-}
-
-.eye-icon{
-  width:22px;
-  height:22px;
-  border:2px solid #003dcc;
-  border-radius:50% 50% 45% 45%;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  font-size:9px;
-  line-height:1;
-}
-
-.compare-section.compare-hidden .eye-icon{
-  opacity:.65;
-}
-
-.compare-section.compare-hidden .eye-text::after{
-  content:"";
-}
-
-.compare-section:not(.compare-hidden) .eye-text{
-  font-size:0;
-}
-
-.compare-section:not(.compare-hidden) .eye-text::after{
-  content:"Ocultar";
-  font-size:13px;
-}
-
-@media(max-width:600px){
-  .compare-eye-btn{
-    min-height:36px!important;
-    padding:0 12px!important;
-    font-size:12px!important;
-  }
-
-  .eye-icon{
-    width:20px;
-    height:20px;
-  }
-}
-
-.compare-head{
-  display:flex!important;
-  align-items:center!important;
-  justify-content:space-between!important;
-  gap:12px!important;
-}
-
-.compare-eye-btn{
-  min-height:42px!important;
+  min-height:38px!important;
   padding:0 16px!important;
   border-radius:999px!important;
-  background:#eaf2ff!important;
-  color:#003dcc!important;
-  border:1px solid rgba(0,107,255,.14)!important;
+
+  background:#f1f5f9!important;
+  color:#0a1020!important;
+
+  border:1px solid rgba(10,16,32,.08)!important;
+
   display:flex!important;
   align-items:center!important;
-  gap:10px!important;
-  font-size:13px!important;
+  justify-content:center!important;
+
+  font-size:12px!important;
   font-weight:950!important;
-  box-shadow:0 8px 18px rgba(0,64,160,.08)!important;
+
+  box-shadow:0 6px 14px rgba(0,64,160,.06)!important;
+  transition:.18s ease!important;
 }
 
-.eye-draw{
-  position:relative;
-  width:28px;
-  height:17px;
-  border:2px solid #003dcc;
-  border-radius:50% / 60%;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-}
-
-.eye-pupil{
-  width:7px;
-  height:7px;
-  border-radius:50%;
-  background:#003dcc;
-  transition:.2s ease;
-}
-
-.compare-section.compare-hidden .eye-pupil{
-  transform:scale(0);
-  opacity:0;
+.compare-eye-btn:hover{
+  background:#006bff!important;
+  color:#ffffff!important;
 }
 
 .compare-body{
@@ -2255,6 +2174,87 @@ select:focus{
   padding-top:0!important;
   padding-bottom:0!important;
   overflow:hidden!important;
+}
+
+@media(max-width:600px){
+  .compare-eye-btn{
+    min-height:34px!important;
+    padding:0 14px!important;
+    font-size:12px!important;
+  }
+}
+
+ /* =========================================================
+   FORM CARD PREMIUM — DADOS E ENTRADAS
+========================================================= */
+
+.blue-section{
+  background:
+    linear-gradient(180deg,#ffffff,#f8fbff)!important;
+}
+
+.blue-section .section-head{
+  display:flex!important;
+  align-items:center!important;
+  gap:10px!important;
+}
+
+.blue-section .section-head::before{
+  content:"";
+  width:34px;
+  height:34px;
+  border-radius:13px;
+  background:
+    radial-gradient(circle at 30% 20%,rgba(255,255,255,.45),transparent 35%),
+    linear-gradient(135deg,#003dcc,#006bff);
+  box-shadow:0 10px 24px rgba(0,107,255,.22);
+}
+
+.blue-section .field{
+  background:#ffffff;
+  border:1px solid rgba(0,107,255,.08);
+  border-radius:20px;
+  padding:14px;
+  box-shadow:0 8px 18px rgba(0,64,160,.045);
+}
+
+.blue-section .field label{
+  margin-left:2px;
+}
+
+.blue-section input{
+  box-shadow:none!important;
+  background:#f8fbff!important;
+  border-color:rgba(0,107,255,.10)!important;
+}
+
+.blue-section input:focus{
+  background:#ffffff!important;
+}
+
+@media(max-width:600px){
+  .blue-section .field{
+    padding:12px!important;
+    border-radius:18px!important;
+  }
+
+  .blue-section .section-head::before{
+    width:30px;
+    height:30px;
+    border-radius:11px;
+  }
+}
+
+ .history-hidden .history-list{
+  max-height:0!important;
+  opacity:0!important;
+  overflow:hidden!important;
+  transition:.25s ease;
+}
+
+.history-list{
+  max-height:800px;
+  transition:.25s ease;
 }
  
 </style>
@@ -2387,12 +2387,9 @@ select:focus{
     <span>Comparativo das fichas</span>
 
     <button id="toggleCompareBtn" class="compare-eye-btn" type="button">
-      <span class="eye-draw">
-        <span class="eye-pupil"></span>
-      </span>
-      <span id="compareEyeText">Ver</span>
-    </button>
-  </div>
+  <span id="compareEyeText">Ver</span>
+</button>
+</div>
 
   <div class="section-body compare-body">
     <div id="systemsCompareBar" class="compare-grid">
@@ -2469,8 +2466,19 @@ select:focus{
   </div>
 </section>
 
-      <section class="section-card"><div class="section-head" style="display:flex;justify-content:space-between;align-items:center;"><span>Histórico</span><button id="toggleHistoryBtn" class="balance-toggle" style="background:#f8fafc;color:var(--text);border:1px solid rgba(10,16,32,.08);" type="button">Ver</button></div><div class="section-body"><div id="historyList" class="history-list hidden"></div></div></section>
-    </main>
+     <section id="historySection" class="section-card">
+  <div class="section-head">
+    <span>Histórico</span>
+
+    <button id="toggleHistoryBtn" class="compare-eye-btn" type="button">
+      <span id="historyEyeText">Ver</span>
+    </button>
+  </div>
+
+  <div class="section-body">
+    <div id="historyList" class="history-list"></div>
+  </div>
+</section>
 
 <div id="mainMenu" class="floating-menu hidden">
   <button class="menu-item" type="button" id="adminOpenBtn">Admin</button>
@@ -4977,7 +4985,21 @@ toggleCompareBtn?.addEventListener("click", () => {
       : "Ocultar";
   }
 });
- 
+
+   // ✅ HISTÓRICO
+  const toggleHistoryBtn = document.getElementById("toggleHistoryBtn");
+  const historySection = document.getElementById("historySection");
+  const historyText = document.getElementById("historyEyeText");
+
+  toggleHistoryBtn?.addEventListener("click", () => {
+    if (!historySection) return;
+
+    const hidden = historySection.classList.toggle("history-hidden");
+
+    if (historyText) {
+      historyText.textContent = hidden ? "Ver" : "Ocultar";
+    }
+  });
 
   // ✅ SCROLL BAR
   window.addEventListener("scroll", handleScrollActionsBar);
