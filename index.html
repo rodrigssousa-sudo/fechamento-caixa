@@ -3114,14 +3114,30 @@ setFinalizarLoading(false);
   setFinalizarLoading(false);
 }
 }
-function clearTurn(turno) {renderTopPreviousCards
-  [`${turno}_nome_operador`,`${turno}_data_fechamento`,`${turno}_banco`,`${turno}_suprema`,`${turno}_pppoker`,`${turno}_buffalo`,`${turno}_ganamos`,`${turno}_cargas`,`${turno}_cargas_poker`].forEach((id) => {
+function clearTurn(turno) {
+
+  renderTopPreviousCards(); // ✅ agora correto
+
+  [
+    `${turno}_nome_operador`,
+    `${turno}_data_fechamento`,
+    `${turno}_banco`,
+    `${turno}_suprema`,
+    `${turno}_pppoker`,
+    `${turno}_buffalo`,
+    `${turno}_ganamos`,
+    `${turno}_cargas`,
+    `${turno}_cargas_poker`
+  ].forEach((id) => {
     const el = byId(id);
+
     if (el) {
       el.value = "";
       if (el.dataset) el.dataset.raw = "";
     }
   });
+
+}
 
   byId(`${turno}_pending_list`).innerHTML = "";
   byId(`${turno}_dynamic_list`).innerHTML = "";
