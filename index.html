@@ -3385,22 +3385,26 @@ function buildPremiumBankReceiptPdf(startDate, endDate) {
   }).join("");
 
   return `
-email
-  .page{
-    max-width:980px;
-    margin:0 auto;
-  }
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<title>Relatório Bank King</title>
+
+<style>
+.page{
+  max-width:980px;
+  margin:0 auto;
+}
 
 .header{
   background:linear-gradient(135deg,#0b1f4d,#163a8a);
   color:#fff;
   border-radius:18px;
   padding:18px 20px;
-
   display:flex;
   justify-content:space-between;
   align-items:center;
-
   margin-bottom:14px;
 }
 
