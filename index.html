@@ -2123,276 +2123,6 @@ select:focus{
 .balance-toggle.active::after{
   transform:translateX(20px);
 }
-
-/* =========================================================
-   COMPARATIVO OCULTO — BOTÃO VER / OCULTAR
-========================================================= */
-
-.compare-head{
-  display:flex!important;
-  align-items:center!important;
-  justify-content:space-between!important;
-  gap:12px!important;
-}
-
-.compare-eye-btn{
-  min-height:38px!important;
-  padding:0 16px!important;
-  border-radius:999px!important;
-
-  background:#f1f5f9!important;
-  color:#0a1020!important;
-
-  border:1px solid rgba(10,16,32,.08)!important;
-
-  display:flex!important;
-  align-items:center!important;
-  justify-content:center!important;
-
-  font-size:12px!important;
-  font-weight:950!important;
-
-  box-shadow:0 6px 14px rgba(0,64,160,.06)!important;
-  transition:.18s ease!important;
-}
-
-.compare-eye-btn:hover{
-  background:#006bff!important;
-  color:#ffffff!important;
-}
-
-.compare-body{
-  max-height:600px;
-  opacity:1;
-  overflow:hidden;
-  transition:max-height .28s ease, opacity .22s ease, padding .22s ease;
-}
-
-.compare-section.compare-hidden .compare-body{
-  max-height:0!important;
-  opacity:0!important;
-  padding-top:0!important;
-  padding-bottom:0!important;
-  overflow:hidden!important;
-}
-
-@media(max-width:600px){
-  .compare-eye-btn{
-    min-height:34px!important;
-    padding:0 14px!important;
-    font-size:12px!important;
-  }
-}
-
- /* =========================================================
-   FORM CARD PREMIUM — DADOS E ENTRADAS
-========================================================= */
-
-.blue-section{
-  background:
-    linear-gradient(180deg,#ffffff,#f8fbff)!important;
-}
-
-.blue-section .section-head{
-  display:flex!important;
-  align-items:center!important;
-  gap:10px!important;
-}
-
-.blue-section .section-head::before{
-  content:"";
-  width:34px;
-  height:34px;
-  border-radius:13px;
-  background:
-    radial-gradient(circle at 30% 20%,rgba(255,255,255,.45),transparent 35%),
-    linear-gradient(135deg,#003dcc,#006bff);
-  box-shadow:0 10px 24px rgba(0,107,255,.22);
-}
-
-.blue-section .field{
-  background:#ffffff;
-  border:1px solid rgba(0,107,255,.08);
-  border-radius:20px;
-  padding:14px;
-  box-shadow:0 8px 18px rgba(0,64,160,.045);
-}
-
-.blue-section .field label{
-  margin-left:2px;
-}
-
-.blue-section input{
-  box-shadow:none!important;
-  background:#f8fbff!important;
-  border-color:rgba(0,107,255,.10)!important;
-}
-
-.blue-section input:focus{
-  background:#ffffff!important;
-}
-
-@media(max-width:600px){
-  .blue-section .field{
-    padding:12px!important;
-    border-radius:18px!important;
-  }
-
-  .blue-section .section-head::before{
-    width:30px;
-    height:30px;
-    border-radius:11px;
-  }
-}
-
- .history-hidden .history-list{
-  max-height:0!important;
-  opacity:0!important;
-  overflow:hidden!important;
-  transition:.25s ease;
-}
-
-.history-list{
-  max-height:800px;
-  transition:.25s ease;
-}
-
-.section-head{
-  display:flex!important;
-  align-items:center!important;
-  justify-content:space-between!important;
-  gap:10px!important;
-}
-
-.section-head span{
-  flex:1;
-}
-
-/* garante que o botão vá totalmente pra direita */
-.section-head button{
-  margin-left:auto!important;
-}
-
- .history-body{
-  max-height:900px;
-  opacity:1;
-  overflow:hidden;
-  transition:max-height .28s ease, opacity .22s ease, padding .22s ease;
-}
-
-.history-hidden .history-body{
-  max-height:0!important;
-  opacity:0!important;
-  padding-top:0!important;
-  padding-bottom:0!important;
-}
-
- .history-body{
-  max-height:1200px;
-  opacity:1;
-  overflow:hidden;
-  transition:max-height .28s ease, opacity .22s ease, padding .22s ease;
-}
-
-.history-hidden .history-body{
-  max-height:0!important;
-  opacity:0!important;
-  padding-top:0!important;
-  padding-bottom:0!important;
-  overflow:hidden!important;
-}
-
- .history-body{
-  max-height:1400px;
-  opacity:1;
-  overflow:hidden;
-  transition:max-height .28s ease, opacity .22s ease, padding .22s ease;
-}
-
-.history-hidden .history-body{
-  max-height:0!important;
-  opacity:0!important;
-  padding-top:0!important;
-  padding-bottom:0!important;
-}
-
- .section-collapsed{
-  max-height:0!important;
-  opacity:0!important;
-  overflow:hidden!important;
-  transition:.25s ease;
-}
-
-.section-expanded{
-  max-height:1200px;
-  opacity:1;
-  transition:.25s ease;
-}
-
- .history-hidden .compare-body{
-  max-height:0;
-  opacity:0;
-  overflow:hidden;
-  padding-top:0;
-  padding-bottom:0;
-  transition:.25s ease;
-}
-
-.compare-body{
-  max-height:800px;
-  opacity:1;
-  transition:.25s ease;
-}
-
- #historySection .history-body{
-  display:block!important;
-  max-height:1400px;
-  opacity:1;
-  overflow:hidden;
-  transition:max-height .28s ease, opacity .22s ease, padding .22s ease;
-}
-
-#historySection.history-hidden .history-body{
-  max-height:0!important;
-  opacity:0!important;
-  padding-top:0!important;
-  padding-bottom:0!important;
-  overflow:hidden!important;
-}
-
-#historyList{
-  display:grid!important;
-}
-
- .admin-panel{
-  padding:22px;
-  margin-bottom:20px;
-  border-radius:28px;
-  background:rgba(255,255,255,.94);
-  border:1px solid rgba(255,255,255,.96);
-  box-shadow:0 14px 34px rgba(10,16,32,.07);
-}
-
-.admin-head{
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  margin-bottom:12px;
-}
-
-.admin-head h3{
-  margin:0;
-  font-size:22px;
-  letter-spacing:-.04em;
-}
-
-.admin-head span{
-  font-size:12px;
-  color:#667085;
-  font-weight:950;
-  text-transform:uppercase;
-  letter-spacing:.08em;
-}
  
 </style>
 
@@ -2454,67 +2184,12 @@ select:focus{
       <button id="menuToggle" class="menu-btn" type="button">☰</button>
     </header>
 
-   <main class="app">
-
-  <!-- ===== ADMIN PANEL ===== -->
-  <div id="adminPanel" class="hidden admin-panel">
-    <div class="admin-head">
-      <h3>Usuários</h3>
-      <span>Painel Admin</span>
-    </div>
-
-    <!-- aqui continuam seus inputs e lista de usuários -->
-  </div>
-
-  <!-- ===== SALDO ===== -->
-  <section class="main-card">
-    <!-- seu balance-card aqui -->
-  </section>
-
-  <!-- ===== RESUMO ===== -->
-  <section class="section-card">
-    <!-- summary-grid aqui -->
-  </section>
-
-  <!-- ===== COMPARATIVO ===== -->
-  <section class="section-card compare-section">
-    <div class="section-head compare-head">
-      <span>Comparativo das fichas</span>
-
-      <button id="toggleCompareBtn" class="compare-eye-btn" type="button">
-        <span id="compareEyeText">Ver</span>
-      </button>
-    </div>
-
-    <div class="section-body compare-body">
-      <div id="systemsCompareBar" class="compare-grid">
-        <div class="compare-pill">
-          <span class="compare-dot same"></span>
-          <div>
-            <div class="compare-name">Aguardando dados</div>
-            <div class="compare-value">Faça pelo menos dois fechamentos</div>
-          </div>
+    <main class="app">
+      <div id="adminPanel" class="hidden" style="padding:22px;margin-bottom:20px;border-radius:28px;background:rgba(255,255,255,.94);border:1px solid rgba(255,255,255,.96);box-shadow:0 14px 34px rgba(10,16,32,.07);">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
+          <h3 style="margin:0;font-size:22px;letter-spacing:-.04em;">Usuários</h3>
+          <span style="font-size:12px;color:#667085;font-weight:950;text-transform:uppercase;letter-spacing:.08em;">Painel Admin</span>
         </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- 🔥 ===== HISTÓRICO (CORRIGIDO) ===== -->
-  <section id="historySection" class="section-card history-hidden">
-
-    <div class="section-head compare-head">
-      <span>Histórico</span>
-
-      <button id="toggleHistoryBtn" class="compare-eye-btn" type="button">
-        <span id="historyEyeText">Ver</span>
-      </button>
-    </div>
-
-    <div class="section-body history-body">
-      <div id="historyList" class="history-list"></div>
-    </div>
-  </section>
-</main>
         <div style="display:grid;gap:10px;margin-bottom:16px;background:#f8fafc;border:1px solid #e5eaf2;border-radius:18px;padding:14px;">
   <div style="font-weight:950;color:#102a56;">Criar usuário</div>
 
@@ -2574,27 +2249,10 @@ select:focus{
         </div>
       </section>
 
-   <section class="section-card green-section compare-section compare-hidden">
-  <div class="section-head compare-head">
-    <span>Comparativo das fichas</span>
-
-    <button id="toggleCompareBtn" class="compare-eye-btn" type="button">
-  <span id="compareEyeText">Ver</span>
-</button>
-</div>
-
-  <div class="section-body compare-body">
-    <div id="systemsCompareBar" class="compare-grid">
-      <div class="compare-pill">
-        <span class="compare-dot same"></span>
-        <div>
-          <div class="compare-name">Aguardando dados</div>
-          <div class="compare-value">Faça pelo menos dois fechamentos</div>
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
+      <section class="section-card green-section">
+        <div class="section-head">Comparativo das fichas</div>
+        <div class="section-body"><div id="systemsCompareBar" class="compare-grid"><div class="compare-pill"><span class="compare-dot same"></span><div><div class="compare-name">Aguardando dados</div><div class="compare-value">Faça pelo menos dois fechamentos</div></div></div></div></div>
+      </section>
 
       <section id="rankingChartSection" class="section-card blue-section hidden">
         <div class="section-head">Ranking</div>
@@ -2658,21 +2316,9 @@ select:focus{
   </div>
 </section>
 
-  <section id="historySection" class="section-card history-hidden">
-  
-  <div class="section-head compare-head">
-    <span>Histórico</span>
+      <section class="section-card"><div class="section-head" style="display:flex;justify-content:space-between;align-items:center;"><span>Histórico</span><button id="toggleHistoryBtn" class="balance-toggle" style="background:#f8fafc;color:var(--text);border:1px solid rgba(10,16,32,.08);" type="button">Ver</button></div><div class="section-body"><div id="historyList" class="history-list hidden"></div></div></section>
+    </main>
 
-    <button id="toggleHistoryBtn" class="compare-eye-btn" type="button">
-      <span id="historyEyeText">Ver</span>
-    </button>
-  </div>
-
-  <div class="section-body compare-body">
-    <div id="historyList" class="history-list hidden"></div>
-  </div>
-
-</section>
 <div id="mainMenu" class="floating-menu hidden">
   <button class="menu-item" type="button" id="adminOpenBtn">Admin</button>
   <button class="menu-item" type="button" id="openPdfCustomBtn">Relatórios PDF</button>
@@ -2721,6 +2367,7 @@ select:focus{
 
     let currentUserData = null;
     let historyCache = [];
+    let historyVisible = false;
     let balanceVisible = true;
     let historyUnsubscribe = null;
     let historyListenerStarted = false;
@@ -4846,61 +4493,13 @@ menuToggle?.addEventListener("click",(e)=>{
 });
 
 backdrop?.addEventListener("click", closeMenu);
+    byId("openDetailedHistoryBtn")?.addEventListener("click", () => { historyVisible = true; byId("historyList")?.classList.remove("hidden"); byId("toggleHistoryBtn").textContent = "Ocultar"; renderHistory(); setTimeout(() => byId("historyList")?.scrollIntoView({ behavior: "smooth", block: "start" }), 100); });
+    byId("toggleHistoryBtn")?.addEventListener("click", () => { historyVisible = !historyVisible; byId("historyList")?.classList.toggle("hidden", !historyVisible); byId("toggleHistoryBtn").textContent = historyVisible ? "Ocultar" : "Ver"; if (historyVisible) renderHistory(); });
+    byId("menuHistoryBtn")?.addEventListener("click", async () => { const allowed = await requireAdmin(); if (!allowed) return; mainMenu?.classList.add("hidden"); historyVisible = true; byId("historyList")?.classList.remove("hidden"); byId("toggleHistoryBtn").textContent = "Ocultar"; renderHistory(); setTimeout(() => byId("historyList")?.scrollIntoView({ behavior: "smooth", block: "start" }), 100); });
+    document.addEventListener("click", (e) => { const card = e.target.closest("[data-history-open]"); if (!card) return; const index = Number(card.dataset.historyOpen); if (Number.isInteger(index)) openHistoryModal(index); });
+    byId("closeHistoryModal")?.addEventListener("click", () => byId("historyModal")?.classList.add("hidden"));
+    byId("historyModalBackdrop")?.addEventListener("click", () => byId("historyModal")?.classList.add("hidden"));
 
-// ===== HISTÓRICO =====
-const historySection = document.getElementById("historySection");
-const historyText = document.getElementById("historyEyeText");
-const historyList = document.getElementById("historyList");
-const toggleBtn = document.getElementById("toggleHistoryBtn");
-
-function setHistoryVisible(show) {
-  if (!historySection) {
-    console.log("❌ historySection não encontrado");
-    return;
-  }
-
-  historySection.classList.toggle("history-hidden", !show);
-
-  if (historyText) {
-    historyText.textContent = show ? "Ocultar" : "Ver";
-  }
-
-  if (show) {
-    historyList?.classList.remove("hidden");
-
-    if (typeof renderHistory === "function") {
-      renderHistory();
-    } else {
-      console.log("❌ renderHistory não existe");
-    }
-  }
-}
-
-toggleBtn?.addEventListener("click", () => {
-  console.log("🟢 Clique no histórico");
-
-  const isHidden = historySection?.classList.contains("history-hidden");
-  setHistoryVisible(isHidden);
-});
-
-/* ✅ ABRIR MODAL DO HISTÓRICO */
-document.addEventListener("click", (e) => {
-  const card = e.target.closest("[data-history-open]");
-  if (!card) return;
-
-  const index = Number(card.dataset.historyOpen);
-  if (Number.isInteger(index)) {
-    openHistoryModal(index);
-  }
-});
-
-byId("closeHistoryModal")?.addEventListener("click", () => {
-  byId("historyModal")?.classList.add("hidden");
-});
-
-byId("historyModalBackdrop")?.addEventListener("click", () => {
-  byId("historyModal")?.classList.add("hidden");
-});
    byId("openPdfCustomBtn")?.addEventListener("click", async () => {
   const allowed = await requireReportsAccess();
   if (!allowed) return;
@@ -5038,10 +4637,8 @@ byId("openRankingBtn")?.addEventListener("click", async () => {
   const chartSection = byId("rankingChartSection");
   const tableSection = byId("rankingTableSection");
 
-  const isHidden = chartSection?.classList.contains("section-collapsed");
-
-chartSection?.classList.toggle("section-collapsed", !isHidden);
-tableSection?.classList.toggle("section-collapsed", !isHidden);
+  chartSection?.classList.toggle("hidden");
+  tableSection?.classList.toggle("hidden");
 
   renderRanking();
 
@@ -5209,45 +4806,6 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   });
 
- const historySection = document.getElementById("historySection");
-const historyList = document.getElementById("historyList");
-const historyText = document.getElementById("historyEyeText");
-const toggleBtn = document.getElementById("toggleHistoryBtn");
-
-toggleBtn?.addEventListener("click", () => {
-  const isHidden = historySection.classList.contains("history-hidden");
-
-  historySection.classList.toggle("history-hidden");
-
-  if (historyText) {
-    historyText.textContent = isHidden ? "Ocultar" : "Ver";
-  }
-
-  if (isHidden) {
-    historyList.classList.remove("hidden");
-    renderHistory?.();
-  }
-});
-
-// ✅ BOTÃO OLHO DO COMPARATIVO
-
-  const toggleCompareBtn = document.getElementById("toggleCompareBtn");
-
-toggleCompareBtn?.addEventListener("click", () => {
-  const section = document.querySelector(".compare-section");
-  const text = document.getElementById("compareEyeText");
-
-  if (!section) return;
-
-  section.classList.toggle("compare-hidden");
-
-  if (text) {
-    text.textContent = section.classList.contains("compare-hidden")
-      ? "Ver"
-      : "Ocultar";
-  }
-});
-
   // ✅ SCROLL BAR
   window.addEventListener("scroll", handleScrollActionsBar);
 
@@ -5292,4 +4850,3 @@ if ("serviceWorker" in navigator) {
 
 </body>
 </html>
-
