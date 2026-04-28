@@ -4716,20 +4716,26 @@ async function createInternalUser() {
 
 
 /* =========================================================
-   SIDEBAR ÚNICA — SEM CONFLITO
+   SIDEBAR — MOBILE + DESKTOP SEM BUG
 ========================================================= */
 
 const bkSideBar = byId("sideBar");
 const bkSidebarBackdrop = byId("sidebarBackdrop");
 
-function openBkSidebar(){
+function openBkSidebar() {
   bkSideBar?.classList.add("open");
   bkSidebarBackdrop?.classList.add("show");
+  document.body.classList.add("sidebar-open");
 }
 
-function closeBkSidebar(){
+function closeBkSidebar() {
   bkSideBar?.classList.remove("open");
   bkSidebarBackdrop?.classList.remove("show");
+  document.body.classList.remove("sidebar-open");
+}
+
+function closeMenu() {
+  closeBkSidebar();
 }
 
 byId("menuToggle")?.addEventListener("click", (e) => {
@@ -4740,37 +4746,89 @@ byId("menuToggle")?.addEventListener("click", (e) => {
 
 bkSidebarBackdrop?.addEventListener("click", closeBkSidebar);
 
-byId("sideHomeBtn")?.addEventListener("click", () => {
+function bindSidebarBtn(id, callback) {
+  const btn = byId(id);
+  if (!btn || btn.dataset.bound === "true") return;
+
+  btn.dataset.bound = "true";
+
+  btn.addEventListener("click", (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    callback();
+  });
+}
+
+bindSidebarBtn("sideHomeBtn", () => {
   closeBkSidebar();
-  window.scrollTo({ top:0, behavior:"smooth" });
+  window.scrollTo({ top: 0, behavior: "smooth" });
 });
 
-byId("sideHistoryBtn")?.addEventListener("click", () => {
+bindSidebarBtn("sideHistoryBtn", () => {
+  if (!hasPermission("history")) return showToast("Sem permissão.", "error");
+
   closeBkSidebar();
   setHistoryVisible?.(true);
-  byId("historySection")?.scrollIntoView({ behavior:"smooth", block:"start" });
+
+  setTimeout(() => {
+    byId("historySection")?.scrollIntoView({
+      behavior: "smooth",
+      block: "start"
+    });
+  }, 200);
 });
 
-byId("sideRankingBtn")?.addEventListener("click", () => {
+bindSidebarBtn("sideGoalBtn", () => {
+  if (!hasPermission("goal")) return showToast("Sem permissão.", "error");
+
+  closeBkSidebar();
+  renderMonthlyGoalCard?.();
+
+  const goalModal = byId("goalModal");
+  const goalCard = byId("monthlyGoalCard");
+
+  if (goalModal) {
+    goalModal.classList.remove("hidden");
+    return;
+  }
+
+  if (goalCard) {
+    goalCard.classList.remove("hidden");
+
+    setTimeout(() => {
+      goalCard.scrollIntoView({
+        behavior: "smooth",
+        block: "start"
+      });
+    }, 200);
+  }
+});
+
+bindSidebarBtn("sideRankingBtn", () => {
+  if (!hasPermission("ranking")) return showToast("Sem permissão.", "error");
+
   closeBkSidebar();
   byId("openRankingBtn")?.click();
 });
 
-byId("sidePdfBtn")?.addEventListener("click", () => {
+bindSidebarBtn("sidePdfBtn", () => {
+  if (!hasPermission("pdf")) return showToast("Sem permissão.", "error");
+
   closeBkSidebar();
   byId("openPdfCustomBtn")?.click();
 });
 
-byId("sideAdminBtn")?.addEventListener("click", () => {
+bindSidebarBtn("sideAdminBtn", () => {
+  if (!hasPermission("admin")) return showToast("Sem permissão.", "error");
+
   closeBkSidebar();
   byId("adminOpenBtn")?.click();
 });
 
-byId("sideLogoutBtn")?.addEventListener("click", () => {
+bindSidebarBtn("sideLogoutBtn", () => {
   closeBkSidebar();
   byId("logoutBtn")?.click();
 });
-
 /* compatibilidade com botões antigos */
 function closeMenu(){
   closeBkSidebar();
