@@ -4627,13 +4627,16 @@ async function createInternalUser() {
       showAuthForm("login");
     }
 
-    onAuthStateChanged(auth, async (user) => {
+  onAuthStateChanged(auth, async (user) => {
   if (!user) {
     currentUserData = null;
+
     authScreen?.classList.remove("hidden");
     appShell?.classList.add("hidden");
+
     byId("adminOpenBtn")?.classList.add("hidden");
     byId("adminPanel")?.classList.add("hidden");
+
     return;
   }
 
@@ -4645,35 +4648,27 @@ async function createInternalUser() {
     appShell?.classList.remove("hidden");
 
     const userName =
-      currentUserData.name ||
+      currentUserData?.name ||
       user.email?.split("@")[0] ||
       "Usuário";
 
     const userEmail = user.email || "";
 
-   byId("sideGoalBtn")?.addEventListener("click", () => {
-  closeBkSidebar?.();
+    /* HEADER ANTIGO — agora só preenche se existir */
+    if (byId("activeUserName")) {
+      byId("activeUserName").textContent = userName;
+    }
 
-  if (typeof renderMonthlyGoalCard === "function") {
-    renderMonthlyGoalCard();
-  }
+    if (byId("activeUserEmail")) {
+      byId("activeUserEmail").textContent = userEmail;
+    }
 
-  byId("goalModal")?.classList.remove("hidden");
-});
+    if (byId("activeUserRole")) {
+      byId("activeUserRole").textContent =
+        currentUserData?.role?.toUpperCase() || "";
+    }
 
-byId("closeGoalModal")?.addEventListener("click", () => {
-  byId("goalModal")?.classList.add("hidden");
-});
-
-byId("goalModalBackdrop")?.addEventListener("click", () => {
-  byId("goalModal")?.classList.add("hidden");
-});
-
-    /* ===== HEADER ===== */
-    byId("activeUserName").textContent = userName;
-    byId("activeUserEmail").textContent = userEmail;
-
-    /* ===== SIDEBAR (🔥 NOVO) ===== */
+    /* SIDEBAR */
     if (byId("sidebarUserName")) {
       byId("sidebarUserName").textContent = userName;
     }
@@ -4682,10 +4677,7 @@ byId("goalModalBackdrop")?.addEventListener("click", () => {
       byId("sidebarUserEmail").textContent = userEmail;
     }
 
-    /* ===== PERMISSÕES ===== */
     applyPermissions(currentUserData);
-
-    /* ===== DADOS ===== */
     startHistoryRealtimeListener();
     render();
 
