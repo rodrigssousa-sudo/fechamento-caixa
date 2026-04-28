@@ -1384,6 +1384,36 @@ select:focus,
   transform:translateY(0);
   pointer-events:auto;
 }
+
+ /* ✅ Remove o buraco da barra de ações quando ela estiver escondida */
+.actions-section:not(.active){
+  display:none!important;
+}
+
+/* ✅ Quando tiver dado preenchido, aparece normal */
+.actions-section.active{
+  display:block!important;
+}
+
+@media(max-width:600px){
+  .actions-section.active{
+    display:block!important;
+    position:fixed!important;
+    left:8px!important;
+    right:8px!important;
+    bottom:calc(10px + env(safe-area-inset-bottom))!important;
+    z-index:9999!important;
+  }
+}
+
+@media(min-width:601px){
+  .actions-section.active{
+    position:relative!important;
+    display:block!important;
+  }
+}
+
+
   
 </style>
 
