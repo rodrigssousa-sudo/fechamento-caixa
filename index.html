@@ -3847,9 +3847,25 @@ function enableSmartMoneyInput(id) {
       .replace(".", ",")
       .replace(/\B(?=(\d{3})+(?!\d))/g, ".");
 
-    input.value = value;
+   input.value = value;
   });
 }
+
+function setFinalizarLoading(state) {
+  const btn = document.getElementById("fecharTurno");
+  if (!btn) return;
+
+  if (state) {
+    btn.disabled = true;
+    btn.innerText = "Salvando...";
+    btn.style.opacity = "0.7";
+  } else {
+    btn.disabled = false;
+    btn.innerText = "Finalizar";
+    btn.style.opacity = "1";
+  }
+}
+
 /* ✅ CRIAR USUÁRIO INTERNO PELO PAINEL ADMIN */
 document.addEventListener("DOMContentLoaded", () => {
 
