@@ -1783,6 +1783,183 @@ select:focus,
     white-space:normal!important;
   }
 }
+
+ /* =========================================================
+   SIDEBAR PREMIUM — BANK KING
+========================================================= */
+
+.bk-sidebar{
+  position:fixed;
+  top:18px;
+  left:18px;
+  bottom:18px;
+  width:310px;
+  z-index:9000;
+  padding:16px;
+  border-radius:30px;
+  background:rgba(255,255,255,.94);
+  backdrop-filter:blur(26px);
+  -webkit-backdrop-filter:blur(26px);
+  border:1px solid rgba(255,255,255,.95);
+  box-shadow:0 24px 70px rgba(0,64,160,.18);
+  display:flex;
+  flex-direction:column;
+  gap:16px;
+}
+
+.sidebar-top{
+  display:flex;
+  align-items:center;
+  gap:12px;
+  padding:6px;
+}
+
+.sidebar-logo{
+  width:48px;
+  height:48px;
+  border-radius:16px;
+  background:linear-gradient(135deg,#003dcc,#006bff);
+  color:#fff;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-weight:950;
+  box-shadow:0 14px 28px rgba(0,107,255,.25);
+}
+
+.sidebar-brand{
+  font-size:18px;
+  font-weight:950;
+  letter-spacing:-.04em;
+  color:#06152e;
+}
+
+.sidebar-sub{
+  font-size:12px;
+  font-weight:850;
+  color:#64748b;
+}
+
+.sidebar-user{
+  display:flex;
+  align-items:center;
+  gap:12px;
+  padding:12px;
+  border-radius:20px;
+  background:#f4f8ff;
+  border:1px solid rgba(0,107,255,.08);
+}
+
+.sidebar-avatar{
+  width:42px;
+  height:42px;
+  border-radius:14px;
+  background:#eaf2ff;
+  color:#003dcc;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-weight:950;
+}
+
+.sidebar-user strong{
+  display:block;
+  font-size:14px;
+  color:#06152e;
+}
+
+.sidebar-user span{
+  display:block;
+  max-width:190px;
+  overflow:hidden;
+  text-overflow:ellipsis;
+  white-space:nowrap;
+  font-size:12px;
+  color:#64748b;
+  font-weight:800;
+}
+
+.sidebar-nav{
+  display:grid;
+  gap:8px;
+}
+
+.sidebar-item{
+  width:100%;
+  min-height:52px;
+  padding:0 14px;
+  border-radius:18px;
+  background:#fff;
+  color:#06152e;
+  border:1px solid rgba(0,107,255,.08);
+  box-shadow:0 8px 20px rgba(0,64,160,.045);
+  display:flex;
+  align-items:center;
+  justify-content:flex-start;
+  font-size:14px;
+  font-weight:950;
+}
+
+.sidebar-item:hover,
+.sidebar-item.active{
+  background:linear-gradient(135deg,#003dcc,#006bff);
+  color:#fff;
+  box-shadow:0 14px 30px rgba(0,107,255,.22);
+}
+
+.sidebar-item.muted{
+  background:#fff1f2;
+  color:#e0313d;
+}
+
+.sidebar-bottom{
+  margin-top:auto;
+}
+
+.sidebar-backdrop{
+  position:fixed;
+  inset:0;
+  z-index:8999;
+  background:rgba(6,21,46,.35);
+  backdrop-filter:blur(10px);
+  opacity:0;
+  pointer-events:none;
+  transition:.2s ease;
+}
+
+/* Desktop: empurra o app para a direita */
+@media(min-width:1000px){
+  .topbar,
+  .app{
+    margin-left:350px!important;
+    max-width:calc(1480px - 350px)!important;
+  }
+
+  .menu-btn{
+    display:none!important;
+  }
+}
+
+/* Mobile: sidebar vira gaveta */
+@media(max-width:999px){
+  .bk-sidebar{
+    top:10px;
+    left:10px;
+    bottom:10px;
+    width:min(86vw,330px);
+    transform:translateX(-115%);
+    transition:.25s cubic-bezier(.22,.61,.36,1);
+  }
+
+  .bk-sidebar.open{
+    transform:translateX(0);
+  }
+
+  .sidebar-backdrop.show{
+    opacity:1;
+    pointer-events:auto;
+  }
+}
  
 </style>
 
@@ -1864,6 +2041,38 @@ select:focus,
 </section>
 
 <div id="appShell" class="app-shell hidden">
+
+ <aside id="sideBar" class="bk-sidebar">
+  <div class="sidebar-top">
+    <div class="sidebar-logo">BK</div>
+    <div>
+      <div class="sidebar-brand">Bank King</div>
+      <div class="sidebar-sub">Controle financeiro</div>
+    </div>
+  </div>
+
+  <div class="sidebar-user">
+    <div class="sidebar-avatar">BK</div>
+    <div>
+      <strong id="sidebarUserName">Usuário</strong>
+      <span id="sidebarUserEmail">email@exemplo.com</span>
+    </div>
+  </div>
+
+  <nav class="sidebar-nav">
+    <button type="button" class="sidebar-item" id="sideHomeBtn">Início</button>
+    <button type="button" class="sidebar-item" id="sideHistoryBtn">Histórico</button>
+    <button type="button" class="sidebar-item" id="sideRankingBtn">Ranking</button>
+    <button type="button" class="sidebar-item" id="sidePdfBtn">Relatórios PDF</button>
+    <button type="button" class="sidebar-item" id="sideAdminBtn">Admin</button>
+  </nav>
+
+  <div class="sidebar-bottom">
+    <button type="button" class="sidebar-item muted" id="sideLogoutBtn">Sair</button>
+  </div>
+</aside>
+
+<div id="sidebarBackdrop" class="sidebar-backdrop"></div>
 
   <header class="topbar">
     <div class="brand">
@@ -4381,10 +4590,55 @@ async function createInternalUser() {
     }
 
     onAuthStateChanged(auth, async (user) => {
-      if (!user) { currentUserData = null; authScreen?.classList.remove("hidden"); appShell?.classList.add("hidden"); byId("adminOpenBtn")?.classList.add("hidden"); byId("adminPanel")?.classList.add("hidden"); return; }
-      try { const allowed = await validateUserAccess(user); if (!allowed) return; authScreen?.classList.add("hidden"); appShell?.classList.remove("hidden"); byId("activeUserName").textContent = currentUserData.name || user.email?.split("@")[0] || "Usuário"; byId("activeUserEmail").textContent = user.email || ""; applyPermissions(currentUserData); startHistoryRealtimeListener(); render(); }
-      catch (error) { console.error("Erro ao validar sessão:", error); alert("Erro ao validar acesso."); await signOut(auth); }
-    });
+  if (!user) {
+    currentUserData = null;
+    authScreen?.classList.remove("hidden");
+    appShell?.classList.add("hidden");
+    byId("adminOpenBtn")?.classList.add("hidden");
+    byId("adminPanel")?.classList.add("hidden");
+    return;
+  }
+
+  try {
+    const allowed = await validateUserAccess(user);
+    if (!allowed) return;
+
+    authScreen?.classList.add("hidden");
+    appShell?.classList.remove("hidden");
+
+    const userName =
+      currentUserData.name ||
+      user.email?.split("@")[0] ||
+      "Usuário";
+
+    const userEmail = user.email || "";
+
+    /* ===== HEADER ===== */
+    byId("activeUserName").textContent = userName;
+    byId("activeUserEmail").textContent = userEmail;
+
+    /* ===== SIDEBAR (🔥 NOVO) ===== */
+    if (byId("sidebarUserName")) {
+      byId("sidebarUserName").textContent = userName;
+    }
+
+    if (byId("sidebarUserEmail")) {
+      byId("sidebarUserEmail").textContent = userEmail;
+    }
+
+    /* ===== PERMISSÕES ===== */
+    applyPermissions(currentUserData);
+
+    /* ===== DADOS ===== */
+    startHistoryRealtimeListener();
+    render();
+
+  } catch (error) {
+    console.error("Erro ao validar sessão:", error);
+    alert("Erro ao validar acesso.");
+    await signOut(auth);
+  }
+});
 
     byId("fecharTurno")?.addEventListener("click", saveTurn);
     byId("calcular")?.addEventListener("click", render);
@@ -4451,6 +4705,55 @@ menuToggle?.addEventListener("click", (e) => {
 
 backdrop?.addEventListener("click", closeMenu);
 
+/* ================= SIDEBAR ================= */
+
+const sideBar = byId("sideBar");
+const sidebarBackdrop = byId("sidebarBackdrop");
+
+function openSidebar(){
+  sideBar?.classList.add("open");
+  sidebarBackdrop?.classList.add("show");
+}
+
+function closeSidebar(){
+  sideBar?.classList.remove("open");
+  sidebarBackdrop?.classList.remove("show");
+}
+
+/* 🔥 BOTÃO ☰ AGORA ABRE SIDEBAR */
+menuToggle?.addEventListener("click", (e) => {
+  e.preventDefault();
+  openSidebar();
+});
+
+/* 🔥 BACKDROP */
+sidebarBackdrop?.addEventListener("click", closeSidebar);
+
+/* 🔥 AÇÕES */
+byId("sideHistoryBtn")?.addEventListener("click", () => {
+  closeSidebar();
+  setHistoryVisible?.(true);
+});
+
+byId("sideRankingBtn")?.addEventListener("click", () => {
+  closeSidebar();
+  byId("openRankingBtn")?.click();
+});
+
+byId("sidePdfBtn")?.addEventListener("click", () => {
+  closeSidebar();
+  byId("openPdfCustomBtn")?.click();
+});
+
+byId("sideAdminBtn")?.addEventListener("click", () => {
+  closeSidebar();
+  byId("adminOpenBtn")?.click();
+});
+
+byId("sideLogoutBtn")?.addEventListener("click", () => {
+  byId("logoutBtn")?.click();
+});
+  
 
 /* =========================================================
    HISTÓRICO — VER / OCULTAR
