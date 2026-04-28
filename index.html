@@ -1842,213 +1842,216 @@
   background:linear-gradient(135deg,#be2633,#ef4444);
 }  
   
-/* =========================================================
-   🌑 DARK MODE ULTRA PREMIUM — BANK KING PRO
+  /* =========================================================
+   🔥 ULTRA PREMIUM LAYER — BANK KING PRO
 ========================================================= */
 
-body.dark-mode{
-  --bk-bg:#05070d;
-  --bk-surface:rgba(15,18,28,.88);
-  --bk-card:#0c111b;
-
-  --bk-text:#f5f7fb;
-  --bk-muted:#8b93a7;
-
-  --bk-navy:#0b1f4d;
-  --bk-blue:#1b3f91;
-  --bk-blue2:#3b82f6;
-
-  --bk-gold:#e3c879;
-  --bk-green:#22c55e;
-  --bk-red:#ef4444;
-
-  --bk-border:rgba(255,255,255,.06);
-
-  background:
-    radial-gradient(circle at 10% 0%, rgba(59,130,246,.18), transparent 35%),
-    radial-gradient(circle at 90% 0%, rgba(227,200,121,.15), transparent 30%),
-    linear-gradient(180deg,#04060b 0%,#05070d 100%)!important;
-
-  color:var(--bk-text)!important;
+/* MICRO CONTRASTE GLOBAL (efeito iOS real) */
+body{
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
 }
 
 /* =========================================
-   💎 GLASS EFFECT GLOBAL
+   ✨ CARDS COM PROFUNDIDADE REAL
 ========================================= */
-body.dark-mode .section-card,
-body.dark-mode .main-card,
-body.dark-mode .user-card,
-body.dark-mode #adminPanel,
-body.dark-mode #monthlyGoalCard{
-  background:var(--bk-surface)!important;
-  backdrop-filter:blur(22px)!important;
-  -webkit-backdrop-filter:blur(22px)!important;
+.section-card,
+.main-card,
+.user-card{
+  position:relative;
+  overflow:hidden;
+}
 
-  border:1px solid var(--bk-border)!important;
+.section-card::before,
+.main-card::before{
+  content:"";
+  position:absolute;
+  inset:0;
+  background:linear-gradient(120deg,
+    rgba(255,255,255,0.6),
+    transparent 40%,
+    transparent 60%,
+    rgba(255,255,255,0.4)
+  );
+  opacity:.25;
+  pointer-events:none;
+}
+
+/* =========================================
+   💎 BORDA INTERNA GLASS (efeito Apple)
+========================================= */
+.section-card,
+.balance-card,
+.history-card{
   box-shadow:
-    0 20px 60px rgba(0,0,0,.65),
-    inset 0 1px 0 rgba(255,255,255,.04)!important;
+    inset 0 1px 0 rgba(255,255,255,0.9),
+    inset 0 -1px 0 rgba(0,0,0,0.02),
+    0 18px 40px rgba(10,16,32,.08);
 }
 
 /* =========================================
-   🔥 TOPBAR NIVEL APPLE
+   🔥 BALANCE CARD MAIS PREMIUM AINDA
 ========================================= */
-body.dark-mode .topbar{
-  background:rgba(10,14,24,.75)!important;
-  backdrop-filter:blur(24px)!important;
+.balance-card{
+  position:relative;
+  overflow:hidden;
+}
 
-  border-bottom:1px solid rgba(255,255,255,.05)!important;
-  box-shadow:0 10px 30px rgba(0,0,0,.6)!important;
+.balance-card::after{
+  content:"";
+  position:absolute;
+  top:-40%;
+  right:-20%;
+  width:300px;
+  height:300px;
+  background:radial-gradient(circle, rgba(255,255,255,0.18), transparent 60%);
+  transform:rotate(25deg);
 }
 
 /* =========================================
-   💰 BALANCE CARD INSANO
+   🎯 BOTÕES COM INTERAÇÃO REAL
 ========================================= */
-body.dark-mode .balance-card{
-  background:
-    radial-gradient(circle at 85% 10%, rgba(227,200,121,.25), transparent 30%),
-    linear-gradient(135deg,#0b1f4d,#1b3f91 60%,#3b82f6)!important;
-
-  border:1px solid rgba(227,200,121,.25)!important;
-
-  box-shadow:
-    0 25px 80px rgba(0,0,0,.9),
-    0 0 40px rgba(59,130,246,.25)!important;
+button{
+  transition: all .18s ease;
 }
 
-/* brilho animado */
-body.dark-mode .balance-card::after{
+button:active{
+  transform:scale(0.96);
+}
+
+/* botão principal com glow */
+.bank-action-primary{
+  position:relative;
+  overflow:hidden;
+}
+
+.bank-action-primary::after{
   content:"";
   position:absolute;
   inset:0;
   background:linear-gradient(120deg,
     transparent,
-    rgba(255,255,255,.12),
+    rgba(255,255,255,.25),
     transparent
   );
-  opacity:.4;
+  opacity:0;
+  transition:.4s;
+}
+
+.bank-action-primary:hover::after{
+  opacity:1;
 }
 
 /* =========================================
-   🧠 INPUTS DARK LUXO
+   🧠 INPUTS MAIS CAROS (efeito iOS)
 ========================================= */
-body.dark-mode input,
-body.dark-mode select{
-  background:linear-gradient(180deg,#0c111b,#0a0f19)!important;
-  border:1px solid rgba(255,255,255,.05)!important;
-  color:var(--bk-text)!important;
-
-  box-shadow:
-    inset 0 1px 0 rgba(255,255,255,.05),
-    0 4px 12px rgba(0,0,0,.6)!important;
+input,
+select{
+  transition: all .15s ease;
 }
 
-body.dark-mode input:focus,
-body.dark-mode select:focus{
-  border-color:#3b82f6!important;
-  box-shadow:
-    0 0 0 3px rgba(59,130,246,.25),
-    0 8px 20px rgba(0,0,0,.8)!important;
+input:focus,
+select:focus{
+  transform:scale(1.01);
 }
 
 /* =========================================
-   🎯 BOTÕES PREMIUM
+   📊 HISTORY MAIS LIMPO E PREMIUM
 ========================================= */
-body.dark-mode .bank-action-primary{
-  background:linear-gradient(135deg,#0b1f4d,#3b82f6)!important;
-
-  box-shadow:
-    0 10px 30px rgba(59,130,246,.35),
-    inset 0 1px 0 rgba(255,255,255,.2)!important;
+.history-card{
+  backdrop-filter: blur(6px);
 }
 
-body.dark-mode .bank-action-light{
-  background:#0c111b!important;
-  border:1px solid rgba(255,255,255,.05)!important;
+.history-main-item{
+  transition:.2s;
 }
 
-/* glow hover */
-body.dark-mode button:hover{
-  filter:brightness(1.08);
-}
-
-/* =========================================
-   📊 HISTORY PREMIUM
-========================================= */
-body.dark-mode .history-card{
-  background:linear-gradient(180deg,#0c111b,#090d16)!important;
-}
-
-body.dark-mode .history-main-item{
-  background:#0a0f19!important;
-  border:1px solid rgba(255,255,255,.04)!important;
-}
-
-body.dark-mode .history-main-item:hover{
+.history-main-item:hover{
   transform:translateY(-2px);
-  box-shadow:0 20px 40px rgba(0,0,0,.7)!important;
-}
-
-/* STATUS */
-body.dark-mode .history-status.positive{
-  background:rgba(34,197,94,.12)!important;
-  color:#4ade80!important;
-}
-
-body.dark-mode .history-status.negative{
-  background:rgba(239,68,68,.12)!important;
-  color:#f87171!important;
+  box-shadow:0 14px 30px rgba(10,16,32,.08);
 }
 
 /* =========================================
-   🧩 MENU
+   🎯 STATUS MAIS SOFISTICADO
 ========================================= */
-body.dark-mode .floating-menu{
-  background:rgba(10,14,24,.9)!important;
+.history-status.positive{
+  background:linear-gradient(135deg,#e8f8ee,#d1fae5)!important;
+}
+
+.history-status.negative{
+  background:linear-gradient(135deg,#fee2e2,#fecaca)!important;
+}
+
+/* =========================================
+   🧩 MENU FLOATING MAIS PREMIUM
+========================================= */
+.floating-menu{
   backdrop-filter:blur(26px)!important;
-
-  border:1px solid rgba(255,255,255,.05)!important;
 }
 
-body.dark-mode .menu-item{
-  background:#0c111b!important;
-  border:1px solid rgba(255,255,255,.05)!important;
+.menu-item{
+  transition:.2s;
 }
 
-body.dark-mode .menu-item:hover{
-  background:linear-gradient(135deg,#0b1f4d,#3b82f6)!important;
+.menu-item:active{
+  transform:scale(0.97);
 }
 
 /* =========================================
-   📱 BOTTOM BAR NIVEL APP STORE
+   📱 BARRA INFERIOR NIVEL APP STORE
 ========================================= */
-body.dark-mode .actions-section{
-  background:rgba(10,14,24,.75)!important;
-  backdrop-filter:blur(22px)!important;
+.actions-section{
+  border:1px solid rgba(255,255,255,.9)!important;
+}
 
-  border:1px solid rgba(255,255,255,.05)!important;
+.bank-action-btn{
+  position:relative;
+  overflow:hidden;
+}
 
-  box-shadow:
-    0 -20px 60px rgba(0,0,0,.9)!important;
+/* efeito de luz ao clicar */
+.bank-action-btn::after{
+  content:"";
+  position:absolute;
+  inset:0;
+  background:radial-gradient(circle, rgba(255,255,255,.25), transparent 60%);
+  opacity:0;
+  transition:.3s;
+}
+
+.bank-action-btn:active::after{
+  opacity:1;
 }
 
 /* =========================================
-   🔢 NUMEROS PREMIUM
+   💰 NUMEROS MAIS IMPACTANTES
 ========================================= */
-body.dark-mode .balance-value,
-body.dark-mode .summary-box-value{
-  color:#ffffff!important;
-  text-shadow:0 0 18px rgba(59,130,246,.25);
+.balance-value,
+.summary-box-value{
+  font-feature-settings: "tnum";
+  letter-spacing:-0.04em;
 }
 
 /* =========================================
-   ✨ ANIMAÇÃO SUAVE
+   🔥 ANIMAÇÃO DE ENTRADA SUAVE
 ========================================= */
-body.dark-mode .section-card,
-body.dark-mode .balance-card,
-body.dark-mode .history-card{
+.section-card,
+.balance-card,
+.history-card{
   animation:fadeInUp .4s ease;
 }
+
+@keyframes fadeInUp{
+  from{
+    opacity:0;
+    transform:translateY(8px);
+  }
+  to{
+    opacity:1;
+    transform:translateY(0);
+  }
+}
+
   
 </style>
 
