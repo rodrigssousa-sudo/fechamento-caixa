@@ -1437,6 +1437,106 @@ select:focus,
   opacity:0!important;
   pointer-events:none!important;
 }
+
+ /* =========================================================
+   MICROINTERAÇÕES PREMIUM — BANK KING
+========================================================= */
+
+.section-card,
+.main-card,
+.user-card,
+.balance-card,
+.history-card,
+.summary-box{
+  transition:transform .18s ease, box-shadow .18s ease;
+}
+
+.section-card:active,
+.main-card:active,
+.user-card:active,
+.history-card:active,
+.summary-box:active{
+  transform:scale(.995);
+}
+
+input,
+select,
+button{
+  transition:
+    transform .18s ease,
+    box-shadow .18s ease,
+    background .18s ease,
+    border-color .18s ease;
+}
+
+/* efeito premium ao focar campo */
+input:focus,
+select:focus{
+  transform:translateY(-1px);
+}
+
+/* botão principal mais vivo */
+.bank-action-primary{
+  position:relative;
+  overflow:hidden;
+}
+
+.bank-action-primary::after{
+  content:"";
+  position:absolute;
+  inset:0;
+  background:linear-gradient(
+    120deg,
+    transparent 0%,
+    rgba(255,255,255,.24) 45%,
+    transparent 75%
+  );
+  transform:translateX(-120%);
+  transition:.45s ease;
+}
+
+.bank-action-primary:hover::after,
+.bank-action-primary:active::after{
+  transform:translateX(120%);
+}
+
+/* cards com brilho sutil */
+.balance-card::before{
+  content:"";
+  position:absolute;
+  inset:0;
+  background:linear-gradient(
+    135deg,
+    rgba(255,255,255,.18),
+    transparent 38%,
+    transparent 72%,
+    rgba(255,255,255,.08)
+  );
+  pointer-events:none;
+}
+
+/* histórico mais elegante */
+.history-card{
+  cursor:pointer;
+}
+
+.history-card:hover{
+  transform:translateY(-2px);
+}
+
+/* menu mais fluido */
+.floating-menu{
+  transition:
+    opacity .18s ease,
+    transform .18s ease;
+}
+
+/* toast mais premium */
+.ck-toast{
+  box-shadow:0 16px 40px rgba(0,0,0,.18);
+  backdrop-filter:blur(12px);
+  -webkit-backdrop-filter:blur(12px);
+}
   
 </style>
 
