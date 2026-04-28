@@ -2921,39 +2921,39 @@ if (!fill || !status) return;
 
     totalRealizado += totalDoTurno;
   });
+const percent = Math.min((totalRealizado / MONTHLY_GOAL_TARGET) * 100, 100);
+const restante = Math.max(MONTHLY_GOAL_TARGET - totalRealizado, 0);
 
-  const percent = Math.min((totalRealizado / MONTHLY_GOAL_TARGET) * 100, 100);
-  const restante = Math.max(MONTHLY_GOAL_TARGET - totalRealizado, 0);
+const mediaDiaria = today > 0 ? totalRealizado / today : 0;
+const projecaoMes = mediaDiaria * daysInMonth;
+const percentProjetado = (projecaoMes / MONTHLY_GOAL_TARGET) * 100;
 
-  const mediaDiaria = today > 0 ? totalRealizado / today : 0;
-  const projecaoMes = mediaDiaria * daysInMonth;
-  const percentProjetado = (projecaoMes / MONTHLY_GOAL_TARGET) * 100;
+const goalFill = byId("goalBarFill");
+const goalStatus = byId("goalStatus");
 
-  const fill = byId("goalBarFill");
-  const status = byId("goalStatus");
+if (goalFill) {
+  goalFill.style.width = "0%";
+  goalFill.offsetHeight;
+  goalFill.style.width = `${percent}%`;
 
-  if (fill) {
-    fill.style.width = "0%";
-fill.offsetHeight;
-fill.style.width = `${percent}%`;
-    fill.classList.remove("success", "danger");
+  goalFill.classList.remove("success", "danger");
 
-    if (totalRealizado > 0) {
-      fill.classList.add("success");
-    }
-
-    if (totalRealizado < 0) {
-      fill.classList.add("danger");
-    }
+  if (totalRealizado > 0) {
+    goalFill.classList.add("success");
   }
 
- if (status) {
-status.innerHTML =
-  percent >= 100
-    ? `<strong>Meta batida 🔥</strong><br>${money(totalRealizado)} realizado • ${percent.toFixed(0)}%`
-    : `<strong>${money(totalRealizado)} realizado</strong><br>
-       Faltam ${money(restante)}
-       <small>Projeção mensal: ${money(projecaoMes)} • ${percentProjetado.toFixed(0)}%</small>`;
+  if (totalRealizado < 0) {
+    goalFill.classList.add("danger");
+  }
+}
+
+if (goalStatus) {
+  goalStatus.innerHTML =
+    percent >= 100
+      ? `<strong>Meta batida 🔥</strong><br>${money(totalRealizado)} realizado • ${percent.toFixed(0)}%`
+      : `<strong>${money(totalRealizado)} realizado</strong><br>
+         Faltam ${money(restante)}
+         <small>Projeção mensal: ${money(projecaoMes)} • ${percentProjetado.toFixed(0)}%</small>`;
 }
 }
     
