@@ -1812,6 +1812,35 @@
     font-size:15px!important;
   }
 }
+
+  .ck-toast{
+  position:fixed;
+  bottom:20px;
+  left:50%;
+  transform:translateX(-50%) translateY(20px);
+  background:#06152e;
+  color:#fff;
+  padding:14px 18px;
+  border-radius:14px;
+  font-weight:900;
+  font-size:13px;
+  z-index:999999;
+  opacity:0;
+  transition:all .25s ease;
+}
+
+.ck-toast.show{
+  opacity:1;
+  transform:translateX(-50%) translateY(0);
+}
+
+.ck-toast.success{
+  background:linear-gradient(135deg,#128044,#16a34a);
+}
+
+.ck-toast.error{
+  background:linear-gradient(135deg,#be2633,#ef4444);
+}  
   
 </style>
 
@@ -4251,17 +4280,52 @@ function enableSmartMoneyInput(id) {
       return;
     }
 
-    // transforma em número com centavos
-    let value = (parseInt(numeric, 10) / 100).toFixed(2);
+   // transforma em número com centavos
+let value = (parseInt(numeric, 10) / 100).toFixed(2);
 
-    // formata BR
-    value = value
-      .replace(".", ",")
-      .replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+// formata BR
+value = value
+  .replace(".", ",")
+  .replace(/\B(?=(\d{3})+(?!\d))/g, ".");
 
-    input.value = value;
+input.value = value;
   });
 }
+
+/* 🔥 FUNÇÕES GLOBAIS (COLE AQUI) */
+function setFinalizarLoading(state, text = "Finalizar") {
+  const btn = document.getElementById("fecharTurno");
+  if (!btn) return;
+
+  if (state) {
+    btn.disabled = true;
+    btn.innerText = text + "...";
+    btn.style.opacity = "0.7";
+  } else {
+    btn.disabled = false;
+    btn.innerText = "Finalizar";
+    btn.style.opacity = "1";
+  }
+}
+
+function showToast(message, type = "success") {
+  const toast = document.createElement("div");
+
+  toast.className = `ck-toast ${type}`;
+  toast.textContent = message;
+
+  document.body.appendChild(toast);
+
+  requestAnimationFrame(() => {
+    toast.classList.add("show");
+  });
+
+  setTimeout(() => {
+    toast.classList.remove("show");
+    setTimeout(() => toast.remove(), 300);
+  }, 2600);
+}
+
 /* ✅ CRIAR USUÁRIO INTERNO PELO PAINEL ADMIN */
 document.addEventListener("DOMContentLoaded", () => {
 
@@ -4285,7 +4349,6 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 
   initAuthEvents();
-
 });
 
 </script>
