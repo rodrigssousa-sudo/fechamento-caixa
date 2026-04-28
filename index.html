@@ -4697,100 +4697,68 @@ async function createInternalUser() {
     document.querySelectorAll("[data-chart-range]").forEach((btn) => { btn.addEventListener("click", () => { document.querySelectorAll("[data-chart-range]").forEach((b) => b.classList.remove("active")); btn.classList.add("active"); renderRanking(btn.dataset.chartRange); }); });
     byId("logoutBtn")?.addEventListener("click", async () => { try { if (historyUnsubscribe) historyUnsubscribe(); await signOut(auth); } catch (error) { console.error("Erro ao sair:", error); alert("Erro ao sair."); } });
 
+
 /* =========================================================
-   SIDEBAR ÚNICA — SUBSTITUI MENU ANTIGO
+   SIDEBAR ÚNICA — SEM CONFLITO
 ========================================================= */
 
-function closeSidebar(){
-  sideBar?.classList.remove("open");
-  sidebarBackdrop?.classList.remove("show");
+const bkSideBar = byId("sideBar");
+const bkSidebarBackdrop = byId("sidebarBackdrop");
+
+function openBkSidebar(){
+  bkSideBar?.classList.add("open");
+  bkSidebarBackdrop?.classList.add("show");
 }
 
-menuToggle?.addEventListener("click", (e) => {
+function closeBkSidebar(){
+  bkSideBar?.classList.remove("open");
+  bkSidebarBackdrop?.classList.remove("show");
+}
+
+byId("menuToggle")?.addEventListener("click", (e) => {
   e.preventDefault();
   e.stopPropagation();
-  openSidebar();
+  openBkSidebar();
 });
 
-sidebarBackdrop?.addEventListener("click", closeSidebar);
+bkSidebarBackdrop?.addEventListener("click", closeBkSidebar);
 
 byId("sideHomeBtn")?.addEventListener("click", () => {
-  closeSidebar();
+  closeBkSidebar();
   window.scrollTo({ top:0, behavior:"smooth" });
 });
 
 byId("sideHistoryBtn")?.addEventListener("click", () => {
-  closeSidebar();
+  closeBkSidebar();
   setHistoryVisible?.(true);
   byId("historySection")?.scrollIntoView({ behavior:"smooth", block:"start" });
 });
 
 byId("sideRankingBtn")?.addEventListener("click", () => {
-  closeSidebar();
+  closeBkSidebar();
   byId("openRankingBtn")?.click();
 });
 
 byId("sidePdfBtn")?.addEventListener("click", () => {
-  closeSidebar();
+  closeBkSidebar();
   byId("openPdfCustomBtn")?.click();
 });
 
 byId("sideAdminBtn")?.addEventListener("click", () => {
-  closeSidebar();
+  closeBkSidebar();
   byId("adminOpenBtn")?.click();
 });
 
 byId("sideLogoutBtn")?.addEventListener("click", () => {
-  closeSidebar();
+  closeBkSidebar();
   byId("logoutBtn")?.click();
 });
 
-
-/* ================= SIDEBAR ================= */
-
-const sideBar = byId("sideBar");
-const sidebarBackdrop = byId("sidebarBackdrop");
-
-function openSidebar(){
-  sideBar?.classList.add("open");
-  sidebarBackdrop?.classList.add("show");
+/* compatibilidade com botões antigos */
+function closeMenu(){
+  closeBkSidebar();
 }
-
-/* 🔥 BOTÃO ☰ AGORA ABRE SIDEBAR */
-menuToggle?.addEventListener("click", (e) => {
-  e.preventDefault();
-  openSidebar();
-});
-
-/* 🔥 BACKDROP */
-sidebarBackdrop?.addEventListener("click", closeSidebar);
-
-/* 🔥 AÇÕES */
-byId("sideHistoryBtn")?.addEventListener("click", () => {
-  closeSidebar();
-  setHistoryVisible?.(true);
-});
-
-byId("sideRankingBtn")?.addEventListener("click", () => {
-  closeSidebar();
-  byId("openRankingBtn")?.click();
-});
-
-byId("sidePdfBtn")?.addEventListener("click", () => {
-  closeSidebar();
-  byId("openPdfCustomBtn")?.click();
-});
-
-byId("sideAdminBtn")?.addEventListener("click", () => {
-  closeSidebar();
-  byId("adminOpenBtn")?.click();
-});
-
-byId("sideLogoutBtn")?.addEventListener("click", () => {
-  byId("logoutBtn")?.click();
-});
   
-
 /* =========================================================
    HISTÓRICO — VER / OCULTAR
 ========================================================= */
