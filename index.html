@@ -1371,6 +1371,19 @@ select:focus,
     bottom:10px;
   }
 }
+
+ .actions-section{
+  opacity:0;
+  transform:translateY(18px);
+  pointer-events:none;
+  transition:.24s ease;
+}
+
+.actions-section.active{
+  opacity:1;
+  transform:translateY(0);
+  pointer-events:auto;
+}
   
 </style>
 
@@ -1692,6 +1705,40 @@ select:focus,
         render();
       });
     }
+
+   function updateActionsVisibility() {
+  const bar = byId("fecharTurno")?.closest(".actions-section");
+  if (!bar) return;
+
+  const fields = [
+    "t2_nome_operador",
+    "t2_data_fechamento",
+    "t2_banco",
+    "t2_suprema",
+    "t2_pppoker",
+    "t2_buffalo",
+    "t2_ganamos",
+    "t2_cargas",
+    "t2_cargas_poker"
+  ];
+
+  const hasInputValue = fields.some((id) => {
+    const el = byId(id);
+    return el && String(el.value || "").trim() !== "";
+  });
+
+  const hasPendingRows = document.querySelectorAll("#t2_pending_list .dynamic-row").length > 0;
+  const hasOutflowRows = document.querySelectorAll("#t2_dynamic_list .dynamic-row").length > 0;
+
+  bar.classList.toggle("active", hasInputValue || hasPendingRows || hasOutflowRows);
+}
+
+document.addEventListener("input", updateActionsVisibility);
+document.addEventListener("click", () => {
+  setTimeout(updateActionsVisibility, 50);
+});
+
+updateActionsVisibility();
 
     async function getCurrentUserData() {
       const user = auth.currentUser;
@@ -3592,7 +3639,22 @@ async function createInternalUser() {
     byId("fecharTurno")?.addEventListener("click", saveTurn);
     byId("calcular")?.addEventListener("click", render);
     byId("limparBtn")?.addEventListener("click", () => clearTurn("t2"));
-    ["t2_banco", "t2_suprema", "t2_pppoker", "t2_buffalo", "t2_ganamos", "t2_cargas", "t2_cargas_poker"].forEach((id) => { const input = byId(id); if (input) { attachMoneyMask(input); input.addEventListener("input", render); } });
+    [
+  "t2_banco",
+  "t2_suprema",
+  "t2_pppoker",
+  "t2_buffalo",
+  "t2_ganamos",
+  "t2_cargas",
+  "t2_cargas_poker"
+].forEach((id) => {
+  const input = byId(id);
+
+  if (input) {
+    enableSmartMoneyInput(id); // 🔥 usa só essa
+    input.addEventListener("input", render);
+  }
+});
     byId("t2_nome_operador")?.addEventListener("input", render);
     byId("t2_data_fechamento")?.addEventListener("input", render);
     document.querySelectorAll("[data-add-pending]").forEach((btn) => { btn.onclick = () => createPendingRow(btn.dataset.addPending); });
@@ -3809,47 +3871,92 @@ byId("adminOpenBtn")?.addEventListener("click", async () => {
 
 function enableSmartMoneyInput(id) {
   const input = document.getElementById(id);
-  if (!input) return;
+  if (!input || input.dataset.smartMoney === "true") return;
+
+  input.dataset.smartMoney = "true";
+  input.autocomplete = "off";
+  input.inputMode = "decimal";
+
+  function parseSmartMoney(value) {
+    let text = String(value || "")
+      .trim()
+      .replace(/\s/g, "")
+      .replace(/[^\d.,-]/g, "");
+
+    if (!text) return "";
+
+    const hasComma = text.includes(",");
+    const hasDot = text.includes(".");
+
+    if (hasComma) {
+      text = text.replace(/\./g, "").replace(",", ".");
+      return Number(text);
+    }
+
+    if (hasDot) {
+      const parts = text.split(".");
+      const last = parts[parts.length - 1];
+
+      if (last.length === 1 || last.length === 2) {
+        text = parts.slice(0, -1).join("") + "." + last;
+      } else {
+        text = text.replace(/\./g, "");
+      }
+
+      return Number(text);
+    }
+
+    return Number(text);
+  }
+
+  function formatBR(number) {
+    if (!Number.isFinite(number)) return "";
+
+    return number.toLocaleString("pt-BR", {
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2
+    });
+  }
+
+  function applyValue(value) {
+    const number = parseSmartMoney(value);
+
+    if (!Number.isFinite(number)) {
+      input.value = "";
+      input.dataset.raw = "";
+      input.dispatchEvent(new Event("input", { bubbles: true }));
+      return;
+    }
+
+    input.value = formatBR(number);
+    input.dataset.raw = String(number);
+    input.dataset.edited = "true";
+
+    input.dispatchEvent(new Event("input", { bubbles: true }));
+  }
 
   input.addEventListener("focus", () => {
-    setTimeout(() => input.select(), 50);
+    setTimeout(() => input.select(), 30);
   });
 
   input.addEventListener("click", () => {
     input.select();
   });
 
-  input.addEventListener("blur", () => {
-    delete input.dataset.edited;
-  });
-
-  // 🔥 TRATAMENTO DE COLAR (AQUI ESTÁ O OURO)
   input.addEventListener("paste", (e) => {
     e.preventDefault();
+    const text = (e.clipboardData || window.clipboardData)?.getData("text") || "";
+    applyValue(text);
+  });
 
-    let text = (e.clipboardData || window.clipboardData).getData("text");
-
-    // remove tudo que não for número
-    let numeric = text.replace(/\D/g, "");
-
-    if (!numeric) {
-      input.value = "";
-      return;
-    }
-
-   // transforma em número com centavos
-let value = (parseInt(numeric, 10) / 100).toFixed(2);
-
-// formata BR
-value = value
-  .replace(".", ",")
-  .replace(/\B(?=(\d{3})+(?!\d))/g, ".");
-
-input.value = value;
+  input.addEventListener("blur", () => {
+    applyValue(input.value);
+    delete input.dataset.edited;
   });
 }
 
 /* 🔥 FUNÇÕES GLOBAIS (COLE AQUI) */
+   
 function setFinalizarLoading(state, text = "Finalizar") {
   const btn = document.getElementById("fecharTurno");
   if (!btn) return;
