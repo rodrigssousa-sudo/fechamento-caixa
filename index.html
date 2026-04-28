@@ -2009,6 +2009,120 @@ select:focus{
     padding:0;
   }
 } 
+
+ /* =========================================================
+   CHART TABS — ESTILO FINTECH PREMIUM
+========================================================= */
+
+.chart-actions{
+  display:flex;
+  gap:6px;
+
+  padding:6px;
+  border-radius:20px;
+
+  background:#eef4ff;
+  border:1px solid rgba(0,107,255,.08);
+
+  width:max-content;
+}
+
+/* botão base */
+.chart-range-btn{
+  min-height:42px;
+  padding:0 16px;
+
+  border:none;
+  border-radius:14px;
+
+  background:transparent;
+  color:#64748b;
+
+  font-size:14px;
+  font-weight:900;
+
+  display:flex;
+  align-items:center;
+  justify-content:center;
+
+  cursor:pointer;
+  transition:all .18s ease;
+}
+
+/* ativo */
+.chart-range-btn.active{
+  background:#ffffff;
+  color:#003dcc;
+
+  box-shadow:
+    0 8px 18px rgba(0,64,160,.08),
+    inset 0 1px 0 rgba(255,255,255,.95);
+}
+
+/* hover */
+.chart-range-btn:hover{
+  color:#003dcc;
+}
+
+/* clique */
+.chart-range-btn:active{
+  transform:scale(.96);
+}
+
+/* MOBILE */
+@media(max-width:600px){
+
+  .chart-actions{
+    width:100%;
+    display:grid;
+    grid-template-columns:1fr 1fr 1fr 1fr;
+    gap:6px;
+  }
+
+  .chart-range-btn{
+    padding:0;
+    font-size:13px;
+  }
+}
+
+ .balance-toggle{
+  position:relative;
+  width:52px;
+  height:30px;
+
+  border-radius:999px;
+  background:rgba(255,255,255,.25);
+
+  border:1px solid rgba(255,255,255,.25);
+
+  cursor:pointer;
+  transition:.25s;
+}
+
+.balance-toggle::after{
+  content:"";
+  position:absolute;
+  top:3px;
+  left:4px;
+
+  width:22px;
+  height:22px;
+  border-radius:50%;
+
+  background:#ffffff;
+
+  transition:.25s;
+}
+
+/* ativo (mostrando saldo) */
+.balance-toggle.active{
+  background:#22c55e;
+}
+
+/* bolinha move */
+.balance-toggle.active::after{
+  transform:translateX(20px);
+}
  
 </style>
 
