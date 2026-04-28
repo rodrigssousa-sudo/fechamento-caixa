@@ -9,7 +9,7 @@ limpar codigo
 
 <style>
 /* =========================================================
-   BANK KING — CSS LIMPO / PREMIUM / MOBILE FIRST
+   BANK KING — CSS PREMIUM CLEAN / MOBILE FIRST
 ========================================================= */
 
 :root{
@@ -61,7 +61,7 @@ body{
   background:
     radial-gradient(circle at 12% -4%, rgba(0,107,255,.16), transparent 32%),
     radial-gradient(circle at 90% 0%, rgba(0,107,255,.10), transparent 28%),
-    linear-gradient(180deg,#ffffff 0%,var(--bg) 100%);
+    linear-gradient(180deg,#fff 0%,var(--bg) 100%);
 }
 
 body::before{
@@ -93,6 +93,7 @@ button:active{
   transform:scale(.97);
 }
 
+/* FORMS */
 input,
 select,
 .outflow-type{
@@ -110,9 +111,7 @@ select,
   transition:var(--transition);
 }
 
-input::placeholder{
-  color:#9aa6b8;
-}
+input::placeholder{color:#9aa6b8;}
 
 input:focus,
 select:focus,
@@ -121,6 +120,7 @@ select:focus,
   box-shadow:
     0 0 0 4px rgba(0,107,255,.12),
     0 12px 26px rgba(0,64,160,.10);
+  transform:translateY(-1px);
 }
 
 .field{
@@ -148,13 +148,13 @@ select:focus,
 
 .auth-card{
   width:100%;
-  max-width:620px;
+  max-width:520px;
+  padding:48px;
+  border-radius:34px;
   background:rgba(255,255,255,.92);
   backdrop-filter:blur(22px);
   -webkit-backdrop-filter:blur(22px);
   border:1px solid rgba(255,255,255,.94);
-  border-radius:34px;
-  padding:48px;
   box-shadow:var(--shadow);
 }
 
@@ -183,7 +183,7 @@ select:focus,
   font-size:44px;
   line-height:1;
   font-weight:950;
-  letter-spacing:-1.8px;
+  letter-spacing:-2.2px;
 }
 
 .auth-sub{
@@ -251,10 +251,8 @@ select:focus,
   padding:0;
 }
 
-/* APP */
-.app-shell{
-  width:100%;
-}
+/* APP BASE */
+.app-shell{width:100%;}
 
 .app{
   width:100%;
@@ -331,21 +329,28 @@ select:focus,
 #monthlyGoalCard{
   background:#fff;
   border:1px solid rgba(0,107,255,.08);
-  border-radius:var(--radius-xl);
+  border-radius:26px;
   box-shadow:var(--shadow);
   overflow:hidden;
+  transition:transform .18s ease, box-shadow .18s ease;
 }
 
-.main-card-pad{
-  padding:20px;
+.section-card:active,
+.main-card:active,
+.user-card:active,
+.history-card:active,
+.summary-box:active{
+  transform:scale(.995);
 }
+
+.main-card-pad{padding:20px;}
 
 .section-head{
   padding:20px 24px;
-  background:linear-gradient(180deg,#ffffff,#f4f8ff);
+  background:linear-gradient(180deg,#fff,#f4f8ff);
   border-bottom:1px solid rgba(0,107,255,.08);
   color:var(--text);
-  font-size:18px;
+  font-size:17px;
   font-weight:950;
   letter-spacing:-.03em;
 }
@@ -362,13 +367,31 @@ select:focus,
   gap:18px;
 }
 
-/* USER */
+/* USER CARD */
 .user-card{
+  position:relative;
+  overflow:hidden;
   display:flex;
   justify-content:space-between;
   align-items:center;
   gap:12px;
-  padding:16px 18px;
+  padding:18px 20px;
+  border-radius:30px;
+  background:
+    radial-gradient(circle at 92% 10%, rgba(0,107,255,.08), transparent 28%),
+    linear-gradient(180deg,#fff,#f8fbff);
+}
+
+.user-card::before{
+  content:"";
+  position:absolute;
+  left:-40px;
+  top:-40px;
+  width:140px;
+  height:140px;
+  border-radius:50%;
+  background:rgba(0,107,255,.06);
+  pointer-events:none;
 }
 
 .user-info{
@@ -376,17 +399,20 @@ select:focus,
   flex-direction:column;
   gap:2px;
   min-width:0;
+  position:relative;
+  z-index:1;
 }
 
 .user-name{
-  font-size:18px;
+  font-size:24px;
   font-weight:950;
   line-height:1.1;
+  letter-spacing:-.05em;
 }
 
 .user-email{
-  font-size:13px;
-  color:var(--muted);
+  font-size:14px;
+  color:#64748b;
   font-weight:750;
   overflow:hidden;
   text-overflow:ellipsis;
@@ -395,30 +421,48 @@ select:focus,
 
 .user-role,
 #activeUserRole{
+  display:inline-flex;
+  width:max-content;
+  margin-top:8px;
+  padding:6px 10px;
+  border-radius:999px;
+  background:#eaf2ff;
+  color:#003dcc;
   font-size:10px;
-  letter-spacing:.10em;
+  letter-spacing:.12em;
   text-transform:uppercase;
-  color:var(--muted);
-  font-weight:850;
+  font-weight:950;
 }
 
 .logout-btn{
-  min-height:42px;
+  position:relative;
+  z-index:1;
+  height:48px;
+  min-width:82px;
   padding:0 16px;
-  border-radius:14px;
-  background:var(--red-bg);
-  color:var(--red);
+  border-radius:18px;
+  background:#fff1f2;
+  color:#e0313d;
   border:1px solid rgba(224,49,61,.14);
+  box-shadow:0 10px 24px rgba(224,49,61,.08);
   font-size:13px;
 }
 
-/* SALDO */
+.logout-btn:hover{
+  background:#e0313d;
+  color:#fff;
+}
+
+/* BALANCE */
 .balance-card{
   position:relative;
   overflow:hidden;
+  min-height:170px;
   padding:28px;
   border-radius:34px;
   color:#fff;
+  display:flex;
+  align-items:flex-end;
   background:
     radial-gradient(circle at 85% 10%, rgba(255,255,255,.24), transparent 28%),
     linear-gradient(135deg,var(--primary-deep),var(--primary-dark) 45%,var(--primary));
@@ -437,9 +481,15 @@ select:focus,
   background:rgba(255,255,255,.13);
 }
 
-.balance-card *{
-  color:#fff!important;
+.balance-card::before{
+  content:"";
+  position:absolute;
+  inset:0;
+  background:linear-gradient(135deg,rgba(255,255,255,.18),transparent 38%,transparent 72%,rgba(255,255,255,.08));
+  pointer-events:none;
 }
+
+.balance-card *{color:#fff!important;}
 
 .balance-label{
   font-size:11px;
@@ -447,11 +497,11 @@ select:focus,
   letter-spacing:.14em;
   opacity:.82;
   font-weight:950;
-  margin-bottom:12px;
+  margin-bottom:8px;
 }
 
 .balance-value{
-  font-size:46px;
+  font-size:52px;
   line-height:1;
   font-weight:950;
   letter-spacing:-.065em;
@@ -478,15 +528,15 @@ select:focus,
 }
 
 .summary-box{
-  min-height:116px;
-  padding:20px;
+  min-height:92px;
+  padding:16px;
   display:flex;
   flex-direction:column;
   justify-content:center;
 }
 
 .summary-box-label{
-  font-size:11px;
+  font-size:10px;
   color:var(--muted);
   font-weight:950;
   text-transform:uppercase;
@@ -495,13 +545,13 @@ select:focus,
 }
 
 .summary-box-value{
-  font-size:24px;
+  font-size:21px;
   font-weight:950;
   color:var(--text);
   letter-spacing:-.04em;
 }
 
-/* DINÂMICOS */
+/* DYNAMIC ROWS */
 .dynamic-list{
   display:grid;
   gap:12px;
@@ -538,9 +588,35 @@ select:focus,
   font-size:14px;
 }
 
-/* AÇÕES */
+/* ACTIONS */
 .actions-section{
   border-radius:26px;
+  opacity:0;
+  transform:translateY(30px) scale(.96);
+  pointer-events:none;
+  transition:.28s cubic-bezier(.22,.61,.36,1);
+}
+
+.actions-section:not(.active){
+  display:none!important;
+}
+
+.actions-section.active{
+  display:block!important;
+  opacity:1;
+  transform:translateY(0) scale(1);
+  pointer-events:auto;
+}
+
+.actions-section.hidden-scroll{
+  transform:translateY(80px);
+  opacity:0;
+}
+
+.actions-section.keyboard-open{
+  transform:translateY(120px)!important;
+  opacity:0!important;
+  pointer-events:none!important;
 }
 
 .bank-actions-grid{
@@ -564,11 +640,27 @@ select:focus,
 }
 
 .bank-action-primary{
+  position:relative;
+  overflow:hidden;
   flex:1.8;
   background:linear-gradient(135deg,var(--primary-dark),var(--primary));
   color:#fff;
   border:none;
   box-shadow:0 16px 34px rgba(0,107,255,.26);
+}
+
+.bank-action-primary::after{
+  content:"";
+  position:absolute;
+  inset:0;
+  background:linear-gradient(120deg,transparent 0%,rgba(255,255,255,.24) 45%,transparent 75%);
+  transform:translateX(-120%);
+  transition:.45s ease;
+}
+
+.bank-action-primary:hover::after,
+.bank-action-primary:active::after{
+  transform:translateX(120%);
 }
 
 .bank-action-title{
@@ -579,15 +671,10 @@ select:focus,
   white-space:nowrap;
 }
 
-.bank-action-primary .bank-action-title{
-  color:#fff;
-}
+.bank-action-primary .bank-action-title{color:#fff;}
+.bank-action-sub{display:none;}
 
-.bank-action-sub{
-  display:none;
-}
-
-/* COMPARATIVO */
+/* COMPARE */
 .compare-grid{
   display:grid;
   grid-template-columns:repeat(auto-fit,minmax(190px,1fr));
@@ -624,7 +711,55 @@ select:focus,
   font-weight:850;
 }
 
-/* HISTÓRICO */
+/* HISTORY */
+.history-head{
+  display:flex!important;
+  align-items:center!important;
+  justify-content:space-between!important;
+  gap:14px!important;
+}
+
+.history-head span{flex:1!important;}
+
+.history-view-btn{
+  min-width:82px!important;
+  height:42px!important;
+  padding:0 20px!important;
+  border-radius:999px!important;
+  border:1px solid rgba(0,107,255,.14)!important;
+  background:linear-gradient(135deg,#003dcc,#006bff)!important;
+  color:#fff!important;
+  display:flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+  font-size:13px!important;
+  font-weight:950!important;
+  box-shadow:0 10px 22px rgba(0,107,255,.22)!important;
+}
+
+.history-view-btn.active,
+#historySection:not(.history-hidden) .history-view-btn{
+  background:#eef4ff!important;
+  color:#003dcc!important;
+  border-color:rgba(0,107,255,.18)!important;
+  box-shadow:0 6px 14px rgba(0,64,160,.08)!important;
+}
+
+.history-body{
+  max-height:1400px;
+  opacity:1;
+  overflow:hidden;
+  transition:max-height .28s ease, opacity .22s ease, padding .22s ease;
+}
+
+#historySection.history-hidden .history-body{
+  max-height:0!important;
+  opacity:0!important;
+  padding-top:0!important;
+  padding-bottom:0!important;
+  overflow:hidden!important;
+}
+
 .history-list{
   display:grid;
   gap:14px;
@@ -727,7 +862,7 @@ select:focus,
   color:var(--muted);
 }
 
-/* RANKING */
+/* RANKING / CHART TABS */
 .ranking-simple-list{
   display:grid;
   gap:0;
@@ -757,9 +892,7 @@ select:focus,
   border-bottom:1px solid rgba(0,107,255,.08);
 }
 
-.ranking-bar-card:last-child{
-  border-bottom:none;
-}
+.ranking-bar-card:last-child{border-bottom:none;}
 
 .ranking-bar-pos{
   font-size:24px;
@@ -817,9 +950,7 @@ select:focus,
   background:linear-gradient(90deg,#e0313d,#ff5b67);
 }
 
-.ranking-bar-fill.neutral{
-  background:#94a3b8;
-}
+.ranking-bar-fill.neutral{background:#94a3b8;}
 
 .ranking-bar-value{
   font-size:16px;
@@ -832,18 +963,41 @@ select:focus,
 .ranking-bar-value.negative{color:var(--red);}
 .ranking-bar-value.neutral{color:#64748b;}
 
-/* META */
-#monthlyGoalCard{
+.chart-actions,
+.ranking-tabs{
+  display:flex;
+  gap:6px;
+  padding:6px;
+  border-radius:20px;
+  background:#eef4ff;
+  border:1px solid rgba(0,107,255,.08);
+  width:max-content;
+}
+
+.chart-range-btn,
+.ranking-tab{
+  min-height:42px;
+  padding:0 16px;
+  border-radius:14px;
+  background:transparent;
+  color:#64748b;
+  font-size:14px;
+  font-weight:900;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+}
+
+.chart-range-btn.active,
+.ranking-tab.active{
   background:#fff;
+  color:#003dcc;
+  box-shadow:0 8px 18px rgba(0,64,160,.08), inset 0 1px 0 rgba(255,255,255,.95);
 }
 
-.goal-bar-wrapper{
-  margin:16px 0;
-}
-
-#goalBarFill{
-  min-width:6px;
-}
+/* GOAL */
+.goal-bar-wrapper{margin:16px 0;}
+#goalBarFill{min-width:6px;}
 
 .goal-status{
   margin-top:12px;
@@ -862,61 +1016,97 @@ select:focus,
 /* MENU */
 .floating-menu{
   position:fixed;
-  top:72px;
-  right:16px;
+  top:96px!important;
+  right:28px!important;
   z-index:120;
-  width:310px;
-  max-width:calc(100vw - 28px);
+  width:380px!important;
+  max-width:calc(100vw - 32px)!important;
   display:grid;
   gap:8px;
-  padding:10px;
-  background:rgba(255,255,255,.92);
-  backdrop-filter:blur(28px);
-  -webkit-backdrop-filter:blur(28px);
-  border:1px solid rgba(255,255,255,.96);
-  border-radius:26px;
-  box-shadow:0 24px 58px rgba(0,64,160,.18);
+  padding:14px!important;
+  border-radius:30px!important;
+  background:linear-gradient(180deg,rgba(255,255,255,.96),rgba(246,249,255,.92))!important;
+  border:1px solid rgba(255,255,255,.95)!important;
+  box-shadow:0 30px 80px rgba(0,31,90,.28), inset 0 1px 0 rgba(255,255,255,.95)!important;
+  transition:opacity .18s ease, transform .18s ease;
+}
+
+.floating-menu::before{
+  content:"Bank King";
+  display:block;
+  padding:12px 14px 14px;
+  margin-bottom:8px;
+  font-size:13px;
+  font-weight:950;
+  letter-spacing:.12em;
+  text-transform:uppercase;
+  color:#64748b;
 }
 
 .floating-menu.hidden{
-  opacity:0;
-  pointer-events:none;
-  transform:translateY(-10px) scale(.96);
+  opacity:0!important;
+  pointer-events:none!important;
+  transform:translateY(-8px) scale(.96)!important;
 }
 
 .floating-menu.show{
-  opacity:1;
-  pointer-events:auto;
-  transform:translateY(0) scale(1);
+  opacity:1!important;
+  pointer-events:auto!important;
+  transform:translateY(0) scale(1)!important;
 }
 
 .menu-item{
   width:100%;
-  min-height:54px;
-  border-radius:18px;
-  background:#fff;
-  color:var(--text);
-  border:1px solid rgba(0,107,255,.08);
-  padding:9px 12px;
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  gap:10px;
+  min-height:64px!important;
+  border-radius:20px!important;
+  background:#fff!important;
+  color:#06152e!important;
+  border:1px solid rgba(0,107,255,.09)!important;
+  padding:0 18px!important;
+  display:flex!important;
+  align-items:center!important;
+  justify-content:flex-start!important;
+  gap:14px!important;
   text-align:left;
-  font-size:14px;
+  font-size:16px!important;
+  font-weight:950!important;
+  box-shadow:0 10px 24px rgba(0,64,160,.06), inset 0 1px 0 rgba(255,255,255,.95)!important;
+}
+
+.menu-item::before{
+  content:"";
+  width:38px!important;
+  height:38px!important;
+  min-width:38px!important;
+  border-radius:14px!important;
+  background:radial-gradient(circle at 30% 20%,rgba(255,255,255,.45),transparent 35%), linear-gradient(135deg,#003DCC,#006BFF)!important;
+  box-shadow:0 10px 24px rgba(0,107,255,.22)!important;
+}
+
+.menu-item::after{
+  content:"›"!important;
+  margin-left:auto!important;
+  font-size:26px!important;
+  font-weight:900!important;
+  color:#94a3b8!important;
 }
 
 .menu-item:hover{
-  background:linear-gradient(135deg,var(--primary-dark),var(--primary));
-  color:#fff;
+  transform:translateY(-1px)!important;
+  background:linear-gradient(135deg,#003DCC,#006BFF)!important;
+  color:#fff!important;
 }
+
+.menu-item:hover::before{background:#fff!important;}
+.menu-item:hover::after{color:#fff!important;}
 
 .menu-backdrop{
   position:fixed;
   inset:0;
   z-index:110;
-  background:rgba(0,31,90,.30);
-  backdrop-filter:blur(6px);
+  background:rgba(6,21,46,.38);
+  backdrop-filter:blur(18px);
+  -webkit-backdrop-filter:blur(18px);
   opacity:0;
   pointer-events:none;
   transition:var(--transition);
@@ -927,7 +1117,7 @@ select:focus,
   pointer-events:auto;
 }
 
-/* MODAL */
+/* MODALS */
 .modal{
   position:fixed;
   inset:0;
@@ -1037,6 +1227,9 @@ select:focus,
   opacity:0;
   transition:.25s ease;
   background:var(--primary-dark);
+  box-shadow:0 16px 40px rgba(0,0,0,.18);
+  backdrop-filter:blur(12px);
+  -webkit-backdrop-filter:blur(12px);
 }
 
 .ck-toast.show{
@@ -1052,16 +1245,14 @@ select:focus,
   background:linear-gradient(135deg,var(--red),#ef4444);
 }
 
-/* MOBILE / iPHONE */
+/* MOBILE */
 @media(max-width:600px){
-
   :root{
     --iphone-x:10px;
     --bottom-actions-height:68px;
   }
 
-  html,
-  body{
+  html,body{
     max-width:100%;
     overflow-x:hidden;
     -webkit-text-size-adjust:100%;
@@ -1074,10 +1265,7 @@ select:focus,
     overscroll-behavior-y:contain;
   }
 
-  button,
-  input,
-  select,
-  textarea{
+  button,input,select,textarea{
     font-size:16px!important;
   }
 
@@ -1092,34 +1280,30 @@ select:focus,
   }
 
   .auth-card{
-    padding:24px 18px;
-    border-radius:28px;
+    padding:22px 18px!important;
+    border-radius:26px!important;
     max-width:100%;
   }
 
   .auth-logo{
-    width:56px;
-    height:56px;
-    border-radius:18px;
+    width:52px!important;
+    height:52px!important;
+    border-radius:17px!important;
   }
 
   .auth-title{
-    font-size:32px;
-    margin-top:12px;
-  }
-
-  .auth-sub{
-    margin-bottom:16px;
+    font-size:30px!important;
+    margin:12px 0 4px!important;
   }
 
   .auth-tabs{
-    margin:20px 0 18px;
+    margin:18px 0 16px!important;
     padding:4px;
     border-radius:18px;
   }
 
   .auth-tab{
-    height:46px;
+    height:44px!important;
     font-size:14px;
     border-radius:14px;
   }
@@ -1137,9 +1321,7 @@ select:focus,
     border-radius:0 0 22px 22px;
   }
 
-  .brand{
-    gap:10px;
-  }
+  .brand{gap:10px;}
 
   .brand-logo{
     width:36px;
@@ -1178,58 +1360,66 @@ select:focus,
   .user-card,
   #monthlyGoalCard,
   #adminPanel{
-    border-radius:24px;
+    border-radius:22px!important;
   }
 
   .section-head{
-    padding:15px 17px;
-    font-size:18px;
+    padding:14px 16px!important;
+    font-size:16px!important;
   }
 
   .section-body{
-    padding:16px 17px;
+    padding:14px 16px!important;
   }
 
   .user-card{
-    padding:17px;
+    padding:17px!important;
+    border-radius:26px!important;
   }
 
   .user-name{
-    font-size:22px;
+    font-size:22px!important;
   }
 
   .user-email{
-    font-size:14px;
-    max-width:100%;
+    font-size:13px!important;
   }
 
   .logout-btn{
-    min-width:70px;
-    height:46px;
-    border-radius:16px;
+    min-width:74px!important;
+    height:46px!important;
   }
 
   .balance-card{
-    padding:21px 19px;
+    min-height:128px!important;
+    padding:20px!important;
     border-radius:28px;
-    min-height:126px;
   }
 
   .balance-value{
-    font-size:39px;
+    font-size:38px!important;
     white-space:nowrap;
     overflow:hidden;
   }
 
   .summary-grid{
-    grid-template-columns:1fr;
-    gap:11px;
+    grid-template-columns:1fr 1fr!important;
+    gap:10px!important;
   }
 
   .summary-box{
-    min-height:98px;
-    padding:17px;
+    min-height:86px!important;
+    padding:14px!important;
     border-radius:22px;
+  }
+
+  .summary-box-label{
+    font-size:9px!important;
+    line-height:1.15!important;
+  }
+
+  .summary-box-value{
+    font-size:18px!important;
   }
 
   .dynamic-row{
@@ -1245,12 +1435,12 @@ select:focus,
     min-height:48px;
   }
 
-  .actions-section{
-    position:fixed;
-    left:8px;
-    right:8px;
-    bottom:calc(10px + env(safe-area-inset-bottom));
-    z-index:9999;
+  .actions-section.active{
+    position:fixed!important;
+    left:8px!important;
+    right:8px!important;
+    bottom:calc(10px + env(safe-area-inset-bottom))!important;
+    z-index:9999!important;
     padding:7px;
     min-height:var(--bottom-actions-height);
     border-radius:24px;
@@ -1260,13 +1450,8 @@ select:focus,
     box-shadow:0 -18px 45px rgba(0,64,160,.20);
   }
 
-  .actions-head{
-    display:none;
-  }
-
-  .actions-body{
-    padding:0;
-  }
+  .actions-head{display:none;}
+  .actions-body{padding:0;}
 
   .bank-actions-grid{
     display:grid;
@@ -1284,6 +1469,13 @@ select:focus,
     font-size:13px;
   }
 
+  .history-view-btn{
+    min-width:76px!important;
+    height:40px!important;
+    padding:0 18px!important;
+    font-size:13px!important;
+  }
+
   .history-card,
   .bank-history-card{
     padding:16px;
@@ -1297,6 +1489,20 @@ select:focus,
 
   .history-operator{
     font-size:21px;
+  }
+
+  .chart-actions,
+  .ranking-tabs{
+    width:100%;
+    display:grid;
+    grid-template-columns:repeat(4,1fr);
+    gap:6px;
+  }
+
+  .chart-range-btn,
+  .ranking-tab{
+    padding:0;
+    font-size:13px;
   }
 
   .ranking-bar-card{
@@ -1323,512 +1529,10 @@ select:focus,
   }
 
   .floating-menu{
-    top:calc(58px + env(safe-area-inset-top));
-    right:10px;
-    width:calc(100vw - 20px);
-    border-radius:24px;
-    padding:9px;
-  }
-
-  .menu-item{
-    min-height:50px;
-    border-radius:16px;
-    font-size:14px;
-  }
-}
-
-@media(max-width:390px){
-  .balance-value{font-size:35px;}
-  .user-name{font-size:21px;}
-  .section-head{font-size:17px;}
-}
-
-@media(max-width:360px){
-  .balance-value{font-size:31px;}
-  .brand-title{font-size:15px;}
-  .brand-sub{font-size:10px;}
-  .bank-action-title{font-size:12px;}
-}
-
-@media(max-width:600px) and (display-mode:standalone){
-  body{
-    padding-bottom:calc(96px + env(safe-area-inset-bottom));
-  }
-
-  .actions-section{
-    bottom:calc(9px + env(safe-area-inset-bottom));
-  }
-}
-
-@media(max-width:900px) and (orientation:landscape){
-  body{
-    padding-bottom:110px;
-  }
-
-  .topbar{
-    position:relative;
-  }
-
-  .actions-section{
-    bottom:10px;
-  }
-}
-
- .actions-section{
-  opacity:0;
-  transform:translateY(18px);
-  pointer-events:none;
-  transition:.24s ease;
-}
-
-.actions-section.active{
-  opacity:1;
-  transform:translateY(0);
-  pointer-events:auto;
-}
-
- /* ✅ Remove o buraco da barra de ações quando ela estiver escondida */
-.actions-section:not(.active){
-  display:none!important;
-}
-
-/* ✅ Quando tiver dado preenchido, aparece normal */
-.actions-section.active{
-  display:block!important;
-}
-
-@media(max-width:600px){
-  .actions-section.active{
-    display:block!important;
-    position:fixed!important;
-    left:8px!important;
-    right:8px!important;
-    bottom:calc(10px + env(safe-area-inset-bottom))!important;
-    z-index:9999!important;
-  }
-}
-
-@media(min-width:601px){
-  .actions-section.active{
-    position:relative!important;
-    display:block!important;
-  }
-}
-
-.actions-section{
-  opacity:0;
-  transform:translateY(30px) scale(.96);
-  pointer-events:none;
-  transition:.28s cubic-bezier(.22,.61,.36,1);
-}
-
-.actions-section.active{
-  opacity:1;
-  transform:translateY(0) scale(1);
-  pointer-events:auto;
-}
-
-.actions-section.hidden-scroll{
-  transform:translateY(80px);
-  opacity:0;
-}
-
- /* 🔥 quando teclado abre */
-.actions-section.keyboard-open{
-  transform:translateY(120px)!important;
-  opacity:0!important;
-  pointer-events:none!important;
-}
-
- /* =========================================================
-   MICROINTERAÇÕES PREMIUM — BANK KING
-========================================================= */
-
-.section-card,
-.main-card,
-.user-card,
-.balance-card,
-.history-card,
-.summary-box{
-  transition:transform .18s ease, box-shadow .18s ease;
-}
-
-.section-card:active,
-.main-card:active,
-.user-card:active,
-.history-card:active,
-.summary-box:active{
-  transform:scale(.995);
-}
-
-input,
-select,
-button{
-  transition:
-    transform .18s ease,
-    box-shadow .18s ease,
-    background .18s ease,
-    border-color .18s ease;
-}
-
-/* efeito premium ao focar campo */
-input:focus,
-select:focus{
-  transform:translateY(-1px);
-}
-
-/* botão principal mais vivo */
-.bank-action-primary{
-  position:relative;
-  overflow:hidden;
-}
-
-.bank-action-primary::after{
-  content:"";
-  position:absolute;
-  inset:0;
-  background:linear-gradient(
-    120deg,
-    transparent 0%,
-    rgba(255,255,255,.24) 45%,
-    transparent 75%
-  );
-  transform:translateX(-120%);
-  transition:.45s ease;
-}
-
-.bank-action-primary:hover::after,
-.bank-action-primary:active::after{
-  transform:translateX(120%);
-}
-
-/* cards com brilho sutil */
-.balance-card::before{
-  content:"";
-  position:absolute;
-  inset:0;
-  background:linear-gradient(
-    135deg,
-    rgba(255,255,255,.18),
-    transparent 38%,
-    transparent 72%,
-    rgba(255,255,255,.08)
-  );
-  pointer-events:none;
-}
-
-/* histórico mais elegante */
-.history-card{
-  cursor:pointer;
-}
-
-.history-card:hover{
-  transform:translateY(-2px);
-}
-
-/* menu mais fluido */
-.floating-menu{
-  transition:
-    opacity .18s ease,
-    transform .18s ease;
-}
-
-/* toast mais premium */
-.ck-toast{
-  box-shadow:0 16px 40px rgba(0,0,0,.18);
-  backdrop-filter:blur(12px);
-  -webkit-backdrop-filter:blur(12px);
-}
-
- /* =========================================================
-   ESTÉTICA PREMIUM — LOGIN + CARDS COMPACTOS
-========================================================= */
-
-.auth-card{
-  max-width:520px;
-}
-
-.auth-title{
-  letter-spacing:-2.2px;
-}
-
-.auth-submit,
-.bank-action-primary{
-  background:linear-gradient(135deg,#003DCC,#006BFF)!important;
-}
-
-.section-card,
-.main-card,
-.user-card,
-.balance-card{
-  border-radius:26px!important;
-}
-
-.section-head{
-  font-size:17px!important;
-}
-
-.summary-box{
-  min-height:96px!important;
-}
-
-@media(max-width:600px){
-
-  .auth-card{
-    padding:22px 18px!important;
-    border-radius:26px!important;
-  }
-
-  .auth-logo{
-    width:52px!important;
-    height:52px!important;
-    border-radius:17px!important;
-  }
-
-  .auth-title{
-    font-size:30px!important;
-    margin:12px 0 4px!important;
-  }
-
-  .auth-tabs{
-    margin:18px 0 16px!important;
-  }
-
-  .auth-tab{
-    height:44px!important;
-  }
-
-  .section-card,
-  .main-card,
-  .user-card{
-    border-radius:22px!important;
-  }
-
-  .section-head{
-    padding:14px 16px!important;
-    font-size:16px!important;
-  }
-
-  .section-body{
-    padding:14px 16px!important;
-  }
-
-  .summary-box{
-    min-height:88px!important;
-    padding:15px!important;
-  }
-
-  .summary-box-value{
-    font-size:21px!important;
-  }
-
-  .balance-card{
-    min-height:116px!important;
-    padding:19px!important;
-  }
-
-  .balance-value{
-    font-size:36px!important;
-  }
-}
-/* =========================================================
-   HOME PREMIUM — HIERARQUIA FINTECH
-========================================================= */
-
-.balance-card{
-  min-height:170px!important;
-  display:flex!important;
-  align-items:flex-end!important;
-}
-
-.balance-label{
-  margin-bottom:8px!important;
-}
-
-.balance-value{
-  font-size:52px!important;
-}
-
-.summary-grid{
-  grid-template-columns:repeat(4,1fr)!important;
-}
-
-.summary-box{
-  min-height:92px!important;
-  padding:16px!important;
-}
-
-.summary-box-label{
-  font-size:10px!important;
-}
-
-.summary-box-value{
-  font-size:21px!important;
-}
-
-.user-card{
-  padding:14px 16px!important;
-}
-
-@media(max-width:600px){
-
-  .balance-card{
-    min-height:128px!important;
-    padding:20px!important;
-  }
-
-  .balance-value{
-    font-size:38px!important;
-  }
-
-  .summary-grid{
-    grid-template-columns:1fr 1fr!important;
-    gap:10px!important;
-  }
-
-  .summary-box{
-    min-height:86px!important;
-    padding:14px!important;
-  }
-
-  .summary-box-label{
-    font-size:9px!important;
-    line-height:1.15!important;
-  }
-
-  .summary-box-value{
-    font-size:18px!important;
-  }
-}
-
- /* =========================================================
-   MENU PREMIUM — ESTILO APP DE BANCO
-========================================================= */
-
-.menu-backdrop.show{
-  background:rgba(6,21,46,.38)!important;
-  backdrop-filter:blur(18px)!important;
-  -webkit-backdrop-filter:blur(18px)!important;
-}
-
-.floating-menu{
-  top:96px!important;
-  right:28px!important;
-  width:380px!important;
-  max-width:calc(100vw - 32px)!important;
-
-  padding:14px!important;
-  border-radius:30px!important;
-
-  background:
-    linear-gradient(180deg,rgba(255,255,255,.96),rgba(246,249,255,.92))!important;
-
-  border:1px solid rgba(255,255,255,.95)!important;
-
-  box-shadow:
-    0 30px 80px rgba(0,31,90,.28),
-    inset 0 1px 0 rgba(255,255,255,.95)!important;
-}
-
-/* cria uma “cabeceira visual” no menu */
-.floating-menu::before{
-  content:"Bank King";
-  display:block;
-  padding:12px 14px 14px;
-  margin-bottom:8px;
-
-  font-size:13px;
-  font-weight:950;
-  letter-spacing:.12em;
-  text-transform:uppercase;
-  color:#64748b;
-}
-
-/* itens do menu */
-.menu-item{
-  min-height:64px!important;
-  border-radius:20px!important;
-
-  background:#ffffff!important;
-  border:1px solid rgba(0,107,255,.09)!important;
-
-  padding:0 18px!important;
-
-  font-size:16px!important;
-  font-weight:950!important;
-  color:#06152e!important;
-
-  box-shadow:
-    0 10px 24px rgba(0,64,160,.06),
-    inset 0 1px 0 rgba(255,255,255,.95)!important;
-
-  display:flex!important;
-  align-items:center!important;
-  justify-content:flex-start!important;
-  gap:14px!important;
-}
-
-/* ícone fake premium antes do texto */
-.menu-item::before{
-  content:"";
-  width:38px!important;
-  height:38px!important;
-  min-width:38px!important;
-
-  border-radius:14px!important;
-  background:
-    radial-gradient(circle at 30% 20%,rgba(255,255,255,.45),transparent 35%),
-    linear-gradient(135deg,#003DCC,#006BFF)!important;
-
-  box-shadow:0 10px 24px rgba(0,107,255,.22)!important;
-}
-
-/* seta */
-.menu-item::after{
-  content:"›"!important;
-  margin-left:auto!important;
-  font-size:26px!important;
-  font-weight:900!important;
-  color:#94a3b8!important;
-}
-
-/* hover desktop */
-.menu-item:hover{
-  transform:translateY(-1px)!important;
-  background:linear-gradient(135deg,#003DCC,#006BFF)!important;
-  color:#ffffff!important;
-  box-shadow:0 18px 36px rgba(0,107,255,.24)!important;
-}
-
-.menu-item:hover::before{
-  background:#ffffff!important;
-}
-
-.menu-item:hover::after{
-  color:#ffffff!important;
-}
-
-/* animação mais real */
-.floating-menu.show{
-  opacity:1!important;
-  pointer-events:auto!important;
-  transform:translateY(0) scale(1)!important;
-}
-
-.floating-menu.hidden{
-  opacity:0!important;
-  pointer-events:none!important;
-  transform:translateY(-8px) scale(.96)!important;
-}
-
-/* MOBILE */
-@media(max-width:600px){
-  .floating-menu{
     top:calc(64px + env(safe-area-inset-top))!important;
     right:10px!important;
     left:10px!important;
     width:auto!important;
-
     padding:12px!important;
     border-radius:28px!important;
   }
@@ -1853,547 +1557,41 @@ select:focus{
   }
 }
 
- /* =========================================================
-   USER CARD PREMIUM — PERFIL BANCÁRIO
-========================================================= */
-
-.user-card{
-  position:relative!important;
-  overflow:hidden!important;
-  padding:18px 20px!important;
-  border-radius:30px!important;
-  background:
-    radial-gradient(circle at 92% 10%, rgba(0,107,255,.08), transparent 28%),
-    linear-gradient(180deg,#ffffff,#f8fbff)!important;
+@media(max-width:390px){
+  .balance-value{font-size:35px!important;}
+  .user-name{font-size:21px!important;}
+  .section-head{font-size:17px!important;}
 }
 
-.user-card::before{
-  content:"";
-  position:absolute;
-  left:-40px;
-  top:-40px;
-  width:140px;
-  height:140px;
-  border-radius:50%;
-  background:rgba(0,107,255,.06);
-  pointer-events:none;
+@media(max-width:360px){
+  .balance-value{font-size:31px!important;}
+  .brand-title{font-size:15px!important;}
+  .brand-sub{font-size:10px!important;}
+  .bank-action-title{font-size:12px!important;}
 }
 
-.user-name{
-  font-size:24px!important;
-  letter-spacing:-.05em!important;
-}
-
-.user-email{
-  font-size:14px!important;
-  color:#64748b!important;
-}
-
-#activeUserRole{
-  display:inline-flex!important;
-  width:max-content!important;
-  margin-top:8px!important;
-  padding:6px 10px!important;
-  border-radius:999px!important;
-  background:#eaf2ff!important;
-  color:#003dcc!important;
-  font-size:10px!important;
-  letter-spacing:.12em!important;
-  font-weight:950!important;
-}
-
-.logout-btn{
-  height:48px!important;
-  min-width:82px!important;
-  border-radius:18px!important;
-  background:#fff1f2!important;
-  color:#e0313d!important;
-  border:1px solid rgba(224,49,61,.14)!important;
-  box-shadow:0 10px 24px rgba(224,49,61,.08)!important;
-}
-
-.logout-btn:hover{
-  background:#e0313d!important;
-  color:#fff!important;
-}
-
-@media(max-width:600px){
-  .user-card{
-    padding:17px!important;
-    border-radius:26px!important;
+@media(max-width:600px) and (display-mode:standalone){
+  body{
+    padding-bottom:calc(96px + env(safe-area-inset-bottom));
   }
 
-  .user-name{
-    font-size:22px!important;
-  }
-
-  .user-email{
-    font-size:13px!important;
-  }
-
-  .logout-btn{
-    min-width:74px!important;
-    height:46px!important;
+  .actions-section.active{
+    bottom:calc(9px + env(safe-area-inset-bottom))!important;
   }
 }
 
-/* =========================================================
-   TABS RANKING — ESTILO BANCO REAL
-========================================================= */
-
-.ranking-tabs{
-  display:flex;
-  gap:8px;
-  padding:6px;
-  border-radius:20px;
-
-  background:#eef4ff;
-  border:1px solid rgba(0,107,255,.08);
-
-  width:max-content;
-}
-
-/* botão base */
-.ranking-tab{
-  min-height:44px;
-  padding:0 16px;
-
-  border-radius:14px;
-  border:none;
-
-  background:transparent;
-  color:#64748b;
-
-  font-size:14px;
-  font-weight:900;
-
-  display:flex;
-  align-items:center;
-  justify-content:center;
-
-  cursor:pointer;
-  transition:all .18s ease;
-}
-
-/* ativo */
-.ranking-tab.active{
-  background:#ffffff;
-  color:#003dcc;
-
-  box-shadow:
-    0 8px 18px rgba(0,64,160,.08),
-    inset 0 1px 0 rgba(255,255,255,.95);
-}
-
-/* hover */
-.ranking-tab:hover{
-  color:#003dcc;
-}
-
-/* efeito leve de pressionar */
-.ranking-tab:active{
-  transform:scale(.96);
-}
-
-/* MOBILE */
-@media(max-width:600px){
-
-  .ranking-tabs{
-    width:100%;
-    display:grid;
-    grid-template-columns:1fr 1fr 1fr 1fr;
-    gap:6px;
+@media(max-width:900px) and (orientation:landscape){
+  body{
+    padding-bottom:110px;
   }
 
-  .ranking-tab{
-    min-height:42px;
-    font-size:13px;
-    padding:0;
-  }
-}
-
- /* =========================================================
-   CHART TABS — ESTILO FINTECH PREMIUM
-========================================================= */
-
-.chart-actions{
-  display:flex;
-  gap:6px;
-
-  padding:6px;
-  border-radius:20px;
-
-  background:#eef4ff;
-  border:1px solid rgba(0,107,255,.08);
-
-  width:max-content;
-}
-
-/* botão base */
-.chart-range-btn{
-  min-height:42px;
-  padding:0 16px;
-
-  border:none;
-  border-radius:14px;
-
-  background:transparent;
-  color:#64748b;
-
-  font-size:14px;
-  font-weight:900;
-
-  display:flex;
-  align-items:center;
-  justify-content:center;
-
-  cursor:pointer;
-  transition:all .18s ease;
-}
-
-/* ativo */
-.chart-range-btn.active{
-  background:#ffffff;
-  color:#003dcc;
-
-  box-shadow:
-    0 8px 18px rgba(0,64,160,.08),
-    inset 0 1px 0 rgba(255,255,255,.95);
-}
-
-/* hover */
-.chart-range-btn:hover{
-  color:#003dcc;
-}
-
-/* clique */
-.chart-range-btn:active{
-  transform:scale(.96);
-}
-
-/* MOBILE */
-@media(max-width:600px){
-
-  .chart-actions{
-    width:100%;
-    display:grid;
-    grid-template-columns:1fr 1fr 1fr 1fr;
-    gap:6px;
+  .topbar{
+    position:relative;
   }
 
-  .chart-range-btn{
-    padding:0;
-    font-size:13px;
+  .actions-section.active{
+    bottom:10px!important;
   }
-}
-
- .balance-toggle{
-  position:relative;
-  width:52px;
-  height:30px;
-
-  border-radius:999px;
-  background:rgba(255,255,255,.25);
-
-  border:1px solid rgba(255,255,255,.25);
-
-  cursor:pointer;
-  transition:.25s;
-}
-
-.balance-toggle::after{
-  content:"";
-  position:absolute;
-  top:3px;
-  left:4px;
-
-  width:22px;
-  height:22px;
-  border-radius:50%;
-
-  background:#ffffff;
-
-  transition:.25s;
-}
-
-/* ativo (mostrando saldo) */
-.balance-toggle.active{
-  background:#22c55e;
-}
-
-/* bolinha move */
-.balance-toggle.active::after{
-  transform:translateX(20px);
-}
-
-/* =========================================================
-   COMPARATIVO OCULTO — BOTÃO VER / OCULTAR
-========================================================= */
-
-.compare-head{
-  display:flex!important;
-  align-items:center!important;
-  justify-content:space-between!important;
-  gap:12px!important;
-}
-
-.compare-eye-btn{
-  min-height:38px!important;
-  padding:0 16px!important;
-  border-radius:999px!important;
-
-  background:#f1f5f9!important;
-  color:#0a1020!important;
-
-  border:1px solid rgba(10,16,32,.08)!important;
-
-  display:flex!important;
-  align-items:center!important;
-  justify-content:center!important;
-
-  font-size:12px!important;
-  font-weight:950!important;
-
-  box-shadow:0 6px 14px rgba(0,64,160,.06)!important;
-  transition:.18s ease!important;
-}
-
-.compare-eye-btn:hover{
-  background:#006bff!important;
-  color:#ffffff!important;
-}
-
-.compare-body{
-  max-height:600px;
-  opacity:1;
-  overflow:hidden;
-  transition:max-height .28s ease, opacity .22s ease, padding .22s ease;
-}
-
-.compare-section.compare-hidden .compare-body{
-  max-height:0!important;
-  opacity:0!important;
-  padding-top:0!important;
-  padding-bottom:0!important;
-  overflow:hidden!important;
-}
-
-@media(max-width:600px){
-  .compare-eye-btn{
-    min-height:34px!important;
-    padding:0 14px!important;
-    font-size:12px!important;
-  }
-}
-
- /* =========================================================
-   FORM CARD PREMIUM — DADOS E ENTRADAS
-========================================================= */
-
-.blue-section{
-  background:
-    linear-gradient(180deg,#ffffff,#f8fbff)!important;
-}
-
-.blue-section .section-head{
-  display:flex!important;
-  align-items:center!important;
-  gap:10px!important;
-}
-
-.blue-section .section-head::before{
-  content:"";
-  width:34px;
-  height:34px;
-  border-radius:13px;
-  background:
-    radial-gradient(circle at 30% 20%,rgba(255,255,255,.45),transparent 35%),
-    linear-gradient(135deg,#003dcc,#006bff);
-  box-shadow:0 10px 24px rgba(0,107,255,.22);
-}
-
-.blue-section .field{
-  background:#ffffff;
-  border:1px solid rgba(0,107,255,.08);
-  border-radius:20px;
-  padding:14px;
-  box-shadow:0 8px 18px rgba(0,64,160,.045);
-}
-
-.blue-section .field label{
-  margin-left:2px;
-}
-
-.blue-section input{
-  box-shadow:none!important;
-  background:#f8fbff!important;
-  border-color:rgba(0,107,255,.10)!important;
-}
-
-.blue-section input:focus{
-  background:#ffffff!important;
-}
-
-@media(max-width:600px){
-  .blue-section .field{
-    padding:12px!important;
-    border-radius:18px!important;
-  }
-
-  .blue-section .section-head::before{
-    width:30px;
-    height:30px;
-    border-radius:11px;
-  }
-}
-
- .history-hidden .history-list{
-  max-height:0!important;
-  opacity:0!important;
-  overflow:hidden!important;
-  transition:.25s ease;
-}
-
-.history-list{
-  max-height:800px;
-  transition:.25s ease;
-}
-
-.section-head{
-  display:flex!important;
-  align-items:center!important;
-  justify-content:space-between!important;
-  gap:10px!important;
-}
-
-.section-head span{
-  flex:1;
-}
-
-/* garante que o botão vá totalmente pra direita */
-.section-head button{
-  margin-left:auto!important;
-}
-
- .history-body{
-  max-height:900px;
-  opacity:1;
-  overflow:hidden;
-  transition:max-height .28s ease, opacity .22s ease, padding .22s ease;
-}
-
-.history-hidden .history-body{
-  max-height:0!important;
-  opacity:0!important;
-  padding-top:0!important;
-  padding-bottom:0!important;
-}
-
- .history-body{
-  max-height:1200px;
-  opacity:1;
-  overflow:hidden;
-  transition:max-height .28s ease, opacity .22s ease, padding .22s ease;
-}
-
-.history-hidden .history-body{
-  max-height:0!important;
-  opacity:0!important;
-  padding-top:0!important;
-  padding-bottom:0!important;
-  overflow:hidden!important;
-}
-
- .history-body{
-  max-height:1400px;
-  opacity:1;
-  overflow:hidden;
-  transition:max-height .28s ease, opacity .22s ease, padding .22s ease;
-}
-
-.history-hidden .history-body{
-  max-height:0!important;
-  opacity:0!important;
-  padding-top:0!important;
-  padding-bottom:0!important;
-}
-
- .section-collapsed{
-  max-height:0!important;
-  opacity:0!important;
-  overflow:hidden!important;
-  transition:.25s ease;
-}
-
-.section-expanded{
-  max-height:1200px;
-  opacity:1;
-  transition:.25s ease;
-}
-
- .history-hidden .compare-body{
-  max-height:0;
-  opacity:0;
-  overflow:hidden;
-  padding-top:0;
-  padding-bottom:0;
-  transition:.25s ease;
-}
-
-.compare-body{
-  max-height:800px;
-  opacity:1;
-  transition:.25s ease;
-}
-
- #historySection .history-body{
-  display:block!important;
-  max-height:1400px;
-  opacity:1;
-  overflow:hidden;
-  transition:max-height .28s ease, opacity .22s ease, padding .22s ease;
-}
-
-#historySection.history-hidden .history-body{
-  max-height:0!important;
-  opacity:0!important;
-  padding-top:0!important;
-  padding-bottom:0!important;
-  overflow:hidden!important;
-}
-
-#historyList{
-  display:grid!important;
-}
-
- .admin-panel{
-  padding:22px;
-  margin-bottom:20px;
-  border-radius:28px;
-  background:rgba(255,255,255,.94);
-  border:1px solid rgba(255,255,255,.96);
-  box-shadow:0 14px 34px rgba(10,16,32,.07);
-}
-
-.admin-head{
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  margin-bottom:12px;
-}
-
-.admin-head h3{
-  margin:0;
-  font-size:22px;
-  letter-spacing:-.04em;
-}
-
-.admin-head span{
-  font-size:12px;
-  color:#667085;
-  font-weight:950;
-  text-transform:uppercase;
-  letter-spacing:.08em;
 }
  
 </style>
@@ -2662,14 +1860,13 @@ select:focus{
 
   <section id="historySection" class="section-card history-hidden">
   
-  <div class="section-head compare-head">
-    <span>Histórico</span>
+  <div class="section-head history-head">
+  <span>Histórico</span>
 
-    <button id="toggleHistoryBtn" class="compare-eye-btn" type="button">
-      <span id="historyEyeText">Ver</span>
-    </button>
-  </div>
-
+  <button id="toggleHistoryBtn" class="history-view-btn" type="button">
+    <span id="historyEyeText">Ver</span>
+  </button>
+</div>
   <div class="section-body compare-body">
     <div id="historyList" class="history-list hidden"></div>
   </div>
