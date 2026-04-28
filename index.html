@@ -1666,6 +1666,82 @@ select:focus,
   background:rgba(0,0,0,.18);
   border-radius:20px;
 }
+
+ /* =========================================================
+   META MENSAL — CARD PREMIUM
+========================================================= */
+
+#monthlyGoalCard{
+  position:relative;
+  overflow:hidden;
+  background:
+    radial-gradient(circle at 92% 8%, rgba(0,107,255,.12), transparent 28%),
+    linear-gradient(180deg,#ffffff,#f8fbff)!important;
+}
+
+#monthlyGoalCard .section-head{
+  font-size:20px!important;
+  padding:22px 26px!important;
+}
+
+#monthlyGoalCard .section-body{
+  padding:26px!important;
+  gap:18px!important;
+}
+
+.goal-bar-track{
+  height:18px!important;
+  background:#dce9ff!important;
+  border-radius:999px!important;
+  overflow:hidden!important;
+  box-shadow:inset 0 2px 6px rgba(0,64,160,.08)!important;
+}
+
+.goal-bar-fill{
+  min-width:16px!important;
+  background:linear-gradient(90deg,#12A150,#20D47A)!important;
+  box-shadow:0 0 18px rgba(18,161,80,.35)!important;
+}
+
+.goal-status{
+  margin-top:8px!important;
+  padding:18px 20px!important;
+  border-radius:22px!important;
+  background:#ffffff!important;
+  border:1px solid rgba(0,107,255,.08)!important;
+  box-shadow:0 10px 24px rgba(0,64,160,.06)!important;
+  color:#64748b!important;
+  font-size:15px!important;
+  line-height:1.45!important;
+  font-weight:900!important;
+}
+
+.goal-status strong{
+  color:#06152e!important;
+}
+
+.goal-status small{
+  margin-top:8px!important;
+  color:#64748b!important;
+  font-size:13px!important;
+  font-weight:850!important;
+}
+
+@media(max-width:600px){
+  #monthlyGoalCard .section-head{
+    font-size:18px!important;
+    padding:18px!important;
+  }
+
+  #monthlyGoalCard .section-body{
+    padding:20px!important;
+  }
+
+  .goal-status{
+    font-size:14px!important;
+    padding:16px!important;
+  }
+}
  
 </style>
 
@@ -2584,11 +2660,12 @@ fill.style.width = `${percent}%`;
   }
 
  if (status) {
-  status.innerHTML =
-    percent >= 100
-      ? `Meta batida 🔥 • ${money(totalRealizado)} realizado • ${percent.toFixed(0)}%`
-      : `${money(totalRealizado)} realizado • faltam ${money(restante)}<br>
-         <small>Projeção mensal: ${money(projecaoMes)} • ${percentProjetado.toFixed(0)}%</small>`;
+status.innerHTML =
+  percent >= 100
+    ? `<strong>Meta batida 🔥</strong><br>${money(totalRealizado)} realizado • ${percent.toFixed(0)}%`
+    : `<strong>${money(totalRealizado)} realizado</strong><br>
+       Faltam ${money(restante)}
+       <small>Projeção mensal: ${money(projecaoMes)} • ${percentProjetado.toFixed(0)}%</small>`;
 }
 }
     
