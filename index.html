@@ -2272,6 +2272,20 @@ select:focus{
 .section-head button{
   margin-left:auto!important;
 }
+
+ .history-body{
+  max-height:900px;
+  opacity:1;
+  overflow:hidden;
+  transition:max-height .28s ease, opacity .22s ease, padding .22s ease;
+}
+
+.history-hidden .history-body{
+  max-height:0!important;
+  opacity:0!important;
+  padding-top:0!important;
+  padding-bottom:0!important;
+}
  
 </style>
 
@@ -2482,7 +2496,7 @@ select:focus{
   </div>
 </section>
 
-     <section id="historySection" class="section-card">
+    <section id="historySection" class="section-card history-hidden">
   <div class="section-head">
     <span>Histórico</span>
 
@@ -2491,11 +2505,10 @@ select:focus{
     </button>
   </div>
 
-  <div class="section-body">
+  <div class="section-body history-body">
     <div id="historyList" class="history-list"></div>
   </div>
 </section>
-
 <div id="mainMenu" class="floating-menu hidden">
   <button class="menu-item" type="button" id="adminOpenBtn">Admin</button>
   <button class="menu-item" type="button" id="openPdfCustomBtn">Relatórios PDF</button>
@@ -4670,13 +4683,74 @@ menuToggle?.addEventListener("click",(e)=>{
 });
 
 backdrop?.addEventListener("click", closeMenu);
-    byId("openDetailedHistoryBtn")?.addEventListener("click", () => { historyVisible = true; byId("historyList")?.classList.remove("hidden"); byId("toggleHistoryBtn").textContent = "Ocultar"; renderHistory(); setTimeout(() => byId("historyList")?.scrollIntoView({ behavior: "smooth", block: "start" }), 100); });
-    byId("toggleHistoryBtn")?.addEventListener("click", () => { historyVisible = !historyVisible; byId("historyList")?.classList.toggle("hidden", !historyVisible); byId("toggleHistoryBtn").textContent = historyVisible ? "Ocultar" : "Ver"; if (historyVisible) renderHistory(); });
-    byId("menuHistoryBtn")?.addEventListener("click", async () => { const allowed = await requireAdmin(); if (!allowed) return; mainMenu?.classList.add("hidden"); historyVisible = true; byId("historyList")?.classList.remove("hidden"); byId("toggleHistoryBtn").textContent = "Ocultar"; renderHistory(); setTimeout(() => byId("historyList")?.scrollIntoView({ behavior: "smooth", block: "start" }), 100); });
-    document.addEventListener("click", (e) => { const card = e.target.closest("[data-history-open]"); if (!card) return; const index = Number(card.dataset.historyOpen); if (Number.isInteger(index)) openHistoryModal(index); });
-    byId("closeHistoryModal")?.addEventListener("click", () => byId("historyModal")?.classList.add("hidden"));
-    byId("historyModalBackdrop")?.addEventListener("click", () => byId("historyModal")?.classList.add("hidden"));
 
+/* ✅ HISTÓRICO — SISTEMA ÚNICO */
+const historySection = byId("historySection");
+const historyText = byId("historyEyeText");
+
+function setHistoryVisible(show) {
+  if (!historySection) return;
+
+  historySection.classList.toggle("history-hidden", !show);
+
+  if (historyText) {
+    historyText.textContent = show ? "Ocultar" : "Ver";
+  }
+
+  if (show && typeof renderHistory === "function") {
+    renderHistory();
+  }
+}
+
+byId("openDetailedHistoryBtn")?.addEventListener("click", () => {
+  setHistoryVisible(true);
+
+  setTimeout(() => {
+    byId("historyList")?.scrollIntoView({
+      behavior: "smooth",
+      block: "start"
+    });
+  }, 100);
+});
+
+byId("toggleHistoryBtn")?.addEventListener("click", () => {
+  const isHidden = historySection?.classList.contains("history-hidden");
+  setHistoryVisible(isHidden);
+});
+
+byId("menuHistoryBtn")?.addEventListener("click", async () => {
+  const allowed = await requireAdmin();
+  if (!allowed) return;
+
+  mainMenu?.classList.add("hidden");
+  setHistoryVisible(true);
+
+  setTimeout(() => {
+    byId("historyList")?.scrollIntoView({
+      behavior: "smooth",
+      block: "start"
+    });
+  }, 100);
+});
+
+/* ✅ ABRIR MODAL DO HISTÓRICO */
+document.addEventListener("click", (e) => {
+  const card = e.target.closest("[data-history-open]");
+  if (!card) return;
+
+  const index = Number(card.dataset.historyOpen);
+  if (Number.isInteger(index)) {
+    openHistoryModal(index);
+  }
+});
+
+byId("closeHistoryModal")?.addEventListener("click", () => {
+  byId("historyModal")?.classList.add("hidden");
+});
+
+byId("historyModalBackdrop")?.addEventListener("click", () => {
+  byId("historyModal")?.classList.add("hidden");
+});
    byId("openPdfCustomBtn")?.addEventListener("click", async () => {
   const allowed = await requireReportsAccess();
   if (!allowed) return;
@@ -5003,19 +5077,23 @@ toggleCompareBtn?.addEventListener("click", () => {
 });
 
    // ✅ HISTÓRICO
-  const toggleHistoryBtn = document.getElementById("toggleHistoryBtn");
-  const historySection = document.getElementById("historySection");
-  const historyText = document.getElementById("historyEyeText");
+const toggleHistoryBtn = document.getElementById("toggleHistoryBtn");
+const historySection = document.getElementById("historySection");
+const historyText = document.getElementById("historyEyeText");
 
-  toggleHistoryBtn?.addEventListener("click", () => {
-    if (!historySection) return;
+toggleHistoryBtn?.addEventListener("click", () => {
+  if (!historySection) return;
 
-    const hidden = historySection.classList.toggle("history-hidden");
+  const isHidden = historySection.classList.toggle("history-hidden");
 
-    if (historyText) {
-      historyText.textContent = hidden ? "Ver" : "Ocultar";
-    }
-  });
+  if (historyText) {
+    historyText.textContent = isHidden ? "Ver" : "Ocultar";
+  }
+
+  if (!isHidden && typeof renderHistory === "function") {
+    renderHistory();
+  }
+});
 
   // ✅ SCROLL BAR
   window.addEventListener("scroll", handleScrollActionsBar);
