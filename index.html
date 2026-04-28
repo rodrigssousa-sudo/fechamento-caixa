@@ -3232,7 +3232,7 @@ function buildPremiumBankReceiptPdf(startDate, endDate) {
 
     const operador = item.nomeOperador || "Sem nome";
     const data = formatDateBR(item.fechamentoDate || item.turno?.dataFechamento || "");
-    const outflows = item.turno?.outflows || [];
+    const outflows = Array.isArray(item.turno?.outflows)   ? item.turno.outflows   : [];
 
     outflows.forEach((o) => {
       const value = Number(o.value || 0);
