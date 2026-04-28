@@ -1850,6 +1850,90 @@ select:focus{
     border-radius:12px!important;
   }
 }
+
+ /* =========================================================
+   USER CARD PREMIUM — PERFIL BANCÁRIO
+========================================================= */
+
+.user-card{
+  position:relative!important;
+  overflow:hidden!important;
+  padding:18px 20px!important;
+  border-radius:30px!important;
+  background:
+    radial-gradient(circle at 92% 10%, rgba(0,107,255,.08), transparent 28%),
+    linear-gradient(180deg,#ffffff,#f8fbff)!important;
+}
+
+.user-card::before{
+  content:"";
+  position:absolute;
+  left:-40px;
+  top:-40px;
+  width:140px;
+  height:140px;
+  border-radius:50%;
+  background:rgba(0,107,255,.06);
+  pointer-events:none;
+}
+
+.user-name{
+  font-size:24px!important;
+  letter-spacing:-.05em!important;
+}
+
+.user-email{
+  font-size:14px!important;
+  color:#64748b!important;
+}
+
+#activeUserRole{
+  display:inline-flex!important;
+  width:max-content!important;
+  margin-top:8px!important;
+  padding:6px 10px!important;
+  border-radius:999px!important;
+  background:#eaf2ff!important;
+  color:#003dcc!important;
+  font-size:10px!important;
+  letter-spacing:.12em!important;
+  font-weight:950!important;
+}
+
+.logout-btn{
+  height:48px!important;
+  min-width:82px!important;
+  border-radius:18px!important;
+  background:#fff1f2!important;
+  color:#e0313d!important;
+  border:1px solid rgba(224,49,61,.14)!important;
+  box-shadow:0 10px 24px rgba(224,49,61,.08)!important;
+}
+
+.logout-btn:hover{
+  background:#e0313d!important;
+  color:#fff!important;
+}
+
+@media(max-width:600px){
+  .user-card{
+    padding:17px!important;
+    border-radius:26px!important;
+  }
+
+  .user-name{
+    font-size:22px!important;
+  }
+
+  .user-email{
+    font-size:13px!important;
+  }
+
+  .logout-btn{
+    min-width:74px!important;
+    height:46px!important;
+  }
+}
  
 </style>
 
