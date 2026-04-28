@@ -3946,20 +3946,6 @@ function buildPremiumBankReceiptPdf(startDate, endDate) {
     font-weight:800;
   }
 
-  .print-btn{
-    position:fixed;
-    right:16px;
-    bottom:16px;
-    z-index:9999;
-    padding:13px 18px;
-    border-radius:16px;
-    border:1px solid #cbd5e1;
-    background:#ffffff;
-    color:#102a56;
-    font-weight:950;
-    box-shadow:0 10px 25px rgba(0,0,0,.18);
-  }
-
   @media(max-width:700px){
     body{padding:16px;}
     .header{display:block;}
@@ -3978,10 +3964,26 @@ function buildPremiumBankReceiptPdf(startDate, endDate) {
     .turn-diff{white-space:normal;}
   }
 
-  @media print{
-    body{background:#fff;padding:0;}
-    .print-btn{display:none!important;}
-    .receipt-card{page-break-inside:avoid;}
+    @media print{
+    body{
+      background:#fff!important;
+      padding:0!important;
+    }
+
+    .print-btn{
+      display:none!important;
+      visibility:hidden!important;
+      height:0!important;
+      width:0!important;
+      margin:0!important;
+      padding:0!important;
+      overflow:hidden!important;
+    }
+
+    .receipt-card{
+      page-break-inside:avoid;
+      break-inside:avoid;
+    }
   }
 </style>
 </head>
@@ -4050,8 +4052,6 @@ function buildPremiumBankReceiptPdf(startDate, endDate) {
   </div>
 
 </div>
-
-<button class="print-btn" onclick="window.print()">Salvar / Exportar PDF</button>
 
 </body>
 </html>
@@ -4545,38 +4545,53 @@ byId("confirmExportPdf")?.addEventListener("click", async () => {
 
   byId("pdfRangeModal")?.classList.add("hidden");
 
-  setTimeout(() => {
-    w.focus();
+ setTimeout(() => {
+  w.focus();
 
-    const printBtn = w.document.createElement("button");
-    printBtn.innerText = "Salvar / Exportar PDF";
-    printBtn.style.cssText = `
-      position:fixed;
-      right:16px;
-      bottom:16px;
-      z-index:9999;
-      padding:14px 18px;
-      border-radius:16px;
-      border:none;
-      background:#06152e;
-      color:white;
-      font-weight:900;
-      box-shadow:0 10px 25px rgba(0,0,0,.25);
-    `;
+  const printBtn = w.document.createElement("button");
+  printBtn.innerText = "Salvar / Exportar PDF";
 
-    printBtn.onclick = () => {
-      printBtn.style.display = "none";
-      w.print();
+  printBtn.style.cssText = `
+    position:fixed;
+    right:20px;
+    bottom:20px;
+    z-index:999999;
+    padding:14px 20px;
+    border-radius:18px;
+    border:none;
+    background:linear-gradient(135deg,#0b1f4d,#163a8a);
+    color:#fff;
+    font-weight:900;
+    font-size:14px;
+    box-shadow:0 12px 30px rgba(0,0,0,.25);
+    cursor:pointer;
+    transition:all .2s ease;
+  `;
 
-      setTimeout(() => {
-        printBtn.style.display = "block";
-      }, 1200);
-    };
+  // 🔥 hover premium
+  printBtn.onmouseenter = () => {
+    printBtn.style.transform = "translateY(-2px)";
+  };
+  printBtn.onmouseleave = () => {
+    printBtn.style.transform = "translateY(0)";
+  };
 
-    w.document.body.appendChild(printBtn);
-  }, 800);
-});
+  printBtn.onclick = () => {
+    printBtn.style.display = "none";
+    w.print();
 
+    setTimeout(() => {
+      printBtn.style.display = "block";
+    }, 1200);
+  };
+
+  // 🔥 garante que fica no topo do body
+  w.document.body.appendChild(printBtn);
+
+  // 🔥 força posição correta (corrige bug iPhone / Safari)
+  w.scrollTo(0, 0);
+
+}, 1000);
 
 /* =========================================================
    RANKING
