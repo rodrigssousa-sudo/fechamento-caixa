@@ -745,10 +745,12 @@ select:focus,
 }
 
 .history-body{
-  max-height:1400px;
+  max-height:70vh; /* ocupa até 70% da tela */
+  overflow-y:auto; /* 🔥 ativa scroll vertical */
   opacity:1;
-  overflow:hidden;
   transition:max-height .28s ease, opacity .22s ease, padding .22s ease;
+
+  -webkit-overflow-scrolling: touch; /* iPhone smooth */
 }
 
 #historySection.history-hidden .history-body{
@@ -1618,6 +1620,52 @@ select:focus,
   padding-bottom:0!important;
   overflow:hidden!important;
 }
+
+@media (max-width: 768px){
+
+  #usersList{
+    gap:14px;
+  }
+
+  #usersList > div{
+    padding:16px;
+    border-radius:20px;
+    box-shadow:0 8px 20px rgba(0,0,0,0.04);
+  }
+
+  #usersList button{
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    font-weight:900;
+    letter-spacing:0.3px;
+  }
+}
+
+ .history-body{
+  max-height:70vh;
+  overflow-y:auto;
+  opacity:1;
+  transition:max-height .28s ease, opacity .22s ease, padding .22s ease;
+  -webkit-overflow-scrolling:touch;
+}
+
+#historySection.history-hidden .history-body{
+  max-height:0!important;
+  opacity:0!important;
+  padding-top:0!important;
+  padding-bottom:0!important;
+  overflow:hidden!important;
+}
+
+.history-body::-webkit-scrollbar{
+  width:5px;
+}
+
+.history-body::-webkit-scrollbar-thumb{
+  background:rgba(0,0,0,.18);
+  border-radius:20px;
+}
  
 </style>
 
@@ -2016,7 +2064,23 @@ select:focus,
   
  <script type="module">
    import { initializeApp, deleteApp } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-app.js";
-    import { getFirestore, collection, addDoc, getDocs, deleteDoc, doc, updateDoc, setDoc, getDoc, onSnapshot, query, limit, serverTimestamp } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-firestore.js";
+    import {
+  getFirestore,
+  collection,
+  addDoc,
+  getDocs,
+  deleteDoc,
+  doc,
+  updateDoc,
+  setDoc,
+  getDoc,
+  onSnapshot,
+  query,
+  limit,
+  orderBy,
+  startAfter,
+  serverTimestamp
+} from "https://www.gstatic.com/firebasejs/12.0.0/firebase-firestore.js";
     import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, onAuthStateChanged, sendPasswordResetEmail } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-auth.js";
 
     const firebaseConfig = {
@@ -2028,19 +2092,25 @@ select:focus,
       appId: "1:108865328748:web:65dbbcf146a67f95512a49"
     };
 
-    const app = initializeApp(firebaseConfig);
-    const db = getFirestore(app);
-    const auth = getAuth(app);
+   const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+const auth = getAuth(app);
 
-    let currentUserData = null;
-    let historyCache = [];
-    let balanceVisible = true;
-    let historyUnsubscribe = null;
-    let historyListenerStarted = false;
-    let rankingChart = null;
-    let rankingRange = "day";
-    let saveInProgress = false;
+let currentUserData = null;
+let historyCache = [];
+let balanceVisible = true;
+let historyUnsubscribe = null;
+let historyListenerStarted = false;
+let rankingChart = null;
+let rankingRange = "day";
+let saveInProgress = false;
 
+/* 🔥 INFINITE SCROLL */
+let historyPageSize = 20;     // quantidade por carga
+let lastHistoryDoc = null;    // último doc carregado (cursor)
+let historyLoading = false;   // evita duplicar requisição
+let historyHasMore = true;    // se ainda tem mais dados
+let historyLoadedIds = new Set(); // evita duplicar no array
     const byId = (id) => document.getElementById(id);
     const authScreen = byId("authScreen");
     const appShell = byId("appShell");
@@ -3191,24 +3261,123 @@ function createDynamicRow(turno) {
   list.appendChild(row);
 }
 
-    function startHistoryRealtimeListener() {
-      if (historyListenerStarted) return;
-      historyListenerStarted = true;
-      const qHistory = query(collection(db, "history"), limit(150));
-      historyUnsubscribe = onSnapshot(qHistory, (snapshot) => {
-        historyCache = snapshot.docs.map((docItem) => ({ id: docItem.id, ...docItem.data() }));
-        historyCache.sort((a, b) => {
-          const dateA = a.submittedAt?.toDate?.()?.getTime?.() || Number(a.submittedAt) || new Date(a.fechamentoDate || a.turno?.dataFechamento || 0).getTime();
-          const dateB = b.submittedAt?.toDate?.()?.getTime?.() || Number(b.submittedAt) || new Date(b.fechamentoDate || b.turno?.dataFechamento || 0).getTime();
-          return dateB - dateA;
-        });
-        renderHistory(); 
-renderCompare(); 
-renderRanking(); 
-renderTopPreviousCards();
-renderMonthlyGoalCard();
-      }, (error) => console.error("Erro ao carregar histórico:", error));
+   function sortHistoryCache() {
+  historyCache.sort((a, b) => {
+    const dateA =
+      a.submittedAt?.toDate?.()?.getTime?.() ||
+      Number(a.submittedAt) ||
+      new Date(a.fechamentoDate || a.turno?.dataFechamento || 0).getTime();
+
+    const dateB =
+      b.submittedAt?.toDate?.()?.getTime?.() ||
+      Number(b.submittedAt) ||
+      new Date(b.fechamentoDate || b.turno?.dataFechamento || 0).getTime();
+
+    return dateB - dateA;
+  });
+}
+
+function mergeHistoryDocs(docs) {
+  docs.forEach((docItem) => {
+    const item = {
+      id: docItem.id,
+      ...docItem.data()
+    };
+
+    const exists = historyCache.some((h) => h.id === item.id);
+    if (!exists) {
+      historyCache.push(item);
     }
+  });
+
+  sortHistoryCache();
+}
+
+function renderHistoryViews() {
+  renderHistory();
+  renderCompare();
+  renderRanking();
+  renderTopPreviousCards();
+  renderMonthlyGoalCard();
+}
+
+function startHistoryRealtimeListener() {
+  if (historyListenerStarted) return;
+
+  historyListenerStarted = true;
+
+  const qHistory = query(
+    collection(db, "history"),
+    orderBy("submittedAt", "desc"),
+    limit(historyPageSize)
+  );
+
+  historyUnsubscribe = onSnapshot(
+    qHistory,
+    (snapshot) => {
+      if (!snapshot.empty) {
+        lastHistoryDoc = snapshot.docs[snapshot.docs.length - 1];
+      }
+
+      historyHasMore = snapshot.docs.length === historyPageSize;
+
+      mergeHistoryDocs(snapshot.docs);
+      renderHistoryViews();
+      setupHistoryInfiniteScroll();
+    },
+    (error) => console.error("Erro ao carregar histórico:", error)
+  );
+}
+
+  async function loadMoreHistory() {
+  if (historyLoading || !historyHasMore || !lastHistoryDoc) return;
+
+  historyLoading = true;
+
+  try {
+    const qMore = query(
+      collection(db, "history"),
+      orderBy("submittedAt", "desc"),
+      startAfter(lastHistoryDoc),
+      limit(historyPageSize)
+    );
+
+    const snapshot = await getDocs(qMore);
+
+    if (snapshot.empty) {
+      historyHasMore = false;
+      renderHistory();
+      return;
+    }
+
+    lastHistoryDoc = snapshot.docs[snapshot.docs.length - 1];
+    historyHasMore = snapshot.docs.length === historyPageSize;
+
+    mergeHistoryDocs(snapshot.docs);
+    renderHistoryViews();
+
+  } catch (error) {
+    console.error("Erro ao carregar mais histórico:", error);
+  } finally {
+    historyLoading = false;
+  }
+}
+
+function setupHistoryInfiniteScroll() {
+  const body = document.querySelector("#historySection .history-body");
+  if (!body || body.dataset.infiniteScroll === "true") return;
+
+  body.dataset.infiniteScroll = "true";
+
+  body.addEventListener("scroll", () => {
+    const nearBottom =
+      body.scrollTop + body.clientHeight >= body.scrollHeight - 180;
+
+    if (nearBottom) {
+      loadMoreHistory();
+    }
+  });
+}
 
 function buildPremiumBankReceiptPdf(startDate, endDate) {
   const filtered = historyCache.filter((item) => {
