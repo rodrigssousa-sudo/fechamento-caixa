@@ -2123,6 +2123,163 @@ select:focus{
 .balance-toggle.active::after{
   transform:translateX(20px);
 }
+
+ /* =========================================================
+   COMPARATIVO OCULTO — BOTÃO OLHO PREMIUM
+========================================================= */
+
+.compare-head{
+  display:flex!important;
+  align-items:center!important;
+  justify-content:space-between!important;
+  gap:12px!important;
+}
+
+.compare-eye-btn{
+  min-height:40px!important;
+  padding:0 14px!important;
+  border-radius:999px!important;
+
+  background:#eaf2ff!important;
+  color:#003dcc!important;
+
+  border:1px solid rgba(0,107,255,.14)!important;
+  box-shadow:0 8px 18px rgba(0,64,160,.08)!important;
+
+  display:flex!important;
+  align-items:center!important;
+  gap:8px!important;
+
+  font-size:13px!important;
+  font-weight:950!important;
+}
+
+.eye-icon{
+  width:22px;
+  height:22px;
+  border:2px solid #003dcc;
+  border-radius:50% 50% 45% 45%;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:9px;
+  line-height:1;
+}
+
+.compare-section.compare-hidden .compare-body{
+  display:none!important;
+}
+
+.compare-section.compare-hidden .eye-icon{
+  opacity:.65;
+}
+
+.compare-section.compare-hidden .eye-text::after{
+  content:"";
+}
+
+.compare-section:not(.compare-hidden) .eye-text{
+  font-size:0;
+}
+
+.compare-section:not(.compare-hidden) .eye-text::after{
+  content:"Ocultar";
+  font-size:13px;
+}
+
+@media(max-width:600px){
+  .compare-eye-btn{
+    min-height:36px!important;
+    padding:0 12px!important;
+    font-size:12px!important;
+  }
+
+  .eye-icon{
+    width:20px;
+    height:20px;
+  }
+}
+
+ /* =========================================================
+   OLHO PREMIUM (REALISTA)
+========================================================= */
+
+.compare-eye-btn{
+  min-height:40px;
+  padding:0 14px;
+
+  border-radius:999px;
+  border:1px solid rgba(0,107,255,.12);
+
+  background:#eaf2ff;
+  color:#003dcc;
+
+  display:flex;
+  align-items:center;
+  gap:10px;
+
+  font-size:13px;
+  font-weight:950;
+
+  box-shadow:0 8px 18px rgba(0,64,160,.08);
+}
+
+/* container do olho */
+.eye-icon{
+  position:relative;
+  width:26px;
+  height:16px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+}
+
+/* formato do olho */
+.eye-shape{
+  position:absolute;
+  width:100%;
+  height:100%;
+  border:2px solid #003dcc;
+  border-radius:50% / 60%;
+}
+
+/* pupila */
+.eye-pupil{
+  width:6px;
+  height:6px;
+  background:#003dcc;
+  border-radius:50%;
+  transition:.25s;
+}
+
+/* ESTADO OCULTO */
+.compare-hidden .eye-pupil{
+  transform:scale(0);
+  opacity:0;
+}
+
+/* animação hover */
+.compare-eye-btn:hover .eye-pupil{
+  transform:scale(1.3);
+}
+
+/* texto */
+.eye-text{
+  font-size:13px;
+}
+
+/* troca texto automático */
+.compare-section.compare-hidden .eye-text::after{
+  content:"Ver";
+}
+
+.compare-section:not(.compare-hidden) .eye-text::after{
+  content:"Ocultar";
+}
+
+.eye-text{
+  font-size:0;
+}
  
 </style>
 
@@ -2249,10 +2406,26 @@ select:focus{
         </div>
       </section>
 
-      <section class="section-card green-section">
-        <div class="section-head">Comparativo das fichas</div>
-        <div class="section-body"><div id="systemsCompareBar" class="compare-grid"><div class="compare-pill"><span class="compare-dot same"></span><div><div class="compare-name">Aguardando dados</div><div class="compare-value">Faça pelo menos dois fechamentos</div></div></div></div></div>
-      </section>
+      <section class="section-card green-section compare-section compare-hidden">
+  <div class="section-head compare-head">
+    <span>Comparativo das fichas</span>
+
+    <span class="eye-icon">
+  <span class="eye-shape"></span>
+  <span class="eye-pupil"></span>
+</span>
+  <div class="section-body compare-body">
+    <div id="systemsCompareBar" class="compare-grid">
+      <div class="compare-pill">
+        <span class="compare-dot same"></span>
+        <div>
+          <div class="compare-name">Aguardando dados</div>
+          <div class="compare-value">Faça pelo menos dois fechamentos</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
 
       <section id="rankingChartSection" class="section-card blue-section hidden">
         <div class="section-head">Ranking</div>
@@ -4805,6 +4978,16 @@ document.addEventListener("DOMContentLoaded", () => {
       enableSmartMoneyInput(id);
     }
   });
+
+// ✅ BOTÃO OLHO DO COMPARATIVO
+
+  const toggleCompareBtn = document.getElementById("toggleCompareBtn");
+  toggleCompareBtn?.addEventListener("click", () => {
+    const section = document.querySelector(".compare-section");
+    if (!section) return;
+    section.classList.toggle("compare-hidden");
+  });
+ 
 
   // ✅ SCROLL BAR
   window.addEventListener("scroll", handleScrollActionsBar);
