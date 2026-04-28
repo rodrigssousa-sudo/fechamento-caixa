@@ -2328,6 +2328,21 @@ select:focus{
   opacity:1;
   transition:.25s ease;
 }
+
+ .history-hidden .compare-body{
+  max-height:0;
+  opacity:0;
+  overflow:hidden;
+  padding-top:0;
+  padding-bottom:0;
+  transition:.25s ease;
+}
+
+.compare-body{
+  max-height:800px;
+  opacity:1;
+  transition:.25s ease;
+}
  
 </style>
 
@@ -2539,7 +2554,8 @@ select:focus{
 </section>
 
   <section id="historySection" class="section-card history-hidden">
-  <div class="section-head">
+  
+  <div class="section-head compare-head">
     <span>Histórico</span>
 
     <button id="toggleHistoryBtn" class="compare-eye-btn" type="button">
@@ -2547,9 +2563,10 @@ select:focus{
     </button>
   </div>
 
-  <div class="section-body history-body">
-    <div id="historyList" class="history-list"></div>
+  <div class="section-body compare-body">
+    <div id="historyList" class="history-list hidden"></div>
   </div>
+
 </section>
 <div id="mainMenu" class="floating-menu hidden">
   <button class="menu-item" type="button" id="adminOpenBtn">Admin</button>
@@ -5087,6 +5104,26 @@ document.addEventListener("DOMContentLoaded", () => {
       enableSmartMoneyInput(id);
     }
   });
+
+ const historySection = document.getElementById("historySection");
+const historyList = document.getElementById("historyList");
+const historyText = document.getElementById("historyEyeText");
+const toggleBtn = document.getElementById("toggleHistoryBtn");
+
+toggleBtn?.addEventListener("click", () => {
+  const isHidden = historySection.classList.contains("history-hidden");
+
+  historySection.classList.toggle("history-hidden");
+
+  if (historyText) {
+    historyText.textContent = isHidden ? "Ocultar" : "Ver";
+  }
+
+  if (isHidden) {
+    historyList.classList.remove("hidden");
+    renderHistory?.();
+  }
+});
 
 // ✅ BOTÃO OLHO DO COMPARATIVO
 
