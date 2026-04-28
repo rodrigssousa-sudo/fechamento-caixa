@@ -1612,266 +1612,322 @@ select:focus,
 </head>
 <body>
 
-  <section id="authScreen" class="auth-screen">
-    <div class="auth-card">
-      <div class="auth-logo">BK</div>
-      <h1 class="auth-title">Bank King</h1>
-      <p class="auth-sub">Acesso BK</p>
+<section id="authScreen" class="auth-screen">
+  <div class="auth-card">
+    <div class="auth-logo">BK</div>
+    <h1 class="auth-title">Bank King</h1>
+    <p class="auth-sub">Acesso BK</p>
 
-      <div class="auth-tabs">
-        <button id="tabLogin" class="auth-tab active" type="button">Entrar</button>
-        <button id="tabRegister" class="auth-tab" type="button">Registrar</button>
-        <button id="tabPassword" class="auth-tab" type="button">Senha</button>
-      </div>
-
-      <form id="loginForm" class="auth-form">
-        <div class="field"><label for="loginEmail">Email</label><input id="loginEmail" type="email" placeholder="Digite seu email" required /></div>
-        <div class="field"><label for="loginPassword">Senha</label><input id="loginPassword" type="password" placeholder="Digite sua senha" required /></div>
-        <div class="remember-row"><input id="rememberLogin" type="checkbox" /><label for="rememberLogin">Manter conectado</label></div>
-        <button class="auth-submit" type="submit">Entrar</button>
-      </form>
-
-      <form id="registerForm" class="auth-form hidden">
-        <div class="field"><label for="registerName">Nome</label><input id="registerName" type="text" placeholder="Seu nome" required /></div>
-        <div class="field"><label for="registerEmail">Email</label><input id="registerEmail" type="email" placeholder="Seu email" required /></div>
-        <div class="field"><label for="registerPassword">Senha</label><input id="registerPassword" type="password" placeholder="Crie uma senha" required /></div>
-        <button class="auth-submit" type="submit">Registrar</button>
-      </form>
-
-      <form id="forgotPasswordForm" class="auth-form hidden">
-        <div class="field"><label for="resetEmail">Email de recuperação</label><input id="resetEmail" type="email" placeholder="Digite seu email" required /></div>
-        <button class="auth-submit" type="submit">Enviar link</button>
-      </form>
-    </div>
-  </section>
-
-  <div id="appShell" class="app-shell hidden">
-    <header class="topbar">
-      <div class="brand">
-        <div class="brand-logo">BK</div>
-        <div><div class="brand-title">Bank King</div><div class="brand-sub">Controle Financeiro</div></div>
-      </div>
-      <button id="menuToggle" class="menu-btn" type="button">☰</button>
-    </header>
-
-   <main class="app">
-
-  <!-- ===== ADMIN PANEL ===== -->
-  <div id="adminPanel" class="hidden admin-panel">
-    <div class="admin-head">
-      <h3>Usuários</h3>
-      <span>Painel Admin</span>
+    <div class="auth-tabs">
+      <button id="tabLogin" class="auth-tab active" type="button">Entrar</button>
+      <button id="tabRegister" class="auth-tab" type="button">Registrar</button>
+      <button id="tabPassword" class="auth-tab" type="button">Senha</button>
     </div>
 
-    <!-- aqui continuam seus inputs e lista de usuários -->
+    <form id="loginForm" class="auth-form">
+      <div class="field">
+        <label for="loginEmail">Email</label>
+        <input id="loginEmail" type="email" placeholder="Digite seu email" required>
+      </div>
+
+      <div class="field">
+        <label for="loginPassword">Senha</label>
+        <input id="loginPassword" type="password" placeholder="Digite sua senha" required>
+      </div>
+
+      <div class="remember-row">
+        <input id="rememberLogin" type="checkbox">
+        <label for="rememberLogin">Manter conectado</label>
+      </div>
+
+      <button class="auth-submit" type="submit">Entrar</button>
+    </form>
+
+    <form id="registerForm" class="auth-form hidden">
+      <div class="field">
+        <label for="registerName">Nome</label>
+        <input id="registerName" type="text" placeholder="Seu nome" required>
+      </div>
+
+      <div class="field">
+        <label for="registerEmail">Email</label>
+        <input id="registerEmail" type="email" placeholder="Seu email" required>
+      </div>
+
+      <div class="field">
+        <label for="registerPassword">Senha</label>
+        <input id="registerPassword" type="password" placeholder="Crie uma senha" required>
+      </div>
+
+      <button class="auth-submit" type="submit">Registrar</button>
+    </form>
+
+    <form id="forgotPasswordForm" class="auth-form hidden">
+      <div class="field">
+        <label for="resetEmail">Email de recuperação</label>
+        <input id="resetEmail" type="email" placeholder="Digite seu email" required>
+      </div>
+
+      <button class="auth-submit" type="submit">Enviar link</button>
+    </form>
   </div>
+</section>
 
-  <!-- ===== SALDO ===== -->
-  <section class="main-card">
-    <!-- seu balance-card aqui -->
-  </section>
+<div id="appShell" class="app-shell hidden">
 
-  <!-- ===== RESUMO ===== -->
-  <section class="section-card">
-    <!-- summary-grid aqui -->
-  </section>
-
-  <!-- ===== COMPARATIVO ===== -->
-  <section class="section-card compare-section">
-    <div class="section-head compare-head">
-      <span>Comparativo das fichas</span>
-
-      <button id="toggleCompareBtn" class="compare-eye-btn" type="button">
-        <span id="compareEyeText">Ver</span>
-      </button>
+  <header class="topbar">
+    <div class="brand">
+      <div class="brand-logo">BK</div>
+      <div>
+        <div class="brand-title">Bank King</div>
+        <div class="brand-sub">Controle Financeiro</div>
+      </div>
     </div>
 
-    <div class="section-body compare-body">
-      <div id="systemsCompareBar" class="compare-grid">
-        <div class="compare-pill">
-          <span class="compare-dot same"></span>
-          <div>
-            <div class="compare-name">Aguardando dados</div>
-            <div class="compare-value">Faça pelo menos dois fechamentos</div>
+    <button id="menuToggle" class="menu-btn" type="button">☰</button>
+  </header>
+
+  <main class="app">
+
+    <div id="adminPanel" class="hidden admin-panel">
+      <div class="admin-head">
+        <h3>Usuários</h3>
+        <span>Painel Admin</span>
+      </div>
+
+      <div class="admin-create-box">
+        <div class="admin-create-title">Criar usuário</div>
+
+        <input id="adminCreateName" type="text" placeholder="Nome do usuário">
+        <input id="adminCreateEmail" type="email" placeholder="Email do usuário">
+        <input id="adminCreatePassword" type="password" placeholder="Senha inicial">
+
+        <select id="adminCreateRole" class="outflow-type">
+          <option value="operador">Operador</option>
+          <option value="admin">Admin</option>
+        </select>
+
+        <button id="adminCreateUserBtn" type="button" class="auth-submit">
+          Criar usuário
+        </button>
+      </div>
+
+      <div id="usersList" class="admin-users-list"></div>
+    </div>
+
+    <section class="user-card">
+      <div class="user-info">
+        <div id="activeUserName" class="user-name">Usuário</div>
+        <div id="activeUserEmail" class="user-email">email@exemplo.com</div>
+        <div id="activeUserRole"></div>
+      </div>
+
+      <button id="logoutBtn" class="logout-btn" type="button">Sair</button>
+    </section>
+
+    <section id="monthlyGoalCard" class="section-card hidden">
+      <div class="section-head">Meta mensal</div>
+
+      <div class="section-body">
+        <div class="goal-bar-wrapper">
+          <div class="goal-bar-track">
+            <div id="goalBarFill" class="goal-bar-fill"></div>
+          </div>
+        </div>
+
+        <div id="goalStatus" class="goal-status">Carregando...</div>
+      </div>
+    </section>
+
+    <section class="balance-card">
+      <div>
+        <div class="balance-label">Saldo Reca</div>
+        <div id="bankValue" class="balance-value">$ 0,00</div>
+      </div>
+    </section>
+
+    <section class="main-card main-card-pad">
+      <div class="summary-grid">
+        <div class="summary-box">
+          <div class="summary-box-label">Operador anterior</div>
+          <div id="previousOperator" class="summary-box-value">-</div>
+        </div>
+
+        <div class="summary-box">
+          <div class="summary-box-label">Último fechamento</div>
+          <div id="previousDate" class="summary-box-value">-</div>
+        </div>
+
+        <div class="summary-box">
+          <div class="summary-box-label">Diferença Caixa</div>
+          <div id="previousDiff" class="summary-box-value">$ 0,00</div>
+        </div>
+
+        <div class="summary-box">
+          <div class="summary-box-label">Saldo Turno Anterior</div>
+          <div id="previousReca" class="summary-box-value green">$ 0,00</div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section-card green-section compare-section compare-hidden">
+      <div class="section-head compare-head">
+        <span>Comparativo das fichas</span>
+
+        <button id="toggleCompareBtn" class="history-view-btn" type="button">
+          <span id="compareEyeText">Ver</span>
+        </button>
+      </div>
+
+      <div class="section-body compare-body">
+        <div id="systemsCompareBar" class="compare-grid">
+          <div class="compare-pill">
+            <span class="compare-dot same"></span>
+            <div>
+              <div class="compare-name">Aguardando dados</div>
+              <div class="compare-value">Faça pelo menos dois fechamentos</div>
+            </div>
           </div>
         </div>
       </div>
-    </div>
-  </section>
+    </section>
 
-  <!-- 🔥 ===== HISTÓRICO (CORRIGIDO) ===== -->
-  <section id="historySection" class="section-card history-hidden">
+    <section id="rankingChartSection" class="section-card blue-section hidden">
+      <div class="section-head">Ranking</div>
 
-    <div class="section-head compare-head">
-      <span>Histórico</span>
-
-      <button id="toggleHistoryBtn" class="compare-eye-btn" type="button">
-        <span id="historyEyeText">Ver</span>
-      </button>
-    </div>
-
-    <div class="section-body history-body">
-      <div id="historyList" class="history-list"></div>
-    </div>
-  </section>
-</main>
-        <div style="display:grid;gap:10px;margin-bottom:16px;background:#f8fafc;border:1px solid #e5eaf2;border-radius:18px;padding:14px;">
-  <div style="font-weight:950;color:#102a56;">Criar usuário</div>
-
-  <input id="adminCreateName" type="text" placeholder="Nome do usuário" />
-  <input id="adminCreateEmail" type="email" placeholder="Email do usuário" />
-  <input id="adminCreatePassword" type="password" placeholder="Senha inicial" />
-
-  <select id="adminCreateRole" style="height:54px;border-radius:18px;border:1px solid rgba(10,16,32,.10);padding:0 14px;font-weight:900;">
-    <option value="operador">Operador</option>
-    <option value="admin">Admin</option>
-  </select>
-
-  <button id="adminCreateUserBtn" type="button" class="auth-submit" style="height:56px;">
-    Criar usuário
-  </button>
-</div>
-        <div id="usersList" style="display:flex;flex-direction:column;gap:10px;"></div>
-      </div>
-
-      <section class="user-card">
-        <div>
-          <div id="activeUserName" class="user-name">Usuário</div>
-          <div id="activeUserEmail" class="user-email">email@exemplo.com</div>
-          <div id="activeUserRole" style="font-size:12px;color:#667085;margin-top:4px;font-weight:950;text-transform:uppercase;letter-spacing:.08em;"></div>
+      <div class="section-body">
+        <div class="chart-actions">
+          <button class="chart-range-btn active" type="button" data-chart-range="day">Dia</button>
+          <button class="chart-range-btn" type="button" data-chart-range="week">Semana</button>
+          <button class="chart-range-btn" type="button" data-chart-range="15">Quinzenal</button>
+          <button class="chart-range-btn" type="button" data-chart-range="30">Mensal</button>
         </div>
-        <button id="logoutBtn" class="logout-btn" type="button">Sair</button>
-      </section>
 
-     <section id="monthlyGoalCard" class="section-card hidden">
-
-  <div class="section-head">
-    Meta mensal
-  </div>
-
-  <div class="section-body">
-
-    <div class="goal-bar-wrapper">
-      <div class="goal-bar-track">
-        <div id="goalBarFill" class="goal-bar-fill"></div>
-      </div>
-    </div>
-
-    <div id="goalStatus" class="goal-status">
-      Carregando...
-    </div>
-
-  </div>
-</section>
-      <section class="balance-card"><div><div class="balance-label">Saldo Reca</div><div id="bankValue" class="balance-value">$ 0,00</div></div></section>
-
-      <section class="main-card main-card-pad">
-        <div class="summary-grid">
-          <div class="summary-box"><div class="summary-box-label">Operador anterior</div><div id="previousOperator" class="summary-box-value">-</div></div>
-          <div class="summary-box"><div class="summary-box-label">Último fechamento</div><div id="previousDate" class="summary-box-value">-</div></div>
-          <div class="summary-box"><div class="summary-box-label">Diferença Caixa</div><div id="previousDiff" class="summary-box-value">$ 0,00</div></div>
-          <div class="summary-box"><div class="summary-box-label">Saldo Turno Anterior</div><div id="previousReca" class="summary-box-value green">$ 0,00</div></div>
-        </div>
-      </section>
-
-   <section class="section-card green-section compare-section compare-hidden">
-  <div class="section-head compare-head">
-    <span>Comparativo das fichas</span>
-
-    <button id="toggleCompareBtn" class="compare-eye-btn" type="button">
-  <span id="compareEyeText">Ver</span>
-</button>
-</div>
-
-  <div class="section-body compare-body">
-    <div id="systemsCompareBar" class="compare-grid">
-      <div class="compare-pill">
-        <span class="compare-dot same"></span>
-        <div>
-          <div class="compare-name">Aguardando dados</div>
-          <div class="compare-value">Faça pelo menos dois fechamentos</div>
+        <div id="rankingSimpleList" class="ranking-simple-list">
+          <div class="ranking-empty">Sem dados para este período.</div>
         </div>
       </div>
-    </div>
-  </div>
-</section>
+    </section>
 
-      <section id="rankingChartSection" class="section-card blue-section hidden">
-        <div class="section-head">Ranking</div>
+    <div class="section-grid">
+      <section class="section-card blue-section">
+        <div class="section-head">1. Dados e Entradas</div>
+
         <div class="section-body">
-          <div class="chart-actions">
-            <button class="chart-range-btn active" type="button" data-chart-range="day">Dia</button>
-            <button class="chart-range-btn" type="button" data-chart-range="week">Semana</button>
-            <button class="chart-range-btn" type="button" data-chart-range="15">Quinzenal</button>
-            <button class="chart-range-btn" type="button" data-chart-range="30">Mensal</button>
+          <div class="field">
+            <label for="t2_nome_operador">Operador</label>
+            <input id="t2_nome_operador" type="text" placeholder="Ex.: Igor T">
           </div>
-         <div id="rankingSimpleList" class="ranking-simple-list">
-  <div class="ranking-empty">Sem dados para este período.</div>
-</div>
+
+          <div class="field">
+            <label for="t2_data_fechamento">Data do fechamento</label>
+            <input id="t2_data_fechamento" type="date">
+          </div>
+
+          <div class="field">
+            <label for="t2_banco">Banco Reca</label>
+            <input id="t2_banco" type="text" inputmode="numeric" placeholder="0,00">
+          </div>
+
+          <div class="field">
+            <label for="t2_suprema">Suprema Fichas</label>
+            <input id="t2_suprema" type="text" inputmode="numeric" placeholder="0,00">
+          </div>
+
+          <div class="field">
+            <label for="t2_pppoker">PPPoker Fichas</label>
+            <input id="t2_pppoker" type="text" inputmode="numeric" placeholder="0,00">
+          </div>
+
+          <div class="field">
+            <label for="t2_buffalo">Buffalo</label>
+            <input id="t2_buffalo" type="text" inputmode="numeric" placeholder="0,00">
+          </div>
+
+          <div class="field">
+            <label for="t2_ganamos">Ganamos</label>
+            <input id="t2_ganamos" type="text" inputmode="numeric" placeholder="0,00">
+          </div>
+
+          <div class="field">
+            <label for="t2_cargas">Carga Casino</label>
+            <input id="t2_cargas" type="text" inputmode="numeric" placeholder="0,00">
+          </div>
+
+          <div class="field">
+            <label for="t2_cargas_poker">Carga Poker</label>
+            <input id="t2_cargas_poker" type="text" inputmode="numeric" placeholder="0,00">
+          </div>
+        </div>
       </section>
 
-      <div class="section-grid">
-        <section class="section-card blue-section">
-          <div class="section-head">1. Dados e Entradas</div>
-          <div class="section-body">
-            <div class="field"><label for="t2_nome_operador">Operador</label><input id="t2_nome_operador" type="text" placeholder="Ex.: Igor T" /></div>
-            <div class="field"><label for="t2_data_fechamento">Data do fechamento</label><input id="t2_data_fechamento" type="date" /></div>
-            <div class="field"><label for="t2_banco">Banco Reca</label><input id="t2_banco" type="text" inputmode="numeric" placeholder="0,00" /></div>
-            <div class="field"><label for="t2_suprema">Suprema Fichas</label><input id="t2_suprema" type="text" inputmode="numeric" placeholder="0,00" /></div>
-            <div class="field"><label for="t2_pppoker">PPPoker Fichas</label><input id="t2_pppoker" type="text" inputmode="numeric" placeholder="0,00" /></div>
-            <div class="field"><label for="t2_buffalo">Buffalo</label><input id="t2_buffalo" type="text" inputmode="numeric" placeholder="0,00" /></div>
-            <div class="field"><label for="t2_ganamos">Ganamos</label><input id="t2_ganamos" type="text" inputmode="numeric" placeholder="0,00" /></div>
-            <div class="field"><label for="t2_cargas">Carga Casino</label><input id="t2_cargas" type="text" inputmode="numeric" placeholder="0,00" /></div>
-            <div class="field"><label for="t2_cargas_poker">Carga Poker</label><input id="t2_cargas_poker" type="text" inputmode="numeric" placeholder="0,00" /></div>
-          </div>
-        </section>
+      <section class="section-card amber-section">
+        <div class="section-head">2. Pagos Pendentes</div>
 
-        <section class="section-card amber-section"><div class="section-head">2. Pagos Pendentes</div><div class="section-body"><div id="t2_pending_list" class="dynamic-list"></div><button type="button" class="add-btn" data-add-pending="t2">+ Adicionar pendente</button></div></section>
+        <div class="section-body">
+          <div id="t2_pending_list" class="dynamic-list"></div>
+
+          <button type="button" class="add-btn" data-add-pending="t2">
+            + Adicionar pendente
+          </button>
+        </div>
+      </section>
+    </div>
+
+    <section class="section-card red-section">
+      <div class="section-head">3. Saídas de Caixa</div>
+
+      <div class="section-body">
+        <div id="t2_dynamic_list" class="dynamic-list"></div>
+
+        <button type="button" class="add-btn" data-add-outflow="t2">
+          + Adicionar saída
+        </button>
+      </div>
+    </section>
+
+    <section class="section-card actions-section">
+      <div class="section-head actions-head">
+        <span>4. Ações</span>
       </div>
 
-      <section class="section-card red-section"><div class="section-head">3. Saídas de Caixa</div><div class="section-body"><div id="t2_dynamic_list" class="dynamic-list"></div><button type="button" class="add-btn" data-add-outflow="t2">+ Adicionar saída</button></div></section>
+      <div class="section-body actions-body">
+        <div class="actions-grid bank-actions-grid">
+          <button id="limparBtn" type="button" class="bank-action-btn bank-action-light">
+            <span class="bank-action-title">Limpar</span>
+            <span class="bank-action-sub">Apagar dados</span>
+          </button>
 
-      <section class="section-card actions-section">
-  <div class="section-head actions-head">
-    <span>4. Ações</span>
-  </div>
+          <button id="calcular" type="button" class="bank-action-btn bank-action-light-blue">
+            <span class="bank-action-title">Calcular</span>
+            <span class="bank-action-sub">Atualizar</span>
+          </button>
 
-  <div class="section-body actions-body">
-    <div class="actions-grid bank-actions-grid">
+          <button id="fecharTurno" type="button" class="bank-action-btn bank-action-primary">
+            <span class="bank-action-title">Finalizar</span>
+            <span class="bank-action-sub">Salvar turno</span>
+          </button>
+        </div>
+      </div>
+    </section>
 
-      <button id="limparBtn" type="button" class="bank-action-btn bank-action-light">
-        <span class="bank-action-title">Limpar</span>
-        <span class="bank-action-sub">Apagar dados</span>
-      </button>
+    <section id="historySection" class="section-card history-hidden">
+      <div class="section-head history-head">
+        <span>Histórico</span>
 
-      <button id="calcular" type="button" class="bank-action-btn bank-action-light-blue">
-        <span class="bank-action-title">Calcular</span>
-        <span class="bank-action-sub">Atualizar</span>
-      </button>
+        <button id="toggleHistoryBtn" class="history-view-btn" type="button">
+          <span id="historyEyeText">Ver</span>
+        </button>
+      </div>
 
-      <button id="fecharTurno" type="button" class="bank-action-btn bank-action-primary">
-        <span class="bank-action-title">Finalizar</span>
-        <span class="bank-action-sub">Salvar turno</span>
-      </button>
+      <div class="section-body history-body">
+        <div id="historyList" class="history-list"></div>
+      </div>
+    </section>
 
-    </div>
-  </div>
-</section>
-
-  <section id="historySection" class="section-card history-hidden">
-  
-  <div class="section-head history-head">
-  <span>Histórico</span>
-
-  <button id="toggleHistoryBtn" class="history-view-btn" type="button">
-    <span id="historyEyeText">Ver</span>
-  </button>
+  </main>
 </div>
-  <div class="section-body compare-body">
-    <div id="historyList" class="history-list hidden"></div>
-  </div>
 
-</section>
 <div id="mainMenu" class="floating-menu hidden">
   <button class="menu-item" type="button" id="adminOpenBtn">Admin</button>
   <button class="menu-item" type="button" id="openPdfCustomBtn">Relatórios PDF</button>
@@ -1880,27 +1936,60 @@ select:focus,
 </div>
 
 <div id="menuBackdrop" class="menu-backdrop"></div>
-</div>
 
 <div id="historyModal" class="modal hidden">
   <div class="modal-backdrop" id="historyModalBackdrop"></div>
+
   <div class="modal-card">
     <div class="modal-head">
       <div>
         <h3 id="historyModalTitle" class="modal-title">Detalhes do turno</h3>
         <div id="historyModalSub" style="color:var(--muted);font-size:13px;margin-top:4px;font-weight:800;"></div>
       </div>
+
       <button id="closeHistoryModal" class="modal-close" type="button">Fechar</button>
     </div>
+
     <div id="historyModalBody"></div>
   </div>
 </div>
 
-  <div id="pdfRangeModal" class="modal hidden"><div class="modal-backdrop" id="pdfRangeBackdrop"></div><div class="modal-card" style="max-width:540px;"><div class="modal-head"><div><h3 class="modal-title">Relatório PDF</h3><div style="color:var(--muted);font-size:13px;margin-top:4px;font-weight:800;">Escolha o período</div></div><button id="closePdfRangeModal" class="modal-close" type="button">Fechar</button></div><div style="display:grid;gap:14px;"><div class="field"><label for="pdfDateStart">Data inicial</label><input id="pdfDateStart" type="date" /></div><div class="field"><label for="pdfDateEnd">Data final</label><input id="pdfDateEnd" type="date" /></div><button id="confirmExportPdf" class="auth-submit" type="button">Gerar PDF</button></div></div></div>
+<div id="pdfRangeModal" class="modal hidden">
+  <div class="modal-backdrop" id="pdfRangeBackdrop"></div>
 
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <div class="modal-card" style="max-width:540px;">
+    <div class="modal-head">
+      <div>
+        <h3 class="modal-title">Relatório PDF</h3>
+        <div style="color:var(--muted);font-size:13px;margin-top:4px;font-weight:800;">
+          Escolha o período
+        </div>
+      </div>
 
-  <script type="module">
+      <button id="closePdfRangeModal" class="modal-close" type="button">Fechar</button>
+    </div>
+
+    <div style="display:grid;gap:14px;">
+      <div class="field">
+        <label for="pdfDateStart">Data inicial</label>
+        <input id="pdfDateStart" type="date">
+      </div>
+
+      <div class="field">
+        <label for="pdfDateEnd">Data final</label>
+        <input id="pdfDateEnd" type="date">
+      </div>
+
+      <button id="confirmExportPdf" class="auth-submit" type="button">
+        Gerar PDF
+      </button>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  
+ <script type="module">
    import { initializeApp, deleteApp } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-app.js";
     import { getFirestore, collection, addDoc, getDocs, deleteDoc, doc, updateDoc, setDoc, getDoc, onSnapshot, query, limit, serverTimestamp } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-firestore.js";
     import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, onAuthStateChanged, sendPasswordResetEmail } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-auth.js";
