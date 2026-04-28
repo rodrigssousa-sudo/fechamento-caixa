@@ -2343,6 +2343,56 @@ select:focus{
   opacity:1;
   transition:.25s ease;
 }
+
+ #historySection .history-body{
+  display:block!important;
+  max-height:1400px;
+  opacity:1;
+  overflow:hidden;
+  transition:max-height .28s ease, opacity .22s ease, padding .22s ease;
+}
+
+#historySection.history-hidden .history-body{
+  max-height:0!important;
+  opacity:0!important;
+  padding-top:0!important;
+  padding-bottom:0!important;
+  overflow:hidden!important;
+}
+
+#historyList{
+  display:grid!important;
+}
+
+ .admin-panel{
+  padding:22px;
+  margin-bottom:20px;
+  border-radius:28px;
+  background:rgba(255,255,255,.94);
+  border:1px solid rgba(255,255,255,.96);
+  box-shadow:0 14px 34px rgba(10,16,32,.07);
+}
+
+.admin-head{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  margin-bottom:12px;
+}
+
+.admin-head h3{
+  margin:0;
+  font-size:22px;
+  letter-spacing:-.04em;
+}
+
+.admin-head span{
+  font-size:12px;
+  color:#667085;
+  font-weight:950;
+  text-transform:uppercase;
+  letter-spacing:.08em;
+}
  
 </style>
 
@@ -2404,12 +2454,67 @@ select:focus{
       <button id="menuToggle" class="menu-btn" type="button">☰</button>
     </header>
 
-    <main class="app">
-      <div id="adminPanel" class="hidden" style="padding:22px;margin-bottom:20px;border-radius:28px;background:rgba(255,255,255,.94);border:1px solid rgba(255,255,255,.96);box-shadow:0 14px 34px rgba(10,16,32,.07);">
-        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
-          <h3 style="margin:0;font-size:22px;letter-spacing:-.04em;">Usuários</h3>
-          <span style="font-size:12px;color:#667085;font-weight:950;text-transform:uppercase;letter-spacing:.08em;">Painel Admin</span>
+   <main class="app">
+
+  <!-- ===== ADMIN PANEL ===== -->
+  <div id="adminPanel" class="hidden admin-panel">
+    <div class="admin-head">
+      <h3>Usuários</h3>
+      <span>Painel Admin</span>
+    </div>
+
+    <!-- aqui continuam seus inputs e lista de usuários -->
+  </div>
+
+  <!-- ===== SALDO ===== -->
+  <section class="main-card">
+    <!-- seu balance-card aqui -->
+  </section>
+
+  <!-- ===== RESUMO ===== -->
+  <section class="section-card">
+    <!-- summary-grid aqui -->
+  </section>
+
+  <!-- ===== COMPARATIVO ===== -->
+  <section class="section-card compare-section">
+    <div class="section-head compare-head">
+      <span>Comparativo das fichas</span>
+
+      <button id="toggleCompareBtn" class="compare-eye-btn" type="button">
+        <span id="compareEyeText">Ver</span>
+      </button>
+    </div>
+
+    <div class="section-body compare-body">
+      <div id="systemsCompareBar" class="compare-grid">
+        <div class="compare-pill">
+          <span class="compare-dot same"></span>
+          <div>
+            <div class="compare-name">Aguardando dados</div>
+            <div class="compare-value">Faça pelo menos dois fechamentos</div>
+          </div>
         </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 🔥 ===== HISTÓRICO (CORRIGIDO) ===== -->
+  <section id="historySection" class="section-card history-hidden">
+
+    <div class="section-head compare-head">
+      <span>Histórico</span>
+
+      <button id="toggleHistoryBtn" class="compare-eye-btn" type="button">
+        <span id="historyEyeText">Ver</span>
+      </button>
+    </div>
+
+    <div class="section-body history-body">
+      <div id="historyList" class="history-list"></div>
+    </div>
+  </section>
+</main>
         <div style="display:grid;gap:10px;margin-bottom:16px;background:#f8fafc;border:1px solid #e5eaf2;border-radius:18px;padding:14px;">
   <div style="font-weight:950;color:#102a56;">Criar usuário</div>
 
@@ -2616,7 +2721,6 @@ select:focus{
 
     let currentUserData = null;
     let historyCache = [];
-    let historyVisible = false;
     let balanceVisible = true;
     let historyUnsubscribe = null;
     let historyListenerStarted = false;
