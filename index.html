@@ -2849,6 +2849,7 @@ async function recalcAllHistory() {
     });
   }
 }
+    
 
 async function saveTurn() {
   try {
@@ -3866,6 +3867,27 @@ function setFinalizarLoading(state) {
   }
 }
 
+    function setFinalizarLoading(...) { ... }
+
+function showToast(message, type = "success") {
+  const toast = document.createElement("div");
+
+  toast.className = `ck-toast ${type}`;
+  toast.textContent = message;
+
+  document.body.appendChild(toast);
+
+  requestAnimationFrame(() => {
+    toast.classList.add("show");
+  });
+
+  setTimeout(() => {
+    toast.classList.remove("show");
+    setTimeout(() => toast.remove(), 300);
+  }, 2600);
+}
+    
+    
 /* ✅ CRIAR USUÁRIO INTERNO PELO PAINEL ADMIN */
 document.addEventListener("DOMContentLoaded", () => {
 
