@@ -1991,6 +1991,124 @@ select:focus,
     padding-left:0!important;
   }
 }
+
+ /* =========================================================
+   SIDEBAR PREMIUM RESPONSIVA (MOBILE + DESKTOP)
+========================================================= */
+
+:root{
+  --sidebar-width: 280px;
+}
+
+/* ===== SIDEBAR ===== */
+#sideBar{
+  position:fixed;
+  top:0;
+  left:0;
+  width:var(--sidebar-width);
+  height:100vh;
+  background:#ffffff;
+  z-index:1000;
+
+  transform:translateX(-100%);
+  transition:transform .3s ease;
+
+  box-shadow: 10px 0 30px rgba(0,0,0,.08);
+  border-right:1px solid rgba(0,0,0,.05);
+}
+
+/* aberta */
+#sideBar.open{
+  transform:translateX(0);
+}
+
+/* ===== BACKDROP (mobile) ===== */
+#sidebarBackdrop{
+  position:fixed;
+  inset:0;
+  background:rgba(0,0,0,.35);
+  opacity:0;
+  pointer-events:none;
+  transition:.3s;
+  z-index:999;
+}
+
+#sidebarBackdrop.show{
+  opacity:1;
+  pointer-events:auto;
+}
+
+/* ===== CONTEÚDO PRINCIPAL (fallback automático) ===== */
+
+/* tenta aplicar automaticamente mesmo sem .app-content */
+body{
+  transition:margin-left .3s ease;
+}
+
+/* ===== DESKTOP ===== */
+@media(min-width:1024px){
+
+  /* sidebar sempre aberta */
+  #sideBar{
+    transform:translateX(0);
+  }
+
+  /* remove fundo escuro */
+  #sidebarBackdrop{
+    display:none !important;
+  }
+
+  /* empurra TODO o app */
+  body{
+    margin-left:var(--sidebar-width);
+  }
+}
+
+/* ===== MOBILE AJUSTE ===== */
+@media(max-width:1023px){
+  body{
+    margin-left:0;
+  }
+}
+
+/* ===== MELHORIAS VISUAIS ===== */
+#sideBar{
+  backdrop-filter: blur(10px);
+}
+
+#sideBar .menu-item,
+#sideBar button{
+  transition:all .2s ease;
+}
+
+#sideBar .menu-item:hover,
+#sideBar button:hover{
+  transform:translateX(4px);
+  opacity:.9;
+}
+
+/* ===== SCROLL INTERNO SIDEBAR ===== */
+#sideBar{
+  overflow-y:auto;
+}
+
+/* ===== SCROLLBAR CLEAN ===== */
+#sideBar::-webkit-scrollbar{
+  width:6px;
+}
+
+#sideBar::-webkit-scrollbar-thumb{
+  background:rgba(0,0,0,.1);
+  border-radius:10px;
+}
+
+ #menuToggle{
+  transition:.2s;
+}
+
+#menuToggle:active{
+  transform:scale(.92);
+}
  
 </style>
 
@@ -2009,7 +2127,49 @@ select:focus,
   
 </head>
 <body>
+<!-- SIDEBAR -->
+<div id="sideBar">
 
+  <div style="padding:20px">
+
+    <!-- HEADER -->
+    <div style="font-weight:900;font-size:18px;margin-bottom:20px;">
+      Bank King
+    </div>
+
+    <!-- USUÁRIO -->
+    <div style="
+      background:#f1f5f9;
+      padding:12px;
+      border-radius:14px;
+      margin-bottom:20px;
+      font-weight:800;
+    ">
+      <div id="sidebarUserName">Usuário</div>
+      <div id="sidebarUserEmail" style="font-size:12px;color:#64748b;"></div>
+    </div>
+
+    <!-- MENU -->
+    <div class="menu-item" id="sideHomeBtn">🏠 Início</div>
+    <div class="menu-item" id="sideHistoryBtn">📊 Histórico</div>
+    <div class="menu-item" id="sideGoalBtn">🎯 Meta mensal</div>
+    <div class="menu-item" id="sideRankingBtn">📈 Ranking</div>
+    <div class="menu-item" id="sidePdfBtn">📄 Relatórios PDF</div>
+    <div class="menu-item" id="sideAdminBtn">⚙️ Admin</div>
+
+    <!-- SAIR -->
+    <div style="margin-top:30px">
+      <div class="menu-item" id="sideLogoutBtn" style="color:#be2633;">
+        🚪 Sair
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- BACKDROP -->
+<div id="sidebarBackdrop"></div>
+ 
 <section id="authScreen" class="auth-screen">
   <div class="auth-card">
     <div class="auth-logo">BK</div>
@@ -2072,6 +2232,38 @@ select:focus,
 </section>
 
 <div id="appShell" class="app-shell hidden">
+
+  <!-- ✅ BOTÃO MENU -->
+
+  <button id="menuToggle" style="
+
+    position:fixed;
+
+    top:16px;
+
+    left:16px;
+
+    z-index:1100;
+
+    background:#0b1f4d;
+
+    color:#fff;
+
+    border:none;
+
+    border-radius:10px;
+
+    padding:10px 12px;
+
+    font-weight:900;
+
+  ">
+
+  ☰
+
+  </button>
+
+  <!-- ✅ SIDEBAR -->
 
  <aside id="sideBar" class="bk-sidebar">
   <div class="sidebar-top">
