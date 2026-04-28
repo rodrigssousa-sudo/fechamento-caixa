@@ -4701,13 +4701,6 @@ async function createInternalUser() {
    SIDEBAR ÚNICA — SUBSTITUI MENU ANTIGO
 ========================================================= */
 
-const menuToggle = byId("menuToggle");
-
-function openSidebar(){
-  sideBar?.classList.add("open");
-  sidebarBackdrop?.classList.add("show");
-}
-
 function closeSidebar(){
   sideBar?.classList.remove("open");
   sidebarBackdrop?.classList.remove("show");
@@ -4761,11 +4754,6 @@ const sidebarBackdrop = byId("sidebarBackdrop");
 function openSidebar(){
   sideBar?.classList.add("open");
   sidebarBackdrop?.classList.add("show");
-}
-
-function closeSidebar(){
-  sideBar?.classList.remove("open");
-  sidebarBackdrop?.classList.remove("show");
 }
 
 /* 🔥 BOTÃO ☰ AGORA ABRE SIDEBAR */
