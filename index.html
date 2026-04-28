@@ -1742,6 +1742,47 @@ select:focus,
     padding:16px!important;
   }
 }
+
+/* =========================================================
+   ADMIN USERS — MOBILE FIX
+========================================================= */
+
+@media(max-width:768px){
+
+  #usersList{
+    display:flex!important;
+    flex-direction:column!important;
+    gap:14px!important;
+    overflow:hidden!important;
+  }
+
+  #usersList > div{
+    width:100%!important;
+    display:flex!important;
+    flex-direction:column!important;
+    align-items:stretch!important;
+    gap:12px!important;
+    padding:16px!important;
+    border-radius:22px!important;
+    overflow:hidden!important;
+  }
+
+  #usersList > div > div:first-child{
+    width:100%!important;
+    max-width:100%!important;
+    overflow:hidden!important;
+  }
+
+  #usersList button{
+    width:100%!important;
+    max-width:100%!important;
+    min-height:48px!important;
+    padding:12px 14px!important;
+    border-radius:16px!important;
+    font-size:15px!important;
+    white-space:normal!important;
+  }
+}
  
 </style>
 
