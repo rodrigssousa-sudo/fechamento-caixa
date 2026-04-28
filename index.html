@@ -4275,6 +4275,34 @@ document.addEventListener("DOMContentLoaded", () => {
     "t2_cargas_poker"
   ].forEach(enableSmartMoneyInput);
 
+ <script>
+// 1. DECLARAÇÃO DAS FUNÇÕES (Onde você deve colar)
+function setFinalizarLoading() {
+  // Sua lógica de finalizar o loading aqui
+  console.log("Loading finalizado");
+}
+
+function showToast(message, type = "success") {
+  const toast = document.createElement("div");
+
+  toast.className = `ck-toast ${type}`;
+  toast.textContent = message;
+
+  document.body.appendChild(toast);
+
+  requestAnimationFrame(() => {
+    toast.classList.add("show");
+  });
+
+  setTimeout(() => {
+    toast.classList.remove("show");
+    setTimeout(() => toast.remove(), 300);
+  }, 2600);
+}
+
+// 2. SEU CÓDIGO EXISTENTE (Eventos e Inicialização)
+document.addEventListener("DOMContentLoaded", () => {
+  
   byId("adminCreateUserBtn")?.addEventListener("click", createInternalUser);
 
   byId("recalculateHistoryBtn")?.addEventListener("click", async () => {
@@ -4282,15 +4310,16 @@ document.addEventListener("DOMContentLoaded", () => {
     if (!allowed) return;
 
     await recalculateAllHistory();
+    // Exemplo de uso após recalcular:
+    showToast("Histórico recalculado com sucesso!");
   });
 
   initAuthEvents();
-
 });
-
 </script>
 
 <script>
+// Registro do Service Worker (PWA)
 if ("serviceWorker" in navigator) {
   window.addEventListener("load", () => {
     navigator.serviceWorker.register("/service-worker.js")
@@ -4302,4 +4331,3 @@ if ("serviceWorker" in navigator) {
 
 </body>
 </html>
-
