@@ -1593,6 +1593,32 @@ select:focus,
     bottom:10px!important;
   }
 }
+
+.compare-head{
+  display:flex!important;
+  align-items:center!important;
+  justify-content:space-between!important;
+  gap:14px!important;
+}
+
+.compare-head span{
+  flex:1!important;
+}
+
+.compare-body{
+  max-height:900px;
+  opacity:1;
+  overflow:hidden;
+  transition:max-height .28s ease, opacity .22s ease, padding .22s ease;
+}
+
+.compare-section.compare-hidden .compare-body{
+  max-height:0!important;
+  opacity:0!important;
+  padding-top:0!important;
+  padding-bottom:0!important;
+  overflow:hidden!important;
+}
  
 </style>
 
@@ -1770,27 +1796,27 @@ select:focus,
       </div>
     </section>
 
-    <section class="section-card green-section compare-section compare-hidden">
-      <div class="section-head compare-head">
-        <span>Comparativo das fichas</span>
+   <section id="compareSection" class="section-card green-section compare-section compare-hidden">
+  <div class="section-head compare-head">
+    <span>Comparativo das fichas</span>
 
-        <button id="toggleCompareBtn" class="history-view-btn" type="button">
-          <span id="compareEyeText">Ver</span>
-        </button>
-      </div>
+    <button id="toggleCompareBtn" class="history-view-btn" type="button">
+      <span id="compareEyeText">Ver</span>
+    </button>
+  </div>
 
-      <div class="section-body compare-body">
-        <div id="systemsCompareBar" class="compare-grid">
-          <div class="compare-pill">
-            <span class="compare-dot same"></span>
-            <div>
-              <div class="compare-name">Aguardando dados</div>
-              <div class="compare-value">Faça pelo menos dois fechamentos</div>
-            </div>
-          </div>
+  <div class="section-body compare-body">
+    <div id="systemsCompareBar" class="compare-grid">
+      <div class="compare-pill">
+        <span class="compare-dot same"></span>
+        <div>
+          <div class="compare-name">Aguardando dados</div>
+          <div class="compare-value">Faça pelo menos dois fechamentos</div>
         </div>
       </div>
-    </section>
+    </div>
+  </div>
+</section>
 
     <section id="rankingChartSection" class="section-card blue-section hidden">
       <div class="section-head">Ranking</div>
