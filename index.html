@@ -5144,25 +5144,6 @@ toggleCompareBtn?.addEventListener("click", () => {
   }
 });
 
-   // ✅ HISTÓRICO
-const toggleHistoryBtn = document.getElementById("toggleHistoryBtn");
-const historySection = document.getElementById("historySection");
-const historyText = document.getElementById("historyEyeText");
-
-toggleHistoryBtn?.addEventListener("click", () => {
-  if (!historySection) return;
-
-  const isHidden = historySection.classList.toggle("history-hidden");
-
-  if (historyText) {
-    historyText.textContent = isHidden ? "Ver" : "Ocultar";
-  }
-
-  if (!isHidden && typeof renderHistory === "function") {
-    renderHistory();
-  }
-});
-
   // ✅ SCROLL BAR
   window.addEventListener("scroll", handleScrollActionsBar);
 
