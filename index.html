@@ -4545,7 +4545,7 @@ byId("confirmExportPdf")?.addEventListener("click", async () => {
 
   byId("pdfRangeModal")?.classList.add("hidden");
 
- setTimeout(() => {
+setTimeout(() => {
   w.focus();
 
   const printBtn = w.document.createElement("button");
@@ -4565,19 +4565,48 @@ byId("confirmExportPdf")?.addEventListener("click", async () => {
     font-size:14px;
     box-shadow:0 12px 30px rgba(0,0,0,.25);
     cursor:pointer;
-    transition:all .2s ease;
   `;
 
-  // 🔥 hover premium
-  printBtn.onmouseenter = () => {
-    printBtn.style.transform = "translateY(-2px)";
-  };
-  printBtn.onmouseleave = () => {
-    printBtn.style.transform = "translateY(0)";
+  const backBtn = w.document.createElement("button");
+  backBtn.innerText = "← Voltar";
+
+  backBtn.style.cssText = `
+    position:fixed;
+    left:20px;
+    bottom:20px;
+    z-index:999999;
+    padding:14px 20px;
+    border-radius:18px;
+    border:none;
+    background:#ffffff;
+    color:#0b1f4d;
+    font-weight:900;
+    font-size:14px;
+    box-shadow:0 12px 30px rgba(0,0,0,.15);
+    cursor:pointer;
+  `;
+
+  printBtn.onclick = () => {
+    printBtn.style.display = "none";
+    backBtn.style.display = "none";
+
+    w.print();
+
+    setTimeout(() => {
+      printBtn.style.display = "block";
+      backBtn.style.display = "block";
+    }, 1200);
   };
 
-setTimeout(() => {
-  w.focus();
+  backBtn.onclick = () => {
+    w.close();
+  };
+
+  w.document.body.appendChild(printBtn);
+  w.document.body.appendChild(backBtn);
+
+  w.scrollTo(0, 0);
+}, 1000);
 
   /* ===== BOTÃO PRINT ===== */
 const printBtn = w.document.createElement("button");
