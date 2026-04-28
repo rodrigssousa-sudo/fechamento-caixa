@@ -3116,7 +3116,7 @@ setFinalizarLoading(false);
 }
 function clearTurn(turno) {
 
-  renderTopPreviousCards(); // ✅ agora correto
+  renderTopPreviousCards();
 
   [
     `${turno}_nome_operador`,
@@ -3137,22 +3137,25 @@ function clearTurn(turno) {
     }
   });
 
-}
+  const pendingList = byId(`${turno}_pending_list`);
+  if (pendingList) pendingList.innerHTML = "";
 
-  byId(`${turno}_pending_list`).innerHTML = "";
-  byId(`${turno}_dynamic_list`).innerHTML = "";
+  const dynamicList = byId(`${turno}_dynamic_list`);
+  if (dynamicList) dynamicList.innerHTML = "";
 
   editingTurnId = null;
   window.editingTurnId = null;
 
-  byId("fecharTurno").innerHTML = `
-    <span class="bank-action-title">Finalizar</span>
-    <span class="bank-action-sub">Salvar turno</span>
-  `;
+  const fecharBtn = byId("fecharTurno");
+  if (fecharBtn) {
+    fecharBtn.innerHTML = `
+      <span class="bank-action-title">Finalizar</span>
+      <span class="bank-action-sub">Salvar turno</span>
+    `;
+  }
 
   render();
 }
-
 function createPendingRow(turno) {
   const list = byId(`${turno}_pending_list`);
   if (!list) return;
