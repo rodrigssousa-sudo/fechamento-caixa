@@ -2597,52 +2597,7 @@ updateActionsVisibility();
       }
       return true;
     }
-
-   function applyPermissions(userData) {
-  const isAdmin = userData?.role === "admin";
-  const isSupervisor = userData?.role === "supervisor";
-  const isOperator = userData?.role === "operador";
-
-  const canOperate = isAdmin || isSupervisor || isOperator;
-  const canViewReports = isAdmin || isSupervisor;
-  const canViewUsers = isAdmin || isSupervisor;
-  const canManage = isAdmin;
-
-  // Admin / Supervisor podem abrir painel de usuários
-  byId("adminOpenBtn")?.classList.toggle("hidden", !canViewUsers);
-
-  // Somente admin pode recalcular
-  byId("recalculateHistoryBtn")?.classList.toggle("hidden", !canManage);
-
-  // Admin / Supervisor podem ver ranking e relatórios
-  byId("openRankingBtn")?.classList.toggle("hidden", !canViewReports);
-  byId("openPdfCustomBtn")?.classList.toggle("hidden", !canViewReports);
-
-  // Se existir esse botão, admin/supervisor podem ver
-  byId("menuHistoryBtn")?.classList.toggle("hidden", !canViewReports);
-
-  // Sempre começa fechado
-  byId("rankingChartSection")?.classList.add("hidden");
-  byId("rankingTableSection")?.classList.add("hidden");
-  byId("adminPanel")?.classList.add("hidden");
-
-  // Botões de relatório rápido, caso existam
-  document.querySelectorAll("[data-report-range]").forEach((btn) => {
-    btn.classList.toggle("hidden", !canViewReports);
-  });
-
-  // Admin, supervisor e operador podem finalizar turno
-  byId("fecharTurno")?.classList.toggle("hidden", !canOperate);
-
-  if (byId("activeUserRole")) {
-    byId("activeUserRole").textContent =
-      isAdmin ? "ADMIN" :
-      isSupervisor ? "SUPERVISOR" :
-      isOperator ? "OPERADOR" :
-      "SEM PERMISSÃO";
-  }
-}
-
+  
 async function validateUserAccess(user) {
   const snap = await getDoc(doc(db, "users", user.uid));
 
