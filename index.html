@@ -4329,7 +4329,7 @@ function showToast(message, type = "success") {
 /* ✅ CRIAR USUÁRIO INTERNO PELO PAINEL ADMIN */
 document.addEventListener("DOMContentLoaded", () => {
 
-  [
+  const moneyFields = [
     "t2_banco",
     "t2_suprema",
     "t2_pppoker",
@@ -4337,20 +4337,38 @@ document.addEventListener("DOMContentLoaded", () => {
     "t2_ganamos",
     "t2_cargas",
     "t2_cargas_poker"
-  ].forEach(enableSmartMoneyInput);
+  ];
 
-  byId("adminCreateUserBtn")?.addEventListener("click", createInternalUser);
-
-  byId("recalculateHistoryBtn")?.addEventListener("click", async () => {
-    const allowed = await requireAdmin();
-    if (!allowed) return;
-
-    await recalculateAllHistory();
+  moneyFields.forEach((id) => {
+    if (typeof enableSmartMoneyInput === "function") {
+      enableSmartMoneyInput(id);
+    }
   });
 
-  initAuthEvents();
-});
+  const adminBtn = document.getElementById("adminCreateUserBtn");
+  if (adminBtn && typeof createInternalUser === "function") {
+    adminBtn.addEventListener("click", createInternalUser);
+  }
 
+  const recalcBtn = document.getElementById("recalculateHistoryBtn");
+  if (
+    recalcBtn &&
+    typeof requireAdmin === "function" &&
+    typeof recalculateAllHistory === "function"
+  ) {
+    recalcBtn.addEventListener("click", async () => {
+      const allowed = await requireAdmin();
+      if (!allowed) return;
+
+      await recalculateAllHistory();
+    });
+  }
+
+  if (typeof initAuthEvents === "function") {
+    initAuthEvents();
+  }
+
+});
 </script>
 
 <script>
