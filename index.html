@@ -2276,6 +2276,21 @@ select:focus{
 .eye-text{
   font-size:0;
 }
+
+ .compare-body{
+  max-height:600px;
+  opacity:1;
+  overflow:hidden;
+  transition:max-height .28s ease, opacity .22s ease, padding .22s ease;
+}
+
+.compare-section.compare-hidden .compare-body{
+  max-height:0!important;
+  opacity:0!important;
+  padding-top:0!important;
+  padding-bottom:0!important;
+  overflow:hidden!important;
+}
  
 </style>
 
@@ -4978,11 +4993,20 @@ document.addEventListener("DOMContentLoaded", () => {
 // ✅ BOTÃO OLHO DO COMPARATIVO
 
   const toggleCompareBtn = document.getElementById("toggleCompareBtn");
-  toggleCompareBtn?.addEventListener("click", () => {
-    const section = document.querySelector(".compare-section");
-    if (!section) return;
-    section.classList.toggle("compare-hidden");
-  });
+
+toggleCompareBtn?.addEventListener("click", () => {
+  const section = document.querySelector(".compare-section");
+  if (!section) return;
+
+  section.classList.toggle("compare-hidden");
+
+  const text = toggleCompareBtn.querySelector(".eye-text");
+  if (text) {
+    text.textContent = section.classList.contains("compare-hidden")
+      ? "Ver"
+      : "Ocultar";
+  }
+});
  
 
   // ✅ SCROLL BAR
