@@ -1960,6 +1960,37 @@ select:focus,
     pointer-events:auto;
   }
 }
+
+ #mainMenu,
+#menuBackdrop{
+  display:none!important;
+}
+
+ @media(min-width:1000px){
+  .bk-sidebar{
+    transform:none!important;
+  }
+
+  .app-shell{
+    padding-left:350px!important;
+  }
+
+  .topbar{
+    margin-left:0!important;
+    max-width:calc(100% - 24px)!important;
+  }
+
+  .app{
+    margin-left:0!important;
+    max-width:calc(100% - 24px)!important;
+  }
+}
+
+@media(max-width:999px){
+  .app-shell{
+    padding-left:0!important;
+  }
+}
  
 </style>
 
@@ -4667,43 +4698,62 @@ async function createInternalUser() {
     byId("logoutBtn")?.addEventListener("click", async () => { try { if (historyUnsubscribe) historyUnsubscribe(); await signOut(auth); } catch (error) { console.error("Erro ao sair:", error); alert("Erro ao sair."); } });
 
 /* =========================================================
-   MENU PRINCIPAL
+   SIDEBAR ÚNICA — SUBSTITUI MENU ANTIGO
 ========================================================= */
 
 const menuToggle = byId("menuToggle");
-const mainMenu = byId("mainMenu");
-const backdrop = byId("menuBackdrop");
+const sideBar = byId("sideBar");
+const sidebarBackdrop = byId("sidebarBackdrop");
 
-function closeMenu(){
-  mainMenu?.classList.add("hidden");
-  mainMenu?.classList.remove("show");
-  backdrop?.classList.remove("show");
+function openSidebar(){
+  sideBar?.classList.add("open");
+  sidebarBackdrop?.classList.add("show");
 }
 
-function openMenu(){
-  mainMenu?.classList.remove("hidden");
-
-  requestAnimationFrame(() => {
-    mainMenu?.classList.add("show");
-    backdrop?.classList.add("show");
-  });
-}
-
-function toggleMenu(){
-  if (mainMenu?.classList.contains("hidden")) {
-    openMenu();
-  } else {
-    closeMenu();
-  }
+function closeSidebar(){
+  sideBar?.classList.remove("open");
+  sidebarBackdrop?.classList.remove("show");
 }
 
 menuToggle?.addEventListener("click", (e) => {
   e.preventDefault();
   e.stopPropagation();
-  toggleMenu();
+  openSidebar();
 });
 
-backdrop?.addEventListener("click", closeMenu);
+sidebarBackdrop?.addEventListener("click", closeSidebar);
+
+byId("sideHomeBtn")?.addEventListener("click", () => {
+  closeSidebar();
+  window.scrollTo({ top:0, behavior:"smooth" });
+});
+
+byId("sideHistoryBtn")?.addEventListener("click", () => {
+  closeSidebar();
+  setHistoryVisible?.(true);
+  byId("historySection")?.scrollIntoView({ behavior:"smooth", block:"start" });
+});
+
+byId("sideRankingBtn")?.addEventListener("click", () => {
+  closeSidebar();
+  byId("openRankingBtn")?.click();
+});
+
+byId("sidePdfBtn")?.addEventListener("click", () => {
+  closeSidebar();
+  byId("openPdfCustomBtn")?.click();
+});
+
+byId("sideAdminBtn")?.addEventListener("click", () => {
+  closeSidebar();
+  byId("adminOpenBtn")?.click();
+});
+
+byId("sideLogoutBtn")?.addEventListener("click", () => {
+  closeSidebar();
+  byId("logoutBtn")?.click();
+});
+
 
 /* ================= SIDEBAR ================= */
 
@@ -4831,8 +4881,6 @@ toggleCompareBtn?.addEventListener("click", () => {
 byId("openPdfCustomBtn")?.addEventListener("click", async () => {
   const allowed = await requireReportsAccess();
   if (!allowed) return;
-
-  closeMenu();
 
   const today = getTodayDateInput();
   const start = byId("pdfDateStart");
