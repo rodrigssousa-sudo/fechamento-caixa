@@ -4965,11 +4965,12 @@ document.addEventListener("DOMContentLoaded", () => {
 
 toggleCompareBtn?.addEventListener("click", () => {
   const section = document.querySelector(".compare-section");
+  const text = document.getElementById("compareEyeText");
+
   if (!section) return;
 
   section.classList.toggle("compare-hidden");
 
-  const text = toggleCompareBtn.querySelector(".eye-text");
   if (text) {
     text.textContent = section.classList.contains("compare-hidden")
       ? "Ver"
