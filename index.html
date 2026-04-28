@@ -4220,16 +4220,16 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   });
 
-  // 👇 ADICIONA AQUI
+  // ✅ SCROLL BAR
   window.addEventListener("scroll", handleScrollActionsBar);
 
-});
-
+  // ✅ ADMIN
   const adminBtn = document.getElementById("adminCreateUserBtn");
   if (adminBtn && typeof createInternalUser === "function") {
     adminBtn.addEventListener("click", createInternalUser);
   }
 
+  // ✅ RECALC
   const recalcBtn = document.getElementById("recalculateHistoryBtn");
   if (
     recalcBtn &&
@@ -4244,6 +4244,7 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
+  // ✅ AUTH
   if (typeof initAuthEvents === "function") {
     initAuthEvents();
   }
