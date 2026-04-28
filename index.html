@@ -2085,45 +2085,6 @@ select:focus{
   }
 }
 
- .balance-toggle{
-  position:relative;
-  width:52px;
-  height:30px;
-
-  border-radius:999px;
-  background:rgba(255,255,255,.25);
-
-  border:1px solid rgba(255,255,255,.25);
-
-  cursor:pointer;
-  transition:.25s;
-}
-
-.balance-toggle::after{
-  content:"";
-  position:absolute;
-  top:3px;
-  left:4px;
-
-  width:22px;
-  height:22px;
-  border-radius:50%;
-
-  background:#ffffff;
-
-  transition:.25s;
-}
-
-/* ativo (mostrando saldo) */
-.balance-toggle.active{
-  background:#22c55e;
-}
-
-/* bolinha move */
-.balance-toggle.active::after{
-  transform:translateX(20px);
-}
-
 .history-head{
   display:flex!important;
   align-items:center!important;
@@ -2169,6 +2130,13 @@ select:focus{
   opacity:0!important;
   padding-top:0!important;
   padding-bottom:0!important;
+}
+
+ .history-view-btn.active{
+  background:#eef4ff!important;
+  color:#003dcc!important;
+  border-color:rgba(0,107,255,.18)!important;
+  box-shadow:0 6px 14px rgba(0,64,160,.08)!important;
 }
  
 </style>
@@ -2363,14 +2331,13 @@ select:focus{
   </div>
 </section>
 
-    <section id="historySection" class="section-card history-hidden">
+<section id="historySection" class="section-card history-hidden">
   <div class="section-head history-head">
     <span>Histórico</span>
 
     <button id="toggleHistoryBtn" class="history-view-btn" type="button">
-      <span id="historyEyeText">Ver</span>
-    </button>
-  </div>
+  <span id="historyEyeText">Ver</span>
+</button>
 
   <div class="section-body history-body">
     <div id="historyList" class="history-list"></div>
@@ -4551,18 +4518,102 @@ menuToggle?.addEventListener("click",(e)=>{
 });
 
 backdrop?.addEventListener("click", closeMenu);
-    byId("openDetailedHistoryBtn")?.addEventListener("click", () => { historyVisible = true; byId("historyList")?.classList.remove("hidden"); byId("toggleHistoryBtn").textContent = "Ocultar"; renderHistory(); setTimeout(() => byId("historyList")?.scrollIntoView({ behavior: "smooth", block: "start" }), 100); });
-    byId("toggleHistoryBtn")?.addEventListener("click", () => { historyVisible = !historyVisible; byId("historyList")?.classList.toggle("hidden", !historyVisible); byId("toggleHistoryBtn").textContent = historyVisible ? "Ocultar" : "Ver"; if (historyVisible) renderHistory(); });
-    byId("menuHistoryBtn")?.addEventListener("click", async () => { const allowed = await requireAdmin(); if (!allowed) return; mainMenu?.classList.add("hidden"); historyVisible = true; byId("historyList")?.classList.remove("hidden"); byId("toggleHistoryBtn").textContent = "Ocultar"; renderHistory(); setTimeout(() => byId("historyList")?.scrollIntoView({ behavior: "smooth", block: "start" }), 100); });
-    document.addEventListener("click", (e) => { const card = e.target.closest("[data-history-open]"); if (!card) return; const index = Number(card.dataset.historyOpen); if (Number.isInteger(index)) openHistoryModal(index); });
-    byId("closeHistoryModal")?.addEventListener("click", () => byId("historyModal")?.classList.add("hidden"));
-    byId("historyModalBackdrop")?.addEventListener("click", () => byId("historyModal")?.classList.add("hidden"));
 
-   byId("openPdfCustomBtn")?.addEventListener("click", async () => {
+/* =========================================================
+   HISTÓRICO — VER / OCULTAR FUNCIONAL
+========================================================= */
+
+const historySection = byId("historySection");
+const historyText = byId("historyEyeText");
+const toggleHistoryBtn = byId("toggleHistoryBtn");
+
+function setHistoryVisible(show) {
+  if (!historySection) return;
+
+  historySection.classList.toggle("history-hidden", !show);
+
+  /* 👇 estado visual do botão */
+  if (toggleHistoryBtn) {
+    toggleHistoryBtn.classList.toggle("active", show);
+  }
+
+  if (historyText) {
+    historyText.textContent = show ? "Ocultar" : "Ver";
+  }
+
+  if (show && typeof renderHistory === "function") {
+    renderHistory();
+  }
+}
+
+function scrollToHistory() {
+  setTimeout(() => {
+    historySection?.scrollIntoView({
+      behavior: "smooth",
+      block: "start"
+    });
+  }, 100);
+}
+
+/* BOTÃO VER */
+toggleHistoryBtn?.addEventListener("click", () => {
+  const isHidden = historySection?.classList.contains("history-hidden");
+  setHistoryVisible(isHidden);
+});
+
+/* ABRIR DETALHADO */
+byId("openDetailedHistoryBtn")?.addEventListener("click", () => {
+  setHistoryVisible(true);
+  scrollToHistory();
+});
+
+/* MENU */
+byId("menuHistoryBtn")?.addEventListener("click", async () => {
+  const allowed = await requireAdmin();
+  if (!allowed) return;
+
+  mainMenu?.classList.add("hidden");
+
+  setHistoryVisible(true);
+  scrollToHistory();
+});
+
+/* =========================================================
+   MODAL HISTÓRICO
+========================================================= */
+
+document.addEventListener("click", (e) => {
+  const card = e.target.closest("[data-history-open]");
+  if (!card) return;
+
+  const index = Number(card.dataset.historyOpen);
+
+  if (Number.isInteger(index)) {
+    openHistoryModal(index);
+  }
+});
+
+byId("closeHistoryModal")?.addEventListener("click", () => {
+  byId("historyModal")?.classList.add("hidden");
+});
+
+byId("historyModalBackdrop")?.addEventListener("click", () => {
+  byId("historyModal")?.classList.add("hidden");
+});
+
+/* =========================================================
+   PDF CUSTOM (CORRIGIDO)
+========================================================= */
+
+byId("openPdfCustomBtn")?.addEventListener("click", async () => {
   const allowed = await requireReportsAccess();
   if (!allowed) return;
 
   mainMenu?.classList.add("hidden");
+
+  // 👉 aqui você pode abrir modal ou função do PDF
+  openPdfModal?.();
+});
 
   const today = getTodayDateInput();
   const start = byId("pdfDateStart");
