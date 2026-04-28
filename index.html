@@ -4100,6 +4100,10 @@ async function createInternalUser() {
     document.querySelectorAll("[data-chart-range]").forEach((btn) => { btn.addEventListener("click", () => { document.querySelectorAll("[data-chart-range]").forEach((b) => b.classList.remove("active")); btn.classList.add("active"); renderRanking(btn.dataset.chartRange); }); });
     byId("logoutBtn")?.addEventListener("click", async () => { try { if (historyUnsubscribe) historyUnsubscribe(); await signOut(auth); } catch (error) { console.error("Erro ao sair:", error); alert("Erro ao sair."); } });
 
+/* =========================================================
+   MENU PRINCIPAL
+========================================================= */
+
 const menuToggle = byId("menuToggle");
 const mainMenu = byId("mainMenu");
 const backdrop = byId("menuBackdrop");
@@ -4113,21 +4117,21 @@ function closeMenu(){
 function openMenu(){
   mainMenu?.classList.remove("hidden");
 
-  requestAnimationFrame(()=>{
+  requestAnimationFrame(() => {
     mainMenu?.classList.add("show");
     backdrop?.classList.add("show");
   });
 }
 
 function toggleMenu(){
-  if(mainMenu.classList.contains("hidden")){
+  if (mainMenu?.classList.contains("hidden")) {
     openMenu();
-  }else{
+  } else {
     closeMenu();
   }
 }
 
-menuToggle?.addEventListener("click",(e)=>{
+menuToggle?.addEventListener("click", (e) => {
   e.preventDefault();
   e.stopPropagation();
   toggleMenu();
@@ -4135,43 +4139,36 @@ menuToggle?.addEventListener("click",(e)=>{
 
 backdrop?.addEventListener("click", closeMenu);
 
-// ===== HISTÓRICO =====
-const historySection = document.getElementById("historySection");
-const historyText = document.getElementById("historyEyeText");
-const historyList = document.getElementById("historyList");
-const toggleBtn = document.getElementById("toggleHistoryBtn");
+
+/* =========================================================
+   HISTÓRICO — VER / OCULTAR
+========================================================= */
+
+const historySection = byId("historySection");
+const historyText = byId("historyEyeText");
+const toggleHistoryBtn = byId("toggleHistoryBtn");
 
 function setHistoryVisible(show) {
-  if (!historySection) {
-    console.log("❌ historySection não encontrado");
-    return;
-  }
+  if (!historySection) return;
 
   historySection.classList.toggle("history-hidden", !show);
+
+  toggleHistoryBtn?.classList.toggle("active", show);
 
   if (historyText) {
     historyText.textContent = show ? "Ocultar" : "Ver";
   }
 
-  if (show) {
-    historyList?.classList.remove("hidden");
-
-    if (typeof renderHistory === "function") {
-      renderHistory();
-    } else {
-      console.log("❌ renderHistory não existe");
-    }
+  if (show && typeof renderHistory === "function") {
+    renderHistory();
   }
 }
 
-toggleBtn?.addEventListener("click", () => {
-  console.log("🟢 Clique no histórico");
-
+toggleHistoryBtn?.addEventListener("click", () => {
   const isHidden = historySection?.classList.contains("history-hidden");
   setHistoryVisible(isHidden);
 });
 
-/* ✅ ABRIR MODAL DO HISTÓRICO */
 document.addEventListener("click", (e) => {
   const card = e.target.closest("[data-history-open]");
   if (!card) return;
@@ -4189,11 +4186,38 @@ byId("closeHistoryModal")?.addEventListener("click", () => {
 byId("historyModalBackdrop")?.addEventListener("click", () => {
   byId("historyModal")?.classList.add("hidden");
 });
-   byId("openPdfCustomBtn")?.addEventListener("click", async () => {
+
+
+/* =========================================================
+   COMPARATIVO — VER / OCULTAR
+========================================================= */
+
+const toggleCompareBtn = byId("toggleCompareBtn");
+const compareText = byId("compareEyeText");
+
+toggleCompareBtn?.addEventListener("click", () => {
+  const section = document.querySelector(".compare-section");
+  if (!section) return;
+
+  section.classList.toggle("compare-hidden");
+
+  if (compareText) {
+    compareText.textContent = section.classList.contains("compare-hidden")
+      ? "Ver"
+      : "Ocultar";
+  }
+});
+
+
+/* =========================================================
+   PDF
+========================================================= */
+
+byId("openPdfCustomBtn")?.addEventListener("click", async () => {
   const allowed = await requireReportsAccess();
   if (!allowed) return;
 
-  mainMenu?.classList.add("hidden");
+  closeMenu();
 
   const today = getTodayDateInput();
   const start = byId("pdfDateStart");
@@ -4251,101 +4275,73 @@ byId("confirmExportPdf")?.addEventListener("click", async () => {
   byId("pdfRangeModal")?.classList.add("hidden");
 
   setTimeout(() => {
-  w.focus();
+    w.focus();
 
-  const printBtn = w.document.createElement("button");
-  printBtn.innerText = "Salvar / Exportar PDF";
-  printBtn.style.cssText = `
-    position:fixed;
-    right:16px;
-    bottom:16px;
-    z-index:9999;
-    padding:14px 18px;
-    border-radius:16px;
-    border:none;
-    background:#06152e;
-    color:white;
-    font-weight:900;
-    box-shadow:0 10px 25px rgba(0,0,0,.25);
-  `;
+    const printBtn = w.document.createElement("button");
+    printBtn.innerText = "Salvar / Exportar PDF";
+    printBtn.style.cssText = `
+      position:fixed;
+      right:16px;
+      bottom:16px;
+      z-index:9999;
+      padding:14px 18px;
+      border-radius:16px;
+      border:none;
+      background:#06152e;
+      color:white;
+      font-weight:900;
+      box-shadow:0 10px 25px rgba(0,0,0,.25);
+    `;
 
-  printBtn.onclick = () => {
-    printBtn.style.display = "none";
-    w.print();
-    setTimeout(() => {
-      printBtn.style.display = "block";
-    }, 1200);
-  };
-
-  w.document.body.appendChild(printBtn);
-}, 800);
-});
-
-document.querySelectorAll("[data-report-range]").forEach((btn) => {
-  btn.addEventListener("click", async () => {
-    const allowed = await requireReportsAccess();
-    if (!allowed) return;
-
-    const days = Number(btn.dataset.reportRange || 7);
-
-    const end = new Date();
-    const start = new Date();
-    start.setDate(start.getDate() - days);
-
-    const endLocal = new Date(end.getTime() - end.getTimezoneOffset() * 60000)
-      .toISOString()
-      .split("T")[0];
-
-    const startLocal = new Date(start.getTime() - start.getTimezoneOffset() * 60000)
-      .toISOString()
-      .split("T")[0];
-
-    const w = window.open("", "_blank", "width=1280,height=900");
-
-    if (!w) {
-      alert("Não foi possível abrir a janela.");
-      return;
-    }
-
-    w.document.open();
-    w.document.write(buildPremiumBankReceiptPdf(startLocal, endLocal));
-    w.document.close();
-
-    setTimeout(() => {
-      w.focus();
+    printBtn.onclick = () => {
+      printBtn.style.display = "none";
       w.print();
-    }, 800);
-  });
+
+      setTimeout(() => {
+        printBtn.style.display = "block";
+      }, 1200);
+    };
+
+    w.document.body.appendChild(printBtn);
+  }, 800);
 });
+
+
+/* =========================================================
+   RANKING
+========================================================= */
 
 byId("openRankingBtn")?.addEventListener("click", async () => {
   const allowed = await requireReportsAccess();
   if (!allowed) return;
-  mainMenu?.classList.add("hidden");
 
-  const chartSection = byId("rankingChartSection");
-  const tableSection = byId("rankingTableSection");
+  closeMenu();
 
-  const isHidden = chartSection?.classList.contains("section-collapsed");
+  const section = byId("rankingChartSection");
+  if (!section) return;
 
-chartSection?.classList.toggle("section-collapsed", !isHidden);
-tableSection?.classList.toggle("section-collapsed", !isHidden);
+  section.classList.toggle("hidden");
 
   renderRanking();
 
-  if (chartSection && !chartSection.classList.contains("hidden")) {
-    chartSection.scrollIntoView({
+  if (!section.classList.contains("hidden")) {
+    section.scrollIntoView({
       behavior: "smooth",
       block: "start"
     });
   }
 });
 
+
+/* =========================================================
+   ADMIN
+========================================================= */
+
 byId("adminOpenBtn")?.addEventListener("click", async () => {
   const allowed = await requireAdmin();
   if (!allowed) return;
 
-  mainMenu?.classList.add("hidden");
+  closeMenu();
 
   const panel = byId("adminPanel");
   if (!panel) return;
@@ -4357,8 +4353,29 @@ byId("adminOpenBtn")?.addEventListener("click", async () => {
   }
 });
 
+byId("adminCreateUserBtn")?.addEventListener("click", async () => {
+  if (typeof createInternalUser === "function") {
+    await createInternalUser();
+  }
+});
+
+byId("recalculateHistoryBtn")?.addEventListener("click", async () => {
+  const allowed = await requireAdmin();
+  if (!allowed) return;
+
+  if (typeof recalcAllHistory === "function") {
+    await recalcAllHistory();
+    showToast("Histórico recalculado.", "success");
+  }
+});
+
+
+/* =========================================================
+   INPUT MONEY PREMIUM
+========================================================= */
+
 function enableSmartMoneyInput(id) {
-  const input = document.getElementById(id);
+  const input = byId(id);
   if (!input || input.dataset.smartMoney === "true") return;
 
   input.dataset.smartMoney = "true";
@@ -4371,7 +4388,7 @@ function enableSmartMoneyInput(id) {
       .replace(/\s/g, "")
       .replace(/[^\d.,-]/g, "");
 
-    if (!text) return "";
+    if (!text) return NaN;
 
     const hasComma = text.includes(",");
     const hasDot = text.includes(".");
@@ -4412,7 +4429,7 @@ function enableSmartMoneyInput(id) {
     if (!Number.isFinite(number)) {
       input.value = "";
       input.dataset.raw = "";
-      input.dispatchEvent(new Event("input", { bubbles: true }));
+      input.dispatchEvent(new Event("input", { bubbles:true }));
       return;
     }
 
@@ -4420,7 +4437,7 @@ function enableSmartMoneyInput(id) {
     input.dataset.raw = String(number);
     input.dataset.edited = "true";
 
-    input.dispatchEvent(new Event("input", { bubbles: true }));
+    input.dispatchEvent(new Event("input", { bubbles:true }));
   }
 
   input.addEventListener("focus", () => {
@@ -4433,7 +4450,10 @@ function enableSmartMoneyInput(id) {
 
   input.addEventListener("paste", (e) => {
     e.preventDefault();
-    const text = (e.clipboardData || window.clipboardData)?.getData("text") || "";
+
+    const text =
+      (e.clipboardData || window.clipboardData)?.getData("text") || "";
+
     applyValue(text);
   });
 
@@ -4443,19 +4463,28 @@ function enableSmartMoneyInput(id) {
   });
 }
 
-/* 🔥 FUNÇÕES GLOBAIS (COLE AQUI) */
-   
+
+/* =========================================================
+   LOADING / TOAST
+========================================================= */
+
 function setFinalizarLoading(state, text = "Finalizar") {
-  const btn = document.getElementById("fecharTurno");
+  const btn = byId("fecharTurno");
   if (!btn) return;
 
   if (state) {
     btn.disabled = true;
-    btn.innerText = text + "...";
+    btn.innerHTML = `
+      <span class="bank-action-title">${text}...</span>
+      <span class="bank-action-sub">Aguarde</span>
+    `;
     btn.style.opacity = "0.7";
   } else {
     btn.disabled = false;
-    btn.innerText = "Finalizar";
+    btn.innerHTML = `
+      <span class="bank-action-title">Finalizar</span>
+      <span class="bank-action-sub">Salvar turno</span>
+    `;
     btn.style.opacity = "1";
   }
 }
@@ -4474,13 +4503,19 @@ function showToast(message, type = "success") {
 
   setTimeout(() => {
     toast.classList.remove("show");
-    setTimeout(() => toast.remove(), 300);
+
+    setTimeout(() => {
+      toast.remove();
+    }, 300);
   }, 2600);
 }
 
-/* ✅ CRIAR USUÁRIO INTERNO PELO PAINEL ADMIN */
-document.addEventListener("DOMContentLoaded", () => {
 
+/* =========================================================
+   BOOT
+========================================================= */
+
+document.addEventListener("DOMContentLoaded", () => {
   const moneyFields = [
     "t2_banco",
     "t2_suprema",
@@ -4492,82 +4527,58 @@ document.addEventListener("DOMContentLoaded", () => {
   ];
 
   moneyFields.forEach((id) => {
-    if (typeof enableSmartMoneyInput === "function") {
-      enableSmartMoneyInput(id);
+    enableSmartMoneyInput(id);
+    byId(id)?.addEventListener("input", render);
+  });
+
+  byId("t2_nome_operador")?.addEventListener("input", render);
+  byId("t2_data_fechamento")?.addEventListener("input", render);
+
+  byId("fecharTurno")?.addEventListener("click", saveTurn);
+  byId("calcular")?.addEventListener("click", render);
+  byId("limparBtn")?.addEventListener("click", () => clearTurn("t2"));
+
+  document.querySelectorAll("[data-add-pending]").forEach((btn) => {
+    btn.onclick = () => {
+      createPendingRow(btn.dataset.addPending);
+      updateActionsVisibility();
+    };
+  });
+
+  document.querySelectorAll("[data-add-outflow]").forEach((btn) => {
+    btn.onclick = () => {
+      createDynamicRow(btn.dataset.addOutflow);
+      updateActionsVisibility();
+    };
+  });
+
+  document.querySelectorAll("[data-chart-range]").forEach((btn) => {
+    btn.addEventListener("click", () => {
+      document
+        .querySelectorAll("[data-chart-range]")
+        .forEach((b) => b.classList.remove("active"));
+
+      btn.classList.add("active");
+      renderRanking(btn.dataset.chartRange);
+    });
+  });
+
+  byId("logoutBtn")?.addEventListener("click", async () => {
+    try {
+      if (historyUnsubscribe) historyUnsubscribe();
+      await signOut(auth);
+    } catch (error) {
+      console.error("Erro ao sair:", error);
+      alert("Erro ao sair.");
     }
   });
 
- const historySection = document.getElementById("historySection");
-const historyList = document.getElementById("historyList");
-const historyText = document.getElementById("historyEyeText");
-const toggleBtn = document.getElementById("toggleHistoryBtn");
-
-toggleBtn?.addEventListener("click", () => {
-  const isHidden = historySection.classList.contains("history-hidden");
-
-  historySection.classList.toggle("history-hidden");
-
-  if (historyText) {
-    historyText.textContent = isHidden ? "Ocultar" : "Ver";
-  }
-
-  if (isHidden) {
-    historyList.classList.remove("hidden");
-    renderHistory?.();
-  }
-});
-
-// ✅ BOTÃO OLHO DO COMPARATIVO
-
-  const toggleCompareBtn = document.getElementById("toggleCompareBtn");
-
-toggleCompareBtn?.addEventListener("click", () => {
-  const section = document.querySelector(".compare-section");
-  const text = document.getElementById("compareEyeText");
-
-  if (!section) return;
-
-  section.classList.toggle("compare-hidden");
-
-  if (text) {
-    text.textContent = section.classList.contains("compare-hidden")
-      ? "Ver"
-      : "Ocultar";
-  }
-});
-
-  // ✅ SCROLL BAR
-  window.addEventListener("scroll", handleScrollActionsBar);
-
-  // ✅ ADMIN
-  const adminBtn = document.getElementById("adminCreateUserBtn");
-  if (adminBtn && typeof createInternalUser === "function") {
-    adminBtn.addEventListener("click", createInternalUser);
-  }
-
-  // ✅ RECALC
-  const recalcBtn = document.getElementById("recalculateHistoryBtn");
-  if (
-    recalcBtn &&
-    typeof requireAdmin === "function" &&
-    typeof recalculateAllHistory === "function"
-  ) {
-    recalcBtn.addEventListener("click", async () => {
-      const allowed = await requireAdmin();
-      if (!allowed) return;
-
-      await recalculateAllHistory();
-    });
-  }
-
-  // ✅ AUTH
   if (typeof initAuthEvents === "function") {
     initAuthEvents();
   }
 
+  updateActionsVisibility();
 });
-</script>
-
 <script>
 if ("serviceWorker" in navigator) {
   window.addEventListener("load", () => {
