@@ -1842,213 +1842,519 @@
   background:linear-gradient(135deg,#be2633,#ef4444);
 }  
   
-  /* =========================================================
-   🔥 ULTRA PREMIUM LAYER — BANK KING PRO
+/* =========================================================
+   BANK KING PRO — DESIGN SYSTEM AZUL FINTECH
+   Inspirado em app bancário azul clean
+   Cole no FINAL do <style>
 ========================================================= */
 
-/* MICRO CONTRASTE GLOBAL (efeito iOS real) */
-body{
-  -webkit-font-smoothing: antialiased;
-  text-rendering: optimizeLegibility;
+:root{
+  --bk-bg:#eef4ff;
+  --bk-bg-2:#ffffff;
+
+  --bk-surface:#ffffff;
+  --bk-surface-soft:#f6f9ff;
+  --bk-card:#ffffff;
+
+  --bk-text:#06152e;
+  --bk-muted:#64748b;
+  --bk-soft:#94a3b8;
+
+  --bk-primary:#006BFF;
+  --bk-primary-dark:#003DCC;
+  --bk-primary-deep:#001F8F;
+  --bk-primary-light:#EAF2FF;
+
+  --bk-green:#12A150;
+  --bk-green-bg:#E8F8EE;
+
+  --bk-red:#E0313D;
+  --bk-red-bg:#FFECEE;
+
+  --bk-border:rgba(0,67,180,.10);
+  --bk-border-soft:rgba(0,107,255,.12);
+
+  --bk-shadow:0 18px 44px rgba(0,64,160,.10);
+  --bk-shadow-soft:0 10px 24px rgba(0,64,160,.07);
+  --bk-shadow-strong:0 26px 70px rgba(0,80,220,.24);
+
+  --bk-radius-xxl:34px;
+  --bk-radius-xl:28px;
+  --bk-radius-lg:22px;
+  --bk-radius-md:17px;
+  --bk-radius-sm:13px;
+
+  --bk-transition:.18s ease;
 }
 
-/* =========================================
-   ✨ CARDS COM PROFUNDIDADE REAL
-========================================= */
+/* BASE */
+*{
+  -webkit-font-smoothing:antialiased;
+  text-rendering:optimizeLegibility;
+}
+
+body{
+  color:var(--bk-text)!important;
+  background:
+    radial-gradient(circle at 12% -4%, rgba(0,107,255,.16), transparent 32%),
+    radial-gradient(circle at 90% 0%, rgba(0,107,255,.10), transparent 28%),
+    linear-gradient(180deg,#ffffff 0%,#eef4ff 100%)!important;
+}
+
+.app{
+  gap:18px!important;
+}
+
+/* TOPO */
+.topbar{
+  background:rgba(255,255,255,.88)!important;
+  backdrop-filter:blur(24px)!important;
+  -webkit-backdrop-filter:blur(24px)!important;
+  border:1px solid rgba(255,255,255,.95)!important;
+  box-shadow:var(--bk-shadow-soft)!important;
+}
+
+.brand-logo,
+.auth-logo{
+  background:linear-gradient(135deg,var(--bk-primary-dark),var(--bk-primary))!important;
+  border:1px solid rgba(255,255,255,.25)!important;
+  box-shadow:
+    0 18px 38px rgba(0,107,255,.28),
+    inset 0 1px 0 rgba(255,255,255,.22)!important;
+}
+
+.brand-title{
+  color:var(--bk-text)!important;
+}
+
+.brand-sub{
+  color:var(--bk-muted)!important;
+}
+
+/* CARDS */
 .section-card,
 .main-card,
-.user-card{
-  position:relative;
-  overflow:hidden;
+.user-card,
+#adminPanel,
+#monthlyGoalCard,
+.auth-card{
+  background:var(--bk-surface)!important;
+  border:1px solid rgba(0,107,255,.08)!important;
+  border-radius:var(--bk-radius-xl)!important;
+  box-shadow:var(--bk-shadow)!important;
+  overflow:hidden!important;
 }
 
-.section-card::before,
-.main-card::before{
-  content:"";
-  position:absolute;
-  inset:0;
-  background:linear-gradient(120deg,
-    rgba(255,255,255,0.6),
-    transparent 40%,
-    transparent 60%,
-    rgba(255,255,255,0.4)
-  );
-  opacity:.25;
-  pointer-events:none;
+/* CABEÇALHO DOS CARDS */
+.section-head{
+  background:linear-gradient(180deg,#ffffff,#f4f8ff)!important;
+  color:var(--bk-text)!important;
+  border-bottom:1px solid rgba(0,107,255,.08)!important;
+  font-size:18px!important;
+  font-weight:950!important;
+  letter-spacing:-.03em!important;
+  padding:20px 24px!important;
 }
 
-/* =========================================
-   💎 BORDA INTERNA GLASS (efeito Apple)
-========================================= */
-.section-card,
-.balance-card,
-.history-card{
+.section-body{
+  padding:22px 24px!important;
+}
+
+/* INPUTS */
+.field label{
+  color:var(--bk-muted)!important;
+  font-size:11px!important;
+  font-weight:950!important;
+  letter-spacing:.08em!important;
+}
+
+input,
+select,
+.outflow-type{
+  min-height:56px!important;
+  border-radius:18px!important;
+  border:1px solid rgba(0,107,255,.10)!important;
+  background:#ffffff!important;
+  color:var(--bk-text)!important;
+  font-size:15px!important;
+  font-weight:850!important;
+  box-shadow:0 7px 16px rgba(0,64,160,.035)!important;
+  transition:var(--bk-transition)!important;
+}
+
+input::placeholder{
+  color:#9aa6b8!important;
+}
+
+input:focus,
+select:focus,
+.outflow-type:focus{
+  border-color:rgba(0,107,255,.48)!important;
   box-shadow:
-    inset 0 1px 0 rgba(255,255,255,0.9),
-    inset 0 -1px 0 rgba(0,0,0,0.02),
-    0 18px 40px rgba(10,16,32,.08);
+    0 0 0 4px rgba(0,107,255,.12),
+    0 12px 26px rgba(0,64,160,.10)!important;
+  transform:translateY(-1px)!important;
 }
 
-/* =========================================
-   🔥 BALANCE CARD MAIS PREMIUM AINDA
-========================================= */
+/* SALDO PRINCIPAL — AZUL FORTE */
 .balance-card{
-  position:relative;
-  overflow:hidden;
+  position:relative!important;
+  overflow:hidden!important;
+  background:
+    radial-gradient(circle at 85% 10%, rgba(255,255,255,.24), transparent 28%),
+    linear-gradient(135deg,var(--bk-primary-deep),var(--bk-primary-dark) 45%,var(--bk-primary))!important;
+  border-radius:var(--bk-radius-xxl)!important;
+  border:1px solid rgba(255,255,255,.18)!important;
+  box-shadow:var(--bk-shadow-strong)!important;
 }
 
 .balance-card::after{
   content:"";
   position:absolute;
-  top:-40%;
-  right:-20%;
-  width:300px;
-  height:300px;
-  background:radial-gradient(circle, rgba(255,255,255,0.18), transparent 60%);
-  transform:rotate(25deg);
+  right:-80px;
+  top:-80px;
+  width:260px;
+  height:260px;
+  border-radius:50%;
+  background:rgba(255,255,255,.13);
+  pointer-events:none;
 }
 
-/* =========================================
-   🎯 BOTÕES COM INTERAÇÃO REAL
-========================================= */
+.balance-label{
+  opacity:.82!important;
+  font-size:11px!important;
+  letter-spacing:.12em!important;
+}
+
+.balance-value{
+  font-size:46px!important;
+  letter-spacing:-.065em!important;
+  font-feature-settings:"tnum";
+}
+
+/* MINI CARDS */
+.summary-box,
+.history-mini,
+.history-main-item,
+.history-platforms div,
+.compare-pill,
+.ranking-bar-card{
+  background:#ffffff!important;
+  border:1px solid rgba(0,107,255,.08)!important;
+  border-radius:22px!important;
+  box-shadow:var(--bk-shadow-soft)!important;
+}
+
+.summary-box-label{
+  color:var(--bk-muted)!important;
+}
+
+.summary-box-value{
+  color:var(--bk-text)!important;
+  font-feature-settings:"tnum";
+}
+
+/* BOTÕES */
 button{
-  transition: all .18s ease;
+  font-weight:950!important;
+  transition:var(--bk-transition)!important;
 }
 
 button:active{
-  transform:scale(0.96);
+  transform:scale(.97)!important;
 }
 
-/* botão principal com glow */
-.bank-action-primary{
-  position:relative;
-  overflow:hidden;
+.auth-submit,
+.bank-action-primary,
+.action-green{
+  background:linear-gradient(135deg,var(--bk-primary-dark),var(--bk-primary))!important;
+  color:#fff!important;
+  border:none!important;
+  box-shadow:
+    0 16px 34px rgba(0,107,255,.26),
+    inset 0 1px 0 rgba(255,255,255,.20)!important;
 }
 
-.bank-action-primary::after{
-  content:"";
-  position:absolute;
-  inset:0;
-  background:linear-gradient(120deg,
-    transparent,
-    rgba(255,255,255,.25),
-    transparent
-  );
-  opacity:0;
-  transition:.4s;
+.add-btn,
+.bank-action-light,
+.bank-action-light-blue,
+.modal-close,
+.balance-toggle,
+.menu-btn{
+  background:#ffffff!important;
+  color:var(--bk-text)!important;
+  border:1px solid rgba(0,107,255,.10)!important;
+  box-shadow:var(--bk-shadow-soft)!important;
 }
 
-.bank-action-primary:hover::after{
-  opacity:1;
+.add-btn:hover,
+.bank-action-light:hover,
+.bank-action-light-blue:hover,
+.menu-btn:hover{
+  background:var(--bk-primary-light)!important;
+  color:var(--bk-primary-dark)!important;
 }
 
-/* =========================================
-   🧠 INPUTS MAIS CAROS (efeito iOS)
-========================================= */
-input,
-select{
-  transition: all .15s ease;
-}
-
-input:focus,
-select:focus{
-  transform:scale(1.01);
-}
-
-/* =========================================
-   📊 HISTORY MAIS LIMPO E PREMIUM
-========================================= */
-.history-card{
-  backdrop-filter: blur(6px);
-}
-
-.history-main-item{
-  transition:.2s;
-}
-
-.history-main-item:hover{
-  transform:translateY(-2px);
-  box-shadow:0 14px 30px rgba(10,16,32,.08);
-}
-
-/* =========================================
-   🎯 STATUS MAIS SOFISTICADO
-========================================= */
-.history-status.positive{
-  background:linear-gradient(135deg,#e8f8ee,#d1fae5)!important;
-}
-
-.history-status.negative{
-  background:linear-gradient(135deg,#fee2e2,#fecaca)!important;
-}
-
-/* =========================================
-   🧩 MENU FLOATING MAIS PREMIUM
-========================================= */
-.floating-menu{
-  backdrop-filter:blur(26px)!important;
-}
-
-.menu-item{
-  transition:.2s;
-}
-
-.menu-item:active{
-  transform:scale(0.97);
-}
-
-/* =========================================
-   📱 BARRA INFERIOR NIVEL APP STORE
-========================================= */
+/* BARRA INFERIOR */
 .actions-section{
-  border:1px solid rgba(255,255,255,.9)!important;
+  border-radius:28px!important;
+}
+
+.bank-actions-grid{
+  display:flex!important;
+  gap:10px!important;
 }
 
 .bank-action-btn{
-  position:relative;
-  overflow:hidden;
+  min-height:56px!important;
+  border-radius:19px!important;
+  display:flex!important;
+  align-items:center!important;
+  justify-content:center!important;
 }
 
-/* efeito de luz ao clicar */
-.bank-action-btn::after{
-  content:"";
-  position:absolute;
-  inset:0;
-  background:radial-gradient(circle, rgba(255,255,255,.25), transparent 60%);
-  opacity:0;
-  transition:.3s;
+.bank-action-title{
+  font-size:14px!important;
+  font-weight:950!important;
 }
 
-.bank-action-btn:active::after{
-  opacity:1;
-}
-
-/* =========================================
-   💰 NUMEROS MAIS IMPACTANTES
-========================================= */
-.balance-value,
-.summary-box-value{
-  font-feature-settings: "tnum";
-  letter-spacing:-0.04em;
-}
-
-/* =========================================
-   🔥 ANIMAÇÃO DE ENTRADA SUAVE
-========================================= */
-.section-card,
-.balance-card,
+/* HISTÓRICO */
+.bank-history-card,
 .history-card{
-  animation:fadeInUp .4s ease;
+  background:#ffffff!important;
+  border:1px solid rgba(0,107,255,.08)!important;
+  border-radius:30px!important;
+  box-shadow:var(--bk-shadow)!important;
+  transition:var(--bk-transition)!important;
 }
 
-@keyframes fadeInUp{
-  from{
-    opacity:0;
-    transform:translateY(8px);
+.history-card:hover{
+  transform:translateY(-2px)!important;
+  box-shadow:0 24px 56px rgba(0,64,160,.14)!important;
+}
+
+.history-date{
+  color:var(--bk-muted)!important;
+}
+
+.history-operator{
+  color:var(--bk-text)!important;
+}
+
+.history-status.positive,
+.history-badge.positive,
+.modal-diff-badge.positive{
+  background:var(--bk-green-bg)!important;
+  color:var(--bk-green)!important;
+  border:1px solid rgba(18,161,80,.14)!important;
+}
+
+.history-status.negative,
+.history-badge.negative,
+.modal-diff-badge.negative{
+  background:var(--bk-red-bg)!important;
+  color:var(--bk-red)!important;
+  border:1px solid rgba(224,49,61,.14)!important;
+}
+
+.history-status.neutral,
+.history-badge.neutral,
+.modal-diff-badge.neutral{
+  background:#eef4ff!important;
+  color:var(--bk-primary-dark)!important;
+  border:1px solid rgba(0,107,255,.12)!important;
+}
+
+/* MODAL */
+.modal-backdrop{
+  background:rgba(0,31,90,.38)!important;
+  backdrop-filter:blur(14px)!important;
+  -webkit-backdrop-filter:blur(14px)!important;
+}
+
+.modal-card{
+  background:#ffffff!important;
+  border-radius:34px 34px 0 0!important;
+  box-shadow:0 -28px 80px rgba(0,64,160,.22)!important;
+}
+
+/* MENU */
+.floating-menu{
+  background:rgba(255,255,255,.92)!important;
+  backdrop-filter:blur(28px)!important;
+  -webkit-backdrop-filter:blur(28px)!important;
+  border:1px solid rgba(255,255,255,.96)!important;
+  box-shadow:0 24px 58px rgba(0,64,160,.18)!important;
+  border-radius:26px!important;
+}
+
+.menu-item{
+  background:#ffffff!important;
+  color:var(--bk-text)!important;
+  border:1px solid rgba(0,107,255,.08)!important;
+  border-radius:18px!important;
+}
+
+.menu-item:hover{
+  background:linear-gradient(135deg,var(--bk-primary-dark),var(--bk-primary))!important;
+  color:#fff!important;
+}
+
+/* RANKING / META */
+.ranking-bar-track,
+.goal-bar-track{
+  background:#e2ecff!important;
+}
+
+.ranking-bar-fill.positive,
+.goal-bar-fill.success{
+  background:linear-gradient(90deg,#0f9f50,#21c464)!important;
+}
+
+.ranking-bar-fill.negative,
+.goal-bar-fill.danger{
+  background:linear-gradient(90deg,#e0313d,#ff5b67)!important;
+}
+
+/* MOBILE */
+@media(max-width:600px){
+
+  body{
+    padding-bottom:96px!important;
   }
-  to{
-    opacity:1;
-    transform:translateY(0);
+
+  .app{
+    padding:12px!important;
+    gap:14px!important;
+  }
+
+  .topbar{
+    top:0!important;
+    padding:9px 12px!important;
+    border-radius:0 0 24px 24px!important;
+  }
+
+  .brand-logo{
+    width:36px!important;
+    height:36px!important;
+    min-width:36px!important;
+    border-radius:13px!important;
+    font-size:13px!important;
+  }
+
+  .brand-title{
+    font-size:15px!important;
+  }
+
+  .brand-sub{
+    font-size:10px!important;
+  }
+
+  .menu-btn{
+    width:38px!important;
+    height:38px!important;
+    border-radius:15px!important;
+  }
+
+  .section-card,
+  .main-card,
+  .user-card,
+  #adminPanel,
+  #monthlyGoalCard{
+    border-radius:26px!important;
+  }
+
+  .section-head{
+    padding:17px 18px!important;
+    font-size:16px!important;
+  }
+
+  .section-body{
+    padding:18px!important;
+  }
+
+  input,
+  select,
+  .outflow-type{
+    min-height:52px!important;
+    border-radius:17px!important;
+  }
+
+  .balance-card{
+    padding:22px!important;
+    border-radius:30px!important;
+  }
+
+  .balance-value{
+    font-size:34px!important;
+  }
+
+  .summary-grid{
+    grid-template-columns:1fr!important;
+  }
+
+  .dynamic-row{
+    grid-template-columns:1fr!important;
+  }
+
+  .actions-section{
+    position:fixed!important;
+    left:10px!important;
+    right:10px!important;
+    bottom:calc(8px + env(safe-area-inset-bottom))!important;
+    z-index:150!important;
+
+    background:rgba(255,255,255,.88)!important;
+    backdrop-filter:blur(24px)!important;
+    -webkit-backdrop-filter:blur(24px)!important;
+
+    border:1px solid rgba(255,255,255,.96)!important;
+    border-radius:26px!important;
+    padding:8px!important;
+    box-shadow:0 -16px 40px rgba(0,64,160,.18)!important;
+  }
+
+  .actions-head{
+    display:none!important;
+  }
+
+  .actions-body{
+    padding:0!important;
+  }
+
+  .bank-actions-grid{
+    gap:7px!important;
+  }
+
+  .bank-action-btn{
+    min-height:48px!important;
+    border-radius:17px!important;
+    padding:0 10px!important;
+  }
+
+  .bank-action-primary{
+    flex:1.75!important;
+  }
+
+  .bank-action-title{
+    font-size:12px!important;
+  }
+
+  .history-card,
+  .bank-history-card{
+    border-radius:27px!important;
+    padding:20px!important;
+  }
+
+  .history-operator{
+    font-size:23px!important;
+  }
+
+  .floating-menu{
+    top:58px!important;
+    right:10px!important;
+    width:calc(100vw - 20px)!important;
+    border-radius:24px!important;
   }
 }
 
