@@ -1,9 +1,9 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-  <title>Bank King PRO</title>
+ <meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+<title>Bank King</title>
 
   <style>
     :root{
@@ -2355,6 +2355,465 @@ button:active{
     right:10px!important;
     width:calc(100vw - 20px)!important;
     border-radius:24px!important;
+  }
+}
+
+/* =========================================================
+   iPHONE / SAFARI — BEST UX BANK KING
+   Cole no FINAL do <style>
+========================================================= */
+
+@media(max-width:600px){
+
+  :root{
+    --iphone-x:10px;
+    --iphone-card:24px;
+    --iphone-gap:12px;
+    --bottom-actions-height:68px;
+    --safari-bottom-space:76px;
+  }
+
+  html,
+  body{
+    width:100%!important;
+    max-width:100%!important;
+    min-height:100%!important;
+    overflow-x:hidden!important;
+    -webkit-text-size-adjust:100%!important;
+    touch-action:manipulation!important;
+  }
+
+  body{
+    padding-bottom:calc(
+      var(--bottom-actions-height) +
+      var(--safari-bottom-space) +
+      env(safe-area-inset-bottom)
+    )!important;
+    background-attachment:scroll!important;
+    overscroll-behavior-y:contain!important;
+  }
+
+  button,
+  input,
+  select,
+  textarea{
+    font-size:16px!important; /* evita zoom no iPhone */
+  }
+
+  button{
+    min-height:44px!important;
+    -webkit-user-select:none!important;
+    user-select:none!important;
+  }
+
+  .app{
+    width:100%!important;
+    max-width:100%!important;
+    padding:10px var(--iphone-x) 0!important;
+    gap:var(--iphone-gap)!important;
+    overflow-x:hidden!important;
+  }
+
+  /* HEADER */
+  .topbar{
+    top:0!important;
+    margin:0!important;
+    width:100%!important;
+    max-width:100%!important;
+    padding:
+      calc(7px + env(safe-area-inset-top))
+      12px
+      10px!important;
+    border-radius:0 0 22px 22px!important;
+  }
+
+  .brand{
+    min-width:0!important;
+    gap:10px!important;
+  }
+
+  .brand-logo{
+    width:36px!important;
+    height:36px!important;
+    min-width:36px!important;
+    border-radius:12px!important;
+    font-size:13px!important;
+  }
+
+  .brand-title{
+    font-size:17px!important;
+    line-height:1.05!important;
+    letter-spacing:-.04em!important;
+    white-space:nowrap!important;
+  }
+
+  .brand-sub{
+    font-size:11px!important;
+    line-height:1.1!important;
+    white-space:nowrap!important;
+  }
+
+  .menu-btn{
+    width:40px!important;
+    height:40px!important;
+    min-width:40px!important;
+    border-radius:15px!important;
+    font-size:20px!important;
+  }
+
+  /* CARDS */
+  .section-card,
+  .main-card,
+  .user-card,
+  #monthlyGoalCard,
+  #adminPanel{
+    width:100%!important;
+    max-width:100%!important;
+    border-radius:var(--iphone-card)!important;
+  }
+
+  .section-head{
+    padding:15px 17px!important;
+    font-size:18px!important;
+    line-height:1.08!important;
+  }
+
+  .section-body{
+    padding:16px 17px!important;
+  }
+
+  /* USER */
+  .user-card{
+    display:flex!important;
+    align-items:center!important;
+    justify-content:space-between!important;
+    gap:12px!important;
+    padding:17px!important;
+  }
+
+  .user-card > div{
+    min-width:0!important;
+    flex:1!important;
+  }
+
+  .user-name{
+    font-size:22px!important;
+    line-height:1.05!important;
+    letter-spacing:-.04em!important;
+  }
+
+  .user-email{
+    max-width:100%!important;
+    font-size:14px!important;
+    line-height:1.2!important;
+    overflow:hidden!important;
+    text-overflow:ellipsis!important;
+    white-space:nowrap!important;
+  }
+
+  #activeUserRole{
+    font-size:10px!important;
+    letter-spacing:.16em!important;
+  }
+
+  .logout-btn{
+    min-width:70px!important;
+    height:46px!important;
+    border-radius:16px!important;
+    font-size:14px!important;
+    flex-shrink:0!important;
+  }
+
+  /* META */
+  #monthlyGoalCard .section-body{
+    gap:10px!important;
+  }
+
+  .goal-bar-wrapper{
+    margin:8px 0 10px!important;
+  }
+
+  #monthlyGoalCard .goal-bar-track,
+  #goalBarFill{
+    height:12px!important;
+    min-height:12px!important;
+  }
+
+  .goal-status{
+    font-size:13px!important;
+    line-height:1.35!important;
+  }
+
+  .goal-status small{
+    display:block!important;
+    margin-top:5px!important;
+    font-size:12px!important;
+    line-height:1.3!important;
+  }
+
+  /* SALDO */
+  .balance-card{
+    padding:21px 19px!important;
+    border-radius:28px!important;
+    min-height:126px!important;
+  }
+
+  .balance-label{
+    font-size:11px!important;
+    letter-spacing:.17em!important;
+  }
+
+  .balance-value{
+    font-size:39px!important;
+    line-height:1!important;
+    white-space:nowrap!important;
+    letter-spacing:-.075em!important;
+    max-width:100%!important;
+    overflow:hidden!important;
+    text-overflow:clip!important;
+  }
+
+  /* RESUMOS */
+  .summary-grid{
+    grid-template-columns:1fr!important;
+    gap:11px!important;
+  }
+
+  .summary-box{
+    padding:17px!important;
+    min-height:98px!important;
+    border-radius:22px!important;
+  }
+
+  .summary-box-label{
+    font-size:10px!important;
+    letter-spacing:.13em!important;
+  }
+
+  .summary-box-value{
+    font-size:23px!important;
+    line-height:1.05!important;
+    word-break:break-word!important;
+  }
+
+  /* INPUTS */
+  .field{
+    gap:7px!important;
+  }
+
+  input,
+  select,
+  .outflow-type{
+    min-height:52px!important;
+    border-radius:17px!important;
+  }
+
+  input:focus,
+  select:focus{
+    transform:none!important; /* evita pulo quando abre teclado */
+  }
+
+  .dynamic-row{
+    grid-template-columns:1fr!important;
+    gap:10px!important;
+    padding:12px!important;
+    border-radius:20px!important;
+  }
+
+  .remove-row-btn,
+  .remove-btn,
+  .add-btn{
+    width:100%!important;
+    min-height:48px!important;
+    border-radius:17px!important;
+  }
+
+  /* BARRA FIXA — SAFARI */
+  .actions-section{
+    position:fixed!important;
+    left:8px!important;
+    right:8px!important;
+    bottom:calc(var(--safari-bottom-space) + env(safe-area-inset-bottom))!important;
+    z-index:9999!important;
+
+    padding:7px!important;
+    border-radius:24px!important;
+    min-height:var(--bottom-actions-height)!important;
+
+    background:rgba(255,255,255,.94)!important;
+    backdrop-filter:blur(24px)!important;
+    -webkit-backdrop-filter:blur(24px)!important;
+
+    box-shadow:
+      0 -18px 45px rgba(0,64,160,.20),
+      inset 0 1px 0 rgba(255,255,255,.95)!important;
+  }
+
+  .actions-head{
+    display:none!important;
+  }
+
+  .actions-body{
+    padding:0!important;
+  }
+
+  .bank-actions-grid{
+    display:grid!important;
+    grid-template-columns:1fr 1fr 1.68fr!important;
+    gap:7px!important;
+  }
+
+  .bank-action-btn{
+    min-height:50px!important;
+    border-radius:17px!important;
+    padding:0 8px!important;
+  }
+
+  .bank-action-title{
+    font-size:13px!important;
+    line-height:1!important;
+    white-space:nowrap!important;
+  }
+
+  .bank-action-sub{
+    display:none!important;
+  }
+
+  /* HISTÓRICO */
+  .history-card,
+  .bank-history-card{
+    padding:16px!important;
+    border-radius:24px!important;
+  }
+
+  .history-card-top{
+    gap:10px!important;
+    margin-bottom:13px!important;
+  }
+
+  .history-date{
+    font-size:12px!important;
+  }
+
+  .history-operator{
+    font-size:21px!important;
+    line-height:1.05!important;
+  }
+
+  .history-status{
+    font-size:12px!important;
+    padding:8px 11px!important;
+  }
+
+  .history-simple{
+    gap:10px!important;
+    align-items:flex-start!important;
+  }
+
+  .history-main strong{
+    font-size:18px!important;
+  }
+
+  .history-secondary strong{
+    font-size:14px!important;
+  }
+
+  /* MODAL */
+  .modal{
+    align-items:flex-end!important;
+  }
+
+  .modal-card{
+    width:100%!important;
+    max-height:84vh!important;
+    border-radius:28px 28px 0 0!important;
+    padding:17px!important;
+    padding-bottom:calc(18px + env(safe-area-inset-bottom))!important;
+  }
+
+  .modal-title{
+    font-size:20px!important;
+  }
+
+  .modal-grid{
+    grid-template-columns:1fr!important;
+    gap:10px!important;
+  }
+
+  /* MENU */
+  .floating-menu{
+    top:calc(58px + env(safe-area-inset-top))!important;
+    right:10px!important;
+    width:calc(100vw - 20px)!important;
+    border-radius:24px!important;
+    padding:9px!important;
+  }
+
+  .menu-item{
+    min-height:50px!important;
+    border-radius:16px!important;
+    font-size:14px!important;
+  }
+}
+
+/* iPhones menores */
+@media(max-width:390px){
+  .balance-value{
+    font-size:35px!important;
+  }
+
+  .user-name{
+    font-size:21px!important;
+  }
+
+  .section-head{
+    font-size:17px!important;
+  }
+}
+
+@media(max-width:360px){
+  .balance-value{
+    font-size:31px!important;
+  }
+
+  .brand-title{
+    font-size:15px!important;
+  }
+
+  .brand-sub{
+    font-size:10px!important;
+  }
+
+  .bank-action-title{
+    font-size:12px!important;
+  }
+}
+
+/* Quando instalado como app na tela inicial */
+@media(max-width:600px) and (display-mode:standalone){
+
+  body{
+    padding-bottom:calc(96px + env(safe-area-inset-bottom))!important;
+  }
+
+  .actions-section{
+    bottom:calc(9px + env(safe-area-inset-bottom))!important;
+  }
+}
+
+/* Quando o iPhone está em landscape */
+@media(max-width:900px) and (orientation:landscape){
+
+  body{
+    padding-bottom:110px!important;
+  }
+
+  .topbar{
+    position:relative!important;
+  }
+
+  .actions-section{
+    bottom:10px!important;
   }
 }
 
