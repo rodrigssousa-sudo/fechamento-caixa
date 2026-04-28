@@ -1992,12 +1992,13 @@ select:focus,
   }
 }
 
- /* =========================================================
-   SIDEBAR PREMIUM RESPONSIVA (MOBILE + DESKTOP)
+/* =========================================================
+   SIDEBAR BANK KING — DESKTOP CLEAN + MINI COLAPSÁVEL
 ========================================================= */
 
 :root{
-  --sidebar-width: 280px;
+  --sidebar-width: 248px;
+  --sidebar-mini-width: 76px;
 }
 
 /* ===== SIDEBAR ===== */
@@ -2007,30 +2008,41 @@ select:focus,
   left:0;
   width:var(--sidebar-width);
   height:100vh;
-  background:#ffffff;
   z-index:1000;
 
-  transform:translateX(-100%);
-  transition:transform .3s ease;
+  background:rgba(255,255,255,.96);
+  backdrop-filter:blur(18px);
+  -webkit-backdrop-filter:blur(18px);
 
-  box-shadow: 10px 0 30px rgba(0,0,0,.08);
-  border-right:1px solid rgba(0,0,0,.05);
+  border-right:1px solid rgba(0,107,255,.08);
+  box-shadow:12px 0 34px rgba(6,21,46,.08);
+
+  transform:translateX(-100%);
+  transition:
+    transform .28s ease,
+    width .24s ease,
+    box-shadow .24s ease;
+
+  overflow-y:auto;
+  overflow-x:hidden;
 }
 
-/* aberta */
+/* aberta mobile */
 #sideBar.open{
   transform:translateX(0);
 }
 
-/* ===== BACKDROP (mobile) ===== */
+/* ===== BACKDROP MOBILE ===== */
 #sidebarBackdrop{
   position:fixed;
   inset:0;
-  background:rgba(0,0,0,.35);
+  z-index:999;
+  background:rgba(6,21,46,.38);
+  backdrop-filter:blur(8px);
+  -webkit-backdrop-filter:blur(8px);
   opacity:0;
   pointer-events:none;
-  transition:.3s;
-  z-index:999;
+  transition:.24s ease;
 }
 
 #sidebarBackdrop.show{
@@ -2038,76 +2050,240 @@ select:focus,
   pointer-events:auto;
 }
 
-/* ===== CONTEÚDO PRINCIPAL (fallback automático) ===== */
-
-/* tenta aplicar automaticamente mesmo sem .app-content */
-body{
-  transition:margin-left .3s ease;
+/* ===== MENU INTERNO ===== */
+#sideBar .sidebar-top{
+  padding:18px 16px 14px;
+  display:flex;
+  align-items:center;
+  gap:10px;
 }
 
-/* ===== DESKTOP ===== */
-@media(min-width:1024px){
-
-  /* sidebar sempre aberta */
-  #sideBar{
-    transform:translateX(0);
-  }
-
-  /* remove fundo escuro */
-  #sidebarBackdrop{
-    display:none !important;
-  }
-
-  /* empurra TODO o app */
-  body{
-    margin-left:var(--sidebar-width);
-  }
+#sideBar .sidebar-logo{
+  width:42px;
+  height:42px;
+  min-width:42px;
+  border-radius:14px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:15px;
+  font-weight:950;
+  color:#fff;
+  background:linear-gradient(135deg,#003dcc,#006bff);
+  box-shadow:0 12px 24px rgba(0,107,255,.22);
 }
 
-/* ===== MOBILE AJUSTE ===== */
-@media(max-width:1023px){
-  body{
-    margin-left:0;
-  }
+#sideBar .sidebar-brand{
+  font-size:15px;
+  font-weight:950;
+  color:#06152e;
+  letter-spacing:-.04em;
+  line-height:1.05;
+  white-space:nowrap;
 }
 
-/* ===== MELHORIAS VISUAIS ===== */
-#sideBar{
-  backdrop-filter: blur(10px);
+#sideBar .sidebar-sub{
+  font-size:11px;
+  font-weight:800;
+  color:#64748b;
+  white-space:nowrap;
 }
 
+/* card usuário */
+#sideBar .sidebar-user{
+  margin:8px 14px 14px;
+  padding:12px;
+  border-radius:18px;
+  background:linear-gradient(180deg,#f8fbff,#eef4ff);
+  border:1px solid rgba(0,107,255,.08);
+  box-shadow:0 8px 20px rgba(0,64,160,.05);
+  overflow:hidden;
+}
+
+#sideBar .sidebar-user-name,
+#sideBar #sidebarUserName{
+  font-size:13px;
+  font-weight:950;
+  color:#06152e;
+  white-space:nowrap;
+  overflow:hidden;
+  text-overflow:ellipsis;
+}
+
+#sideBar .sidebar-user-email,
+#sideBar #sidebarUserEmail{
+  margin-top:2px;
+  font-size:11px;
+  font-weight:750;
+  color:#64748b;
+  white-space:nowrap;
+  overflow:hidden;
+  text-overflow:ellipsis;
+}
+
+/* itens */
 #sideBar .menu-item,
 #sideBar button{
-  transition:all .2s ease;
+  width:calc(100% - 28px);
+  min-height:46px;
+  margin:6px 14px;
+  padding:0 14px;
+  border-radius:16px;
+
+  display:flex;
+  align-items:center;
+  gap:10px;
+
+  background:#ffffff;
+  border:1px solid rgba(0,107,255,.07);
+  color:#06152e;
+
+  font-size:13px;
+  font-weight:900;
+  text-align:left;
+
+  box-shadow:0 7px 16px rgba(0,64,160,.035);
+  transition:
+    transform .18s ease,
+    background .18s ease,
+    color .18s ease,
+    box-shadow .18s ease;
 }
 
 #sideBar .menu-item:hover,
 #sideBar button:hover{
-  transform:translateX(4px);
-  opacity:.9;
+  transform:translateX(3px);
+  background:#eef4ff;
+  color:#003dcc;
+  box-shadow:0 10px 22px rgba(0,64,160,.07);
 }
 
-/* ===== SCROLL INTERNO SIDEBAR ===== */
-#sideBar{
-  overflow-y:auto;
+/* sair */
+#sideBar #sideLogoutBtn{
+  margin-top:18px;
+  background:#fff1f2;
+  color:#e0313d;
+  border-color:rgba(224,49,61,.14);
 }
 
-/* ===== SCROLLBAR CLEAN ===== */
+/* scrollbar */
 #sideBar::-webkit-scrollbar{
-  width:6px;
+  width:5px;
 }
 
 #sideBar::-webkit-scrollbar-thumb{
-  background:rgba(0,0,0,.1);
-  border-radius:10px;
+  background:rgba(0,107,255,.16);
+  border-radius:999px;
 }
 
- #menuToggle{
-  transition:.2s;
+/* ===== BOTÃO MENU ANTIGO ===== */
+#menuToggle{
+  transition:.2s ease;
 }
 
 #menuToggle:active{
   transform:scale(.92);
+}
+
+/* ===== CONTEÚDO ===== */
+body{
+  transition:margin-left .24s ease;
+}
+
+/* =========================================================
+   DESKTOP — SIDEBAR FIXA CLEAN
+========================================================= */
+
+@media(min-width:1024px){
+
+  #sideBar{
+    transform:translateX(0);
+  }
+
+  #sidebarBackdrop{
+    display:none!important;
+  }
+
+  body{
+    margin-left:var(--sidebar-width);
+  }
+
+  /* botão antigo pode continuar no header, mas não precisa ficar flutuando */
+  #menuToggle{
+    display:none!important;
+  }
+}
+
+/* =========================================================
+   DESKTOP MINI COLAPSÁVEL
+   Para ativar mini: adicione class="sidebar-mini" no body via JS
+========================================================= */
+
+@media(min-width:1024px){
+
+  body.sidebar-mini{
+    margin-left:var(--sidebar-mini-width);
+  }
+
+  body.sidebar-mini #sideBar{
+    width:var(--sidebar-mini-width);
+  }
+
+  body.sidebar-mini #sideBar .sidebar-top{
+    padding:16px 12px;
+    justify-content:center;
+  }
+
+  body.sidebar-mini #sideBar .sidebar-logo{
+    width:42px;
+    height:42px;
+    min-width:42px;
+  }
+
+  body.sidebar-mini #sideBar .sidebar-brand,
+  body.sidebar-mini #sideBar .sidebar-sub,
+  body.sidebar-mini #sideBar .sidebar-user,
+  body.sidebar-mini #sideBar .menu-item span,
+  body.sidebar-mini #sideBar button span{
+    display:none!important;
+  }
+
+  body.sidebar-mini #sideBar .menu-item,
+  body.sidebar-mini #sideBar button{
+    width:48px;
+    height:48px;
+    min-height:48px;
+    margin:8px auto;
+    padding:0;
+    justify-content:center;
+    border-radius:17px;
+    font-size:0;
+  }
+
+  body.sidebar-mini #sideBar .menu-item::first-letter,
+  body.sidebar-mini #sideBar button::first-letter{
+    font-size:18px;
+  }
+}
+
+/* =========================================================
+   MOBILE — SIDEBAR SOBREPOSTA
+========================================================= */
+
+@media(max-width:1023px){
+
+  body{
+    margin-left:0!important;
+  }
+
+  #sideBar{
+    width:min(82vw, 286px);
+    border-radius:0 26px 26px 0;
+  }
+
+  #menuToggle{
+    display:flex!important;
+  }
 }
  
 </style>
@@ -2150,17 +2326,17 @@ body{
     </div>
 
     <!-- MENU -->
-    <div class="menu-item" id="sideHomeBtn">🏠 Início</div>
-    <div class="menu-item" id="sideHistoryBtn">📊 Histórico</div>
-    <div class="menu-item" id="sideGoalBtn">🎯 Meta mensal</div>
-    <div class="menu-item" id="sideRankingBtn">📈 Ranking</div>
-    <div class="menu-item" id="sidePdfBtn">📄 Relatórios PDF</div>
-    <div class="menu-item" id="sideAdminBtn">⚙️ Admin</div>
+    <div class="menu-item" id="sideHomeBtn">Início</div>
+    <div class="menu-item" id="sideHistoryBtn">Histórico</div>
+    <div class="menu-item" id="sideGoalBtn">Meta mensal</div>
+    <div class="menu-item" id="sideRankingBtn">Ranking</div>
+    <div class="menu-item" id="sidePdfBtn">Relatórios PDF</div>
+    <div class="menu-item" id="sideAdminBtn">Admin</div>
 
     <!-- SAIR -->
     <div style="margin-top:30px">
       <div class="menu-item" id="sideLogoutBtn" style="color:#be2633;">
-        🚪 Sair
+         Sair
       </div>
     </div>
 
@@ -2232,36 +2408,6 @@ body{
 </section>
 
 <div id="appShell" class="app-shell hidden">
-
-  <!-- ✅ BOTÃO MENU -->
-
-  <button id="menuToggle" style="
-
-    position:fixed;
-
-    top:16px;
-
-    left:16px;
-
-    z-index:1100;
-
-    background:#0b1f4d;
-
-    color:#fff;
-
-    border:none;
-
-    border-radius:10px;
-
-    padding:10px 12px;
-
-    font-weight:900;
-
-  ">
-
-  ☰
-
-  </button>
 
   <!-- ✅ SIDEBAR -->
 
