@@ -1934,6 +1934,81 @@ select:focus{
     height:46px!important;
   }
 }
+
+/* =========================================================
+   TABS RANKING — ESTILO BANCO REAL
+========================================================= */
+
+.ranking-tabs{
+  display:flex;
+  gap:8px;
+  padding:6px;
+  border-radius:20px;
+
+  background:#eef4ff;
+  border:1px solid rgba(0,107,255,.08);
+
+  width:max-content;
+}
+
+/* botão base */
+.ranking-tab{
+  min-height:44px;
+  padding:0 16px;
+
+  border-radius:14px;
+  border:none;
+
+  background:transparent;
+  color:#64748b;
+
+  font-size:14px;
+  font-weight:900;
+
+  display:flex;
+  align-items:center;
+  justify-content:center;
+
+  cursor:pointer;
+  transition:all .18s ease;
+}
+
+/* ativo */
+.ranking-tab.active{
+  background:#ffffff;
+  color:#003dcc;
+
+  box-shadow:
+    0 8px 18px rgba(0,64,160,.08),
+    inset 0 1px 0 rgba(255,255,255,.95);
+}
+
+/* hover */
+.ranking-tab:hover{
+  color:#003dcc;
+}
+
+/* efeito leve de pressionar */
+.ranking-tab:active{
+  transform:scale(.96);
+}
+
+/* MOBILE */
+@media(max-width:600px){
+
+  .ranking-tabs{
+    width:100%;
+    display:grid;
+    grid-template-columns:1fr 1fr 1fr 1fr;
+    gap:6px;
+  }
+
+  .ranking-tab{
+    min-height:42px;
+    font-size:13px;
+    padding:0;
+  }
+} 
  
 </style>
 
