@@ -1413,7 +1413,30 @@ select:focus,
   }
 }
 
+.actions-section{
+  opacity:0;
+  transform:translateY(30px) scale(.96);
+  pointer-events:none;
+  transition:.28s cubic-bezier(.22,.61,.36,1);
+}
 
+.actions-section.active{
+  opacity:1;
+  transform:translateY(0) scale(1);
+  pointer-events:auto;
+}
+
+.actions-section.hidden-scroll{
+  transform:translateY(80px);
+  opacity:0;
+}
+
+ /* 🔥 quando teclado abre */
+.actions-section.keyboard-open{
+  transform:translateY(120px)!important;
+  opacity:0!important;
+  pointer-events:none!important;
+}
   
 </style>
 
@@ -3437,6 +3460,64 @@ function buildPremiumBankReceiptPdf(startDate, endDate) {
 `;
 }
 
+   let lastScrollY = 0;
+
+function handleScrollActionsBar() {
+  const bar = document.querySelector(".actions-section");
+  if (!bar || !bar.classList.contains("active")) return;
+
+  const currentScroll = window.scrollY;
+
+  if (currentScroll > lastScrollY + 10) {
+    // descendo
+    bar.classList.add("hidden-scroll");
+  } else if (currentScroll < lastScrollY - 10) {
+    // subindo
+    bar.classList.remove("hidden-scroll");
+  }
+
+  lastScrollY = currentScroll;
+}
+   // 👇 COLOCA AQUI (fora do DOMContentLoaded)
+let ticking = false;
+   
+window.addEventListener("scroll", () => {
+  if (!ticking) {
+    window.requestAnimationFrame(() => {
+      handleScrollActionsBar();
+      ticking = false;
+    });
+    ticking = true;
+  }
+});
+
+   function handleKeyboard(open) {
+  const bar = document.querySelector(".actions-section");
+  if (!bar) return;
+
+  if (open) {
+    bar.classList.add("keyboard-open");
+  } else {
+    bar.classList.remove("keyboard-open");
+  }
+}
+
+// 👇 detecta foco em inputs
+const isIOS = /iPhone|iPad|iPod/i.test(navigator.userAgent);
+
+if (isIOS) {
+
+  document.addEventListener("focusin", (e) => {
+    if (e.target.matches("input, textarea, select")) {
+      handleKeyboard(true);
+    }
+  });
+
+  document.addEventListener("focusout", () => {
+    setTimeout(() => handleKeyboard(false), 150);
+  });
+}
+
 async function createInternalUser() {
   const allowed = await requireAdmin();
   if (!allowed) return;
@@ -4038,6 +4119,11 @@ document.addEventListener("DOMContentLoaded", () => {
       enableSmartMoneyInput(id);
     }
   });
+
+  // 👇 ADICIONA AQUI
+  window.addEventListener("scroll", handleScrollActionsBar);
+
+});
 
   const adminBtn = document.getElementById("adminCreateUserBtn");
   if (adminBtn && typeof createInternalUser === "function") {
