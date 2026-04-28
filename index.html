@@ -2286,6 +2286,21 @@ select:focus{
   padding-top:0!important;
   padding-bottom:0!important;
 }
+
+ .history-body{
+  max-height:1200px;
+  opacity:1;
+  overflow:hidden;
+  transition:max-height .28s ease, opacity .22s ease, padding .22s ease;
+}
+
+.history-hidden .history-body{
+  max-height:0!important;
+  opacity:0!important;
+  padding-top:0!important;
+  padding-bottom:0!important;
+  overflow:hidden!important;
+}
  
 </style>
 
@@ -2496,7 +2511,7 @@ select:focus{
   </div>
 </section>
 
-    <section id="historySection" class="section-card history-hidden">
+   <section id="historySection" class="section-card history-hidden">
   <div class="section-head">
     <span>Histórico</span>
 
@@ -4689,7 +4704,10 @@ const historySection = byId("historySection");
 const historyText = byId("historyEyeText");
 
 function setHistoryVisible(show) {
-  if (!historySection) return;
+  if (!historySection) {
+    console.log("historySection não encontrado");
+    return;
+  }
 
   historySection.classList.toggle("history-hidden", !show);
 
@@ -4701,17 +4719,6 @@ function setHistoryVisible(show) {
     renderHistory();
   }
 }
-
-byId("openDetailedHistoryBtn")?.addEventListener("click", () => {
-  setHistoryVisible(true);
-
-  setTimeout(() => {
-    byId("historyList")?.scrollIntoView({
-      behavior: "smooth",
-      block: "start"
-    });
-  }, 100);
-});
 
 byId("toggleHistoryBtn")?.addEventListener("click", () => {
   const isHidden = historySection?.classList.contains("history-hidden");
