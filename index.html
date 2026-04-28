@@ -4576,19 +4576,71 @@ byId("confirmExportPdf")?.addEventListener("click", async () => {
     printBtn.style.transform = "translateY(0)";
   };
 
+setTimeout(() => {
+  w.focus();
+
+  /* ===== BOTÃO PRINT ===== */
+  const printBtn = w.document.createElement("button");
+  printBtn.innerText = "Salvar / Exportar PDF";
+
+  printBtn.style.cssText = `
+    position:fixed;
+    right:20px;
+    bottom:20px;
+    z-index:999999;
+    padding:14px 20px;
+    border-radius:18px;
+    border:none;
+    background:linear-gradient(135deg,#0b1f4d,#163a8a);
+    color:#fff;
+    font-weight:900;
+    font-size:14px;
+    box-shadow:0 12px 30px rgba(0,0,0,.25);
+    cursor:pointer;
+  `;
+
   printBtn.onclick = () => {
+    // 🔥 esconde botões antes de imprimir
     printBtn.style.display = "none";
+    backBtn.style.display = "none";
+
     w.print();
 
-    setTimeout(() => {
-      printBtn.style.display = "block";
-    }, 1200);
+    // 🔥 volta depois
+   setTimeout(() => {
+  if (printBtn) printBtn.style.display = "block";
+  if (backBtn) backBtn.style.display = "block";
+}, 1200);
+
+  /* ===== BOTÃO VOLTAR ===== */
+  const backBtn = w.document.createElement("button");
+  backBtn.innerText = "← Voltar";
+
+  backBtn.style.cssText = `
+    position:fixed;
+    left:20px;
+    bottom:20px;
+    z-index:999999;
+    padding:14px 20px;
+    border-radius:18px;
+    border:none;
+    background:#ffffff;
+    color:#0b1f4d;
+    font-weight:900;
+    font-size:14px;
+    box-shadow:0 12px 30px rgba(0,0,0,.15);
+    cursor:pointer;
+  `;
+
+  backBtn.onclick = () => {
+    w.close();
   };
 
-  // 🔥 garante que fica no topo do body
+  /* ===== ADICIONA NA TELA ===== */
   w.document.body.appendChild(printBtn);
+  w.document.body.appendChild(backBtn);
 
-  // 🔥 força posição correta (corrige bug iPhone / Safari)
+  /* ===== CORREÇÃO SCROLL ===== */
   w.scrollTo(0, 0);
 
 }, 1000);
