@@ -1629,7 +1629,76 @@ select:focus{
     font-size:36px!important;
   }
 }
-  
+/* =========================================================
+   HOME PREMIUM — HIERARQUIA FINTECH
+========================================================= */
+
+.balance-card{
+  min-height:170px!important;
+  display:flex!important;
+  align-items:flex-end!important;
+}
+
+.balance-label{
+  margin-bottom:8px!important;
+}
+
+.balance-value{
+  font-size:52px!important;
+}
+
+.summary-grid{
+  grid-template-columns:repeat(4,1fr)!important;
+}
+
+.summary-box{
+  min-height:92px!important;
+  padding:16px!important;
+}
+
+.summary-box-label{
+  font-size:10px!important;
+}
+
+.summary-box-value{
+  font-size:21px!important;
+}
+
+.user-card{
+  padding:14px 16px!important;
+}
+
+@media(max-width:600px){
+
+  .balance-card{
+    min-height:128px!important;
+    padding:20px!important;
+  }
+
+  .balance-value{
+    font-size:38px!important;
+  }
+
+  .summary-grid{
+    grid-template-columns:1fr 1fr!important;
+    gap:10px!important;
+  }
+
+  .summary-box{
+    min-height:86px!important;
+    padding:14px!important;
+  }
+
+  .summary-box-label{
+    font-size:9px!important;
+    line-height:1.15!important;
+  }
+
+  .summary-box-value{
+    font-size:18px!important;
+  }
+}
+ 
 </style>
 
 <!-- PWA -->
