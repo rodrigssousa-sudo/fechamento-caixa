@@ -4870,9 +4870,20 @@ bindSidebarBtn("sideAdminBtn", () => {
   byId("adminOpenBtn")?.click();
 });
 
-bindSidebarBtn("sideLogoutBtn", () => {
+bindSidebarBtn("sideLogoutBtn", async () => {
   closeBkSidebar();
-  byId("logoutBtn")?.click();
+
+  try {
+    if (historyUnsubscribe) historyUnsubscribe();
+
+    await signOut(auth);
+
+    showToast("Saiu com sucesso.", "success");
+
+  } catch (error) {
+    console.error("Erro ao sair:", error);
+    showToast("Erro ao sair.", "error");
+  }
 });
 /* compatibilidade com botões antigos */
 function closeSidebarMenu() {
