@@ -5044,23 +5044,16 @@ async function recalculateAllHistory() {
   if (!allowed) return false;
 
   try {
-    console.log("🔄 Recalculando histórico completo...");
-
     const q = query(
       collection(db, "history"),
       orderBy("submittedAt", "asc")
     );
 
     const snapshot = await getDocs(q);
-
-    if (snapshot.empty) {
-      console.log("Nenhum histórico encontrado.");
-      return true;
-    }
+    if (snapshot.empty) return true;
 
     const docs = snapshot.docs;
     let previousSaldoTotal = null;
-    let erros = 0;
 
     for (let i = 0; i < docs.length; i++) {
       const item = docs[i];
@@ -5069,47 +5062,31 @@ async function recalculateAllHistory() {
         const data = item.data();
         const turno = data.turno || {};
 
-        if (typeof calcularSaldoLiquido !== "function") {
-          throw new Error("Função calcularSaldoLiquido não existe.");
-        }
-
         const saldoLiquido = Number(calcularSaldoLiquido(turno)) || 0;
         const currentSaldoTotal = saldoLiquido;
 
-        let diff = 0;
-
-        if (previousSaldoTotal !== null) {
-          diff = currentSaldoTotal - previousSaldoTotal;
-        }
+        const diff =
+          previousSaldoTotal === null
+            ? 0
+            : currentSaldoTotal - previousSaldoTotal;
 
         await updateDoc(doc(db, "history", item.id), {
           "turno.saldoLiquido": saldoLiquido,
-          currentSaldoTotal: currentSaldoTotal,
-          diff: diff,
+          currentSaldoTotal,
+          diff,
           recalculatedAt: serverTimestamp()
         });
 
         previousSaldoTotal = currentSaldoTotal;
-
-      } catch (docError) {
-        erros++;
-
-        console.error("❌ Erro no histórico índice:", i);
-        console.error("ID do documento:", item.id);
-        console.error("Erro:", docError);
-
-        // continua recalculando os próximos
+      } catch (e) {
+        console.warn("Histórico ignorado no recálculo:", item.id);
         continue;
       }
     }
 
-    console.log("✅ Recálculo finalizado.");
-    console.log("Erros encontrados:", erros);
-
     return true;
-
-  } catch (error) {
-    console.error("Erro geral ao recalcular histórico:", error);
+  } catch (e) {
+    console.warn("Recálculo ignorado:", e);
     return false;
   }
 }
@@ -5888,15 +5865,14 @@ document.addEventListener("DOMContentLoaded", () => {
 byId("sideHomeBtn")?.addEventListener("click", async () => {
   const loader = byId("appReloadLoader");
 
-  try {
-    loader?.classList.add("active");
+  loader?.classList.add("active");
 
+  try {
     if (typeof recalculateAllHistory === "function") {
       await recalculateAllHistory();
     }
-
   } catch (e) {
-    console.error("Erro ao reiniciar:", e);
+    console.warn("Falha silenciosa ao recalcular:", e);
   }
 
   location.reload();
