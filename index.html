@@ -2371,6 +2371,62 @@ select:focus,
   backdrop-filter:blur(14px)!important;
   -webkit-backdrop-filter:blur(14px)!important;
 }
+
+ .app-reload-loader{
+  position:fixed;
+  inset:0;
+  z-index:99999;
+  display:none;
+  align-items:center;
+  justify-content:center;
+  background:rgba(3,12,30,.62);
+  backdrop-filter:blur(14px);
+}
+
+.app-reload-loader.active{
+  display:flex;
+}
+
+.reload-card{
+  width:min(320px, 88vw);
+  padding:28px 22px;
+  border-radius:26px;
+  background:linear-gradient(180deg, rgba(255,255,255,.96), rgba(240,246,255,.94));
+  box-shadow:0 30px 80px rgba(0,0,0,.28);
+  border:1px solid rgba(255,255,255,.65);
+  text-align:center;
+  color:#07152f;
+}
+
+.reload-spinner{
+  width:48px;
+  height:48px;
+  margin:0 auto 16px;
+  border-radius:50%;
+  border:4px solid rgba(0,107,255,.16);
+  border-top-color:#006BFF;
+  animation:reloadSpin .8s linear infinite;
+}
+
+.reload-card strong{
+  display:block;
+  font-size:17px;
+  font-weight:900;
+  margin-bottom:6px;
+}
+
+.reload-card span{
+  display:block;
+  font-size:13px;
+  color:#64748b;
+  font-weight:700;
+}
+
+@keyframes reloadSpin{
+  to{
+    transform:rotate(360deg);
+  }
+}
  
 </style>
 
@@ -5762,14 +5818,19 @@ document.addEventListener("DOMContentLoaded", () => {
 // 🔥 BOTÃO INÍCIO = RECALCULAR + RECARREGAR
 
 byId("sideHomeBtn")?.addEventListener("click", async () => {
+  const loader = byId("appReloadLoader");
+
   try {
+    loader?.classList.add("active");
+
     if (typeof recalculateAllHistory === "function") {
       await recalculateAllHistory();
     }
+
     location.reload();
   } catch (e) {
     console.error("Erro ao reiniciar:", e);
-    location.reload(); // fallback
+    location.reload();
   }
 });
 
@@ -5825,6 +5886,15 @@ if ("serviceWorker" in navigator) {
   });
 }
 </script>
+
+<!-- 🔥 LOADER -->
+<div id="appReloadLoader" class="app-reload-loader">
+  <div class="reload-card">
+    <div class="reload-spinner"></div>
+    <strong>Atualizando sistema</strong>
+    <span>Recalculando histórico...</span>
+  </div>
+</div>
 
 </body>
 </html>
