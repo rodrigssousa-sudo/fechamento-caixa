@@ -1785,6 +1785,71 @@ select:focus,
 }
 
  /* =========================================================
+   SIDEBAR — TRANSIÇÃO PREMIUM TIPO BANCO
+========================================================= */
+
+#sideBar{
+  transform:translateX(-105%) scale(.98);
+  opacity:.92;
+  transition:
+    transform .34s cubic-bezier(.22,.61,.36,1),
+    opacity .24s ease,
+    width .24s ease,
+    box-shadow .24s ease;
+  will-change:transform, opacity;
+}
+
+#sideBar.open{
+  transform:translateX(0) scale(1);
+  opacity:1;
+}
+
+/* overlay suave, sem tela preta */
+#sidebarBackdrop{
+  position:fixed;
+  inset:0;
+  z-index:999;
+
+  background:rgba(6,21,46,.14)!important;
+  backdrop-filter:blur(10px) saturate(140%);
+  -webkit-backdrop-filter:blur(10px) saturate(140%);
+
+  opacity:0;
+  pointer-events:none;
+
+  transition:
+    opacity .28s ease,
+    backdrop-filter .28s ease;
+}
+
+#sidebarBackdrop.show{
+  opacity:1;
+  pointer-events:auto;
+}
+
+/* mobile: aparência mais app */
+@media(max-width:1023px){
+  #sideBar{
+    border-radius:0 28px 28px 0;
+    box-shadow:
+      18px 0 55px rgba(6,21,46,.18),
+      inset -1px 0 0 rgba(255,255,255,.7);
+  }
+}
+
+/* desktop sem overlay */
+@media(min-width:1024px){
+  #sidebarBackdrop{
+    display:none!important;
+  }
+
+  #sideBar{
+    opacity:1;
+    transform:translateX(0) scale(1);
+  }
+}
+
+ /* =========================================================
    SIDEBAR PREMIUM — BANK KING
 ========================================================= */
 
