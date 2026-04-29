@@ -2263,6 +2263,206 @@ select:focus,
     padding-left:0!important;
   }
 }
+
+ /* =========================================================
+   META MENSAL — MODAL PREMIUM DASHBOARD
+========================================================= */
+
+#goalModal .modal-card,
+#monthlyGoalCard{
+  max-width:1080px!important;
+  border-radius:34px!important;
+  padding:0!important;
+  overflow:hidden!important;
+
+  background:
+    radial-gradient(circle at 90% 0%, rgba(0,107,255,.10), transparent 32%),
+    radial-gradient(circle at 20% 100%, rgba(18,161,80,.08), transparent 28%),
+    linear-gradient(180deg,#ffffff,#f8fbff)!important;
+
+  border:1px solid rgba(255,255,255,.96)!important;
+  box-shadow:
+    0 34px 110px rgba(6,21,46,.22),
+    inset 0 1px 0 rgba(255,255,255,.95)!important;
+}
+
+/* Cabeçalho */
+#goalModal .modal-head,
+#monthlyGoalCard .section-head{
+  margin:0!important;
+  padding:34px 40px 26px!important;
+  border-bottom:1px solid rgba(0,107,255,.08)!important;
+
+  background:rgba(255,255,255,.76)!important;
+  backdrop-filter:blur(18px)!important;
+  -webkit-backdrop-filter:blur(18px)!important;
+}
+
+#goalModal .modal-title,
+#monthlyGoalCard .section-head{
+  font-size:34px!important;
+  line-height:1!important;
+  font-weight:950!important;
+  letter-spacing:-.07em!important;
+  color:#06152e!important;
+}
+
+#goalModal .modal-head::after{
+  content:"Acompanhe seu progresso este mês";
+  position:absolute;
+  left:40px;
+  top:76px;
+  color:#64748b;
+  font-size:15px;
+  font-weight:850;
+}
+
+/* Botão fechar */
+#closeGoalModal{
+  height:58px!important;
+  padding:0 28px!important;
+  border-radius:999px!important;
+
+  background:#f4f8ff!important;
+  color:#003dcc!important;
+  border:1px solid rgba(0,107,255,.16)!important;
+
+  font-size:15px!important;
+  font-weight:950!important;
+  box-shadow:0 14px 30px rgba(0,64,160,.08)!important;
+}
+
+/* Corpo */
+#goalModal .modal-card > div:last-child,
+#monthlyGoalCard .section-body{
+  padding:36px 40px 40px!important;
+  display:grid!important;
+  gap:24px!important;
+}
+
+/* Barra */
+.goal-bar-wrapper{
+  margin:0!important;
+}
+
+.goal-bar-track{
+  height:22px!important;
+  border-radius:999px!important;
+  background:#dce9ff!important;
+  box-shadow:inset 0 2px 7px rgba(0,64,160,.10)!important;
+  overflow:hidden!important;
+}
+
+.goal-bar-fill{
+  min-width:22px!important;
+  border-radius:999px!important;
+  background:linear-gradient(90deg,#12A150,#22d477)!important;
+  box-shadow:
+    0 0 22px rgba(18,161,80,.35),
+    inset 0 1px 0 rgba(255,255,255,.35)!important;
+}
+
+/* Card de dados */
+.goal-status{
+  position:relative!important;
+  margin:0!important;
+  padding:28px 32px!important;
+  border-radius:28px!important;
+
+  background:rgba(255,255,255,.88)!important;
+  border:1px solid rgba(0,107,255,.10)!important;
+  box-shadow:
+    0 18px 42px rgba(0,64,160,.08),
+    inset 0 1px 0 rgba(255,255,255,.9)!important;
+
+  color:#64748b!important;
+  font-size:18px!important;
+  line-height:1.55!important;
+  font-weight:900!important;
+}
+
+.goal-status strong{
+  display:block!important;
+  margin-bottom:4px!important;
+  color:#06152e!important;
+  font-size:26px!important;
+  line-height:1.15!important;
+  letter-spacing:-.05em!important;
+  font-weight:950!important;
+}
+
+.goal-status small{
+  display:block!important;
+  margin-top:16px!important;
+  padding-top:16px!important;
+  border-top:1px solid rgba(0,107,255,.08)!important;
+
+  color:#64748b!important;
+  font-size:16px!important;
+  font-weight:850!important;
+}
+
+/* Backdrop mais premium */
+#goalModal .modal-backdrop{
+  background:rgba(6,21,46,.18)!important;
+  backdrop-filter:blur(22px) saturate(145%)!important;
+  -webkit-backdrop-filter:blur(22px) saturate(145%)!important;
+}
+
+/* Mobile */
+@media(max-width:600px){
+
+  #goalModal .modal-card,
+  #monthlyGoalCard{
+    border-radius:30px 30px 0 0!important;
+  }
+
+  #goalModal .modal-head,
+  #monthlyGoalCard .section-head{
+    padding:26px 22px 24px!important;
+  }
+
+  #goalModal .modal-title,
+  #monthlyGoalCard .section-head{
+    font-size:28px!important;
+  }
+
+  #goalModal .modal-head::after{
+    left:22px;
+    top:64px;
+    font-size:13px;
+  }
+
+  #closeGoalModal{
+    height:48px!important;
+    padding:0 20px!important;
+    font-size:14px!important;
+  }
+
+  #goalModal .modal-card > div:last-child,
+  #monthlyGoalCard .section-body{
+    padding:28px 22px 30px!important;
+    gap:20px!important;
+  }
+
+  .goal-bar-track{
+    height:18px!important;
+  }
+
+  .goal-status{
+    padding:22px!important;
+    border-radius:24px!important;
+    font-size:16px!important;
+  }
+
+  .goal-status strong{
+    font-size:22px!important;
+  }
+
+  .goal-status small{
+    font-size:14px!important;
+  }
+}
  
 </style>
 
