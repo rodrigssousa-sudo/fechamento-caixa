@@ -4750,6 +4750,17 @@ bkSidebarBackdrop?.addEventListener("click", closeBkSidebar);
    SIDEBAR ACTIONS — CLEAN + SEM ERRO
 ========================================================= */
 
+/* ===== FECHAR META (CORRETO) ===== */
+function closeGoal() {
+  byId("goalModal")?.classList.add("hidden");
+}
+
+/* botão fechar */
+byId("closeGoalModal")?.addEventListener("click", closeGoal);
+
+/* clicar fora (backdrop) */
+byId("goalModalBackdrop")?.addEventListener("click", closeGoal);
+  
 /* ===== PERMISSÕES ===== */
 function hasPermission(feature) {
   const role = currentUserData?.role;
