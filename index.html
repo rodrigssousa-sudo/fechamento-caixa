@@ -5827,11 +5827,12 @@ byId("sideHomeBtn")?.addEventListener("click", async () => {
       await recalculateAllHistory();
     }
 
-    location.reload();
   } catch (e) {
-    console.error("Erro ao reiniciar:", e);
-    location.reload();
+    console.error("Erro no recálculo:", e);
   }
+
+  // 🔥 SEMPRE RECARREGA
+  location.reload();
 });
 
   document.querySelectorAll("[data-add-pending]").forEach((btn) => {
