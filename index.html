@@ -5039,15 +5039,64 @@ async function createInternalUser() {
   }
 }
 
-   async function recalculateAllHistory() {
+ async function recalculateAllHistory() {
   const allowed = await requireAdmin();
   if (!allowed) return false;
 
-  console.log("Recalcular histórico chamado.");
+  try {
+    console.log("🔄 Recalculando histórico completo...");
 
-  // Por enquanto ainda não recalcula nada.
-  // Apenas libera o fluxo do botão Início.
-  return true;
+    const q = query(
+      collection(db, "history"),
+      orderBy("submittedAt", "asc")
+    );
+
+    const snapshot = await getDocs(q);
+
+    if (snapshot.empty) {
+      console.log("Nenhum histórico encontrado.");
+      return true;
+    }
+
+    const docs = snapshot.docs;
+
+    let previousSaldoTotal = null;
+
+    for (const item of docs) {
+      const data = item.data();
+      const turno = data.turno || {};
+
+      // recalcula saldo líquido usando tua função principal
+      const saldoLiquido = calcularSaldoLiquido(turno);
+
+      // saldo total atual
+      const currentSaldoTotal = saldoLiquido;
+
+      // diferença com fechamento anterior
+      let diff = 0;
+
+      if (previousSaldoTotal !== null) {
+        diff = currentSaldoTotal - previousSaldoTotal;
+      }
+
+      await updateDoc(doc(db, "history", item.id), {
+        "turno.saldoLiquido": saldoLiquido,
+        currentSaldoTotal: currentSaldoTotal,
+        diff: diff,
+        recalculatedAt: serverTimestamp()
+      });
+
+      previousSaldoTotal = currentSaldoTotal;
+    }
+
+    console.log("✅ Histórico recalculado com sucesso.");
+    return true;
+
+  } catch (error) {
+    console.error("Erro ao recalcular histórico:", error);
+    alert("Erro ao recalcular histórico.");
+    return false;
+  }
 }
 
     function initAuthEvents() {
