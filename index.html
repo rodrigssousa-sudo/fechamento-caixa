@@ -5039,7 +5039,7 @@ async function createInternalUser() {
   }
 }
 
- async function recalculateAllHistory() {
+async function recalculateAllHistory() {
   const allowed = await requireAdmin();
   if (!allowed) return false;
 
@@ -5059,42 +5059,57 @@ async function createInternalUser() {
     }
 
     const docs = snapshot.docs;
-
     let previousSaldoTotal = null;
+    let erros = 0;
 
-    for (const item of docs) {
-      const data = item.data();
-      const turno = data.turno || {};
+    for (let i = 0; i < docs.length; i++) {
+      const item = docs[i];
 
-      // recalcula saldo líquido usando tua função principal
-      const saldoLiquido = calcularSaldoLiquido(turno);
+      try {
+        const data = item.data();
+        const turno = data.turno || {};
 
-      // saldo total atual
-      const currentSaldoTotal = saldoLiquido;
+        if (typeof calcularSaldoLiquido !== "function") {
+          throw new Error("Função calcularSaldoLiquido não existe.");
+        }
 
-      // diferença com fechamento anterior
-      let diff = 0;
+        const saldoLiquido = Number(calcularSaldoLiquido(turno)) || 0;
+        const currentSaldoTotal = saldoLiquido;
 
-      if (previousSaldoTotal !== null) {
-        diff = currentSaldoTotal - previousSaldoTotal;
+        let diff = 0;
+
+        if (previousSaldoTotal !== null) {
+          diff = currentSaldoTotal - previousSaldoTotal;
+        }
+
+        await updateDoc(doc(db, "history", item.id), {
+          "turno.saldoLiquido": saldoLiquido,
+          currentSaldoTotal: currentSaldoTotal,
+          diff: diff,
+          recalculatedAt: serverTimestamp()
+        });
+
+        previousSaldoTotal = currentSaldoTotal;
+
+      } catch (docError) {
+        erros++;
+
+        console.error("❌ Erro no histórico índice:", i);
+        console.error("ID do documento:", item.id);
+        console.error("Erro:", docError);
+
+        // continua recalculando os próximos
+        continue;
       }
-
-      await updateDoc(doc(db, "history", item.id), {
-        "turno.saldoLiquido": saldoLiquido,
-        currentSaldoTotal: currentSaldoTotal,
-        diff: diff,
-        recalculatedAt: serverTimestamp()
-      });
-
-      previousSaldoTotal = currentSaldoTotal;
     }
 
-    console.log("✅ Histórico recalculado com sucesso.");
+    console.log("✅ Recálculo finalizado.");
+    console.log("Erros encontrados:", erros);
+
     return true;
 
   } catch (error) {
-    console.error("Erro ao recalcular histórico:", error);
-    alert("Erro ao recalcular histórico.");
+    console.error("Erro geral ao recalcular histórico:", error);
     return false;
   }
 }
@@ -5880,11 +5895,11 @@ byId("sideHomeBtn")?.addEventListener("click", async () => {
       await recalculateAllHistory();
     }
 
-    location.reload();
   } catch (e) {
     console.error("Erro ao reiniciar:", e);
-    location.reload();
   }
+
+  location.reload();
 });
 
   document.querySelectorAll("[data-add-pending]").forEach((btn) => {
