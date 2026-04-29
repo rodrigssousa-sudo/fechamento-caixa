@@ -5863,19 +5863,45 @@ document.addEventListener("DOMContentLoaded", () => {
 
 // 🔥 BOTÃO INÍCIO = RECALCULAR + RECARREGAR
 byId("sideHomeBtn")?.addEventListener("click", async () => {
+
   const loader = byId("appReloadLoader");
 
   loader?.classList.add("active");
 
   try {
+
     if (typeof recalculateAllHistory === "function") {
+
       await recalculateAllHistory();
+
     }
+
+    if (typeof startHistoryRealtimeListener === "function") {
+
+      startHistoryRealtimeListener();
+
+    }
+
+    if (typeof render === "function") {
+
+      render();
+
+    }
+
+    if (typeof updateActionsVisibility === "function") {
+
+      updateActionsVisibility();
+
+    }
+
   } catch (e) {
-    console.warn("Falha silenciosa ao recalcular:", e);
+
+    console.warn("Atualização interna ignorou erro:", e);
+
   }
 
-  location.reload();
+  loader?.classList.remove("active");
+
 });
 
   document.querySelectorAll("[data-add-pending]").forEach((btn) => {
