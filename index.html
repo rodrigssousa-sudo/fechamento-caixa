@@ -4830,7 +4830,7 @@ bindSidebarBtn("sideLogoutBtn", () => {
   byId("logoutBtn")?.click();
 });
 /* compatibilidade com botões antigos */
-function closeMenu(){
+function closeSidebarMenu() {
   closeBkSidebar();
 }
   
@@ -5099,7 +5099,7 @@ byId("openRankingBtn")?.addEventListener("click", async () => {
   const allowed = await requireReportsAccess();
   if (!allowed) return;
 
-  closeMenu();
+  closeSidebarMenu();
 
   const section = byId("rankingChartSection");
   if (!section) return;
@@ -5125,7 +5125,7 @@ byId("adminOpenBtn")?.addEventListener("click", async () => {
   const allowed = await requireAdmin();
   if (!allowed) return;
 
-  closeMenu();
+  closeSidebarMenu();
 
   const panel = byId("adminPanel");
   if (!panel) return;
