@@ -5758,6 +5758,11 @@ document.addEventListener("DOMContentLoaded", () => {
   byId("calcular")?.addEventListener("click", render);
   byId("limparBtn")?.addEventListener("click", () => clearTurn("t2"));
 
+  // 🔥 BOTÃO INICIAR = RECARREGAR APP/PÁGINA COMPLETA
+ byId("sideHomeBtn")?.addEventListener("click", () => {
+  location.reload();
+});
+
   document.querySelectorAll("[data-add-pending]").forEach((btn) => {
     btn.onclick = () => {
       createPendingRow(btn.dataset.addPending);
