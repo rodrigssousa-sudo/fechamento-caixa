@@ -5758,9 +5758,19 @@ document.addEventListener("DOMContentLoaded", () => {
   byId("calcular")?.addEventListener("click", render);
   byId("limparBtn")?.addEventListener("click", () => clearTurn("t2"));
 
-  // 🔥 BOTÃO INICIAR = RECARREGAR APP/PÁGINA COMPLETA
- byId("sideHomeBtn")?.addEventListener("click", () => {
-  location.reload();
+
+// 🔥 BOTÃO INÍCIO = RECALCULAR + RECARREGAR
+
+byId("sideHomeBtn")?.addEventListener("click", async () => {
+  try {
+    if (typeof recalculateAllHistory === "function") {
+      await recalculateAllHistory();
+    }
+    location.reload();
+  } catch (e) {
+    console.error("Erro ao reiniciar:", e);
+    location.reload(); // fallback
+  }
 });
 
   document.querySelectorAll("[data-add-pending]").forEach((btn) => {
