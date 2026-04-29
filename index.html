@@ -4746,6 +4746,26 @@ byId("menuToggle")?.addEventListener("click", (e) => {
 
 bkSidebarBackdrop?.addEventListener("click", closeBkSidebar);
 
+/* =========================================================
+   SIDEBAR ACTIONS — CLEAN + SEM ERRO
+========================================================= */
+
+/* ===== PERMISSÕES ===== */
+function hasPermission(feature) {
+  const role = currentUserData?.role;
+
+  if (!role) return false;
+
+  const permissions = {
+    admin: ["home","history","goal","ranking","pdf","admin"],
+    supervisor: ["home","history","goal","ranking","pdf"],
+    operador: ["home","history"]
+  };
+
+  return permissions[role]?.includes(feature);
+}
+
+/* ===== BIND UNIVERSAL ===== */
 function bindSidebarBtn(id, callback) {
   const btn = byId(id);
   if (!btn || btn.dataset.bound === "true") return;
@@ -4755,17 +4775,28 @@ function bindSidebarBtn(id, callback) {
   btn.addEventListener("click", (e) => {
     e.preventDefault();
     e.stopPropagation();
+
+    if (!currentUserData) {
+      showToast("Carregando usuário...", "error");
+      return;
+    }
+
     callback();
   });
 }
 
+/* ===== HOME ===== */
 bindSidebarBtn("sideHomeBtn", () => {
   closeBkSidebar();
   window.scrollTo({ top: 0, behavior: "smooth" });
 });
 
+/* ===== HISTÓRICO ===== */
 bindSidebarBtn("sideHistoryBtn", () => {
-  if (!hasPermission("history")) return showToast("Sem permissão.", "error");
+  if (!hasPermission("history")) {
+    showToast("Sem permissão.", "error");
+    return;
+  }
 
   closeBkSidebar();
   setHistoryVisible?.(true);
@@ -4778,8 +4809,12 @@ bindSidebarBtn("sideHistoryBtn", () => {
   }, 200);
 });
 
+/* ===== META MENSAL ===== */
 bindSidebarBtn("sideGoalBtn", () => {
-  if (!hasPermission("goal")) return showToast("Sem permissão.", "error");
+  if (!hasPermission("goal")) {
+    showToast("Sem permissão.", "error");
+    return;
+  }
 
   closeBkSidebar();
   renderMonthlyGoalCard?.();
@@ -4803,7 +4838,6 @@ bindSidebarBtn("sideGoalBtn", () => {
     }, 200);
   }
 });
-
 bindSidebarBtn("sideRankingBtn", () => {
   if (!hasPermission("ranking")) return showToast("Sem permissão.", "error");
 
