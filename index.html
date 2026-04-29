@@ -5039,11 +5039,16 @@ async function createInternalUser() {
   }
 }
 
-    async function recalculateAllHistory() {
-      const allowed = await requireAdmin();
-      if (!allowed) return;
-      alert("Recalcular histórico ainda precisa de uma regra final de atualização. A proteção admin já está instalada.");
-    }
+   async function recalculateAllHistory() {
+  const allowed = await requireAdmin();
+  if (!allowed) return false;
+
+  console.log("Recalcular histórico chamado.");
+
+  // Por enquanto ainda não recalcula nada.
+  // Apenas libera o fluxo do botão Início.
+  return true;
+}
 
     function initAuthEvents() {
       const tabLogin = byId("tabLogin"), tabRegister = byId("tabRegister"), tabPassword = byId("tabPassword");
@@ -5816,7 +5821,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
 // 🔥 BOTÃO INÍCIO = RECALCULAR + RECARREGAR
-
 byId("sideHomeBtn")?.addEventListener("click", async () => {
   const loader = byId("appReloadLoader");
 
@@ -5827,12 +5831,11 @@ byId("sideHomeBtn")?.addEventListener("click", async () => {
       await recalculateAllHistory();
     }
 
+    location.reload();
   } catch (e) {
-    console.error("Erro no recálculo:", e);
+    console.error("Erro ao reiniciar:", e);
+    location.reload();
   }
-
-  // 🔥 SEMPRE RECARREGA
-  location.reload();
 });
 
   document.querySelectorAll("[data-add-pending]").forEach((btn) => {
