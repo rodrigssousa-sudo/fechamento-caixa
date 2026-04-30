@@ -109,7 +109,7 @@
           </div>
           <div class="field"><label>Data do fechamento</label><input id="closingDate" type="datetime-local" /></div>
           <div class="field"><label>Saldo Reca</label><input id="webReca" class="money-input" inputmode="decimal" placeholder="0,00" /></div>
-          <div class="field"><label>Saldo real conferido</label><input id="saldoRealConferido" class="money-input" inputmode="decimal" placeholder="Opcional" /></div>
+          
           <div class="field"><label>Suprema</label><input id="suprema" class="money-input" inputmode="decimal" placeholder="0,00" /></div>
           <div class="field"><label>PPPoker</label><input id="pppoker" class="money-input" inputmode="decimal" placeholder="0,00" /></div>
           <div class="field"><label>Buffalo</label><input id="buffalo" class="money-input" inputmode="decimal" placeholder="0,00" /></div>
@@ -157,7 +157,7 @@
           <div class="summary-note">
             <span>Carga poker: <b id="calcCargaPoker">$ 0,00</b></span>
             <span>Carga casino: <b id="calcCargaCasino">$ 0,00</b></span>
-            <span>Dif. real x sistema: <b id="calcDiferencaReal">$ 0,00</b></span>
+            
           </div>
           <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:16px;">
           <button id="clearClosingBtn" class="btn secondary full">Limpar campos</button>
@@ -288,7 +288,7 @@
   </div>
 
   <div id="editHistoryModal" class="edit-modal"><div class="edit-panel"><div class="edit-panel-head"><h2>Editar fechamento</h2><button id="editCloseBtn" class="edit-close">×</button></div><input id="editHistoryId" type="hidden" /><div class="form-grid"><div class="field"><label>Operador</label><input id="editOperatorName" /></div><div class="field"><label>Data do fechamento</label><input id="editClosingDate" type="datetime-local" /></div><div class="field"><label>Reca</label><input id="editWebReca" class="money-input" inputmode="decimal" /></div>
-        <div class="field"><label>Saldo real conferido</label><input id="editSaldoRealConferido" class="money-input" inputmode="decimal" /></div><div class="field"><label>Suprema</label><input id="editSuprema" class="money-input" inputmode="decimal" /></div><div class="field"><label>PPPoker</label><input id="editPppoker" class="money-input" inputmode="decimal" /></div><div class="field"><label>Buffalo</label><input id="editBuffalo" class="money-input" inputmode="decimal" /></div><div class="field"><label>Ganamos</label><input id="editGanamos" class="money-input" inputmode="decimal" /></div><div class="field"><label>Carga poker</label><input id="editCargasPoker" class="money-input" inputmode="decimal" /></div><div class="field"><label>Carga casino</label><input id="editCargasCasino" class="money-input" inputmode="decimal" /></div></div><div class="grid two"><div class="card" style="box-shadow:none;margin-top:12px;"><div class="card-title"><h2>Pagos pendentes</h2><button id="editAddPendingBtn" class="small-btn">+ Adicionar</button></div><div id="editPendingList" class="dynamic-list"></div></div><div class="card" style="box-shadow:none;margin-top:12px;"><div class="card-title"><h2>Retiradas</h2><button id="editAddOutflowBtn" class="small-btn">+ Adicionar</button></div><div id="editOutflowList" class="dynamic-list"></div></div></div><div class="edit-actions"><button id="saveEditBtn" class="btn">Salvar alterações</button><button id="cancelEditBtn" class="btn secondary">Cancelar</button></div></div></div>
+        <div class="field"><label>Suprema</label><input id="editSuprema" class="money-input" inputmode="decimal" /></div><div class="field"><label>PPPoker</label><input id="editPppoker" class="money-input" inputmode="decimal" /></div><div class="field"><label>Buffalo</label><input id="editBuffalo" class="money-input" inputmode="decimal" /></div><div class="field"><label>Ganamos</label><input id="editGanamos" class="money-input" inputmode="decimal" /></div><div class="field"><label>Carga poker</label><input id="editCargasPoker" class="money-input" inputmode="decimal" /></div><div class="field"><label>Carga casino</label><input id="editCargasCasino" class="money-input" inputmode="decimal" /></div></div><div class="grid two"><div class="card" style="box-shadow:none;margin-top:12px;"><div class="card-title"><h2>Pagos pendentes</h2><button id="editAddPendingBtn" class="small-btn">+ Adicionar</button></div><div id="editPendingList" class="dynamic-list"></div></div><div class="card" style="box-shadow:none;margin-top:12px;"><div class="card-title"><h2>Retiradas</h2><button id="editAddOutflowBtn" class="small-btn">+ Adicionar</button></div><div id="editOutflowList" class="dynamic-list"></div></div></div><div class="edit-actions"><button id="saveEditBtn" class="btn">Salvar alterações</button><button id="cancelEditBtn" class="btn secondary">Cancelar</button></div></div></div>
 
   <div id="appReloadLoader" class="app-reload-loader"><div class="reload-card"><div class="reload-spinner"></div><strong>Atualizando sistema</strong><span>Recalculando dados...</span></div></div>
 
@@ -403,6 +403,17 @@
       return visibleHistory().filter(item => !isAdjustmentItem(item));
     }
 
+    function lastRealClosing(){
+      return visibleHistory().find(item => !isAdjustmentItem(item)) || null;
+    }
+
+    function previousRealClosingAfter(currentItem){
+      const view = visibleHistory();
+      const idx = view.findIndex(x => x.id === currentItem?.id);
+      const start = idx >= 0 ? idx + 1 : 0;
+      return view.slice(start).find(item => !isAdjustmentItem(item)) || null;
+    }
+
     function monthlyOperationalHistory(){
       const now = new Date();
       const monthStart = new Date(now.getFullYear(), now.getMonth(), 1);
@@ -420,10 +431,8 @@
       const webReca=moneyToNumber($("webReca")?.value), suprema=moneyToNumber($("suprema")?.value), pppoker=moneyToNumber($("pppoker")?.value), buffalo=moneyToNumber($("buffalo")?.value), ganamos=moneyToNumber($("ganamos")?.value), cargasPoker=moneyToNumber($("cargasPoker")?.value), cargasCasino=moneyToNumber($("cargasCasino")?.value);
       const pendings=getDynamicRows("pendingList"), outflows=getDynamicRows("outflowList");
       const pendentesTotal=pendings.reduce((s,x)=>s+x.value,0), saidasTotal=outflows.reduce((s,x)=>s+x.value,0), retiradaLucroTotal=outflows.filter(x=>x.category==="lucro").reduce((s,x)=>s+x.value,0), custoOperacionalTotal=outflows.filter(x=>x.category==="custo_operacional").reduce((s,x)=>s+x.value,0);
-      const saldoRealConferido = moneyToNumber($("saldoRealConferido")?.value || 0);
-      const turno={operatorName:$("operatorName")?.value.trim()||"", closingDate:$("closingDate")?.value||new Date().toISOString(), webReca,suprema,pppoker,buffalo,ganamos,cargasPoker,cargasCasino,saldoRealConferido,pendings,outflows,pendentesTotal,saidasTotal,retiradaLucroTotal,custoOperacionalTotal};
+      const turno={operatorName:$("operatorName")?.value.trim()||"", closingDate:$("closingDate")?.value||new Date().toISOString(), webReca,suprema,pppoker,buffalo,ganamos,cargasPoker,cargasCasino,pendings,outflows,pendentesTotal,saidasTotal,retiradaLucroTotal,custoOperacionalTotal};
       turno.saldoLiquido=calcularSaldoLiquido(turno);
-      turno.diferencaRealSistema = saldoRealConferido > 0 ? saldoRealConferido - turno.saldoLiquido : 0;
       return turno;
     }
     function calcularSaldoLiquido(turno={}){ const webReca=moneyToNumber(turno.webReca??turno.reca??turno.banco??0), suprema=moneyToNumber(turno.suprema??0)*400, pppoker=moneyToNumber(turno.pppoker??0)*400, buffalo=moneyToNumber(turno.buffalo??0), ganamos=moneyToNumber(turno.ganamos??0), cargasPoker=moneyToNumber(turno.cargasPoker??0)*400, cargasCasino=moneyToNumber(turno.cargasCasino??turno.cargas??0), pendentes=moneyToNumber(turno.pendentesTotal??(turno.pendings||[]).reduce((s,x)=>s+moneyToNumber(x.value),0)), saidas=moneyToNumber(turno.saidasTotal??(turno.outflows||[]).reduce((s,x)=>s+moneyToNumber(x.value),0)); return webReca+suprema+pppoker+buffalo+ganamos+cargasPoker+cargasCasino-pendentes+saidas; }
@@ -441,7 +450,7 @@
     }
 
     function clearClosingForm(){
-      ["webReca","saldoRealConferido","suprema","pppoker","buffalo","ganamos","cargasPoker","cargasCasino"].forEach(id=>{
+      ["webReca","suprema","pppoker","buffalo","ganamos","cargasPoker","cargasCasino"].forEach(id=>{
         if($(id)) $(id).value = "";
       });
 
@@ -453,18 +462,8 @@
     }
 
     function enableClearOnFocus(){
-      document.querySelectorAll("input").forEach(input=>{
-        if(input.dataset.clearOnFocus === "1") return;
-        input.dataset.clearOnFocus = "1";
-
-        input.addEventListener("focus", ()=>{
-          if(input.type === "password" || input.type === "email" || input.type === "date" || input.type === "datetime-local" || input.type === "hidden") return;
-          if(input.value && input.value.trim() !== ""){
-            input.value = "";
-            input.dispatchEvent(new Event("input", { bubbles:true }));
-          }
-        });
-      });
+      // Desativado: os campos não devem zerar ao clicar/focar,
+      // para permitir sair do app e voltar sem perder os números digitados.
     }
 
     function renderCalculations(){
@@ -477,7 +476,7 @@
       if($("calcCustoSaida")) $("calcCustoSaida").textContent = formatMoney(turno.custoOperacionalTotal || 0);
       if($("calcCargaPoker")) $("calcCargaPoker").textContent = formatMoney((turno.cargasPoker || 0) * 400);
       if($("calcCargaCasino")) $("calcCargaCasino").textContent = formatMoney(turno.cargasCasino || 0);
-      if($("calcDiferencaReal")) $("calcDiferencaReal").textContent = formatMoney(turno.diferencaRealSistema || 0);
+      
 
       const saldoEl = $("calcSaldoLiquido");
       if(saldoEl){
@@ -514,7 +513,8 @@
 
     function renderHome(){
       const view = visibleHistory();
-      const last = view[0], prev = view[1];
+      const last = lastRealClosing() || view[0];
+      const prev = last ? previousRealClosingAfter(last) : null;
       const saldoReca = last?.turno?.webReca ?? last?.turno?.reca ?? last?.webReca ?? 0;
       const saldoLiquido = last?.turno?.saldoLiquido ?? last?.currentSaldoTotal ?? 0;
       const pendentes = last?.turno?.pendentesTotal ?? 0;
@@ -676,13 +676,48 @@
       const hasMainValue = [turno.webReca, turno.suprema, turno.pppoker, turno.buffalo, turno.ganamos, turno.cargasPoker, turno.cargasCasino, turno.pendentesTotal, turno.saidasTotal].some(v=>moneyToNumber(v)>0);
       if(!turno.operatorName) return "Informe o operador.";
       if(!hasMainValue) return "Informe pelo menos um valor antes de salvar.";
-      if(Math.abs(turno.diferencaRealSistema || 0) > 1000000){
-        return "A diferença entre saldo real e sistema está muito alta. Confira antes de salvar.";
-      }
+      
       return "";
     }
 
-    async function saveClosing(){ try{ const turno=getTurnFromForm(); const validationError = validateTurnBeforeSave(turno); if(validationError) return alert(validationError); turno.supervisorUid=currentProfile?.supervisorUid||(isSupervisor()?currentUser?.uid:null)||null; turno.supervisorEmail=currentProfile?.supervisorEmail||(isSupervisor()?currentUser?.email:null)||null; turno.supervisorName=currentProfile?.supervisorName||(isSupervisor()?profileName():null)||null; const view=visibleHistory(); const lastSaldo=view[0]?.turno?.saldoLiquido??view[0]?.currentSaldoTotal??null; const diff=lastSaldo===null?0:turno.saldoLiquido-lastSaldo; await addDoc(collection(db,"history"),{type:"closing",turno,operatorName:turno.operatorName,supervisorUid:turno.supervisorUid,supervisorEmail:turno.supervisorEmail,supervisorName:turno.supervisorName,currentSaldoTotal:turno.saldoLiquido,diff,submittedAt:serverTimestamp(),createdBy:currentUser?.uid||null,createdByEmail:currentUser?.email||null}); await addAudit("save_closing",`Fechamento salvo por ${turno.operatorName}`); clearClosingForm(); alert("Fechamento salvo com sucesso."); }catch(e){ alert(friendlyError(e)); } }
+    async function saveClosing(){
+      try{
+        const turno = getTurnFromForm();
+        const validationError = validateTurnBeforeSave(turno);
+        if(validationError) return alert(validationError);
+
+        turno.supervisorUid = currentProfile?.supervisorUid || (isSupervisor()?currentUser?.uid:null) || null;
+        turno.supervisorEmail = currentProfile?.supervisorEmail || (isSupervisor()?currentUser?.email:null) || null;
+        turno.supervisorName = currentProfile?.supervisorName || (isSupervisor()?profileName():null) || null;
+
+        // IMPORTANTE: ajuste/carga rápida NÃO entra como base do próximo fechamento.
+        // O diff do fechamento compara sempre contra o último fechamento real.
+        const lastReal = lastRealClosing();
+        const lastSaldo = lastReal?.turno?.saldoLiquido ?? lastReal?.currentSaldoTotal ?? null;
+        const diff = lastSaldo === null ? 0 : turno.saldoLiquido - lastSaldo;
+
+        await addDoc(collection(db,"history"),{
+          type:"closing",
+          adjustment:false,
+          turno,
+          operatorName:turno.operatorName,
+          supervisorUid:turno.supervisorUid,
+          supervisorEmail:turno.supervisorEmail,
+          supervisorName:turno.supervisorName,
+          currentSaldoTotal:turno.saldoLiquido,
+          diff,
+          submittedAt:serverTimestamp(),
+          createdBy:currentUser?.uid||null,
+          createdByEmail:currentUser?.email||null
+        });
+
+        await addAudit("save_closing",`Fechamento salvo por ${turno.operatorName}`);
+        clearClosingForm();
+        alert("Fechamento salvo com sucesso.");
+      }catch(e){
+        alert(friendlyError(e));
+      }
+    }
 
     async function addQuickCapitalInjection(){
       if(!await requireAdmin()) return;
@@ -824,7 +859,55 @@
     function closeEdit(){ $("editHistoryModal").classList.remove("active"); }
     async function saveEdit(){ if(!await requireAdmin()) return; const id=$("editHistoryId").value; const ref=doc(db,"history",id); const original=historyCache.find(x=>x.id===id)||{}; const t={...(original.turno||{}),operatorName:$("editOperatorName").value.trim(),closingDate:$("editClosingDate").value||new Date().toISOString(),webReca:moneyToNumber($("editWebReca").value),suprema:moneyToNumber($("editSuprema").value),pppoker:moneyToNumber($("editPppoker").value),buffalo:moneyToNumber($("editBuffalo").value),ganamos:moneyToNumber($("editGanamos").value),cargasPoker:moneyToNumber($("editCargasPoker").value),cargasCasino:moneyToNumber($("editCargasCasino").value),pendings:getDynamicRows("editPendingList"),outflows:getDynamicRows("editOutflowList")}; t.pendentesTotal=t.pendings.reduce((s,x)=>s+x.value,0); t.saidasTotal=t.outflows.reduce((s,x)=>s+x.value,0); t.retiradaLucroTotal=t.outflows.filter(x=>x.category==="lucro").reduce((s,x)=>s+x.value,0); t.custoOperacionalTotal=t.outflows.filter(x=>x.category==="custo_operacional").reduce((s,x)=>s+x.value,0); t.saldoLiquido=calcularSaldoLiquido(t); try{await updateDoc(ref,{turno:t,operatorName:t.operatorName,currentSaldoTotal:t.saldoLiquido,editedAt:serverTimestamp(),editedBy:currentUser?.uid||null}); await addAudit("edit_history",`Fechamento editado: ${id}`); closeEdit(); await recalculateAllHistory(); alert("Fechamento editado e histórico recalculado.");}catch(e){alert(friendlyError(e));} }
 
-    async function recalculateAllHistory(){ if(!await requireAdmin()) return false; const loader=$("appReloadLoader"); loader?.classList.add("active"); try{const qh=query(collection(db,"history"),orderBy("submittedAt","asc")); const snap=await getDocs(qh); let previousSaldoTotal=null; for(const item of snap.docs){try{const data=item.data(), turno=data.turno||{}; const isAdjustment = data.adjustment === true || data.type === "capital_injection" || turno.ajusteTipo === "carga_rapida"; const saldoLiquido=calcularSaldoLiquido(turno); let currentSaldoTotal, diff; if(isAdjustment){ diff = saldoLiquido; currentSaldoTotal = (previousSaldoTotal ?? 0) + diff; } else { currentSaldoTotal = saldoLiquido; diff = previousSaldoTotal===null ? 0 : currentSaldoTotal-previousSaldoTotal; } await updateDoc(doc(db,"history",item.id),{"turno.saldoLiquido":saldoLiquido,currentSaldoTotal,diff,recalculatedAt:serverTimestamp()}); previousSaldoTotal=currentSaldoTotal;}catch(e){console.warn("Histórico ignorado no recálculo:",item.id,e);}} await addAudit("recalculate_history","Histórico recalculado"); renderAll(); return true;}catch(e){alert(friendlyError(e)); return false;}finally{setTimeout(()=>loader?.classList.remove("active"),500);} }
+    async function recalculateAllHistory(){
+      if(!await requireAdmin()) return false;
+      const loader=$("appReloadLoader");
+      loader?.classList.add("active");
+
+      try{
+        const qh=query(collection(db,"history"),orderBy("submittedAt","asc"));
+        const snap=await getDocs(qh);
+        let previousRealClosingSaldo=null;
+
+        for(const item of snap.docs){
+          try{
+            const data=item.data();
+            const turno=data.turno||{};
+            const isAdjustment = data.adjustment === true || data.type === "capital_injection" || turno.ajusteTipo === "carga_rapida";
+            const saldoLiquido=calcularSaldoLiquido(turno);
+            let currentSaldoTotal, diff;
+
+            if(isAdjustment){
+              // Ajuste é movimento de aporte/correção: aparece no histórico, mas não vira base operacional.
+              diff = saldoLiquido;
+              currentSaldoTotal = saldoLiquido;
+            }else{
+              currentSaldoTotal = saldoLiquido;
+              diff = previousRealClosingSaldo===null ? 0 : currentSaldoTotal - previousRealClosingSaldo;
+              previousRealClosingSaldo = currentSaldoTotal;
+            }
+
+            await updateDoc(doc(db,"history",item.id),{
+              "turno.saldoLiquido":saldoLiquido,
+              currentSaldoTotal,
+              diff,
+              recalculatedAt:serverTimestamp()
+            });
+          }catch(e){
+            console.warn("Histórico ignorado no recálculo:",item.id,e);
+          }
+        }
+
+        await addAudit("recalculate_history","Histórico recalculado com ajustes ignorados como base operacional");
+        renderAll();
+        return true;
+      }catch(e){
+        alert(friendlyError(e));
+        return false;
+      }finally{
+        setTimeout(()=>loader?.classList.remove("active"),500);
+      }
+    }
     async function refreshInternal(){ const loader=$("appReloadLoader"); loader?.classList.add("active"); renderAll(); setTimeout(()=>loader?.classList.remove("active"),650); }
 
     function getReportItems(){ let items=visibleHistory(); const start=$("reportStart")?.value, end=$("reportEnd")?.value, operator=($("reportOperator")?.value||"").trim().toLowerCase(), supervisor=($("reportSupervisor")?.value||"").trim().toLowerCase(); if(start) items=items.filter(x=>{const d=x.submittedAt?.toDate?x.submittedAt.toDate():new Date(x.turno?.closingDate||x.createdAt||0); return !isNaN(d)&&d.toISOString().slice(0,10)>=start;}); if(end) items=items.filter(x=>{const d=x.submittedAt?.toDate?x.submittedAt.toDate():new Date(x.turno?.closingDate||x.createdAt||0); return !isNaN(d)&&d.toISOString().slice(0,10)<=end;}); if(operator) items=items.filter(x=>String(x.operatorName||x.turno?.operatorName||"").toLowerCase().includes(operator)); if(supervisor) items=items.filter(x=>String(x.supervisorName||x.turno?.supervisorName||x.supervisorEmail||x.turno?.supervisorEmail||"").toLowerCase().includes(supervisor)); return items; }
@@ -1027,7 +1110,7 @@
           showScreen("Home");
           refreshInternal();
         };
-      } applyBankMoneyMaskAll(document); enableClearOnFocus(); ["webReca","saldoRealConferido","suprema","pppoker","buffalo","ganamos","cargasPoker","cargasCasino","quickCargaCasino","operatorName","closingDate","editWebReca","editSuprema","editPppoker","editBuffalo","editGanamos","editCargasPoker","editCargasCasino"].forEach(id=>$(id)?.addEventListener("input",renderCalculations)); document.addEventListener("bankmoney", renderCalculations); $("togglePendingBtn") && ($("togglePendingBtn").onclick=()=>{ const panel=$("pendingPanel"); panel?.classList.toggle("active"); $("togglePendingBtn").textContent = panel?.classList.contains("active") ? "Ocultar" : "Abrir"; });
+      } applyBankMoneyMaskAll(document); enableClearOnFocus(); ["webReca","suprema","pppoker","buffalo","ganamos","cargasPoker","cargasCasino","quickCargaCasino","operatorName","closingDate","editWebReca","editSuprema","editPppoker","editBuffalo","editGanamos","editCargasPoker","editCargasCasino"].forEach(id=>$(id)?.addEventListener("input",renderCalculations)); document.addEventListener("bankmoney", renderCalculations); $("togglePendingBtn") && ($("togglePendingBtn").onclick=()=>{ const panel=$("pendingPanel"); panel?.classList.toggle("active"); $("togglePendingBtn").textContent = panel?.classList.contains("active") ? "Ocultar" : "Abrir"; });
       $("toggleOutflowBtn") && ($("toggleOutflowBtn").onclick=()=>{ const panel=$("outflowPanel"); panel?.classList.toggle("active"); $("toggleOutflowBtn").textContent = panel?.classList.contains("active") ? "Ocultar" : "Abrir"; });
       $("addPendingBtn").onclick=()=>createDynamicRow("pendingList","Nome / motivo"); $("addOutflowBtn").onclick=()=>createDynamicRow("outflowList","Descrição");
       $("quickChargeBtn") && ($("quickChargeBtn").onclick=addQuickCapitalInjection);
