@@ -156,6 +156,7 @@
           <div class="summary-note">
             <span>Carga poker: <b id="calcCargaPoker">$ 0,00</b></span>
             <span>Carga casino: <b id="calcCargaCasino">$ 0,00</b></span>
+            <span>Dif. real x sistema: <b id="calcDiferencaReal">$ 0,00</b></span>
           </div>
           <button id="saveClosingBtn" class="btn full" style="margin-top:16px;">Salvar fechamento</button>
         </div>
@@ -392,12 +393,15 @@
       const webReca=moneyToNumber($("webReca")?.value), suprema=moneyToNumber($("suprema")?.value), pppoker=moneyToNumber($("pppoker")?.value), buffalo=moneyToNumber($("buffalo")?.value), ganamos=moneyToNumber($("ganamos")?.value), cargasPoker=moneyToNumber($("cargasPoker")?.value), cargasCasino=moneyToNumber($("cargasCasino")?.value);
       const pendings=getDynamicRows("pendingList"), outflows=getDynamicRows("outflowList");
       const pendentesTotal=pendings.reduce((s,x)=>s+x.value,0), saidasTotal=outflows.reduce((s,x)=>s+x.value,0), retiradaLucroTotal=outflows.filter(x=>x.category==="lucro").reduce((s,x)=>s+x.value,0), custoOperacionalTotal=outflows.filter(x=>x.category==="custo_operacional").reduce((s,x)=>s+x.value,0);
-      const turno={operatorName:$("operatorName")?.value.trim()||"", closingDate:$("closingDate")?.value||new Date().toISOString(), webReca,suprema,pppoker,buffalo,ganamos,cargasPoker,cargasCasino,pendings,outflows,pendentesTotal,saidasTotal,retiradaLucroTotal,custoOperacionalTotal};
-      turno.saldoLiquido=calcularSaldoLiquido(turno); return turno;
+      const saldoRealConferido = moneyToNumber($("saldoRealConferido")?.value || 0);
+      const turno={operatorName:$("operatorName")?.value.trim()||"", closingDate:$("closingDate")?.value||new Date().toISOString(), webReca,suprema,pppoker,buffalo,ganamos,cargasPoker,cargasCasino,saldoRealConferido,pendings,outflows,pendentesTotal,saidasTotal,retiradaLucroTotal,custoOperacionalTotal};
+      turno.saldoLiquido=calcularSaldoLiquido(turno);
+      turno.diferencaRealSistema = saldoRealConferido > 0 ? saldoRealConferido - turno.saldoLiquido : 0;
+      return turno;
     }
     function calcularSaldoLiquido(turno={}){ const webReca=moneyToNumber(turno.webReca??turno.reca??turno.banco??0), suprema=moneyToNumber(turno.suprema??0)*400, pppoker=moneyToNumber(turno.pppoker??0)*400, buffalo=moneyToNumber(turno.buffalo??0), ganamos=moneyToNumber(turno.ganamos??0), cargasPoker=moneyToNumber(turno.cargasPoker??0)*400, cargasCasino=moneyToNumber(turno.cargasCasino??turno.cargas??0), pendentes=moneyToNumber(turno.pendentesTotal??(turno.pendings||[]).reduce((s,x)=>s+moneyToNumber(x.value),0)), saidas=moneyToNumber(turno.saidasTotal??(turno.outflows||[]).reduce((s,x)=>s+moneyToNumber(x.value),0)); return webReca+suprema+pppoker+buffalo+ganamos+cargasPoker+cargasCasino-pendentes+saidas; }
     function clearClosingForm(){
-      ["operatorName","webReca","suprema","pppoker","buffalo","ganamos","cargasPoker","cargasCasino"].forEach(id=>{
+      ["operatorName","webReca","saldoRealConferido","suprema","pppoker","buffalo","ganamos","cargasPoker","cargasCasino"].forEach(id=>{
         if($(id)) $(id).value = "";
       });
 
@@ -435,6 +439,7 @@
       if($("calcCustoSaida")) $("calcCustoSaida").textContent = formatMoney(turno.custoOperacionalTotal || 0);
       if($("calcCargaPoker")) $("calcCargaPoker").textContent = formatMoney((turno.cargasPoker || 0) * 400);
       if($("calcCargaCasino")) $("calcCargaCasino").textContent = formatMoney(turno.cargasCasino || 0);
+      if($("calcDiferencaReal")) $("calcDiferencaReal").textContent = formatMoney(turno.diferencaRealSistema || 0);
 
       const saldoEl = $("calcSaldoLiquido");
       if(saldoEl){
@@ -638,6 +643,26 @@
       const motivo = $("quickCargaMotivo")?.value.trim() || "Carga rápida de caixa";
       const operador = $("quickCargaOperador")?.value.trim() || profileName() || "Admin";
       const totalAjuste = (cargasPoker * 400) + cargasCasino;
+      const turno = {
+        operatorName: operador,
+        closingDate: new Date().toISOString(),
+        webReca: 0,
+        suprema: 0,
+        pppoker: 0,
+        buffalo: 0,
+        ganamos: 0,
+        cargasPoker,
+        cargasCasino,
+        pendings: [],
+        outflows: [],
+        pendentesTotal: 0,
+        saidasTotal: 0,
+        retiradaLucroTotal: 0,
+        custoOperacionalTotal: 0,
+        ajusteTipo: "carga_rapida",
+        ajusteMotivo: motivo,
+        saldoLiquido: totalAjuste
+      };
 
       if(totalAjuste <= 0){
         alert("Informe uma carga poker ou casino maior que zero.");
@@ -956,6 +981,7 @@
       if(name==="Admin"){loadUsers();loadAudit();}
       if(name==="Ranking") renderRanking();
       if(name==="Reports") previewReport();
+      if(name==="Goals") renderMonthlyGoal(visibleHistory());
     }
     function updateRoleVisibility(){
       const adminOnlyIds = [
@@ -973,7 +999,7 @@
       });
     }
 
-    function bindEvents(){ applyBankMoneyMaskAll(document); enableClearOnFocus(); ["webReca","suprema","pppoker","buffalo","ganamos","cargasPoker","cargasCasino","quickCargaCasino","operatorName","closingDate","editWebReca","editSuprema","editPppoker","editBuffalo","editGanamos","editCargasPoker","editCargasCasino"].forEach(id=>$(id)?.addEventListener("input",renderCalculations)); document.addEventListener("bankmoney", renderCalculations); $("addPendingBtn").onclick=()=>createDynamicRow("pendingList","Nome / motivo"); $("addOutflowBtn").onclick=()=>createDynamicRow("outflowList","Descrição");
+    function bindEvents(){ applyBankMoneyMaskAll(document); enableClearOnFocus(); ["webReca","saldoRealConferido","suprema","pppoker","buffalo","ganamos","cargasPoker","cargasCasino","quickCargaCasino","operatorName","closingDate","editWebReca","editSuprema","editPppoker","editBuffalo","editGanamos","editCargasPoker","editCargasCasino"].forEach(id=>$(id)?.addEventListener("input",renderCalculations)); document.addEventListener("bankmoney", renderCalculations); $("addPendingBtn").onclick=()=>createDynamicRow("pendingList","Nome / motivo"); $("addOutflowBtn").onclick=()=>createDynamicRow("outflowList","Descrição");
       $("quickChargeBtn") && ($("quickChargeBtn").onclick=addQuickCapitalInjection);
       $("toggleQuickChargeBtn") && ($("toggleQuickChargeBtn").onclick=()=>{
         const panel = $("quickChargePanel");
@@ -986,10 +1012,17 @@
         $("toggleCreateUserBtn").textContent = panel?.classList.contains("active") ? "Ocultar criar usuário" : "Mostrar criar usuário";
       });
       $("createUserBtn").onclick=createInternalUser; $("historySearch").addEventListener("input",renderHistory); $("historyDate").addEventListener("input",renderHistory); document.querySelectorAll(".nav-btn[data-screen]").forEach(btn=>btn.onclick=()=>showScreen(btn.dataset.screen));
-      $("moreMenuBtn") && ($("moreMenuBtn").onclick=()=>{
+      $("moreMenuBtn") && ($("moreMenuBtn").onclick=(ev)=>{
+        ev.stopPropagation();
         $("moreMenu")?.classList.toggle("active");
       });
-      document.querySelectorAll("[data-more-screen]").forEach(btn=>btn.onclick=()=>showScreen(btn.dataset.moreScreen)); document.querySelectorAll("[data-rank]").forEach(btn=>btn.onclick=()=>{document.querySelectorAll("[data-rank]").forEach(b=>b.classList.remove("active")); btn.classList.add("active"); currentRankRange=btn.dataset.rank; renderRanking();}); $("logoutBtn").onclick=async()=>{if(historyUnsubscribe)historyUnsubscribe();if(systemUnsubscribe)systemUnsubscribe();await signOut(auth);}; $("loginBtn").onclick=async()=>{try{hideNotice("loginNotice");await signInWithEmailAndPassword(auth,$("loginEmail").value.trim(),$("loginPassword").value);}catch(e){showNotice("loginNotice",friendlyError(e),"error");}}; $("registerBtn").onclick=registerAccess; $("resetPasswordBtn").onclick=async()=>{try{const email=$("loginEmail").value.trim(); if(!email) return showNotice("loginNotice","Informe o email.","error"); await sendPasswordResetEmail(auth,email); showNotice("loginNotice","Email de recuperação enviado.","ok");}catch(e){showNotice("loginNotice",friendlyError(e),"error");}}; $("receiptCloseBtn") && ($("receiptCloseBtn").onclick=closeHistoryReceipt);
+      document.addEventListener("click", (ev)=>{
+        const menu = $("moreMenu");
+        if(!menu?.classList.contains("active")) return;
+        if(menu.contains(ev.target) || $("moreMenuBtn")?.contains(ev.target)) return;
+        menu.classList.remove("active");
+      });
+      document.querySelectorAll("[data-more-screen]").forEach(btn=>btn.onclick=(ev)=>{ ev.stopPropagation(); showScreen(btn.dataset.moreScreen); }); document.querySelectorAll("[data-rank]").forEach(btn=>btn.onclick=()=>{document.querySelectorAll("[data-rank]").forEach(b=>b.classList.remove("active")); btn.classList.add("active"); currentRankRange=btn.dataset.rank; renderRanking();}); $("logoutBtn").onclick=async()=>{if(historyUnsubscribe)historyUnsubscribe();if(systemUnsubscribe)systemUnsubscribe();await signOut(auth);}; $("loginBtn").onclick=async()=>{try{hideNotice("loginNotice");await signInWithEmailAndPassword(auth,$("loginEmail").value.trim(),$("loginPassword").value);}catch(e){showNotice("loginNotice",friendlyError(e),"error");}}; $("registerBtn").onclick=registerAccess; $("resetPasswordBtn").onclick=async()=>{try{const email=$("loginEmail").value.trim(); if(!email) return showNotice("loginNotice","Informe o email.","error"); await sendPasswordResetEmail(auth,email); showNotice("loginNotice","Email de recuperação enviado.","ok");}catch(e){showNotice("loginNotice",friendlyError(e),"error");}}; $("receiptCloseBtn") && ($("receiptCloseBtn").onclick=closeHistoryReceipt);
       $("editCloseBtn").onclick=closeEdit; $("cancelEditBtn").onclick=closeEdit; $("saveEditBtn").onclick=saveEdit; $("editAddPendingBtn").onclick=()=>createDynamicRow("editPendingList","Nome / motivo"); $("editAddOutflowBtn").onclick=()=>createDynamicRow("editOutflowList","Descrição"); }
     function initDate(){ const now=new Date(); now.setMinutes(now.getMinutes()-now.getTimezoneOffset()); $("closingDate").value=now.toISOString().slice(0,16); }
 
