@@ -3131,10 +3131,8 @@ function calcularSaldoCaixa(turno = {}) {
     Number(turno.pppoker || 0) * 400 +
     Number(turno.buffalo || 0) +
     Number(turno.ganamos || 0) -
-
     Number(turno.cargaPoker || 0) -
     Number(turno.cargaFichas || 0) -
-
     Number(turno.pendentes || turno.pendentesTotal || 0)
   );
 }
@@ -3152,7 +3150,13 @@ function calcularSaldoLiquido(turno = {}) {
 }
 
 function calcularDiffReal(turnoAtual = {}, turnoAnterior = {}) {
-  return calcularSaldoCaixa(turnoAtual) - calcularSaldoCaixa(turnoAnterior);
+  const totalAtual = calcularSaldoCaixa(turnoAtual);
+  const totalAnterior = calcularSaldoCaixa(turnoAnterior);
+
+  const lucroRealizadoAtual =
+    Number(turnoAtual.saidas || turnoAtual.saidasTotal || 0);
+
+  return totalAtual - totalAnterior + lucroRealizadoAtual;
 }
 
 function getTurnoBreakdown(t = {}) {
