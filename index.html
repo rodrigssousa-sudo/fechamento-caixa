@@ -179,6 +179,8 @@
           <div class="form-grid" style="margin-top:14px;">
             <div class="field"><label>Carga fichas poker</label><input id="quickCargaPoker" inputmode="decimal" placeholder="Quantidade de fichas" /></div>
             <div class="field"><label>Carga casino / dinheiro</label><input id="quickCargaCasino" class="money-input" inputmode="decimal" placeholder="0,00" /></div>
+            <div class="field"><label>Retirada do caixa</label><input id="quickRetiradaCaixa" class="money-input" inputmode="decimal" placeholder="0,00" /></div>
+            <div class="field"><label>Tipo da retirada</label><select id="quickRetiradaTipo"><option value="lucro">Lucro</option><option value="custo_operacional">Custo operacional</option></select></div>
             <div class="field"><label>Motivo</label><input id="quickCargaMotivo" placeholder="Ex: aporte de caixa / reposição banca" /></div>
             <div class="field"><label>Operador responsável</label><input id="quickCargaOperador" placeholder="Admin / responsável" /></div>
           </div>
@@ -405,6 +407,31 @@
 
     function lastRealClosing(){
       return visibleHistory().find(item => !isAdjustmentItem(item)) || null;
+    }
+
+    function adjustmentImpact(item){
+      if(!isAdjustmentItem(item)) return 0;
+      const t = item.turno || {};
+      if(t.saldoLiquido !== undefined) return moneyToNumber(t.saldoLiquido);
+      return moneyToNumber(item.diff || 0);
+    }
+
+    function baseForNextClosing(){
+      const view = visibleHistory();
+      const lastRealIndex = view.findIndex(item => !isAdjustmentItem(item));
+      const lastReal = lastRealIndex >= 0 ? view[lastRealIndex] : null;
+      const lastRealSaldo = lastReal ? moneyToNumber(lastReal.turno?.saldoLiquido ?? lastReal.currentSaldoTotal ?? 0) : null;
+
+      if(lastRealIndex < 0){
+        return null;
+      }
+
+      const adjustmentsAfterLastReal = view
+        .slice(0, lastRealIndex)
+        .filter(isAdjustmentItem)
+        .reduce((s,item)=>s + adjustmentImpact(item), 0);
+
+      return lastRealSaldo + adjustmentsAfterLastReal;
     }
 
     function previousRealClosingAfter(currentItem){
@@ -692,9 +719,8 @@
 
         // IMPORTANTE: ajuste/carga rápida NÃO entra como base do próximo fechamento.
         // O diff do fechamento compara sempre contra o último fechamento real.
-        const lastReal = lastRealClosing();
-        const lastSaldo = lastReal?.turno?.saldoLiquido ?? lastReal?.currentSaldoTotal ?? null;
-        const diff = lastSaldo === null ? 0 : turno.saldoLiquido - lastSaldo;
+        const baseSaldo = baseForNextClosing();
+        const diff = baseSaldo === null ? 0 : turno.saldoLiquido - baseSaldo;
 
         await addDoc(collection(db,"history"),{
           type:"closing",
@@ -724,9 +750,11 @@
 
       const cargasPoker = moneyToNumber($("quickCargaPoker")?.value || 0);
       const cargasCasino = moneyToNumber($("quickCargaCasino")?.value || 0);
+      const retiradaCaixa = moneyToNumber($("quickRetiradaCaixa")?.value || 0);
+      const retiradaTipo = $("quickRetiradaTipo")?.value || "lucro";
       const motivo = $("quickCargaMotivo")?.value.trim() || "Carga rápida de caixa";
       const operador = $("quickCargaOperador")?.value.trim() || profileName() || "Admin";
-      const totalAjuste = (cargasPoker * 400) + cargasCasino;
+      const totalAjuste = (cargasPoker * 400) + cargasCasino - retiradaCaixa;
       const turno = {
         operatorName: operador,
         closingDate: new Date().toISOString(),
@@ -738,18 +766,24 @@
         cargasPoker,
         cargasCasino,
         pendings: [],
-        outflows: [],
+        outflows: retiradaCaixa > 0 ? [{
+          name: motivo,
+          category: retiradaTipo,
+          value: retiradaCaixa
+        }] : [],
         pendentesTotal: 0,
-        saidasTotal: 0,
-        retiradaLucroTotal: 0,
-        custoOperacionalTotal: 0,
+        saidasTotal: retiradaCaixa,
+        retiradaLucroTotal: retiradaTipo === "lucro" ? retiradaCaixa : 0,
+        custoOperacionalTotal: retiradaTipo === "custo_operacional" ? retiradaCaixa : 0,
         ajusteTipo: "carga_rapida",
         ajusteMotivo: motivo,
+        retiradaCaixa,
+        retiradaTipo,
         saldoLiquido: totalAjuste
       };
 
-      if(totalAjuste <= 0){
-        alert("Informe uma carga poker ou casino maior que zero.");
+      if((cargasPoker <= 0 && cargasCasino <= 0 && retiradaCaixa <= 0)){
+        alert("Informe uma carga ou uma retirada de caixa maior que zero.");
         return;
       }
 
@@ -775,7 +809,7 @@
 
         await addAudit("quick_capital_injection", `Carga rápida adicionada: ${formatMoney(totalAjuste)} • ${motivo}`);
 
-        ["quickCargaPoker","quickCargaCasino","quickCargaMotivo","quickCargaOperador"].forEach(id=>{ if($(id)) $(id).value=""; });
+        ["quickCargaPoker","quickCargaCasino","quickRetiradaCaixa","quickRetiradaTipo","quickCargaMotivo","quickCargaOperador"].forEach(id=>{ if($(id)) $(id).value=""; });
 
         await recalculateAllHistory();
         alert("Carga adicionada ao sistema como ajuste auditável.");
@@ -1112,7 +1146,7 @@
           showScreen("Home");
           refreshInternal();
         };
-      } applyBankMoneyMaskAll(document); enableClearOnFocus(); ["webReca","suprema","pppoker","buffalo","ganamos","cargasPoker","cargasCasino","quickCargaCasino","operatorName","closingDate","editWebReca","editSuprema","editPppoker","editBuffalo","editGanamos","editCargasPoker","editCargasCasino"].forEach(id=>$(id)?.addEventListener("input",renderCalculations)); document.addEventListener("bankmoney", renderCalculations); $("togglePendingBtn") && ($("togglePendingBtn").onclick=()=>{ const panel=$("pendingPanel"); panel?.classList.toggle("active"); $("togglePendingBtn").textContent = panel?.classList.contains("active") ? "Ocultar" : "Abrir"; });
+      } applyBankMoneyMaskAll(document); enableClearOnFocus(); ["webReca","suprema","pppoker","buffalo","ganamos","cargasPoker","cargasCasino","quickCargaCasino","quickRetiradaCaixa","operatorName","closingDate","editWebReca","editSuprema","editPppoker","editBuffalo","editGanamos","editCargasPoker","editCargasCasino"].forEach(id=>$(id)?.addEventListener("input",renderCalculations)); document.addEventListener("bankmoney", renderCalculations); $("togglePendingBtn") && ($("togglePendingBtn").onclick=()=>{ const panel=$("pendingPanel"); panel?.classList.toggle("active"); $("togglePendingBtn").textContent = panel?.classList.contains("active") ? "Ocultar" : "Abrir"; });
       $("toggleOutflowBtn") && ($("toggleOutflowBtn").onclick=()=>{ const panel=$("outflowPanel"); panel?.classList.toggle("active"); $("toggleOutflowBtn").textContent = panel?.classList.contains("active") ? "Ocultar" : "Abrir"; });
       $("addPendingBtn").onclick=()=>createDynamicRow("pendingList","Nome / motivo"); $("addOutflowBtn").onclick=()=>createDynamicRow("outflowList","Descrição");
       $("quickChargeBtn") && ($("quickChargeBtn").onclick=addQuickCapitalInjection);
