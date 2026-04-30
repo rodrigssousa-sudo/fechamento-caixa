@@ -694,6 +694,7 @@ import {
   onAuthStateChanged,
   signOut
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+  
 const firebaseConfig = {
   apiKey: "AIzaSyAuyfJNu2vwvVyH5gRsvg82m98teFCmPXw",
   authDomain: "bank-king-c53cf.firebaseapp.com",
@@ -1517,7 +1518,15 @@ function protectApp(){
 document.addEventListener("DOMContentLoaded", async () => {
 
   // 🔐 LOGIN
-  document.getElementById("loginBtn")?.addEventListener("click", loginUser);
+  setTimeout(() => {
+  const btn = document.getElementById("loginBtn");
+  if (btn) {
+    btn.onclick = loginUser;
+    console.log("Login conectado");
+  } else {
+    console.log("Botão NÃO encontrado");
+  }
+}, 500);
   protectApp();
 
   // 🔁 NAVEGAÇÃO
