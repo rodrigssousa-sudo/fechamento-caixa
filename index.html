@@ -5074,9 +5074,8 @@ async function recalculateAllHistory() {
         const data = item.data();
         const turno = data.turno || {};
 
-        const saldoLiquido = Number(calcularSaldoLiquido(turno)) || 0;
-        const currentSaldoTotal = saldoLiquido;
-
+        const saldoLiquido = Number(calcularSaldoCaixa(turno)) || 0;
+const currentSaldoTotal = saldoLiquido;
         const diff =
           previousSaldoTotal === null
             ? 0
