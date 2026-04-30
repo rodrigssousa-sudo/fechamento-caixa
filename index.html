@@ -5070,6 +5070,23 @@ async function recalculateAllHistory() {
             ? 0
             : currentSaldoTotal - previousSaldoTotal;
 
+        console.log("RECALCULANDO HISTÓRICO:", {
+          id: item.id,
+          operador: data.nomeOperador,
+          data: data.fechamentoDate,
+          reca: turno.reca,
+          suprema: turno.suprema,
+          pppoker: turno.pppoker,
+          buffalo: turno.buffalo,
+          ganamos: turno.ganamos,
+          pendentesTotal: turno.pendentesTotal,
+          saidasTotal: turno.saidasTotal,
+          saldoLiquido,
+          previousSaldoTotal,
+          currentSaldoTotal,
+          diff
+        });
+
         await updateDoc(doc(db, "history", item.id), {
           "turno.saldoLiquido": saldoLiquido,
           currentSaldoTotal,
@@ -5079,14 +5096,16 @@ async function recalculateAllHistory() {
 
         previousSaldoTotal = currentSaldoTotal;
       } catch (e) {
-        console.warn("Histórico ignorado no recálculo:", item.id);
+        console.warn("Histórico ignorado no recálculo:", item.id, e);
         continue;
       }
     }
 
+    alert("Histórico recalculado com sucesso.");
     return true;
   } catch (e) {
     console.warn("Recálculo ignorado:", e);
+    alert("Erro ao recalcular histórico.");
     return false;
   }
 }
