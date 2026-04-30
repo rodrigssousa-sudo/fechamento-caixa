@@ -110,8 +110,8 @@
           <div class="field"><label>PPPoker</label><input id="pppoker" class="money-input" inputmode="decimal" placeholder="0,00" /></div>
           <div class="field"><label>Buffalo</label><input id="buffalo" class="money-input" inputmode="decimal" placeholder="0,00" /></div>
           <div class="field"><label>Ganamos</label><input id="ganamos" class="money-input" inputmode="decimal" placeholder="0,00" /></div>
-          <div class="field"><label>Carga fichas poker</label><input id="cargasPoker" class="money-input" inputmode="decimal" placeholder="0,00" /></div>
-          <div class="field"><label>Carga casino</label><input id="cargasCasino" class="money-input" inputmode="decimal" placeholder="0,00" /></div>
+          
+          
         </div>
       </div>
       <div class="grid two">
@@ -155,7 +155,10 @@
             <span>Carga casino: <b id="calcCargaCasino">$ 0,00</b></span>
             <span>Dif. real x sistema: <b id="calcDiferencaReal">$ 0,00</b></span>
           </div>
-          <button id="saveClosingBtn" class="btn full" style="margin-top:16px;">Salvar fechamento</button>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:16px;">
+          <button id="clearClosingBtn" class="btn secondary full">Limpar campos</button>
+          <button id="saveClosingBtn" class="btn full">Salvar fechamento</button>
+        </div>
         </div>
       </div>
 
@@ -420,6 +423,12 @@
       return turno;
     }
     function calcularSaldoLiquido(turno={}){ const webReca=moneyToNumber(turno.webReca??turno.reca??turno.banco??0), suprema=moneyToNumber(turno.suprema??0)*400, pppoker=moneyToNumber(turno.pppoker??0)*400, buffalo=moneyToNumber(turno.buffalo??0), ganamos=moneyToNumber(turno.ganamos??0), cargasPoker=moneyToNumber(turno.cargasPoker??0)*400, cargasCasino=moneyToNumber(turno.cargasCasino??turno.cargas??0), pendentes=moneyToNumber(turno.pendentesTotal??(turno.pendings||[]).reduce((s,x)=>s+moneyToNumber(x.value),0)), saidas=moneyToNumber(turno.saidasTotal??(turno.outflows||[]).reduce((s,x)=>s+moneyToNumber(x.value),0)); return webReca+suprema+pppoker+buffalo+ganamos+cargasPoker+cargasCasino-pendentes+saidas; }
+    function fillOperatorFromProfile(){
+      if($("operatorName") && !$("operatorName").value){
+        $("operatorName").value = profileName() || "";
+      }
+    }
+
     function clearClosingForm(){
       ["operatorName","webReca","saldoRealConferido","suprema","pppoker","buffalo","ganamos","cargasPoker","cargasCasino"].forEach(id=>{
         if($(id)) $(id).value = "";
@@ -428,6 +437,7 @@
       if($("pendingList")) $("pendingList").innerHTML = "";
       if($("outflowList")) $("outflowList").innerHTML = "";
       initDate();
+      fillOperatorFromProfile();
       renderCalculations();
     }
 
@@ -999,7 +1009,12 @@
       });
     }
 
-    function bindEvents(){ applyBankMoneyMaskAll(document); enableClearOnFocus(); ["webReca","saldoRealConferido","suprema","pppoker","buffalo","ganamos","cargasPoker","cargasCasino","quickCargaCasino","operatorName","closingDate","editWebReca","editSuprema","editPppoker","editBuffalo","editGanamos","editCargasPoker","editCargasCasino"].forEach(id=>$(id)?.addEventListener("input",renderCalculations)); document.addEventListener("bankmoney", renderCalculations); $("togglePendingBtn") && ($("togglePendingBtn").onclick=()=>{ const panel=$("pendingPanel"); panel?.classList.toggle("active"); $("togglePendingBtn").textContent = panel?.classList.contains("active") ? "Ocultar" : "Abrir"; });
+    function bindEvents(){
+      // logo volta para início
+      $("logoRefreshBtn").onclick = () => {
+        showScreen("Home");
+        refreshInternal();
+      }; applyBankMoneyMaskAll(document); enableClearOnFocus(); ["webReca","saldoRealConferido","suprema","pppoker","buffalo","ganamos","cargasPoker","cargasCasino","quickCargaCasino","operatorName","closingDate","editWebReca","editSuprema","editPppoker","editBuffalo","editGanamos","editCargasPoker","editCargasCasino"].forEach(id=>$(id)?.addEventListener("input",renderCalculations)); document.addEventListener("bankmoney", renderCalculations); $("togglePendingBtn") && ($("togglePendingBtn").onclick=()=>{ const panel=$("pendingPanel"); panel?.classList.toggle("active"); $("togglePendingBtn").textContent = panel?.classList.contains("active") ? "Ocultar" : "Abrir"; });
       $("toggleOutflowBtn") && ($("toggleOutflowBtn").onclick=()=>{ const panel=$("outflowPanel"); panel?.classList.toggle("active"); $("toggleOutflowBtn").textContent = panel?.classList.contains("active") ? "Ocultar" : "Abrir"; });
       $("addPendingBtn").onclick=()=>createDynamicRow("pendingList","Nome / motivo"); $("addOutflowBtn").onclick=()=>createDynamicRow("outflowList","Descrição");
       $("quickChargeBtn") && ($("quickChargeBtn").onclick=addQuickCapitalInjection);
@@ -1007,7 +1022,8 @@
         const panel = $("quickChargePanel");
         panel?.classList.toggle("active");
         $("toggleQuickChargeBtn").textContent = panel?.classList.contains("active") ? "Ocultar carga rápida" : "Mostrar carga rápida";
-      }); $("saveClosingBtn").onclick=saveClosing; $("refreshBtn").onclick=refreshInternal; $("logoRefreshBtn").onclick=refreshInternal; $("recalculateBtn").onclick=recalculateAllHistory; $("pdfReportBtn").onclick=generateBankPdfReport; $("previewReportBtn").onclick=previewReport; $("generateReportBtn").onclick=generateBankPdfReport; ["reportStart","reportEnd","reportOperator","reportSupervisor"].forEach(id=>$(id)?.addEventListener("input",previewReport)); $("loadUsersBtn").onclick=loadUsers;
+      }); $("clearClosingBtn") && ($("clearClosingBtn").onclick=clearClosingForm);
+      $("saveClosingBtn").onclick=saveClosing; $("refreshBtn").onclick=refreshInternal; // BK já volta para Início e atualiza no começo do bindEvents() $("recalculateBtn").onclick=recalculateAllHistory; $("pdfReportBtn").onclick=generateBankPdfReport; $("previewReportBtn").onclick=previewReport; $("generateReportBtn").onclick=generateBankPdfReport; ["reportStart","reportEnd","reportOperator","reportSupervisor"].forEach(id=>$(id)?.addEventListener("input",previewReport)); $("loadUsersBtn").onclick=loadUsers;
       $("toggleCreateUserBtn") && ($("toggleCreateUserBtn").onclick=()=>{
         const panel = $("createUserPanel");
         panel?.classList.toggle("active");
@@ -1031,7 +1047,7 @@
     onAuthStateChanged(auth,async(user)=>{ currentUser=user; if(!user){$("loginScreen").classList.remove("hidden");$("appShell").classList.add("hidden");$("bottomNav").classList.add("hidden");return;} currentProfile=await loadProfile(user); if(currentProfile.blocked){await signOut(auth);return alert("Usuário bloqueado.");} if(currentProfile.approved===false){$("loginScreen").classList.remove("hidden");$("appShell").classList.add("hidden");$("bottomNav").classList.add("hidden");showNotice("loginNotice","Usuário aguardando aprovação do admin.","error");return;} $("loginScreen").classList.add("hidden");$("appShell").classList.remove("hidden");$("bottomNav").classList.remove("hidden");$("topUserLabel").textContent=`${currentProfile.name||user.email} • ${isAdmin()?"Admin":isSupervisor()?"Supervisor":"Operador"}`; $("adminStatus").textContent=isAdmin()?"Admin ativo":"Somente admin";
       if($("moreAdminBtn")) $("moreAdminBtn").style.display = isAdmin() ? "flex" : "none";
 
-      updateRoleVisibility(); if(currentProfile.permissionError) showNotice("appNotice","Seu login entrou, mas o Firestore negou acesso ao perfil. Ajuste as regras ou coloque seu email em BOOTSTRAP_ADMIN_EMAILS.","error"); startHistoryRealtimeListener(); startSystemRealtime(); renderAll(); });
+      updateRoleVisibility(); if(currentProfile.permissionError) showNotice("appNotice","Seu login entrou, mas o Firestore negou acesso ao perfil. Ajuste as regras ou coloque seu email em BOOTSTRAP_ADMIN_EMAILS.","error"); startHistoryRealtimeListener(); startSystemRealtime(); fillOperatorFromProfile(); renderAll(); });
 
     function runSelfTests(){ const tests=[]; const assert=(name,cond)=>tests.push({name,pass:!!cond}); assert("money BR",moneyToNumber("1.234,56")===1234.56); assert("money US",moneyToNumber("1,234.56")===1234.56); assert("calc multipliers",calcularSaldoLiquido({webReca:100,suprema:1,pppoker:2,buffalo:10,ganamos:20,cargasPoker:1,cargasCasino:5,pendentesTotal:15,saidasTotal:7})===1327); assert("operator access own",(()=>{currentUser={uid:"u1",email:"a@a.com"};currentProfile={name:"Ana",role:"operator"};return canAccessHistoryItem({createdBy:"u1",turno:{}});})()); console.table(tests); return tests; }
     window.BankKingTests={runSelfTests,moneyToNumber,calcularSaldoLiquido};
