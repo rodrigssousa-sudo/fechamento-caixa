@@ -3,51 +3,86 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-  <title>Bank King V2</title>
+  <title>Bank King Dashboard V2</title>
 
   <style>
     :root{
-      --bg:#eef4ff; --card:#ffffff; --text:#07152f; --muted:#64748b;
-      --border:rgba(15,42,107,.12); --primary:#006BFF; --primary-dark:#0B1F4D;
-      --primary-deep:#06152e; --gold:#d6b46a; --success:#10b981; --danger:#ef4444;
-      --warning:#f59e0b; --shadow:0 18px 45px rgba(15,42,107,.12);
-      --radius:24px; --bottom:86px;
+      --bg:#eef4ff;
+      --card:#ffffff;
+      --text:#07152f;
+      --muted:#64748b;
+      --border:rgba(15,42,107,.12);
+      --primary:#006BFF;
+      --primary-dark:#0B1F4D;
+      --primary-deep:#06152e;
+      --gold:#d6b46a;
+      --success:#10b981;
+      --danger:#ef4444;
+      --warning:#f59e0b;
+      --shadow:0 18px 45px rgba(15,42,107,.12);
+      --radius:24px;
+      --bottom:86px;
     }
+
     *{box-sizing:border-box}
     html,body{margin:0;min-height:100%;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Inter,Arial,sans-serif;background:var(--bg);color:var(--text)}
     body{padding:env(safe-area-inset-top) 0 env(safe-area-inset-bottom)}
-    button,input,select,textarea{font-family:inherit} button{border:0;cursor:pointer}.hidden{display:none!important}
+    button,input,select,textarea{font-family:inherit}
+    button{border:0;cursor:pointer}
+    .hidden{display:none!important}
+
     .app-shell{min-height:100vh;padding:16px 14px calc(var(--bottom) + 18px);max-width:980px;margin:0 auto}
+
     .topbar{position:sticky;top:0;z-index:50;display:flex;align-items:center;justify-content:space-between;gap:12px;padding:10px 2px 14px;background:linear-gradient(180deg,rgba(238,244,255,.96),rgba(238,244,255,.76));backdrop-filter:blur(18px)}
-    .brand{display:flex;align-items:center;gap:10px}.logo-box{width:48px;height:48px;border-radius:16px;background:linear-gradient(145deg,#0F2A6B,#006BFF);color:white;display:flex;align-items:center;justify-content:center;font-weight:950;box-shadow:0 16px 36px rgba(0,107,255,.25);cursor:pointer;transition:.18s ease}.logo-box:active{transform:scale(.95)}
-    .brand h1{font-size:18px;margin:0;font-weight:950;letter-spacing:-.4px}.brand span{display:block;font-size:12px;color:var(--muted);font-weight:700;margin-top:2px}.top-actions{display:flex;gap:8px}.icon-btn{width:42px;height:42px;border-radius:14px;background:rgba(255,255,255,.82);box-shadow:0 10px 28px rgba(15,42,107,.08);color:var(--primary-dark);font-weight:950;border:1px solid var(--border)}
-    .screen{display:none;animation:fadeUp .25s ease}.screen.active{display:block}@keyframes fadeUp{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+    .brand{display:flex;align-items:center;gap:10px}
+    .logo-box{width:48px;height:48px;border-radius:16px;background:linear-gradient(145deg,#0F2A6B,#006BFF);color:white;display:flex;align-items:center;justify-content:center;font-weight:950;box-shadow:0 16px 36px rgba(0,107,255,.25);cursor:pointer;transition:.18s ease}
+    .logo-box:active{transform:scale(.95)}
+    .brand h1{font-size:18px;margin:0;font-weight:950;letter-spacing:-.4px}
+    .brand span{display:block;font-size:12px;color:var(--muted);font-weight:700;margin-top:2px}
+    .top-actions{display:flex;gap:8px}
+    .icon-btn{width:42px;height:42px;border-radius:14px;background:rgba(255,255,255,.82);box-shadow:0 10px 28px rgba(15,42,107,.08);color:var(--primary-dark);font-weight:950;border:1px solid var(--border)}
+
+    .screen{display:none;animation:fadeUp .25s ease}.screen.active{display:block}
+    @keyframes fadeUp{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+
     .hero-card{border-radius:34px;padding:24px;background:radial-gradient(circle at 85% 8%,rgba(214,180,106,.22),transparent 30%),radial-gradient(circle at 18% 12%,rgba(59,130,246,.32),transparent 34%),linear-gradient(145deg,#020817,#06152e 48%,#0B1F4D);color:#fff;box-shadow:0 32px 90px rgba(2,8,23,.28);overflow:hidden;position:relative;border:1px solid rgba(255,255,255,.10)}
-    .hero-card:after{content:"";position:absolute;width:170px;height:170px;border-radius:50%;background:rgba(255,255,255,.08);right:-60px;bottom:-70px;filter:blur(2px)}.hero-label{font-size:13px;font-weight:800;opacity:.78}.hero-value{font-size:36px;font-weight:950;letter-spacing:-1.5px;margin:7px 0 4px;text-shadow:0 8px 26px rgba(0,0,0,.22)}.hero-sub{font-size:12px;font-weight:800;opacity:.78}.hero-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:18px;position:relative;z-index:2}.hero-mini{background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.16);border-radius:20px;padding:12px;backdrop-filter:blur(10px)}.hero-mini span{display:block;font-size:11px;opacity:.75;font-weight:800}.hero-mini strong{display:block;margin-top:4px;font-size:15px;font-weight:950}
-    .grid{display:grid;gap:12px;margin-top:14px}.grid.two{grid-template-columns:1fr 1fr}.grid.three{grid-template-columns:repeat(3,1fr)}.card{background:linear-gradient(180deg,rgba(255,255,255,.98),rgba(248,251,255,.96));border:1px solid rgba(15,42,107,.10);border-radius:var(--radius);padding:17px;box-shadow:var(--shadow);backdrop-filter:blur(10px)}.card-title{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;gap:10px}.card-title h2{margin:0;font-size:16px;font-weight:950;letter-spacing:-.3px}.card-title span{font-size:12px;color:var(--muted);font-weight:800}.metric{font-size:24px;font-weight:950;letter-spacing:-.7px}.metric.good{color:var(--success)}.metric.bad{color:var(--danger)}.muted{color:var(--muted);font-size:12px;font-weight:750}
-    .notice{border-radius:18px;padding:12px 14px;background:#fff7ed;border:1px solid #fed7aa;color:#9a3412;font-size:12px;font-weight:800;margin:12px 0}
-    .summary-panel{padding:0;overflow:hidden;border-radius:28px;background:linear-gradient(180deg,#ffffff,#f8fbff)}
-    .summary-head{padding:18px;background:linear-gradient(145deg,#06152e,#0B1F4D);color:#fff;display:flex;justify-content:space-between;align-items:flex-start;gap:12px}
-    .summary-head h2{margin:0;font-size:17px;font-weight:950;letter-spacing:-.3px}.summary-head span{font-size:12px;color:rgba(255,255,255,.72);font-weight:800}.summary-live{border-radius:999px;padding:7px 10px;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.14);font-size:11px;font-weight:950;color:#dbeafe;white-space:nowrap}
-    .summary-main{padding:18px}.summary-total{border-radius:24px;padding:18px;background:radial-gradient(circle at 90% 0%,rgba(0,107,255,.18),transparent 34%),linear-gradient(180deg,#f8fbff,#ffffff);border:1px solid rgba(0,107,255,.10)}.summary-total span{display:block;font-size:12px;color:var(--muted);font-weight:900}.summary-total strong{display:block;margin-top:6px;font-size:32px;font-weight:950;letter-spacing:-1.2px;color:#06152e}
-    .summary-breakdown{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-top:12px}.summary-box{border-radius:18px;padding:13px;background:#fff;border:1px solid rgba(15,42,107,.09);box-shadow:0 10px 24px rgba(15,42,107,.05)}.summary-box span{display:block;font-size:11px;color:var(--muted);font-weight:900}.summary-box b{display:block;margin-top:5px;font-size:15px;font-weight:950}.summary-box.danger b{color:var(--danger)}.summary-box.good b{color:var(--success)}.summary-box.gold b{color:#a16207}
-    .summary-note{margin-top:12px;border-radius:16px;padding:11px 12px;background:#eef4ff;color:#0B1F4D;font-size:12px;font-weight:850;display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap}
-    .goal-card{margin-top:14px;border-radius:24px;padding:16px;background:linear-gradient(145deg,#ffffff,#f8fbff);border:1px solid rgba(15,42,107,.10);box-shadow:0 14px 34px rgba(15,42,107,.08)}
-    .goal-top{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin-bottom:12px}.goal-top h2{margin:0;font-size:16px;font-weight:950;letter-spacing:-.3px}.goal-top span{display:block;margin-top:3px;color:var(--muted);font-size:12px;font-weight:800}.goal-badge{border-radius:999px;padding:7px 10px;background:#eef4ff;color:#0B1F4D;font-size:11px;font-weight:950;white-space:nowrap}.goal-values{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px}.goal-box{border-radius:18px;padding:12px;background:#fff;border:1px solid rgba(15,42,107,.08)}.goal-box span{display:block;font-size:11px;color:var(--muted);font-weight:900}.goal-box b{display:block;margin-top:5px;font-size:17px;font-weight:950}.goal-bar{height:13px;border-radius:999px;background:#e8eef8;overflow:hidden;border:1px solid rgba(15,42,107,.06)}.goal-fill{height:100%;width:0%;border-radius:999px;background:linear-gradient(90deg,#006BFF,#10b981);transition:width .35s ease}.goal-footer{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;margin-top:9px;color:var(--muted);font-size:12px;font-weight:850}.notice.ok{background:#ecfdf5;border-color:#bbf7d0;color:#166534}.notice.error{background:#fef2f2;border-color:#fecaca;color:#991b1b}
-    .form-grid{display:grid;gap:12px}.field label{display:block;font-size:12px;font-weight:900;color:#334155;margin:0 0 7px}.money-input{font-variant-numeric:tabular-nums;text-align:right;letter-spacing:.2px}.field input,.field select{width:100%;height:48px;border-radius:16px;border:1px solid var(--border);background:#f8fbff;padding:0 14px;font-weight:850;color:var(--text);outline:0;font-size:16px}.field textarea{width:100%;min-height:88px;border-radius:16px;border:1px solid var(--border);background:#f8fbff;padding:12px 14px;font-weight:750;outline:0;resize:vertical}.field input:focus,.field select:focus,.field textarea:focus{border-color:rgba(0,107,255,.45);box-shadow:0 0 0 4px rgba(0,107,255,.08)}
+    .hero-card:after{content:"";position:absolute;width:170px;height:170px;border-radius:50%;background:rgba(255,255,255,.08);right:-60px;bottom:-70px;filter:blur(2px)}
+    .hero-label{font-size:13px;font-weight:800;opacity:.78}
+    .hero-value{font-size:36px;font-weight:950;letter-spacing:-1.5px;margin:7px 0 4px;text-shadow:0 8px 26px rgba(0,0,0,.22)}
+    .hero-sub{font-size:12px;font-weight:800;opacity:.78}
+    .hero-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:18px;position:relative;z-index:2}
+    .hero-mini{background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.16);border-radius:20px;padding:12px;backdrop-filter:blur(10px)}
+    .hero-mini span{display:block;font-size:11px;opacity:.75;font-weight:800}.hero-mini strong{display:block;margin-top:4px;font-size:15px;font-weight:950}
+
+    .grid{display:grid;gap:12px;margin-top:14px}.grid.two{grid-template-columns:1fr 1fr}.grid.three{grid-template-columns:repeat(3,1fr)}
+    .card{background:linear-gradient(180deg,rgba(255,255,255,.98),rgba(248,251,255,.96));border:1px solid rgba(15,42,107,.10);border-radius:var(--radius);padding:17px;box-shadow:var(--shadow);backdrop-filter:blur(10px)}
+    .card-title{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;gap:10px}
+    .card-title h2{margin:0;font-size:16px;font-weight:950;letter-spacing:-.3px}.card-title span{font-size:12px;color:var(--muted);font-weight:800}
+    .metric{font-size:24px;font-weight:950;letter-spacing:-.7px}.metric.good{color:var(--success)}.metric.bad{color:var(--danger)}
+    .muted{color:var(--muted);font-size:12px;font-weight:750}
+
+    .form-grid{display:grid;gap:12px}.field label{display:block;font-size:12px;font-weight:900;color:#334155;margin:0 0 7px}.money-input{font-variant-numeric:tabular-nums;text-align:right;letter-spacing:.2px}.field input,.field select{width:100%;height:48px;border-radius:16px;border:1px solid var(--border);background:#f8fbff;padding:0 14px;font-weight:850;color:var(--text);outline:0}.field textarea{width:100%;min-height:88px;border-radius:16px;border:1px solid var(--border);background:#f8fbff;padding:12px 14px;font-weight:750;outline:0;resize:vertical}.field input:focus,.field select:focus,.field textarea:focus{border-color:rgba(0,107,255,.45);box-shadow:0 0 0 4px rgba(0,107,255,.08)}
+
     .btn{height:48px;border-radius:16px;padding:0 16px;font-weight:950;background:var(--primary);color:#fff;box-shadow:0 14px 30px rgba(0,107,255,.24);display:inline-flex;align-items:center;justify-content:center;gap:8px}.btn.secondary{background:#fff;color:var(--primary-dark);border:1px solid var(--border);box-shadow:0 10px 24px rgba(15,42,107,.08)}.btn.danger{background:var(--danger)}.btn.full{width:100%}.btn:active{transform:scale(.985)}
-    .dynamic-list{display:grid;gap:8px}.row-item{display:grid;grid-template-columns:1fr 150px 40px;gap:8px;align-items:center}.row-item.outflow-row{grid-template-columns:1fr 150px 150px 40px}.row-item input,.row-item select{height:44px;border-radius:14px;border:1px solid var(--border);padding:0 12px;background:#f8fbff;font-weight:800;color:var(--text);outline:0;font-size:16px}.row-item select{appearance:none;background-image:linear-gradient(45deg,transparent 50%,#64748b 50%),linear-gradient(135deg,#64748b 50%,transparent 50%);background-position:calc(100% - 16px) 18px,calc(100% - 11px) 18px;background-size:5px 5px,5px 5px;background-repeat:no-repeat;padding-right:28px}.remove-row{height:40px;border-radius:13px;background:#fee2e2;color:#991b1b;font-weight:950}
-    .history-tools{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px}.history-list{display:grid;gap:10px}.history-item{background:#fff;border:1px solid var(--border);border-radius:20px;padding:14px;box-shadow:0 10px 24px rgba(15,42,107,.06)}.history-top{display:flex;justify-content:space-between;gap:10px;margin-bottom:8px}.history-top strong{font-size:14px}.history-top span{font-size:12px;color:var(--muted);font-weight:800}.history-values{display:grid;grid-template-columns:1fr 1fr;gap:8px;font-size:12px}.history-values b{display:block;font-size:15px;margin-top:3px}.history-actions{display:flex;gap:8px;margin-top:10px;flex-wrap:wrap}.small-btn{height:34px;border-radius:12px;padding:0 10px;font-size:12px;font-weight:950;background:#eef4ff;color:#0F2A6B}.small-btn.danger{background:#fee2e2;color:#991b1b}
+
+    .dynamic-list{display:grid;gap:8px}.row-item{display:grid;grid-template-columns:1fr 150px 130px 40px;gap:8px;align-items:center}.row-item.outflow-row{grid-template-columns:1fr 150px 130px 40px}.row-type{height:44px;border-radius:14px;border:1px solid var(--border);padding:0 10px;background:#f8fbff;font-weight:850;color:#07152f}.row-item input{height:44px;border-radius:14px;border:1px solid var(--border);padding:0 12px;background:#f8fbff;font-weight:800}.remove-row{height:40px;border-radius:13px;background:#fee2e2;color:#991b1b;font-weight:950}
+
+    .history-tools{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px}.history-list{display:grid;gap:10px}.history-item{background:#fff;border:1px solid var(--border);border-radius:20px;padding:14px;box-shadow:0 10px 24px rgba(15,42,107,.06)}.history-top{display:flex;justify-content:space-between;gap:10px;margin-bottom:8px}.history-top strong{font-size:14px}.history-top span{font-size:12px;color:var(--muted);font-weight:800}.history-values{display:grid;grid-template-columns:1fr 1fr;gap:8px;font-size:12px}.history-values b{display:block;font-size:15px;margin-top:3px}.history-actions{display:flex;gap:8px;margin-top:10px}.small-btn{height:34px;border-radius:12px;padding:0 10px;font-size:12px;font-weight:950;background:#eef4ff;color:#0F2A6B}.small-btn.danger{background:#fee2e2;color:#991b1b}
+
     .rank-tabs{display:flex;gap:8px;overflow:auto;margin-bottom:12px}.rank-tabs button{height:38px;border-radius:13px;padding:0 14px;background:#fff;color:var(--primary-dark);font-weight:950;border:1px solid var(--border);white-space:nowrap}.rank-tabs button.active{background:var(--primary);color:#fff}.rank-list{display:grid;gap:12px}.rank-item{background:#fff;border:1px solid var(--border);border-radius:20px;padding:14px;box-shadow:0 10px 24px rgba(15,42,107,.06)}.rank-head{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:10px}.rank-left{display:flex;align-items:center;gap:10px}.rank-pos{width:34px;height:34px;border-radius:13px;background:#eef4ff;display:flex;align-items:center;justify-content:center;font-weight:950;color:var(--primary-dark)}.rank-name{font-weight:950;font-size:14px}.rank-meta{font-size:11px;color:var(--muted);font-weight:850;margin-top:2px}.rank-value{font-size:15px;font-weight:950;white-space:nowrap}.rank-bar{height:13px;border-radius:999px;background:#e8eef8;overflow:hidden;border:1px solid rgba(15,42,107,.06)}.rank-fill{height:100%;width:0%;border-radius:999px;transition:width .35s ease}.rank-fill.good{background:linear-gradient(90deg,#006BFF,#10b981)}.rank-fill.bad{background:linear-gradient(90deg,#ef4444,#f97316)}.rank-footer{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;margin-top:8px;color:var(--muted);font-size:11px;font-weight:850}
+
     .admin-grid{display:grid;gap:12px}.user-item{display:grid;grid-template-columns:1fr auto;align-items:center;gap:12px;background:#fff;border:1px solid var(--border);border-radius:18px;padding:12px}.user-item strong{font-size:13px}.user-actions{display:grid;grid-template-columns:150px 150px 110px;gap:8px;align-items:center}.user-actions select,.user-actions button{height:38px;border-radius:13px;font-size:12px;font-weight:950}.user-actions select{border:1px solid var(--border);background:#eef4ff;color:#0F2A6B;padding:0 10px;outline:0}.admin-create-panel{display:none}.admin-create-panel.active{display:block}.admin-toggle{height:38px;border-radius:13px;background:#eef4ff;color:#0F2A6B;font-size:12px;font-weight:950;padding:0 12px}@media(max-width:640px){.user-item{grid-template-columns:1fr}.user-actions{grid-template-columns:1fr}.user-actions select,.user-actions button{width:100%}}.badge{font-size:11px;font-weight:950;border-radius:999px;padding:5px 8px;background:#eef4ff;color:#0F2A6B}.badge.ok{background:#dcfce7;color:#166534}.badge.off{background:#fee2e2;color:#991b1b}
+
     .bottom-nav{position:fixed;left:50%;bottom:calc(10px + env(safe-area-inset-bottom));transform:translateX(-50%);width:min(960px,calc(100% - 20px));height:72px;border-radius:26px;background:rgba(255,255,255,.88);backdrop-filter:blur(22px);box-shadow:0 24px 80px rgba(15,42,107,.18);border:1px solid rgba(255,255,255,.78);display:grid;grid-template-columns:repeat(6,1fr);z-index:80;padding:7px}.nav-btn{border-radius:19px;background:transparent;color:#64748b;font-weight:950;font-size:11px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px}.nav-btn b{font-size:18px;line-height:1}.nav-btn.active{background:linear-gradient(145deg,#0F2A6B,#006BFF);color:#fff;box-shadow:0 12px 28px rgba(0,107,255,.23)}
-    .login-screen{position:fixed;inset:0;z-index:100000;background:linear-gradient(180deg,#06152e,#0F2A6B 55%,#006BFF);display:flex;align-items:center;justify-content:center;padding:18px;color:#fff}.login-card{width:min(410px,100%);background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.18);backdrop-filter:blur(20px);border-radius:30px;padding:24px;box-shadow:0 30px 90px rgba(0,0,0,.26)}.login-logo{width:76px;height:76px;border-radius:24px;background:#fff;color:#006BFF;display:flex;align-items:center;justify-content:center;font-size:26px;font-weight:950;margin:0 auto 14px}.login-card h1{text-align:center;margin:0;font-size:28px}.login-card p{text-align:center;opacity:.78;font-weight:700;margin:6px 0 22px}.login-card input{width:100%;height:52px;margin-bottom:10px;border-radius:17px;border:1px solid rgba(255,255,255,.18);background:rgba(255,255,255,.12);color:#fff;padding:0 14px;font-weight:850;outline:0;font-size:16px}.login-card input::placeholder{color:rgba(255,255,255,.62)}
+
+    .login-screen{position:fixed;inset:0;z-index:100000;background:linear-gradient(180deg,#06152e,#0F2A6B 55%,#006BFF);display:flex;align-items:center;justify-content:center;padding:18px;color:#fff}.login-card{width:min(390px,100%);background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.18);backdrop-filter:blur(20px);border-radius:30px;padding:24px;box-shadow:0 30px 90px rgba(0,0,0,.26)}.login-logo{width:76px;height:76px;border-radius:24px;background:#fff;color:#006BFF;display:flex;align-items:center;justify-content:center;font-size:26px;font-weight:950;margin:0 auto 14px}.login-card h1{text-align:center;margin:0;font-size:28px}.login-card p{text-align:center;opacity:.78;font-weight:700;margin:6px 0 22px}.login-card input{width:100%;height:52px;margin-bottom:10px;border-radius:17px;border:1px solid rgba(255,255,255,.18);background:rgba(255,255,255,.12);color:#fff;padding:0 14px;font-weight:850;outline:0}.login-card input::placeholder{color:rgba(255,255,255,.62)}
+
     .app-splash,.app-reload-loader{position:fixed;inset:0;z-index:999999;display:flex;align-items:center;justify-content:center;background:radial-gradient(circle at 50% 20%,rgba(59,130,246,.45),transparent 38%),linear-gradient(180deg,#06152e,#0b2f7a 55%,#006BFF);color:#fff;transition:.7s ease}.app-splash.hide{opacity:0;transform:scale(1.04);pointer-events:none}.splash-content{text-align:center;animation:splashEnter .9s cubic-bezier(.2,.9,.2,1)}.splash-logo{width:86px;height:86px;margin:0 auto 18px;border-radius:26px;display:flex;align-items:center;justify-content:center;background:linear-gradient(145deg,#fff,#dbeafe);color:#0052cc;font-size:28px;font-weight:950;box-shadow:0 24px 60px rgba(0,0,0,.35)}.splash-content h1{margin:0;font-size:30px;font-weight:950}.splash-content p{margin:6px 0 24px;font-size:14px;font-weight:800;opacity:.78}.splash-loader{width:150px;height:5px;margin:0 auto;border-radius:999px;background:rgba(255,255,255,.18);overflow:hidden}.splash-loader span{display:block;width:45%;height:100%;border-radius:999px;background:#fff;animation:loaderMove 1.1s ease-in-out infinite}.app-reload-loader{z-index:999998;background:rgba(3,12,30,.62);backdrop-filter:blur(14px);display:none}.app-reload-loader.active{display:flex}.reload-card{width:min(320px,88vw);padding:28px 22px;border-radius:26px;background:linear-gradient(180deg,rgba(255,255,255,.96),rgba(240,246,255,.94));box-shadow:0 30px 80px rgba(0,0,0,.28);border:1px solid rgba(255,255,255,.65);text-align:center;color:#07152f}.reload-spinner{width:48px;height:48px;margin:0 auto 16px;border-radius:50%;border:4px solid rgba(0,107,255,.16);border-top-color:#006BFF;animation:spin .8s linear infinite}.reload-card strong{display:block;font-size:17px;font-weight:950}.reload-card span{display:block;font-size:13px;color:#64748b;font-weight:800;margin-top:6px}
     @keyframes splashEnter{from{opacity:0;transform:translateY(18px) scale(.96)}to{opacity:1;transform:translateY(0) scale(1)}}@keyframes loaderMove{0%{transform:translateX(-120%)}100%{transform:translateX(260%)}}@keyframes spin{to{transform:rotate(360deg)}}
-    .receipt-modal{position:fixed;inset:0;z-index:1000000;background:rgba(2,8,23,.62);backdrop-filter:blur(16px);display:none;align-items:center;justify-content:center;padding:16px}.receipt-modal.active{display:flex}.receipt-panel{width:min(560px,100%);max-height:88vh;overflow:auto;background:linear-gradient(180deg,#fff,#f8fbff);border-radius:30px;padding:22px;box-shadow:0 35px 100px rgba(0,0,0,.32);border:1px solid rgba(255,255,255,.8)}.receipt-head{display:flex;align-items:center;justify-content:space-between;gap:12px;border-bottom:1px solid #e8eef8;padding-bottom:14px;margin-bottom:14px}.receipt-brand{display:flex;align-items:center;gap:12px}.receipt-logo{width:50px;height:50px;border-radius:16px;background:linear-gradient(145deg,#0B1F4D,#006BFF);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:950}.receipt-head h2{margin:0;font-size:18px;font-weight:950}.receipt-head span{display:block;color:#64748b;font-size:12px;font-weight:800;margin-top:2px}.receipt-close{width:40px;height:40px;border-radius:14px;background:#eef4ff;color:#0B1F4D;font-weight:950}.receipt-total{border-radius:24px;padding:18px;background:linear-gradient(145deg,#020817,#06152e 48%,#0B1F4D);color:#fff;margin-bottom:14px}.receipt-total span{display:block;font-size:12px;font-weight:800;opacity:.72}.receipt-total strong{display:block;font-size:30px;font-weight:950;letter-spacing:-1px;margin-top:5px}.receipt-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}.receipt-row{border-radius:16px;background:#fff;border:1px solid #e8eef8;padding:12px}.receipt-row span{display:block;color:#64748b;font-size:11px;font-weight:900}.receipt-row b{display:block;margin-top:5px;font-size:15px;font-weight:950}.receipt-section{margin-top:14px}.receipt-section h3{font-size:13px;margin:0 0 8px;font-weight:950;color:#0B1F4D}.receipt-list{display:grid;gap:7px}.receipt-line{display:flex;justify-content:space-between;gap:10px;border-radius:14px;background:#fff;border:1px solid #e8eef8;padding:10px;font-size:12px;font-weight:850}.receipt-footer{margin-top:16px;border-top:1px solid #e8eef8;padding-top:12px;display:flex;justify-content:space-between;gap:10px;color:#64748b;font-size:11px;font-weight:850}.receipt-actions{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:14px}@media(max-width:520px){.receipt-grid{grid-template-columns:1fr}.receipt-actions{grid-template-columns:1fr}}
-    .edit-modal{position:fixed;inset:0;z-index:1000000;background:rgba(2,8,23,.62);backdrop-filter:blur(16px);display:none;align-items:center;justify-content:center;padding:16px}.edit-modal.active{display:flex}.edit-panel{width:min(760px,100%);max-height:88vh;overflow:auto;background:#fff;border-radius:28px;padding:20px;box-shadow:0 35px 100px rgba(0,0,0,.32)}.edit-panel-head{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:14px}.edit-panel-head h2{margin:0;font-size:18px;font-weight:950}.edit-close{width:40px;height:40px;border-radius:14px;background:#eef4ff;color:#0B1F4D;font-weight:950}.edit-actions{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:14px}
+
     @media(min-width:760px){.form-grid{grid-template-columns:repeat(2,1fr)}.admin-grid{grid-template-columns:1fr 1fr}.history-tools{grid-template-columns:1fr 1fr 150px 150px}.hero-value{font-size:42px}}
-    @media(max-width:520px){.summary-breakdown{grid-template-columns:1fr 1fr}.summary-total strong{font-size:27px}.grid.two,.grid.three{grid-template-columns:1fr}.row-item,.row-item.outflow-row{grid-template-columns:1fr}.remove-row{width:100%}.hero-grid{grid-template-columns:1fr}.brand h1{font-size:16px}.bottom-nav{height:70px}.nav-btn{font-size:10px}.edit-actions{grid-template-columns:1fr}.edit-panel{padding:16px;border-radius:24px}}
+    @media(max-width:420px){.grid.two,.grid.three{grid-template-columns:1fr}.row-item,.row-item.outflow-row{grid-template-columns:1fr}.remove-row{width:100%}.hero-grid{grid-template-columns:1fr}.brand h1{font-size:16px}.bottom-nav{height:70px}.nav-btn{font-size:10px}}
+  .edit-modal{position:fixed;inset:0;z-index:1000000;background:rgba(2,8,23,.62);backdrop-filter:blur(16px);display:none;align-items:center;justify-content:center;padding:16px}.edit-modal.active{display:flex}.edit-panel{width:min(760px,100%);max-height:88vh;overflow:auto;background:#fff;border-radius:28px;padding:20px;box-shadow:0 35px 100px rgba(0,0,0,.32)}.edit-panel-head{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:14px}.edit-panel-head h2{margin:0;font-size:18px;font-weight:950}.edit-close{width:40px;height:40px;border-radius:14px;background:#eef4ff;color:#0B1F4D;font-weight:950}.edit-actions{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:14px}@media(max-width:520px){.edit-actions{grid-template-columns:1fr}.edit-panel{padding:16px;border-radius:24px}}
   </style>
 </head>
 <body>
@@ -56,55 +91,64 @@
     <div class="login-card">
       <div class="login-logo">BK</div>
       <h1>Bank King</h1>
-      <p>Relatório financeiro</p>
-      <div id="loginNotice" class="notice hidden"></div>
+      <p>Dashboard financeiro premium</p>
       <input id="loginEmail" type="email" placeholder="Email" autocomplete="email" />
       <input id="loginPassword" type="password" placeholder="Senha" autocomplete="current-password" />
-      <button id="loginBtn" class="btn full">Entrar</button>
-      <button id="registerBtn" class="btn secondary full" style="margin-top:10px;">Criar conta / solicitar acesso</button>
+      <button id="loginBtn" class="btn full">Entrar no sistema</button>
+      <button id="registerBtn" class="btn secondary full" style="margin-top:10px;">Criar primeira conta / solicitar acesso</button>
       <button id="resetPasswordBtn" class="btn secondary full" style="margin-top:10px;">Recuperar senha</button>
     </div>
   </div>
 
   <div id="appSplash" class="app-splash">
-    <div class="splash-content"><div class="splash-logo">BK</div><h1>Bank King</h1><p>Controle Financeiro</p><div class="splash-loader"><span></span></div></div>
+    <div class="splash-content">
+      <div class="splash-logo">BK</div>
+      <h1>Bank King</h1>
+      <p>Controle Financeiro</p>
+      <div class="splash-loader"><span></span></div>
+    </div>
   </div>
 
   <main id="appShell" class="app-shell hidden">
     <header class="topbar">
-      <div class="brand"><div class="logo-box" id="logoRefreshBtn">BK</div><div><h1>Bank King</h1><span id="topUserLabel">Sistema financeiro</span></div></div>
-      <div class="top-actions"><button id="refreshBtn" class="icon-btn" title="Atualizar">↻</button><button id="logoutBtn" class="icon-btn" title="Sair">⎋</button></div>
+      <div class="brand">
+        <div class="logo-box" id="logoRefreshBtn">BK</div>
+        <div>
+          <h1>Bank King</h1>
+          <span id="topUserLabel">Sistema financeiro</span>
+        </div>
+      </div>
+      <div class="top-actions">
+        <button id="refreshBtn" class="icon-btn" title="Atualizar">↻</button>
+        <button id="logoutBtn" class="icon-btn" title="Sair">⎋</button>
+      </div>
     </header>
-    <div id="appNotice" class="notice hidden"></div>
 
     <section id="screenHome" class="screen active">
       <div class="hero-card">
-        <div class="hero-label">Saldo Reca</div><div id="homeSaldoReca" class="hero-value">$ 0,00</div><div id="homeUpdatedAt" class="hero-sub">Aguardando atualização</div>
-        <div class="hero-grid"><div class="hero-mini"><span>Diferença do turno</span><strong id="homeDiff">$ 0,00</strong></div><div class="hero-mini"><span>Operador atual</span><strong id="homeOperator">-</strong></div><div class="hero-mini"><span>Último fechamento</span><strong id="homeLastClose">-</strong></div><div class="hero-mini"><span>Status</span><strong id="homeStatus">Online</strong></div></div>
-      </div>
-      <div class="grid two">
-        <div class="card"><div class="card-title"><h2>Saldo líquido</h2><span>Atual</span></div><div id="homeSaldoLiquido" class="metric">$ 0,00</div><div class="muted">Fechamento atual</div></div>
-        <div class="card"><div class="card-title"><h2>Pendentes</h2><span>Total</span></div><div id="homePendentes" class="metric bad">$ 0,00</div><div class="muted">Pagos pendentes</div></div>  
+        <div class="hero-label">Saldo Reca</div>
+        <div id="homeSaldoReca" class="hero-value">$ 0,00</div>
+        <div id="homeUpdatedAt" class="hero-sub">Aguardando atualização</div>
+        <div id="metaMensalCard" class="hero-mini" style="grid-column:1/-1; display:none;">
+            <span>Meta mensal</span>
+            <strong id="metaMensalValor">$ 0,00</strong>
+            <div class="muted" id="metaMensalProgresso">0% atingido</div>
+          </div>
+          <div class="hero-grid">
+          <div class="hero-mini"><span>Diferença do turno</span><strong id="homeDiff">$ 0,00</strong></div>
+          <div class="hero-mini"><span>Operador atual</span><strong id="homeOperator">-</strong></div>
+          <div class="hero-mini"><span>Último fechamento</span><strong id="homeLastClose">-</strong></div>
+          <div class="hero-mini"><span>Status</span><strong id="homeStatus">Online</strong></div>
+        </div>
       </div>
 
-      <div id="monthlyGoalCard" class="goal-card hidden">
-        <div class="goal-top">
-          <div>
-            <h2>Meta mensal</h2>
-            <span>Visível para admin e supervisor</span>
-          </div>
-          <div id="monthlyGoalPercent" class="goal-badge">0%</div>
-        </div>
-        <div class="goal-values">
-          <div class="goal-box"><span>Realizado no mês</span><b id="monthlyGoalDone">$ 0,00</b></div>
-          <div class="goal-box"><span>Meta definida</span><b id="monthlyGoalTarget">$ 0,00</b></div>
-        </div>
-        <div class="goal-bar"><div id="monthlyGoalFill" class="goal-fill"></div></div>
-        <div class="goal-footer">
-          <span id="monthlyGoalRemaining">Faltam $ 0,00</span>
-          <span id="monthlyGoalStatus">Em andamento</span>
-        </div>
+      <div class="grid two">
+        <div class="card"><div class="card-title"><h2>Saldo líquido</h2><span>Atual</span></div><div id="homeSaldoLiquido" class="metric">$ 0,00</div><div class="muted">Baseado no fechamento atual</div></div>
+        <div class="card"><div class="card-title"><h2>Pendentes</h2><span>Total</span></div><div id="homePendentes" class="metric bad">$ 0,00</div><div class="muted">Pagos pendentes cadastrados</div></div>
+        <div class="card"><div class="card-title"><h2>Volume visível</h2><span>Perfil</span></div><div id="homeVolume" class="metric">$ 0,00</div><div class="muted">Soma dos fechamentos permitidos</div></div>
+        <div class="card"><div class="card-title"><h2>Top operador</h2><span>Ranking</span></div><div id="homeTopOperator" class="metric" style="font-size:20px;">-</div><div class="muted">Melhor desempenho no período visível</div></div>
       </div>
+
       <div class="card" style="margin-top:14px;">
         <div class="card-title">
           <h2>Comparativo de fichas</h2>
@@ -115,93 +159,100 @@
     </section>
 
     <section id="screenClose" class="screen">
-      <div class="card"><div class="card-title"><h2>Fechamento de turno</h2><span>Automático</span></div>
+      <div class="card">
+        <div class="card-title"><h2>Fechamento de turno</h2><span>Automático</span></div>
         <div class="form-grid">
           <div class="field"><label>Operador</label><input id="operatorName" placeholder="Nome do operador" /></div>
           <div class="field"><label>Data do fechamento</label><input id="closingDate" type="datetime-local" /></div>
-          <div class="field"><label>Saldo Reca</label><input id="webReca" class="money-input" inputmode="decimal" placeholder="0,00" /></div>
-          <div class="field"><label>Suprema</label><input id="suprema" class="money-input" inputmode="decimal" placeholder="0,00" /></div>
-          <div class="field"><label>PPPoker</label><input id="pppoker" class="money-input" inputmode="decimal" placeholder="0,00" /></div>
-          <div class="field"><label>Buffalo</label><input id="buffalo" class="money-input" inputmode="decimal" placeholder="0,00" /></div>
-          <div class="field"><label>Ganamos</label><input id="ganamos" class="money-input" inputmode="decimal" placeholder="0,00" /></div>
-          <div class="field"><label>Carga fichas poker</label><input id="cargasPoker" class="money-input" inputmode="decimal" placeholder="0,00" /></div>
-          <div class="field"><label>Carga casino</label><input id="cargasCasino" class="money-input" inputmode="decimal" placeholder="0,00" /></div>
-        </div>
-      </div>
-      <div class="grid two"><div class="card"><div class="card-title"><h2>Pagos pendentes</h2><button id="addPendingBtn" class="small-btn">+ Adicionar</button></div><div id="pendingList" class="dynamic-list"></div></div><div class="card"><div class="card-title"><h2>Retiradas</h2><button id="addOutflowBtn" class="small-btn">+ Adicionar</button></div><div id="outflowList" class="dynamic-list"></div></div></div>
-
-       <div class="card summary-panel">
-        <div class="summary-head">
-          <div>
-            <h2>Resumo calculado</h2>
-            <span>Conferência automática do turno</span>
-          </div>
-          <div class="summary-live">Tempo real</div>
-        </div>
-        <div class="summary-main">
-          <div class="summary-total">
-            <span>Saldo líquido final</span>
-            <strong id="calcSaldoLiquido">$ 0,00</strong>
-          </div>
-          <div class="summary-breakdown">
-            <div class="summary-box danger"><span>Pendentes</span><b id="calcPendentes">$ 0,00</b></div>
-            <div class="summary-box"><span>Retiradas total</span><b id="calcSaidas">$ 0,00</b></div>
-            <div class="summary-box good"><span>Retirada lucro</span><b id="calcLucroSaida">$ 0,00</b></div>
-            <div class="summary-box gold"><span>Custo operacional</span><b id="calcCustoSaida">$ 0,00</b></div>
-          </div>
-          <div class="summary-note">
-            <span>Carga poker: <b id="calcCargaPoker">$ 0,00</b></span>
-            <span>Carga casino: <b id="calcCargaCasino">$ 0,00</b></span>
-          </div>
-          <button id="saveClosingBtn" class="btn full" style="margin-top:16px;">Salvar fechamento</button>
+          <div class="field"><label>Web Reca</label><input id="webReca" inputmode="decimal" placeholder="0,00" /></div>
+          <div class="field"><label>Suprema ×400</label><input id="suprema" inputmode="decimal" placeholder="0,00" /></div>
+          <div class="field"><label>PPPoker ×400</label><input id="pppoker" inputmode="decimal" placeholder="0,00" /></div>
+          <div class="field"><label>Buffalo</label><input id="buffalo" inputmode="decimal" placeholder="0,00" /></div>
+          <div class="field"><label>Ganamos</label><input id="ganamos" inputmode="decimal" placeholder="0,00" /></div>
+          <div class="field"><label>Carga fichas poker ×400</label><input id="cargasPoker" class="money-input" inputmode="decimal" placeholder="0,00" /></div>
+          <div class="field"><label>Carga casino / dinheiro</label><input id="cargasCasino" class="money-input" inputmode="decimal" placeholder="0,00" /></div>
         </div>
       </div>
 
-      <div id="quickChargeCard" class="card" style="margin-top:14px;">
-        <div class="card-title">
-          <div>
-            <h2>Carga rápida automática</h2>
-            <span>Admin • Ajuste auditável</span>
-          </div>
-          <button id="toggleQuickChargeBtn" class="admin-toggle">Mostrar carga rápida</button>
+      <div class="grid two">
+        <div class="card">
+          <div class="card-title"><h2>Pagos pendentes</h2><button id="addPendingBtn" class="small-btn">+ Adicionar</button></div>
+          <div id="pendingList" class="dynamic-list"></div>
         </div>
+        <div class="card">
+          <div class="card-title"><h2>Retiradas / Saídas</h2><button id="addOutflowBtn" class="small-btn">+ Adicionar</button></div>
+          <div id="outflowList" class="dynamic-list"></div>
+        </div>
+      </div>
 
-        <div id="quickChargePanel" class="admin-create-panel">
-          <div class="form-grid" style="margin-top:14px;">
-            <div class="field"><label>Carga fichas poker</label><input id="quickCargaPoker" inputmode="decimal" placeholder="Quantidade de fichas" /></div>
-            <div class="field"><label>Carga casino / dinheiro</label><input id="quickCargaCasino" class="money-input" inputmode="decimal" placeholder="0,00" /></div>
-            <div class="field"><label>Motivo</label><input id="quickCargaMotivo" placeholder="Ex: aporte de caixa / reposição banca" /></div>
-            <div class="field"><label>Operador responsável</label><input id="quickCargaOperador" placeholder="Admin / responsável" /></div>
-          </div>
-          <button id="quickChargeBtn" class="btn full" style="margin-top:14px;">Adicionar carga ao sistema</button>
-          <div class="muted" style="margin-top:10px;">Cria um ajuste separado no histórico, sem alterar fechamentos antigos.</div>
+      <div class="card">
+        <div class="card-title"><h2>Resumo calculado</h2><span>Tempo real</span></div>
+        <div class="grid three">
+          <div><div class="muted">Saldo líquido</div><div id="calcSaldoLiquido" class="metric">$ 0,00</div></div>
+          <div><div class="muted">Pendentes</div><div id="calcPendentes" class="metric bad">$ 0,00</div></div>
+          <div><div class="muted">Retiradas</div><div id="calcSaidas" class="metric">$ 0,00</div></div>
         </div>
+        <button id="saveClosingBtn" class="btn full" style="margin-top:16px;">Salvar fechamento</button>
       </div>
     </section>
 
-    <section id="screenHistory" class="screen"><div class="card"><div class="card-title"><h2>Histórico inteligente</h2><span id="historyCount">0 registros</span></div><div class="history-tools"><div class="field"><input id="historySearch" placeholder="Buscar operador" /></div><div class="field"><input id="historyDate" type="date" /></div><button id="recalculateBtn" class="btn secondary">Recalcular</button><button id="pdfReportBtn" class="btn secondary">PDF Banco</button></div><div id="historyList" class="history-list"></div></div></section>
+    <section id="screenHistory" class="screen">
+      <div class="card">
+        <div class="card-title"><h2>Histórico inteligente</h2><span id="historyCount">0 registros</span></div>
+        <div class="history-tools">
+          <div class="field"><input id="historySearch" placeholder="Buscar operador" /></div>
+          <div class="field"><input id="historyDate" type="date" /></div>
+          <button id="recalculateBtn" class="btn secondary">Recalcular</button>
+          <button id="pdfReportBtn" class="btn secondary">PDF Banco</button>
+          <button id="pdfReportBtn" class="btn secondary">PDF Banco</button>
+        </div>
+        <div id="historyList" class="history-list"></div>
+      </div>
+    </section>
 
-    <section id="screenRanking" class="screen"><div class="card"><div class="card-title"><h2>Ranking operadores</h2><span>Lucro por operador</span></div><div class="rank-tabs"><button class="active" data-rank="day">Diário</button><button data-rank="week">Semanal</button><button data-rank="month">Mensal</button><button data-rank="all">Total</button></div><div id="rankingList" class="rank-list"></div></div></section>
+    <section id="screenRanking" class="screen">
+      <div class="card">
+        <div class="card-title"><h2>Ranking operadores</h2><span>Lucro por operador</span></div>
+        <div class="rank-tabs">
+          <button class="active" data-rank="day">Diário</button>
+          <button data-rank="week">Semanal</button>
+          <button data-rank="month">Mensal</button>
+          <button data-rank="all">Total</button>
+        </div>
+        <div id="rankingList" class="rank-list"></div>
+      </div>
+    </section>
 
-    <section id="screenReports" class="screen"><div class="card"><div class="card-title"><h2>Relatórios premium</h2><span>PDF nível banco</span></div><div class="form-grid"><div class="field"><label>Data inicial</label><input id="reportStart" type="date" /></div><div class="field"><label>Data final</label><input id="reportEnd" type="date" /></div><div class="field"><label>Operador</label><input id="reportOperator" placeholder="Todos" /></div><div class="field"><label>Supervisor</label><input id="reportSupervisor" placeholder="Todos" /></div></div><div class="grid three"><div class="card" style="box-shadow:none;"><div class="muted">Fechamentos</div><div id="reportPreviewCount" class="metric">0</div></div><div class="card" style="box-shadow:none;"><div class="muted">Saldo líquido</div><div id="reportPreviewSaldo" class="metric">$ 0,00</div></div><div class="card" style="box-shadow:none;"><div class="muted">Diferença</div><div id="reportPreviewDiff" class="metric">$ 0,00</div></div></div><button id="previewReportBtn" class="btn secondary full" style="margin-top:14px;">Pré-visualizar resumo</button><button id="generateReportBtn" class="btn full" style="margin-top:10px;">Gerar PDF</button></div></section>
+    <section id="screenReports" class="screen">
+      <div class="card">
+        <div class="card-title"><h2>Relatórios premium</h2><span>PDF nível banco</span></div>
+        <div class="form-grid">
+          <div class="field"><label>Data inicial</label><input id="reportStart" type="date" /></div>
+          <div class="field"><label>Data final</label><input id="reportEnd" type="date" /></div>
+          <div class="field"><label>Operador</label><input id="reportOperator" placeholder="Todos" /></div>
+          <div class="field"><label>Supervisor</label><input id="reportSupervisor" placeholder="Todos" /></div>
+        </div>
+        <div class="grid three">
+          <div class="card" style="box-shadow:none;"><div class="muted">Fechamentos</div><div id="reportPreviewCount" class="metric">0</div></div>
+          <div class="card" style="box-shadow:none;"><div class="muted">Saldo líquido</div><div id="reportPreviewSaldo" class="metric">$ 0,00</div></div>
+          <div class="card" style="box-shadow:none;"><div class="muted">Diferença</div><div id="reportPreviewDiff" class="metric">$ 0,00</div></div>
+        </div>
+        <button id="previewReportBtn" class="btn secondary full" style="margin-top:14px;">Pré-visualizar resumo</button>
+        <button id="generateReportBtn" class="btn full" style="margin-top:10px;">Gerar PDF Banco Premium</button>
+      </div>
+    </section>
 
     <section id="screenAdmin" class="screen">
       <div class="card">
-        <div class="card-title">
-          <h2>Painel Admin</h2>
-          <button id="toggleCreateUserBtn" class="admin-toggle">Mostrar criar usuário</button>
+        <div class="card-title"><h2>Painel Admin</h2><span id="adminStatus">Protegido</span></div>
+        <div class="form-grid">
+          <div class="field"><label>Email do novo usuário</label><input id="newUserEmail" type="email" placeholder="usuario@email.com" /></div>
+          <div class="field"><label>Senha temporária</label><input id="newUserPassword" type="password" placeholder="mínimo 6 caracteres" /></div>
+          <div class="field"><label>Nome</label><input id="newUserName" placeholder="Nome do operador" /></div>
+          <div class="field"><label>Função</label><select id="newUserRole"><option value="operator">Operador</option><option value="supervisor">Supervisor</option><option value="admin">Admin</option></select></div>
+          <div class="field"><label>Supervisor UID / email da equipe</label><input id="newUserSupervisor" placeholder="Opcional para operador" /></div>
         </div>
-        <span id="adminStatus" class="muted">Protegido</span>
-        <div id="createUserPanel" class="admin-create-panel">
-          <div class="form-grid" style="margin-top:14px;">
-            <div class="field"><label>Email do novo usuário</label><input id="newUserEmail" type="email" placeholder="usuario@email.com" /></div>
-            <div class="field"><label>Senha temporária</label><input id="newUserPassword" type="password" placeholder="mínimo 6 caracteres" /></div>
-            <div class="field"><label>Nome</label><input id="newUserName" placeholder="Nome do operador" /></div>
-            <div class="field"><label>Função</label><select id="newUserRole"><option value="operator">Operador</option><option value="supervisor">Supervisor</option><option value="admin">Admin</option></select></div>
-            <div class="field"><label>Supervisor</label><input id="newUserSupervisor" placeholder="Só para operador" /></div>
-          </div>
-          <button id="createUserBtn" class="btn full" style="margin-top:14px;">Criar usuário</button>
-        </div>
+        <button id="createUserBtn" class="btn full" style="margin-top:14px;">Criar usuário</button>
       </div>
 
       <div class="card">
@@ -209,162 +260,278 @@
         <div id="usersList" class="admin-grid"></div>
       </div>
 
-      <div class="card"><div class="card-title"><h2>Auditoria</h2><span>Últimas ações</span></div><div id="auditList" class="history-list"></div></div>
+      <div class="card">
+        <div class="card-title"><h2>Auditoria</h2><span>Últimas ações</span></div>
+        <div id="auditList" class="history-list"></div>
+      </div>
     </section>
   </main>
 
-  <nav id="bottomNav" class="bottom-nav hidden"><button class="nav-btn active" data-screen="Home"><b>⌂</b>Início</button><button class="nav-btn" data-screen="Close"><b>＋</b>Fechar</button><button class="nav-btn" data-screen="History"><b>≡</b>Histórico</button><button class="nav-btn" data-screen="Ranking"><b>★</b>Ranking</button><button class="nav-btn" data-screen="Reports"><b>▣</b>Relatórios</button><button class="nav-btn" data-screen="Admin"><b>⚙</b>Admin</button></nav>
+  <nav id="bottomNav" class="bottom-nav hidden">
+    <button class="nav-btn active" data-screen="Home"><b>⌂</b>Início</button>
+    <button class="nav-btn" data-screen="Close"><b>＋</b>Fechar</button>
+    <button class="nav-btn" data-screen="History"><b>≡</b>Histórico</button>
+    <button class="nav-btn" data-screen="Ranking"><b>★</b>Ranking</button>
+    <button class="nav-btn" data-screen="Reports"><b>▣</b>Relatórios</button>
+    <button class="nav-btn" data-screen="Admin"><b>⚙</b>Admin</button>
+  </nav>
 
-  <div id="receiptModal" class="receipt-modal">
-    <div class="receipt-panel">
-      <div class="receipt-head">
-        <div class="receipt-brand">
-          <div class="receipt-logo">BK</div>
-          <div>
-            <h2>Comprovante Bank King</h2>
-            <span id="receiptSubtitle">Fechamento detalhado</span>
-          </div>
+  <div id="editHistoryModal" class="edit-modal">
+    <div class="edit-panel">
+      <div class="edit-panel-head">
+        <h2>Editar fechamento</h2>
+        <button id="editCloseBtn" class="edit-close">×</button>
+      </div>
+
+      <input id="editHistoryId" type="hidden" />
+
+      <div class="form-grid">
+        <div class="field"><label>Operador</label><input id="editOperatorName" /></div>
+        <div class="field"><label>Data do fechamento</label><input id="editClosingDate" type="datetime-local" /></div>
+        <div class="field"><label>Web Reca</label><input id="editWebReca" class="money-input" inputmode="decimal" /></div>
+        <div class="field"><label>Suprema ×400</label><input id="editSuprema" class="money-input" inputmode="decimal" /></div>
+        <div class="field"><label>PPPoker ×400</label><input id="editPppoker" class="money-input" inputmode="decimal" /></div>
+        <div class="field"><label>Buffalo</label><input id="editBuffalo" class="money-input" inputmode="decimal" /></div>
+        <div class="field"><label>Ganamos</label><input id="editGanamos" class="money-input" inputmode="decimal" /></div>
+        <div class="field"><label>Carga fichas poker ×400</label><input id="editCargasPoker" class="money-input" inputmode="decimal" /></div>
+        <div class="field"><label>Carga casino / dinheiro</label><input id="editCargasCasino" class="money-input" inputmode="decimal" /></div>
+      </div>
+
+      <div class="grid two">
+        <div class="card" style="box-shadow:none;margin-top:12px;">
+          <div class="card-title"><h2>Pagos pendentes</h2><button id="editAddPendingBtn" class="small-btn">+ Adicionar</button></div>
+          <div id="editPendingList" class="dynamic-list"></div>
         </div>
-        <button id="receiptCloseBtn" class="receipt-close">×</button>
+        <div class="card" style="box-shadow:none;margin-top:12px;">
+          <div class="card-title"><h2>Retiradas / Saídas</h2><button id="editAddOutflowBtn" class="small-btn">+ Adicionar</button></div>
+          <div id="editOutflowList" class="dynamic-list"></div>
+        </div>
       </div>
 
-      <div class="receipt-total">
-        <span>Saldo líquido do fechamento</span>
-        <strong id="receiptSaldoLiquido">$ 0,00</strong>
-      </div>
-
-      <div id="receiptContent"></div>
-
-      <div class="receipt-footer">
-        <span id="receiptCode">Código interno</span>
-        <span>Documento interno • Bank King</span>
-      </div>
-
-      <div id="receiptAdminActions" class="receipt-actions hidden">
-        <button id="receiptEditBtn" class="btn secondary">Editar fechamento</button>
-        <button id="receiptDeleteBtn" class="btn danger">Excluir fechamento</button>
+      <div class="edit-actions">
+        <button id="saveEditBtn" class="btn">Salvar alterações</button>
+        <button id="cancelEditBtn" class="btn secondary">Cancelar</button>
       </div>
     </div>
   </div>
 
-  <div id="editHistoryModal" class="edit-modal"><div class="edit-panel"><div class="edit-panel-head"><h2>Editar fechamento</h2><button id="editCloseBtn" class="edit-close">×</button></div><input id="editHistoryId" type="hidden" /><div class="form-grid"><div class="field"><label>Operador</label><input id="editOperatorName" /></div><div class="field"><label>Data do fechamento</label><input id="editClosingDate" type="datetime-local" /></div><div class="field"><label>Reca</label><input id="editWebReca" class="money-input" inputmode="decimal" /></div><div class="field"><label>Suprema</label><input id="editSuprema" class="money-input" inputmode="decimal" /></div><div class="field"><label>PPPoker</label><input id="editPppoker" class="money-input" inputmode="decimal" /></div><div class="field"><label>Buffalo</label><input id="editBuffalo" class="money-input" inputmode="decimal" /></div><div class="field"><label>Ganamos</label><input id="editGanamos" class="money-input" inputmode="decimal" /></div><div class="field"><label>Carga poker</label><input id="editCargasPoker" class="money-input" inputmode="decimal" /></div><div class="field"><label>Carga casino</label><input id="editCargasCasino" class="money-input" inputmode="decimal" /></div></div><div class="grid two"><div class="card" style="box-shadow:none;margin-top:12px;"><div class="card-title"><h2>Pagos pendentes</h2><button id="editAddPendingBtn" class="small-btn">+ Adicionar</button></div><div id="editPendingList" class="dynamic-list"></div></div><div class="card" style="box-shadow:none;margin-top:12px;"><div class="card-title"><h2>Retiradas</h2><button id="editAddOutflowBtn" class="small-btn">+ Adicionar</button></div><div id="editOutflowList" class="dynamic-list"></div></div></div><div class="edit-actions"><button id="saveEditBtn" class="btn">Salvar alterações</button><button id="cancelEditBtn" class="btn secondary">Cancelar</button></div></div></div>
-
-  <div id="appReloadLoader" class="app-reload-loader"><div class="reload-card"><div class="reload-spinner"></div><strong>Atualizando sistema</strong><span>Recalculando dados...</span></div></div>
+  <div id="appReloadLoader" class="app-reload-loader">
+    <div class="reload-card">
+      <div class="reload-spinner"></div>
+      <strong>Atualizando sistema</strong>
+      <span>Recalculando dados...</span>
+    </div>
+  </div>
 
   <script type="module">
     import { initializeApp, deleteApp } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-app.js";
     import { getAuth, onAuthStateChanged, signInWithEmailAndPassword, signOut, sendPasswordResetEmail, createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-auth.js";
-    import { getFirestore, collection, doc, getDoc, getDocs, addDoc, setDoc, updateDoc, deleteDoc, onSnapshot, query, orderBy, limit, serverTimestamp } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-firestore.js";
+    import { getFirestore, collection, doc, getDoc, getDocs, addDoc, setDoc, updateDoc, deleteDoc, onSnapshot, query, orderBy, limit, serverTimestamp, Timestamp } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-firestore.js";
 
+    /* =========================================================
+       1) COLE AQUI SUA CONFIGURAÇÃO FIREBASE
+    ========================================================= */
     const firebaseConfig = {
-      apiKey: "AIzaSyAuyfJNu2vwvVyH5gRsvg82m98teFCmPXw",
-      authDomain: "bank-king-c53cf.firebaseapp.com",
-      projectId: "bank-king-c53cf",
-      storageBucket: "bank-king-c53cf.firebasestorage.app",
-      messagingSenderId: "108865328748",
-      appId: "1:108865328748:web:65dbbcf146a67f95512a49"
+      apiKey: "COLE_AQUI",
+      authDomain: "COLE_AQUI",
+      projectId: "COLE_AQUI",
+      storageBucket: "COLE_AQUI",
+      messagingSenderId: "COLE_AQUI",
+      appId: "COLE_AQUI"
     };
-
-    /* IMPORTANTE:
-      Para evitar o erro "Missing or insufficient permissions" no primeiro acesso,
-      este código NÃO tenta mais ler a coleção users inteira antes de criar conta.
-      Depois de criar sua primeira conta, coloque seu email aqui para ela entrar como admin automaticamente.
-      Exemplo: const BOOTSTRAP_ADMIN_EMAILS = ["seuemail@gmail.com"];
-    */
-    const BOOTSTRAP_ADMIN_EMAILS = ["admin@bankking.local"];
 
     const app = initializeApp(firebaseConfig);
     const auth = getAuth(app);
     const db = getFirestore(app);
+
     const $ = (id) => document.getElementById(id);
-
-    let currentUser = null, currentProfile = null, historyCache = [], historyUnsubscribe = null, systemUnsubscribe = null, currentRankRange = "day";
-
-    function showNotice(targetId, message, type="error"){
-      const el = $(targetId); if(!el) return;
-      el.className = `notice ${type}`; el.textContent = message; el.classList.remove("hidden");
-    }
-    function hideNotice(targetId){ $(targetId)?.classList.add("hidden"); }
-    function friendlyError(error){
-      const code = error?.code || "";
-      if(code.includes("permission-denied")) return "Permissão negada no Firestore. Ajuste as regras ou aprove este usuário como admin.";
-      if(code.includes("auth/email-already-in-use")) return "Este email já está cadastrado. Use Entrar no sistema.";
-      if(code.includes("auth/invalid-credential")) return "Email ou senha inválidos.";
-      if(code.includes("auth/weak-password")) return "A senha precisa ter pelo menos 6 caracteres.";
-      return error?.message || String(error);
-    }
+    let currentUser = null;
+    let currentProfile = null;
+    let historyCache = [];
+    let historyUnsubscribe = null;
+    let systemUnsubscribe = null;
+    let currentRankRange = "day";
 
     function moneyToNumber(value){
-      if(value === null || value === undefined) return 0; if(typeof value === "number") return value;
-      let s = String(value).trim().replace(/[^0-9,.-]/g, ""); if(!s) return 0;
-      const hasComma = s.includes(","), hasDot = s.includes(".");
-      if(hasComma && hasDot){ const lastComma=s.lastIndexOf(","), lastDot=s.lastIndexOf("."); s = lastComma > lastDot ? s.split(".").join("").replace(",",".") : s.split(",").join(""); }
-      else if(hasComma){ s = s.split(".").join("").replace(",","."); }
-      const n = Number(s); return Number.isFinite(n) ? n : 0;
+      if(value === null || value === undefined) return 0;
+      if(typeof value === "number") return value;
+      let s = String(value).trim().replace(/[^\d,.-]/g, "");
+      if(!s) return 0;
+      const hasComma = s.includes(",");
+      const hasDot = s.includes(".");
+      if(hasComma && hasDot){
+        const lastComma = s.lastIndexOf(",");
+        const lastDot = s.lastIndexOf(".");
+        if(lastComma > lastDot) s = s.replace(/\./g, "").replace(",", ".");
+        else s = s.replace(/,/g, "");
+      } else if(hasComma){
+        s = s.replace(/\./g, "").replace(",", ".");
+      }
+      const n = Number(s);
+      return Number.isFinite(n) ? n : 0;
     }
 
-    function formatInputMoney(value){
-      const n = moneyToNumber(value);
-      if(!n) return "";
-      return n.toLocaleString("pt-BR", { minimumFractionDigits:2, maximumFractionDigits:2 });
+    function formatMoney(value){
+      return new Intl.NumberFormat("es-AR", { style:"currency", currency:"ARS", minimumFractionDigits:2 }).format(Number(value)||0);
     }
 
-    function applyBankMoneyMask(input){
-      if(!input) return;
-      input.classList.add("money-input");
-      input.addEventListener("input", () => {
-        const digits = String(input.value || "").replace(/[^0-9]/g, "");
-        if(!digits){ input.value = ""; input.dispatchEvent(new Event("bankmoney", { bubbles:true })); return; }
-        const number = Number(digits) / 100;
-        input.value = number.toLocaleString("pt-BR", { minimumFractionDigits:2, maximumFractionDigits:2 });
-        input.dispatchEvent(new Event("bankmoney", { bubbles:true }));
-      });
-      input.addEventListener("focus", () => {
-        if(input.value) input.value = formatInputMoney(input.value);
-      });
-      input.addEventListener("blur", () => {
-        if(input.value) input.value = formatInputMoney(input.value);
-      });
+    function dateLabel(value){
+      if(!value) return "-";
+      let d;
+      if(value?.toDate) d = value.toDate();
+      else d = new Date(value);
+      if(isNaN(d)) return "-";
+      return d.toLocaleString("pt-BR", { day:"2-digit", month:"2-digit", year:"2-digit", hour:"2-digit", minute:"2-digit" });
     }
 
-    function applyBankMoneyMaskAll(scope=document){
-      scope.querySelectorAll(".money-input").forEach(input => {
-        if(input.dataset.bankMask === "1") return;
-        input.dataset.bankMask = "1";
-        applyBankMoneyMask(input);
-      });
+    function isAdmin(){
+      return currentProfile?.role === "admin" || currentProfile?.admin === true;
     }
 
-    function formatMoney(value){ return new Intl.NumberFormat("es-AR",{style:"currency",currency:"ARS",minimumFractionDigits:2}).format(Number(value)||0); }
-    function dateLabel(value){ if(!value) return "-"; const d = value?.toDate ? value.toDate() : new Date(value); if(isNaN(d)) return "-"; return d.toLocaleString("pt-BR",{day:"2-digit",month:"2-digit",year:"2-digit",hour:"2-digit",minute:"2-digit"}); }
-    function toDateInputValue(value){ const d = value?.toDate ? value.toDate() : new Date(value || Date.now()); if(isNaN(d)) return ""; d.setMinutes(d.getMinutes()-d.getTimezoneOffset()); return d.toISOString().slice(0,16); }
+    function isSupervisor(){
+      return currentProfile?.role === "supervisor";
+    }
 
-    function isBootstrapEmail(email){ return BOOTSTRAP_ADMIN_EMAILS.map(x=>x.toLowerCase()).includes(String(email||"").toLowerCase()); }
-    function isAdmin(){ return currentProfile?.role === "admin" || currentProfile?.admin === true; }
-    function isSupervisor(){ return currentProfile?.role === "supervisor"; }
-    function profileName(){ return currentProfile?.name || currentUser?.email?.split("@")[0] || ""; }
-    async function requireAdmin(){ if(isAdmin()) return true; alert("Ação permitida somente para admin."); return false; }
+    function profileName(){
+      return currentProfile?.name || currentUser?.email?.split("@")[0] || "";
+    }
 
     function canAccessHistoryItem(item){
       if(isAdmin()) return true;
-      const t = item.turno || {}; const uid = currentUser?.uid || ""; const email = currentUser?.email || ""; const name = profileName().toLowerCase(); const operator = String(item.operatorName || t.operatorName || "").toLowerCase();
-      if(isSupervisor()) return item.supervisorUid===uid || t.supervisorUid===uid || item.supervisorEmail===email || t.supervisorEmail===email || item.createdBy===uid;
-      return item.createdBy===uid || item.createdByEmail===email || operator===name;
-    }
-    function visibleHistory(){ return historyCache.filter(canAccessHistoryItem); }
 
-    function getDynamicRows(containerId){ const el=$(containerId); if(!el) return []; return [...el.querySelectorAll(".row-item")].map(row=>({name:row.querySelector(".row-name")?.value||"",category:row.querySelector(".row-category")?.value||"",value:moneyToNumber(row.querySelector(".row-value")?.value||0)})).filter(x=>x.name||x.value); }
-    function setDynamicRows(containerId, rows=[]){ const el=$(containerId); if(!el) return; el.innerHTML=""; (rows.length?rows:[{}]).forEach(r=>createDynamicRow(containerId,"Nome / motivo",r)); }
-    function createDynamicRow(containerId,label="Descrição",data={}){ const list=$(containerId); if(!list) return; const row=document.createElement("div"); const isOutflow=containerId.toLowerCase().includes("outflow"); row.className="row-item"+(isOutflow?" outflow-row":""); const safeName=String(data.name||"").replace(/"/g,'&quot;'); const value=data.value ? formatInputMoney(data.value) : ""; const category=data.category||data.type||"lucro"; row.innerHTML=isOutflow?`<input class="row-name" placeholder="${label}" value="${safeName}" /><select class="row-category"><option value="lucro">Lucro</option><option value="custo_operacional">Custo operacional</option></select><input class="row-value money-input" inputmode="decimal" placeholder="0,00" value="${value}" /><button type="button" class="remove-row">×</button>`:`<input class="row-name" placeholder="${label}" value="${safeName}" /><input class="row-value money-input" inputmode="decimal" placeholder="0,00" value="${value}" /><button type="button" class="remove-row">×</button>`; if(isOutflow) row.querySelector(".row-category").value=category; row.querySelectorAll("input,select").forEach(i=>i.addEventListener("input",renderCalculations)); row.querySelectorAll("select").forEach(i=>i.addEventListener("change",renderCalculations)); row.querySelector(".remove-row").onclick=()=>{row.remove();renderCalculations();}; list.appendChild(row); applyBankMoneyMaskAll(row); enableClearOnFocus(); }
+      const t = item.turno || {};
+      const uid = currentUser?.uid || "";
+      const email = currentUser?.email || "";
+      const name = profileName().toLowerCase();
+      const operator = String(item.operatorName || t.operatorName || "").toLowerCase();
+
+      if(isSupervisor()){
+        return item.supervisorUid === uid || t.supervisorUid === uid || item.supervisorEmail === email || t.supervisorEmail === email || item.createdBy === uid;
+      }
+
+      return item.createdBy === uid || item.createdByEmail === email || operator === name;
+    }
+
+    function visibleHistory(){
+      return historyCache.filter(canAccessHistoryItem);
+    }
+
+    async function requireAdmin(){
+      if(isAdmin()) return true;
+      alert("Ação permitida somente para admin.");
+      return false;
+    }
+
+    function formatSmartMoneyInput(input){
+      let numeric = String(input.value || "").replace(/\D/g, "");
+      if(!numeric){ input.value = ""; return; }
+      let value = (parseInt(numeric, 10) / 100).toFixed(2);
+      value = value.replace(".", ",").replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+      input.value = value;
+    }
+
+    function formatSmartMoneyInput(input){
+      let numeric = String(input.value || "").replace(/[^0-9]/g, "");
+      if(!numeric){ input.value = ""; return; }
+      let value = (parseInt(numeric, 10) / 100).toFixed(2);
+      let parts = value.split(".");
+      parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+      input.value = parts[0] + "," + parts[1];
+    }
+
+    function enableSmartMoneyInput(id){
+      const input = $(id);
+      if(!input) return;
+      input.classList.add("money-input");
+      input.addEventListener("input", () => {
+        formatSmartMoneyInput(input);
+        renderCalculations();
+      });
+    }
+
+    function enableSmartMoneyElement(input){
+      if(!input) return;
+      input.classList.add("money-input");
+      input.addEventListener("input", () => formatSmartMoneyInput(input));
+    }
+
+    function getDynamicTotal(containerId){
+      return [...$(containerId).querySelectorAll(".row-value")].reduce((sum, input) => sum + moneyToNumber(input.value), 0);
+    }
+
+    function getDynamicRows(containerId){
+      return [...$(containerId).querySelectorAll(".row-item")].map(row => ({
+        name: row.querySelector(".row-name")?.value || "",
+        type: row.querySelector(".row-type")?.value || "",
+        value: moneyToNumber(row.querySelector(".row-value")?.value || 0)
+      })).filter(x => x.name || x.value);
+    }
+
+    function createDynamicRow(containerId, label="Descrição", data={}){
+      const list = $(containerId);
+      const row = document.createElement("div");
+      const isOutflow = containerId.toLowerCase().includes("outflow");
+      row.className = "row-item" + (isOutflow ? " outflow-row" : "");
+      row.innerHTML = `
+        <input class="row-name" placeholder="${label}" value="${data.name || ""}" />
+        <select class="row-type">
+          ${isOutflow
+            ? `<option value="lucro">Lucro</option><option value="custo_operacional">Custo operacional</option>`
+            : `<option value="pendente">Pendente</option>`}
+        </select>
+        <input class="row-value" inputmode="decimal" placeholder="0,00" value="${data.value ? String(data.value).replace(".", ",") : ""}" />
+        <button type="button" class="remove-row">×</button>
+      `;
+      row.querySelector(".row-type").value = data.type || (isOutflow ? "lucro" : "pendente");
+      row.querySelectorAll("input").forEach(i => {
+        if(i.classList.contains("row-value")) enableSmartMoneyElement(i);
+        i.addEventListener("input", renderCalculations);
+      });
+      row.querySelector(".row-type").addEventListener("change", renderCalculations);
+      row.querySelector(".remove-row").onclick = () => { row.remove(); renderCalculations(); };
+      list.appendChild(row);
+    }
 
     function getTurnFromForm(){
-      const webReca=moneyToNumber($("webReca")?.value), suprema=moneyToNumber($("suprema")?.value), pppoker=moneyToNumber($("pppoker")?.value), buffalo=moneyToNumber($("buffalo")?.value), ganamos=moneyToNumber($("ganamos")?.value), cargasPoker=moneyToNumber($("cargasPoker")?.value), cargasCasino=moneyToNumber($("cargasCasino")?.value);
-      const pendings=getDynamicRows("pendingList"), outflows=getDynamicRows("outflowList");
-      const pendentesTotal=pendings.reduce((s,x)=>s+x.value,0), saidasTotal=outflows.reduce((s,x)=>s+x.value,0), retiradaLucroTotal=outflows.filter(x=>x.category==="lucro").reduce((s,x)=>s+x.value,0), custoOperacionalTotal=outflows.filter(x=>x.category==="custo_operacional").reduce((s,x)=>s+x.value,0);
-      const turno={operatorName:$("operatorName")?.value.trim()||"", closingDate:$("closingDate")?.value||new Date().toISOString(), webReca,suprema,pppoker,buffalo,ganamos,cargasPoker,cargasCasino,pendings,outflows,pendentesTotal,saidasTotal,retiradaLucroTotal,custoOperacionalTotal};
-      turno.saldoLiquido=calcularSaldoLiquido(turno); return turno;
+      const webReca = moneyToNumber($("webReca").value);
+      const suprema = moneyToNumber($("suprema").value);
+      const pppoker = moneyToNumber($("pppoker").value);
+      const buffalo = moneyToNumber($("buffalo").value);
+      const ganamos = moneyToNumber($("ganamos").value);
+      const cargasPoker = moneyToNumber($("cargasPoker").value);
+      const cargasCasino = moneyToNumber($("cargasCasino").value);
+      const cargas = (cargasPoker * 400) + cargasCasino;
+      const pendings = getDynamicRows("pendingList");
+      const outflows = getDynamicRows("outflowList");
+      const pendentesTotal = pendings.reduce((s,x)=>s+x.value,0);
+      const saidasTotal = outflows.reduce((s,x)=>s+x.value,0);
+      const retiradaLucroTotal = outflows.filter(x=>x.type === "lucro").reduce((s,x)=>s+x.value,0);
+      const custoOperacionalTotal = outflows.filter(x=>x.type === "custo_operacional").reduce((s,x)=>s+x.value,0);
+
+      const saldoLiquido = calcularSaldoLiquido({ webReca, suprema, pppoker, buffalo, ganamos, cargas, cargasPoker, cargasCasino, pendings, outflows });
+
+      return {
+        operatorName: $("operatorName").value.trim(),
+        closingDate: $("closingDate").value || new Date().toISOString(),
+        webReca, suprema, pppoker, buffalo, ganamos, cargas,
+        pendings, outflows, pendentesTotal, saidasTotal, retiradaLucroTotal, custoOperacionalTotal, saldoLiquido
+      };
     }
-    function calcularSaldoLiquido(turno={}){ const webReca=moneyToNumber(turno.webReca??turno.reca??turno.banco??0), suprema=moneyToNumber(turno.suprema??0)*400, pppoker=moneyToNumber(turno.pppoker??0)*400, buffalo=moneyToNumber(turno.buffalo??0), ganamos=moneyToNumber(turno.ganamos??0), cargasPoker=moneyToNumber(turno.cargasPoker??0)*400, cargasCasino=moneyToNumber(turno.cargasCasino??turno.cargas??0), pendentes=moneyToNumber(turno.pendentesTotal??(turno.pendings||[]).reduce((s,x)=>s+moneyToNumber(x.value),0)), saidas=moneyToNumber(turno.saidasTotal??(turno.outflows||[]).reduce((s,x)=>s+moneyToNumber(x.value),0)); return webReca+suprema+pppoker+buffalo+ganamos+cargasPoker+cargasCasino-pendentes+saidas; }
+
+    function calcularSaldoLiquido(turno={}){
+      const webReca = moneyToNumber(turno.webReca ?? turno.reca ?? turno.banco ?? 0);
+      const suprema = moneyToNumber(turno.suprema ?? 0) * 400;
+      const pppoker = moneyToNumber(turno.pppoker ?? 0) * 400;
+      const buffalo = moneyToNumber(turno.buffalo ?? 0);
+      const ganamos = moneyToNumber(turno.ganamos ?? 0);
+      const cargasPoker = moneyToNumber(turno.cargasPoker ?? 0) * 400;
+      const cargasCasino = moneyToNumber(turno.cargasCasino ?? 0);
+      const cargas = moneyToNumber(turno.cargas ?? (cargasPoker + cargasCasino));
+      const pendentes = moneyToNumber(turno.pendentesTotal ?? (turno.pendings || []).reduce((s,x)=>s+moneyToNumber(x.value),0));
+      const saidas = moneyToNumber(turno.saidasTotal ?? (turno.outflows || []).reduce((s,x)=>s+moneyToNumber(x.value),0));
+      return webReca + suprema + pppoker + buffalo + ganamos + cargas - pendentes + saidas;
+    }
+
     function clearClosingForm(){
       ["operatorName","webReca","suprema","pppoker","buffalo","ganamos","cargasPoker","cargasCasino"].forEach(id=>{
         if($(id)) $(id).value = "";
@@ -396,53 +563,51 @@
 
     function renderCalculations(){
       const turno = getTurnFromForm();
-
-      if($("calcSaldoLiquido")) $("calcSaldoLiquido").textContent = formatMoney(turno.saldoLiquido);
-      if($("calcPendentes")) $("calcPendentes").textContent = formatMoney(turno.pendentesTotal);
-      if($("calcSaidas")) $("calcSaidas").textContent = formatMoney(turno.saidasTotal);
-      if($("calcLucroSaida")) $("calcLucroSaida").textContent = formatMoney(turno.retiradaLucroTotal || 0);
-      if($("calcCustoSaida")) $("calcCustoSaida").textContent = formatMoney(turno.custoOperacionalTotal || 0);
-      if($("calcCargaPoker")) $("calcCargaPoker").textContent = formatMoney((turno.cargasPoker || 0) * 400);
-      if($("calcCargaCasino")) $("calcCargaCasino").textContent = formatMoney(turno.cargasCasino || 0);
-
-      const saldoEl = $("calcSaldoLiquido");
-      if(saldoEl){
-        saldoEl.style.color = turno.saldoLiquido < 0 ? "#ef4444" : "#06152e";
-      }
-
-      if($("homeOperator")) $("homeOperator").textContent = turno.operatorName || profileName() || "-";
+      $("calcSaldoLiquido").textContent = formatMoney(turno.saldoLiquido);
+      $("calcPendentes").textContent = formatMoney(turno.pendentesTotal);
+      $("calcSaidas").textContent = formatMoney(turno.saidasTotal);
+      $("homeOperator").textContent = turno.operatorName || currentProfile?.name || currentUser?.email?.split("@")[0] || "-";
     }
 
-    function renderMonthlyGoal(view){
-      const card = $("monthlyGoalCard");
-      if(!card) return;
+    function renderMetaMensal(view){
+      const meta = 10000000;
+      const totalMes = view.reduce((s,x)=>s+moneyToNumber(x.diff||0),0);
+      const percent = meta ? Math.min(100, (totalMes/meta)*100) : 0;
 
-      const allowed = isAdmin() || isSupervisor();
-      card.classList.toggle("hidden", !allowed);
-      if(!allowed) return;
+      if($("metaMensalValor")) $("metaMensalValor").textContent = formatMoney(meta);
+      if($("metaMensalProgresso")) $("metaMensalProgresso").textContent = `${percent.toFixed(1)}% atingido`;
+    }
 
-      const target = moneyToNumber(currentProfile?.monthlyGoal || currentProfile?.metaMensal || 10000000);
-      const now = new Date();
-      const monthStart = new Date(now.getFullYear(), now.getMonth(), 1);
-
-      const monthItems = view.filter(x => {
-        const d = x.submittedAt?.toDate ? x.submittedAt.toDate() : new Date(x.turno?.closingDate || x.createdAt || 0);
-        return !isNaN(d) && d >= monthStart;
+    function renderHome(){
+      const view = visibleHistory();
+      const last = view[0];
+      const prev = view[1];
+      const saldoReca = last?.turno?.webReca ?? last?.turno?.reca ?? last?.webReca ?? 0;
+      const saldoLiquido = last?.turno?.saldoLiquido ?? last?.currentSaldoTotal ?? 0;
+      const pendentes = last?.turno?.pendentesTotal ?? 0;
+      const diff = last?.diff ?? (prev ? saldoLiquido - (prev?.turno?.saldoLiquido ?? prev?.currentSaldoTotal ?? 0) : 0);
+      const volume = view.reduce((s,x)=>s+moneyToNumber(x.turno?.saldoLiquido ?? x.currentSaldoTotal),0);
+      const map = new Map();
+      view.forEach(x=>{
+        const name = x.operatorName || x.turno?.operatorName || "Sem operador";
+        const prevValue = map.get(name) || 0;
+        map.set(name, prevValue + moneyToNumber(x.diff ?? 0));
       });
+      const top = [...map.entries()].sort((a,b)=>b[1]-a[1])[0];
 
-      const done = monthItems.reduce((s,x)=>s + moneyToNumber(x.diff ?? 0), 0);
-      const percent = target > 0 ? Math.max(0, Math.min(100, (done / target) * 100)) : 0;
-      const remaining = Math.max(0, target - done);
-
-      $("monthlyGoalDone").textContent = formatMoney(done);
-      $("monthlyGoalTarget").textContent = formatMoney(target);
-      $("monthlyGoalPercent").textContent = `${percent.toFixed(1)}%`;
-      $("monthlyGoalFill").style.width = `${percent}%`;
-      $("monthlyGoalRemaining").textContent = remaining > 0 ? `Faltam ${formatMoney(remaining)}` : "Meta alcançada";
-      $("monthlyGoalStatus").textContent = remaining > 0 ? "Em andamento" : "Meta batida";
+      $("homeSaldoReca").textContent = formatMoney(saldoReca);
+      $("homeSaldoLiquido").textContent = formatMoney(saldoLiquido);
+      $("homePendentes").textContent = formatMoney(pendentes);
+      $("homeDiff").textContent = formatMoney(diff);
+      $("homeDiff").style.color = diff < 0 ? "#fecaca" : "#bbf7d0";
+      if($("homeVolume")) $("homeVolume").textContent = formatMoney(volume);
+      if($("homeTopOperator")) $("homeTopOperator").textContent = top ? `${top[0]} • ${formatMoney(top[1])}` : "-";
+      $("homeLastClose").textContent = last ? dateLabel(last.submittedAt || last.createdAt || last.turno?.closingDate) : "-";
+      $("homeUpdatedAt").textContent = last ? "Última atualização: " + dateLabel(last.submittedAt || last.createdAt) : "Aguardando fechamento";
+      renderChipsComparison(last, prev);
+      renderMetaMensal(view);
+      renderChipsComparison(last, prev);
     }
-
-    function renderHome(){ const view=visibleHistory(), last=view[0], prev=view[1]; const saldoReca=last?.turno?.webReca??last?.turno?.reca??last?.webReca??0, saldoLiquido=last?.turno?.saldoLiquido??last?.currentSaldoTotal??0, pendentes=last?.turno?.pendentesTotal??0, diff=last?.diff??(prev?saldoLiquido-(prev?.turno?.saldoLiquido??prev?.currentSaldoTotal??0):0), volume=view.reduce((s,x)=>s+moneyToNumber(x.turno?.saldoLiquido??x.currentSaldoTotal),0); const map=new Map(); view.forEach(x=>{const name=x.operatorName||x.turno?.operatorName||"Sem operador"; map.set(name,(map.get(name)||0)+moneyToNumber(x.diff??0));}); const top=[...map.entries()].sort((a,b)=>b[1]-a[1])[0]; $("homeSaldoReca").textContent=formatMoney(saldoReca); $("homeSaldoLiquido").textContent=formatMoney(saldoLiquido); $("homePendentes").textContent=formatMoney(pendentes); $("homeDiff").textContent=formatMoney(diff); $("homeDiff").style.color=diff<0?"#fecaca":"#bbf7d0"; if($("homeVolume")) $("homeVolume").textContent=formatMoney(volume); if($("homeTopOperator")) $("homeTopOperator").textContent=top?`${top[0]} • ${formatMoney(top[1])}`:"-"; $("homeLastClose").textContent=last?dateLabel(last.submittedAt||last.createdAt||last.turno?.closingDate):"-"; $("homeUpdatedAt").textContent=last?"Última atualização: "+dateLabel(last.submittedAt||last.createdAt):"Aguardando fechamento"; renderMonthlyGoal(view); renderChipsComparison(last, prev); }
 
     function renderChipsComparison(last, prev){
       const box = $("chipsComparison");
@@ -492,9 +657,51 @@
       }).join("");
     }
     
-    function renderHistory(){ const search=$("historySearch")?.value.trim().toLowerCase()||"", date=$("historyDate")?.value||""; let list=visibleHistory(); if(search) list=list.filter(x=>(x.operatorName||x.turno?.operatorName||"").toLowerCase().includes(search)); if(date) list=list.filter(x=>{const d=x.submittedAt?.toDate?x.submittedAt.toDate():new Date(x.turno?.closingDate||x.createdAt||0); return !isNaN(d)&&d.toISOString().slice(0,10)===date;}); $("historyCount").textContent=`${list.length} registros`; $("historyList").innerHTML=list.map(item=>{const t=item.turno||{}, operator=item.operatorName||t.operatorName||"Sem operador", saldo=t.saldoLiquido??item.currentSaldoTotal??0, diff=item.diff??0, adminActions=isAdmin()?`<button class="small-btn" data-edit="${item.id}">Editar</button><button class="small-btn danger" data-delete="${item.id}">Excluir</button>`:""; return `<div class="history-item" data-receipt="${item.id}" style="cursor:pointer;"><div class="history-top"><strong>${operator}</strong><span>${dateLabel(item.submittedAt||t.closingDate)}</span></div><div class="history-values"><div><span class="muted">Saldo líquido</span><b>${formatMoney(saldo)}</b></div><div><span class="muted">Diferença</span><b style="color:${diff<0?'#ef4444':'#10b981'}">${formatMoney(diff)}</b></div></div><div class="history-actions">${adminActions}</div></div>`;}).join("")||`<div class="history-item">Nenhum fechamento encontrado.</div>`; document.querySelectorAll("[data-delete]").forEach(btn=>btn.onclick=(ev)=>{ev.stopPropagation();deleteHistory(btn.dataset.delete);}); document.querySelectorAll("[data-edit]").forEach(btn=>btn.onclick=(ev)=>{ev.stopPropagation();openEditHistory(btn.dataset.edit);}); document.querySelectorAll("[data-receipt]").forEach(card=>card.onclick=()=>openHistoryReceipt(card.dataset.receipt)); }
+    function renderHistory(){
+      const search = $("historySearch").value.trim().toLowerCase();
+      const date = $("historyDate").value;
+      let list = visibleHistory();
+      if(search) list = list.filter(x => (x.operatorName || x.turno?.operatorName || "").toLowerCase().includes(search));
+      if(date) list = list.filter(x => {
+        const d = x.submittedAt?.toDate ? x.submittedAt.toDate() : new Date(x.turno?.closingDate || x.createdAt || 0);
+        return d.toISOString().slice(0,10) === date;
+      });
 
-    function periodStart(range){ const now=new Date(), d=new Date(now); if(range==="day") d.setHours(0,0,0,0); if(range==="week") d.setDate(now.getDate()-7); if(range==="month") d.setMonth(now.getMonth()-1); if(range==="all") return null; return d; }
+      $("historyCount").textContent = `${list.length} registros`;
+      $("historyList").innerHTML = list.map(item => {
+        const t = item.turno || {};
+        const operator = item.operatorName || t.operatorName || "Sem operador";
+        const saldo = t.saldoLiquido ?? item.currentSaldoTotal ?? 0;
+        const diff = item.diff ?? 0;
+        const adminActions = isAdmin() ? `
+          <button class="small-btn" data-edit="${item.id}">Editar</button>
+          <button class="small-btn danger" data-delete="${item.id}">Excluir</button>
+        ` : "";
+        return `
+          <div class="history-item">
+            <div class="history-top"><strong>${operator}</strong><span>${dateLabel(item.submittedAt || t.closingDate)}</span></div>
+            <div class="history-values">
+              <div><span class="muted">Saldo líquido</span><b>${formatMoney(saldo)}</b></div>
+              <div><span class="muted">Diferença</span><b style="color:${diff<0?'#ef4444':'#10b981'}">${formatMoney(diff)}</b></div>
+            </div>
+            <div class="history-actions">${adminActions}</div>
+          </div>`;
+      }).join("") || `<div class="history-item">Nenhum fechamento encontrado.</div>`;
+
+      document.querySelectorAll("[data-delete]").forEach(btn => btn.onclick = () => deleteHistory(btn.dataset.delete));
+      document.querySelectorAll("[data-edit]").forEach(btn => btn.onclick = () => editHistoryPlaceholder(btn.dataset.edit));
+    }
+
+    function periodStart(range){
+      const now = new Date();
+      const d = new Date(now);
+      if(range === "day") d.setHours(0,0,0,0);
+      if(range === "week") d.setDate(now.getDate() - 7);
+      if(range === "month") d.setMonth(now.getMonth() - 1);
+      if(range === "all") return null;
+      return d;
+    }
+
     function renderRanking(){
       const start = periodStart(currentRankRange);
       let list = visibleHistory();
@@ -548,156 +755,179 @@
       }).join("") || `<div class="rank-item">Sem dados para ranking.</div>`;
     }
 
-    function renderAll(){ try{renderCalculations();renderHome();renderHistory();renderRanking();previewReport();}catch(e){console.warn("Render ignorou erro:",e);} }
+    function renderAll(){
+      renderCalculations();
+      renderHome();
+      renderHistory();
+      renderRanking();
+    }
 
-    async function saveClosing(){ try{ const turno=getTurnFromForm(); if(!turno.operatorName) return alert("Informe o operador."); turno.supervisorUid=currentProfile?.supervisorUid||(isSupervisor()?currentUser?.uid:null)||null; turno.supervisorEmail=currentProfile?.supervisorEmail||(isSupervisor()?currentUser?.email:null)||null; turno.supervisorName=currentProfile?.supervisorName||(isSupervisor()?profileName():null)||null; const view=visibleHistory(); const lastSaldo=view[0]?.turno?.saldoLiquido??view[0]?.currentSaldoTotal??null; const diff=lastSaldo===null?0:turno.saldoLiquido-lastSaldo; await addDoc(collection(db,"history"),{type:"closing",turno,operatorName:turno.operatorName,supervisorUid:turno.supervisorUid,supervisorEmail:turno.supervisorEmail,supervisorName:turno.supervisorName,currentSaldoTotal:turno.saldoLiquido,diff,submittedAt:serverTimestamp(),createdBy:currentUser?.uid||null,createdByEmail:currentUser?.email||null}); await addAudit("save_closing",`Fechamento salvo por ${turno.operatorName}`); clearClosingForm(); alert("Fechamento salvo com sucesso."); }catch(e){ alert(friendlyError(e)); } }
+    async function saveClosing(){
+      const turno = getTurnFromForm();
+      if(!turno.operatorName) return alert("Informe o operador.");
 
-    async function addQuickCapitalInjection(){
-      if(!await requireAdmin()) return;
-
-      const cargasPoker = moneyToNumber($("quickCargaPoker")?.value || 0);
-      const cargasCasino = moneyToNumber($("quickCargaCasino")?.value || 0);
-      const motivo = $("quickCargaMotivo")?.value.trim() || "Carga rápida de caixa";
-      const operador = $("quickCargaOperador")?.value.trim() || profileName() || "Admin";
-      const totalAjuste = (cargasPoker * 400) + cargasCasino;
-
-      if(totalAjuste <= 0){
-        alert("Informe uma carga poker ou casino maior que zero.");
-        return;
-      }
+      turno.supervisorUid = currentProfile?.supervisorUid || (isSupervisor() ? currentUser?.uid : null) || null;
+      turno.supervisorEmail = currentProfile?.supervisorEmail || (isSupervisor() ? currentUser?.email : null) || null;
+      turno.supervisorName = currentProfile?.supervisorName || (isSupervisor() ? profileName() : null) || null;
 
       const view = visibleHistory();
       const lastSaldo = view[0]?.turno?.saldoLiquido ?? view[0]?.currentSaldoTotal ?? null;
+      const diff = lastSaldo === null ? 0 : turno.saldoLiquido - lastSaldo;
 
-      const turno = {
-        operatorName: operador,
-        closingDate: new Date().toISOString(),
-        webReca: 0,
-        suprema: 0,
-        pppoker: 0,
-        buffalo: 0,
-        ganamos: 0,
-        cargasPoker,
-        cargasCasino,
-        pendings: [],
-        outflows: [],
-        pendentesTotal: 0,
-        saidasTotal: 0,
-        retiradaLucroTotal: 0,
-        custoOperacionalTotal: 0,
-        ajusteTipo: "carga_rapida",
-        ajusteMotivo: motivo,
-        saldoLiquido: totalAjuste
+      await addDoc(collection(db,"history"), {
+        turno,
+        operatorName: turno.operatorName,
+        supervisorUid: turno.supervisorUid,
+        supervisorEmail: turno.supervisorEmail,
+        supervisorName: turno.supervisorName,
+        currentSaldoTotal: turno.saldoLiquido,
+        diff,
+        submittedAt: serverTimestamp(),
+        createdBy: currentUser?.uid || null,
+        createdByEmail: currentUser?.email || null
+      });
+      await addAudit("save_closing", `Fechamento salvo por ${turno.operatorName}`);
+      alert("Fechamento salvo com sucesso.");
+    }
+
+    async function deleteHistory(id){
+      if(!await requireAdmin()) return;
+      if(!confirm("Excluir este fechamento?")) return;
+      await deleteDoc(doc(db,"history",id));
+      await addAudit("delete_history", `Fechamento excluído: ${id}`);
+    }
+
+    function setMoneyValue(id, value){
+      const el = $(id);
+      if(!el) return;
+      el.value = value ? Number(value).toFixed(2).replace(".", ",").replace(/\B(?=(\d{3})+(?!\d))/g, ".") : "";
+    }
+
+    function fillDynamicRows(containerId, rows, label){
+      const list = $(containerId);
+      list.innerHTML = "";
+      (rows && rows.length ? rows : [{}]).forEach(row => createDynamicRow(containerId, label, row));
+    }
+
+    async function editHistoryPlaceholder(id){
+      if(!await requireAdmin()) return;
+      const ref = doc(db,"history",id);
+      const snap = await getDoc(ref);
+      if(!snap.exists()) return alert("Fechamento não encontrado.");
+
+      const data = snap.data();
+      const t = data.turno || {};
+      $("editHistoryId").value = id;
+      $("editOperatorName").value = data.operatorName || t.operatorName || "";
+      $("editClosingDate").value = t.closingDate ? String(t.closingDate).slice(0,16) : "";
+      setMoneyValue("editWebReca", t.webReca ?? t.reca ?? 0);
+      setMoneyValue("editSuprema", t.suprema ?? 0);
+      setMoneyValue("editPppoker", t.pppoker ?? 0);
+      setMoneyValue("editBuffalo", t.buffalo ?? 0);
+      setMoneyValue("editGanamos", t.ganamos ?? 0);
+      setMoneyValue("editCargasPoker", t.cargasPoker ?? 0);
+      setMoneyValue("editCargasCasino", t.cargasCasino ?? t.cargas ?? 0);
+      fillDynamicRows("editPendingList", t.pendings || [], "Nome / motivo");
+      fillDynamicRows("editOutflowList", t.outflows || [], "Descrição");
+      $("editHistoryModal").classList.add("active");
+    }
+
+    async function saveEditHistory(){
+      if(!await requireAdmin()) return;
+      const id = $("editHistoryId").value;
+      if(!id) return;
+
+      const ref = doc(db,"history",id);
+      const snap = await getDoc(ref);
+      if(!snap.exists()) return alert("Fechamento não encontrado.");
+      const old = snap.data();
+      const oldTurno = old.turno || {};
+
+      const pendings = getDynamicRows("editPendingList");
+      const outflows = getDynamicRows("editOutflowList");
+      const pendentesTotal = pendings.reduce((s,x)=>s+x.value,0);
+      const saidasTotal = outflows.reduce((s,x)=>s+x.value,0);
+      const retiradaLucroTotal = outflows.filter(x=>x.type === "lucro").reduce((s,x)=>s+x.value,0);
+      const custoOperacionalTotal = outflows.filter(x=>x.type === "custo_operacional").reduce((s,x)=>s+x.value,0);
+
+      const updatedTurno = {
+        ...oldTurno,
+        operatorName: $("editOperatorName").value.trim(),
+        closingDate: $("editClosingDate").value || oldTurno.closingDate || new Date().toISOString(),
+        webReca: moneyToNumber($("editWebReca").value),
+        suprema: moneyToNumber($("editSuprema").value),
+        pppoker: moneyToNumber($("editPppoker").value),
+        buffalo: moneyToNumber($("editBuffalo").value),
+        ganamos: moneyToNumber($("editGanamos").value),
+        cargasPoker: moneyToNumber($("editCargasPoker").value),
+        cargasCasino: moneyToNumber($("editCargasCasino").value),
+        pendings,
+        outflows,
+        pendentesTotal,
+        saidasTotal,
+        retiradaLucroTotal,
+        custoOperacionalTotal
       };
+      updatedTurno.cargas = (updatedTurno.cargasPoker * 400) + updatedTurno.cargasCasino;
+      updatedTurno.saldoLiquido = calcularSaldoLiquido(updatedTurno);
 
-      const diff = lastSaldo === null ? totalAjuste : totalAjuste;
+      await updateDoc(ref, {
+        turno: updatedTurno,
+        operatorName: updatedTurno.operatorName,
+        currentSaldoTotal: updatedTurno.saldoLiquido,
+        editedAt: serverTimestamp(),
+        editedBy: currentUser?.uid || null
+      });
 
+      await addAudit("edit_history", `Fechamento editado: ${id}`);
+      $("editHistoryModal").classList.remove("active");
+      await recalculateAllHistory();
+      alert("Fechamento editado e histórico recalculado.");
+    }
+
+    async function recalculateAllHistory(){
+      if(!await requireAdmin()) return false;
+      const loader = $("appReloadLoader");
+      loader?.classList.add("active");
       try{
-        await addDoc(collection(db,"history"), {
-          type:"capital_injection",
-          adjustment:true,
-          adjustmentType:"carga_rapida",
-          adjustmentReason:motivo,
-          turno,
-          operatorName:operador,
-          currentSaldoTotal:totalAjuste,
-          diff,
-          submittedAt:serverTimestamp(),
-          createdBy:currentUser?.uid || null,
-          createdByEmail:currentUser?.email || null
-        });
-
-        await addAudit("quick_capital_injection", `Carga rápida adicionada: ${formatMoney(totalAjuste)} • ${motivo}`);
-
-        ["quickCargaPoker","quickCargaCasino","quickCargaMotivo","quickCargaOperador"].forEach(id=>{ if($(id)) $(id).value=""; });
-
-        await recalculateAllHistory();
-        alert("Carga adicionada ao sistema como ajuste auditável.");
+        const qh = query(collection(db,"history"), orderBy("submittedAt","asc"));
+        const snap = await getDocs(qh);
+        let previousSaldoTotal = null;
+        for(const item of snap.docs){
+          try{
+            const data = item.data();
+            const turno = data.turno || {};
+            const saldoLiquido = calcularSaldoLiquido(turno);
+            const diff = previousSaldoTotal === null ? 0 : saldoLiquido - previousSaldoTotal;
+            await updateDoc(doc(db,"history",item.id), {
+              "turno.saldoLiquido": saldoLiquido,
+              currentSaldoTotal: saldoLiquido,
+              diff,
+              recalculatedAt: serverTimestamp()
+            });
+            previousSaldoTotal = saldoLiquido;
+          }catch(e){ console.warn("Histórico ignorado:", item.id, e); }
+        }
+        await addAudit("recalculate_history", "Histórico recalculado");
+        return true;
       }catch(e){
-        alert(friendlyError(e));
+        console.warn("Recálculo ignorado:", e);
+        return false;
+      }finally{
+        setTimeout(()=>loader?.classList.remove("active"), 500);
       }
     }
 
-    async function deleteHistory(id){ if(!await requireAdmin()) return; if(!confirm("Excluir este fechamento?")) return; try{await deleteDoc(doc(db,"history",id)); await addAudit("delete_history",`Fechamento excluído: ${id}`);}catch(e){alert(friendlyError(e));} }
-
-    function receiptLine(label, value){
-      return `<div class="receipt-line"><span>${label}</span><b>${value}</b></div>`;
+    async function refreshInternal(){
+      const loader = $("appReloadLoader");
+      loader?.classList.add("active");
+      try{
+        renderAll();
+      }finally{
+        setTimeout(()=>loader?.classList.remove("active"), 650);
+      }
     }
 
-    function renderReceiptRows(title, rows, emptyText){
-      const list = (rows || []).filter(x=>x.name || x.value);
-      return `<div class="receipt-section"><h3>${title}</h3><div class="receipt-list">${list.length ? list.map(x=>receiptLine(`${x.name || "Sem descrição"}${x.category ? " • " + (x.category === "custo_operacional" ? "Custo operacional" : "Lucro") : ""}`, formatMoney(x.value || 0))).join("") : `<div class="receipt-line"><span>${emptyText}</span><b>-</b></div>`}</div></div>`;
-    }
-
-    function openHistoryReceipt(id){
-      const item = historyCache.find(x=>x.id===id);
-      if(!item) return alert("Fechamento não encontrado.");
-
-      const t = item.turno || {};
-      const saldo = t.saldoLiquido ?? item.currentSaldoTotal ?? 0;
-      const diff = item.diff ?? 0;
-      const cargaPokerMoney = moneyToNumber(t.cargasPoker || 0) * 400;
-      const cargaCasino = moneyToNumber(t.cargasCasino ?? t.cargas ?? 0);
-
-      $("receiptSaldoLiquido").textContent = formatMoney(saldo);
-      $("receiptSubtitle").textContent = `${item.type === "capital_injection" ? "Ajuste de carga" : "Fechamento de turno"} • ${dateLabel(item.submittedAt || t.closingDate)}`;
-      $("receiptCode").textContent = `ID: ${id.slice(0,8)} • ${item.type || "closing"}`;
-
-      $("receiptContent").innerHTML = `
-        <div class="receipt-grid">
-          <div class="receipt-row"><span>Operador</span><b>${item.operatorName || t.operatorName || "-"}</b></div>
-          <div class="receipt-row"><span>Supervisor</span><b>${item.supervisorName || t.supervisorName || item.supervisorEmail || "-"}</b></div>
-          <div class="receipt-row"><span>Data</span><b>${dateLabel(item.submittedAt || t.closingDate)}</b></div>
-          <div class="receipt-row"><span>Diferença</span><b style="color:${diff<0?'#ef4444':'#10b981'}">${formatMoney(diff)}</b></div>
-        </div>
-
-        <div class="receipt-section">
-          <h3>Resumo financeiro</h3>
-          <div class="receipt-list">
-            ${receiptLine("Saldo Reca", formatMoney(t.webReca ?? t.reca ?? 0))}
-            ${receiptLine("Suprema ×400", formatMoney(moneyToNumber(t.suprema || 0) * 400))}
-            ${receiptLine("PPPoker ×400", formatMoney(moneyToNumber(t.pppoker || 0) * 400))}
-            ${receiptLine("Buffalo", formatMoney(t.buffalo || 0))}
-            ${receiptLine("Ganamos", formatMoney(t.ganamos || 0))}
-            ${receiptLine("Carga poker ×400", formatMoney(cargaPokerMoney))}
-            ${receiptLine("Carga casino", formatMoney(cargaCasino))}
-            ${receiptLine("Pagos pendentes", formatMoney(t.pendentesTotal || 0))}
-            ${receiptLine("Retiradas total", formatMoney(t.saidasTotal || 0))}
-            ${receiptLine("Retirada lucro", formatMoney(t.retiradaLucroTotal || 0))}
-            ${receiptLine("Custo operacional", formatMoney(t.custoOperacionalTotal || 0))}
-          </div>
-        </div>
-
-        ${renderReceiptRows("Pagos pendentes detalhados", t.pendings, "Sem pagos pendentes")}
-        ${renderReceiptRows("Retiradas detalhadas", t.outflows, "Sem retiradas")}
-
-        ${t.ajusteMotivo || item.adjustmentReason ? `<div class="receipt-section"><h3>Motivo do ajuste</h3><div class="receipt-line"><span>${t.ajusteMotivo || item.adjustmentReason}</span><b>Ajuste</b></div></div>` : ""}
-      `;
-
-      const adminActions = $("receiptAdminActions");
-      adminActions?.classList.toggle("hidden", !isAdmin());
-
-      const editBtn = $("receiptEditBtn");
-      const deleteBtn = $("receiptDeleteBtn");
-      if(editBtn) editBtn.onclick = () => { closeHistoryReceipt(); openEditHistory(id); };
-      if(deleteBtn) deleteBtn.onclick = () => { closeHistoryReceipt(); deleteHistory(id); };
-
-      $("receiptModal").classList.add("active");
-    }
-
-    function closeHistoryReceipt(){
-      $("receiptModal")?.classList.remove("active");
-    }
-
-    async function openEditHistory(id){ if(!await requireAdmin()) return; const item=historyCache.find(x=>x.id===id); if(!item) return alert("Fechamento não encontrado no cache."); const t=item.turno||{}; $("editHistoryId").value=id; $("editOperatorName").value=item.operatorName||t.operatorName||""; $("editClosingDate").value=toDateInputValue(t.closingDate||item.submittedAt); $("editWebReca").value=t.webReca??t.reca??0; $("editSuprema").value=t.suprema??0; $("editPppoker").value=t.pppoker??0; $("editBuffalo").value=t.buffalo??0; $("editGanamos").value=t.ganamos??0; $("editCargasPoker").value=t.cargasPoker??0; $("editCargasCasino").value=t.cargasCasino??t.cargas??0; setDynamicRows("editPendingList",t.pendings||[]); setDynamicRows("editOutflowList",t.outflows||[]); $("editHistoryModal").classList.add("active"); }
-    function closeEdit(){ $("editHistoryModal").classList.remove("active"); }
-    async function saveEdit(){ if(!await requireAdmin()) return; const id=$("editHistoryId").value; const ref=doc(db,"history",id); const original=historyCache.find(x=>x.id===id)||{}; const t={...(original.turno||{}),operatorName:$("editOperatorName").value.trim(),closingDate:$("editClosingDate").value||new Date().toISOString(),webReca:moneyToNumber($("editWebReca").value),suprema:moneyToNumber($("editSuprema").value),pppoker:moneyToNumber($("editPppoker").value),buffalo:moneyToNumber($("editBuffalo").value),ganamos:moneyToNumber($("editGanamos").value),cargasPoker:moneyToNumber($("editCargasPoker").value),cargasCasino:moneyToNumber($("editCargasCasino").value),pendings:getDynamicRows("editPendingList"),outflows:getDynamicRows("editOutflowList")}; t.pendentesTotal=t.pendings.reduce((s,x)=>s+x.value,0); t.saidasTotal=t.outflows.reduce((s,x)=>s+x.value,0); t.retiradaLucroTotal=t.outflows.filter(x=>x.category==="lucro").reduce((s,x)=>s+x.value,0); t.custoOperacionalTotal=t.outflows.filter(x=>x.category==="custo_operacional").reduce((s,x)=>s+x.value,0); t.saldoLiquido=calcularSaldoLiquido(t); try{await updateDoc(ref,{turno:t,operatorName:t.operatorName,currentSaldoTotal:t.saldoLiquido,editedAt:serverTimestamp(),editedBy:currentUser?.uid||null}); await addAudit("edit_history",`Fechamento editado: ${id}`); closeEdit(); await recalculateAllHistory(); alert("Fechamento editado e histórico recalculado.");}catch(e){alert(friendlyError(e));} }
-
-    async function recalculateAllHistory(){ if(!await requireAdmin()) return false; const loader=$("appReloadLoader"); loader?.classList.add("active"); try{const qh=query(collection(db,"history"),orderBy("submittedAt","asc")); const snap=await getDocs(qh); let previousSaldoTotal=null; for(const item of snap.docs){try{const data=item.data(), turno=data.turno||{}, saldoLiquido=calcularSaldoLiquido(turno), diff=previousSaldoTotal===null?0:saldoLiquido-previousSaldoTotal; await updateDoc(doc(db,"history",item.id),{"turno.saldoLiquido":saldoLiquido,currentSaldoTotal:saldoLiquido,diff,recalculatedAt:serverTimestamp()}); previousSaldoTotal=saldoLiquido;}catch(e){console.warn("Histórico ignorado no recálculo:",item.id,e);}} await addAudit("recalculate_history","Histórico recalculado"); renderAll(); return true;}catch(e){alert(friendlyError(e)); return false;}finally{setTimeout(()=>loader?.classList.remove("active"),500);} }
-    async function refreshInternal(){ const loader=$("appReloadLoader"); loader?.classList.add("active"); renderAll(); setTimeout(()=>loader?.classList.remove("active"),650); }
-
-    function getReportItems(){ let items=visibleHistory(); const start=$("reportStart")?.value, end=$("reportEnd")?.value, operator=($("reportOperator")?.value||"").trim().toLowerCase(), supervisor=($("reportSupervisor")?.value||"").trim().toLowerCase(); if(start) items=items.filter(x=>{const d=x.submittedAt?.toDate?x.submittedAt.toDate():new Date(x.turno?.closingDate||x.createdAt||0); return !isNaN(d)&&d.toISOString().slice(0,10)>=start;}); if(end) items=items.filter(x=>{const d=x.submittedAt?.toDate?x.submittedAt.toDate():new Date(x.turno?.closingDate||x.createdAt||0); return !isNaN(d)&&d.toISOString().slice(0,10)<=end;}); if(operator) items=items.filter(x=>String(x.operatorName||x.turno?.operatorName||"").toLowerCase().includes(operator)); if(supervisor) items=items.filter(x=>String(x.supervisorName||x.turno?.supervisorName||x.supervisorEmail||x.turno?.supervisorEmail||"").toLowerCase().includes(supervisor)); return items; }
-    function previewReport(){ if(!$("reportPreviewCount")) return; const items=getReportItems(), totalSaldo=items.reduce((s,x)=>s+moneyToNumber(x.turno?.saldoLiquido??x.currentSaldoTotal),0), totalDiff=items.reduce((s,x)=>s+moneyToNumber(x.diff),0); $("reportPreviewCount").textContent=items.length; $("reportPreviewSaldo").textContent=formatMoney(totalSaldo); $("reportPreviewDiff").textContent=formatMoney(totalDiff); }
     function buildBankPdfHtml(items){
       const generatedAt = new Date().toLocaleString("pt-BR");
       const reportCode = "BK-" + Date.now().toString().slice(-8);
@@ -799,14 +1029,58 @@
 </html>`;
     }
 
-    function generateBankPdfReport(){ const items=$("reportStart")?getReportItems():visibleHistory(); const win=window.open("","_blank"); if(!win) return alert("Permita pop-ups para gerar o PDF."); win.document.open(); win.document.write(buildBankPdfHtml(items)); win.document.close(); setTimeout(()=>{win.focus();win.print();},500); }
+    function generateBankPdfReport(){
+      const items = visibleHistory();
+      const html = buildBankPdfHtml(items);
+      const win = window.open("", "_blank");
+      if(!win) return alert("Permita pop-ups para gerar o PDF.");
+      win.document.open();
+      win.document.write(html);
+      win.document.close();
+      setTimeout(()=>{ win.focus(); win.print(); }, 500);
+    }
 
-    function startHistoryRealtimeListener(){ if(historyUnsubscribe) historyUnsubscribe(); const qh=query(collection(db,"history"),orderBy("submittedAt","desc"),limit(300)); historyUnsubscribe=onSnapshot(qh,snap=>{historyCache=snap.docs.map(d=>({id:d.id,...d.data()})); hideNotice("appNotice"); renderAll();},error=>{console.warn("History permission/listener:",error); showNotice("appNotice",friendlyError(error),"error"); historyCache=[]; renderAll();}); }
-    function startSystemRealtime(){ if(systemUnsubscribe) systemUnsubscribe(); systemUnsubscribe=onSnapshot(doc(db,"system","saldoReca"),snap=>{ if(!snap.exists()) return; const data=snap.data(); if(data.valor!==undefined){$("homeSaldoReca").textContent=formatMoney(data.valor); $("homeUpdatedAt").textContent="Saldo realtime: "+dateLabel(data.updatedAt);}},error=>console.warn("Saldo Reca realtime não configurado:",error)); }
+    function startHistoryRealtimeListener(){
+      if(historyUnsubscribe) historyUnsubscribe();
+      const qh = query(collection(db,"history"), orderBy("submittedAt","desc"), limit(300));
+      historyUnsubscribe = onSnapshot(qh, snap => {
+        historyCache = snap.docs.map(d => ({ id:d.id, ...d.data() }));
+        renderAll();
+      }, error => {
+        console.error("Erro no realtime history:", error);
+        alert("Erro ao carregar histórico. Confira as regras do Firestore e se o banco foi criado.");
+      });
+    }
 
-    async function safeSetUserProfile(user, profile){ try{ await setDoc(doc(db,"users",user.uid), profile, { merge:true }); return true; }catch(e){ console.warn("Não conseguiu gravar perfil:",e); showNotice("appNotice",friendlyError(e),"error"); return false; } }
-    async function loadProfile(user){ const ref=doc(db,"users",user.uid); try{ const snap=await getDoc(ref); if(snap.exists()) return snap.data(); const bootstrap=isBootstrapEmail(user.email); const profile={email:user.email,name:user.email.split("@")[0],role:bootstrap?"admin":"operator",approved:bootstrap?true:false,blocked:false,createdAt:serverTimestamp()}; await safeSetUserProfile(user,profile); return profile; }catch(e){ console.warn("Erro ao ler perfil:",e); if(isBootstrapEmail(user.email)){ return {email:user.email,name:user.email.split("@")[0],role:"admin",approved:true,blocked:false,localOnly:true}; } showNotice("appNotice",friendlyError(e),"error"); return {email:user.email,name:user.email.split("@")[0],role:"operator",approved:false,blocked:false,permissionError:true}; } }
-    async function addAudit(action,description){ try{ await addDoc(collection(db,"audit_logs"),{action,description,uid:currentUser?.uid||null,email:currentUser?.email||null,createdAt:serverTimestamp()}); }catch(e){ console.warn("Audit não gravado:",e); } }
+    function startSystemRealtime(){
+      if(systemUnsubscribe) systemUnsubscribe();
+      systemUnsubscribe = onSnapshot(doc(db,"system","saldoReca"), snap => {
+        if(!snap.exists()) return;
+        const data = snap.data();
+        if(data.valor !== undefined){
+          $("homeSaldoReca").textContent = formatMoney(data.valor);
+          $("homeUpdatedAt").textContent = "Saldo realtime: " + dateLabel(data.updatedAt);
+        }
+      }, error => {
+        console.warn("Saldo Reca realtime não configurado ainda:", error);
+      });
+    }
+
+    async function loadProfile(user){
+      const ref = doc(db,"users",user.uid);
+      const snap = await getDoc(ref);
+      if(!snap.exists()){
+        await setDoc(ref, { email:user.email, name:user.email.split("@")[0], role:"operator", approved:false, blocked:false, createdAt:serverTimestamp() });
+        return { email:user.email, name:user.email.split("@")[0], role:"operator", approved:false, blocked:false };
+      }
+      return snap.data();
+    }
+
+    async function addAudit(action, description){
+      try{
+        await addDoc(collection(db,"audit_logs"), { action, description, uid:currentUser?.uid || null, email:currentUser?.email || null, createdAt:serverTimestamp() });
+      }catch(e){ console.warn("Audit não gravado:", e); }
+    }
 
     async function loadUsers(){
       if(!await requireAdmin()) return;
@@ -875,12 +1149,95 @@
       }
     }
 
-    async function loadAudit(){ if(!isAdmin()) return; try{ const qh=query(collection(db,"audit_logs"),orderBy("createdAt","desc"),limit(20)); const snap=await getDocs(qh); $("auditList").innerHTML=snap.docs.map(d=>{const a=d.data(); return `<div class="history-item"><div class="history-top"><strong>${a.action}</strong><span>${dateLabel(a.createdAt)}</span></div><div class="muted">${a.description||""}<br>${a.email||""}</div></div>`;}).join("")||`<div class="history-item">Sem auditoria.</div>`; }catch(e){ $("auditList").innerHTML=`<div class="notice error">${friendlyError(e)}</div>`; } }
+    async function loadAudit(){
+      if(!isAdmin()) return;
+      const qh = query(collection(db,"audit_logs"), orderBy("createdAt","desc"), limit(20));
+      const snap = await getDocs(qh);
+      $("auditList").innerHTML = snap.docs.map(d => {
+        const a = d.data();
+        return `<div class="history-item"><div class="history-top"><strong>${a.action}</strong><span>${dateLabel(a.createdAt)}</span></div><div class="muted">${a.description || ""}<br>${a.email || ""}</div></div>`;
+      }).join("") || `<div class="history-item">Sem auditoria.</div>`;
+    }
 
-    async function createInternalUser(){ if(!await requireAdmin()) return; const email=$("newUserEmail").value.trim(), password=$("newUserPassword").value, name=$("newUserName").value.trim(), role=$("newUserRole").value, supervisorRaw=$("newUserSupervisor")?.value.trim()||""; if(!email||!password) return alert("Informe email e senha."); if(password.length<6) return alert("A senha precisa ter pelo menos 6 caracteres."); const secondaryApp=initializeApp(firebaseConfig,"SecondaryUserCreator"+Date.now()), secondaryAuth=getAuth(secondaryApp); try{ const cred=await createUserWithEmailAndPassword(secondaryAuth,email,password); await setDoc(doc(db,"users",cred.user.uid),{email,name:name||email.split("@")[0],role,supervisorUid:role==="operator"&&!supervisorRaw.includes("@")?(supervisorRaw||null):null,supervisorEmail:role==="operator"&&supervisorRaw.includes("@")?supervisorRaw:null,approved:true,blocked:false,createdAt:serverTimestamp(),createdBy:currentUser?.uid||null}); await signOut(secondaryAuth); await deleteApp(secondaryApp); await addAudit("create_user",`Usuário criado: ${email}`); ["newUserEmail","newUserPassword","newUserName","newUserSupervisor"].forEach(id=>{if($(id)) $(id).value="";}); await loadUsers(); alert("Usuário criado com sucesso."); }catch(e){ try{await signOut(secondaryAuth);await deleteApp(secondaryApp);}catch(_ignored){} alert(friendlyError(e)); } }
-    async function registerAccess(){ const email=$("loginEmail").value.trim(), password=$("loginPassword").value; if(!email||!password) return showNotice("loginNotice","Informe email e senha para criar acesso.","error"); if(password.length<6) return showNotice("loginNotice","A senha precisa ter pelo menos 6 caracteres.","error"); try{ const bootstrap=isBootstrapEmail(email); const cred=await createUserWithEmailAndPassword(auth,email,password); const profile={email,name:email.split("@")[0],role:bootstrap?"admin":"operator",approved:bootstrap?true:false,blocked:false,createdAt:serverTimestamp()}; await safeSetUserProfile(cred.user,profile); showNotice("loginNotice",bootstrap?"Conta admin criada. Entrando...":"Conta criada. Aguarde aprovação do admin.",bootstrap?"ok":"error"); }catch(e){ showNotice("loginNotice",friendlyError(e),"error"); } }
+    async function createInternalUser(){
+      if(!await requireAdmin()) return;
+      const email = $("newUserEmail").value.trim();
+      const password = $("newUserPassword").value;
+      const name = $("newUserName").value.trim();
+      const role = $("newUserRole").value;
+      const supervisorRaw = $("newUserSupervisor").value.trim();
+      if(!email || !password) return alert("Informe email e senha.");
+      if(password.length < 6) return alert("A senha precisa ter pelo menos 6 caracteres.");
 
-    function showScreen(name){ document.querySelectorAll(".screen").forEach(s=>s.classList.remove("active")); $("screen"+name)?.classList.add("active"); document.querySelectorAll(".nav-btn").forEach(b=>b.classList.toggle("active",b.dataset.screen===name)); if(name==="Admin"){loadUsers();loadAudit();} if(name==="Ranking") renderRanking(); if(name==="Reports") previewReport(); }
+      const secondaryApp = initializeApp(firebaseConfig, "SecondaryUserCreator" + Date.now());
+      const secondaryAuth = getAuth(secondaryApp);
+
+      try{
+        const cred = await createUserWithEmailAndPassword(secondaryAuth, email, password);
+        await setDoc(doc(db,"users",cred.user.uid), {
+          email,
+          name:name || email.split("@")[0],
+          role,
+          supervisorUid: role === "operator" ? (supervisorRaw || null) : null,
+          supervisorEmail: role === "operator" && supervisorRaw.includes("@") ? supervisorRaw : null,
+          approved:true,
+          blocked:false,
+          createdAt:serverTimestamp(),
+          createdBy:currentUser?.uid || null
+        });
+        await signOut(secondaryAuth);
+        await deleteApp(secondaryApp);
+        await addAudit("create_user", `Usuário criado: ${email}`);
+        $("newUserEmail").value = "";
+        $("newUserPassword").value = "";
+        $("newUserName").value = "";
+        if($("newUserSupervisor")) $("newUserSupervisor").value = "";
+        $("newUserSupervisor").value = "";
+        await loadUsers();
+        alert("Usuário criado com sucesso.");
+      }catch(e){
+        try{ await signOut(secondaryAuth); await deleteApp(secondaryApp); }catch(_ignored){}
+        alert("Erro ao criar usuário: " + e.message);
+      }
+    }
+
+    async function registerAccess(){
+      const email = $("loginEmail").value.trim();
+      const password = $("loginPassword").value;
+      if(!email || !password) return alert("Informe email e senha para criar acesso.");
+      if(password.length < 6) return alert("A senha precisa ter pelo menos 6 caracteres.");
+
+      try{
+        const usersSnap = await getDocs(collection(db,"users"));
+        const isFirstUser = usersSnap.empty;
+        const cred = await createUserWithEmailAndPassword(auth, email, password);
+        await setDoc(doc(db,"users",cred.user.uid), {
+          email,
+          name:email.split("@")[0],
+          role:isFirstUser ? "admin" : "operator",
+          approved:isFirstUser ? true : false,
+          blocked:false,
+          createdAt:serverTimestamp()
+        });
+        if(isFirstUser){
+          alert("Primeira conta criada como ADMIN.");
+        }else{
+          alert("Conta criada. Aguarde aprovação do admin.");
+        }
+      }catch(e){
+        alert("Erro ao criar acesso: " + e.message);
+      }
+    }
+
+    function showScreen(name){
+      document.querySelectorAll(".screen").forEach(s=>s.classList.remove("active"));
+      $("screen"+name)?.classList.add("active");
+      document.querySelectorAll(".nav-btn").forEach(b=>b.classList.toggle("active", b.dataset.screen === name));
+      if(name === "Admin") { loadUsers(); loadAudit(); }
+      if(name === "Ranking") renderRanking();
+      if(name === "Reports") previewReport();
+    }
+
     function updateRoleVisibility(){
       const adminOnlyIds = [
         "cargasPoker",
@@ -895,32 +1252,91 @@
         const wrapper = el?.closest(".field") || el;
         if(wrapper) wrapper.style.display = isAdmin() ? "" : "none";
       });
+
+      const metaCard = $("metaMensalCard");
+      if(metaCard){
+        metaCard.style.display = (isAdmin() || isSupervisor()) ? "block" : "none";
+      }
+    });
     }
 
-    function bindEvents(){ applyBankMoneyMaskAll(document); enableClearOnFocus(); ["webReca","suprema","pppoker","buffalo","ganamos","cargasPoker","cargasCasino","quickCargaCasino","operatorName","closingDate","editWebReca","editSuprema","editPppoker","editBuffalo","editGanamos","editCargasPoker","editCargasCasino"].forEach(id=>$(id)?.addEventListener("input",renderCalculations)); document.addEventListener("bankmoney", renderCalculations); $("addPendingBtn").onclick=()=>createDynamicRow("pendingList","Nome / motivo"); $("addOutflowBtn").onclick=()=>createDynamicRow("outflowList","Descrição");
-      $("quickChargeBtn") && ($("quickChargeBtn").onclick=addQuickCapitalInjection);
-      $("toggleQuickChargeBtn") && ($("toggleQuickChargeBtn").onclick=()=>{
-        const panel = $("quickChargePanel");
-        panel?.classList.toggle("active");
-        $("toggleQuickChargeBtn").textContent = panel?.classList.contains("active") ? "Ocultar carga rápida" : "Mostrar carga rápida";
-      }); $("saveClosingBtn").onclick=saveClosing; $("refreshBtn").onclick=refreshInternal; $("logoRefreshBtn").onclick=refreshInternal; $("recalculateBtn").onclick=recalculateAllHistory; $("pdfReportBtn").onclick=generateBankPdfReport; $("previewReportBtn").onclick=previewReport; $("generateReportBtn").onclick=generateBankPdfReport; ["reportStart","reportEnd","reportOperator","reportSupervisor"].forEach(id=>$(id)?.addEventListener("input",previewReport)); $("loadUsersBtn").onclick=loadUsers;
-      $("toggleCreateUserBtn") && ($("toggleCreateUserBtn").onclick=()=>{
-        const panel = $("createUserPanel");
-        panel?.classList.toggle("active");
-        $("toggleCreateUserBtn").textContent = panel?.classList.contains("active") ? "Ocultar criar usuário" : "Mostrar criar usuário";
-      });
-      $("createUserBtn").onclick=createInternalUser; $("historySearch").addEventListener("input",renderHistory); $("historyDate").addEventListener("input",renderHistory); document.querySelectorAll(".nav-btn").forEach(btn=>btn.onclick=()=>showScreen(btn.dataset.screen)); document.querySelectorAll("[data-rank]").forEach(btn=>btn.onclick=()=>{document.querySelectorAll("[data-rank]").forEach(b=>b.classList.remove("active")); btn.classList.add("active"); currentRankRange=btn.dataset.rank; renderRanking();}); $("logoutBtn").onclick=async()=>{if(historyUnsubscribe)historyUnsubscribe();if(systemUnsubscribe)systemUnsubscribe();await signOut(auth);}; $("loginBtn").onclick=async()=>{try{hideNotice("loginNotice");await signInWithEmailAndPassword(auth,$("loginEmail").value.trim(),$("loginPassword").value);}catch(e){showNotice("loginNotice",friendlyError(e),"error");}}; $("registerBtn").onclick=registerAccess; $("resetPasswordBtn").onclick=async()=>{try{const email=$("loginEmail").value.trim(); if(!email) return showNotice("loginNotice","Informe o email.","error"); await sendPasswordResetEmail(auth,email); showNotice("loginNotice","Email de recuperação enviado.","ok");}catch(e){showNotice("loginNotice",friendlyError(e),"error");}}; $("receiptCloseBtn") && ($("receiptCloseBtn").onclick=closeHistoryReceipt);
-      $("editCloseBtn").onclick=closeEdit; $("cancelEditBtn").onclick=closeEdit; $("saveEditBtn").onclick=saveEdit; $("editAddPendingBtn").onclick=()=>createDynamicRow("editPendingList","Nome / motivo"); $("editAddOutflowBtn").onclick=()=>createDynamicRow("editOutflowList","Descrição"); }
-    function initDate(){ const now=new Date(); now.setMinutes(now.getMinutes()-now.getTimezoneOffset()); $("closingDate").value=now.toISOString().slice(0,16); }
+    function bindEvents(){
+      ["webReca","suprema","pppoker","buffalo","ganamos","cargasPoker","cargasCasino","operatorName","closingDate"].forEach(id => enableSmartMoneyInput(id));
+      $("addPendingBtn").onclick = () => createDynamicRow("pendingList", "Nome / motivo");
+      $("addOutflowBtn").onclick = () => createDynamicRow("outflowList", "Descrição");
+      $("saveClosingBtn").onclick = saveClosing;
+      $("refreshBtn").onclick = refreshInternal;
+      $("logoRefreshBtn").onclick = refreshInternal;
+      $("recalculateBtn").onclick = recalculateAllHistory;
+      $("pdfReportBtn").onclick = generateBankPdfReport;
+      $("previewReportBtn") && ($("previewReportBtn").onclick = previewReport);
+      $("generateReportBtn") && ($("generateReportBtn").onclick = generateBankPdfReport);
+      ["reportStart","reportEnd","reportOperator","reportSupervisor"].forEach(id => $(id)?.addEventListener("input", previewReport));
+      $("pdfReportBtn").onclick = generateBankPdfReport;
+      $("loadUsersBtn").onclick = loadUsers;
+      $("createUserBtn").onclick = createInternalUser;
+      $("editCloseBtn") && ($("editCloseBtn").onclick = () => $("editHistoryModal").classList.remove("active"));
+      $("cancelEditBtn") && ($("cancelEditBtn").onclick = () => $("editHistoryModal").classList.remove("active"));
+      $("saveEditBtn") && ($("saveEditBtn").onclick = saveEditHistory);
+      $("editAddPendingBtn") && ($("editAddPendingBtn").onclick = () => createDynamicRow("editPendingList", "Nome / motivo"));
+      $("editAddOutflowBtn") && ($("editAddOutflowBtn").onclick = () => createDynamicRow("editOutflowList", "Descrição"));
+      ["editWebReca","editSuprema","editPppoker","editBuffalo","editGanamos","editCargasPoker","editCargasCasino"].forEach(id => enableSmartMoneyInput(id));
+      $("historySearch").addEventListener("input", renderHistory);
+      $("historyDate").addEventListener("input", renderHistory);
+      document.querySelectorAll(".nav-btn").forEach(btn => btn.onclick = () => showScreen(btn.dataset.screen));
+      document.querySelectorAll("[data-rank]").forEach(btn => btn.onclick = () => { document.querySelectorAll("[data-rank]").forEach(b=>b.classList.remove("active")); btn.classList.add("active"); currentRankRange = btn.dataset.rank; renderRanking(); });
+      $("logoutBtn").onclick = async()=>{ if(historyUnsubscribe) historyUnsubscribe(); if(systemUnsubscribe) systemUnsubscribe(); await signOut(auth); };
+      $("loginBtn").onclick = async()=>{
+        try{ await signInWithEmailAndPassword(auth, $("loginEmail").value.trim(), $("loginPassword").value); }
+        catch(e){ alert("Erro no login: " + e.message); }
+      };
+      $("registerBtn").onclick = registerAccess;
+      $("resetPasswordBtn").onclick = async()=>{
+        const email = $("loginEmail").value.trim();
+        if(!email) return alert("Informe o email.");
+        await sendPasswordResetEmail(auth, email);
+        alert("Email de recuperação enviado.");
+      };
+    }
 
-    onAuthStateChanged(auth,async(user)=>{ currentUser=user; if(!user){$("loginScreen").classList.remove("hidden");$("appShell").classList.add("hidden");$("bottomNav").classList.add("hidden");return;} currentProfile=await loadProfile(user); if(currentProfile.blocked){await signOut(auth);return alert("Usuário bloqueado.");} if(currentProfile.approved===false){$("loginScreen").classList.remove("hidden");$("appShell").classList.add("hidden");$("bottomNav").classList.add("hidden");showNotice("loginNotice","Usuário aguardando aprovação do admin.","error");return;} $("loginScreen").classList.add("hidden");$("appShell").classList.remove("hidden");$("bottomNav").classList.remove("hidden");$("topUserLabel").textContent=`${currentProfile.name||user.email} • ${isAdmin()?"Admin":isSupervisor()?"Supervisor":"Operador"}`; $("adminStatus").textContent=isAdmin()?"Admin ativo":"Somente admin";
+    function initDate(){
+      const now = new Date();
+      now.setMinutes(now.getMinutes() - now.getTimezoneOffset());
+      $("closingDate").value = now.toISOString().slice(0,16);
+    }
 
-      updateRoleVisibility(); if(currentProfile.permissionError) showNotice("appNotice","Seu login entrou, mas o Firestore negou acesso ao perfil. Ajuste as regras ou coloque seu email em BOOTSTRAP_ADMIN_EMAILS.","error"); startHistoryRealtimeListener(); startSystemRealtime(); renderAll(); });
+    onAuthStateChanged(auth, async(user)=>{
+      currentUser = user;
+      if(!user){
+        $("loginScreen").classList.remove("hidden");
+        $("appShell").classList.add("hidden");
+        $("bottomNav").classList.add("hidden");
+        return;
+      }
+      currentProfile = await loadProfile(user);
+      if(currentProfile.blocked){ await signOut(auth); return alert("Usuário bloqueado."); }
+      if(currentProfile.approved === false){ await signOut(auth); return alert("Usuário aguardando aprovação do admin."); }
+      $("loginScreen").classList.add("hidden");
+      $("appShell").classList.remove("hidden");
+      $("bottomNav").classList.remove("hidden");
+      $("topUserLabel").textContent = `${currentProfile.name || user.email} • ${isAdmin() ? "Admin" : isSupervisor() ? "Supervisor" : "Operador"}`;
+      $("adminStatus").textContent = isAdmin() ? "Admin ativo" : "Somente admin";
+      startHistoryRealtimeListener();
+      startSystemRealtime();
+      renderAll();
+    });
 
-    function runSelfTests(){ const tests=[]; const assert=(name,cond)=>tests.push({name,pass:!!cond}); assert("money BR",moneyToNumber("1.234,56")===1234.56); assert("money US",moneyToNumber("1,234.56")===1234.56); assert("calc multipliers",calcularSaldoLiquido({webReca:100,suprema:1,pppoker:2,buffalo:10,ganamos:20,cargasPoker:1,cargasCasino:5,pendentesTotal:15,saidasTotal:7})===1327); assert("operator access own",(()=>{currentUser={uid:"u1",email:"a@a.com"};currentProfile={name:"Ana",role:"operator"};return canAccessHistoryItem({createdBy:"u1",turno:{}});})()); console.table(tests); return tests; }
-    window.BankKingTests={runSelfTests,moneyToNumber,calcularSaldoLiquido};
-
-    document.addEventListener("DOMContentLoaded",()=>{ bindEvents(); initDate(); createDynamicRow("pendingList","Nome / motivo"); createDynamicRow("outflowList","Descrição"); setTimeout(()=>{const splash=$("appSplash"); splash?.classList.add("hide"); setTimeout(()=>splash?.remove(),800);},1600); runSelfTests(); });
+    document.addEventListener("DOMContentLoaded", () => {
+      bindEvents();
+      initDate();
+      createDynamicRow("pendingList", "Nome / motivo");
+      createDynamicRow("outflowList", "Descrição");
+      setTimeout(()=>{
+        const splash = $("appSplash");
+        splash?.classList.add("hide");
+        setTimeout(()=>splash?.remove(),800);
+      },1600);
+    });
   </script>
 </body>
 </html>
