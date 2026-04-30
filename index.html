@@ -3124,16 +3124,18 @@ async function validateUserAccess(user) {
 
   return true;
 }
-  function calcularSaldoBase(turno = {}) {
+ function calcularSaldoCaixa(turno = {}) {
   return (
     Number(turno.reca || 0) +
     Number(turno.suprema || 0) * 400 +
     Number(turno.pppoker || 0) * 400 +
     Number(turno.buffalo || 0) +
     Number(turno.ganamos || 0) -
-    Number(turno.cargaFichas || 0) -
+
     Number(turno.cargaPoker || 0) -
-    Number(turno.pendentes || turno.pendentesTotal || 0)
+    Number(turno.cargaFichas || 0) +
+
+    Number(turno.saidas || turno.saidasTotal || 0)
   );
 }
 
@@ -3150,11 +3152,10 @@ function calcularSaldoLiquido(turno = {}) {
 }
 
 function calcularDiffReal(turnoAtual = {}, turnoAnterior = {}) {
-  const saldoAtual = calcularSaldoCaixa(turnoAtual);
-  const saldoAnterior = calcularSaldoCaixa(turnoAnterior);
+  const saldoAtual = calcularSaldoBase(turnoAtual);
+  const saldoAnterior = calcularSaldoBase(turnoAnterior);
 
-  const saidasAtual =
-    Number(turnoAtual.saidas || turnoAtual.saidasTotal || 0);
+  const saidasAtual = Number(turnoAtual.saidas || turnoAtual.saidasTotal || 0);
 
   return saldoAtual - saldoAnterior + saidasAtual;
 }
