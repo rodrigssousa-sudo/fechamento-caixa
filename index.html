@@ -3140,6 +3140,28 @@ function getTotalSaidas(turno = {}) {
   return Number(turno.saidasTotal || turno.saidas || 0);
 }
 
+function getTotalPendentes(turno = {}) {
+  const salvo = Number(turno.pendentesTotal || turno.pendentes || 0);
+  if (salvo > 0) return salvo;
+  if (Array.isArray(turno.pendings)) {
+    return turno.pendings.reduce((acc, item) => {
+      return acc + Number(item.value || 0);
+    }, 0);
+  }
+  return 0;
+}
+
+function getTotalSaidas(turno = {}) {
+  const salvo = Number(turno.saidasTotal || turno.saidas || 0);
+  if (salvo > 0) return salvo;
+  if (Array.isArray(turno.outflows)) {
+    return turno.outflows.reduce((acc, item) => {
+      return acc + Number(item.value || 0);
+    }, 0);
+  }
+  return 0;
+}
+
 function calcularSaldoBase(turno = {}) {
   return (
     Number(turno.reca || 0) +
