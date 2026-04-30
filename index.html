@@ -1150,6 +1150,7 @@ function startShiftClosuresHistory(){
 
     renderShiftClosuresHistory(shiftClosuresCache);
     bindClosureHistoryActions();
+
   }, (error) => {
     console.warn("Erro ao carregar histórico de fechamentos:", error);
 
@@ -1162,6 +1163,8 @@ function startShiftClosuresHistory(){
 
 async function rebuildMasterBalanceFromLastClosure() {
   try {
+    await criarSaldoMestreSeNaoExistir();
+
     const q = query(
       collection(db, "shiftClosures"),
       orderBy("createdAt", "desc"),
@@ -1182,7 +1185,6 @@ async function rebuildMasterBalanceFromLastClosure() {
         diferencaReal: 0,
         updatedAt: serverTimestamp()
       });
-
       return;
     }
 
@@ -1221,145 +1223,6 @@ async function deleteShiftClosure(id) {
     alert("Erro ao excluir fechamento.");
   }
 }
-function fillShiftClosureForm(item) {
-  document.getElementById("shiftOperatorName").value = item.operador || "";
-  document.getElementById("shiftName").value = item.turno || "T1";
-
-  document.getElementById("shiftReca").value = item.saldosInformados?.reca || "";
-  document.getElementById("shiftSuprema").value = item.saldosInformados?.suprema || "";
-  document.getElementById("shiftPppoker").value = item.saldosInformados?.pppoker || "";
-  document.getElementById("shiftBuffalo").value = item.saldosInformados?.buffalo || "";
-  document.getElementById("shiftGanamos").value = item.saldosInformados?.ganamos || "";
-  document.getElementById("shiftPendentes").value = item.saldosInformados?.pendentes || "";
-
-  setText("saveShiftClosureBtn", "Atualizar Fechamento");
-
-  const cancelBtn = document.getElementById("cancelEditClosureBtn");
-  if (cancelBtn) cancelBtn.style.display = "block";
-}
-
-function editShiftClosure(id) {
-  const item = shiftClosuresCache.find(c => c.id === id);
-
-  if (!item) {
-    alert("Fechamento não encontrado.");
-    return;
-  }
-
-  editingClosureId = id;
-  fillShiftClosureForm(item);
-  switchScreen("screenHistory", document.querySelector('[data-screen="screenHistory"]'));
-
-  setText("shiftPreviewDetails", "Editando fechamento salvo.");
-}
-
-function cancelEditClosure() {
-  editingClosureId = null;
-
-  clearShiftClosureForm();
-
-  setText("saveShiftClosureBtn", "Salvar Fechamento");
-
-  const cancelBtn = document.getElementById("cancelEditClosureBtn");
-  if (cancelBtn) cancelBtn.style.display = "none";
-}
-
-async function updateExistingShiftClosure() {
-  try {
-    const original = shiftClosuresCache.find(c => c.id === editingClosureId);
-
-    if (!original) {
-      alert("Fechamento original não encontrado.");
-      return;
-    }
-
-    const turno = getShiftClosureFormData();
-
-    if (!turno.operador) {
-      alert("Informe o nome do operador.");
-      return;
-    }
-
-    const totalInformado = calcularTotalInformadoTurno(turno);
-    const totalMestre = bkNumber(original.totalMestreAnterior);
-    const diffReal = totalInformado - totalMestre;
-
-    const updatedClosure = {
-      operador: turno.operador,
-      turno: turno.turno,
-      saldosInformados: {
-        reca: turno.reca,
-        suprema: turno.suprema,
-        pppoker: turno.pppoker,
-        buffalo: turno.buffalo,
-        ganamos: turno.ganamos,
-        pendentes: turno.pendentes
-      },
-      totalInformado,
-      diffReal,
-      updatedAt: serverTimestamp(),
-      updatedBy: auth?.currentUser?.email || "operador"
-    };
-
-await updateDoc(doc(db, "shiftClosures", editingClosureId), updatedClosure);
-
-// 🔥 RECONSTRÓI O SALDO MESTRE SEMPRE
-await rebuildMasterBalanceFromLastClosure();
-
-cancelEditClosure();
-alert("Fechamento atualizado com sucesso.");
-
-} catch (error) {
-  console.warn("Erro ao atualizar fechamento:", error);
-  alert("Erro ao atualizar fechamento.");
-}
-
-function bindClosureHistoryActions() {
-  document.querySelectorAll("[data-delete-closure]").forEach(btn => {
-    btn.addEventListener("click", () => {
-      deleteShiftClosure(btn.dataset.deleteClosure);
-    });
-  });
-
-  function startShiftClosuresHistory(){
-  const q = query(
-    collection(db, "shiftClosures"),
-    orderBy("createdAt", "desc"),
-    limit(20)
-  );
-
-  onSnapshot(q, (snapshot) => {
-    shiftClosuresCache = snapshot.docs.map(docSnap => ({
-      id: docSnap.id,
-      ...docSnap.data()
-    }));
-
-    renderShiftClosuresHistory(shiftClosuresCache);
-    bindClosureHistoryActions();
-  }, (error) => {
-    console.warn("Erro ao carregar histórico de fechamentos:", error);
-
-    const list = document.getElementById("closureHistoryList");
-    if (list) {
-      list.innerHTML = `<div class="bk-history-empty">Erro ao carregar histórico.</div>`;
-    }
-  });
-}
-
-async function deleteShiftClosure(id) {
-  const confirmDelete = confirm("Tem certeza que deseja excluir este fechamento?");
-  if (!confirmDelete) return;
-
-  try {
-    const ref = doc(db, "shiftClosures", id);
-    await deleteDoc(ref);
-
-    alert("Fechamento excluído com sucesso.");
-  } catch (error) {
-    console.warn("Erro ao excluir fechamento:", error);
-    alert("Erro ao excluir fechamento.");
-  }
-}
 
 function fillShiftClosureForm(item) {
   document.getElementById("shiftOperatorName").value = item.operador || "";
@@ -1395,7 +1258,6 @@ function editShiftClosure(id) {
 
 function cancelEditClosure() {
   editingClosureId = null;
-
   clearShiftClosureForm();
 
   setText("saveShiftClosureBtn", "Salvar Fechamento");
@@ -1442,23 +1304,7 @@ async function updateExistingShiftClosure() {
     };
 
     await updateDoc(doc(db, "shiftClosures", editingClosureId), updatedClosure);
-
-    const latestClosure = shiftClosuresCache[0];
-
-    if (latestClosure && latestClosure.id === editingClosureId) {
-      await updateDoc(doc(db, "companyBalance", "main"), {
-        reca: turno.reca,
-        suprema: turno.suprema,
-        pppoker: turno.pppoker,
-        buffalo: turno.buffalo,
-        ganamos: turno.ganamos,
-        pendentes: turno.pendentes,
-        diferencaReal: diffReal,
-        updatedAt: serverTimestamp()
-      });
-    } else {
-      alert("Fechamento editado. Como não é o último fechamento, o saldo mestre não foi alterado automaticamente.");
-    }
+    await rebuildMasterBalanceFromLastClosure();
 
     cancelEditClosure();
     alert("Fechamento atualizado com sucesso.");
@@ -1473,6 +1319,12 @@ function bindClosureHistoryActions() {
   document.querySelectorAll("[data-delete-closure]").forEach(btn => {
     btn.addEventListener("click", () => {
       deleteShiftClosure(btn.dataset.deleteClosure);
+    });
+  });
+
+  document.querySelectorAll("[data-edit-closure]").forEach(btn => {
+    btn.addEventListener("click", () => {
+      editShiftClosure(btn.dataset.editClosure);
     });
   });
 }
@@ -1520,8 +1372,8 @@ function protectApp(){
 }
 
 document.addEventListener("DOMContentLoaded", async () => {
+  console.log("DOM carregado");
 
-  // 🔐 LOGIN
   const loginBtn = document.getElementById("loginBtn");
 
   if (loginBtn) {
@@ -1533,22 +1385,17 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   protectApp();
 
-  // 🔁 NAVEGAÇÃO
   document.querySelectorAll(".nav-btn").forEach(btn => {
     btn.addEventListener("click", () => {
       switchScreen(btn.dataset.screen, btn);
     });
   });
 
-  // 🔄 DASHBOARD
   document.getElementById("refreshDashboardBtn")?.addEventListener("click", () => {
     renderDashboardSaldos();
   });
 
-  // 💰 ADMIN MOVIMENTOS
   document.getElementById("saveAdminMovementBtn")?.addEventListener("click", saveAdminMovement);
-
-  // 📊 FECHAMENTO
   document.getElementById("previewShiftClosureBtn")?.addEventListener("click", previewShiftClosure);
   document.getElementById("saveShiftClosureBtn")?.addEventListener("click", saveShiftClosure);
   document.getElementById("cancelEditClosureBtn")?.addEventListener("click", cancelEditClosure);
@@ -1562,40 +1409,5 @@ document.addEventListener("DOMContentLoaded", async () => {
     console.warn("Erro ao iniciar app:", error);
     setText("dashboardStatus", "Erro");
   }
-
 });
-
-  // 🔁 NAVEGAÇÃO
-  document.querySelectorAll(".nav-btn").forEach(btn => {
-    btn.addEventListener("click", () => {
-      switchScreen(btn.dataset.screen, btn);
-    });
-  });
-
-  // 🔄 DASHBOARD
-  document.getElementById("refreshDashboardBtn")?.addEventListener("click", () => {
-    renderDashboardSaldos();
-  });
-
-  // 💰 ADMIN MOVIMENTOS
-  document.getElementById("saveAdminMovementBtn")?.addEventListener("click", saveAdminMovement);
-
-  // 📊 FECHAMENTO
-  document.getElementById("previewShiftClosureBtn")?.addEventListener("click", previewShiftClosure);
-  document.getElementById("saveShiftClosureBtn")?.addEventListener("click", saveShiftClosure);
-  document.getElementById("cancelEditClosureBtn")?.addEventListener("click", cancelEditClosure);
-
-  try {
-    setText("dashboardStatus", "Carregando");
-
-    await criarSaldoMestreSeNaoExistir();
-
-    startDashboardSaldosRealtime();
-    startShiftClosuresHistory();
-
-  } catch (error) {
-    console.warn("Erro ao iniciar app:", error);
-    setText("dashboardStatus", "Erro");
-  }
-
-});
+</script>
