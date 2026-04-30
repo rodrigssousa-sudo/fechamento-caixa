@@ -447,21 +447,22 @@
     }
 
     function baseForNextClosing(){
-      // MODELO FINAL:
-      // Ajuste interno altera a BASE OPERACIONAL do próximo fechamento,
-      // mas não entra como lucro/diferença operacional própria.
+      // BASE OPERACIONAL FINAL:
+      // 1) Fechamento real passa para o próximo turno como: saldoLiquido - retiradas.
+      // 2) Ajuste interno altera essa base.
+      // 3) Diff do próximo fechamento compara saldoLiquido atual contra essa base.
       const view = visibleHistory();
       const lastRealIndex = view.findIndex(item => !isAdjustmentItem(item));
       const lastReal = lastRealIndex >= 0 ? view[lastRealIndex] : null;
       if(!lastReal) return null;
 
-      const lastRealSaldo = moneyToNumber(lastReal.turno?.saldoLiquido ?? lastReal.currentSaldoTotal ?? 0);
+      const lastRealBase = moneyToNumber(lastReal.turno?.baseOperacional ?? lastReal.operationalBase ?? calcularBaseOperacional(lastReal.turno || {}));
       const adjustmentsAfterLastReal = view
         .slice(0, lastRealIndex)
         .filter(isAdjustmentItem)
         .reduce((s,item)=>s + adjustmentImpact(item), 0);
 
-      return lastRealSaldo + adjustmentsAfterLastReal;
+      return lastRealBase + adjustmentsAfterLastReal;
     }
 
     function latestInternalAdjustment(){
@@ -497,8 +498,9 @@
 
         if(!prevReal) return 0;
 
-        const prevSaldo = moneyToNumber(prevReal.turno?.saldoLiquido ?? prevReal.currentSaldoTotal ?? 0);
-        return currentSaldo - prevSaldo;
+        // Para exibição simples do histórico, mostra fechamento atual vs base real anterior.
+        const prevBase = moneyToNumber(prevReal.turno?.baseOperacional ?? prevReal.operationalBase ?? calcularBaseOperacional(prevReal.turno || {}));
+        return currentSaldo - prevBase;
       }catch(e){
         console.warn("Erro displayCashDiff:", e);
         return 0;
@@ -526,7 +528,29 @@
       turno.saldoLiquido=calcularSaldoLiquido(turno);
       return turno;
     }
-    function calcularSaldoLiquido(turno={}){ const webReca=moneyToNumber(turno.webReca??turno.reca??turno.banco??0), suprema=moneyToNumber(turno.suprema??0)*400, pppoker=moneyToNumber(turno.pppoker??0)*400, buffalo=moneyToNumber(turno.buffalo??0), ganamos=moneyToNumber(turno.ganamos??0), cargasPoker=moneyToNumber(turno.cargasPoker??0)*400, cargasCasino=moneyToNumber(turno.cargasCasino??turno.cargas??0), pendentes=moneyToNumber(turno.pendentesTotal??(turno.pendings||[]).reduce((s,x)=>s+moneyToNumber(x.value),0)), saidas=moneyToNumber(turno.saidasTotal??(turno.outflows||[]).reduce((s,x)=>s+moneyToNumber(x.value),0)); return webReca+suprema+pppoker+buffalo+ganamos+cargasPoker+cargasCasino-pendentes+saidas; }
+    function calcularSaldoLiquido(turno={}){
+      const webReca=moneyToNumber(turno.webReca??turno.reca??turno.banco??0),
+        suprema=moneyToNumber(turno.suprema??0)*400,
+        pppoker=moneyToNumber(turno.pppoker??0)*400,
+        buffalo=moneyToNumber(turno.buffalo??0),
+        ganamos=moneyToNumber(turno.ganamos??0),
+        cargasPoker=moneyToNumber(turno.cargasPoker??0)*400,
+        cargasCasino=moneyToNumber(turno.cargasCasino??turno.cargas??0),
+        pendentes=moneyToNumber(turno.pendentesTotal??(turno.pendings||[]).reduce((s,x)=>s+moneyToNumber(x.value),0)),
+        saidas=moneyToNumber(turno.saidasTotal??(turno.outflows||[]).reduce((s,x)=>s+moneyToNumber(x.value),0));
+
+      // Saldo líquido de conferência: soma retiradas porque elas saíram do caixa,
+      // mas precisam ser reconhecidas no resultado daquele fechamento.
+      return webReca+suprema+pppoker+buffalo+ganamos+cargasPoker+cargasCasino-pendentes+saidas;
+    }
+
+    function calcularBaseOperacional(turno={}){
+      // Base operacional é o caixa real que passa para o próximo turno.
+      // Por isso retiradas NÃO podem inflar a base do turno seguinte.
+      const saldoLiquido = moneyToNumber(turno.saldoLiquido ?? calcularSaldoLiquido(turno));
+      const saidas = moneyToNumber(turno.saidasTotal ?? (turno.outflows||[]).reduce((s,x)=>s+moneyToNumber(x.value),0));
+      return saldoLiquido - saidas;
+    }
     function fillOperatorFromProfile(){
       const name = profileName() || currentUser?.email?.split("@")[0] || "";
 
@@ -818,6 +842,7 @@
         // mas não aparece como lucro operacional próprio.
         const baseSaldo = baseForNextClosing();
         const diff = baseSaldo === null ? 0 : turno.saldoLiquido - baseSaldo;
+        turno.baseOperacional = calcularBaseOperacional(turno);
 
         await addDoc(collection(db,"history"),{
           type:"closing",
@@ -828,6 +853,7 @@
           supervisorEmail:turno.supervisorEmail,
           supervisorName:turno.supervisorName,
           currentSaldoTotal:turno.saldoLiquido,
+          operationalBase:turno.baseOperacional,
           diff,
           submittedAt:serverTimestamp(),
           createdBy:currentUser?.uid||null,
@@ -1081,20 +1107,21 @@
             let currentSaldoTotal, diff;
 
             if(isAdjustment){
-              // Ajuste interno: altera a base operacional futura,
-              // mas permanece separado do resultado operacional.
+              // Ajuste interno altera apenas a base operacional.
               diff = saldoLiquido;
-              currentSaldoTotal = operationalBaseSaldo===null ? saldoLiquido : operationalBaseSaldo + diff;
-              operationalBaseSaldo = currentSaldoTotal;
+              currentSaldoTotal = saldoLiquido;
+              operationalBaseSaldo = (operationalBaseSaldo ?? 0) + diff;
             }else{
               currentSaldoTotal = saldoLiquido;
               diff = operationalBaseSaldo===null ? 0 : currentSaldoTotal - operationalBaseSaldo;
-              operationalBaseSaldo = currentSaldoTotal;
+              operationalBaseSaldo = calcularBaseOperacional({ ...turno, saldoLiquido });
             }
 
             const updatePayload = {
               "turno.saldoLiquido": saldoLiquido,
+              "turno.baseOperacional": isAdjustment ? operationalBaseSaldo : calcularBaseOperacional({ ...turno, saldoLiquido }),
               currentSaldoTotal,
+              operationalBase: isAdjustment ? operationalBaseSaldo : calcularBaseOperacional({ ...turno, saldoLiquido }),
               diff,
               recalculatedAt: serverTimestamp()
             };
