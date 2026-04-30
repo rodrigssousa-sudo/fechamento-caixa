@@ -867,7 +867,7 @@
       try{
         const qh=query(collection(db,"history"),orderBy("submittedAt","asc"));
         const snap=await getDocs(qh);
-        let previousRealClosingSaldo=null;
+        let operationalBaseSaldo=null;
 
         for(const item of snap.docs){
           try{
@@ -878,13 +878,15 @@
             let currentSaldoTotal, diff;
 
             if(isAdjustment){
-              // Ajuste é movimento de aporte/correção: aparece no histórico, mas não vira base operacional.
+              // Ajuste nível banco: impacta a BASE do próximo fechamento,
+              // mas não é lucro operacional/ranking.
               diff = saldoLiquido;
-              currentSaldoTotal = saldoLiquido;
+              currentSaldoTotal = operationalBaseSaldo===null ? saldoLiquido : operationalBaseSaldo + diff;
+              operationalBaseSaldo = currentSaldoTotal;
             }else{
               currentSaldoTotal = saldoLiquido;
-              diff = previousRealClosingSaldo===null ? 0 : currentSaldoTotal - previousRealClosingSaldo;
-              previousRealClosingSaldo = currentSaldoTotal;
+              diff = operationalBaseSaldo===null ? 0 : currentSaldoTotal - operationalBaseSaldo;
+              operationalBaseSaldo = currentSaldoTotal;
             }
 
             await updateDoc(doc(db,"history",item.id),{
