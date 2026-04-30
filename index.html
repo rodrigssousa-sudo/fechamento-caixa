@@ -158,12 +158,45 @@
 
     function moneyToNumber(value){
       if(value === null || value === undefined) return 0; if(typeof value === "number") return value;
-      let s = String(value).trim().replace(/[^\d,.-]/g, ""); if(!s) return 0;
+      let s = String(value).trim().replace(/[^0-9,.-]/g, ""); if(!s) return 0;
       const hasComma = s.includes(","), hasDot = s.includes(".");
-      if(hasComma && hasDot){ const lastComma=s.lastIndexOf(","), lastDot=s.lastIndexOf("."); s = lastComma > lastDot ? s.replace(/\./g,"").replace(",",".") : s.replace(/,/g,""); }
-      else if(hasComma){ s = s.replace(/\./g,"").replace(",","."); }
+      if(hasComma && hasDot){ const lastComma=s.lastIndexOf(","), lastDot=s.lastIndexOf("."); s = lastComma > lastDot ? s.split(".").join("").replace(",",".") : s.split(",").join(""); }
+      else if(hasComma){ s = s.split(".").join("").replace(",","."); }
       const n = Number(s); return Number.isFinite(n) ? n : 0;
     }
+
+    function formatInputMoney(value){
+      const n = moneyToNumber(value);
+      if(!n) return "";
+      return n.toLocaleString("pt-BR", { minimumFractionDigits:2, maximumFractionDigits:2 });
+    }
+
+    function applyBankMoneyMask(input){
+      if(!input) return;
+      input.classList.add("money-input");
+      input.addEventListener("input", () => {
+        const digits = String(input.value || "").replace(/[^0-9]/g, "");
+        if(!digits){ input.value = ""; input.dispatchEvent(new Event("bankmoney", { bubbles:true })); return; }
+        const number = Number(digits) / 100;
+        input.value = number.toLocaleString("pt-BR", { minimumFractionDigits:2, maximumFractionDigits:2 });
+        input.dispatchEvent(new Event("bankmoney", { bubbles:true }));
+      });
+      input.addEventListener("focus", () => {
+        if(input.value) input.value = formatInputMoney(input.value);
+      });
+      input.addEventListener("blur", () => {
+        if(input.value) input.value = formatInputMoney(input.value);
+      });
+    }
+
+    function applyBankMoneyMaskAll(scope=document){
+      scope.querySelectorAll(".money-input").forEach(input => {
+        if(input.dataset.bankMask === "1") return;
+        input.dataset.bankMask = "1";
+        applyBankMoneyMask(input);
+      });
+    }
+
     function formatMoney(value){ return new Intl.NumberFormat("es-AR",{style:"currency",currency:"ARS",minimumFractionDigits:2}).format(Number(value)||0); }
     function dateLabel(value){ if(!value) return "-"; const d = value?.toDate ? value.toDate() : new Date(value); if(isNaN(d)) return "-"; return d.toLocaleString("pt-BR",{day:"2-digit",month:"2-digit",year:"2-digit",hour:"2-digit",minute:"2-digit"}); }
     function toDateInputValue(value){ const d = value?.toDate ? value.toDate() : new Date(value || Date.now()); if(isNaN(d)) return ""; d.setMinutes(d.getMinutes()-d.getTimezoneOffset()); return d.toISOString().slice(0,16); }
@@ -184,7 +217,7 @@
 
     function getDynamicRows(containerId){ const el=$(containerId); if(!el) return []; return [...el.querySelectorAll(".row-item")].map(row=>({name:row.querySelector(".row-name")?.value||"",category:row.querySelector(".row-category")?.value||"",value:moneyToNumber(row.querySelector(".row-value")?.value||0)})).filter(x=>x.name||x.value); }
     function setDynamicRows(containerId, rows=[]){ const el=$(containerId); if(!el) return; el.innerHTML=""; (rows.length?rows:[{}]).forEach(r=>createDynamicRow(containerId,"Nome / motivo",r)); }
-    function createDynamicRow(containerId,label="Descrição",data={}){ const list=$(containerId); if(!list) return; const row=document.createElement("div"); const isOutflow=containerId.toLowerCase().includes("outflow"); row.className="row-item"+(isOutflow?" outflow-row":""); const safeName=String(data.name||"").replace(/"/g,'&quot;'); const value=data.value??""; const category=data.category||data.type||"lucro"; row.innerHTML=isOutflow?`<input class="row-name" placeholder="${label}" value="${safeName}" /><select class="row-category"><option value="lucro">Lucro</option><option value="custo_operacional">Custo operacional</option></select><input class="row-value money-input" inputmode="decimal" placeholder="0,00" value="${value}" /><button type="button" class="remove-row">×</button>`:`<input class="row-name" placeholder="${label}" value="${safeName}" /><input class="row-value money-input" inputmode="decimal" placeholder="0,00" value="${value}" /><button type="button" class="remove-row">×</button>`; if(isOutflow) row.querySelector(".row-category").value=category; row.querySelectorAll("input,select").forEach(i=>i.addEventListener("input",renderCalculations)); row.querySelectorAll("select").forEach(i=>i.addEventListener("change",renderCalculations)); row.querySelector(".remove-row").onclick=()=>{row.remove();renderCalculations();}; list.appendChild(row); }
+    function createDynamicRow(containerId,label="Descrição",data={}){ const list=$(containerId); if(!list) return; const row=document.createElement("div"); const isOutflow=containerId.toLowerCase().includes("outflow"); row.className="row-item"+(isOutflow?" outflow-row":""); const safeName=String(data.name||"").replace(/"/g,'&quot;'); const value=data.value ? formatInputMoney(data.value) : ""; const category=data.category||data.type||"lucro"; row.innerHTML=isOutflow?`<input class="row-name" placeholder="${label}" value="${safeName}" /><select class="row-category"><option value="lucro">Lucro</option><option value="custo_operacional">Custo operacional</option></select><input class="row-value money-input" inputmode="decimal" placeholder="0,00" value="${value}" /><button type="button" class="remove-row">×</button>`:`<input class="row-name" placeholder="${label}" value="${safeName}" /><input class="row-value money-input" inputmode="decimal" placeholder="0,00" value="${value}" /><button type="button" class="remove-row">×</button>`; if(isOutflow) row.querySelector(".row-category").value=category; row.querySelectorAll("input,select").forEach(i=>i.addEventListener("input",renderCalculations)); row.querySelectorAll("select").forEach(i=>i.addEventListener("change",renderCalculations)); row.querySelector(".remove-row").onclick=()=>{row.remove();renderCalculations();}; list.appendChild(row); applyBankMoneyMaskAll(row); }
 
     function getTurnFromForm(){
       const webReca=moneyToNumber($("webReca")?.value), suprema=moneyToNumber($("suprema")?.value), pppoker=moneyToNumber($("pppoker")?.value), buffalo=moneyToNumber($("buffalo")?.value), ganamos=moneyToNumber($("ganamos")?.value), cargasPoker=moneyToNumber($("cargasPoker")?.value), cargasCasino=moneyToNumber($("cargasCasino")?.value);
@@ -226,85 +259,14 @@
     async function loadProfile(user){ const ref=doc(db,"users",user.uid); try{ const snap=await getDoc(ref); if(snap.exists()) return snap.data(); const bootstrap=isBootstrapEmail(user.email); const profile={email:user.email,name:user.email.split("@")[0],role:bootstrap?"admin":"operator",approved:bootstrap?true:false,blocked:false,createdAt:serverTimestamp()}; await safeSetUserProfile(user,profile); return profile; }catch(e){ console.warn("Erro ao ler perfil:",e); if(isBootstrapEmail(user.email)){ return {email:user.email,name:user.email.split("@")[0],role:"admin",approved:true,blocked:false,localOnly:true}; } showNotice("appNotice",friendlyError(e),"error"); return {email:user.email,name:user.email.split("@")[0],role:"operator",approved:false,blocked:false,permissionError:true}; } }
     async function addAudit(action,description){ try{ await addDoc(collection(db,"audit_logs"),{action,description,uid:currentUser?.uid||null,email:currentUser?.email||null,createdAt:serverTimestamp()}); }catch(e){ console.warn("Audit não gravado:",e); } }
 
-    async function loadUsers(){
-  if(!await requireAdmin()) return;
-
-  const snap = await getDocs(collection(db,"users"));
-
-  $("usersList").innerHTML = snap.docs.map(d => {
-    const u = d.data();
-    const role = u.role || "operator";
-
-    return `<div class="user-item">
-      <div>
-        <strong>${u.name || u.email || d.id}</strong>
-        <div class="muted">${u.email || ""}</div>
-        <div class="muted">Cargo atual: <b>${role}</b></div>
-      </div>
-
-      <div style="display:flex;gap:6px;align-items:center;flex-wrap:wrap;justify-content:flex-end">
-        <span class="badge ${u.approved?'ok':'off'}">${u.approved?'Aprovado':'Pendente'}</span>
-        <span class="badge ${u.blocked?'off':'ok'}">${u.blocked?'Bloqueado':'Ativo'}</span>
-
-        <select class="small-btn" data-role-select="${d.id}" style="height:34px;border:0;outline:0;background:#eef4ff;color:#0F2A6B;">
-          <option value="operator" ${role === "operator" ? "selected" : ""}>Operador</option>
-          <option value="supervisor" ${role === "supervisor" ? "selected" : ""}>Supervisor</option>
-          <option value="admin" ${role === "admin" ? "selected" : ""}>Admin</option>
-        </select>
-
-        <button class="small-btn" data-save-role="${d.id}">Salvar cargo</button>
-        <button class="small-btn" data-approve="${d.id}">Aprovar</button>
-        <button class="small-btn danger" data-block="${d.id}">${u.blocked?'Desbloq.':'Bloquear'}</button>
-      </div>
-    </div>`;
-  }).join("") || `<div class="user-item">Nenhum usuário encontrado.</div>`;
-
-  document.querySelectorAll("[data-save-role]").forEach(btn => btn.onclick = async()=>{
-    const id = btn.dataset.saveRole;
-    const select = document.querySelector(`[data-role-select="${id}"]`);
-    const role = select?.value || "operator";
-
-    await updateDoc(doc(db,"users",id), { role });
-    await addAudit("update_user_role", `Cargo alterado para ${role}: ${id}`);
-
-    loadUsers();
-  });
-
-  document.querySelectorAll("[data-approve]").forEach(btn => btn.onclick = async()=>{
-    const id = btn.dataset.approve;
-    const select = document.querySelector(`[data-role-select="${id}"]`);
-    const role = select?.value || "operator";
-
-    await updateDoc(doc(db,"users",id), {
-      approved:true,
-      role
-    });
-
-    await addAudit("approve_user", `Usuário aprovado como ${role}: ${id}`);
-
-    loadUsers();
-  });
-
-  document.querySelectorAll("[data-block]").forEach(btn => btn.onclick = async()=>{
-    const id = btn.dataset.block;
-    const s = await getDoc(doc(db,"users",id));
-
-    await updateDoc(doc(db,"users",id), {
-      blocked:!s.data()?.blocked
-    });
-
-    await addAudit("toggle_user_block", `Bloqueio alterado: ${id}`);
-
-    loadUsers();
-  });
-}
+    async function loadUsers(){ if(!await requireAdmin()) return; try{ const snap=await getDocs(collection(db,"users")); $("usersList").innerHTML=snap.docs.map(d=>{const u=d.data(); return `<div class="user-item"><div><strong>${u.name||u.email||d.id}</strong><div class="muted">${u.email||""}<br>${d.id}</div></div><div style="display:flex;gap:6px;align-items:center;flex-wrap:wrap;justify-content:flex-end"><span class="badge ${u.approved?'ok':'off'}">${u.approved?'Aprovado':'Pendente'}</span><span class="badge ${u.blocked?'off':'ok'}">${u.blocked?'Bloqueado':'Ativo'}</span><span class="badge">${u.role||'operator'}</span><button class="small-btn" data-approve="${d.id}">Aprovar</button><button class="small-btn danger" data-block="${d.id}">${u.blocked?'Desbloq.':'Bloquear'}</button></div></div>`;}).join("")||`<div class="user-item">Nenhum usuário encontrado.</div>`; document.querySelectorAll("[data-approve]").forEach(btn=>btn.onclick=async()=>{await updateDoc(doc(db,"users",btn.dataset.approve),{approved:true});loadUsers();}); document.querySelectorAll("[data-block]").forEach(btn=>btn.onclick=async()=>{const id=btn.dataset.block,s=await getDoc(doc(db,"users",id)); await updateDoc(doc(db,"users",id),{blocked:!s.data()?.blocked});loadUsers();}); }catch(e){ $("usersList").innerHTML=`<div class="notice error">${friendlyError(e)}</div>`; } }
     async function loadAudit(){ if(!isAdmin()) return; try{ const qh=query(collection(db,"audit_logs"),orderBy("createdAt","desc"),limit(20)); const snap=await getDocs(qh); $("auditList").innerHTML=snap.docs.map(d=>{const a=d.data(); return `<div class="history-item"><div class="history-top"><strong>${a.action}</strong><span>${dateLabel(a.createdAt)}</span></div><div class="muted">${a.description||""}<br>${a.email||""}</div></div>`;}).join("")||`<div class="history-item">Sem auditoria.</div>`; }catch(e){ $("auditList").innerHTML=`<div class="notice error">${friendlyError(e)}</div>`; } }
 
     async function createInternalUser(){ if(!await requireAdmin()) return; const email=$("newUserEmail").value.trim(), password=$("newUserPassword").value, name=$("newUserName").value.trim(), role=$("newUserRole").value, supervisorRaw=$("newUserSupervisor")?.value.trim()||""; if(!email||!password) return alert("Informe email e senha."); if(password.length<6) return alert("A senha precisa ter pelo menos 6 caracteres."); const secondaryApp=initializeApp(firebaseConfig,"SecondaryUserCreator"+Date.now()), secondaryAuth=getAuth(secondaryApp); try{ const cred=await createUserWithEmailAndPassword(secondaryAuth,email,password); await setDoc(doc(db,"users",cred.user.uid),{email,name:name||email.split("@")[0],role,supervisorUid:role==="operator"&&!supervisorRaw.includes("@")?(supervisorRaw||null):null,supervisorEmail:role==="operator"&&supervisorRaw.includes("@")?supervisorRaw:null,approved:true,blocked:false,createdAt:serverTimestamp(),createdBy:currentUser?.uid||null}); await signOut(secondaryAuth); await deleteApp(secondaryApp); await addAudit("create_user",`Usuário criado: ${email}`); ["newUserEmail","newUserPassword","newUserName","newUserSupervisor"].forEach(id=>{if($(id)) $(id).value="";}); await loadUsers(); alert("Usuário criado com sucesso."); }catch(e){ try{await signOut(secondaryAuth);await deleteApp(secondaryApp);}catch(_ignored){} alert(friendlyError(e)); } }
     async function registerAccess(){ const email=$("loginEmail").value.trim(), password=$("loginPassword").value; if(!email||!password) return showNotice("loginNotice","Informe email e senha para criar acesso.","error"); if(password.length<6) return showNotice("loginNotice","A senha precisa ter pelo menos 6 caracteres.","error"); try{ const bootstrap=isBootstrapEmail(email); const cred=await createUserWithEmailAndPassword(auth,email,password); const profile={email,name:email.split("@")[0],role:bootstrap?"admin":"operator",approved:bootstrap?true:false,blocked:false,createdAt:serverTimestamp()}; await safeSetUserProfile(cred.user,profile); showNotice("loginNotice",bootstrap?"Conta admin criada. Entrando...":"Conta criada. Aguarde aprovação do admin.",bootstrap?"ok":"error"); }catch(e){ showNotice("loginNotice",friendlyError(e),"error"); } }
 
     function showScreen(name){ document.querySelectorAll(".screen").forEach(s=>s.classList.remove("active")); $("screen"+name)?.classList.add("active"); document.querySelectorAll(".nav-btn").forEach(b=>b.classList.toggle("active",b.dataset.screen===name)); if(name==="Admin"){loadUsers();loadAudit();} if(name==="Ranking") renderRanking(); if(name==="Reports") previewReport(); }
-    function bindEvents(){ ["webReca","suprema","pppoker","buffalo","ganamos","cargasPoker","cargasCasino","operatorName","closingDate"].forEach(id=>$(id)?.addEventListener("input",renderCalculations)); $("addPendingBtn").onclick=()=>createDynamicRow("pendingList","Nome / motivo"); $("addOutflowBtn").onclick=()=>createDynamicRow("outflowList","Descrição"); $("saveClosingBtn").onclick=saveClosing; $("refreshBtn").onclick=refreshInternal; $("logoRefreshBtn").onclick=refreshInternal; $("recalculateBtn").onclick=recalculateAllHistory; $("pdfReportBtn").onclick=generateBankPdfReport; $("previewReportBtn").onclick=previewReport; $("generateReportBtn").onclick=generateBankPdfReport; ["reportStart","reportEnd","reportOperator","reportSupervisor"].forEach(id=>$(id)?.addEventListener("input",previewReport)); $("loadUsersBtn").onclick=loadUsers; $("createUserBtn").onclick=createInternalUser; $("historySearch").addEventListener("input",renderHistory); $("historyDate").addEventListener("input",renderHistory); document.querySelectorAll(".nav-btn").forEach(btn=>btn.onclick=()=>showScreen(btn.dataset.screen)); document.querySelectorAll("[data-rank]").forEach(btn=>btn.onclick=()=>{document.querySelectorAll("[data-rank]").forEach(b=>b.classList.remove("active")); btn.classList.add("active"); currentRankRange=btn.dataset.rank; renderRanking();}); $("logoutBtn").onclick=async()=>{if(historyUnsubscribe)historyUnsubscribe();if(systemUnsubscribe)systemUnsubscribe();await signOut(auth);}; $("loginBtn").onclick=async()=>{try{hideNotice("loginNotice");await signInWithEmailAndPassword(auth,$("loginEmail").value.trim(),$("loginPassword").value);}catch(e){showNotice("loginNotice",friendlyError(e),"error");}}; $("registerBtn").onclick=registerAccess; $("resetPasswordBtn").onclick=async()=>{try{const email=$("loginEmail").value.trim(); if(!email) return showNotice("loginNotice","Informe o email.","error"); await sendPasswordResetEmail(auth,email); showNotice("loginNotice","Email de recuperação enviado.","ok");}catch(e){showNotice("loginNotice",friendlyError(e),"error");}}; $("editCloseBtn").onclick=closeEdit; $("cancelEditBtn").onclick=closeEdit; $("saveEditBtn").onclick=saveEdit; $("editAddPendingBtn").onclick=()=>createDynamicRow("editPendingList","Nome / motivo"); $("editAddOutflowBtn").onclick=()=>createDynamicRow("editOutflowList","Descrição"); }
+    function bindEvents(){ applyBankMoneyMaskAll(document); ["webReca","suprema","pppoker","buffalo","ganamos","cargasPoker","cargasCasino","operatorName","closingDate","editWebReca","editSuprema","editPppoker","editBuffalo","editGanamos","editCargasPoker","editCargasCasino"].forEach(id=>$(id)?.addEventListener("input",renderCalculations)); document.addEventListener("bankmoney", renderCalculations); $("addPendingBtn").onclick=()=>createDynamicRow("pendingList","Nome / motivo"); $("addOutflowBtn").onclick=()=>createDynamicRow("outflowList","Descrição"); $("saveClosingBtn").onclick=saveClosing; $("refreshBtn").onclick=refreshInternal; $("logoRefreshBtn").onclick=refreshInternal; $("recalculateBtn").onclick=recalculateAllHistory; $("pdfReportBtn").onclick=generateBankPdfReport; $("previewReportBtn").onclick=previewReport; $("generateReportBtn").onclick=generateBankPdfReport; ["reportStart","reportEnd","reportOperator","reportSupervisor"].forEach(id=>$(id)?.addEventListener("input",previewReport)); $("loadUsersBtn").onclick=loadUsers; $("createUserBtn").onclick=createInternalUser; $("historySearch").addEventListener("input",renderHistory); $("historyDate").addEventListener("input",renderHistory); document.querySelectorAll(".nav-btn").forEach(btn=>btn.onclick=()=>showScreen(btn.dataset.screen)); document.querySelectorAll("[data-rank]").forEach(btn=>btn.onclick=()=>{document.querySelectorAll("[data-rank]").forEach(b=>b.classList.remove("active")); btn.classList.add("active"); currentRankRange=btn.dataset.rank; renderRanking();}); $("logoutBtn").onclick=async()=>{if(historyUnsubscribe)historyUnsubscribe();if(systemUnsubscribe)systemUnsubscribe();await signOut(auth);}; $("loginBtn").onclick=async()=>{try{hideNotice("loginNotice");await signInWithEmailAndPassword(auth,$("loginEmail").value.trim(),$("loginPassword").value);}catch(e){showNotice("loginNotice",friendlyError(e),"error");}}; $("registerBtn").onclick=registerAccess; $("resetPasswordBtn").onclick=async()=>{try{const email=$("loginEmail").value.trim(); if(!email) return showNotice("loginNotice","Informe o email.","error"); await sendPasswordResetEmail(auth,email); showNotice("loginNotice","Email de recuperação enviado.","ok");}catch(e){showNotice("loginNotice",friendlyError(e),"error");}}; $("editCloseBtn").onclick=closeEdit; $("cancelEditBtn").onclick=closeEdit; $("saveEditBtn").onclick=saveEdit; $("editAddPendingBtn").onclick=()=>createDynamicRow("editPendingList","Nome / motivo"); $("editAddOutflowBtn").onclick=()=>createDynamicRow("editOutflowList","Descrição"); }
     function initDate(){ const now=new Date(); now.setMinutes(now.getMinutes()-now.getTimezoneOffset()); $("closingDate").value=now.toISOString().slice(0,16); }
 
     onAuthStateChanged(auth,async(user)=>{ currentUser=user; if(!user){$("loginScreen").classList.remove("hidden");$("appShell").classList.add("hidden");$("bottomNav").classList.add("hidden");return;} currentProfile=await loadProfile(user); if(currentProfile.blocked){await signOut(auth);return alert("Usuário bloqueado.");} if(currentProfile.approved===false){$("loginScreen").classList.remove("hidden");$("appShell").classList.add("hidden");$("bottomNav").classList.add("hidden");showNotice("loginNotice","Usuário aguardando aprovação do admin.","error");return;} $("loginScreen").classList.add("hidden");$("appShell").classList.remove("hidden");$("bottomNav").classList.remove("hidden");$("topUserLabel").textContent=`${currentProfile.name||user.email} • ${isAdmin()?"Admin":isSupervisor()?"Supervisor":"Operador"}`; $("adminStatus").textContent=isAdmin()?"Admin ativo":"Somente admin"; if(currentProfile.permissionError) showNotice("appNotice","Seu login entrou, mas o Firestore negou acesso ao perfil. Ajuste as regras ou coloque seu email em BOOTSTRAP_ADMIN_EMAILS.","error"); startHistoryRealtimeListener(); startSystemRealtime(); renderAll(); });
