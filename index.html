@@ -436,9 +436,9 @@ body{
     <input id="loginEmail" type="email" placeholder="Email" style="width:100%;margin-bottom:10px;padding:10px;">
     <input id="loginPassword" type="password" placeholder="Senha" style="width:100%;margin-bottom:15px;padding:10px;">
 
-    <button id="loginBtn" style="width:100%;padding:12px;background:#006BFF;color:white;border:none;border-radius:10px;">
-      Entrar
-    </button>
+   <button id="loginBtn" onclick="loginUser()" style="width:100%;padding:12px;background:#006BFF;color:white;border:none;border-radius:10px;">
+  Entrar
+</button>
 
   </div>
 
@@ -1487,7 +1487,9 @@ function switchScreen(id, btn){
 
 // 🔐 LOGIN
 async function loginUser(){
-  const email = document.getElementById("loginEmail")?.value;
+  console.log("Botão login clicado");
+
+  const email = document.getElementById("loginEmail")?.value.trim();
   const pass = document.getElementById("loginPassword")?.value;
 
   if (!email || !pass) {
@@ -1496,12 +1498,16 @@ async function loginUser(){
   }
 
   try {
-    await signInWithEmailAndPassword(auth, email, pass);
+    const result = await signInWithEmailAndPassword(auth, email, pass);
+    console.log("Login OK:", result.user.email);
+    document.getElementById("loginScreen").style.display = "none";
   } catch (err){
     console.error("Erro no login:", err);
-    alert("Erro no login. Confira email e senha.");
+    alert("Erro no login: " + err.message);
   }
 }
+
+window.loginUser = loginUser;
 
 function protectApp(){
   onAuthStateChanged(auth, (user) => {
