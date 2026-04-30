@@ -484,6 +484,39 @@
       return view.slice(start).find(item => !isAdjustmentItem(item)) || null;
     }
 
+    function displayCashDiff(item){
+      try{
+        if(!item) return 0;
+
+        if(isAdjustmentItem(item)) return adjustmentImpact(item);
+
+        const currentSaldo = moneyToNumber(item.turno?.saldoLiquido ?? item.currentSaldoTotal ?? 0);
+        const prevReal = previousRealClosingAfter(item);
+        if(!prevReal) return 0;
+
+        const prevSaldo = moneyToNumber(prevReal.turno?.saldoLiquido ?? prevReal.currentSaldoTotal ?? 0);
+        return currentSaldo - prevSaldo;
+      }catch(e){
+        console.warn("Erro displayCashDiff:", e);
+        return 0;
+      }
+    }
+      if(!item) return 0;
+
+      // Ajuste aparece separado com seu impacto interno.
+      if(isAdjustmentItem(item)) return adjustmentImpact(item);
+
+      // Fechamento normal mostra diferença REAL de caixa:
+      // fechamento atual - fechamento real anterior.
+      // Não inclui ajuste interno no cálculo exibido.
+      const currentSaldo = moneyToNumber(item.turno?.saldoLiquido ?? item.currentSaldoTotal ?? 0);
+      const prevReal = previousRealClosingAfter(item);
+      if(!prevReal) return 0;
+
+      const prevSaldo = moneyToNumber(prevReal.turno?.saldoLiquido ?? prevReal.currentSaldoTotal ?? 0);
+      return currentSaldo - prevSaldo;
+    }
+
     function monthlyOperationalHistory(){
       const now = new Date();
       const monthStart = new Date(now.getFullYear(), now.getMonth(), 1);
@@ -588,7 +621,7 @@
       const saldoReca = last?.turno?.webReca ?? last?.turno?.reca ?? last?.webReca ?? 0;
       const saldoLiquido = last?.turno?.saldoLiquido ?? last?.currentSaldoTotal ?? 0;
       const pendentes = last?.turno?.pendentesTotal ?? 0;
-      const diff = last?.diff ?? (prev ? saldoLiquido - (prev?.turno?.saldoLiquido ?? prev?.currentSaldoTotal ?? 0) : 0);
+      const diff = last ? displayCashDiff(last) : 0;
 
       const todayStart = new Date();
       todayStart.setHours(0,0,0,0);
