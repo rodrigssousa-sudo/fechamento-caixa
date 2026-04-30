@@ -154,7 +154,8 @@
           </div>
           <button id="saveClosingBtn" class="btn full" style="margin-top:16px;">Salvar fechamento</button>
         </div>
-      
+      </div>
+
       <div id="quickChargeCard" class="card" style="margin-top:14px;">
         <div class="card-title">
           <h2>Carga rápida automática</h2>
@@ -168,7 +169,6 @@
         </div>
         <button id="quickChargeBtn" class="btn full" style="margin-top:14px;">Adicionar carga ao sistema</button>
         <div class="muted" style="margin-top:10px;">Cria um ajuste separado no histórico, sem alterar fechamentos antigos.</div>
-      </div>
       </div>
     </section>
 
@@ -349,7 +349,47 @@
       $("monthlyGoalStatus").textContent = remaining > 0 ? "Em andamento" : "Meta batida";
     }
 
-    function renderHome(){ const view=visibleHistory(), last=view[0], prev=view[1]; const saldoReca=last?.turno?.webReca??last?.turno?.reca??last?.webReca??0, saldoLiquido=last?.turno?.saldoLiquido??last?.currentSaldoTotal??0, pendentes=last?.turno?.pendentesTotal??0, diff=last?.diff??(prev?saldoLiquido-(prev?.turno?.saldoLiquido??prev?.currentSaldoTotal??0):0), volume=view.reduce((s,x)=>s+moneyToNumber(x.turno?.saldoLiquido??x.currentSaldoTotal),0); const map=new Map(); view.forEach(x=>{const name=x.operatorName||x.turno?.operatorName||"Sem operador"; map.set(name,(map.get(name)||0)+moneyToNumber(x.diff??0));}); const top=[...map.entries()].sort((a,b)=>b[1]-a[1])[0]; $("homeSaldoReca").textContent=formatMoney(saldoReca); $("homeSaldoLiquido").textContent=formatMoney(saldoLiquido); $("homePendentes").textContent=formatMoney(pendentes); $("homeDiff").textContent=formatMoney(diff); $("homeDiff").style.color=diff<0?"#fecaca":"#bbf7d0"; if($("homeVolume")) $("homeVolume").textContent=formatMoney(volume); $("homeTopOperator").textContent=top?`${top[0]} • ${formatMoney(top[1])}`:"-"; $("homeLastClose").textContent=last?dateLabel(last.submittedAt||last.createdAt||last.turno?.closingDate):"-"; $("homeUpdatedAt").textContent=last?"Última atualização: "+dateLabel(last.submittedAt||last.createdAt):"Aguardando fechamento"; renderMonthlyGoal(view); }
+    function renderHome(){ const view=visibleHistory(), last=view[0], prev=view[1]; const saldoReca=last?.turno?.webReca??last?.turno?.reca??last?.webReca??0, saldoLiquido=last?.turno?.saldoLiquido??last?.currentSaldoTotal??0, pendentes=last?.turno?.pendentesTotal??0, diff=last?.diff??(prev?saldoLiquido-(prev?.turno?.saldoLiquido??prev?.currentSaldoTotal??0):0), volume=view.reduce((s,x)=>s+moneyToNumber(x.turno?.saldoLiquido??x.currentSaldoTotal),0); const map=new Map(); view.forEach(x=>{const name=x.operatorName||x.turno?.operatorName||"Sem operador"; map.set(name,(map.get(name)||0)+moneyToNumber(x.diff??0));}); const top=[...map.entries()].sort((a,b)=>b[1]-a[1])[0]; $("homeSaldoReca").textContent=formatMoney(saldoReca); $("homeSaldoLiquido").textContent=formatMoney(saldoLiquido); $("homePendentes").textContent=formatMoney(pendentes); $("homeDiff").textContent=formatMoney(diff); $("homeDiff").style.color=diff<0?"#fecaca":"#bbf7d0"; if($("homeVolume")) $("homeVolume").textContent=formatMoney(volume); if($("homeTopOperator")) $("homeTopOperator").textContent=top?`${top[0]} • ${formatMoney(top[1])}`:"-"; $("homeLastClose").textContent=last?dateLabel(last.submittedAt||last.createdAt||last.turno?.closingDate):"-"; $("homeUpdatedAt").textContent=last?"Última atualização: "+dateLabel(last.submittedAt||last.createdAt):"Aguardando fechamento"; renderMonthlyGoal(view); renderChipsComparison(last, prev); }
+
+    function renderChipsComparison(last, prev){
+      const box = $("chipsComparison");
+      if(!box) return;
+      if(!last){
+        box.innerHTML = `<div class="muted">Nenhum fechamento para comparar.</div>`;
+        return;
+      }
+
+      const lt = last.turno || {};
+      const pt = prev?.turno || {};
+      const items = [
+        { label:"Suprema", key:"suprema", factor:400 },
+        { label:"PPPoker", key:"pppoker", factor:400 },
+        { label:"Buffalo", key:"buffalo", factor:1 },
+        { label:"Ganamos", key:"ganamos", factor:1 }
+      ];
+
+      box.innerHTML = items.map(item=>{
+        const atualBruto = moneyToNumber(lt[item.key] ?? 0);
+        const anteriorBruto = moneyToNumber(pt[item.key] ?? 0);
+        const diffBruto = atualBruto - anteriorBruto;
+        const atualMoney = atualBruto * item.factor;
+        const diffMoney = diffBruto * item.factor;
+        const positive = diffBruto >= 0;
+
+        return `<div class="history-item" style="box-shadow:none;">
+          <div class="history-top">
+            <strong>${item.label}</strong>
+            <span style="color:${positive ? '#10b981' : '#ef4444'}">${positive ? '+' : ''}${diffBruto.toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2})}</span>
+          </div>
+          <div class="history-values">
+            <div><span class="muted">Atual</span><b>${atualBruto.toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2})}</b></div>
+            <div><span class="muted">Anterior</span><b>${anteriorBruto.toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2})}</b></div>
+            <div><span class="muted">Valor atual</span><b>${formatMoney(atualMoney)}</b></div>
+            <div><span class="muted">Diferença $</span><b style="color:${positive ? '#10b981' : '#ef4444'}">${formatMoney(diffMoney)}</b></div>
+          </div>
+        </div>`;
+      }).join("");
+    }
 
     function renderHistory(){ const search=$("historySearch")?.value.trim().toLowerCase()||"", date=$("historyDate")?.value||""; let list=visibleHistory(); if(search) list=list.filter(x=>(x.operatorName||x.turno?.operatorName||"").toLowerCase().includes(search)); if(date) list=list.filter(x=>{const d=x.submittedAt?.toDate?x.submittedAt.toDate():new Date(x.turno?.closingDate||x.createdAt||0); return !isNaN(d)&&d.toISOString().slice(0,10)===date;}); $("historyCount").textContent=`${list.length} registros`; $("historyList").innerHTML=list.map(item=>{const t=item.turno||{}, operator=item.operatorName||t.operatorName||"Sem operador", saldo=t.saldoLiquido??item.currentSaldoTotal??0, diff=item.diff??0, adminActions=isAdmin()?`<button class="small-btn" data-edit="${item.id}">Editar</button><button class="small-btn danger" data-delete="${item.id}">Excluir</button>`:""; return `<div class="history-item"><div class="history-top"><strong>${operator}</strong><span>${dateLabel(item.submittedAt||t.closingDate)}</span></div><div class="history-values"><div><span class="muted">Saldo líquido</span><b>${formatMoney(saldo)}</b></div><div><span class="muted">Diferença</span><b style="color:${diff<0?'#ef4444':'#10b981'}">${formatMoney(diff)}</b></div></div><div class="history-actions">${adminActions}</div></div>`;}).join("")||`<div class="history-item">Nenhum fechamento encontrado.</div>`; document.querySelectorAll("[data-delete]").forEach(btn=>btn.onclick=()=>deleteHistory(btn.dataset.delete)); document.querySelectorAll("[data-edit]").forEach(btn=>btn.onclick=()=>openEditHistory(btn.dataset.edit)); }
 
@@ -446,7 +486,69 @@
     async function loadProfile(user){ const ref=doc(db,"users",user.uid); try{ const snap=await getDoc(ref); if(snap.exists()) return snap.data(); const bootstrap=isBootstrapEmail(user.email); const profile={email:user.email,name:user.email.split("@")[0],role:bootstrap?"admin":"operator",approved:bootstrap?true:false,blocked:false,createdAt:serverTimestamp()}; await safeSetUserProfile(user,profile); return profile; }catch(e){ console.warn("Erro ao ler perfil:",e); if(isBootstrapEmail(user.email)){ return {email:user.email,name:user.email.split("@")[0],role:"admin",approved:true,blocked:false,localOnly:true}; } showNotice("appNotice",friendlyError(e),"error"); return {email:user.email,name:user.email.split("@")[0],role:"operator",approved:false,blocked:false,permissionError:true}; } }
     async function addAudit(action,description){ try{ await addDoc(collection(db,"audit_logs"),{action,description,uid:currentUser?.uid||null,email:currentUser?.email||null,createdAt:serverTimestamp()}); }catch(e){ console.warn("Audit não gravado:",e); } }
 
-    async function loadUsers(){ if(!await requireAdmin()) return; try{ const snap=await getDocs(collection(db,"users")); $("usersList").innerHTML=snap.docs.map(d=>{const u=d.data(); return `<div class="user-item"><div><strong>${u.name||u.email||d.id}</strong><div class="muted">${u.email||""}<br>${d.id}</div></div><div style="display:flex;gap:6px;align-items:center;flex-wrap:wrap;justify-content:flex-end"><span class="badge ${u.approved?'ok':'off'}">${u.approved?'Aprovado':'Pendente'}</span><span class="badge ${u.blocked?'off':'ok'}">${u.blocked?'Bloqueado':'Ativo'}</span><span class="badge">${u.role||'operator'}</span><button class="small-btn" data-approve="${d.id}">Aprovar</button><button class="small-btn danger" data-block="${d.id}">${u.blocked?'Desbloq.':'Bloquear'}</button></div></div>`;}).join("")||`<div class="user-item">Nenhum usuário encontrado.</div>`; document.querySelectorAll("[data-approve]").forEach(btn=>btn.onclick=async()=>{await updateDoc(doc(db,"users",btn.dataset.approve),{approved:true});loadUsers();}); document.querySelectorAll("[data-block]").forEach(btn=>btn.onclick=async()=>{const id=btn.dataset.block,s=await getDoc(doc(db,"users",id)); await updateDoc(doc(db,"users",id),{blocked:!s.data()?.blocked});loadUsers();}); }catch(e){ $("usersList").innerHTML=`<div class="notice error">${friendlyError(e)}</div>`; } }
+    async function loadUsers(){
+      if(!await requireAdmin()) return;
+
+      try{
+        const snap = await getDocs(collection(db,"users"));
+
+        $("usersList").innerHTML = snap.docs.map(d=>{
+          const u = d.data();
+          const role = u.role || "operator";
+
+          return `<div class="user-item">
+            <div>
+              <strong>${u.name || u.email || d.id}</strong>
+              <div class="muted">${u.email || ""}<br>${d.id}</div>
+              <div class="muted">Cargo atual: <b>${role}</b></div>
+            </div>
+            <div style="display:flex;gap:6px;align-items:center;flex-wrap:wrap;justify-content:flex-end">
+              <span class="badge ${u.approved?'ok':'off'}">${u.approved?'Aprovado':'Pendente'}</span>
+              <span class="badge ${u.blocked?'off':'ok'}">${u.blocked?'Bloqueado':'Ativo'}</span>
+
+              <select class="small-btn" data-role-select="${d.id}" style="height:34px;border:0;outline:0;background:#eef4ff;color:#0F2A6B;">
+                <option value="operator" ${role === "operator" ? "selected" : ""}>Operador</option>
+                <option value="supervisor" ${role === "supervisor" ? "selected" : ""}>Supervisor</option>
+                <option value="admin" ${role === "admin" ? "selected" : ""}>Admin</option>
+              </select>
+
+              <button class="small-btn" data-save-role="${d.id}">Salvar cargo</button>
+              <button class="small-btn" data-approve="${d.id}">Aprovar</button>
+              <button class="small-btn danger" data-block="${d.id}">${u.blocked?'Desbloq.':'Bloquear'}</button>
+            </div>
+          </div>`;
+        }).join("") || `<div class="user-item">Nenhum usuário encontrado.</div>`;
+
+        document.querySelectorAll("[data-save-role]").forEach(btn=>btn.onclick=async()=>{
+          const id = btn.dataset.saveRole;
+          const select = document.querySelector(`[data-role-select="${id}"]`);
+          const role = select?.value || "operator";
+          await updateDoc(doc(db,"users",id), { role });
+          await addAudit("update_user_role", `Cargo alterado para ${role}: ${id}`);
+          loadUsers();
+        });
+
+        document.querySelectorAll("[data-approve]").forEach(btn=>btn.onclick=async()=>{
+          const id = btn.dataset.approve;
+          const select = document.querySelector(`[data-role-select="${id}"]`);
+          const role = select?.value || "operator";
+          await updateDoc(doc(db,"users",id), { approved:true, role });
+          await addAudit("approve_user", `Usuário aprovado como ${role}: ${id}`);
+          loadUsers();
+        });
+
+        document.querySelectorAll("[data-block]").forEach(btn=>btn.onclick=async()=>{
+          const id = btn.dataset.block;
+          const s = await getDoc(doc(db,"users",id));
+          await updateDoc(doc(db,"users",id), { blocked:!s.data()?.blocked });
+          await addAudit("toggle_user_block", `Bloqueio alterado: ${id}`);
+          loadUsers();
+        });
+      }catch(e){
+        $("usersList").innerHTML = `<div class="notice error">${friendlyError(e)}</div>`;
+      }
+    }
+
     async function loadAudit(){ if(!isAdmin()) return; try{ const qh=query(collection(db,"audit_logs"),orderBy("createdAt","desc"),limit(20)); const snap=await getDocs(qh); $("auditList").innerHTML=snap.docs.map(d=>{const a=d.data(); return `<div class="history-item"><div class="history-top"><strong>${a.action}</strong><span>${dateLabel(a.createdAt)}</span></div><div class="muted">${a.description||""}<br>${a.email||""}</div></div>`;}).join("")||`<div class="history-item">Sem auditoria.</div>`; }catch(e){ $("auditList").innerHTML=`<div class="notice error">${friendlyError(e)}</div>`; } }
 
     async function createInternalUser(){ if(!await requireAdmin()) return; const email=$("newUserEmail").value.trim(), password=$("newUserPassword").value, name=$("newUserName").value.trim(), role=$("newUserRole").value, supervisorRaw=$("newUserSupervisor")?.value.trim()||""; if(!email||!password) return alert("Informe email e senha."); if(password.length<6) return alert("A senha precisa ter pelo menos 6 caracteres."); const secondaryApp=initializeApp(firebaseConfig,"SecondaryUserCreator"+Date.now()), secondaryAuth=getAuth(secondaryApp); try{ const cred=await createUserWithEmailAndPassword(secondaryAuth,email,password); await setDoc(doc(db,"users",cred.user.uid),{email,name:name||email.split("@")[0],role,supervisorUid:role==="operator"&&!supervisorRaw.includes("@")?(supervisorRaw||null):null,supervisorEmail:role==="operator"&&supervisorRaw.includes("@")?supervisorRaw:null,approved:true,blocked:false,createdAt:serverTimestamp(),createdBy:currentUser?.uid||null}); await signOut(secondaryAuth); await deleteApp(secondaryApp); await addAudit("create_user",`Usuário criado: ${email}`); ["newUserEmail","newUserPassword","newUserName","newUserSupervisor"].forEach(id=>{if($(id)) $(id).value="";}); await loadUsers(); alert("Usuário criado com sucesso."); }catch(e){ try{await signOut(secondaryAuth);await deleteApp(secondaryApp);}catch(_ignored){} alert(friendlyError(e)); } }
@@ -464,7 +566,7 @@
 
       adminOnlyIds.forEach(id => {
         const el = $(id);
-        const wrapper = el?.closest(".field");
+        const wrapper = el?.closest(".field") || el;
         if(wrapper) wrapper.style.display = isAdmin() ? "" : "none";
       });
     }
