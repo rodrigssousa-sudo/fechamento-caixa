@@ -13,7 +13,9 @@
       --muted:#64748b;
       --border:rgba(15,42,107,.12);
       --primary:#006BFF;
-      --primary-dark:#0F2A6B;
+      --primary-dark:#0B1F4D;
+      --primary-deep:#06152e;
+      --gold:#d6b46a;
       --success:#10b981;
       --danger:#ef4444;
       --warning:#f59e0b;
@@ -43,17 +45,17 @@
     .screen{display:none;animation:fadeUp .25s ease}.screen.active{display:block}
     @keyframes fadeUp{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
 
-    .hero-card{border-radius:30px;padding:22px;background:radial-gradient(circle at 85% 8%,rgba(255,255,255,.35),transparent 28%),linear-gradient(145deg,#06152e,#0F2A6B 54%,#006BFF);color:#fff;box-shadow:0 28px 70px rgba(0,107,255,.27);overflow:hidden;position:relative}
+    .hero-card{border-radius:34px;padding:24px;background:radial-gradient(circle at 85% 8%,rgba(214,180,106,.22),transparent 30%),radial-gradient(circle at 18% 12%,rgba(59,130,246,.32),transparent 34%),linear-gradient(145deg,#020817,#06152e 48%,#0B1F4D);color:#fff;box-shadow:0 32px 90px rgba(2,8,23,.28);overflow:hidden;position:relative;border:1px solid rgba(255,255,255,.10)}
     .hero-card:after{content:"";position:absolute;width:170px;height:170px;border-radius:50%;background:rgba(255,255,255,.08);right:-60px;bottom:-70px;filter:blur(2px)}
     .hero-label{font-size:13px;font-weight:800;opacity:.78}
-    .hero-value{font-size:34px;font-weight:950;letter-spacing:-1.4px;margin:7px 0 4px}
+    .hero-value{font-size:36px;font-weight:950;letter-spacing:-1.5px;margin:7px 0 4px;text-shadow:0 8px 26px rgba(0,0,0,.22)}
     .hero-sub{font-size:12px;font-weight:800;opacity:.78}
     .hero-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:18px;position:relative;z-index:2}
     .hero-mini{background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.16);border-radius:20px;padding:12px;backdrop-filter:blur(10px)}
     .hero-mini span{display:block;font-size:11px;opacity:.75;font-weight:800}.hero-mini strong{display:block;margin-top:4px;font-size:15px;font-weight:950}
 
     .grid{display:grid;gap:12px;margin-top:14px}.grid.two{grid-template-columns:1fr 1fr}.grid.three{grid-template-columns:repeat(3,1fr)}
-    .card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:16px;box-shadow:var(--shadow)}
+    .card{background:linear-gradient(180deg,rgba(255,255,255,.98),rgba(248,251,255,.96));border:1px solid rgba(15,42,107,.10);border-radius:var(--radius);padding:17px;box-shadow:var(--shadow);backdrop-filter:blur(10px)}
     .card-title{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;gap:10px}
     .card-title h2{margin:0;font-size:16px;font-weight:950;letter-spacing:-.3px}.card-title span{font-size:12px;color:var(--muted);font-weight:800}
     .metric{font-size:24px;font-weight:950;letter-spacing:-.7px}.metric.good{color:var(--success)}.metric.bad{color:var(--danger)}
@@ -71,7 +73,7 @@
 
     .admin-grid{display:grid;gap:12px}.user-item{display:flex;justify-content:space-between;align-items:center;gap:10px;background:#fff;border:1px solid var(--border);border-radius:18px;padding:12px}.user-item strong{font-size:13px}.badge{font-size:11px;font-weight:950;border-radius:999px;padding:5px 8px;background:#eef4ff;color:#0F2A6B}.badge.ok{background:#dcfce7;color:#166534}.badge.off{background:#fee2e2;color:#991b1b}
 
-    .bottom-nav{position:fixed;left:50%;bottom:calc(10px + env(safe-area-inset-bottom));transform:translateX(-50%);width:min(960px,calc(100% - 20px));height:72px;border-radius:26px;background:rgba(255,255,255,.88);backdrop-filter:blur(22px);box-shadow:0 24px 80px rgba(15,42,107,.18);border:1px solid rgba(255,255,255,.78);display:grid;grid-template-columns:repeat(5,1fr);z-index:80;padding:7px}.nav-btn{border-radius:19px;background:transparent;color:#64748b;font-weight:950;font-size:11px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px}.nav-btn b{font-size:18px;line-height:1}.nav-btn.active{background:linear-gradient(145deg,#0F2A6B,#006BFF);color:#fff;box-shadow:0 12px 28px rgba(0,107,255,.23)}
+    .bottom-nav{position:fixed;left:50%;bottom:calc(10px + env(safe-area-inset-bottom));transform:translateX(-50%);width:min(960px,calc(100% - 20px));height:72px;border-radius:26px;background:rgba(255,255,255,.88);backdrop-filter:blur(22px);box-shadow:0 24px 80px rgba(15,42,107,.18);border:1px solid rgba(255,255,255,.78);display:grid;grid-template-columns:repeat(6,1fr);z-index:80;padding:7px}.nav-btn{border-radius:19px;background:transparent;color:#64748b;font-weight:950;font-size:11px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px}.nav-btn b{font-size:18px;line-height:1}.nav-btn.active{background:linear-gradient(145deg,#0F2A6B,#006BFF);color:#fff;box-shadow:0 12px 28px rgba(0,107,255,.23)}
 
     .login-screen{position:fixed;inset:0;z-index:100000;background:linear-gradient(180deg,#06152e,#0F2A6B 55%,#006BFF);display:flex;align-items:center;justify-content:center;padding:18px;color:#fff}.login-card{width:min(390px,100%);background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.18);backdrop-filter:blur(20px);border-radius:30px;padding:24px;box-shadow:0 30px 90px rgba(0,0,0,.26)}.login-logo{width:76px;height:76px;border-radius:24px;background:#fff;color:#006BFF;display:flex;align-items:center;justify-content:center;font-size:26px;font-weight:950;margin:0 auto 14px}.login-card h1{text-align:center;margin:0;font-size:28px}.login-card p{text-align:center;opacity:.78;font-weight:700;margin:6px 0 22px}.login-card input{width:100%;height:52px;margin-bottom:10px;border-radius:17px;border:1px solid rgba(255,255,255,.18);background:rgba(255,255,255,.12);color:#fff;padding:0 14px;font-weight:850;outline:0}.login-card input::placeholder{color:rgba(255,255,255,.62)}
 
@@ -137,6 +139,8 @@
       <div class="grid two">
         <div class="card"><div class="card-title"><h2>Saldo líquido</h2><span>Atual</span></div><div id="homeSaldoLiquido" class="metric">$ 0,00</div><div class="muted">Baseado no fechamento atual</div></div>
         <div class="card"><div class="card-title"><h2>Pendentes</h2><span>Total</span></div><div id="homePendentes" class="metric bad">$ 0,00</div><div class="muted">Pagos pendentes cadastrados</div></div>
+        <div class="card"><div class="card-title"><h2>Volume visível</h2><span>Perfil</span></div><div id="homeVolume" class="metric">$ 0,00</div><div class="muted">Soma dos fechamentos permitidos</div></div>
+        <div class="card"><div class="card-title"><h2>Top operador</h2><span>Ranking</span></div><div id="homeTopOperator" class="metric" style="font-size:20px;">-</div><div class="muted">Melhor desempenho no período visível</div></div>
       </div>
     </section>
 
@@ -203,6 +207,25 @@
       </div>
     </section>
 
+    <section id="screenReports" class="screen">
+      <div class="card">
+        <div class="card-title"><h2>Relatórios premium</h2><span>PDF nível banco</span></div>
+        <div class="form-grid">
+          <div class="field"><label>Data inicial</label><input id="reportStart" type="date" /></div>
+          <div class="field"><label>Data final</label><input id="reportEnd" type="date" /></div>
+          <div class="field"><label>Operador</label><input id="reportOperator" placeholder="Todos" /></div>
+          <div class="field"><label>Supervisor</label><input id="reportSupervisor" placeholder="Todos" /></div>
+        </div>
+        <div class="grid three">
+          <div class="card" style="box-shadow:none;"><div class="muted">Fechamentos</div><div id="reportPreviewCount" class="metric">0</div></div>
+          <div class="card" style="box-shadow:none;"><div class="muted">Saldo líquido</div><div id="reportPreviewSaldo" class="metric">$ 0,00</div></div>
+          <div class="card" style="box-shadow:none;"><div class="muted">Diferença</div><div id="reportPreviewDiff" class="metric">$ 0,00</div></div>
+        </div>
+        <button id="previewReportBtn" class="btn secondary full" style="margin-top:14px;">Pré-visualizar resumo</button>
+        <button id="generateReportBtn" class="btn full" style="margin-top:10px;">Gerar PDF Banco Premium</button>
+      </div>
+    </section>
+
     <section id="screenAdmin" class="screen">
       <div class="card">
         <div class="card-title"><h2>Painel Admin</h2><span id="adminStatus">Protegido</span></div>
@@ -233,6 +256,7 @@
     <button class="nav-btn" data-screen="Close"><b>＋</b>Fechar</button>
     <button class="nav-btn" data-screen="History"><b>≡</b>Histórico</button>
     <button class="nav-btn" data-screen="Ranking"><b>★</b>Ranking</button>
+    <button class="nav-btn" data-screen="Reports"><b>▣</b>Relatórios</button>
     <button class="nav-btn" data-screen="Admin"><b>⚙</b>Admin</button>
   </nav>
 
@@ -429,11 +453,22 @@
       const saldoLiquido = last?.turno?.saldoLiquido ?? last?.currentSaldoTotal ?? 0;
       const pendentes = last?.turno?.pendentesTotal ?? 0;
       const diff = last?.diff ?? (prev ? saldoLiquido - (prev?.turno?.saldoLiquido ?? prev?.currentSaldoTotal ?? 0) : 0);
+      const volume = view.reduce((s,x)=>s+moneyToNumber(x.turno?.saldoLiquido ?? x.currentSaldoTotal),0);
+      const map = new Map();
+      view.forEach(x=>{
+        const name = x.operatorName || x.turno?.operatorName || "Sem operador";
+        const prev = map.get(name) || 0;
+        map.set(name, prev + moneyToNumber(x.diff ?? 0));
+      });
+      const top = [...map.entries()].sort((a,b)=>b[1]-a[1])[0];
+
       $("homeSaldoReca").textContent = formatMoney(saldoReca);
       $("homeSaldoLiquido").textContent = formatMoney(saldoLiquido);
       $("homePendentes").textContent = formatMoney(pendentes);
       $("homeDiff").textContent = formatMoney(diff);
       $("homeDiff").style.color = diff < 0 ? "#fecaca" : "#bbf7d0";
+      $("homeVolume").textContent = formatMoney(volume);
+      $("homeTopOperator").textContent = top ? `${top[0]} • ${formatMoney(top[1])}` : "-";
       $("homeLastClose").textContent = last ? dateLabel(last.submittedAt || last.createdAt || last.turno?.closingDate) : "-";
       $("homeUpdatedAt").textContent = last ? "Última atualização: " + dateLabel(last.submittedAt || last.createdAt) : "Aguardando fechamento";
     }
@@ -652,6 +687,7 @@
 
     function buildBankPdfHtml(items){
       const generatedAt = new Date().toLocaleString("pt-BR");
+      const reportCode = "BK-" + Date.now().toString().slice(-8);
       const totalSaldo = items.reduce((s,x)=>s+moneyToNumber(x.turno?.saldoLiquido ?? x.currentSaldoTotal),0);
       const totalDiff = items.reduce((s,x)=>s+moneyToNumber(x.diff),0);
       const totalPendentes = items.reduce((s,x)=>s+moneyToNumber(x.turno?.pendentesTotal),0);
@@ -680,13 +716,16 @@
       return `<!DOCTYPE html>
 <html><head><meta charset="UTF-8"><title>Relatório Bank King</title>
 <style>
-*{box-sizing:border-box}body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Arial,sans-serif;margin:0;background:#f3f6fb;color:#07152f;padding:28px}.page{background:#fff;border-radius:24px;padding:28px;box-shadow:0 20px 70px rgba(15,42,107,.12)}.header{display:flex;justify-content:space-between;gap:20px;border-bottom:2px solid #e8eef8;padding-bottom:18px;margin-bottom:18px}.logo{width:62px;height:62px;border-radius:18px;background:linear-gradient(145deg,#0F2A6B,#006BFF);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:950;font-size:22px}.brand{display:flex;gap:14px;align-items:center}.brand h1{margin:0;font-size:26px}.brand p{margin:4px 0 0;color:#64748b;font-weight:700}.meta{text-align:right;color:#64748b;font-size:12px;font-weight:700}.cards{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin:18px 0}.card{border:1px solid #e8eef8;border-radius:18px;padding:14px;background:#f8fbff}.card span{font-size:11px;color:#64748b;font-weight:800}.card b{display:block;font-size:18px;margin-top:5px}table{width:100%;border-collapse:collapse;font-size:10px;margin-top:14px}th{background:#0F2A6B;color:#fff;text-align:left;padding:8px;border:1px solid #0F2A6B}td{padding:7px;border:1px solid #e8eef8}tr:nth-child(even){background:#f8fbff}.section-title{font-size:15px;font-weight:950;margin-top:18px}.footer{display:flex;justify-content:space-between;margin-top:24px;padding-top:14px;border-top:1px solid #e8eef8;color:#64748b;font-size:11px;font-weight:800}@media print{body{background:#fff;padding:0}.page{box-shadow:none;border-radius:0}table{font-size:8px}td,th{padding:5px}}
-</style></head><body><div class="page">
-<div class="header"><div class="brand"><div class="logo">BK</div><div><h1>Relatório Bank King</h1><p>Controle financeiro interno • nível banco</p></div></div><div class="meta">Gerado em ${generatedAt}<br>Usuário: ${currentProfile?.name || currentUser?.email || "-"}<br>Perfil: ${isAdmin()?"Admin":isSupervisor()?"Supervisor":"Operador"}</div></div>
+*{box-sizing:border-box}body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Arial,sans-serif;margin:0;background:#eef2f7;color:#07152f;padding:28px}.cover{background:linear-gradient(145deg,#020817,#06152e 48%,#0B1F4D);color:#fff;border-radius:28px;padding:32px;margin-bottom:18px;position:relative;overflow:hidden}.cover:after{content:'';position:absolute;width:220px;height:220px;border-radius:50%;right:-70px;top:-80px;background:rgba(214,180,106,.16)}.cover h1{margin:0;font-size:34px;letter-spacing:-1px}.cover p{margin:8px 0 0;color:rgba(255,255,255,.72);font-weight:700}.seal{margin-top:22px;display:inline-flex;border:1px solid rgba(214,180,106,.5);color:#f7d98b;border-radius:999px;padding:8px 12px;font-size:11px;font-weight:900;letter-spacing:.6px}.page{background:#fff;border-radius:24px;padding:28px;box-shadow:0 20px 70px rgba(15,42,107,.12)}.header{display:flex;justify-content:space-between;gap:20px;border-bottom:2px solid #e8eef8;padding-bottom:18px;margin-bottom:18px}.logo{width:62px;height:62px;border-radius:18px;background:linear-gradient(145deg,#0B1F4D,#006BFF);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:950;font-size:22px}.brand{display:flex;gap:14px;align-items:center}.brand h2{margin:0;font-size:25px}.brand p{margin:4px 0 0;color:#64748b;font-weight:700}.meta{text-align:right;color:#64748b;font-size:12px;font-weight:700}.cards{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin:18px 0}.card{border:1px solid #e8eef8;border-radius:18px;padding:14px;background:#f8fbff}.card span{font-size:11px;color:#64748b;font-weight:800}.card b{display:block;font-size:18px;margin-top:5px}.section-title{font-size:15px;font-weight:950;margin-top:18px}table{width:100%;border-collapse:collapse;font-size:10px;margin-top:14px}th{background:#0B1F4D;color:#fff;text-align:left;padding:8px;border:1px solid #0B1F4D}td{padding:7px;border:1px solid #e8eef8}tr:nth-child(even){background:#f8fbff}.signature{display:grid;grid-template-columns:1fr 1fr;gap:40px;margin-top:34px}.sign-line{border-top:1px solid #94a3b8;padding-top:8px;color:#64748b;font-size:11px;font-weight:800}.footer{display:flex;justify-content:space-between;margin-top:24px;padding-top:14px;border-top:1px solid #e8eef8;color:#64748b;font-size:11px;font-weight:800}@media print{body{background:#fff;padding:0}.cover{border-radius:0;min-height:220px}.page{box-shadow:none;border-radius:0}table{font-size:8px}td,th{padding:5px}.cover{break-after:avoid}}
+</style></head><body>
+<div class="cover"><h1>Bank King</h1><p>Relatório financeiro interno premium</p><div class="seal">DOCUMENTO CONFIDENCIAL • ${reportCode}</div></div>
+<div class="page">
+<div class="header"><div class="brand"><div class="logo">BK</div><div><h2>Relatório detalhado</h2><p>Controle • Auditoria • Resultado</p></div></div><div class="meta">Gerado em ${generatedAt}<br>Código: ${reportCode}<br>Usuário: ${currentProfile?.name || currentUser?.email || "-"}<br>Perfil: ${isAdmin()?"Admin":isSupervisor()?"Supervisor":"Operador"}</div></div>
 <div class="cards"><div class="card"><span>Fechamentos</span><b>${items.length}</b></div><div class="card"><span>Saldo líquido somado</span><b>${formatMoney(totalSaldo)}</b></div><div class="card"><span>Diferença total</span><b>${formatMoney(totalDiff)}</b></div><div class="card"><span>Pendentes / Saídas</span><b>${formatMoney(totalPendentes)} / ${formatMoney(totalSaidas)}</b></div></div>
 <div class="section-title">Fechamentos detalhados</div>
 <table><thead><tr><th>#</th><th>Data</th><th>Operador</th><th>Supervisor</th><th>Web Reca</th><th>Suprema×400</th><th>PPPoker×400</th><th>Buffalo</th><th>Ganamos</th><th>Cargas</th><th>Pendentes</th><th>Saídas</th><th>Saldo Líquido</th><th>Diff</th></tr></thead><tbody>${rows || `<tr><td colspan="14">Nenhum fechamento encontrado.</td></tr>`}</tbody></table>
-<div class="footer"><span>Controle • Transparência • Resultados</span><span>Documento interno • Bank King</span></div>
+<div class="signature"><div class="sign-line">Responsável interno</div><div class="sign-line">Conferência / Auditoria</div></div>
+<div class="footer"><span>Controle • Transparência • Resultados</span><span>Documento interno confidencial • Bank King</span></div>
 </div></body></html>`;
     }
 
@@ -848,6 +887,7 @@
       document.querySelectorAll(".nav-btn").forEach(b=>b.classList.toggle("active", b.dataset.screen === name));
       if(name === "Admin") { loadUsers(); loadAudit(); }
       if(name === "Ranking") renderRanking();
+      if(name === "Reports") previewReport();
     }
 
     function bindEvents(){
@@ -859,6 +899,9 @@
       $("logoRefreshBtn").onclick = refreshInternal;
       $("recalculateBtn").onclick = recalculateAllHistory;
       $("pdfReportBtn").onclick = generateBankPdfReport;
+      $("previewReportBtn") && ($("previewReportBtn").onclick = previewReport);
+      $("generateReportBtn") && ($("generateReportBtn").onclick = generateBankPdfReport);
+      ["reportStart","reportEnd","reportOperator","reportSupervisor"].forEach(id => $(id)?.addEventListener("input", previewReport));
       $("loadUsersBtn").onclick = loadUsers;
       $("createUserBtn").onclick = createInternalUser;
       $("historySearch").addEventListener("input", renderHistory);
