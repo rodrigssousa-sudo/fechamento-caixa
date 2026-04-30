@@ -1,4 +1,7 @@
 
+
+
+
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
@@ -3124,57 +3127,41 @@ async function validateUserAccess(user) {
 
   return true;
 }
- function getTotalPendentes(turno = {}) {
-  if (Array.isArray(turno.pendings)) {
-    return turno.pendings.reduce((acc, item) => acc + Number(item.value || 0), 0);
-  }
+    function calcularSaldoBase(turno) {
+      return Number(turno.reca || 0) + Number(turno.suprema || 0) * 400 + Number(turno.pppoker || 0) * 400 + Number(turno.buffalo || 0) + Number(turno.ganamos || 0) - Number(turno.pendentes || turno.pendentesTotal || 0);
+    }
 
-  return Number(turno.pendentesTotal || turno.pendentes || 0);
-}
+    function calcularSaldoCaixa(turno) {
+      return calcularSaldoBase(turno) + Number(turno.cargaFichas || 0) + Number(turno.cargaPoker || 0) - Number(turno.saidas || turno.saidasTotal || 0);
+    }
 
-function getTotalSaidas(turno = {}) {
-  if (Array.isArray(turno.outflows)) {
-    return turno.outflows.reduce((acc, item) => acc + Number(item.value || 0), 0);
-  }
+    function calcularDiffReal(turnoAtual, turnoAnterior) {
+      const baseAtual = calcularSaldoBase(turnoAtual);
+      const baseAnterior = calcularSaldoBase(turnoAnterior);
+      const saidasAtual = Number(turnoAtual.saidas || turnoAtual.saidasTotal || 0);
+      const cargasAtual = Number(turnoAtual.cargaFichas || 0) + Number(turnoAtual.cargaPoker || 0);
+      return (baseAtual - cargasAtual + saidasAtual) - baseAnterior;
+    }
 
-  return Number(turno.saidasTotal || turno.saidas || 0);
-}
+    function calcularSaldo(turno) { return calcularSaldoCaixa(turno); }
 
-function calcularSaldoBase(turno) {
-  return Number(turno.reca || 0) +
-    Number(turno.suprema || 0) * 400 +
-    Number(turno.pppoker || 0) * 400 +
-    Number(turno.buffalo || 0) +
-    Number(turno.ganamos || 0) -
-    Number(turno.pendentes || turno.pendentesTotal || 0);
-}
-
-function calcularSaldoCaixa(turno) {
-  return calcularSaldoBase(turno) -
-    Number(turno.saidas || turno.saidasTotal || 0);
-}
-
-function calcularSaldo(turno) {
-  return calcularSaldoCaixa(turno);
-}
-
-function getTurnoBreakdown(t = {}) {
-  return {
-    reca: Number(t.reca || 0),
-    supremaFichas: Number(t.suprema || 0),
-    supremaValor: Number(t.suprema || 0) * 400,
-    pppokerFichas: Number(t.pppoker || 0),
-    pppokerValor: Number(t.pppoker || 0) * 400,
-    buffalo: Number(t.buffalo || 0),
-    ganamos: Number(t.ganamos || 0),
-    cargaFichas: Number(t.cargaFichas || 0),
-    cargaPoker: Number(t.cargaPoker || 0),
-    pendentes: Number(t.pendentesTotal || t.pendentes || 0),
-    saidas: Number(t.saidasTotal || t.saidas || 0),
-    base: calcularSaldoBase(t),
-    caixa: calcularSaldoCaixa(t)
-  };
-}
+    function getTurnoBreakdown(t = {}) {
+      return {
+        reca: Number(t.reca || 0),
+        supremaFichas: Number(t.suprema || 0),
+        supremaValor: Number(t.suprema || 0) * 400,
+        pppokerFichas: Number(t.pppoker || 0),
+        pppokerValor: Number(t.pppoker || 0) * 400,
+        buffalo: Number(t.buffalo || 0),
+        ganamos: Number(t.ganamos || 0),
+        cargaFichas: Number(t.cargaFichas || 0),
+        cargaPoker: Number(t.cargaPoker || 0),
+        pendentes: Number(t.pendentesTotal || t.pendentes || 0),
+        saidas: Number(t.saidasTotal || t.saidas || 0),
+        base: calcularSaldoBase(t),
+        caixa: calcularSaldoCaixa(t)
+      };
+    }
 
     function getRankingStartDate(range) {
       const now = new Date();
@@ -3871,7 +3858,7 @@ setFinalizarLoading(
       .filter(item => item.type === "operacional")
       .reduce((acc, item) => acc + Number(item.value || 0), 0);
 
-    const saldoLiquido = entradasTotal - pendentesTotal - saidasTotal;
+    const saldoLiquido = entradasTotal - pendentesTotal;
 
     const entries = [
       { name: "Banco Reca", value: reca },
@@ -5078,8 +5065,9 @@ async function recalculateAllHistory() {
         const data = item.data();
         const turno = data.turno || {};
 
-        const saldoLiquido = Number(calcularSaldoCaixa(turno)) || 0;
+        const saldoLiquido = Number(calcularSaldoLiquido(turno)) || 0;
         const currentSaldoTotal = saldoLiquido;
+
         const diff =
           previousSaldoTotal === null
             ? 0
@@ -5878,45 +5866,19 @@ document.addEventListener("DOMContentLoaded", () => {
 
 // 🔥 BOTÃO INÍCIO = RECALCULAR + RECARREGAR
 byId("sideHomeBtn")?.addEventListener("click", async () => {
-
   const loader = byId("appReloadLoader");
 
   loader?.classList.add("active");
 
   try {
-
     if (typeof recalculateAllHistory === "function") {
-
       await recalculateAllHistory();
-
     }
-
-    if (typeof startHistoryRealtimeListener === "function") {
-
-      startHistoryRealtimeListener();
-
-    }
-
-    if (typeof render === "function") {
-
-      render();
-
-    }
-
-    if (typeof updateActionsVisibility === "function") {
-
-      updateActionsVisibility();
-
-    }
-
   } catch (e) {
-
-    console.warn("Atualização interna ignorou erro:", e);
-
+    console.warn("Falha silenciosa ao recalcular:", e);
   }
 
-  loader?.classList.remove("active");
-
+  location.reload();
 });
 
   document.querySelectorAll("[data-add-pending]").forEach((btn) => {
