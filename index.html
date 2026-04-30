@@ -527,7 +527,7 @@
         saldoEl.style.color = turno.saldoLiquido < 0 ? "#ef4444" : "#06152e";
       }
 
-      if($("homeOperator")) $("homeOperator").textContent = turno.operatorName || profileName() || "-";
+      if($("homeOperator")) $("homeOperator").textContent = profileName() || "-";
     }
 
     function renderMonthlyGoal(view){
@@ -583,8 +583,13 @@
       $("homeSaldoReca").textContent = formatMoney(saldoReca);
       $("homeSaldoLiquido").textContent = formatMoney(saldoLiquido);
       $("homePendentes").textContent = formatMoney(pendentes);
-      $("homeDiff").textContent = formatMoney(diff);
-      $("homeDiff").style.color = diff < 0 ? "#fecaca" : "#bbf7d0";
+
+      const latestAdjustment = latestInternalAdjustment();
+      const adjustmentValue = latestAdjustment ? adjustmentImpact(latestAdjustment) : 0;
+      if($("homeInternalAdjustment")){
+        $("homeInternalAdjustment").textContent = adjustmentDescription(latestAdjustment);
+        $("homeInternalAdjustment").style.color = adjustmentValue < 0 ? "#fecaca" : "#bbf7d0";
+      }
       if($("homeTodayResult")){
         $("homeTodayResult").textContent = formatMoney(todayResult);
         $("homeTodayResult").style.color = todayResult < 0 ? "#dc2626" : "#059669";
@@ -593,6 +598,7 @@
         $("homeWeekResult").textContent = formatMoney(weekResult);
         $("homeWeekResult").style.color = weekResult < 0 ? "#dc2626" : "#059669";
       }
+      if($("homeOperator")) $("homeOperator").textContent = last ? (last.operatorName || last.turno?.operatorName || "-") : "-";
       $("homeLastClose").textContent = last ? dateLabel(last.submittedAt || last.createdAt || last.turno?.closingDate) : "-";
       $("homeUpdatedAt").textContent = last ? "Última atualização: " + dateLabel(last.submittedAt || last.createdAt) : "Aguardando fechamento";
       renderMonthlyGoal(view);
@@ -734,8 +740,9 @@
         turno.supervisorEmail = currentProfile?.supervisorEmail || (isSupervisor()?currentUser?.email:null) || null;
         turno.supervisorName = currentProfile?.supervisorName || (isSupervisor()?profileName():null) || null;
 
-        // REGRA FINAL: ajuste interno NÃO entra na diferença de caixa.
-        // O diff do fechamento compara sempre contra o último fechamento real.
+        // MODELO FINAL:
+        // Ajuste interno altera a base operacional do próximo fechamento,
+        // mas não aparece como lucro operacional próprio.
         const baseSaldo = baseForNextClosing();
         const diff = baseSaldo === null ? 0 : turno.saldoLiquido - baseSaldo;
 
