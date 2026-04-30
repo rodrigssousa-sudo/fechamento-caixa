@@ -645,6 +645,7 @@ import {
   getFirestore,
   doc,
   getDoc,
+  getDocs,
   setDoc,
   updateDoc,
   deleteDoc,
@@ -656,7 +657,6 @@ import {
   orderBy,
   limit
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
-
 import { getAuth } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 
 const firebaseConfig = {
@@ -1125,21 +1125,67 @@ function startShiftClosuresHistory(){
   });
 }
 
+async function rebuildMasterBalanceFromLastClosure() {
+  try {
+    const q = query(
+      collection(db, "shiftClosures"),
+      orderBy("createdAt", "desc"),
+      limit(1)
+    );
+
+    const snapshot = await getDocs(q);
+    const balanceRef = doc(db, "companyBalance", "main");
+
+    if (snapshot.empty) {
+      await updateDoc(balanceRef, {
+        reca: 0,
+        suprema: 0,
+        pppoker: 0,
+        buffalo: 0,
+        ganamos: 0,
+        pendentes: 0,
+        diferencaReal: 0,
+        updatedAt: serverTimestamp()
+      });
+
+      return;
+    }
+
+    const lastClosure = snapshot.docs[0].data();
+    const s = lastClosure.saldosInformados || {};
+
+    await updateDoc(balanceRef, {
+      reca: bkNumber(s.reca),
+      suprema: bkNumber(s.suprema),
+      pppoker: bkNumber(s.pppoker),
+      buffalo: bkNumber(s.buffalo),
+      ganamos: bkNumber(s.ganamos),
+      pendentes: bkNumber(s.pendentes),
+      diferencaReal: bkNumber(lastClosure.diffReal),
+      updatedAt: serverTimestamp()
+    });
+
+  } catch (error) {
+    console.warn("Erro ao reconstruir saldo mestre:", error);
+  }
+}
+
 async function deleteShiftClosure(id) {
   const confirmDelete = confirm("Tem certeza que deseja excluir este fechamento?");
   if (!confirmDelete) return;
 
   try {
     const ref = doc(db, "shiftClosures", id);
-    await deleteDoc(ref);
 
-    alert("Fechamento excluído com sucesso.");
+    await deleteDoc(ref);
+    await rebuildMasterBalanceFromLastClosure();
+
+    alert("Fechamento excluído e saldo mestre reconstruído.");
   } catch (error) {
     console.warn("Erro ao excluir fechamento:", error);
     alert("Erro ao excluir fechamento.");
   }
 }
-
 function fillShiftClosureForm(item) {
   document.getElementById("shiftOperatorName").value = item.operador || "";
   document.getElementById("shiftName").value = item.turno || "T1";
@@ -1220,32 +1266,17 @@ async function updateExistingShiftClosure() {
       updatedBy: auth?.currentUser?.email || "operador"
     };
 
-    await updateDoc(doc(db, "shiftClosures", editingClosureId), updatedClosure);
+await updateDoc(doc(db, "shiftClosures", editingClosureId), updatedClosure);
 
-    const latestClosure = shiftClosuresCache[0];
+// 🔥 RECONSTRÓI O SALDO MESTRE SEMPRE
+await rebuildMasterBalanceFromLastClosure();
 
-    if (latestClosure && latestClosure.id === editingClosureId) {
-      await updateDoc(doc(db, "companyBalance", "main"), {
-        reca: turno.reca,
-        suprema: turno.suprema,
-        pppoker: turno.pppoker,
-        buffalo: turno.buffalo,
-        ganamos: turno.ganamos,
-        pendentes: turno.pendentes,
-        diferencaReal: diffReal,
-        updatedAt: serverTimestamp()
-      });
-    } else {
-      alert("Fechamento editado. Como não é o último fechamento, o saldo mestre não foi alterado automaticamente.");
-    }
+cancelEditClosure();
+alert("Fechamento atualizado com sucesso.");
 
-    cancelEditClosure();
-    alert("Fechamento atualizado com sucesso.");
-
-  } catch (error) {
-    console.warn("Erro ao atualizar fechamento:", error);
-    alert("Erro ao atualizar fechamento.");
-  }
+} catch (error) {
+  console.warn("Erro ao atualizar fechamento:", error);
+  alert("Erro ao atualizar fechamento.");
 }
 
 function bindClosureHistoryActions() {
