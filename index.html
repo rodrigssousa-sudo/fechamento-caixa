@@ -409,52 +409,46 @@
       return visibleHistory().find(item => !isAdjustmentItem(item)) || null;
     }
 
-    function adjustmentImpact(item){
-      if(!isAdjustmentItem(item)) return 0;
-      const t = item.turno || {};
+    function getAdjustmentParts(item){
+      const t = item?.turno || {};
 
-      // AJUSTE NÍVEL BANCO:
-      // Carga poker entra como fichas ×400.
-      // Carga casino entra como dinheiro.
-      // Retirada de caixa precisa SUBTRAIR, não somar.
       const cargaPoker = moneyToNumber(t.cargasPoker || 0) * 400;
       const cargaCasino = moneyToNumber(t.cargasCasino ?? t.cargas ?? 0);
-      // IMPORTANTE: ajustes antigos não tinham retiradaCaixa separado
-      // então precisamos reconstruir corretamente
-      let retiradaCaixa = 0;
 
+      let retiradaCaixa = 0;
       if(t.retiradaCaixa !== undefined){
         retiradaCaixa = moneyToNumber(t.retiradaCaixa);
-      }else if(Array.isArray(t.outflows)){
-        // soma TODAS as retiradas reais
+      }else if(Array.isArray(t.outflows) && t.outflows.length){
         retiradaCaixa = t.outflows.reduce((s,x)=>s + moneyToNumber(x.value),0);
       }else{
         retiradaCaixa = moneyToNumber(t.saidasTotal ?? 0);
       }
 
+      return { cargaPoker, cargaCasino, retiradaCaixa };
+    }
+
+    function adjustmentImpact(item){
+      if(!isAdjustmentItem(item)) return 0;
+
+      const { cargaPoker, cargaCasino, retiradaCaixa } = getAdjustmentParts(item);
       const impacto = cargaPoker + cargaCasino - retiradaCaixa;
 
-      // Se for ajuste antigo sem campos detalhados, usa saldo/diff salvo como fallback.
-      if(impacto !== 0) return impacto;
-      return moneyToNumber(t.saldoLiquido ?? item.diff ?? 0);
+      // Se tiver campos de ajuste, essa é a fonte da verdade.
+      if(cargaPoker || cargaCasino || retiradaCaixa) return impacto;
+
+      // Fallback para ajuste antigo sem estrutura.
+      const t = item?.turno || {};
+      return moneyToNumber(t.saldoLiquido ?? item?.diff ?? 0);
     }
 
     function baseForNextClosing(){
-      const view = visibleHistory();
-      const lastRealIndex = view.findIndex(item => !isAdjustmentItem(item));
-      const lastReal = lastRealIndex >= 0 ? view[lastRealIndex] : null;
-      const lastRealSaldo = lastReal ? moneyToNumber(lastReal.turno?.saldoLiquido ?? lastReal.currentSaldoTotal ?? 0) : null;
-
-      if(lastRealIndex < 0){
-        return null;
-      }
-
-      const adjustmentsAfterLastReal = view
-        .slice(0, lastRealIndex)
-        .filter(isAdjustmentItem)
-        .reduce((s,item)=>s + adjustmentImpact(item), 0);
-
-      return lastRealSaldo + adjustmentsAfterLastReal;
+      // REGRA FINAL:
+      // Ajuste interno aparece separado no histórico/relatório,
+      // mas NÃO altera a base da diferença de caixa do próximo fechamento.
+      // A diferença do turno compara sempre fechamento real x fechamento real.
+      const lastReal = lastRealClosing();
+      if(!lastReal) return null;
+      return moneyToNumber(lastReal.turno?.saldoLiquido ?? lastReal.currentSaldoTotal ?? 0);
     }
 
     function previousRealClosingAfter(currentItem){
@@ -740,7 +734,7 @@
         turno.supervisorEmail = currentProfile?.supervisorEmail || (isSupervisor()?currentUser?.email:null) || null;
         turno.supervisorName = currentProfile?.supervisorName || (isSupervisor()?profileName():null) || null;
 
-        // IMPORTANTE: ajuste/carga rápida NÃO entra como base do próximo fechamento.
+        // REGRA FINAL: ajuste interno NÃO entra na diferença de caixa.
         // O diff do fechamento compara sempre contra o último fechamento real.
         const baseSaldo = baseForNextClosing();
         const diff = baseSaldo === null ? 0 : turno.saldoLiquido - baseSaldo;
@@ -931,33 +925,41 @@
             const data=item.data();
             const turno=data.turno||{};
             const isAdjustment = data.adjustment === true || data.type === "capital_injection" || turno.ajusteTipo === "carga_rapida";
+            const adjustmentParts = isAdjustment ? getAdjustmentParts({ ...data, turno }) : null;
             const saldoLiquido = isAdjustment ? adjustmentImpact({ ...data, turno }) : calcularSaldoLiquido(turno);
             let currentSaldoTotal, diff;
 
             if(isAdjustment){
-              // Ajuste nível banco: impacta a BASE do próximo fechamento,
-              // mas não é lucro operacional/ranking.
+              // Ajuste interno: aparece separado, mas NÃO altera a base operacional.
+              // Não deve afetar a diferença de caixa do próximo fechamento.
               diff = saldoLiquido;
-              currentSaldoTotal = operationalBaseSaldo===null ? saldoLiquido : operationalBaseSaldo + diff;
-              operationalBaseSaldo = currentSaldoTotal;
+              currentSaldoTotal = saldoLiquido;
             }else{
               currentSaldoTotal = saldoLiquido;
               diff = operationalBaseSaldo===null ? 0 : currentSaldoTotal - operationalBaseSaldo;
               operationalBaseSaldo = currentSaldoTotal;
             }
 
-            await updateDoc(doc(db,"history",item.id),{
-              "turno.saldoLiquido":saldoLiquido,
+            const updatePayload = {
+              "turno.saldoLiquido": saldoLiquido,
               currentSaldoTotal,
               diff,
-              recalculatedAt:serverTimestamp()
-            });
+              recalculatedAt: serverTimestamp()
+            };
+
+            if(isAdjustment && adjustmentParts){
+              updatePayload["turno.retiradaCaixa"] = adjustmentParts.retiradaCaixa;
+              updatePayload["turno.saidasTotal"] = adjustmentParts.retiradaCaixa;
+              updatePayload["turno.ajusteImpacto"] = saldoLiquido;
+            }
+
+            await updateDoc(doc(db,"history",item.id), updatePayload);
           }catch(e){
             console.warn("Histórico ignorado no recálculo:",item.id,e);
           }
         }
 
-        await addAudit("recalculate_history","Histórico recalculado com ajustes ignorados como base operacional");
+        await addAudit("recalculate_history","Histórico recalculado: ajustes internos separados da diferença de caixa");
         renderAll();
         return true;
       }catch(e){
