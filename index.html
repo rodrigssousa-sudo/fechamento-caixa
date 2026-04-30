@@ -428,10 +428,10 @@
       const pt = prev?.turno || {};
 
       const items = [
-        { label:"Suprema", key:"suprema", factor:400, type:"chips" },
-        { label:"PPPoker", key:"pppoker", factor:400, type:"chips" },
-        { label:"Buffalo", key:"buffalo", factor:1, type:"money" },
-        { label:"Ganamos", key:"ganamos", factor:1, type:"money" }
+        { label:"Suprema", key:"suprema", type:"chips" },
+        { label:"PPPoker", key:"pppoker", type:"chips" },
+        { label:"Buffalo", key:"buffalo", type:"money" },
+        { label:"Ganamos", key:"ganamos", type:"money" }
       ];
 
       box.innerHTML = items.map(item=>{
@@ -440,13 +440,11 @@
         const diff = atual - anterior;
         const positive = diff >= 0;
 
-        const atualLabel = item.type === "chips"
-          ? `${atual.toLocaleString("pt-BR",{minimumFractionDigits:2,maximumFractionDigits:2})} fichas`
-          : formatMoney(atual);
-
-        const anteriorLabel = item.type === "chips"
-          ? `${anterior.toLocaleString("pt-BR",{minimumFractionDigits:2,maximumFractionDigits:2})} fichas`
-          : formatMoney(anterior);
+        const formatValue = (value) => {
+          return item.type === "chips"
+            ? `${value.toLocaleString("pt-BR",{minimumFractionDigits:2,maximumFractionDigits:2})} fichas`
+            : formatMoney(value);
+        };
 
         const diffLabel = item.type === "chips"
           ? `${positive ? "+" : ""}${diff.toLocaleString("pt-BR",{minimumFractionDigits:2,maximumFractionDigits:2})} fichas`
@@ -457,12 +455,9 @@
             <strong>${item.label}</strong>
             <span style="color:${positive ? '#10b981' : '#ef4444'}">${diffLabel}</span>
           </div>
-
           <div class="history-values">
-            <div><span class="muted">Atual</span><b>${atualLabel}</b></div>
-            <div><span class="muted">Anterior</span><b>${anteriorLabel}</b></div>
-            <div><span class="muted">${item.type === "chips" ? "Equivalente $" : "Valor atual"}</span><b>${formatMoney(atual * item.factor)}</b></div>
-            <div><span class="muted">Diferença $</span><b style="color:${positive ? '#10b981' : '#ef4444'}">${formatMoney(diff * item.factor)}</b></div>
+            <div><span class="muted">Atual</span><b>${formatValue(atual)}</b></div>
+            <div><span class="muted">Anterior</span><b>${formatValue(anterior)}</b></div>
           </div>
         </div>`;
       }).join("");
