@@ -2,7 +2,7 @@
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
   <title>Bank King V2</title>
 
   <style>
@@ -13,7 +13,7 @@
       --warning:#f59e0b; --shadow:0 18px 45px rgba(15,42,107,.12);
       --radius:24px; --bottom:86px;
     }
-    *{box-sizing:border-box}
+    *{box-sizing:border-box; touch-action: manipulation;}
     html,body{margin:0;min-height:100%;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Inter,Arial,sans-serif;background:var(--bg);color:var(--text)}
     body{padding:env(safe-area-inset-top) 0 env(safe-area-inset-bottom)}
     button,input,select,textarea{font-family:inherit} button{border:0;cursor:pointer}.hidden{display:none!important}
@@ -89,10 +89,10 @@
         </div>
       </div>
       <div class="grid two">
-        <div class="card"><div class="card-title"><h2>Saldo líquido</h2><span>Atual</span></div><div id="homeSaldoLiquido" class="metric">$ 0,00</div><div class="muted">Fechamento atual</div></div>
-        <div class="card"><div class="card-title"><h2>Pendentes</h2><span>Total</span></div><div id="homePendentes" class="metric bad">$ 0,00</div><div class="muted">Pagos pendentes</div></div>
-        <div id="todayResultCard" class="card"><div class="card-title"><h2>Lucro hoje</h2><span>Retiradas</span></div><div id="homeTodayResult" class="metric">$ 0,00</div><div class="muted">Somente retiradas tipo lucro</div></div>
-        <div id="weekResultCard" class="card"><div class="card-title"><h2>Lucro semana</h2><span>Retiradas</span></div><div id="homeWeekResult" class="metric">$ 0,00</div><div class="muted">Somente retiradas tipo lucro</div></div>  
+        <div class="card" data-home-detail="saldo" style="cursor:pointer;"><div class="card-title"><h2>Saldo líquido</h2><span>Atual</span></div><div id="homeSaldoLiquido" class="metric">$ 0,00</div><div class="muted">Toque para ver detalhes</div></div>
+        <div class="card" data-home-detail="pendentes" style="cursor:pointer;"><div class="card-title"><h2>Pendentes</h2><span>Total</span></div><div id="homePendentes" class="metric bad">$ 0,00</div><div class="muted">Toque para ver detalhes</div></div>
+        <div id="todayResultCard" class="card" data-home-detail="lucroHoje" style="cursor:pointer;"><div class="card-title"><h2>Lucro hoje</h2><span>Retiradas</span></div><div id="homeTodayResult" class="metric">$ 0,00</div><div class="muted">Toque para ver detalhes</div></div>
+        <div id="weekResultCard" class="card" data-home-detail="lucroSemana" style="cursor:pointer;"><div class="card-title"><h2>Lucro semana</h2><span>Retiradas</span></div><div id="homeWeekResult" class="metric">$ 0,00</div><div class="muted">Toque para ver detalhes</div></div>  
       </div>
 
       <div class="card" style="margin-top:14px;">
@@ -986,6 +986,77 @@
       $("receiptModal")?.classList.remove("active");
     }
 
+    function openHomeMetricDetail(type){
+      const view = visibleHistory();
+      const last = lastRealClosing() || view[0];
+      const t = last?.turno || {};
+      let title = "Detalhamento";
+      let total = 0;
+      let content = "";
+
+      const now = new Date();
+      const todayStart = new Date(now); todayStart.setHours(0,0,0,0);
+      const weekStart = new Date(now); weekStart.setDate(weekStart.getDate()-7);
+
+      const makeLines = (rows, emptyText="Sem detalhes") => {
+        const clean = (rows || []).filter(x=>x.label || x.value);
+        return clean.length
+          ? clean.map(x=>receiptLine(x.label, formatMoney(x.value || 0))).join("")
+          : `<div class="receipt-line"><span>${emptyText}</span><b>-</b></div>`;
+      };
+
+      if(type === "saldo"){
+        title = "Saldo líquido atual";
+        total = moneyToNumber(t.saldoLiquido ?? last?.currentSaldoTotal ?? 0);
+        content = `
+          <div class="receipt-section"><h3>Composição do saldo</h3><div class="receipt-list">
+            ${receiptLine("Saldo Reca", formatMoney(t.webReca ?? t.reca ?? 0))}
+            ${receiptLine("Suprema ×400", formatMoney(moneyToNumber(t.suprema || 0) * 400))}
+            ${receiptLine("PPPoker ×400", formatMoney(moneyToNumber(t.pppoker || 0) * 400))}
+            ${receiptLine("Buffalo", formatMoney(t.buffalo || 0))}
+            ${receiptLine("Ganamos", formatMoney(t.ganamos || 0))}
+            ${receiptLine("Pagos pendentes", "- " + formatMoney(t.pendentesTotal || 0))}
+            ${receiptLine("Retiradas", "+ " + formatMoney(t.saidasTotal || 0))}
+          </div></div>`;
+      }
+
+      if(type === "pendentes"){
+        title = "Pagos pendentes";
+        total = moneyToNumber(t.pendentesTotal || 0);
+        content = `<div class="receipt-section"><h3>Lista de pendentes do último fechamento</h3><div class="receipt-list">${makeLines((t.pendings || []).map(p=>({label:p.name || "Sem descrição", value:p.value || 0})), "Sem pagos pendentes")}</div></div>`;
+      }
+
+      if(type === "lucroHoje" || type === "lucroSemana"){
+        const start = type === "lucroHoje" ? todayStart : weekStart;
+        title = type === "lucroHoje" ? "Lucro de hoje" : "Lucro da semana";
+        const rows = [];
+
+        view.forEach(item=>{
+          const d = item.submittedAt?.toDate ? item.submittedAt.toDate() : new Date(item.turno?.closingDate || item.createdAt || 0);
+          if(isNaN(d) || d < start) return;
+          const tt = item.turno || {};
+          (tt.outflows || []).forEach(o=>{
+            if(o.category === "lucro"){
+              rows.push({
+                label: `${item.operatorName || tt.operatorName || "Sem operador"} • ${o.name || "Retirada lucro"}`,
+                value: moneyToNumber(o.value || 0)
+              });
+            }
+          });
+        });
+
+        total = rows.reduce((s,x)=>s + moneyToNumber(x.value),0);
+        content = `<div class="receipt-section"><h3>Retiradas tipo lucro</h3><div class="receipt-list">${makeLines(rows, "Sem retiradas de lucro no período")}</div></div>`;
+      }
+
+      $("receiptSaldoLiquido").textContent = formatMoney(total);
+      $("receiptSubtitle").textContent = title;
+      $("receiptCode").textContent = "Detalhamento da tela inicial";
+      $("receiptContent").innerHTML = content;
+      $("receiptAdminActions")?.classList.add("hidden");
+      $("receiptModal").classList.add("active");
+    }
+
     async function openEditHistory(id){ if(!await requireAdmin()) return; const item=historyCache.find(x=>x.id===id); if(!item) return alert("Fechamento não encontrado no cache."); const t=item.turno||{}; $("editHistoryId").value=id; $("editOperatorName").value=item.operatorName||t.operatorName||""; $("editClosingDate").value=toDateInputValue(t.closingDate||item.submittedAt); $("editWebReca").value=t.webReca??t.reca??0; $("editSuprema").value=t.suprema??0; $("editPppoker").value=t.pppoker??0; $("editBuffalo").value=t.buffalo??0; $("editGanamos").value=t.ganamos??0; $("editCargasPoker").value=t.cargasPoker??0; $("editCargasCasino").value=t.cargasCasino??t.cargas??0; setDynamicRows("editPendingList",t.pendings||[]); setDynamicRows("editOutflowList",t.outflows||[]); $("editHistoryModal").classList.add("active"); }
     function closeEdit(){ $("editHistoryModal").classList.remove("active"); }
     async function saveEdit(){ if(!await requireAdmin()) return; const id=$("editHistoryId").value; const ref=doc(db,"history",id); const original=historyCache.find(x=>x.id===id)||{}; const t={...(original.turno||{}),operatorName:$("editOperatorName").value.trim(),closingDate:$("editClosingDate").value||new Date().toISOString(),webReca:moneyToNumber($("editWebReca").value),suprema:moneyToNumber($("editSuprema").value),pppoker:moneyToNumber($("editPppoker").value),buffalo:moneyToNumber($("editBuffalo").value),ganamos:moneyToNumber($("editGanamos").value),cargasPoker:moneyToNumber($("editCargasPoker").value),cargasCasino:moneyToNumber($("editCargasCasino").value),pendings:getDynamicRows("editPendingList"),outflows:getDynamicRows("editOutflowList")}; t.pendentesTotal=t.pendings.reduce((s,x)=>s+x.value,0); t.saidasTotal=t.outflows.reduce((s,x)=>s+x.value,0); t.retiradaLucroTotal=t.outflows.filter(x=>x.category==="lucro").reduce((s,x)=>s+x.value,0); t.custoOperacionalTotal=t.outflows.filter(x=>x.category==="custo_operacional").reduce((s,x)=>s+x.value,0); t.saldoLiquido=calcularSaldoLiquido(t); try{await updateDoc(ref,{turno:t,operatorName:t.operatorName,currentSaldoTotal:t.saldoLiquido,editedAt:serverTimestamp(),editedBy:currentUser?.uid||null}); await addAudit("edit_history",`Fechamento editado: ${id}`); closeEdit(); await recalculateAllHistory(); alert("Fechamento editado e histórico recalculado.");}catch(e){alert(friendlyError(e));} }
@@ -1279,6 +1350,9 @@
       $("createUserBtn") && ($("createUserBtn").onclick=createInternalUser);
       $("historySearch")?.addEventListener("input",()=>{ historyRenderLimit=30; renderHistory(); });
       $("historyDate")?.addEventListener("input",()=>{ historyRenderLimit=30; renderHistory(); }); document.querySelectorAll(".nav-btn[data-screen]").forEach(btn=>btn.onclick=()=>showScreen(btn.dataset.screen));
+      document.querySelectorAll("[data-home-detail]").forEach(card=>{
+        card.onclick = () => openHomeMetricDetail(card.dataset.homeDetail);
+      });
       $("moreMenuBtn") && ($("moreMenuBtn").onclick=(ev)=>{
         ev.stopPropagation();
         $("moreMenu")?.classList.toggle("active");
