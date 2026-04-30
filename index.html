@@ -81,7 +81,7 @@
     <section id="screenHome" class="screen active">
       <div class="hero-card">
         <div class="hero-label">Saldo Reca</div><div id="homeSaldoReca" class="hero-value">$ 0,00</div><div id="homeUpdatedAt" class="hero-sub">Aguardando atualização</div>
-        <div class="hero-grid"><div class="hero-mini"><span>Diferença do turno</span><strong id="homeDiff">$ 0,00</strong></div><div class="hero-mini"><span>Operador atual</span><strong id="homeOperator">-</strong></div><div class="hero-mini"><span>Último fechamento</span><strong id="homeLastClose">-</strong></div><div class="hero-mini"><span>Status</span><strong id="homeStatus">Online</strong></div></div>
+        <div class="hero-grid"><div class="hero-mini"><span>Ajuste interno</span><strong id="homeInternalAdjustment">$ 0,00</strong></div><div class="hero-mini"><span>Operador último turno</span><strong id="homeOperator">-</strong></div><div class="hero-mini"><span>Data e hora</span><strong id="homeLastClose">-</strong></div><div class="hero-mini"><span>Status</span><strong id="homeStatus">Online</strong></div></div>
       </div>
       <div class="grid two">
         <div class="card"><div class="card-title"><h2>Saldo líquido</h2><span>Atual</span></div><div id="homeSaldoLiquido" class="metric">$ 0,00</div><div class="muted">Fechamento atual</div></div>
@@ -442,13 +442,34 @@
     }
 
     function baseForNextClosing(){
-      // REGRA FINAL:
-      // Ajuste interno aparece separado no histórico/relatório,
-      // mas NÃO altera a base da diferença de caixa do próximo fechamento.
-      // A diferença do turno compara sempre fechamento real x fechamento real.
-      const lastReal = lastRealClosing();
+      // MODELO FINAL:
+      // Ajuste interno altera a BASE OPERACIONAL do próximo fechamento,
+      // mas não entra como lucro/diferença operacional própria.
+      const view = visibleHistory();
+      const lastRealIndex = view.findIndex(item => !isAdjustmentItem(item));
+      const lastReal = lastRealIndex >= 0 ? view[lastRealIndex] : null;
       if(!lastReal) return null;
-      return moneyToNumber(lastReal.turno?.saldoLiquido ?? lastReal.currentSaldoTotal ?? 0);
+
+      const lastRealSaldo = moneyToNumber(lastReal.turno?.saldoLiquido ?? lastReal.currentSaldoTotal ?? 0);
+      const adjustmentsAfterLastReal = view
+        .slice(0, lastRealIndex)
+        .filter(isAdjustmentItem)
+        .reduce((s,item)=>s + adjustmentImpact(item), 0);
+
+      return lastRealSaldo + adjustmentsAfterLastReal;
+    }
+
+    function latestInternalAdjustment(){
+      return visibleHistory().find(isAdjustmentItem) || null;
+    }
+
+    function adjustmentDescription(item){
+      if(!item) return "Sem ajuste";
+      const t = item.turno || {};
+      const value = adjustmentImpact(item);
+      const reason = t.ajusteMotivo || item.adjustmentReason || "Ajuste interno";
+      const sign = value > 0 ? "+" : "";
+      return `${sign}${formatMoney(value)} • ${reason}`;
     }
 
     function previousRealClosingAfter(currentItem){
@@ -580,9 +601,9 @@
         return !isNaN(d) && d >= weekStart;
       }).reduce((s,x)=>s + moneyToNumber(x.diff || 0), 0);
 
-      $("homeSaldoReca").textContent = formatMoney(saldoReca);
-      $("homeSaldoLiquido").textContent = formatMoney(saldoLiquido);
-      $("homePendentes").textContent = formatMoney(pendentes);
+      if($("homeSaldoReca")) if($("homeSaldoReca")) $("homeSaldoReca").textContent = formatMoney(saldoReca);
+      if($("homeSaldoLiquido")) if($("homeSaldoLiquido")) $("homeSaldoLiquido").textContent = formatMoney(saldoLiquido);
+      if($("homePendentes")) if($("homePendentes")) $("homePendentes").textContent = formatMoney(pendentes);
 
       const latestAdjustment = latestInternalAdjustment();
       const adjustmentValue = latestAdjustment ? adjustmentImpact(latestAdjustment) : 0;
@@ -599,8 +620,8 @@
         $("homeWeekResult").style.color = weekResult < 0 ? "#dc2626" : "#059669";
       }
       if($("homeOperator")) $("homeOperator").textContent = last ? (last.operatorName || last.turno?.operatorName || "-") : "-";
-      $("homeLastClose").textContent = last ? dateLabel(last.submittedAt || last.createdAt || last.turno?.closingDate) : "-";
-      $("homeUpdatedAt").textContent = last ? "Última atualização: " + dateLabel(last.submittedAt || last.createdAt) : "Aguardando fechamento";
+      if($("homeLastClose")) if($("homeLastClose")) $("homeLastClose").textContent = last ? dateLabel(last.submittedAt || last.createdAt || last.turno?.closingDate) : "-";
+      if($("homeUpdatedAt")) if($("homeUpdatedAt")) $("homeUpdatedAt").textContent = last ? "Última atualização: " + dateLabel(last.submittedAt || last.createdAt) : "Aguardando fechamento";
       renderMonthlyGoal(view);
       renderChipsComparison(last, prev);
     }
@@ -720,7 +741,21 @@
       }).join("") || `<div class="rank-item">Sem dados para ranking.</div>`;
     }
 
-    function renderAll(){ try{renderCalculations();renderHome();renderHistory();renderRanking();previewReport();}catch(e){console.warn("Render ignorou erro:",e);} }
+    function safeRender(name, fn){
+      try{
+        if(typeof fn === "function") fn();
+      }catch(e){
+        console.warn(`Render ignorou erro em ${name}:`, e);
+      }
+    }
+
+    function renderAll(){
+      safeRender("calculations", renderCalculations);
+      safeRender("home", renderHome);
+      safeRender("history", renderHistory);
+      safeRender("ranking", renderRanking);
+      safeRender("report", previewReport);
+    }
 
     function validateTurnBeforeSave(turno){
       const hasMainValue = [turno.webReca, turno.suprema, turno.pppoker, turno.buffalo, turno.ganamos, turno.cargasPoker, turno.cargasCasino, turno.pendentesTotal, turno.saidasTotal].some(v=>moneyToNumber(v)>0);
@@ -937,10 +972,11 @@
             let currentSaldoTotal, diff;
 
             if(isAdjustment){
-              // Ajuste interno: aparece separado, mas NÃO altera a base operacional.
-              // Não deve afetar a diferença de caixa do próximo fechamento.
+              // Ajuste interno: altera a base operacional futura,
+              // mas permanece separado do resultado operacional.
               diff = saldoLiquido;
-              currentSaldoTotal = saldoLiquido;
+              currentSaldoTotal = operationalBaseSaldo===null ? saldoLiquido : operationalBaseSaldo + diff;
+              operationalBaseSaldo = currentSaldoTotal;
             }else{
               currentSaldoTotal = saldoLiquido;
               diff = operationalBaseSaldo===null ? 0 : currentSaldoTotal - operationalBaseSaldo;
@@ -966,7 +1002,7 @@
           }
         }
 
-        await addAudit("recalculate_history","Histórico recalculado: ajustes internos separados da diferença de caixa");
+        await addAudit("recalculate_history","Histórico recalculado: ajustes internos alteram base operacional sem virar resultado operacional");
         renderAll();
         return true;
       }catch(e){
