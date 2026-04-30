@@ -5879,21 +5879,40 @@ document.addEventListener("DOMContentLoaded", () => {
   byId("limparBtn")?.addEventListener("click", () => clearTurn("t2"));
 
 
-// 🔥 BOTÃO INÍCIO = RECALCULAR + RECARREGAR
+// 🔥 BOTÃO INÍCIO = ATUALIZAÇÃO INTERNA (SEM SAIR DO APP)
 byId("sideHomeBtn")?.addEventListener("click", async () => {
   const loader = byId("appReloadLoader");
 
   loader?.classList.add("active");
 
   try {
+    // recalcula histórico (se existir)
     if (typeof recalculateAllHistory === "function") {
       await recalculateAllHistory();
     }
+
+    // reinicia listener do Firebase
+    if (typeof startHistoryRealtimeListener === "function") {
+      startHistoryRealtimeListener();
+    }
+
+    // re-renderiza tela
+    if (typeof render === "function") {
+      render();
+    }
+
+    // atualiza UI
+    if (typeof updateActionsVisibility === "function") {
+      updateActionsVisibility();
+    }
+
   } catch (e) {
-    console.warn("Falha silenciosa ao recalcular:", e);
+    console.warn("Atualização interna ignorou erro:", e);
   }
 
-  location.reload();
+  setTimeout(() => {
+    loader?.classList.remove("active");
+  }, 600);
 });
 
   document.querySelectorAll("[data-add-pending]").forEach((btn) => {
