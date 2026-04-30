@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-  <title>Bank King Dashboard V2</title>
+  <title>Bank King V2</title>
 
   <style>
     :root{
@@ -47,11 +47,11 @@
     <div class="login-card">
       <div class="login-logo">BK</div>
       <h1>Bank King</h1>
-      <p>Dashboard financeiro premium</p>
+      <p>Relatório financeiro</p>
       <div id="loginNotice" class="notice hidden"></div>
       <input id="loginEmail" type="email" placeholder="Email" autocomplete="email" />
       <input id="loginPassword" type="password" placeholder="Senha" autocomplete="current-password" />
-      <button id="loginBtn" class="btn full">Entrar no sistema</button>
+      <button id="loginBtn" class="btn full">Entrar</button>
       <button id="registerBtn" class="btn secondary full" style="margin-top:10px;">Criar conta / solicitar acesso</button>
       <button id="resetPasswordBtn" class="btn secondary full" style="margin-top:10px;">Recuperar senha</button>
     </div>
@@ -74,10 +74,9 @@
         <div class="hero-grid"><div class="hero-mini"><span>Diferença do turno</span><strong id="homeDiff">$ 0,00</strong></div><div class="hero-mini"><span>Operador atual</span><strong id="homeOperator">-</strong></div><div class="hero-mini"><span>Último fechamento</span><strong id="homeLastClose">-</strong></div><div class="hero-mini"><span>Status</span><strong id="homeStatus">Online</strong></div></div>
       </div>
       <div class="grid two">
-        <div class="card"><div class="card-title"><h2>Saldo líquido</h2><span>Atual</span></div><div id="homeSaldoLiquido" class="metric">$ 0,00</div><div class="muted">Baseado no fechamento atual</div></div>
-        <div class="card"><div class="card-title"><h2>Pendentes</h2><span>Total</span></div><div id="homePendentes" class="metric bad">$ 0,00</div><div class="muted">Pagos pendentes cadastrados</div></div>
-        <div class="card"><div class="card-title"><h2>Volume visível</h2><span>Perfil</span></div><div id="homeVolume" class="metric">$ 0,00</div><div class="muted">Soma dos fechamentos permitidos</div></div>
-        <div class="card"><div class="card-title"><h2>Top operador</h2><span>Ranking</span></div><div id="homeTopOperator" class="metric" style="font-size:20px;">-</div><div class="muted">Melhor desempenho no período visível</div></div>
+        <div class="card"><div class="card-title"><h2>Saldo líquido</h2><span>Atual</span></div><div id="homeSaldoLiquido" class="metric">$ 0,00</div><div class="muted">Fechamento atual</div></div>
+        <div class="card"><div class="card-title"><h2>Pendentes</h2><span>Total</span></div><div id="homePendentes" class="metric bad">$ 0,00</div><div class="muted">Pagos pendentes</div></div>
+        <div class="card"><div class="card-title"><h2>Top operador</h2><span>Ranking</span></div><div id="homeTopOperator" class="metric" style="font-size:20px;">-</div><div class="muted">Melhor desempenho</div></div>
       </div>
     </section>
 
@@ -86,16 +85,16 @@
         <div class="form-grid">
           <div class="field"><label>Operador</label><input id="operatorName" placeholder="Nome do operador" /></div>
           <div class="field"><label>Data do fechamento</label><input id="closingDate" type="datetime-local" /></div>
-          <div class="field"><label>Web Reca</label><input id="webReca" class="money-input" inputmode="decimal" placeholder="0,00" /></div>
-          <div class="field"><label>Suprema ×400</label><input id="suprema" class="money-input" inputmode="decimal" placeholder="0,00" /></div>
-          <div class="field"><label>PPPoker ×400</label><input id="pppoker" class="money-input" inputmode="decimal" placeholder="0,00" /></div>
+          <div class="field"><label>Saldo Reca</label><input id="webReca" class="money-input" inputmode="decimal" placeholder="0,00" /></div>
+          <div class="field"><label>Suprema</label><input id="suprema" class="money-input" inputmode="decimal" placeholder="0,00" /></div>
+          <div class="field"><label>PPPoker</label><input id="pppoker" class="money-input" inputmode="decimal" placeholder="0,00" /></div>
           <div class="field"><label>Buffalo</label><input id="buffalo" class="money-input" inputmode="decimal" placeholder="0,00" /></div>
           <div class="field"><label>Ganamos</label><input id="ganamos" class="money-input" inputmode="decimal" placeholder="0,00" /></div>
-          <div class="field"><label>Carga fichas poker ×400</label><input id="cargasPoker" class="money-input" inputmode="decimal" placeholder="0,00" /></div>
-          <div class="field"><label>Carga casino / dinheiro</label><input id="cargasCasino" class="money-input" inputmode="decimal" placeholder="0,00" /></div>
+          <div class="field"><label>Carga fichas poker</label><input id="cargasPoker" class="money-input" inputmode="decimal" placeholder="0,00" /></div>
+          <div class="field"><label>Carga casino</label><input id="cargasCasino" class="money-input" inputmode="decimal" placeholder="0,00" /></div>
         </div>
       </div>
-      <div class="grid two"><div class="card"><div class="card-title"><h2>Pagos pendentes</h2><button id="addPendingBtn" class="small-btn">+ Adicionar</button></div><div id="pendingList" class="dynamic-list"></div></div><div class="card"><div class="card-title"><h2>Retiradas / Saídas</h2><button id="addOutflowBtn" class="small-btn">+ Adicionar</button></div><div id="outflowList" class="dynamic-list"></div></div></div>
+      <div class="grid two"><div class="card"><div class="card-title"><h2>Pagos pendentes</h2><button id="addPendingBtn" class="small-btn">+ Adicionar</button></div><div id="pendingList" class="dynamic-list"></div></div><div class="card"><div class="card-title"><h2>Retiradas</h2><button id="addOutflowBtn" class="small-btn">+ Adicionar</button></div><div id="outflowList" class="dynamic-list"></div></div></div>
       <div class="card"><div class="card-title"><h2>Resumo calculado</h2><span>Tempo real</span></div><div class="grid three"><div><div class="muted">Saldo líquido</div><div id="calcSaldoLiquido" class="metric">$ 0,00</div></div><div><div class="muted">Pendentes</div><div id="calcPendentes" class="metric bad">$ 0,00</div></div><div><div class="muted">Retiradas</div><div id="calcSaidas" class="metric">$ 0,00</div></div></div><button id="saveClosingBtn" class="btn full" style="margin-top:16px;">Salvar fechamento</button></div>
     </section>
 
@@ -103,14 +102,14 @@
 
     <section id="screenRanking" class="screen"><div class="card"><div class="card-title"><h2>Ranking operadores</h2><span>Lucro por operador</span></div><div class="rank-tabs"><button class="active" data-rank="day">Diário</button><button data-rank="week">Semanal</button><button data-rank="month">Mensal</button><button data-rank="all">Total</button></div><div id="rankingList" class="rank-list"></div></div></section>
 
-    <section id="screenReports" class="screen"><div class="card"><div class="card-title"><h2>Relatórios premium</h2><span>PDF nível banco</span></div><div class="form-grid"><div class="field"><label>Data inicial</label><input id="reportStart" type="date" /></div><div class="field"><label>Data final</label><input id="reportEnd" type="date" /></div><div class="field"><label>Operador</label><input id="reportOperator" placeholder="Todos" /></div><div class="field"><label>Supervisor</label><input id="reportSupervisor" placeholder="Todos" /></div></div><div class="grid three"><div class="card" style="box-shadow:none;"><div class="muted">Fechamentos</div><div id="reportPreviewCount" class="metric">0</div></div><div class="card" style="box-shadow:none;"><div class="muted">Saldo líquido</div><div id="reportPreviewSaldo" class="metric">$ 0,00</div></div><div class="card" style="box-shadow:none;"><div class="muted">Diferença</div><div id="reportPreviewDiff" class="metric">$ 0,00</div></div></div><button id="previewReportBtn" class="btn secondary full" style="margin-top:14px;">Pré-visualizar resumo</button><button id="generateReportBtn" class="btn full" style="margin-top:10px;">Gerar PDF Banco Premium</button></div></section>
+    <section id="screenReports" class="screen"><div class="card"><div class="card-title"><h2>Relatórios premium</h2><span>PDF nível banco</span></div><div class="form-grid"><div class="field"><label>Data inicial</label><input id="reportStart" type="date" /></div><div class="field"><label>Data final</label><input id="reportEnd" type="date" /></div><div class="field"><label>Operador</label><input id="reportOperator" placeholder="Todos" /></div><div class="field"><label>Supervisor</label><input id="reportSupervisor" placeholder="Todos" /></div></div><div class="grid three"><div class="card" style="box-shadow:none;"><div class="muted">Fechamentos</div><div id="reportPreviewCount" class="metric">0</div></div><div class="card" style="box-shadow:none;"><div class="muted">Saldo líquido</div><div id="reportPreviewSaldo" class="metric">$ 0,00</div></div><div class="card" style="box-shadow:none;"><div class="muted">Diferença</div><div id="reportPreviewDiff" class="metric">$ 0,00</div></div></div><button id="previewReportBtn" class="btn secondary full" style="margin-top:14px;">Pré-visualizar resumo</button><button id="generateReportBtn" class="btn full" style="margin-top:10px;">Gerar PDF</button></div></section>
 
-    <section id="screenAdmin" class="screen"><div class="card"><div class="card-title"><h2>Painel Admin</h2><span id="adminStatus">Protegido</span></div><div class="form-grid"><div class="field"><label>Email do novo usuário</label><input id="newUserEmail" type="email" placeholder="usuario@email.com" /></div><div class="field"><label>Senha temporária</label><input id="newUserPassword" type="password" placeholder="mínimo 6 caracteres" /></div><div class="field"><label>Nome</label><input id="newUserName" placeholder="Nome do operador" /></div><div class="field"><label>Função</label><select id="newUserRole"><option value="operator">Operador</option><option value="supervisor">Supervisor</option><option value="admin">Admin</option></select></div><div class="field"><label>Supervisor UID/email</label><input id="newUserSupervisor" placeholder="Só para operador" /></div></div><button id="createUserBtn" class="btn full" style="margin-top:14px;">Criar usuário</button></div><div class="card"><div class="card-title"><h2>Usuários</h2><button id="loadUsersBtn" class="small-btn">Atualizar</button></div><div id="usersList" class="admin-grid"></div></div><div class="card"><div class="card-title"><h2>Auditoria</h2><span>Últimas ações</span></div><div id="auditList" class="history-list"></div></div></section>
+    <section id="screenAdmin" class="screen"><div class="card"><div class="card-title"><h2>Painel Admin</h2><span id="adminStatus">Protegido</span></div><div class="form-grid"><div class="field"><label>Email do novo usuário</label><input id="newUserEmail" type="email" placeholder="usuario@email.com" /></div><div class="field"><label>Senha temporária</label><input id="newUserPassword" type="password" placeholder="mínimo 6 caracteres" /></div><div class="field"><label>Nome</label><input id="newUserName" placeholder="Nome do operador" /></div><div class="field"><label>Função</label><select id="newUserRole"><option value="operator">Operador</option><option value="supervisor">Supervisor</option><option value="admin">Admin</option></select></div><div class="field"><label>Supervisor</label><input id="newUserSupervisor" placeholder="Só para operador" /></div></div><button id="createUserBtn" class="btn full" style="margin-top:14px;">Criar usuário</button></div><div class="card"><div class="card-title"><h2>Usuários</h2><button id="loadUsersBtn" class="small-btn">Atualizar</button></div><div id="usersList" class="admin-grid"></div></div><div class="card"><div class="card-title"><h2>Auditoria</h2><span>Últimas ações</span></div><div id="auditList" class="history-list"></div></div></section>
   </main>
 
   <nav id="bottomNav" class="bottom-nav hidden"><button class="nav-btn active" data-screen="Home"><b>⌂</b>Início</button><button class="nav-btn" data-screen="Close"><b>＋</b>Fechar</button><button class="nav-btn" data-screen="History"><b>≡</b>Histórico</button><button class="nav-btn" data-screen="Ranking"><b>★</b>Ranking</button><button class="nav-btn" data-screen="Reports"><b>▣</b>Relatórios</button><button class="nav-btn" data-screen="Admin"><b>⚙</b>Admin</button></nav>
 
-  <div id="editHistoryModal" class="edit-modal"><div class="edit-panel"><div class="edit-panel-head"><h2>Editar fechamento</h2><button id="editCloseBtn" class="edit-close">×</button></div><input id="editHistoryId" type="hidden" /><div class="form-grid"><div class="field"><label>Operador</label><input id="editOperatorName" /></div><div class="field"><label>Data do fechamento</label><input id="editClosingDate" type="datetime-local" /></div><div class="field"><label>Web Reca</label><input id="editWebReca" class="money-input" inputmode="decimal" /></div><div class="field"><label>Suprema ×400</label><input id="editSuprema" class="money-input" inputmode="decimal" /></div><div class="field"><label>PPPoker ×400</label><input id="editPppoker" class="money-input" inputmode="decimal" /></div><div class="field"><label>Buffalo</label><input id="editBuffalo" class="money-input" inputmode="decimal" /></div><div class="field"><label>Ganamos</label><input id="editGanamos" class="money-input" inputmode="decimal" /></div><div class="field"><label>Carga fichas poker ×400</label><input id="editCargasPoker" class="money-input" inputmode="decimal" /></div><div class="field"><label>Carga casino / dinheiro</label><input id="editCargasCasino" class="money-input" inputmode="decimal" /></div></div><div class="grid two"><div class="card" style="box-shadow:none;margin-top:12px;"><div class="card-title"><h2>Pagos pendentes</h2><button id="editAddPendingBtn" class="small-btn">+ Adicionar</button></div><div id="editPendingList" class="dynamic-list"></div></div><div class="card" style="box-shadow:none;margin-top:12px;"><div class="card-title"><h2>Retiradas / Saídas</h2><button id="editAddOutflowBtn" class="small-btn">+ Adicionar</button></div><div id="editOutflowList" class="dynamic-list"></div></div></div><div class="edit-actions"><button id="saveEditBtn" class="btn">Salvar alterações</button><button id="cancelEditBtn" class="btn secondary">Cancelar</button></div></div></div>
+  <div id="editHistoryModal" class="edit-modal"><div class="edit-panel"><div class="edit-panel-head"><h2>Editar fechamento</h2><button id="editCloseBtn" class="edit-close">×</button></div><input id="editHistoryId" type="hidden" /><div class="form-grid"><div class="field"><label>Operador</label><input id="editOperatorName" /></div><div class="field"><label>Data do fechamento</label><input id="editClosingDate" type="datetime-local" /></div><div class="field"><label>Reca</label><input id="editWebReca" class="money-input" inputmode="decimal" /></div><div class="field"><label>Suprema</label><input id="editSuprema" class="money-input" inputmode="decimal" /></div><div class="field"><label>PPPoker</label><input id="editPppoker" class="money-input" inputmode="decimal" /></div><div class="field"><label>Buffalo</label><input id="editBuffalo" class="money-input" inputmode="decimal" /></div><div class="field"><label>Ganamos</label><input id="editGanamos" class="money-input" inputmode="decimal" /></div><div class="field"><label>Carga poker</label><input id="editCargasPoker" class="money-input" inputmode="decimal" /></div><div class="field"><label>Carga casino</label><input id="editCargasCasino" class="money-input" inputmode="decimal" /></div></div><div class="grid two"><div class="card" style="box-shadow:none;margin-top:12px;"><div class="card-title"><h2>Pagos pendentes</h2><button id="editAddPendingBtn" class="small-btn">+ Adicionar</button></div><div id="editPendingList" class="dynamic-list"></div></div><div class="card" style="box-shadow:none;margin-top:12px;"><div class="card-title"><h2>Retiradas</h2><button id="editAddOutflowBtn" class="small-btn">+ Adicionar</button></div><div id="editOutflowList" class="dynamic-list"></div></div></div><div class="edit-actions"><button id="saveEditBtn" class="btn">Salvar alterações</button><button id="cancelEditBtn" class="btn secondary">Cancelar</button></div></div></div>
 
   <div id="appReloadLoader" class="app-reload-loader"><div class="reload-card"><div class="reload-spinner"></div><strong>Atualizando sistema</strong><span>Recalculando dados...</span></div></div>
 
@@ -227,7 +226,78 @@
     async function loadProfile(user){ const ref=doc(db,"users",user.uid); try{ const snap=await getDoc(ref); if(snap.exists()) return snap.data(); const bootstrap=isBootstrapEmail(user.email); const profile={email:user.email,name:user.email.split("@")[0],role:bootstrap?"admin":"operator",approved:bootstrap?true:false,blocked:false,createdAt:serverTimestamp()}; await safeSetUserProfile(user,profile); return profile; }catch(e){ console.warn("Erro ao ler perfil:",e); if(isBootstrapEmail(user.email)){ return {email:user.email,name:user.email.split("@")[0],role:"admin",approved:true,blocked:false,localOnly:true}; } showNotice("appNotice",friendlyError(e),"error"); return {email:user.email,name:user.email.split("@")[0],role:"operator",approved:false,blocked:false,permissionError:true}; } }
     async function addAudit(action,description){ try{ await addDoc(collection(db,"audit_logs"),{action,description,uid:currentUser?.uid||null,email:currentUser?.email||null,createdAt:serverTimestamp()}); }catch(e){ console.warn("Audit não gravado:",e); } }
 
-    async function loadUsers(){ if(!await requireAdmin()) return; try{ const snap=await getDocs(collection(db,"users")); $("usersList").innerHTML=snap.docs.map(d=>{const u=d.data(); return `<div class="user-item"><div><strong>${u.name||u.email||d.id}</strong><div class="muted">${u.email||""}<br>${d.id}</div></div><div style="display:flex;gap:6px;align-items:center;flex-wrap:wrap;justify-content:flex-end"><span class="badge ${u.approved?'ok':'off'}">${u.approved?'Aprovado':'Pendente'}</span><span class="badge ${u.blocked?'off':'ok'}">${u.blocked?'Bloqueado':'Ativo'}</span><span class="badge">${u.role||'operator'}</span><button class="small-btn" data-approve="${d.id}">Aprovar</button><button class="small-btn danger" data-block="${d.id}">${u.blocked?'Desbloq.':'Bloquear'}</button></div></div>`;}).join("")||`<div class="user-item">Nenhum usuário encontrado.</div>`; document.querySelectorAll("[data-approve]").forEach(btn=>btn.onclick=async()=>{await updateDoc(doc(db,"users",btn.dataset.approve),{approved:true});loadUsers();}); document.querySelectorAll("[data-block]").forEach(btn=>btn.onclick=async()=>{const id=btn.dataset.block,s=await getDoc(doc(db,"users",id)); await updateDoc(doc(db,"users",id),{blocked:!s.data()?.blocked});loadUsers();}); }catch(e){ $("usersList").innerHTML=`<div class="notice error">${friendlyError(e)}</div>`; } }
+    async function loadUsers(){
+  if(!await requireAdmin()) return;
+
+  const snap = await getDocs(collection(db,"users"));
+
+  $("usersList").innerHTML = snap.docs.map(d => {
+    const u = d.data();
+    const role = u.role || "operator";
+
+    return `<div class="user-item">
+      <div>
+        <strong>${u.name || u.email || d.id}</strong>
+        <div class="muted">${u.email || ""}</div>
+        <div class="muted">Cargo atual: <b>${role}</b></div>
+      </div>
+
+      <div style="display:flex;gap:6px;align-items:center;flex-wrap:wrap;justify-content:flex-end">
+        <span class="badge ${u.approved?'ok':'off'}">${u.approved?'Aprovado':'Pendente'}</span>
+        <span class="badge ${u.blocked?'off':'ok'}">${u.blocked?'Bloqueado':'Ativo'}</span>
+
+        <select class="small-btn" data-role-select="${d.id}" style="height:34px;border:0;outline:0;background:#eef4ff;color:#0F2A6B;">
+          <option value="operator" ${role === "operator" ? "selected" : ""}>Operador</option>
+          <option value="supervisor" ${role === "supervisor" ? "selected" : ""}>Supervisor</option>
+          <option value="admin" ${role === "admin" ? "selected" : ""}>Admin</option>
+        </select>
+
+        <button class="small-btn" data-save-role="${d.id}">Salvar cargo</button>
+        <button class="small-btn" data-approve="${d.id}">Aprovar</button>
+        <button class="small-btn danger" data-block="${d.id}">${u.blocked?'Desbloq.':'Bloquear'}</button>
+      </div>
+    </div>`;
+  }).join("") || `<div class="user-item">Nenhum usuário encontrado.</div>`;
+
+  document.querySelectorAll("[data-save-role]").forEach(btn => btn.onclick = async()=>{
+    const id = btn.dataset.saveRole;
+    const select = document.querySelector(`[data-role-select="${id}"]`);
+    const role = select?.value || "operator";
+
+    await updateDoc(doc(db,"users",id), { role });
+    await addAudit("update_user_role", `Cargo alterado para ${role}: ${id}`);
+
+    loadUsers();
+  });
+
+  document.querySelectorAll("[data-approve]").forEach(btn => btn.onclick = async()=>{
+    const id = btn.dataset.approve;
+    const select = document.querySelector(`[data-role-select="${id}"]`);
+    const role = select?.value || "operator";
+
+    await updateDoc(doc(db,"users",id), {
+      approved:true,
+      role
+    });
+
+    await addAudit("approve_user", `Usuário aprovado como ${role}: ${id}`);
+
+    loadUsers();
+  });
+
+  document.querySelectorAll("[data-block]").forEach(btn => btn.onclick = async()=>{
+    const id = btn.dataset.block;
+    const s = await getDoc(doc(db,"users",id));
+
+    await updateDoc(doc(db,"users",id), {
+      blocked:!s.data()?.blocked
+    });
+
+    await addAudit("toggle_user_block", `Bloqueio alterado: ${id}`);
+
+    loadUsers();
+  });
+}
     async function loadAudit(){ if(!isAdmin()) return; try{ const qh=query(collection(db,"audit_logs"),orderBy("createdAt","desc"),limit(20)); const snap=await getDocs(qh); $("auditList").innerHTML=snap.docs.map(d=>{const a=d.data(); return `<div class="history-item"><div class="history-top"><strong>${a.action}</strong><span>${dateLabel(a.createdAt)}</span></div><div class="muted">${a.description||""}<br>${a.email||""}</div></div>`;}).join("")||`<div class="history-item">Sem auditoria.</div>`; }catch(e){ $("auditList").innerHTML=`<div class="notice error">${friendlyError(e)}</div>`; } }
 
     async function createInternalUser(){ if(!await requireAdmin()) return; const email=$("newUserEmail").value.trim(), password=$("newUserPassword").value, name=$("newUserName").value.trim(), role=$("newUserRole").value, supervisorRaw=$("newUserSupervisor")?.value.trim()||""; if(!email||!password) return alert("Informe email e senha."); if(password.length<6) return alert("A senha precisa ter pelo menos 6 caracteres."); const secondaryApp=initializeApp(firebaseConfig,"SecondaryUserCreator"+Date.now()), secondaryAuth=getAuth(secondaryApp); try{ const cred=await createUserWithEmailAndPassword(secondaryAuth,email,password); await setDoc(doc(db,"users",cred.user.uid),{email,name:name||email.split("@")[0],role,supervisorUid:role==="operator"&&!supervisorRaw.includes("@")?(supervisorRaw||null):null,supervisorEmail:role==="operator"&&supervisorRaw.includes("@")?supervisorRaw:null,approved:true,blocked:false,createdAt:serverTimestamp(),createdBy:currentUser?.uid||null}); await signOut(secondaryAuth); await deleteApp(secondaryApp); await addAudit("create_user",`Usuário criado: ${email}`); ["newUserEmail","newUserPassword","newUserName","newUserSupervisor"].forEach(id=>{if($(id)) $(id).value="";}); await loadUsers(); alert("Usuário criado com sucesso."); }catch(e){ try{await signOut(secondaryAuth);await deleteApp(secondaryApp);}catch(_ignored){} alert(friendlyError(e)); } }
