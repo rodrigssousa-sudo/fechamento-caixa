@@ -436,7 +436,7 @@ body{
     <input id="loginEmail" type="email" placeholder="Email" style="width:100%;margin-bottom:10px;padding:10px;">
     <input id="loginPassword" type="password" placeholder="Senha" style="width:100%;margin-bottom:15px;padding:10px;">
 
-   <button id="loginBtn" onclick="loginUser()" style="width:100%;padding:12px;background:#006BFF;color:white;border:none;border-radius:10px;">
+   <button id="loginBtn" style="width:100%;padding:12px;background:#006BFF;color:white;border:none;border-radius:10px;">
   Entrar
 </button>
 
@@ -1507,8 +1507,6 @@ async function loginUser(){
   }
 }
 
-window.loginUser = loginUser;
-
 function protectApp(){
   onAuthStateChanged(auth, (user) => {
     const loginScreen = document.getElementById("loginScreen");
@@ -1524,16 +1522,48 @@ function protectApp(){
 document.addEventListener("DOMContentLoaded", async () => {
 
   // 🔐 LOGIN
-  setTimeout(() => {
-  const btn = document.getElementById("loginBtn");
-  if (btn) {
-    btn.onclick = loginUser;
+  const loginBtn = document.getElementById("loginBtn");
+
+  if (loginBtn) {
+    loginBtn.addEventListener("click", loginUser);
     console.log("Login conectado");
   } else {
-    console.log("Botão NÃO encontrado");
+    console.warn("Botão login NÃO encontrado");
   }
-}, 500);
+
   protectApp();
+
+  // 🔁 NAVEGAÇÃO
+  document.querySelectorAll(".nav-btn").forEach(btn => {
+    btn.addEventListener("click", () => {
+      switchScreen(btn.dataset.screen, btn);
+    });
+  });
+
+  // 🔄 DASHBOARD
+  document.getElementById("refreshDashboardBtn")?.addEventListener("click", () => {
+    renderDashboardSaldos();
+  });
+
+  // 💰 ADMIN MOVIMENTOS
+  document.getElementById("saveAdminMovementBtn")?.addEventListener("click", saveAdminMovement);
+
+  // 📊 FECHAMENTO
+  document.getElementById("previewShiftClosureBtn")?.addEventListener("click", previewShiftClosure);
+  document.getElementById("saveShiftClosureBtn")?.addEventListener("click", saveShiftClosure);
+  document.getElementById("cancelEditClosureBtn")?.addEventListener("click", cancelEditClosure);
+
+  try {
+    setText("dashboardStatus", "Carregando");
+    await criarSaldoMestreSeNaoExistir();
+    startDashboardSaldosRealtime();
+    startShiftClosuresHistory();
+  } catch (error) {
+    console.warn("Erro ao iniciar app:", error);
+    setText("dashboardStatus", "Erro");
+  }
+
+});
 
   // 🔁 NAVEGAÇÃO
   document.querySelectorAll(".nav-btn").forEach(btn => {
