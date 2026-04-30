@@ -3855,7 +3855,7 @@ setFinalizarLoading(
       .filter(item => item.type === "operacional")
       .reduce((acc, item) => acc + Number(item.value || 0), 0);
 
-    const saldoLiquido = entradasTotal - pendentesTotal;
+    const saldoLiquido = entradasTotal - pendentesTotal - saidasTotal;
 
     const entries = [
       { name: "Banco Reca", value: reca },
