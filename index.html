@@ -590,20 +590,23 @@
       const weekStart = new Date();
       weekStart.setDate(weekStart.getDate() - 7);
 
-      const op = operationalHistory();
-      const todayResult = op.filter(x=>{
-        const d = x.submittedAt?.toDate ? x.submittedAt.toDate() : new Date(x.turno?.closingDate || x.createdAt || 0);
+      const profitItems = visibleHistory();
+      const lucroFromItem = (x) => moneyToNumber(x.turno?.retiradaLucroTotal ?? 0);
+      const itemDate = (x) => x.submittedAt?.toDate ? x.submittedAt.toDate() : new Date(x.turno?.closingDate || x.createdAt || 0);
+
+      const todayResult = profitItems.filter(x=>{
+        const d = itemDate(x);
         return !isNaN(d) && d >= todayStart;
-      }).reduce((s,x)=>s + moneyToNumber(x.diff || 0), 0);
+      }).reduce((s,x)=>s + lucroFromItem(x), 0);
 
-      const weekResult = op.filter(x=>{
-        const d = x.submittedAt?.toDate ? x.submittedAt.toDate() : new Date(x.turno?.closingDate || x.createdAt || 0);
+      const weekResult = profitItems.filter(x=>{
+        const d = itemDate(x);
         return !isNaN(d) && d >= weekStart;
-      }).reduce((s,x)=>s + moneyToNumber(x.diff || 0), 0);
+      }).reduce((s,x)=>s + lucroFromItem(x), 0);
 
-      if($("homeSaldoReca")) if($("homeSaldoReca")) $("homeSaldoReca").textContent = formatMoney(saldoReca);
-      if($("homeSaldoLiquido")) if($("homeSaldoLiquido")) $("homeSaldoLiquido").textContent = formatMoney(saldoLiquido);
-      if($("homePendentes")) if($("homePendentes")) $("homePendentes").textContent = formatMoney(pendentes);
+      if($("homeSaldoReca")) $("homeSaldoReca").textContent = formatMoney(saldoReca);
+      if($("homeSaldoLiquido")) $("homeSaldoLiquido").textContent = formatMoney(saldoLiquido);
+      if($("homePendentes")) $("homePendentes").textContent = formatMoney(pendentes);
 
       const latestAdjustment = latestInternalAdjustment();
       const adjustmentValue = latestAdjustment ? adjustmentImpact(latestAdjustment) : 0;
@@ -611,6 +614,10 @@
         $("homeInternalAdjustment").textContent = adjustmentDescription(latestAdjustment);
         $("homeInternalAdjustment").style.color = adjustmentValue < 0 ? "#fecaca" : "#bbf7d0";
       }
+      const canSeeProfitCards = isAdmin() || isSupervisor();
+      if($("todayResultCard")) $("todayResultCard").classList.toggle("hidden", !canSeeProfitCards);
+      if($("weekResultCard")) $("weekResultCard").classList.toggle("hidden", !canSeeProfitCards);
+
       if($("homeTodayResult")){
         $("homeTodayResult").textContent = formatMoney(todayResult);
         $("homeTodayResult").style.color = todayResult < 0 ? "#dc2626" : "#059669";
@@ -620,8 +627,8 @@
         $("homeWeekResult").style.color = weekResult < 0 ? "#dc2626" : "#059669";
       }
       if($("homeOperator")) $("homeOperator").textContent = last ? (last.operatorName || last.turno?.operatorName || "-") : "-";
-      if($("homeLastClose")) if($("homeLastClose")) $("homeLastClose").textContent = last ? dateLabel(last.submittedAt || last.createdAt || last.turno?.closingDate) : "-";
-      if($("homeUpdatedAt")) if($("homeUpdatedAt")) $("homeUpdatedAt").textContent = last ? "Última atualização: " + dateLabel(last.submittedAt || last.createdAt) : "Aguardando fechamento";
+      if($("homeLastClose")) $("homeLastClose").textContent = last ? dateLabel(last.submittedAt || last.createdAt || last.turno?.closingDate) : "-";
+      if($("homeUpdatedAt")) $("homeUpdatedAt").textContent = last ? "Última atualização: " + dateLabel(last.submittedAt || last.createdAt) : "Aguardando fechamento";
       renderMonthlyGoal(view);
       renderChipsComparison(last, prev);
     }
