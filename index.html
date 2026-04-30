@@ -3138,10 +3138,7 @@ async function validateUserAccess(user) {
 }
 
 function calcularSaldoCaixa(turno = {}) {
-  return (
-    calcularSaldoBase(turno) -
-    Number(turno.saidas || turno.saidasTotal || 0)
-  );
+  return calcularSaldoBase(turno);
 }
 
 function calcularSaldo(turno = {}) {
@@ -3153,7 +3150,13 @@ function calcularSaldoLiquido(turno = {}) {
 }
 
 function calcularDiffReal(turnoAtual = {}, turnoAnterior = {}) {
-  return calcularSaldoCaixa(turnoAtual) - calcularSaldoCaixa(turnoAnterior);
+  const saldoAtual = calcularSaldoCaixa(turnoAtual);
+  const saldoAnterior = calcularSaldoCaixa(turnoAnterior);
+
+  const saidasAtual =
+    Number(turnoAtual.saidas || turnoAtual.saidasTotal || 0);
+
+  return saldoAtual - saldoAnterior + saidasAtual;
 }
 
 function getTurnoBreakdown(t = {}) {
