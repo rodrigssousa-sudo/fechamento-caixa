@@ -3140,21 +3140,18 @@ function getTotalSaidas(turno = {}) {
   return Number(turno.saidasTotal || turno.saidas || 0);
 }
 
-function calcularSaldoBase(turno = {}) {
-  return (
-    Number(turno.reca || 0) +
+function calcularSaldoBase(turno) {
+  return Number(turno.reca || 0) +
     Number(turno.suprema || 0) * 400 +
     Number(turno.pppoker || 0) * 400 +
     Number(turno.buffalo || 0) +
     Number(turno.ganamos || 0) -
-    Number(turno.cargaFichas || 0) -
-    Number(turno.cargaPoker || 0) -
-    getTotalPendentes(turno)
-  );
+    Number(turno.pendentes || turno.pendentesTotal || 0);
 }
 
-function calcularSaldoCaixa(turno = {}) {
-  return calcularSaldoBase(turno) - getTotalSaidas(turno);
+function calcularSaldoCaixa(turno) {
+  return calcularSaldoBase(turno) -
+    Number(turno.saidas || turno.saidasTotal || 0);
 }
 
 function calcularSaldo(turno) {
@@ -3172,8 +3169,8 @@ function getTurnoBreakdown(t = {}) {
     ganamos: Number(t.ganamos || 0),
     cargaFichas: Number(t.cargaFichas || 0),
     cargaPoker: Number(t.cargaPoker || 0),
-    pendentes: getTotalPendentes(t),
-    saidas: getTotalSaidas(t),
+    pendentes: Number(t.pendentesTotal || t.pendentes || 0),
+    saidas: Number(t.saidasTotal || t.saidas || 0),
     base: calcularSaldoBase(t),
     caixa: calcularSaldoCaixa(t)
   };
