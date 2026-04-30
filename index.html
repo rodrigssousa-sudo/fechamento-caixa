@@ -729,8 +729,40 @@
 </div></body></html>`;
     }
 
+    function getReportItems(){
+      let items = visibleHistory();
+      const start = $("reportStart")?.value;
+      const end = $("reportEnd")?.value;
+      const operator = ($("reportOperator")?.value || "").trim().toLowerCase();
+      const supervisor = ($("reportSupervisor")?.value || "").trim().toLowerCase();
+      if(start){
+        items = items.filter(x=>{
+          const d = x.submittedAt?.toDate ? x.submittedAt.toDate() : new Date(x.turno?.closingDate || x.createdAt || 0);
+          return d.toISOString().slice(0,10) >= start;
+        });
+      }
+      if(end){
+        items = items.filter(x=>{
+          const d = x.submittedAt?.toDate ? x.submittedAt.toDate() : new Date(x.turno?.closingDate || x.createdAt || 0);
+          return d.toISOString().slice(0,10) <= end;
+        });
+      }
+      if(operator) items = items.filter(x=>String(x.operatorName || x.turno?.operatorName || "").toLowerCase().includes(operator));
+      if(supervisor) items = items.filter(x=>String(x.supervisorName || x.turno?.supervisorName || x.supervisorEmail || x.turno?.supervisorEmail || "").toLowerCase().includes(supervisor));
+      return items;
+    }
+
+    function previewReport(){
+      const items = getReportItems();
+      const totalSaldo = items.reduce((s,x)=>s+moneyToNumber(x.turno?.saldoLiquido ?? x.currentSaldoTotal),0);
+      const totalDiff = items.reduce((s,x)=>s+moneyToNumber(x.diff),0);
+      $("reportPreviewCount").textContent = items.length;
+      $("reportPreviewSaldo").textContent = formatMoney(totalSaldo);
+      $("reportPreviewDiff").textContent = formatMoney(totalDiff);
+    }
+
     function generateBankPdfReport(){
-      const items = visibleHistory();
+      const items = $("reportStart") ? getReportItems() : visibleHistory();
       const html = buildBankPdfHtml(items);
       const win = window.open("", "_blank");
       if(!win) return alert("Permita pop-ups para gerar o PDF.");
