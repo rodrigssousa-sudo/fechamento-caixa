@@ -1,1413 +1,5962 @@
+
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-<meta charset="UTF-8" />
+ <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-<title>Bank King PRO</title>
-
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800;900&display=swap" rel="stylesheet">
+<title>Bank King</title>
 
 <style>
+/* =========================================================
+   BANK KING — CSS PREMIUM CLEAN / MOBILE FIRST
+========================================================= */
+
 :root{
   --bg:#eef4ff;
   --card:#ffffff;
   --text:#06152e;
   --muted:#64748b;
   --border:rgba(0,107,255,.10);
+
   --primary:#006BFF;
-  --primary-dark:#0F2A6B;
+  --primary-dark:#003DCC;
+  --primary-deep:#001F8F;
+  --primary-light:#EAF2FF;
+
+  --green:#12A150;
+  --green-bg:#E8F8EE;
+  --red:#E0313D;
+  --red-bg:#FFECEE;
+
+  --shadow:0 18px 44px rgba(0,64,160,.10);
+  --shadow-soft:0 10px 24px rgba(0,64,160,.07);
+  --shadow-strong:0 26px 70px rgba(0,80,220,.24);
+
+  --radius-xl:28px;
+  --radius-lg:22px;
+  --radius-md:17px;
+  --transition:.18s ease;
 }
 
-*{margin:0;padding:0;box-sizing:border-box;}
+/* RESET */
+*{
+  box-sizing:border-box;
+  -webkit-tap-highlight-color:transparent;
+  -webkit-font-smoothing:antialiased;
+  text-rendering:optimizeLegibility;
+}
+
+html,body{
+  margin:0;
+  padding:0;
+  width:100%;
+  min-height:100%;
+  overflow-x:hidden;
+  font-family:Inter,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+}
 
 body{
-  font-family:Inter,system-ui,sans-serif;
-  background:var(--bg);
   color:var(--text);
+  background:
+    radial-gradient(circle at 12% -4%, rgba(0,107,255,.16), transparent 32%),
+    radial-gradient(circle at 90% 0%, rgba(0,107,255,.10), transparent 28%),
+    linear-gradient(180deg,#fff 0%,var(--bg) 100%);
 }
 
-.app-container{
-  max-width:1000px;
-  margin:0 auto;
-  min-height:100vh;
-  padding-bottom:90px;
+body::before{
+  content:"";
+  position:fixed;
+  inset:0;
+  pointer-events:none;
+  background-image:
+    linear-gradient(rgba(0,107,255,.035) 1px, transparent 1px),
+    linear-gradient(90deg,rgba(0,107,255,.035) 1px, transparent 1px);
+  background-size:42px 42px;
+  opacity:.5;
 }
 
-.app-header{
-  position:sticky;
-  top:0;
-  z-index:50;
-  background:rgba(255,255,255,.75);
-  backdrop-filter:blur(12px);
-  border-bottom:1px solid var(--border);
-  padding:14px 16px;
+.hidden{display:none!important;}
+.green{color:var(--green)!important;}
+.red{color:var(--red)!important;}
+.blue{color:var(--primary)!important;}
+
+button{
+  border:0;
+  cursor:pointer;
+  font-family:inherit;
+  font-weight:950;
+  transition:var(--transition);
+}
+
+button:active{
+  transform:scale(.97);
+}
+
+/* FORMS */
+input,
+select,
+.outflow-type{
+  width:100%;
+  min-height:56px;
+  border-radius:18px;
+  border:1px solid var(--border);
+  background:#fff;
+  color:var(--text);
+  font-size:16px;
+  font-weight:850;
+  padding:0 16px;
+  outline:none;
+  box-shadow:0 7px 16px rgba(0,64,160,.035);
+  transition:var(--transition);
+}
+
+input::placeholder{color:#9aa6b8;}
+
+input:focus,
+select:focus,
+.outflow-type:focus{
+  border-color:rgba(0,107,255,.48);
+  box-shadow:
+    0 0 0 4px rgba(0,107,255,.12),
+    0 12px 26px rgba(0,64,160,.10);
+  transform:translateY(-1px);
+}
+
+.field{
   display:flex;
-  justify-content:space-between;
-  align-items:center;
+  flex-direction:column;
+  gap:8px;
 }
 
-.logo-box{
-  width:42px;
-  height:42px;
-  border-radius:14px;
-  background:var(--primary-dark);
+.field label{
+  font-size:11px;
+  color:var(--muted);
+  font-weight:950;
+  text-transform:uppercase;
+  letter-spacing:.08em;
+}
+
+/* AUTH */
+.auth-screen{
+  min-height:100vh;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  padding:24px;
+}
+
+.auth-card{
+  width:100%;
+  max-width:520px;
+  padding:48px;
+  border-radius:34px;
+  background:rgba(255,255,255,.92);
+  backdrop-filter:blur(22px);
+  -webkit-backdrop-filter:blur(22px);
+  border:1px solid rgba(255,255,255,.94);
+  box-shadow:var(--shadow);
+}
+
+.auth-logo,
+.brand-logo{
+  background:linear-gradient(135deg,var(--primary-dark),var(--primary));
   color:#fff;
   display:flex;
   align-items:center;
   justify-content:center;
-  font-weight:900;
+  font-weight:950;
+  box-shadow:
+    0 18px 38px rgba(0,107,255,.28),
+    inset 0 1px 0 rgba(255,255,255,.22);
 }
 
-.app-title{
-  font-weight:900;
-  font-size:16px;
+.auth-logo{
+  width:68px;
+  height:68px;
+  border-radius:22px;
+  margin-bottom:16px;
 }
 
-.screen{display:none;}
-.screen.active{display:block;}
-
-.app-nav{
-  position:fixed;
-  bottom:0;
-  left:0;
-  right:0;
-  z-index:100;
-  background:rgba(255,255,255,.88);
-  backdrop-filter:blur(16px);
-  border-top:1px solid var(--border);
-  display:grid;
-  grid-template-columns:repeat(3,1fr);
-  padding:10px;
+.auth-title{
+  margin:24px 0 6px;
+  font-size:44px;
+  line-height:1;
+  font-weight:950;
+  letter-spacing:-2.2px;
 }
 
-.nav-btn{
-  border:none;
-  background:none;
-  padding:10px;
-  font-size:12px;
-  font-weight:800;
+.auth-sub{
   color:var(--muted);
+  font-size:14px;
+  margin:0 0 22px;
+  font-weight:800;
 }
 
-.nav-btn.active{
-  color:var(--primary-dark);
+.auth-tabs{
+  display:flex;
+  gap:8px;
+  margin:26px 0 22px;
+  padding:6px;
+  background:#eef4ff;
+  border:1px solid var(--border);
+  border-radius:20px;
 }
 
-.bk-dashboard,
-.bk-admin-panel{
-  padding:18px;
-  background:
-    radial-gradient(circle at top, rgba(0,107,255,.14), transparent 34%),
-    linear-gradient(180deg, #eef4ff 0%, #f8fbff 100%);
+.auth-tab{
+  flex:1;
+  height:52px;
+  border-radius:15px;
+  background:transparent;
+  color:var(--muted);
+  font-size:15px;
 }
 
-.bk-hero{
+.auth-tab.active{
+  background:#fff;
+  color:var(--text);
+  box-shadow:var(--shadow-soft);
+}
+
+.auth-form{
+  display:grid;
+  gap:14px;
+}
+
+.auth-submit{
+  width:100%;
+  height:62px;
+  border-radius:22px;
+  background:linear-gradient(135deg,var(--primary-dark),var(--primary));
+  color:#fff;
+  font-size:18px;
+  box-shadow:
+    0 16px 34px rgba(0,107,255,.26),
+    inset 0 1px 0 rgba(255,255,255,.20);
+}
+
+.remember-row{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  color:var(--muted);
+  font-size:13px;
+  font-weight:850;
+}
+
+.remember-row input{
+  width:18px;
+  height:18px;
+  min-height:auto;
+  padding:0;
+}
+
+/* APP BASE */
+.app-shell{width:100%;}
+
+.app{
+  width:100%;
+  max-width:1480px;
+  margin:0 auto;
+  padding:20px;
+  display:grid;
+  gap:18px;
+}
+
+.topbar{
+  position:sticky;
+  top:12px;
+  z-index:50;
+  max-width:1480px;
+  margin:14px auto 0;
+  padding:18px 24px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:16px;
+  background:rgba(255,255,255,.88);
+  backdrop-filter:blur(24px);
+  -webkit-backdrop-filter:blur(24px);
+  border:1px solid rgba(255,255,255,.95);
+  border-radius:34px;
+  box-shadow:var(--shadow-soft);
+}
+
+.brand{
+  display:flex;
+  align-items:center;
+  gap:14px;
+  min-width:0;
+}
+
+.brand-logo{
+  width:64px;
+  height:64px;
+  min-width:64px;
+  border-radius:22px;
+  font-size:22px;
+}
+
+.brand-title{
+  font-size:24px;
+  font-weight:950;
+  letter-spacing:-.05em;
+}
+
+.brand-sub{
+  color:var(--muted);
+  font-size:14px;
+  font-weight:800;
+}
+
+.menu-btn{
+  width:54px;
+  height:54px;
+  min-width:54px;
+  border-radius:20px;
+  background:#fff;
+  color:var(--text);
+  border:1px solid var(--border);
+  box-shadow:var(--shadow-soft);
+  font-size:24px;
+}
+
+/* CARDS */
+.section-card,
+.main-card,
+.user-card,
+#adminPanel,
+#monthlyGoalCard{
+  background:#fff;
+  border:1px solid rgba(0,107,255,.08);
+  border-radius:26px;
+  box-shadow:var(--shadow);
+  overflow:hidden;
+  transition:transform .18s ease, box-shadow .18s ease;
+}
+
+.section-card:active,
+.main-card:active,
+.user-card:active,
+.history-card:active,
+.summary-box:active{
+  transform:scale(.995);
+}
+
+.main-card-pad{padding:20px;}
+
+.section-head{
+  padding:20px 24px;
+  background:linear-gradient(180deg,#fff,#f4f8ff);
+  border-bottom:1px solid rgba(0,107,255,.08);
+  color:var(--text);
+  font-size:17px;
+  font-weight:950;
+  letter-spacing:-.03em;
+}
+
+.section-body{
+  padding:22px 24px;
+  display:grid;
+  gap:15px;
+}
+
+.section-grid{
+  display:grid;
+  grid-template-columns:repeat(2,1fr);
+  gap:18px;
+}
+
+/* USER CARD */
+.user-card{
+  position:relative;
+  overflow:hidden;
   display:flex;
   justify-content:space-between;
-  gap:14px;
-  padding:24px;
-  margin-bottom:18px;
+  align-items:center;
+  gap:12px;
+  padding:18px 20px;
   border-radius:30px;
-  color:#fff;
-  background:linear-gradient(135deg,#0F2A6B,#006BFF);
-  box-shadow:0 24px 60px rgba(15,42,107,.28);
+  background:
+    radial-gradient(circle at 92% 10%, rgba(0,107,255,.08), transparent 28%),
+    linear-gradient(180deg,#fff,#f8fbff);
 }
 
-.bk-eyebrow{
-  display:block;
+.user-card::before{
+  content:"";
+  position:absolute;
+  left:-40px;
+  top:-40px;
+  width:140px;
+  height:140px;
+  border-radius:50%;
+  background:rgba(0,107,255,.06);
+  pointer-events:none;
+}
+
+.user-info{
+  display:flex;
+  flex-direction:column;
+  gap:2px;
+  min-width:0;
+  position:relative;
+  z-index:1;
+}
+
+.user-name{
+  font-size:24px;
+  font-weight:950;
+  line-height:1.1;
+  letter-spacing:-.05em;
+}
+
+.user-email{
+  font-size:14px;
+  color:#64748b;
+  font-weight:750;
+  overflow:hidden;
+  text-overflow:ellipsis;
+  white-space:nowrap;
+}
+
+.user-role,
+#activeUserRole{
+  display:inline-flex;
+  width:max-content;
+  margin-top:8px;
+  padding:6px 10px;
+  border-radius:999px;
+  background:#eaf2ff;
+  color:#003dcc;
+  font-size:10px;
+  letter-spacing:.12em;
+  text-transform:uppercase;
+  font-weight:950;
+}
+
+.logout-btn{
+  position:relative;
+  z-index:1;
+  height:48px;
+  min-width:82px;
+  padding:0 16px;
+  border-radius:18px;
+  background:#fff1f2;
+  color:#e0313d;
+  border:1px solid rgba(224,49,61,.14);
+  box-shadow:0 10px 24px rgba(224,49,61,.08);
+  font-size:13px;
+}
+
+.logout-btn:hover{
+  background:#e0313d;
+  color:#fff;
+}
+
+/* BALANCE */
+.balance-card{
+  position:relative;
+  overflow:hidden;
+  min-height:170px;
+  padding:28px;
+  border-radius:34px;
+  color:#fff;
+  display:flex;
+  align-items:flex-end;
+  background:
+    radial-gradient(circle at 85% 10%, rgba(255,255,255,.24), transparent 28%),
+    linear-gradient(135deg,var(--primary-deep),var(--primary-dark) 45%,var(--primary));
+  border:1px solid rgba(255,255,255,.18);
+  box-shadow:var(--shadow-strong);
+}
+
+.balance-card::after{
+  content:"";
+  position:absolute;
+  right:-80px;
+  top:-80px;
+  width:260px;
+  height:260px;
+  border-radius:50%;
+  background:rgba(255,255,255,.13);
+}
+
+.balance-card::before{
+  content:"";
+  position:absolute;
+  inset:0;
+  background:linear-gradient(135deg,rgba(255,255,255,.18),transparent 38%,transparent 72%,rgba(255,255,255,.08));
+  pointer-events:none;
+}
+
+.balance-card *{color:#fff!important;}
+
+.balance-label{
   font-size:11px;
-  font-weight:900;
-  letter-spacing:.16em;
-  opacity:.78;
+  text-transform:uppercase;
+  letter-spacing:.14em;
+  opacity:.82;
+  font-weight:950;
   margin-bottom:8px;
 }
 
-.bk-hero h1{
-  margin:0;
-  font-size:28px;
-  line-height:1.1;
+.balance-value{
+  font-size:52px;
+  line-height:1;
   font-weight:950;
+  letter-spacing:-.065em;
+  font-feature-settings:"tnum";
 }
 
-.bk-hero p{
-  margin:8px 0 0;
-  font-size:14px;
-  opacity:.82;
-}
-
-.bk-hero-badge{
-  min-width:82px;
-  padding:10px 12px;
-  border-radius:18px;
-  text-align:center;
-  background:rgba(255,255,255,.14);
-  border:1px solid rgba(255,255,255,.22);
-}
-
-.bk-hero-badge span{
-  display:block;
-  font-size:11px;
-  opacity:.75;
-}
-
-.bk-hero-badge strong{
-  display:block;
-  margin-top:3px;
-  font-size:13px;
-}
-
-.bk-main-card,
-.bk-platform-card,
-.bk-summary-card,
-.bk-admin-form{
-  background:#fff;
-  border:1px solid rgba(15,42,107,.08);
-  box-shadow:0 14px 32px rgba(15,42,107,.08);
-}
-
-.bk-main-card{
-  padding:22px;
-  margin-bottom:18px;
-  border-radius:28px;
-  background:linear-gradient(135deg,#fff,#edf5ff);
-}
-
-.bk-main-card span,
-.bk-platform-card span,
-.bk-summary-card span{
-  display:block;
-  color:#64748b;
-  font-weight:800;
-  margin-bottom:6px;
-}
-
-.bk-main-card strong{
-  display:block;
-  font-size:34px;
-  color:#0F2A6B;
-  font-weight:950;
-}
-
-.bk-main-card small,
-.bk-platform-card small{
-  display:block;
-  margin-top:8px;
-  color:#94a3b8;
-  font-size:12px;
-}
-
-.bk-platform-grid{
+/* SUMMARY */
+.summary-grid{
   display:grid;
-  grid-template-columns:1fr 1fr;
-  gap:12px;
-  margin-bottom:18px;
+  grid-template-columns:repeat(4,1fr);
+  gap:14px;
 }
 
-.bk-platform-card{
+.summary-box,
+.compare-pill,
+.history-mini,
+.history-main-item,
+.history-platforms div,
+.ranking-bar-card{
+  background:#fff;
+  border:1px solid rgba(0,107,255,.08);
+  border-radius:22px;
+  box-shadow:var(--shadow-soft);
+}
+
+.summary-box{
+  min-height:92px;
   padding:16px;
-  min-height:142px;
-  border-radius:24px;
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
 }
 
-.bk-icon{
-  width:42px;
-  height:42px;
+.summary-box-label{
+  font-size:10px;
+  color:var(--muted);
+  font-weight:950;
+  text-transform:uppercase;
+  letter-spacing:.09em;
+  margin-bottom:8px;
+}
+
+.summary-box-value{
+  font-size:21px;
+  font-weight:950;
+  color:var(--text);
+  letter-spacing:-.04em;
+}
+
+/* DYNAMIC ROWS */
+.dynamic-list{
+  display:grid;
+  gap:12px;
+}
+
+.dynamic-row{
+  display:grid;
+  grid-template-columns:1.2fr .8fr auto;
+  gap:10px;
+  align-items:end;
+  padding:14px;
+  border-radius:20px;
+  border:1px solid rgba(0,107,255,.08);
+  background:#fff;
+}
+
+.remove-row-btn,
+.remove-btn{
+  min-height:52px;
+  min-width:52px;
+  border-radius:17px;
+  background:var(--red-bg);
+  color:var(--red);
+  font-size:18px;
+  border:1px solid rgba(224,49,61,.14);
+}
+
+.add-btn{
+  min-height:50px;
+  border-radius:18px;
+  background:#fff;
+  border:1px dashed rgba(0,107,255,.22);
+  color:var(--muted);
+  font-size:14px;
+}
+
+/* ACTIONS */
+.actions-section{
+  border-radius:26px;
+  opacity:0;
+  transform:translateY(30px) scale(.96);
+  pointer-events:none;
+  transition:.28s cubic-bezier(.22,.61,.36,1);
+}
+
+.actions-section:not(.active){
+  display:none!important;
+}
+
+.actions-section.active{
+  display:block!important;
+  opacity:1;
+  transform:translateY(0) scale(1);
+  pointer-events:auto;
+}
+
+.actions-section.hidden-scroll{
+  transform:translateY(80px);
+  opacity:0;
+}
+
+.actions-section.keyboard-open{
+  transform:translateY(120px)!important;
+  opacity:0!important;
+  pointer-events:none!important;
+}
+
+.bank-actions-grid{
+  display:flex;
+  gap:10px;
+  width:100%;
+}
+
+.bank-action-btn{
+  flex:1;
+  min-height:54px;
+  border-radius:18px;
+  padding:0 14px;
   display:flex;
   align-items:center;
   justify-content:center;
-  margin-bottom:12px;
-  border-radius:15px;
-  background:#eef4ff;
-  font-size:20px;
+  background:#fff;
+  border:1px solid var(--border);
+  box-shadow:var(--shadow-soft);
+  text-align:center;
 }
 
-.bk-platform-card strong{
-  display:block;
-  font-size:20px;
-  color:#06152e;
+.bank-action-primary{
+  position:relative;
+  overflow:hidden;
+  flex:1.8;
+  background:linear-gradient(135deg,var(--primary-dark),var(--primary));
+  color:#fff;
+  border:none;
+  box-shadow:0 16px 34px rgba(0,107,255,.26);
+}
+
+.bank-action-primary::after{
+  content:"";
+  position:absolute;
+  inset:0;
+  background:linear-gradient(120deg,transparent 0%,rgba(255,255,255,.24) 45%,transparent 75%);
+  transform:translateX(-120%);
+  transition:.45s ease;
+}
+
+.bank-action-primary:hover::after,
+.bank-action-primary:active::after{
+  transform:translateX(120%);
+}
+
+.bank-action-title{
+  font-size:14px;
+  line-height:1;
   font-weight:950;
+  color:var(--text);
+  white-space:nowrap;
 }
 
-.bk-summary-grid{
+.bank-action-primary .bank-action-title{color:#fff;}
+.bank-action-sub{display:none;}
+
+/* COMPARE */
+.compare-grid{
   display:grid;
-  grid-template-columns:1fr 1fr;
+  grid-template-columns:repeat(auto-fit,minmax(190px,1fr));
   gap:12px;
 }
 
-.bk-summary-card{
-  padding:16px;
-  border-radius:22px;
+.compare-pill{
+  padding:15px;
+  display:flex;
+  gap:11px;
+  align-items:center;
 }
 
-.bk-summary-card strong{
-  color:#0F2A6B;
+.compare-dot{
+  width:12px;
+  height:12px;
+  border-radius:999px;
+  background:#94a3b8;
+  flex-shrink:0;
+}
+
+.compare-dot.up{background:var(--green);box-shadow:0 0 0 4px rgba(18,161,80,.12);}
+.compare-dot.down{background:var(--red);box-shadow:0 0 0 4px rgba(224,49,61,.12);}
+.compare-dot.same{background:#94a3b8;}
+
+.compare-name{
+  font-size:13px;
   font-weight:950;
 }
 
-.bk-actions{
-  position:sticky;
-  bottom:80px;
-  margin-top:16px;
+.compare-value{
+  font-size:12px;
+  color:var(--muted);
+  font-weight:850;
 }
 
-.bk-actions button,
-.bk-admin-form button{
-  width:100%;
-  border:none;
+/* =========================================================
+   HISTORY — PREMIUM CLEAN / MOBILE FIRST
+========================================================= */
+
+.history-head{
+  display:flex!important;
+  align-items:center!important;
+  justify-content:space-between!important;
+  gap:14px!important;
+}
+
+.history-head span{
+  flex:1!important;
+}
+
+/* botão Ver/Ocultar */
+.history-view-btn{
+  min-width:78px!important;
+  height:40px!important;
+  padding:0 18px!important;
+  border-radius:999px!important;
+  border:1px solid rgba(0,107,255,.14)!important;
+  background:linear-gradient(135deg,#003dcc,#006bff)!important;
+  color:#fff!important;
+  display:flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+  font-size:13px!important;
+  font-weight:950!important;
+  box-shadow:0 10px 22px rgba(0,107,255,.20)!important;
+}
+
+.history-view-btn.active,
+#historySection:not(.history-hidden) .history-view-btn{
+  background:#eef4ff!important;
+  color:#003dcc!important;
+  border-color:rgba(0,107,255,.18)!important;
+  box-shadow:0 6px 14px rgba(0,64,160,.08)!important;
+}
+
+/* corpo com scroll premium */
+.history-body{
+  max-height:72vh;
+  overflow-y:auto;
+  opacity:1;
+  padding:16px!important;
+  background:linear-gradient(180deg,#f8fbff,#ffffff);
+  transition:max-height .28s ease, opacity .22s ease, padding .22s ease;
+  -webkit-overflow-scrolling:touch;
+}
+
+#historySection.history-hidden .history-body{
+  max-height:0!important;
+  opacity:0!important;
+  padding-top:0!important;
+  padding-bottom:0!important;
+  overflow:hidden!important;
+}
+
+/* lista */
+.history-list{
+  display:grid;
+  gap:12px;
+}
+
+/* cards */
+.history-card,
+.bank-history-card{
+  padding:16px!important;
+  border-radius:22px!important;
+  background:rgba(255,255,255,.94)!important;
+  border:1px solid rgba(0,107,255,.08)!important;
+  box-shadow:
+    0 10px 26px rgba(0,64,160,.07),
+    inset 0 1px 0 rgba(255,255,255,.9)!important;
+  cursor:pointer;
+  transition:transform .18s ease, box-shadow .18s ease;
+}
+
+.history-card:hover{
+  transform:translateY(-2px);
+  box-shadow:
+    0 14px 32px rgba(0,64,160,.10),
+    inset 0 1px 0 rgba(255,255,255,.9)!important;
+}
+
+/* topo */
+.history-card-top{
+  display:flex!important;
+  justify-content:space-between!important;
+  align-items:flex-start!important;
+  gap:12px!important;
+  margin-bottom:14px!important;
+}
+
+.history-date{
+  font-size:12px!important;
+  font-weight:950!important;
+  color:#64748b!important;
+}
+
+.history-operator{
+  margin-top:3px!important;
+  font-size:22px!important;
+  font-weight:950!important;
+  color:#06152e!important;
+  letter-spacing:-.06em!important;
+  line-height:1.05!important;
+}
+
+/* badge diferença */
+.history-status,
+.history-badge,
+.modal-diff-badge{
+  display:inline-flex;
+  align-items:center;
+  width:max-content;
+  padding:7px 11px!important;
+  border-radius:999px!important;
+  font-size:12px!important;
+  font-weight:950!important;
+  white-space:nowrap!important;
+}
+
+.history-status.positive,
+.history-badge.positive,
+.modal-diff-badge.positive{
+  background:#e8f8ee!important;
+  color:#12a150!important;
+}
+
+.history-status.negative,
+.history-badge.negative,
+.modal-diff-badge.negative{
+  background:#ffecee!important;
+  color:#e0313d!important;
+}
+
+.history-status.neutral,
+.history-badge.neutral,
+.modal-diff-badge.neutral{
+  background:#eef4ff!important;
+  color:#003dcc!important;
+}
+
+/* valores */
+.history-simple{
+  margin-top:10px!important;
+  padding-top:12px!important;
+  border-top:1px solid rgba(0,107,255,.07)!important;
+  display:grid!important;
+  grid-template-columns:1fr 1fr!important;
+  gap:12px!important;
+}
+
+.history-main span,
+.history-secondary span{
+  display:block!important;
+  margin-bottom:5px!important;
+  font-size:10px!important;
+  text-transform:uppercase!important;
+  letter-spacing:.10em!important;
+  color:#64748b!important;
+  font-weight:900!important;
+}
+
+.history-main strong,
+.history-secondary strong{
+  display:block!important;
+  font-size:20px!important;
+  font-weight:950!important;
+  line-height:1!important;
+  color:#06152e!important;
+  letter-spacing:-.05em!important;
+}
+
+.history-secondary strong{
+  color:#64748b!important;
+}
+
+/* scrollbar premium */
+.history-body::-webkit-scrollbar{
+  width:5px;
+}
+
+.history-body::-webkit-scrollbar-thumb{
+  background:rgba(0,107,255,.18);
+  border-radius:999px;
+}
+
+/* mobile */
+@media(max-width:600px){
+  .history-body{
+    max-height:78vh;
+    padding:14px!important;
+  }
+
+  .history-card,
+  .bank-history-card{
+    padding:15px!important;
+    border-radius:21px!important;
+  }
+
+  .history-card-top{
+    gap:10px!important;
+  }
+
+  .history-operator{
+    font-size:20px!important;
+  }
+
+  .history-main strong,
+  .history-secondary strong{
+    font-size:18px!important;
+  }
+}
+
+/* RANKING / CHART TABS */
+.ranking-simple-list{
+  display:grid;
+  gap:0;
+  background:#fff;
+  border-radius:26px;
+  overflow:hidden;
+}
+
+.ranking-empty{
+  padding:22px;
   border-radius:18px;
-  padding:15px;
+  background:#f8fafc;
+  border:1px dashed rgba(0,107,255,.18);
+  color:var(--muted);
   font-weight:900;
-  color:#fff;
-  background:linear-gradient(135deg,#0F2A6B,#006BFF);
-  box-shadow:0 14px 32px rgba(15,42,107,.25);
+  text-align:center;
 }
 
-.bk-section-title{
+.ranking-bar-card{
+  display:grid;
+  grid-template-columns:48px 1fr 170px;
+  gap:18px;
+  align-items:center;
+  padding:20px 22px;
+  border-radius:0;
+  border:0;
+  border-bottom:1px solid rgba(0,107,255,.08);
+}
+
+.ranking-bar-card:last-child{border-bottom:none;}
+
+.ranking-bar-pos{
+  font-size:24px;
+  font-weight:950;
+  text-align:center;
+}
+
+.ranking-bar-info{
+  display:grid;
+  gap:10px;
+  min-width:0;
+}
+
+.ranking-bar-top{
+  display:flex;
+  align-items:center;
+  gap:8px;
+  flex-wrap:wrap;
+}
+
+.ranking-bar-top strong{
+  font-size:17px;
+  font-weight:950;
+}
+
+.ranking-bar-top span{
+  font-size:13px;
+  color:var(--muted);
+  font-weight:800;
+}
+
+.ranking-bar-track,
+.goal-bar-track{
+  width:100%;
+  height:14px;
+  border-radius:999px;
+  background:#e2ecff;
+  overflow:hidden;
+}
+
+.ranking-bar-fill,
+.goal-bar-fill{
+  height:100%;
+  border-radius:999px;
+  transition:width .35s ease;
+}
+
+.ranking-bar-fill.positive,
+.goal-bar-fill.success{
+  background:linear-gradient(90deg,#0f9f50,#21c464);
+}
+
+.ranking-bar-fill.negative,
+.goal-bar-fill.danger{
+  background:linear-gradient(90deg,#e0313d,#ff5b67);
+}
+
+.ranking-bar-fill.neutral{background:#94a3b8;}
+
+.ranking-bar-value{
+  font-size:16px;
+  font-weight:950;
+  text-align:right;
+  white-space:nowrap;
+}
+
+.ranking-bar-value.positive{color:var(--green);}
+.ranking-bar-value.negative{color:var(--red);}
+.ranking-bar-value.neutral{color:#64748b;}
+
+.chart-actions,
+.ranking-tabs{
+  display:flex;
+  gap:6px;
+  padding:6px;
+  border-radius:20px;
+  background:#eef4ff;
+  border:1px solid rgba(0,107,255,.08);
+  width:max-content;
+}
+
+.chart-range-btn,
+.ranking-tab{
+  min-height:42px;
+  padding:0 16px;
+  border-radius:14px;
+  background:transparent;
+  color:#64748b;
+  font-size:14px;
+  font-weight:900;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+}
+
+.chart-range-btn.active,
+.ranking-tab.active{
+  background:#fff;
+  color:#003dcc;
+  box-shadow:0 8px 18px rgba(0,64,160,.08), inset 0 1px 0 rgba(255,255,255,.95);
+}
+
+/* GOAL */
+.goal-bar-wrapper{margin:16px 0;}
+#goalBarFill{min-width:6px;}
+
+.goal-status{
+  margin-top:12px;
+  font-size:13px;
+  font-weight:900;
+  color:var(--muted);
+}
+
+.goal-status small{
+  display:block;
+  margin-top:6px;
+  font-size:12px;
+  font-weight:800;
+}
+
+/* MENU */
+.floating-menu{
+  position:fixed;
+  top:96px!important;
+  right:28px!important;
+  z-index:120;
+  width:380px!important;
+  max-width:calc(100vw - 32px)!important;
+  display:grid;
+  gap:8px;
+  padding:14px!important;
+  border-radius:30px!important;
+  background:linear-gradient(180deg,rgba(255,255,255,.96),rgba(246,249,255,.92))!important;
+  border:1px solid rgba(255,255,255,.95)!important;
+  box-shadow:0 30px 80px rgba(0,31,90,.28), inset 0 1px 0 rgba(255,255,255,.95)!important;
+  transition:opacity .18s ease, transform .18s ease;
+}
+
+.floating-menu::before{
+  content:"Bank King";
+  display:block;
+  padding:12px 14px 14px;
+  margin-bottom:8px;
+  font-size:13px;
+  font-weight:950;
+  letter-spacing:.12em;
+  text-transform:uppercase;
+  color:#64748b;
+}
+
+.floating-menu.hidden{
+  opacity:0!important;
+  pointer-events:none!important;
+  transform:translateY(-8px) scale(.96)!important;
+}
+
+.floating-menu.show{
+  opacity:1!important;
+  pointer-events:auto!important;
+  transform:translateY(0) scale(1)!important;
+}
+
+.menu-item{
+  width:100%;
+  min-height:64px!important;
+  border-radius:20px!important;
+  background:#fff!important;
+  color:#06152e!important;
+  border:1px solid rgba(0,107,255,.09)!important;
+  padding:0 18px!important;
+  display:flex!important;
+  align-items:center!important;
+  justify-content:flex-start!important;
+  gap:14px!important;
+  text-align:left;
+  font-size:16px!important;
+  font-weight:950!important;
+  box-shadow:0 10px 24px rgba(0,64,160,.06), inset 0 1px 0 rgba(255,255,255,.95)!important;
+}
+
+.menu-item::before{
+  content:"";
+  width:38px!important;
+  height:38px!important;
+  min-width:38px!important;
+  border-radius:14px!important;
+  background:radial-gradient(circle at 30% 20%,rgba(255,255,255,.45),transparent 35%), linear-gradient(135deg,#003DCC,#006BFF)!important;
+  box-shadow:0 10px 24px rgba(0,107,255,.22)!important;
+}
+
+.menu-item::after{
+  content:"›"!important;
+  margin-left:auto!important;
+  font-size:26px!important;
+  font-weight:900!important;
+  color:#94a3b8!important;
+}
+
+.menu-item:hover{
+  transform:translateY(-1px)!important;
+  background:linear-gradient(135deg,#003DCC,#006BFF)!important;
+  color:#fff!important;
+}
+
+.menu-item:hover::before{background:#fff!important;}
+.menu-item:hover::after{color:#fff!important;}
+
+.menu-backdrop{
+  position:fixed;
+  inset:0;
+  z-index:110;
+  background:rgba(6,21,46,.38);
+  backdrop-filter:blur(18px);
+  -webkit-backdrop-filter:blur(18px);
+  opacity:0;
+  pointer-events:none;
+  transition:var(--transition);
+}
+
+.menu-backdrop.show{
+  opacity:1;
+  pointer-events:auto;
+}
+
+/* =========================================================
+   MODALS — PREMIUM BANK STYLE
+========================================================= */
+
+.modal{
+  position:fixed;
+  inset:0;
+  z-index:9500;
+  display:flex;
+  align-items:flex-end;
+  justify-content:center;
+}
+
+.modal.hidden{
+  display:none!important;
+}
+
+.modal-backdrop{
+  position:absolute;
+  inset:0;
+  background:rgba(6,21,46,.18);
+  backdrop-filter:blur(18px) saturate(140%);
+  -webkit-backdrop-filter:blur(18px) saturate(140%);
+}
+
+.modal-card{
+  position:relative;
+  width:100%;
+  max-width:980px;
+  max-height:88vh;
+  overflow:auto;
+
+  background:
+    radial-gradient(circle at 90% 0%, rgba(0,107,255,.08), transparent 30%),
+    linear-gradient(180deg,#ffffff,#f8fbff);
+
+  border:1px solid rgba(255,255,255,.95);
+  border-radius:34px 34px 0 0;
+  padding:24px;
+
+  box-shadow:
+    0 -30px 90px rgba(6,21,46,.22),
+    inset 0 1px 0 rgba(255,255,255,.95);
+
+  animation:modalUp .28s cubic-bezier(.22,.61,.36,1);
+}
+
+@keyframes modalUp{
+  from{
+    transform:translateY(28px) scale(.98);
+    opacity:0;
+  }
+  to{
+    transform:translateY(0) scale(1);
+    opacity:1;
+  }
+}
+
+.modal-head{
+  position:sticky;
+  top:0;
+  z-index:5;
+
+  display:flex;
+  justify-content:space-between;
+  align-items:flex-start;
+  gap:14px;
+
+  margin:-24px -24px 18px;
+  padding:22px 24px;
+
+  background:rgba(255,255,255,.92);
+  backdrop-filter:blur(18px);
+  -webkit-backdrop-filter:blur(18px);
+
+  border-bottom:1px solid rgba(0,107,255,.08);
+}
+
+.modal-title{
+  margin:0;
+  font-size:24px;
+  line-height:1.05;
+  font-weight:950;
+  color:#06152e;
+  letter-spacing:-.06em;
+}
+
+#historyModalSub{
+  color:#64748b!important;
+  font-size:13px!important;
+  margin-top:6px!important;
+  font-weight:850!important;
+}
+
+.modal-close{
+  min-height:42px;
+  padding:0 16px;
+  border-radius:999px;
+
+  background:#eef4ff;
+  color:#003dcc;
+
+  border:1px solid rgba(0,107,255,.12);
+  font-size:13px;
+  font-weight:950;
+
+  box-shadow:0 8px 18px rgba(0,64,160,.08);
+}
+
+.modal-close:hover{
+  background:linear-gradient(135deg,#003dcc,#006bff);
+  color:#fff;
+}
+
+.modal-grid{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:12px;
   margin-bottom:14px;
 }
 
-.bk-section-title span{
-  font-size:11px;
-  font-weight:900;
-  letter-spacing:.14em;
-  color:#006BFF;
+.modal-diff-badge{
+  margin:4px 0 14px;
+  padding:9px 13px!important;
+  border-radius:999px!important;
+  font-size:13px!important;
+  font-weight:950!important;
 }
 
-.bk-section-title h2{
-  margin:4px 0;
-  font-size:24px;
-  color:#0F2A6B;
-}
-
-.bk-section-title p{
-  margin:0;
-  font-size:13px;
-  color:#64748b;
-}
-
-.bk-admin-form{
-  display:grid;
-  gap:12px;
-  padding:18px;
-  border-radius:26px;
-}
-
-.bk-admin-form label{
-  display:grid;
-  gap:6px;
-  font-size:13px;
-  font-weight:800;
-  color:#334155;
-}
-
-.bk-admin-form input,
-.bk-admin-form select{
-  width:100%;
-  border:1px solid rgba(15,42,107,.12);
-  border-radius:16px;
-  padding:14px;
-  font-size:15px;
-  background:#f8fbff;
-  outline:none;
-}
-
-.bk-history-list{
-  display:grid;
-  gap:12px;
-}
-
-.bk-history-card{
-  background:#ffffff;
-  border:1px solid rgba(15,42,107,.08);
+/* seções internas */
+.detail-section{
+  margin-top:14px;
+  background:rgba(255,255,255,.94);
+  border:1px solid rgba(0,107,255,.08);
   border-radius:22px;
-  padding:16px;
-  box-shadow:0 12px 28px rgba(15,42,107,.07);
+  overflow:hidden;
+  box-shadow:0 8px 22px rgba(0,64,160,.045);
 }
 
-.bk-history-card-top{
-  display:flex;
-  justify-content:space-between;
-  gap:12px;
-  margin-bottom:10px;
+.detail-section-title{
+  padding:14px 16px;
+  background:linear-gradient(180deg,#f4f8ff,#ffffff);
+  border-bottom:1px solid rgba(0,107,255,.08);
+
+  color:#003dcc;
+  font-size:13px;
+  font-weight:950;
+  letter-spacing:.04em;
+  text-transform:uppercase;
 }
 
-.bk-history-card h3{
-  margin:0;
-  font-size:16px;
-  color:#0F2A6B;
-}
-
-.bk-history-card small{
-  color:#64748b;
-  font-size:12px;
-}
-
-.bk-history-row{
-  display:flex;
-  justify-content:space-between;
-  gap:12px;
-  padding:8px 0;
-  border-top:1px solid rgba(15,42,107,.07);
+.detail-table{
+  width:100%;
+  border-collapse:collapse;
   font-size:13px;
 }
 
-.bk-history-row span{
-  color:#64748b;
-  font-weight:800;
+.detail-table th,
+.detail-table td{
+  padding:12px 14px;
+  border-bottom:1px solid rgba(0,107,255,.06);
+  text-align:left;
 }
 
-.bk-history-row strong{
-  color:#06152e;
+.detail-table tr:last-child td{
+  border-bottom:none;
+}
+
+.detail-table th{
+  font-size:10px;
+  text-transform:uppercase;
+  letter-spacing:.10em;
+  color:#64748b;
+  background:#fbfcff;
   font-weight:950;
+}
+
+.detail-table td{
+  color:#06152e;
+  font-weight:850;
+}
+
+.detail-table td:last-child{
   text-align:right;
+  font-weight:950;
+  white-space:nowrap;
 }
 
-.bk-diff-positive{
-  color:#059669 !important;
+/* botões editar/excluir do modal */
+#editHistoryBtn,
+#deleteHistoryBtn{
+  min-height:50px!important;
+  border-radius:16px!important;
+  font-size:14px!important;
+  font-weight:950!important;
 }
 
-.bk-diff-negative{
-  color:#dc2626 !important;
-}
+/* mobile */
+@media(max-width:600px){
+  .modal-card{
+    max-height:86vh;
+    padding:18px;
+    border-radius:30px 30px 0 0;
+    padding-bottom:calc(20px + env(safe-area-inset-bottom));
+  }
 
-.bk-history-empty{
-  padding:18px;
-  border-radius:20px;
-  background:#ffffff;
-  color:#64748b;
-  border:1px solid rgba(15,42,107,.08);
-}
+  .modal-head{
+    margin:-18px -18px 16px;
+    padding:18px;
+  }
 
-.bk-history-actions{
-  display:grid;
-  grid-template-columns:1fr 1fr;
-  gap:10px;
-  margin-top:12px;
-}
+  .modal-title{
+    font-size:22px;
+  }
 
-.bk-history-actions button{
-  border:none;
+  .modal-grid{
+    grid-template-columns:1fr;
+  }
+
+  .detail-section{
+    border-radius:20px;
+  }
+
+  .detail-section-title{
+    font-size:12px;
+    padding:13px 14px;
+  }
+
+  .detail-table th,
+  .detail-table td{
+    padding:11px 12px;
+  }
+
+  .detail-table td:last-child{
+    text-align:left;
+  }
+}
+ 
+/* TOAST */
+.ck-toast{
+  position:fixed;
+  bottom:20px;
+  left:50%;
+  transform:translateX(-50%) translateY(20px);
+  color:#fff;
+  padding:14px 18px;
   border-radius:14px;
-  padding:12px;
   font-weight:900;
   font-size:13px;
+  z-index:999999;
+  opacity:0;
+  transition:.25s ease;
+  background:var(--primary-dark);
+  box-shadow:0 16px 40px rgba(0,0,0,.18);
+  backdrop-filter:blur(12px);
+  -webkit-backdrop-filter:blur(12px);
 }
 
-.bk-edit-btn{
-  background:#eef4ff;
-  color:#0F2A6B;
+.ck-toast.show{
+  opacity:1;
+  transform:translateX(-50%) translateY(0);
 }
 
-.bk-delete-btn{
-  background:#fee2e2;
-  color:#991b1b;
+.ck-toast.success{
+  background:linear-gradient(135deg,var(--green),#16a34a);
 }
 
-@media(min-width:760px){
-  .bk-platform-grid{grid-template-columns:repeat(5,1fr);}
-  .bk-summary-grid{grid-template-columns:repeat(4,1fr);}
-  .bk-admin-form{grid-template-columns:1fr 1fr;}
-  .bk-admin-form button{grid-column:span 2;}
+.ck-toast.error{
+  background:linear-gradient(135deg,var(--red),#ef4444);
 }
-</style>
-</head>
 
-<body>
+/* MOBILE */
+@media(max-width:600px){
+  :root{
+    --iphone-x:10px;
+    --bottom-actions-height:68px;
+  }
 
-<div id="loginScreen" style="
+  html,body{
+    max-width:100%;
+    overflow-x:hidden;
+    -webkit-text-size-adjust:100%;
+    touch-action:manipulation;
+  }
+
+  body{
+    padding-bottom:calc(96px + env(safe-area-inset-bottom));
+    background-attachment:scroll;
+    overscroll-behavior-y:contain;
+  }
+
+  button,input,select,textarea{
+    font-size:16px!important;
+  }
+
+  .app{
+    padding:10px var(--iphone-x) 0;
+    gap:12px;
+  }
+
+  .auth-screen{
+    align-items:flex-start;
+    padding:calc(18px + env(safe-area-inset-top)) 14px 20px;
+  }
+
+  .auth-card{
+    padding:22px 18px!important;
+    border-radius:26px!important;
+    max-width:100%;
+  }
+
+  .auth-logo{
+    width:52px!important;
+    height:52px!important;
+    border-radius:17px!important;
+  }
+
+  .auth-title{
+    font-size:30px!important;
+    margin:12px 0 4px!important;
+  }
+
+  .auth-tabs{
+    margin:18px 0 16px!important;
+    padding:4px;
+    border-radius:18px;
+  }
+
+  .auth-tab{
+    height:44px!important;
+    font-size:14px;
+    border-radius:14px;
+  }
+
+  .auth-submit{
+    height:54px;
+    border-radius:18px;
+  }
+
+  .topbar{
+    top:0;
+    margin:0;
+    width:100%;
+    padding:calc(7px + env(safe-area-inset-top)) 12px 10px;
+    border-radius:0 0 22px 22px;
+  }
+
+  .brand{gap:10px;}
+
+  .brand-logo{
+    width:36px;
+    height:36px;
+    min-width:36px;
+    border-radius:12px;
+    font-size:13px;
+  }
+
+  .brand-title{
+    font-size:17px;
+    line-height:1.05;
+    white-space:nowrap;
+  }
+
+  .brand-sub{
+    font-size:11px;
+    line-height:1.1;
+    white-space:nowrap;
+  }
+
+  .menu-btn{
+    width:40px;
+    height:40px;
+    min-width:40px;
+    border-radius:15px;
+    font-size:20px;
+  }
+
+  .section-grid{
+    grid-template-columns:1fr;
+  }
+
+  .section-card,
+  .main-card,
+  .user-card,
+  #monthlyGoalCard,
+  #adminPanel{
+    border-radius:22px!important;
+  }
+
+  .section-head{
+    padding:14px 16px!important;
+    font-size:16px!important;
+  }
+
+  .section-body{
+    padding:14px 16px!important;
+  }
+
+  .user-card{
+    padding:17px!important;
+    border-radius:26px!important;
+  }
+
+  .user-name{
+    font-size:22px!important;
+  }
+
+  .user-email{
+    font-size:13px!important;
+  }
+
+  .logout-btn{
+    min-width:74px!important;
+    height:46px!important;
+  }
+
+  .balance-card{
+    min-height:128px!important;
+    padding:20px!important;
+    border-radius:28px;
+  }
+
+  .balance-value{
+    font-size:38px!important;
+    white-space:nowrap;
+    overflow:hidden;
+  }
+
+  .summary-grid{
+    grid-template-columns:1fr 1fr!important;
+    gap:10px!important;
+  }
+
+  .summary-box{
+    min-height:86px!important;
+    padding:14px!important;
+    border-radius:22px;
+  }
+
+  .summary-box-label{
+    font-size:9px!important;
+    line-height:1.15!important;
+  }
+
+  .summary-box-value{
+    font-size:18px!important;
+  }
+
+  .dynamic-row{
+    grid-template-columns:1fr;
+    padding:12px;
+    border-radius:20px;
+  }
+
+  .remove-row-btn,
+  .remove-btn,
+  .add-btn{
+    width:100%;
+    min-height:48px;
+  }
+
+  .actions-section.active{
+    position:fixed!important;
+    left:8px!important;
+    right:8px!important;
+    bottom:calc(10px + env(safe-area-inset-bottom))!important;
+    z-index:9999!important;
+    padding:7px;
+    min-height:var(--bottom-actions-height);
+    border-radius:24px;
+    background:rgba(255,255,255,.94);
+    backdrop-filter:blur(24px);
+    -webkit-backdrop-filter:blur(24px);
+    box-shadow:0 -18px 45px rgba(0,64,160,.20);
+  }
+
+  .actions-head{display:none;}
+  .actions-body{padding:0;}
+
+  .bank-actions-grid{
+    display:grid;
+    grid-template-columns:1fr 1fr 1.68fr;
+    gap:7px;
+  }
+
+  .bank-action-btn{
+    min-height:50px;
+    border-radius:17px;
+    padding:0 8px;
+  }
+
+  .bank-action-title{
+    font-size:13px;
+  }
+
+  .history-view-btn{
+    min-width:76px!important;
+    height:40px!important;
+    padding:0 18px!important;
+    font-size:13px!important;
+  }
+
+  .history-card,
+  .bank-history-card{
+    padding:16px;
+    border-radius:24px;
+  }
+
+  .history-card-top{
+    display:grid;
+    gap:10px;
+  }
+
+  .history-operator{
+    font-size:21px;
+  }
+
+  .chart-actions,
+  .ranking-tabs{
+    width:100%;
+    display:grid;
+    grid-template-columns:repeat(4,1fr);
+    gap:6px;
+  }
+
+  .chart-range-btn,
+  .ranking-tab{
+    padding:0;
+    font-size:13px;
+  }
+
+  .ranking-bar-card{
+    grid-template-columns:34px 1fr;
+    gap:12px;
+    padding:16px;
+  }
+
+  .ranking-bar-value{
+    grid-column:2;
+    text-align:left;
+    font-size:14px;
+  }
+
+  .modal-card{
+    max-height:84vh;
+    border-radius:28px 28px 0 0;
+    padding:17px;
+    padding-bottom:calc(18px + env(safe-area-inset-bottom));
+  }
+
+  .modal-grid{
+    grid-template-columns:1fr;
+  }
+
+  .floating-menu{
+    top:calc(64px + env(safe-area-inset-top))!important;
+    right:10px!important;
+    left:10px!important;
+    width:auto!important;
+    padding:12px!important;
+    border-radius:28px!important;
+  }
+
+  .floating-menu::before{
+    padding:10px 12px 12px!important;
+    font-size:12px!important;
+  }
+
+  .menu-item{
+    min-height:58px!important;
+    border-radius:19px!important;
+    font-size:15px!important;
+    padding:0 14px!important;
+  }
+
+  .menu-item::before{
+    width:34px!important;
+    height:34px!important;
+    min-width:34px!important;
+    border-radius:12px!important;
+  }
+}
+
+@media(max-width:390px){
+  .balance-value{font-size:35px!important;}
+  .user-name{font-size:21px!important;}
+  .section-head{font-size:17px!important;}
+}
+
+@media(max-width:360px){
+  .balance-value{font-size:31px!important;}
+  .brand-title{font-size:15px!important;}
+  .brand-sub{font-size:10px!important;}
+  .bank-action-title{font-size:12px!important;}
+}
+
+@media(max-width:600px) and (display-mode:standalone){
+  body{
+    padding-bottom:calc(96px + env(safe-area-inset-bottom));
+  }
+
+  .actions-section.active{
+    bottom:calc(9px + env(safe-area-inset-bottom))!important;
+  }
+}
+
+@media(max-width:900px) and (orientation:landscape){
+  body{
+    padding-bottom:110px;
+  }
+
+  .topbar{
+    position:relative;
+  }
+
+  .actions-section.active{
+    bottom:10px!important;
+  }
+}
+
+.compare-head{
+  display:flex!important;
+  align-items:center!important;
+  justify-content:space-between!important;
+  gap:14px!important;
+}
+
+.compare-head span{
+  flex:1!important;
+}
+
+.compare-body{
+  max-height:900px;
+  opacity:1;
+  overflow:hidden;
+  transition:max-height .28s ease, opacity .22s ease, padding .22s ease;
+}
+
+.compare-section.compare-hidden .compare-body{
+  max-height:0!important;
+  opacity:0!important;
+  padding-top:0!important;
+  padding-bottom:0!important;
+  overflow:hidden!important;
+}
+
+@media (max-width: 768px){
+
+  #usersList{
+    gap:14px;
+  }
+
+  #usersList > div{
+    padding:16px;
+    border-radius:20px;
+    box-shadow:0 8px 20px rgba(0,0,0,0.04);
+  }
+
+  #usersList button{
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    font-weight:900;
+    letter-spacing:0.3px;
+  }
+}
+
+ .history-body{
+  max-height:70vh;
+  overflow-y:auto;
+  opacity:1;
+  transition:max-height .28s ease, opacity .22s ease, padding .22s ease;
+  -webkit-overflow-scrolling:touch;
+}
+
+#historySection.history-hidden .history-body{
+  max-height:0!important;
+  opacity:0!important;
+  padding-top:0!important;
+  padding-bottom:0!important;
+  overflow:hidden!important;
+}
+
+.history-body::-webkit-scrollbar{
+  width:5px;
+}
+
+.history-body::-webkit-scrollbar-thumb{
+  background:rgba(0,0,0,.18);
+  border-radius:20px;
+}
+
+ /* =========================================================
+   META MENSAL — CARD PREMIUM
+========================================================= */
+
+#monthlyGoalCard{
+  position:relative;
+  overflow:hidden;
+  background:
+    radial-gradient(circle at 92% 8%, rgba(0,107,255,.12), transparent 28%),
+    linear-gradient(180deg,#ffffff,#f8fbff)!important;
+}
+
+#monthlyGoalCard .section-head{
+  font-size:20px!important;
+  padding:22px 26px!important;
+}
+
+#monthlyGoalCard .section-body{
+  padding:26px!important;
+  gap:18px!important;
+}
+
+.goal-bar-track{
+  height:18px!important;
+  background:#dce9ff!important;
+  border-radius:999px!important;
+  overflow:hidden!important;
+  box-shadow:inset 0 2px 6px rgba(0,64,160,.08)!important;
+}
+
+.goal-bar-fill{
+  min-width:16px!important;
+  background:linear-gradient(90deg,#12A150,#20D47A)!important;
+  box-shadow:0 0 18px rgba(18,161,80,.35)!important;
+}
+
+.goal-status{
+  margin-top:8px!important;
+  padding:18px 20px!important;
+  border-radius:22px!important;
+  background:#ffffff!important;
+  border:1px solid rgba(0,107,255,.08)!important;
+  box-shadow:0 10px 24px rgba(0,64,160,.06)!important;
+  color:#64748b!important;
+  font-size:15px!important;
+  line-height:1.45!important;
+  font-weight:900!important;
+}
+
+.goal-status strong{
+  color:#06152e!important;
+}
+
+.goal-status small{
+  margin-top:8px!important;
+  color:#64748b!important;
+  font-size:13px!important;
+  font-weight:850!important;
+}
+
+@media(max-width:600px){
+  #monthlyGoalCard .section-head{
+    font-size:18px!important;
+    padding:18px!important;
+  }
+
+  #monthlyGoalCard .section-body{
+    padding:20px!important;
+  }
+
+  .goal-status{
+    font-size:14px!important;
+    padding:16px!important;
+  }
+}
+
+/* =========================================================
+   ADMIN USERS — MOBILE FIX
+========================================================= */
+
+@media(max-width:768px){
+
+  #usersList{
+    display:flex!important;
+    flex-direction:column!important;
+    gap:14px!important;
+    overflow:hidden!important;
+  }
+
+  #usersList > div{
+    width:100%!important;
+    display:flex!important;
+    flex-direction:column!important;
+    align-items:stretch!important;
+    gap:12px!important;
+    padding:16px!important;
+    border-radius:22px!important;
+    overflow:hidden!important;
+  }
+
+  #usersList > div > div:first-child{
+    width:100%!important;
+    max-width:100%!important;
+    overflow:hidden!important;
+  }
+
+  #usersList button{
+    width:100%!important;
+    max-width:100%!important;
+    min-height:48px!important;
+    padding:12px 14px!important;
+    border-radius:16px!important;
+    font-size:15px!important;
+    white-space:normal!important;
+  }
+}
+
+ /* =========================================================
+   SIDEBAR — TRANSIÇÃO PREMIUM TIPO BANCO
+========================================================= */
+
+#sideBar{
+  transform:translateX(-105%) scale(.98);
+  opacity:.92;
+  transition:
+    transform .34s cubic-bezier(.22,.61,.36,1),
+    opacity .24s ease,
+    width .24s ease,
+    box-shadow .24s ease;
+  will-change:transform, opacity;
+}
+
+#sideBar.open{
+  transform:translateX(0) scale(1);
+  opacity:1;
+}
+
+/* overlay suave, sem tela preta */
+#sidebarBackdrop{
   position:fixed;
   inset:0;
-  background:#0F2A6B;
+  z-index:999;
+
+  background:rgba(6,21,46,.14)!important;
+  backdrop-filter:blur(10px) saturate(140%);
+  -webkit-backdrop-filter:blur(10px) saturate(140%);
+
+  opacity:0;
+  pointer-events:none;
+
+  transition:
+    opacity .28s ease,
+    backdrop-filter .28s ease;
+}
+
+#sidebarBackdrop.show{
+  opacity:1;
+  pointer-events:auto;
+}
+
+/* mobile: aparência mais app */
+@media(max-width:1023px){
+  #sideBar{
+    border-radius:0 28px 28px 0;
+    box-shadow:
+      18px 0 55px rgba(6,21,46,.18),
+      inset -1px 0 0 rgba(255,255,255,.7);
+  }
+}
+
+/* desktop sem overlay */
+@media(min-width:1024px){
+  #sidebarBackdrop{
+    display:none!important;
+  }
+
+  #sideBar{
+    opacity:1;
+    transform:translateX(0) scale(1);
+  }
+}
+
+ /* =========================================================
+   SIDEBAR PREMIUM — BANK KING
+========================================================= */
+
+.bk-sidebar{
+  position:fixed;
+  top:18px;
+  left:18px;
+  bottom:18px;
+  width:310px;
+  z-index:9000;
+  padding:16px;
+  border-radius:30px;
+  background:rgba(255,255,255,.94);
+  backdrop-filter:blur(26px);
+  -webkit-backdrop-filter:blur(26px);
+  border:1px solid rgba(255,255,255,.95);
+  box-shadow:0 24px 70px rgba(0,64,160,.18);
+  display:flex;
+  flex-direction:column;
+  gap:16px;
+}
+
+.sidebar-top{
+  display:flex;
+  align-items:center;
+  gap:12px;
+  padding:6px;
+}
+
+.sidebar-logo{
+  width:48px;
+  height:48px;
+  border-radius:16px;
+  background:linear-gradient(135deg,#003dcc,#006bff);
+  color:#fff;
   display:flex;
   align-items:center;
   justify-content:center;
-  z-index:9999;
-">
+  font-weight:950;
+  box-shadow:0 14px 28px rgba(0,107,255,.25);
+}
 
-  <div style="
-    background:white;
-    padding:30px;
-    border-radius:20px;
-    width:300px;
-  ">
+.sidebar-brand{
+  font-size:18px;
+  font-weight:950;
+  letter-spacing:-.04em;
+  color:#06152e;
+}
 
-    <h2 style="margin-bottom:15px;">Login</h2>
+.sidebar-sub{
+  font-size:12px;
+  font-weight:850;
+  color:#64748b;
+}
 
-    <input id="loginEmail" type="email" placeholder="Email" style="width:100%;margin-bottom:10px;padding:10px;">
-    <input id="loginPassword" type="password" placeholder="Senha" style="width:100%;margin-bottom:15px;padding:10px;">
+.sidebar-user{
+  display:flex;
+  align-items:center;
+  gap:12px;
+  padding:12px;
+  border-radius:20px;
+  background:#f4f8ff;
+  border:1px solid rgba(0,107,255,.08);
+}
 
-   <button id="loginBtn" style="width:100%;padding:12px;background:#006BFF;color:white;border:none;border-radius:10px;">
-  Entrar
-</button>
+.sidebar-avatar{
+  width:42px;
+  height:42px;
+  border-radius:14px;
+  background:#eaf2ff;
+  color:#003dcc;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-weight:950;
+}
 
-  </div>
+.sidebar-user strong{
+  display:block;
+  font-size:14px;
+  color:#06152e;
+}
 
-</div>
+.sidebar-user span{
+  display:block;
+  max-width:190px;
+  overflow:hidden;
+  text-overflow:ellipsis;
+  white-space:nowrap;
+  font-size:12px;
+  color:#64748b;
+  font-weight:800;
+}
 
-<div class="app-container">
+.sidebar-nav{
+  display:grid;
+  gap:8px;
+}
 
-  <div class="app-header">
-    <div class="logo-box">BK</div>
-    <div class="app-title">Bank King PRO</div>
-  </div>
+.sidebar-item{
+  width:100%;
+  min-height:52px;
+  padding:0 14px;
+  border-radius:18px;
+  background:#fff;
+  color:#06152e;
+  border:1px solid rgba(0,107,255,.08);
+  box-shadow:0 8px 20px rgba(0,64,160,.045);
+  display:flex;
+  align-items:center;
+  justify-content:flex-start;
+  font-size:14px;
+  font-weight:950;
+}
 
-  <div id="screenDashboard" class="screen active">
-    <section id="dashboardSaldos" class="bk-dashboard">
-      <div class="bk-hero">
-        <div>
-          <span class="bk-eyebrow">BANK KING PRO</span>
-          <h1>Dashboard de Saldos</h1>
-          <p>Controle geral dos saldos da empresa em tempo real.</p>
-        </div>
+.sidebar-item:hover,
+.sidebar-item.active{
+  background:linear-gradient(135deg,#003dcc,#006bff);
+  color:#fff;
+  box-shadow:0 14px 30px rgba(0,107,255,.22);
+}
 
-        <div class="bk-hero-badge">
-          <span>Status</span>
-          <strong id="dashboardStatus">Carregando</strong>
-        </div>
-      </div>
+.sidebar-item.muted{
+  background:#fff1f2;
+  color:#e0313d;
+}
 
-      <div class="bk-main-card">
-        <span>Saldo Total da Empresa</span>
-        <strong id="saldoTotalEmpresa">$ 0,00</strong>
-        <small>Reca + Suprema×400 + PPPoker×400 + Buffalo + Ganamos</small>
-      </div>
+.sidebar-bottom{
+  margin-top:auto;
+}
 
-      <div class="bk-platform-grid">
-        <div class="bk-platform-card">
-          <div class="bk-icon">🏦</div>
-          <span>Saldo Reca</span>
-          <strong id="saldoReca">$ 0,00</strong>
-          <small>Banco / Web Reca</small>
-        </div>
+.sidebar-backdrop{
+  position:fixed;
+  inset:0;
+  z-index:8999;
+  background:rgba(6,21,46,.35);
+  backdrop-filter:blur(10px);
+  opacity:0;
+  pointer-events:none;
+  transition:.2s ease;
+}
 
-        <div class="bk-platform-card">
-          <div class="bk-icon">🎲</div>
-          <span>Suprema</span>
-          <strong id="saldoSuprema">0 fichas</strong>
-          <small id="saldoSupremaValor">$ 0,00 convertido</small>
-        </div>
+/* Desktop: empurra o app para a direita */
+@media(min-width:1000px){
+  .topbar,
+  .app{
+    margin-left:350px!important;
+    max-width:calc(1480px - 350px)!important;
+  }
 
-        <div class="bk-platform-card">
-          <div class="bk-icon">🃏</div>
-          <span>PPPoker</span>
-          <strong id="saldoPppoker">0 fichas</strong>
-          <small id="saldoPppokerValor">$ 0,00 convertido</small>
-        </div>
+  .menu-btn{
+    display:none!important;
+  }
+}
 
-        <div class="bk-platform-card">
-          <div class="bk-icon">🐃</div>
-          <span>Buffalo</span>
-          <strong id="saldoBuffalo">$ 0,00</strong>
-          <small>Saldo plataforma</small>
-        </div>
+/* Mobile: sidebar vira gaveta */
+@media(max-width:999px){
+  .bk-sidebar{
+    top:10px;
+    left:10px;
+    bottom:10px;
+    width:min(86vw,330px);
+    transform:translateX(-115%);
+    transition:.25s cubic-bezier(.22,.61,.36,1);
+  }
 
-        <div class="bk-platform-card">
-          <div class="bk-icon">🎰</div>
-          <span>Ganamos</span>
-          <strong id="saldoGanamos">$ 0,00</strong>
-          <small>Saldo plataforma</small>
-        </div>
-      </div>
+  .bk-sidebar.open{
+    transform:translateX(0);
+  }
 
-      <div class="bk-summary-grid">
-        <div class="bk-summary-card">
-          <span>Pendentes</span>
-          <strong id="saldoPendentes">$ 0,00</strong>
-        </div>
+  .sidebar-backdrop.show{
+    opacity:1;
+    pointer-events:auto;
+  }
+}
 
-        <div class="bk-summary-card">
-          <span>Lucro Realizado</span>
-          <strong id="lucroRealizado">$ 0,00</strong>
-        </div>
+ #mainMenu,
+#menuBackdrop{
+  display:none!important;
+}
 
-        <div class="bk-summary-card">
-          <span>Cargas Admin</span>
-          <strong id="cargasAdmin">$ 0,00</strong>
-        </div>
+ @media(min-width:1000px){
+  .bk-sidebar{
+    transform:none!important;
+  }
 
-        <div class="bk-summary-card">
-          <span>Diferença Real</span>
-          <strong id="diferencaReal">$ 0,00</strong>
-        </div>
-      </div>
+  .app-shell{
+    padding-left:350px!important;
+  }
 
-      <div class="bk-actions">
-        <button type="button" id="refreshDashboardBtn">Atualizar Dashboard</button>
-      </div>
-    </section>
-  </div>
+  .topbar{
+    margin-left:0!important;
+    max-width:calc(100% - 24px)!important;
+  }
 
-  <div id="screenAdmin" class="screen">
-    <section id="adminMovementsPanel" class="bk-admin-panel">
-      <div class="bk-section-title">
-        <span>ADMIN</span>
-        <h2>Movimentos de Saldo</h2>
-        <p>Cargas, retiradas, gastos e correções do saldo mestre.</p>
-      </div>
+  .app{
+    margin-left:0!important;
+    max-width:calc(100% - 24px)!important;
+  }
+}
 
-      <div class="bk-admin-form">
-        <label>
-          Tipo de movimento
-          <select id="adminMovementType">
-            <option value="carga">Carga / Adicionar saldo</option>
-            <option value="retirada">Retirada / Lucro realizado</option>
-            <option value="gasto">Gasto operacional</option>
-            <option value="correcao">Correção manual</option>
-          </select>
-        </label>
+@media(max-width:999px){
+  .app-shell{
+    padding-left:0!important;
+  }
+}
 
-        <label>
-          Plataforma
-          <select id="adminMovementPlatform">
-            <option value="reca">Reca</option>
-            <option value="suprema">Suprema</option>
-            <option value="pppoker">PPPoker</option>
-            <option value="buffalo">Buffalo</option>
-            <option value="ganamos">Ganamos</option>
-          </select>
-        </label>
+/* =========================================================
+   META MODAL — AJUSTE IPHONE (CENTRALIZADO PREMIUM)
+========================================================= */
 
-        <label>
-          Valor
-          <input id="adminMovementValue" type="number" placeholder="Ex: 100000">
-        </label>
+@media(max-width:600px){
 
-        <label>
-          Descrição
-          <input id="adminMovementDescription" type="text" placeholder="Ex: Carga Suprema / Retirada Bruno">
-        </label>
+  /* container geral do modal */
+  #goalModal{
+    align-items:center!important; /* centraliza vertical */
+    padding:12px!important;
+  }
 
-        <button type="button" id="saveAdminMovementBtn">Salvar Movimento</button>
-      </div>
-    </section>
-  </div>
+  /* card principal */
+  #goalModal .modal-card{
+    width:100%!important;
+    max-width:420px!important; /* 🔥 limite tipo app banco */
+    margin:0 auto!important;
 
-  <div id="screenHistory" class="screen">
-    <section id="shiftClosurePanel" class="bk-admin-panel">
-      <div class="bk-section-title">
-        <span>FECHAMENTO</span>
-        <h2>Fechamento de Turno</h2>
-        <p>Informe os saldos finais vistos pelo operador.</p>
-      </div>
+    border-radius:28px!important;
 
-      <div class="bk-admin-form">
-        <label>
-          Nome do operador
-          <input id="shiftOperatorName" type="text" placeholder="Ex: Bruno">
-        </label>
+    /* NÃO colar na tela */
+    box-shadow:
+      0 30px 80px rgba(6,21,46,.25),
+      0 10px 30px rgba(0,0,0,.10)!important;
 
-        <label>
-          Turno
-          <select id="shiftName">
-            <option value="T1">T1</option>
-            <option value="T2">T2</option>
-          </select>
-        </label>
+    /* efeito floating */
+    transform:scale(.98);
+    animation:modalIn .35s cubic-bezier(.22,.61,.36,1) forwards;
+  }
 
-        <label>
-          Banco Reca
-          <input id="shiftReca" type="number" placeholder="Ex: 725000">
-        </label>
+  /* animação suave */
+  @keyframes modalIn{
+    from{
+      transform:translateY(30px) scale(.95);
+      opacity:0;
+    }
+    to{
+      transform:translateY(0) scale(1);
+      opacity:1;
+    }
+  }
 
-        <label>
-          Suprema fichas
-          <input id="shiftSuprema" type="number" step="0.01" placeholder="Ex: 210.99">
-        </label>
+  /* header mais limpo */
+  #goalModal .modal-head{
+    padding:22px 20px 18px!important;
+  }
 
-        <label>
-          PPPoker fichas
-          <input id="shiftPppoker" type="number" step="0.01" placeholder="Ex: 1332.03">
-        </label>
+  #goalModal .modal-title{
+    font-size:24px!important;
+  }
 
-        <label>
-          Buffalo
-          <input id="shiftBuffalo" type="number" placeholder="Ex: 2560206">
-        </label>
+  /* subtitulo */
+  #goalModal .modal-head::after{
+    top:60px!important;
+    left:20px!important;
+    font-size:13px!important;
+  }
 
-        <label>
-          Ganamos
-          <input id="shiftGanamos" type="number" placeholder="Ex: 2030174">
-        </label>
+  /* botão fechar estilo premium */
+  #closeGoalModal{
+    height:44px!important;
+    padding:0 16px!important;
+    font-size:13px!important;
 
-        <label>
-          Pagos pendentes
-          <input id="shiftPendentes" type="number" placeholder="Ex: 100000">
-        </label>
+    border-radius:14px!important;
 
-<button type="button" id="previewShiftClosureBtn">Calcular Prévia</button>
-<button type="button" id="saveShiftClosureBtn">Salvar Fechamento</button>
+    background:#eef4ff!important;
+    border:1px solid rgba(0,107,255,.12)!important;
+  }
 
-<button type="button" id="cancelEditClosureBtn" style="display:none; background:#64748b;">Cancelar Edição</button>
-      </div>
+  /* conteúdo */
+  #goalModal .modal-card > div:last-child{
+    padding:20px!important;
+    gap:18px!important;
+  }
 
-      <div class="bk-main-card" style="margin-top:16px;">
-        <span>Resultado do Turno</span>
-        <strong id="shiftDiffPreview">$ 0,00</strong>
-        <small id="shiftPreviewDetails">Preencha os dados para calcular.</small>
-      </div>
-    </section>
+  /* barra */
+  .goal-bar-track{
+    height:16px!important;
+  }
 
-    <section id="closureHistoryPanel" class="bk-admin-panel">
-      <div class="bk-section-title">
-        <span>AUDITORIA</span>
-        <h2>Últimos Fechamentos</h2>
-        <p>Histórico em tempo real dos turnos salvos.</p>
-      </div>
+  /* card interno */
+  .goal-status{
+    padding:18px!important;
+    border-radius:20px!important;
+    font-size:15px!important;
+  }
 
-      <div id="closureHistoryList" class="bk-history-list">
-        <div class="bk-history-empty">Nenhum fechamento salvo ainda.</div>
-      </div>
-    </section>
-  </div>
+  .goal-status strong{
+    font-size:20px!important;
+  }
 
-</div>
+  .goal-status small{
+    font-size:13px!important;
+  }
 
-<div class="app-nav">
-  <button class="nav-btn active" data-screen="screenDashboard">Dashboard</button>
-  <button class="nav-btn" data-screen="screenAdmin">Admin</button>
-  <button class="nav-btn" data-screen="screenHistory">Histórico</button>
-</div>
+}
 
-<script type="module">
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+/* =========================================================
+   BACKDROP MAIS SUAVE (SEM TELA PRETA PESADA)
+========================================================= */
 
-import {
-  getFirestore,
-  doc,
-  getDoc,
-  getDocs,
-  setDoc,
-  updateDoc,
-  deleteDoc,
-  onSnapshot,
-  addDoc,
-  collection,
-  serverTimestamp,
-  query,
-  orderBy,
-  limit
-} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+#goalModal .modal-backdrop{
+  background:rgba(6,21,46,.18)!important;
+  backdrop-filter:blur(14px)!important;
+  -webkit-backdrop-filter:blur(14px)!important;
+}
 
-import {
-  getAuth,
-  signInWithEmailAndPassword,
-  onAuthStateChanged,
-  signOut
-} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+ .app-reload-loader{
+  position:fixed;
+  inset:0;
+  z-index:99999;
+  display:none;
+  align-items:center;
+  justify-content:center;
+  background:rgba(3,12,30,.62);
+  backdrop-filter:blur(14px);
+}
+
+.app-reload-loader.active{
+  display:flex;
+}
+
+.reload-card{
+  width:min(320px, 88vw);
+  padding:28px 22px;
+  border-radius:26px;
+  background:linear-gradient(180deg, rgba(255,255,255,.96), rgba(240,246,255,.94));
+  box-shadow:0 30px 80px rgba(0,0,0,.28);
+  border:1px solid rgba(255,255,255,.65);
+  text-align:center;
+  color:#07152f;
+}
+
+.reload-spinner{
+  width:48px;
+  height:48px;
+  margin:0 auto 16px;
+  border-radius:50%;
+  border:4px solid rgba(0,107,255,.16);
+  border-top-color:#006BFF;
+  animation:reloadSpin .8s linear infinite;
+}
+
+.reload-card strong{
+  display:block;
+  font-size:17px;
+  font-weight:900;
+  margin-bottom:6px;
+}
+
+.reload-card span{
+  display:block;
+  font-size:13px;
+  color:#64748b;
+  font-weight:700;
+}
+
+@keyframes reloadSpin{
+  to{
+    transform:rotate(360deg);
+  }
+}
+ 
+</style>
+
+<!-- PWA -->
+<link rel="manifest" href="/manifest.json">
+<meta name="theme-color" content="#06152e">
+
+<!-- ANDROID / CHROME -->
+<meta name="mobile-web-app-capable" content="yes">
+
+<!-- iOS -->
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Bank King">
+
+<link rel="apple-touch-icon" href="/icon-192.png">
   
-const firebaseConfig = {
-  apiKey: "AIzaSyAuyfJNu2vwvVyH5gRsvg82m98teFCmPXw",
-  authDomain: "bank-king-c53cf.firebaseapp.com",
-  projectId: "bank-king-c53cf",
-  storageBucket: "bank-king-c53cf.firebasestorage.app",
-  messagingSenderId: "108865328748",
-  appId: "1:108865328748:web:65dbbcf146a67f95512a49"
-};
+</head>
+<body>
 
-const app = initializeApp(firebaseConfig);
+<section id="authScreen" class="auth-screen">
+  <div class="auth-card">
+    <div class="auth-logo">BK</div>
+    <h1 class="auth-title">Bank King</h1>
+    <p class="auth-sub">Acesso BK</p>
+
+    <div class="auth-tabs">
+      <button id="tabLogin" class="auth-tab active" type="button">Entrar</button>
+      <button id="tabRegister" class="auth-tab" type="button">Registrar</button>
+      <button id="tabPassword" class="auth-tab" type="button">Senha</button>
+    </div>
+
+    <form id="loginForm" class="auth-form">
+      <div class="field">
+        <label for="loginEmail">Email</label>
+        <input id="loginEmail" type="email" placeholder="Digite seu email" required>
+      </div>
+
+      <div class="field">
+        <label for="loginPassword">Senha</label>
+        <input id="loginPassword" type="password" placeholder="Digite sua senha" required>
+      </div>
+
+      <div class="remember-row">
+        <input id="rememberLogin" type="checkbox">
+        <label for="rememberLogin">Manter conectado</label>
+      </div>
+
+      <button class="auth-submit" type="submit">Entrar</button>
+    </form>
+
+    <form id="registerForm" class="auth-form hidden">
+      <div class="field">
+        <label for="registerName">Nome</label>
+        <input id="registerName" type="text" placeholder="Seu nome" required>
+      </div>
+
+      <div class="field">
+        <label for="registerEmail">Email</label>
+        <input id="registerEmail" type="email" placeholder="Seu email" required>
+      </div>
+
+      <div class="field">
+        <label for="registerPassword">Senha</label>
+        <input id="registerPassword" type="password" placeholder="Crie uma senha" required>
+      </div>
+
+      <button class="auth-submit" type="submit">Registrar</button>
+    </form>
+
+    <form id="forgotPasswordForm" class="auth-form hidden">
+      <div class="field">
+        <label for="resetEmail">Email de recuperação</label>
+        <input id="resetEmail" type="email" placeholder="Digite seu email" required>
+      </div>
+
+      <button class="auth-submit" type="submit">Enviar link</button>
+    </form>
+  </div>
+</section>
+
+<div id="appShell" class="app-shell hidden">
+
+ <aside id="sideBar" class="bk-sidebar">
+  <div class="sidebar-top">
+    <div class="sidebar-logo">BK</div>
+    <div>
+      <div class="sidebar-brand">Bank King</div>
+      <div class="sidebar-sub">Controle financeiro</div>
+    </div>
+  </div>
+
+  <div class="sidebar-user">
+    <div class="sidebar-avatar">BK</div>
+    <div>
+      <strong id="sidebarUserName">Usuário</strong>
+      <span id="sidebarUserEmail">email@exemplo.com</span>
+    </div>
+  </div>
+
+ <nav class="sidebar-nav">
+  <button type="button" class="sidebar-item" id="sideHomeBtn">Início</button>
+  <button type="button" class="sidebar-item" id="sideHistoryBtn">Histórico</button>
+  <button type="button" class="sidebar-item" id="sideGoalBtn">Meta mensal</button>
+  <button type="button" class="sidebar-item" id="sideRankingBtn">Ranking</button>
+  <button type="button" class="sidebar-item" id="sidePdfBtn">Relatórios PDF</button>
+  <button type="button" class="sidebar-item" id="sideAdminBtn">Admin</button>
+</nav>
+
+  <div class="sidebar-bottom">
+    <button type="button" class="sidebar-item muted" id="sideLogoutBtn">Sair</button>
+  </div>
+</aside>
+
+<div id="sidebarBackdrop" class="sidebar-backdrop"></div>
+
+  <header class="topbar">
+    <div class="brand">
+      <div class="brand-logo">BK</div>
+      <div>
+        <div class="brand-title">Bank King</div>
+        <div class="brand-sub">Controle Financeiro</div>
+      </div>
+    </div>
+
+    <button id="menuToggle" class="menu-btn" type="button">☰</button>
+  </header>
+
+  <main class="app">
+
+    <div id="adminPanel" class="hidden admin-panel">
+      <div class="admin-head">
+        <h3>Usuários</h3>
+        <span>Painel Admin</span>
+      </div>
+
+      <div class="admin-create-box">
+        <div class="admin-create-title">Criar usuário</div>
+
+        <input id="adminCreateName" type="text" placeholder="Nome do usuário">
+        <input id="adminCreateEmail" type="email" placeholder="Email do usuário">
+        <input id="adminCreatePassword" type="password" placeholder="Senha inicial">
+
+        <select id="adminCreateRole" class="outflow-type">
+          <option value="operador">Operador</option>
+          <option value="admin">Admin</option>
+        </select>
+
+        <button id="adminCreateUserBtn" type="button" class="auth-submit">
+          Criar usuário
+        </button>
+      </div>
+
+      <div id="usersList" class="admin-users-list"></div>
+    </div>
+
+    <section class="balance-card">
+      <div>
+        <div class="balance-label">Saldo Reca</div>
+        <div id="bankValue" class="balance-value">$ 0,00</div>
+      </div>
+    </section>
+
+    <section class="main-card main-card-pad">
+      <div class="summary-grid">
+        <div class="summary-box">
+          <div class="summary-box-label">Operador anterior</div>
+          <div id="previousOperator" class="summary-box-value">-</div>
+        </div>
+
+        <div class="summary-box">
+          <div class="summary-box-label">Último fechamento</div>
+          <div id="previousDate" class="summary-box-value">-</div>
+        </div>
+
+        <div class="summary-box">
+          <div class="summary-box-label">Diferença Caixa</div>
+          <div id="previousDiff" class="summary-box-value">$ 0,00</div>
+        </div>
+
+        <div class="summary-box">
+          <div class="summary-box-label">Saldo Turno Anterior</div>
+          <div id="previousReca" class="summary-box-value green">$ 0,00</div>
+        </div>
+      </div>
+    </section>
+
+   <section id="compareSection" class="section-card green-section compare-section compare-hidden">
+  <div class="section-head compare-head">
+    <span>Comparativo das fichas</span>
+
+    <button id="toggleCompareBtn" class="history-view-btn" type="button">
+      <span id="compareEyeText">Ver</span>
+    </button>
+  </div>
+
+  <div class="section-body compare-body">
+    <div id="systemsCompareBar" class="compare-grid">
+      <div class="compare-pill">
+        <span class="compare-dot same"></span>
+        <div>
+          <div class="compare-name">Aguardando dados</div>
+          <div class="compare-value">Faça pelo menos dois fechamentos</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+    <section id="rankingChartSection" class="section-card blue-section hidden">
+      <div class="section-head">Ranking</div>
+
+      <div class="section-body">
+        <div class="chart-actions">
+          <button class="chart-range-btn active" type="button" data-chart-range="day">Dia</button>
+          <button class="chart-range-btn" type="button" data-chart-range="week">Semana</button>
+          <button class="chart-range-btn" type="button" data-chart-range="15">Quinzenal</button>
+          <button class="chart-range-btn" type="button" data-chart-range="30">Mensal</button>
+        </div>
+
+        <div id="rankingSimpleList" class="ranking-simple-list">
+          <div class="ranking-empty">Sem dados para este período.</div>
+        </div>
+      </div>
+    </section>
+
+    <div class="section-grid">
+      <section class="section-card blue-section">
+        <div class="section-head">1. Dados e Entradas</div>
+
+        <div class="section-body">
+          <div class="field">
+            <label for="t2_nome_operador">Operador</label>
+            <input id="t2_nome_operador" type="text" placeholder="Ex.: Igor T">
+          </div>
+
+          <div class="field">
+            <label for="t2_data_fechamento">Data do fechamento</label>
+            <input id="t2_data_fechamento" type="date">
+          </div>
+
+          <div class="field">
+            <label for="t2_banco">Banco Reca</label>
+            <input id="t2_banco" type="text" inputmode="numeric" placeholder="0,00">
+          </div>
+
+          <div class="field">
+            <label for="t2_suprema">Suprema Fichas</label>
+            <input id="t2_suprema" type="text" inputmode="numeric" placeholder="0,00">
+          </div>
+
+          <div class="field">
+            <label for="t2_pppoker">PPPoker Fichas</label>
+            <input id="t2_pppoker" type="text" inputmode="numeric" placeholder="0,00">
+          </div>
+
+          <div class="field">
+            <label for="t2_buffalo">Buffalo</label>
+            <input id="t2_buffalo" type="text" inputmode="numeric" placeholder="0,00">
+          </div>
+
+          <div class="field">
+            <label for="t2_ganamos">Ganamos</label>
+            <input id="t2_ganamos" type="text" inputmode="numeric" placeholder="0,00">
+          </div>
+
+          <div class="field">
+            <label for="t2_cargas">Carga Casino</label>
+            <input id="t2_cargas" type="text" inputmode="numeric" placeholder="0,00">
+          </div>
+
+          <div class="field">
+            <label for="t2_cargas_poker">Carga Poker</label>
+            <input id="t2_cargas_poker" type="text" inputmode="numeric" placeholder="0,00">
+          </div>
+        </div>
+      </section>
+
+      <section class="section-card amber-section">
+        <div class="section-head">2. Pagos Pendentes</div>
+
+        <div class="section-body">
+          <div id="t2_pending_list" class="dynamic-list"></div>
+
+          <button type="button" class="add-btn" data-add-pending="t2">
+            + Adicionar pendente
+          </button>
+        </div>
+      </section>
+    </div>
+
+    <section class="section-card red-section">
+      <div class="section-head">3. Saídas de Caixa</div>
+
+      <div class="section-body">
+        <div id="t2_dynamic_list" class="dynamic-list"></div>
+
+        <button type="button" class="add-btn" data-add-outflow="t2">
+          + Adicionar saída
+        </button>
+      </div>
+    </section>
+
+    <section class="section-card actions-section">
+      <div class="section-head actions-head">
+        <span>4. Ações</span>
+      </div>
+
+      <div class="section-body actions-body">
+        <div class="actions-grid bank-actions-grid">
+          <button id="limparBtn" type="button" class="bank-action-btn bank-action-light">
+            <span class="bank-action-title">Limpar</span>
+            <span class="bank-action-sub">Apagar dados</span>
+          </button>
+
+          <button id="calcular" type="button" class="bank-action-btn bank-action-light-blue">
+            <span class="bank-action-title">Calcular</span>
+            <span class="bank-action-sub">Atualizar</span>
+          </button>
+
+          <button id="fecharTurno" type="button" class="bank-action-btn bank-action-primary">
+            <span class="bank-action-title">Finalizar</span>
+            <span class="bank-action-sub">Salvar turno</span>
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <section id="historySection" class="section-card history-hidden">
+      <div class="section-head history-head">
+        <span>Histórico</span>
+
+        <button id="toggleHistoryBtn" class="history-view-btn" type="button">
+          <span id="historyEyeText">Ver</span>
+        </button>
+      </div>
+
+      <div class="section-body history-body">
+        <div id="historyList" class="history-list"></div>
+      </div>
+    </section>
+
+  </main>
+</div>
+
+<div id="mainMenu" class="floating-menu hidden">
+  <button class="menu-item" type="button" id="adminOpenBtn">Admin</button>
+  <button class="menu-item" type="button" id="openPdfCustomBtn">Relatórios PDF</button>
+  <button class="menu-item" type="button" id="openRankingBtn">Ranking operadores</button>
+  <button class="menu-item" type="button" id="recalculateHistoryBtn">Recalcular histórico</button>
+</div>
+
+<div id="menuBackdrop" class="menu-backdrop"></div>
+
+<div id="historyModal" class="modal hidden">
+  <div class="modal-backdrop" id="historyModalBackdrop"></div>
+
+  <div class="modal-card">
+    <div class="modal-head">
+      <div>
+        <h3 id="historyModalTitle" class="modal-title">Detalhes do turno</h3>
+        <div id="historyModalSub" style="color:var(--muted);font-size:13px;margin-top:4px;font-weight:800;"></div>
+      </div>
+
+      <button id="closeHistoryModal" class="modal-close" type="button">Fechar</button>
+    </div>
+
+    <div id="historyModalBody"></div>
+  </div>
+</div>
+
+ <div id="goalModal" class="modal hidden">
+  <div class="modal-backdrop" id="goalModalBackdrop"></div>
+
+  <div class="modal-card" style="max-width:620px;">
+    <div class="modal-head">
+      <div>
+        <h3 class="modal-title">Meta mensal</h3>
+        <div style="color:var(--muted);font-size:13px;margin-top:4px;font-weight:800;">
+          Progresso do mês atual
+        </div>
+      </div>
+
+      <button id="closeGoalModal" class="modal-close" type="button">Fechar</button>
+    </div>
+
+    <div class="goal-bar-wrapper">
+      <div class="goal-bar-track">
+        <div id="goalBarFill" class="goal-bar-fill"></div>
+      </div>
+    </div>
+
+    <div id="goalStatus" class="goal-status">
+      Carregando...
+    </div>
+  </div>
+</div>
+
+<div id="pdfRangeModal" class="modal hidden">
+  <div class="modal-backdrop" id="pdfRangeBackdrop"></div>
+
+  <div class="modal-card" style="max-width:540px;">
+    <div class="modal-head">
+      <div>
+        <h3 class="modal-title">Relatório PDF</h3>
+        <div style="color:var(--muted);font-size:13px;margin-top:4px;font-weight:800;">
+          Escolha o período
+        </div>
+      </div>
+
+      <button id="closePdfRangeModal" class="modal-close" type="button">Fechar</button>
+    </div>
+
+    <div style="display:grid;gap:14px;">
+      <div class="field">
+        <label for="pdfDateStart">Data inicial</label>
+        <input id="pdfDateStart" type="date">
+      </div>
+
+      <div class="field">
+        <label for="pdfDateEnd">Data final</label>
+        <input id="pdfDateEnd" type="date">
+      </div>
+
+      <button id="confirmExportPdf" class="auth-submit" type="button">
+        Gerar PDF
+      </button>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  
+ <script type="module">
+   import { initializeApp, deleteApp } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-app.js";
+    import {
+  getFirestore,
+  collection,
+  addDoc,
+  getDocs,
+  deleteDoc,
+  doc,
+  updateDoc,
+  setDoc,
+  getDoc,
+  onSnapshot,
+  query,
+  limit,
+  orderBy,
+  startAfter,
+  serverTimestamp
+} from "https://www.gstatic.com/firebasejs/12.0.0/firebase-firestore.js";
+    import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, onAuthStateChanged, sendPasswordResetEmail } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-auth.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyAuyfJNu2vwvVyH5gRsvg82m98teFCmPXw",
+      authDomain: "bank-king-c53cf.firebaseapp.com",
+      projectId: "bank-king-c53cf",
+      storageBucket: "bank-king-c53cf.firebasestorage.app",
+      messagingSenderId: "108865328748",
+      appId: "1:108865328748:web:65dbbcf146a67f95512a49"
+    };
+
+   const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 const auth = getAuth(app);
 
-const BK_MULTIPLIER = 400;
-let dashboardBalanceState = {
-  reca: 0,
-  suprema: 0,
-  pppoker: 0,
-  buffalo: 0,
-  ganamos: 0,
-  pendentes: 0,
-  lucroRealizado: 0,
-  cargasAdmin: 0,
-  diferencaReal: 0
-};
+let currentUserData = null;
+let historyCache = [];
+let balanceVisible = true;
+let historyUnsubscribe = null;
+let historyListenerStarted = false;
+let rankingChart = null;
+let rankingRange = "day";
+let saveInProgress = false;
 
-let shiftClosuresCache = [];
-let editingClosureId = null;
+/* 🔥 INFINITE SCROLL */
+let historyPageSize = 20;     // quantidade por carga
+let lastHistoryDoc = null;    // último doc carregado (cursor)
+let historyLoading = false;   // evita duplicar requisição
+let historyHasMore = true;    // se ainda tem mais dados
+let historyLoadedIds = new Set(); // evita duplicar no array
+    const byId = (id) => document.getElementById(id);
+    const authScreen = byId("authScreen");
+    const appShell = byId("appShell");
+    const loginForm = byId("loginForm");
+    const registerForm = byId("registerForm");
+    const forgotPasswordForm = byId("forgotPasswordForm");
 
-function bkNumber(value){
-  return Number(value || 0);
-}
+    function money(value) {
+      return `$ ${Number(value || 0).toLocaleString("pt-BR", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+    }
 
-function bkMoney(value){
-  return bkNumber(value).toLocaleString("pt-BR", {
-    style:"currency",
-    currency:"ARS"
+    function escapeHtml(text) {
+      return String(text ?? "").replaceAll("&", "&amp;").replaceAll("<", "&lt;").replaceAll(">", "&gt;").replaceAll('"', "&quot;").replaceAll("'", "&#39;");
+    }
+
+    function getTodayDateInput() {
+      const now = new Date();
+      const local = new Date(now.getTime() - now.getTimezoneOffset() * 60000);
+      return local.toISOString().split("T")[0];
+    }
+
+    function formatDateBR(dateStr) {
+      if (!dateStr) return "Sem data";
+      const [y, m, d] = String(dateStr).split("-");
+      if (!y || !m || !d) return String(dateStr);
+      return `${d}/${m}/${y}`;
+    }
+
+    function formatDateTimeBR(value) {
+      if (!value) return "Sem data";
+      const dt = value?.toDate ? value.toDate() : new Date(value);
+      if (isNaN(dt.getTime())) return "Sem data";
+      return `${dt.toLocaleDateString("pt-BR")} às ${dt.toLocaleTimeString("pt-BR", { hour: "2-digit", minute: "2-digit" })}`;
+    }
+
+    function parseMoney(value) {
+      if (!value) return 0;
+      const normalized = String(value).replace(/\s/g, "").replace(/\$/g, "").replace(/\./g, "").replace(",", ".").replace(/[^\d.-]/g, "");
+      const number = parseFloat(normalized);
+      return Number.isFinite(number) ? number : 0;
+    }
+
+    function parseFicha(value) {
+      const s = String(value || "0").trim();
+      if (s.includes(",")) return Number(s.replace(/\./g, "").replace(",", ".")) || 0;
+      if (s.includes(".")) return Number(s) || 0;
+      return Number(s) || 0;
+    }
+
+    function attachMoneyMask(input) {
+      if (!input || input.dataset.maskAttached === "true") return;
+      input.dataset.maskAttached = "true";
+      input.dataset.raw = input.dataset.raw || "";
+      input.autocomplete = "off";
+      input.addEventListener("keydown", (e) => {
+        if (/^\d$/.test(e.key)) {
+          e.preventDefault();
+          input.dataset.raw += e.key;
+        } else if (e.key === "Backspace") {
+          e.preventDefault();
+          input.dataset.raw = input.dataset.raw.slice(0, -1);
+        } else {
+          return;
+        }
+        const val = Number(input.dataset.raw || 0) / 100;
+        input.value = val.toLocaleString("pt-BR", { minimumFractionDigits: 2 });
+        render();
+      });
+    }
+
+   function updateActionsVisibility() {
+  const bar = byId("fecharTurno")?.closest(".actions-section");
+  if (!bar) return;
+
+  const fields = [
+    "t2_nome_operador",
+    "t2_data_fechamento",
+    "t2_banco",
+    "t2_suprema",
+    "t2_pppoker",
+    "t2_buffalo",
+    "t2_ganamos",
+    "t2_cargas",
+    "t2_cargas_poker"
+  ];
+
+  const hasInputValue = fields.some((id) => {
+    const el = byId(id);
+    return el && String(el.value || "").trim() !== "";
   });
+
+  const hasPendingRows = document.querySelectorAll("#t2_pending_list .dynamic-row").length > 0;
+  const hasOutflowRows = document.querySelectorAll("#t2_dynamic_list .dynamic-row").length > 0;
+
+  bar.classList.toggle("active", hasInputValue || hasPendingRows || hasOutflowRows);
 }
 
-function bkFichas(value){
-  return bkNumber(value).toLocaleString("pt-BR", {
-    minimumFractionDigits:2,
-    maximumFractionDigits:2
-  }) + " fichas";
+document.addEventListener("input", updateActionsVisibility);
+document.addEventListener("click", () => {
+  setTimeout(updateActionsVisibility, 50);
+});
+
+updateActionsVisibility();
+
+    async function getCurrentUserData() {
+      const user = auth.currentUser;
+      if (!user) return null;
+      const snap = await getDoc(doc(db, "users", user.uid));
+      if (!snap.exists()) return null;
+      return { uid: user.uid, email: user.email, ...snap.data() };
+    }
+
+    async function isCurrentUserAdmin() {
+      const data = currentUserData || await getCurrentUserData();
+      return data?.role === "admin" && data?.status === "active";
+    }
+
+    async function requireAdmin() {
+      const allowed = await isCurrentUserAdmin();
+      if (!allowed) {
+        alert("Acesso permitido apenas para admin.");
+        return false;
+      }
+      return true;
+    }
+
+   function applyPermissions(userData) {
+  const isAdmin = userData?.role === "admin";
+  const isSupervisor = userData?.role === "supervisor";
+  const isOperator = userData?.role === "operador";
+
+  const canOperate = isAdmin || isSupervisor || isOperator;
+  const canViewReports = isAdmin || isSupervisor;
+  const canViewUsers = isAdmin || isSupervisor;
+  const canManage = isAdmin;
+
+  // Admin / Supervisor podem abrir painel de usuários
+  byId("adminOpenBtn")?.classList.toggle("hidden", !canViewUsers);
+
+  // Somente admin pode recalcular
+  byId("recalculateHistoryBtn")?.classList.toggle("hidden", !canManage);
+
+  // Admin / Supervisor podem ver ranking e relatórios
+  byId("openRankingBtn")?.classList.toggle("hidden", !canViewReports);
+  byId("openPdfCustomBtn")?.classList.toggle("hidden", !canViewReports);
+
+  // Se existir esse botão, admin/supervisor podem ver
+  byId("menuHistoryBtn")?.classList.toggle("hidden", !canViewReports);
+
+  // Sempre começa fechado
+  byId("rankingChartSection")?.classList.add("hidden");
+  byId("rankingTableSection")?.classList.add("hidden");
+  byId("adminPanel")?.classList.add("hidden");
+
+  // Botões de relatório rápido, caso existam
+  document.querySelectorAll("[data-report-range]").forEach((btn) => {
+    btn.classList.toggle("hidden", !canViewReports);
+  });
+
+  // Admin, supervisor e operador podem finalizar turno
+  byId("fecharTurno")?.classList.toggle("hidden", !canOperate);
+
+  if (byId("activeUserRole")) {
+    byId("activeUserRole").textContent =
+      isAdmin ? "ADMIN" :
+      isSupervisor ? "SUPERVISOR" :
+      isOperator ? "OPERADOR" :
+      "SEM PERMISSÃO";
+  }
 }
 
-function setText(id, value){
-  const el = document.getElementById(id);
-  if (el) el.textContent = value;
-}
-
-function getInput(id){
-  const el = document.getElementById(id);
-  return el ? el.value : "";
-}
-
-function calcularSaldoTotalEmpresa(saldos = {}){
-  return (
-    bkNumber(saldos.reca) +
-    bkNumber(saldos.suprema) * BK_MULTIPLIER +
-    bkNumber(saldos.pppoker) * BK_MULTIPLIER +
-    bkNumber(saldos.buffalo) +
-    bkNumber(saldos.ganamos)
-  );
-}
-
-function renderDashboardSaldos(saldos = dashboardBalanceState){
-  const supremaValor = bkNumber(saldos.suprema) * BK_MULTIPLIER;
-  const pppokerValor = bkNumber(saldos.pppoker) * BK_MULTIPLIER;
-  const totalEmpresa = calcularSaldoTotalEmpresa(saldos);
-
-  setText("saldoTotalEmpresa", bkMoney(totalEmpresa));
-  setText("saldoReca", bkMoney(saldos.reca));
-  setText("saldoSuprema", bkFichas(saldos.suprema));
-  setText("saldoSupremaValor", bkMoney(supremaValor) + " convertido");
-  setText("saldoPppoker", bkFichas(saldos.pppoker));
-  setText("saldoPppokerValor", bkMoney(pppokerValor) + " convertido");
-  setText("saldoBuffalo", bkMoney(saldos.buffalo));
-  setText("saldoGanamos", bkMoney(saldos.ganamos));
-  setText("saldoPendentes", bkMoney(saldos.pendentes));
-  setText("lucroRealizado", bkMoney(saldos.lucroRealizado));
-  setText("cargasAdmin", bkMoney(saldos.cargasAdmin));
-  setText("diferencaReal", bkMoney(saldos.diferencaReal));
-}
-
-async function criarSaldoMestreSeNaoExistir(){
-  const ref = doc(db, "companyBalance", "main");
-  const snap = await getDoc(ref);
+async function validateUserAccess(user) {
+  const snap = await getDoc(doc(db, "users", user.uid));
 
   if (!snap.exists()) {
-    await setDoc(ref, {
-      reca: 0,
-      suprema: 0,
-      pppoker: 0,
-      buffalo: 0,
-      ganamos: 0,
-      pendentes: 0,
-      lucroRealizado: 0,
-      cargasAdmin: 0,
-      diferencaReal: 0,
-      createdAt: serverTimestamp(),
-      updatedAt: serverTimestamp()
-    });
+    alert("Usuário não autorizado.");
+    await signOut(auth);
+    return false;
   }
-}
 
-function startDashboardSaldosRealtime(){
-  const ref = doc(db, "companyBalance", "main");
+  const data = snap.data();
 
-  onSnapshot(ref, (snap) => {
-    if (!snap.exists()) {
-      setText("dashboardStatus", "Sem dados");
-      return;
-    }
+  if (data.status === "pending") {
+    alert("Sua conta está aguardando aprovação do administrador.");
+    await signOut(auth);
+    return false;
+  }
 
-    const data = snap.data() || {};
+  if (data.status === "blocked") {
+    alert("Sua conta foi bloqueada.");
+    await signOut(auth);
+    return false;
+  }
 
-    dashboardBalanceState = {
-      reca: bkNumber(data.reca),
-      suprema: bkNumber(data.suprema),
-      pppoker: bkNumber(data.pppoker),
-      buffalo: bkNumber(data.buffalo),
-      ganamos: bkNumber(data.ganamos),
-      pendentes: bkNumber(data.pendentes),
-      lucroRealizado: bkNumber(data.lucroRealizado),
-      cargasAdmin: bkNumber(data.cargasAdmin),
-      diferencaReal: bkNumber(data.diferencaReal)
-    };
+  if (data.status !== "active") {
+    alert("Usuário sem status ativo.");
+    await signOut(auth);
+    return false;
+  }
 
-    renderDashboardSaldos();
-    setText("dashboardStatus", "Online");
-  }, (error) => {
-    console.warn("Erro no Dashboard:", error);
-    setText("dashboardStatus", "Erro");
-  });
-}
+  const allowedRoles = ["admin", "supervisor", "operador"];
 
-function clearAdminMovementForm(){
-  document.getElementById("adminMovementValue").value = "";
-  document.getElementById("adminMovementDescription").value = "";
-}
+  if (!allowedRoles.includes(data.role)) {
+    alert("Usuário sem permissão definida.");
+    await signOut(auth);
+    return false;
+  }
 
-function calcularNovoSaldoPorMovimento(saldoAtual, movimento){
-  const saldo = {
-    reca: bkNumber(saldoAtual.reca),
-    suprema: bkNumber(saldoAtual.suprema),
-    pppoker: bkNumber(saldoAtual.pppoker),
-    buffalo: bkNumber(saldoAtual.buffalo),
-    ganamos: bkNumber(saldoAtual.ganamos),
-    pendentes: bkNumber(saldoAtual.pendentes),
-    lucroRealizado: bkNumber(saldoAtual.lucroRealizado),
-    cargasAdmin: bkNumber(saldoAtual.cargasAdmin),
-    diferencaReal: bkNumber(saldoAtual.diferencaReal)
+  currentUserData = {
+    uid: user.uid,
+    email: user.email,
+    ...data
   };
 
-  const platform = movimento.platform;
-  const value = bkNumber(movimento.value);
-
-  if (!Object.prototype.hasOwnProperty.call(saldo, platform)) {
-    throw new Error("Plataforma inválida.");
-  }
-
-  if (movimento.type === "carga") {
-    saldo[platform] += value;
-    saldo.cargasAdmin += value;
-  }
-
-  if (movimento.type === "retirada") {
-    saldo[platform] -= value;
-    saldo.lucroRealizado += value;
-  }
-
-  if (movimento.type === "gasto") {
-    saldo[platform] -= value;
-  }
-
-  if (movimento.type === "correcao") {
-    saldo[platform] += value;
-  }
-
-  return saldo;
+  return true;
 }
-
-async function saveAdminMovement(){
-  try {
-    const type = getInput("adminMovementType");
-    const platform = getInput("adminMovementPlatform");
-    const value = bkNumber(getInput("adminMovementValue"));
-    const description = getInput("adminMovementDescription").trim();
-
-    if (!type || !platform || value <= 0) {
-      alert("Preencha tipo, plataforma e valor.");
-      return;
-    }
-
-    await criarSaldoMestreSeNaoExistir();
-
-    const balanceRef = doc(db, "companyBalance", "main");
-    const balanceSnap = await getDoc(balanceRef);
-    const saldoAtual = balanceSnap.data() || {};
-
-    const movimento = {
-      type,
-      platform,
-      value,
-      description,
-      createdAt: serverTimestamp(),
-      createdBy: auth?.currentUser?.email || "admin"
-    };
-
-    const novoSaldo = calcularNovoSaldoPorMovimento(saldoAtual, movimento);
-
-    await addDoc(collection(db, "adminMovements"), movimento);
-
-    await updateDoc(balanceRef, {
-      ...novoSaldo,
-      updatedAt: serverTimestamp()
-    });
-
-    clearAdminMovementForm();
-    alert("Movimento admin salvo com sucesso.");
-  } catch (error) {
-    console.warn("Erro ao salvar movimento admin:", error);
-    alert("Erro ao salvar movimento admin.");
-  }
-}
-
-function calcularTotalInformadoTurno(turno = {}) {
+function calcularSaldoCaixa(turno = {}) {
   return (
-    bkNumber(turno.reca) +
-    bkNumber(turno.suprema) * BK_MULTIPLIER +
-    bkNumber(turno.pppoker) * BK_MULTIPLIER +
-    bkNumber(turno.buffalo) +
-    bkNumber(turno.ganamos) -
-    bkNumber(turno.pendentes)
+    Number(turno.reca || 0) +
+    Number(turno.suprema || 0) * 400 +
+    Number(turno.pppoker || 0) * 400 +
+    Number(turno.buffalo || 0) +
+    Number(turno.ganamos || 0) -
+    Number(turno.cargaPoker || 0) -
+    Number(turno.cargaFichas || 0) -
+    Number(turno.pendentes || turno.pendentesTotal || 0)
   );
 }
 
-function getShiftClosureFormData() {
+function calcularSaldoBase(turno = {}) {
+  return calcularSaldoCaixa(turno);
+}
+
+function calcularSaldo(turno = {}) {
+  return calcularSaldoCaixa(turno);
+}
+
+function calcularSaldoLiquido(turno = {}) {
+  return calcularSaldoCaixa(turno);
+}
+
+function calcularDiffReal(turnoAtual = {}, turnoAnterior = {}) {
+  const totalAtual = calcularSaldoCaixa(turnoAtual);
+  const totalAnterior = calcularSaldoCaixa(turnoAnterior);
+
+  const lucroRealizadoAtual =
+    Number(turnoAtual.saidas || turnoAtual.saidasTotal || 0);
+
+  return totalAtual - totalAnterior + lucroRealizadoAtual;
+}
+
+function getTurnoBreakdown(t = {}) {
   return {
-    operador: getInput("shiftOperatorName").trim(),
-    turno: getInput("shiftName"),
-    reca: bkNumber(getInput("shiftReca")),
-    suprema: bkNumber(getInput("shiftSuprema")),
-    pppoker: bkNumber(getInput("shiftPppoker")),
-    buffalo: bkNumber(getInput("shiftBuffalo")),
-    ganamos: bkNumber(getInput("shiftGanamos")),
-    pendentes: bkNumber(getInput("shiftPendentes"))
+    reca: Number(t.reca || 0),
+    supremaFichas: Number(t.suprema || 0),
+    supremaValor: Number(t.suprema || 0) * 400,
+    pppokerFichas: Number(t.pppoker || 0),
+    pppokerValor: Number(t.pppoker || 0) * 400,
+    buffalo: Number(t.buffalo || 0),
+    ganamos: Number(t.ganamos || 0),
+
+    cargaFichas: Number(t.cargaFichas || 0),
+    cargaPoker: Number(t.cargaPoker || 0),
+    pendentes: Number(t.pendentesTotal || t.pendentes || 0),
+    saidas: Number(t.saidasTotal || t.saidas || 0),
+
+    caixa: calcularSaldoCaixa(t)
   };
 }
 
-function renderShiftPreview(diff, totalInformado, totalMestre) {
-  setText("shiftDiffPreview", bkMoney(diff));
-  setText("shiftPreviewDetails", `Informado: ${bkMoney(totalInformado)} | Saldo mestre: ${bkMoney(totalMestre)}`);
-}
-
-async function previewShiftClosure() {
-  await criarSaldoMestreSeNaoExistir();
-
-  const balanceRef = doc(db, "companyBalance", "main");
-  const snap = await getDoc(balanceRef);
-  const saldoMestre = snap.data() || {};
-  const turno = getShiftClosureFormData();
-
-  const totalInformado = calcularTotalInformadoTurno(turno);
-  const totalMestre = calcularSaldoTotalEmpresa(saldoMestre);
-  const diffReal = totalInformado - totalMestre;
-
-  renderShiftPreview(diffReal, totalInformado, totalMestre);
-
-  return { turno, saldoMestre, totalInformado, totalMestre, diffReal };
-}
-
-function clearShiftClosureForm() {
-  [
-    "shiftOperatorName",
-    "shiftReca",
-    "shiftSuprema",
-    "shiftPppoker",
-    "shiftBuffalo",
-    "shiftGanamos",
-    "shiftPendentes"
-  ].forEach(id => {
-    const el = document.getElementById(id);
-    if (el) el.value = "";
-  });
-
-  setText("shiftDiffPreview", "$ 0,00");
-  setText("shiftPreviewDetails", "Preencha os dados para calcular.");
-}
-
-async function saveShiftClosure() {
-  if (editingClosureId) {
-    await updateExistingShiftClosure();
-    return;
-  }
-
-  try {
-    const result = await previewShiftClosure();
-
-    if (!result.turno.operador) {
-      alert("Informe o nome do operador.");
-      return;
+    function getRankingStartDate(range) {
+      const now = new Date();
+      const start = new Date(now);
+      if (range === "day") start.setHours(0,0,0,0);
+      if (range === "week") start.setDate(start.getDate() - 7);
+      if (range === "15") start.setDate(start.getDate() - 15);
+      if (range === "30") start.setDate(start.getDate() - 30);
+      return start;
     }
 
-    const fechamento = {
-      operador: result.turno.operador,
-      turno: result.turno.turno,
-      saldosInformados: {
-        reca: result.turno.reca,
-        suprema: result.turno.suprema,
-        pppoker: result.turno.pppoker,
-        buffalo: result.turno.buffalo,
-        ganamos: result.turno.ganamos,
-        pendentes: result.turno.pendentes
-      },
-      saldoMestreAnterior: result.saldoMestre,
-      totalInformado: result.totalInformado,
-      totalMestreAnterior: result.totalMestre,
-      diffReal: result.diffReal,
-      createdAt: serverTimestamp(),
-      createdBy: auth?.currentUser?.email || "operador"
-    };
+function renderRanking(range = rankingRange) {
+  rankingRange = range;
 
-    await addDoc(collection(db, "shiftClosures"), fechamento);
+  const container = byId("rankingSimpleList");
+  if (!container) return;
 
-    const balanceRef = doc(db, "companyBalance", "main");
+  const startDate = getRankingStartDate(range);
+  const ranking = {};
 
-    await updateDoc(balanceRef, {
-      reca: result.turno.reca,
-      suprema: result.turno.suprema,
-      pppoker: result.turno.pppoker,
-      buffalo: result.turno.buffalo,
-      ganamos: result.turno.ganamos,
-      pendentes: result.turno.pendentes,
-      diferencaReal: result.diffReal,
-      updatedAt: serverTimestamp()
-    });
+  historyCache.forEach((item, index) => {
+    const baseDate = item.fechamentoDate || item.turno?.dataFechamento;
+    if (!baseDate) return;
 
-    clearShiftClosureForm();
-    alert("Fechamento salvo e saldo mestre atualizado.");
-  } catch (error) {
-    console.warn("Erro ao salvar fechamento:", error);
-    alert("Erro ao salvar fechamento.");
-  }
-}
-function formatClosureDate(value){
-  try {
-    if (!value) return "Sem data";
-    const date = value.toDate ? value.toDate() : new Date(value);
+    const itemDate = new Date(`${baseDate}T12:00:00`);
+    if (itemDate < startDate) return;
 
-    return date.toLocaleString("pt-BR", {
-      day:"2-digit",
-      month:"2-digit",
-      year:"numeric",
-      hour:"2-digit",
-      minute:"2-digit"
-    });
-  } catch {
-    return "Sem data";
-  }
-}
+    const previousItem = historyCache[index + 1];
+    if (!previousItem) return;
 
-function renderShiftClosuresHistory(items = []){
-  const list = document.getElementById("closureHistoryList");
-  if (!list) return;
+    const nome = item.nomeOperador || "Sem nome";
+    const diff = calcularDiffReal(item.turno || {}, previousItem.turno || {});
+    const saidas = Number(item.turno?.saidasTotal || item.turno?.saidas || 0);
 
-  if (!items.length) {
-    list.innerHTML = `<div class="bk-history-empty">Nenhum fechamento salvo ainda.</div>`;
-    return;
-  }
+    if (!ranking[nome]) {
+      ranking[nome] = {
+        qtd: 0,
+        diff: 0,
+        saidas: 0
+      };
+    }
 
-  list.innerHTML = items.map(item => {
-    const diffClass = item.diffReal >= 0 ? "bk-diff-positive" : "bk-diff-negative";
+    ranking[nome].qtd += 1;
+    ranking[nome].diff += diff;
+    ranking[nome].saidas += saidas;
+  });
+
+  const list = Object.entries(ranking)
+    .map(([nome, r]) => ({
+      nome,
+      ...r,
+      absDiff: Math.abs(r.diff)
+    }))
+    .sort((a, b) => b.absDiff - a.absDiff);
+
+  const maxDiff = Math.max(...list.map(r => r.absDiff), 1);
+
+  const rows = list.map((r, index) => {
+    const percent = Math.max((r.absDiff / maxDiff) * 100, 4);
+    const isNegative = r.diff < 0;
+    const isPositive = r.diff > 0;
 
     return `
-      <div class="bk-history-card">
-        <div class="bk-history-card-top">
-          <div>
-            <h3>${item.turno || "Turno"} — ${item.operador || "Operador"}</h3>
-            <small>${formatClosureDate(item.createdAt)}</small>
+      <div class="ranking-bar-card">
+        <div class="ranking-bar-pos">${index + 1}</div>
+
+        <div class="ranking-bar-info">
+          <div class="ranking-bar-top">
+            <strong>${escapeHtml(r.nome)}</strong>
+            <span>${r.qtd} fechamento${r.qtd > 1 ? "s" : ""}</span>
           </div>
-          <small>${item.createdBy || ""}</small>
+
+          <div class="ranking-bar-track">
+            <div 
+              class="ranking-bar-fill ${isNegative ? "negative" : isPositive ? "positive" : "neutral"}" 
+              style="width:${percent}%"
+            ></div>
+          </div>
         </div>
 
-        <div class="bk-history-row">
-          <span>Total informado</span>
-          <strong>${bkMoney(item.totalInformado)}</strong>
-        </div>
-
-        <div class="bk-history-row">
-          <span>Saldo mestre anterior</span>
-          <strong>${bkMoney(item.totalMestreAnterior)}</strong>
-        </div>
-
-        <div class="bk-history-row">
-          <span>Diferença real</span>
-          <strong class="${diffClass}">${bkMoney(item.diffReal)}</strong>
-        </div>
-
-        <div class="bk-history-row">
-          <span>Reca</span>
-          <strong>${bkMoney(item.saldosInformados?.reca)}</strong>
-        </div>
-
-        <div class="bk-history-row">
-          <span>Suprema</span>
-          <strong>${bkFichas(item.saldosInformados?.suprema)}</strong>
-        </div>
-
-        <div class="bk-history-row">
-          <span>PPPoker</span>
-          <strong>${bkFichas(item.saldosInformados?.pppoker)}</strong>
-        </div>
-
-        <div class="bk-history-row">
-          <span>Buffalo</span>
-          <strong>${bkMoney(item.saldosInformados?.buffalo)}</strong>
-        </div>
-
-        <div class="bk-history-row">
-          <span>Ganamos</span>
-          <strong>${bkMoney(item.saldosInformados?.ganamos)}</strong>
-        </div>
-
-        <div class="bk-history-row">
-          <span>Pendentes</span>
-          <strong>${bkMoney(item.saldosInformados?.pendentes)}</strong>
-        </div>
-
-        <div class="bk-history-actions">
-          <button class="bk-edit-btn" data-edit-closure="${item.id}">Editar</button>
-          <button class="bk-delete-btn" data-delete-closure="${item.id}">Excluir</button>
+        <div class="ranking-bar-value ${isNegative ? "negative" : isPositive ? "positive" : "neutral"}">
+          ${isPositive ? "+" : isNegative ? "-" : ""}${money(r.absDiff)}
         </div>
       </div>
     `;
   }).join("");
+
+  container.innerHTML = rows || `<div class="ranking-empty">Sem dados para este período.</div>`;
+  
+}
+    
+    function renderCompare() {
+      if (historyCache.length < 2) return;
+      const current = historyCache[0].turno || {};
+      const prev = historyCache[1].turno || {};
+      const systems = [
+        { name: "Banco", diff: Number(current.reca || 0) - Number(prev.reca || 0), type: "money" },
+        { name: "Suprema", diff: Number(current.suprema || 0) - Number(prev.suprema || 0), type: "fichas" },
+        { name: "PPPoker", diff: Number(current.pppoker || 0) - Number(prev.pppoker || 0), type: "fichas" },
+        { name: "Buffalo", diff: Number(current.buffalo || 0) - Number(prev.buffalo || 0), type: "money" },
+        { name: "Ganamos", diff: Number(current.ganamos || 0) - Number(prev.ganamos || 0), type: "money" }
+      ];
+      byId("systemsCompareBar").innerHTML = systems.map((s) => {
+        const cls = s.diff > 0 ? "up" : s.diff < 0 ? "down" : "same";
+        const sign = s.diff > 0 ? "+" : s.diff < 0 ? "-" : "";
+        const valueText = s.type === "money" ? `${sign} ${money(Math.abs(s.diff))}` : `${sign} ${Math.abs(s.diff).toLocaleString("pt-BR")} fichas`;
+        return `<div class="compare-pill"><span class="compare-dot ${cls}"></span><div><div class="compare-name">${s.name}</div><div class="compare-value">${valueText}</div></div></div>`;
+      }).join("");
+    }
+
+    function renderTopPreviousCards() {
+      const last = historyCache[0];
+      if (!last) {
+        byId("previousOperator").textContent = "-";
+        byId("previousDate").textContent = "-";
+        byId("previousDiff").textContent = money(0);
+        byId("previousReca").textContent = money(0);
+        byId("bankValue").textContent = money(0);
+        return;
+      }
+      const previousLast = historyCache[1];
+      const diff = previousLast ? calcularDiffReal(last.turno || {}, previousLast.turno || {}) : 0;
+      const lastTotal = calcularSaldoCaixa(last.turno || {});
+      const lastReca = Number(last.total || last.turno?.reca || 0);
+      byId("previousOperator").textContent = last.nomeOperador || "Sem nome";
+      byId("previousDate").textContent = formatDateBR(last.fechamentoDate || last.turno?.dataFechamento || "");
+      const previousDiff = byId("previousDiff");
+      previousDiff.textContent = `${diff > 0 ? "+" : diff < 0 ? "-" : ""}${money(Math.abs(diff))}`;
+      previousDiff.classList.remove("green", "red");
+      if (diff > 0) previousDiff.classList.add("green");
+      if (diff < 0) previousDiff.classList.add("red");
+      byId("previousReca").textContent = money(lastTotal);
+      byId("bankValue").textContent = balanceVisible ? money(lastReca) : "Saldo oculto";
+    }
+
+const MONTHLY_GOAL_TARGET = 40000000;
+
+function renderMonthlyGoalCard() {
+  const fill = byId("goalBarFill");
+const status = byId("goalStatus");
+if (!fill || !status) return;
+
+  const canView =
+    currentUserData?.role === "admin" ||
+    currentUserData?.role === "supervisor";
+
+  if (!canView) {
+  status.innerHTML = "Acesso permitido apenas para admin ou supervisor.";
+  return;
 }
 
-function startShiftClosuresHistory(){
-  const q = query(
-    collection(db, "shiftClosures"),
-    orderBy("createdAt", "desc"),
-    limit(20)
+  const now = new Date();
+  const currentYear = now.getFullYear();
+  const currentMonth = now.getMonth();
+  const today = now.getDate();
+  const daysInMonth = new Date(currentYear, currentMonth + 1, 0).getDate();
+
+  let totalRealizado = 0;
+
+  historyCache.forEach((item) => {
+    const t = item.turno || {};
+    const dateStr = item.fechamentoDate || t.dataFechamento;
+    if (!dateStr) return;
+
+    const itemDate = new Date(`${dateStr}T12:00:00`);
+
+    if (
+      itemDate.getFullYear() !== currentYear ||
+      itemDate.getMonth() !== currentMonth
+    ) return;
+
+    let totalDoTurno = 0;
+
+    (t.outflows || []).forEach((o) => {
+      const tipo = String(o.type || "")
+        .toLowerCase()
+        .normalize("NFD")
+        .replace(/[\u0300-\u036f]/g, "");
+
+      if (
+        tipo === "lucro" ||
+        tipo === "retirada" ||
+        tipo === "retiradas"
+      ) {
+        totalDoTurno += Number(o.value || 0);
+      }
+    });
+
+    if (!totalDoTurno) {
+      totalDoTurno += Number(
+        t.lucroRealizadoTotal ||
+        item.lucroRealizadoTotal ||
+        0
+      );
+    }
+
+    totalRealizado += totalDoTurno;
+  });
+const percent = Math.min((totalRealizado / MONTHLY_GOAL_TARGET) * 100, 100);
+const restante = Math.max(MONTHLY_GOAL_TARGET - totalRealizado, 0);
+
+const mediaDiaria = today > 0 ? totalRealizado / today : 0;
+const projecaoMes = mediaDiaria * daysInMonth;
+const percentProjetado = (projecaoMes / MONTHLY_GOAL_TARGET) * 100;
+
+const goalFill = byId("goalBarFill");
+const goalStatus = byId("goalStatus");
+
+if (goalFill) {
+  goalFill.style.width = "0%";
+  goalFill.offsetHeight;
+  goalFill.style.width = `${percent}%`;
+
+  goalFill.classList.remove("success", "danger");
+
+  if (totalRealizado > 0) {
+    goalFill.classList.add("success");
+  }
+
+  if (totalRealizado < 0) {
+    goalFill.classList.add("danger");
+  }
+}
+
+if (goalStatus) {
+  goalStatus.innerHTML =
+    percent >= 100
+      ? `<strong>Meta batida 🔥</strong><br>${money(totalRealizado)} realizado • ${percent.toFixed(0)}%`
+      : `<strong>${money(totalRealizado)} realizado</strong><br>
+         Faltam ${money(restante)}
+         <small>Projeção mensal: ${money(projecaoMes)} • ${percentProjetado.toFixed(0)}%</small>`;
+}
+}
+    
+    function render() {
+  renderTopPreviousCards();
+  renderCompare();
+  renderRanking();
+  renderMonthlyGoalCard();
+}
+
+    function renderHistory() {
+  const list = byId("historyList");
+  if (!list) return;
+
+  renderTopPreviousCards();
+
+  if (!historyCache.length) {
+    list.innerHTML = `<div class="history-card">Sem histórico ainda.</div>`;
+    return;
+  }
+
+  list.innerHTML = historyCache.map((item, index) => {
+    const nome = item.nomeOperador || "Sem nome";
+    const data = formatDateBR(item.fechamentoDate || item.turno?.dataFechamento || "");
+    const turno = item.turno || {};
+    const b = getTurnoBreakdown(turno);
+
+    const previousItem = historyCache[index + 1];
+    const diff = previousItem
+      ? calcularDiffReal(turno, previousItem.turno || {})
+      : 0;
+
+  return `
+  <div class="history-card bank-history-card" data-history-open="${index}">
+    
+    <div class="history-card-top">
+      <div>
+        <div class="history-date">${data}</div>
+        <div class="history-operator">${escapeHtml(nome)}</div>
+      </div>
+
+      <div class="history-status ${diff > 0 ? "positive" : diff < 0 ? "negative" : "neutral"}">
+        ${diff > 0 ? "+" : diff < 0 ? "-" : ""}${money(Math.abs(diff))}
+      </div>
+    </div>
+
+    <div class="history-simple">
+      
+      <div class="history-main">
+        <span>Banco Reca</span>
+        <strong>${money(b.reca)}</strong>
+      </div>
+
+      <div class="history-secondary">
+        <span>Pendentes</span>
+        <strong>${money(b.pendentes)}</strong>
+      </div>
+
+    </div>
+
+  </div>
+`;
+  }).join("");
+}
+
+    function rowsTable(title, rows) {
+      return `<div class="detail-section"><div class="detail-section-title">${title}</div><table class="detail-table"><thead><tr><th>Descrição</th><th>Valor</th></tr></thead><tbody>${rows}</tbody></table></div>`;
+    }
+
+    function openHistoryModal(index) {
+      const item = historyCache[index];
+      if (!item) return;
+      const turno = item.turno || {};
+      const previousItem = historyCache[index + 1];
+      const b = getTurnoBreakdown(turno);
+      const diff = previousItem ? calcularDiffReal(turno, previousItem.turno || {}) : 0;
+     byId("historyModalSub").innerHTML = `Enviado em: ${formatDateTimeBR(item.submittedAt)}<br>
+   <span style="font-weight:600; color:#0f172a">${item.operadorEmail || "-"}</span>`;
+
+      const entriesRows = `
+        <tr><td>Banco Reca</td><td>${money(b.reca)}</td></tr>
+       <tr>
+  <td>Suprema</td>
+  <td>${b.supremaFichas.toLocaleString("pt-BR", {
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2
+  })} fichas</td>
+</tr>
+
+<tr>
+  <td>PPPoker</td>
+  <td>${b.pppokerFichas.toLocaleString("pt-BR", {
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2
+  })} fichas</td>
+</tr>
+        <tr><td>Buffalo</td><td>${money(b.buffalo)}</td></tr>
+        <tr><td>Ganamos</td><td>${money(b.ganamos)}</td></tr>`;
+      const discountRows = `
+        <tr><td>Carga de Fichas</td><td>${money(b.cargaFichas)}</td></tr>
+        <tr><td>Carga Poker</td><td>${money(b.cargaPoker)}</td></tr>
+        <tr><td>Pagos Pendentes</td><td>${money(b.pendentes)}</td></tr>
+        <tr><td>Saídas de Caixa</td><td>${money(b.saidas)}</td></tr>`;
+      const pendingRows = (turno.pendings || []).map(p => `<tr><td>${escapeHtml(p.name || "Pendente")}</td><td>${money(p.value)}</td></tr>`).join("") || `<tr><td colspan="2">Sem pendentes detalhados</td></tr>`;
+      const outflowRows = (turno.outflows || []).map(o => `<tr><td>${escapeHtml(o.name || "Saída")}</td><td>${money(o.value)}</td></tr>`).join("") || `<tr><td colspan="2">Sem saídas detalhadas</td></tr>`;
+
+      byId("historyModalBody").innerHTML = `
+      <div class="modal-grid">
+  <div class="summary-box">
+    <div class="summary-box-label">Banco Reca</div>
+    <div class="summary-box-value">${money(b.reca)}</div>
+  </div>
+
+  <div class="summary-box">
+    <div class="summary-box-label">Pendentes</div>
+    <div class="summary-box-value red">${money(b.pendentes)}</div>
+  </div>
+</div>
+
+<div class="modal-diff-badge ${diff > 0 ? "positive" : diff < 0 ? "negative" : "neutral"}">
+  Diferença: ${diff > 0 ? "+" : diff < 0 ? "-" : ""}${money(Math.abs(diff))}
+</div>
+        ${rowsTable("Entradas e plataformas", entriesRows)}
+        ${rowsTable("Descontos, pendentes e saídas", discountRows)}
+        ${rowsTable("Pagos pendentes detalhados", pendingRows)}
+      ${rowsTable("Saídas de caixa detalhadas", outflowRows)}
+
+${currentUserData?.role === "admin" ? `
+  <div style="margin-top:18px;display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+    <button id="editHistoryBtn" type="button" style="
+      width:100%;
+      padding:15px;
+      border-radius:16px;
+      border:none;
+      background:#eef4ff;
+      color:#102a56;
+      font-weight:950;
+      cursor:pointer;
+    ">
+      Editar histórico
+    </button>
+
+    <button id="deleteHistoryBtn" type="button" style="
+      width:100%;
+      padding:15px;
+      border-radius:16px;
+      border:none;
+      background:#fee2e2;
+      color:#be2633;
+      font-weight:950;
+      cursor:pointer;
+    ">
+      Excluir histórico
+    </button>
+  </div>
+` : ""}`;
+
+byId("editHistoryBtn")?.addEventListener("click", async () => {
+  const allowed = await requireAdmin();
+  if (!allowed) return;
+
+  await editTurn(item.id);
+  byId("historyModal")?.classList.add("hidden");
+});
+
+byId("deleteHistoryBtn")?.addEventListener("click", async () => {
+  const allowed = await requireAdmin();
+  if (!allowed) return;
+  if (!confirm("Tem certeza que deseja excluir?")) return;
+
+  try {
+    await deleteDoc(doc(db, "history", item.id));
+    alert("Excluído com sucesso");
+    byId("historyModal")?.classList.add("hidden");
+  } catch (err) {
+    console.error(err);
+    alert("Erro ao excluir");
+  }
+});
+      byId("historyModal")?.classList.remove("hidden");
+    }
+
+let editingTurnId = null;
+
+function setInputValue(id, value) {
+  const input = byId(id);
+  if (!input) return;
+
+  const numberValue = Number(value || 0);
+
+  input.value = numberValue.toLocaleString("pt-BR", {
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2
+  });
+
+  if (input.dataset) {
+    input.dataset.raw = String(Math.round(numberValue * 100));
+  }
+}
+
+async function requireReportsAccess() {
+  const data = currentUserData || await getCurrentUserData();
+
+  const allowed =
+    data?.role === "admin" ||
+    data?.role === "supervisor";
+
+  if (!allowed) {
+    alert("Acesso permitido apenas para administradores ou supervisores.");
+    return false;
+  }
+
+  return true;
+}
+
+async function editTurn(id) {
+  const allowed = await requireAdmin();
+  if (!allowed) return;
+
+  const item = historyCache.find(h => h.id === id);
+
+  if (!item) {
+    alert("Histórico não encontrado.");
+    return;
+  }
+
+  const t = item.turno || {};
+
+  editingTurnId = id;
+  window.editingTurnId = id;
+
+  byId("t2_nome_operador").value = item.nomeOperador || "";
+  byId("t2_data_fechamento").value = item.fechamentoDate || t.dataFechamento || getTodayDateInput();
+
+  setInputValue("t2_banco", t.reca);
+  setInputValue("t2_buffalo", t.buffalo);
+  setInputValue("t2_ganamos", t.ganamos);
+  setInputValue("t2_cargas", t.cargaFichas);
+
+  byId("t2_suprema").value = Number(t.suprema || 0).toLocaleString("pt-BR", {
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2
+  });
+
+  byId("t2_pppoker").value = Number(t.pppoker || 0).toLocaleString("pt-BR", {
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2
+  });
+
+  const cargaPokerFichas = Number(t.cargaPoker || 0) / 400;
+
+  byId("t2_cargas_poker").value = cargaPokerFichas.toLocaleString("pt-BR", {
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2
+  });
+
+  const pendingList = byId("t2_pending_list");
+  const outflowList = byId("t2_dynamic_list");
+
+  if (pendingList) pendingList.innerHTML = "";
+  if (outflowList) outflowList.innerHTML = "";
+
+  (t.pendings || []).forEach(p => {
+    createPendingRow("t2");
+
+    const row = pendingList.lastElementChild;
+    const inputs = row.querySelectorAll("input");
+
+    inputs[0].value = p.name || "";
+    inputs[1].value = Number(p.value || 0).toLocaleString("pt-BR", {
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2
+    });
+  });
+
+  (t.outflows || []).forEach(o => {
+    createDynamicRow("t2");
+
+    const row = outflowList.lastElementChild;
+    const inputs = row.querySelectorAll("input");
+    const select = row.querySelector("select");
+
+    inputs[0].value = o.name || "";
+    inputs[1].value = Number(o.value || 0).toLocaleString("pt-BR", {
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2
+    });
+
+    if (select) {
+      select.value = o.type || "operacional";
+    }
+  });
+
+  byId("fecharTurno").innerHTML = `
+    <span class="bank-action-title">Salvar edição</span>
+    <span class="bank-action-sub">Atualizar turno</span>
+  `;
+
+  alert("Modo edição ativado. Altere os dados e clique em Salvar edição.");
+  window.scrollTo({ top: 0, behavior: "smooth" });
+}
+
+async function recalcAllHistory() {
+  const snap = await getDocs(collection(db, "history"));
+
+  const docs = snap.docs
+    .map(d => ({ id: d.id, ...d.data() }))
+    .sort((a, b) => {
+      const dateA =
+        a.submittedAt?.toDate?.()?.getTime?.() ||
+        Number(a.submittedAt) ||
+        new Date(a.fechamentoDate || a.turno?.dataFechamento || 0).getTime();
+
+      const dateB =
+        b.submittedAt?.toDate?.()?.getTime?.() ||
+        Number(b.submittedAt) ||
+        new Date(b.fechamentoDate || b.turno?.dataFechamento || 0).getTime();
+
+      return dateB - dateA;
+    });
+
+  for (let i = 0; i < docs.length; i++) {
+    const current = docs[i];
+    const previous = docs[i + 1];
+
+    const turnoAtual = current.turno || {};
+    const turnoAnterior = previous ? previous.turno || {} : null;
+
+    const b = getTurnoBreakdown(turnoAtual);
+
+    let diff = 0;
+
+    if (turnoAnterior) {
+      diff = calcularDiffReal(turnoAtual, turnoAnterior);
+    }
+
+    await updateDoc(doc(db, "history", current.id), {
+      saldo: b.caixa,
+      currentSaldoTotal: b.caixa,
+      diff,
+      bankVariation: diff,
+      recalculatedAt: Date.now()
+    });
+  }
+}
+
+async function saveTurn() {
+  try {
+if (saveInProgress) return;
+
+saveInProgress = true;
+
+setFinalizarLoading(
+  true,
+  editingTurnId || window.editingTurnId ? "Salvando edição" : "Finalizando"
+);
+    const userData = currentUserData || await getCurrentUserData();
+
+    if (!userData || userData.status !== "active") {
+      alert("Usuário sem permissão.");
+      return;
+    }
+
+   if (!["admin", "supervisor", "operador"].includes(userData.role)) {
+  alert("Acesso negado.");
+  return;
+}
+
+    if (editingTurnId || window.editingTurnId) {
+      if (userData.role !== "admin") {
+        alert("Edição negada.");
+        return;
+      }
+    }
+
+    const nome = byId("t2_nome_operador")?.value.trim();
+
+    if (!nome) {
+      alert("Operador obrigatório");
+      return;
+    }
+
+    const valMoney = (id) => parseMoney(byId(id)?.value || "");
+    const valFicha = (id) => parseFicha(byId(id)?.value || "");
+
+    const reca = valMoney("t2_banco");
+    const suprema = valFicha("t2_suprema");
+    const pppoker = valFicha("t2_pppoker");
+    const buffalo = valMoney("t2_buffalo");
+    const ganamos = valMoney("t2_ganamos");
+    const cargaFichas = valMoney("t2_cargas");
+    const cargaPokerRaw = valFicha("t2_cargas_poker");
+    const cargaPoker = cargaPokerRaw * 400;
+
+    const pendings = [...document.querySelectorAll("#t2_pending_list .dynamic-row")]
+      .map((row, index) => {
+        const inputs = row.querySelectorAll("input");
+
+        const name = inputs[0]?.value.trim() || "";
+        const value = parseMoney(inputs[1]?.value || "");
+
+        if ((name || value) && !name) {
+          throw new Error(`Nome obrigatório no pendente ${index + 1}`);
+        }
+
+        if ((name || value) && !value) {
+          throw new Error(`Valor obrigatório no pendente ${index + 1}`);
+        }
+
+        return {
+          name,
+          value
+        };
+      })
+      .filter(item => item.name || item.value);
+
+    const outflows = [...document.querySelectorAll("#t2_dynamic_list .dynamic-row")]
+      .map((row, index) => {
+        const inputs = row.querySelectorAll("input");
+        const select = row.querySelector("select");
+
+        const name = inputs[0]?.value.trim() || "";
+        const value = parseMoney(inputs[1]?.value || "");
+        const type = select?.value || "";
+
+        if ((name || value) && !name) {
+          throw new Error(`Nome obrigatório na saída ${index + 1}`);
+        }
+
+        if ((name || value) && !value) {
+          throw new Error(`Valor obrigatório na saída ${index + 1}`);
+        }
+
+        if ((name || value) && !type) {
+          throw new Error(`Selecione o tipo da saída ${index + 1}`);
+        }
+
+        return {
+          name,
+          value,
+          type
+        };
+      })
+      .filter(item => item.name || item.value);
+
+    const entradasTotal =
+      reca +
+      (suprema * 400) +
+      (pppoker * 400) +
+      buffalo +
+      ganamos -
+      cargaFichas -
+      cargaPoker;
+
+    const pendentesTotal = pendings.reduce((acc, item) => acc + Number(item.value || 0), 0);
+    const saidasTotal = outflows.reduce((acc, item) => acc + Number(item.value || 0), 0);
+
+    const lucroRealizadoTotal = outflows
+      .filter(item => item.type === "lucro")
+      .reduce((acc, item) => acc + Number(item.value || 0), 0);
+
+    const gastosOperacionaisTotal = outflows
+      .filter(item => item.type === "operacional")
+      .reduce((acc, item) => acc + Number(item.value || 0), 0);
+
+    const saldoLiquido = entradasTotal - pendentesTotal - saidasTotal;
+
+    const entries = [
+      { name: "Banco Reca", value: reca },
+      { name: "Suprema (x400)", value: suprema * 400 },
+      { name: "PPPoker (x400)", value: pppoker * 400 },
+      { name: "Buffalo", value: buffalo },
+      { name: "Ganamos", value: ganamos },
+      { name: "Carga de Fichas", value: cargaFichas },
+      { name: "Cargas F. Poker (x400)", value: cargaPoker }
+    ];
+
+    const turno = {
+      reca,
+      suprema,
+      pppoker,
+      buffalo,
+      ganamos,
+      cargaFichas,
+      cargaPoker,
+      dataFechamento: byId("t2_data_fechamento")?.value || getTodayDateInput(),
+      entries,
+      pendings,
+      outflows,
+      entradasTotal,
+      pendentesTotal,
+      saidasTotal,
+      lucroRealizadoTotal,
+      gastosOperacionaisTotal,
+      saldoLiquido
+    };
+
+let diff = 0;
+
+const idEmEdicao = editingTurnId || window.editingTurnId;
+const originalItem = idEmEdicao
+  ? historyCache.find(h => h.id === idEmEdicao)
+  : null;
+
+if (historyCache.length && !idEmEdicao) {
+  const previous = historyCache[0];
+  const previousSaldo = calcularSaldo(previous.turno || {});
+  diff = (saldoLiquido + saidasTotal) - previousSaldo;
+}
+
+const item = {
+  nomeOperador: nome,
+  operadorUid: userData.uid,
+  operadorEmail: userData.email,
+  fechamentoDate: turno.dataFechamento,
+  total: reca,
+  saldo: saldoLiquido,
+  currentSaldoTotal: saldoLiquido,
+  retiradaLucro: saidasTotal,
+  turnProfit: saidasTotal,
+  lucroRealizadoTotal,
+  gastosOperacionaisTotal,
+  diff,
+  bankVariation: diff,
+  turno,
+
+  // mantém a posição original no histórico quando for edição
+  submittedAt: originalItem?.submittedAt || Date.now()
+};
+
+if (idEmEdicao) {
+await updateDoc(doc(db, "history", idEmEdicao), {
+  ...item,
+  editedAt: Date.now(),
+  editedBy: userData.email || userData.uid
+});
+
+await recalcAllHistory();
+
+editingTurnId = null;
+window.editingTurnId = null;
+
+showToast("Histórico atualizado com sucesso.", "success");
+
+clearTurn("t2");
+
+render();
+renderHistory();
+renderTopPreviousCards();
+renderMonthlyGoalCard();
+
+saveInProgress = false;
+setFinalizarLoading(false);
+
+return;
+}
+await addDoc(collection(db, "history"), item);
+
+showToast("Turno salvo com sucesso.", "success");
+
+// limpa campos (se já tiver função)
+clearTurn("t2");
+
+// re-renderiza tudo sem reload
+render();
+renderHistory();
+renderTopPreviousCards();
+renderMonthlyGoalCard();
+
+// libera botão
+saveInProgress = false;
+setFinalizarLoading(false);
+
+} catch (error) {
+  console.error("Erro ao salvar turno:", error);
+  alert(error.message || "Erro ao salvar turno.");
+
+  saveInProgress = false;
+  setFinalizarLoading(false);
+}
+}
+function clearTurn(turno) {
+
+  renderTopPreviousCards();
+
+  [
+    `${turno}_nome_operador`,
+    `${turno}_data_fechamento`,
+    `${turno}_banco`,
+    `${turno}_suprema`,
+    `${turno}_pppoker`,
+    `${turno}_buffalo`,
+    `${turno}_ganamos`,
+    `${turno}_cargas`,
+    `${turno}_cargas_poker`
+  ].forEach((id) => {
+    const el = byId(id);
+
+    if (el) {
+      el.value = "";
+      if (el.dataset) el.dataset.raw = "";
+    }
+  });
+
+  const pendingList = byId(`${turno}_pending_list`);
+  if (pendingList) pendingList.innerHTML = "";
+
+  const dynamicList = byId(`${turno}_dynamic_list`);
+  if (dynamicList) dynamicList.innerHTML = "";
+
+  editingTurnId = null;
+  window.editingTurnId = null;
+
+  const fecharBtn = byId("fecharTurno");
+  if (fecharBtn) {
+    fecharBtn.innerHTML = `
+      <span class="bank-action-title">Finalizar</span>
+      <span class="bank-action-sub">Salvar turno</span>
+    `;
+  }
+
+  render();
+}
+function createPendingRow(turno) {
+  const list = byId(`${turno}_pending_list`);
+  if (!list) return;
+
+  const row = document.createElement("div");
+  row.className = "dynamic-row";
+
+  row.innerHTML = `
+    <input type="text" placeholder="Nome do pendente">
+    <input type="text" inputmode="numeric" placeholder="0,00">
+    <button type="button" class="remove-row-btn">×</button>
+  `;
+
+  row.querySelector(".remove-row-btn").onclick = () => {
+    row.remove();
+    render();
+  };
+
+  list.appendChild(row);
+}
+
+function createDynamicRow(turno) {
+  const list = byId(`${turno}_dynamic_list`);
+  if (!list) return;
+
+  const row = document.createElement("div");
+  row.className = "dynamic-row";
+
+  row.innerHTML = `
+    <input type="text" placeholder="Nome da saída">
+    <input type="text" inputmode="numeric" placeholder="0,00">
+
+    <select class="outflow-type">
+      <option value="">Tipo da saída</option>
+      <option value="operacional">Gasto operacional</option>
+      <option value="lucro">Retirada</option>
+    </select>
+
+    <button type="button" class="remove-row-btn">×</button>
+  `;
+
+  row.querySelector(".remove-row-btn").onclick = () => {
+    row.remove();
+    render();
+  };
+
+  list.appendChild(row);
+}
+
+   function sortHistoryCache() {
+  historyCache.sort((a, b) => {
+    const dateA =
+      a.submittedAt?.toDate?.()?.getTime?.() ||
+      Number(a.submittedAt) ||
+      new Date(a.fechamentoDate || a.turno?.dataFechamento || 0).getTime();
+
+    const dateB =
+      b.submittedAt?.toDate?.()?.getTime?.() ||
+      Number(b.submittedAt) ||
+      new Date(b.fechamentoDate || b.turno?.dataFechamento || 0).getTime();
+
+    return dateB - dateA;
+  });
+}
+
+function mergeHistoryDocs(docs) {
+  docs.forEach((docItem) => {
+    const item = {
+      id: docItem.id,
+      ...docItem.data()
+    };
+
+    const exists = historyCache.some((h) => h.id === item.id);
+    if (!exists) {
+      historyCache.push(item);
+    }
+  });
+
+  sortHistoryCache();
+}
+
+function renderHistoryViews() {
+  renderHistory();
+  renderCompare();
+  renderRanking();
+  renderTopPreviousCards();
+  renderMonthlyGoalCard();
+}
+
+function startHistoryRealtimeListener() {
+  if (historyListenerStarted) return;
+
+  historyListenerStarted = true;
+
+  const qHistory = query(
+    collection(db, "history"),
+    orderBy("submittedAt", "desc"),
+    limit(historyPageSize)
   );
 
-  onSnapshot(q, (snapshot) => {
-    shiftClosuresCache = snapshot.docs.map(docSnap => ({
-      id: docSnap.id,
-      ...docSnap.data()
-    }));
+  historyUnsubscribe = onSnapshot(
+    qHistory,
+    (snapshot) => {
+      if (!snapshot.empty) {
+        lastHistoryDoc = snapshot.docs[snapshot.docs.length - 1];
+      }
 
-    renderShiftClosuresHistory(shiftClosuresCache);
-    bindClosureHistoryActions();
+      historyHasMore = snapshot.docs.length === historyPageSize;
 
-  }, (error) => {
-    console.warn("Erro ao carregar histórico de fechamentos:", error);
+      mergeHistoryDocs(snapshot.docs);
+      renderHistoryViews();
+      setupHistoryInfiniteScroll();
+    },
+    (error) => console.error("Erro ao carregar histórico:", error)
+  );
+}
 
-    const list = document.getElementById("closureHistoryList");
-    if (list) {
-      list.innerHTML = `<div class="bk-history-empty">Erro ao carregar histórico.</div>`;
+  async function loadMoreHistory() {
+  if (historyLoading || !historyHasMore || !lastHistoryDoc) return;
+
+  historyLoading = true;
+
+  try {
+    const qMore = query(
+      collection(db, "history"),
+      orderBy("submittedAt", "desc"),
+      startAfter(lastHistoryDoc),
+      limit(historyPageSize)
+    );
+
+    const snapshot = await getDocs(qMore);
+
+    if (snapshot.empty) {
+      historyHasMore = false;
+      renderHistory();
+      return;
+    }
+
+    lastHistoryDoc = snapshot.docs[snapshot.docs.length - 1];
+    historyHasMore = snapshot.docs.length === historyPageSize;
+
+    mergeHistoryDocs(snapshot.docs);
+    renderHistoryViews();
+
+  } catch (error) {
+    console.error("Erro ao carregar mais histórico:", error);
+  } finally {
+    historyLoading = false;
+  }
+}
+
+function setupHistoryInfiniteScroll() {
+  const body = document.querySelector("#historySection .history-body");
+  if (!body || body.dataset.infiniteScroll === "true") return;
+
+  body.dataset.infiniteScroll = "true";
+
+  body.addEventListener("scroll", () => {
+    const nearBottom =
+      body.scrollTop + body.clientHeight >= body.scrollHeight - 180;
+
+    if (nearBottom) {
+      loadMoreHistory();
     }
   });
 }
 
-async function rebuildMasterBalanceFromLastClosure() {
-  try {
-    await criarSaldoMestreSeNaoExistir();
+function buildPremiumBankReceiptPdf(startDate, endDate) {
+  const filtered = historyCache.filter((item) => {
+    const date = item.fechamentoDate || item.turno?.dataFechamento;
+    return date && date >= startDate && date <= endDate;
+  });
 
+  let totalLucroRealizado = 0;
+  let totalGastos = 0;
+  let totalRecaPeriodo = 0;
+  let diffTotal = 0;
+
+  const lucroRows = [];
+  const gastoRows = [];
+
+  filtered.forEach((item, index) => {
+    const t = item.turno || {};
+    const b = getTurnoBreakdown(t);
+
+    totalRecaPeriodo += Number(b.reca || 0);
+
+    const previousItem = filtered[index + 1];
+    if (previousItem) {
+      diffTotal += calcularDiffReal(t, previousItem.turno || {});
+    }
+
+    const operador = item.nomeOperador || "Sem nome";
+    const data = formatDateBR(item.fechamentoDate || item.turno?.dataFechamento || "");
+    const outflows = Array.isArray(item.turno?.outflows)   ? item.turno.outflows   : [];
+
+    outflows.forEach((o) => {
+      const value = Number(o.value || 0);
+
+      if (o.type === "lucro") {
+        totalLucroRealizado += value;
+
+        lucroRows.push(`
+          <div class="profit-row">
+            <div>
+              <strong>${escapeHtml(o.name || "Lucro realizado")}</strong>
+              <span>${escapeHtml(operador)} • ${data}</span>
+            </div>
+            <b>${money(value)}</b>
+          </div>
+        `);
+      } else {
+        totalGastos += value;
+
+        gastoRows.push(`
+          <div class="profit-row">
+            <div>
+              <strong>${escapeHtml(o.name || "Gasto operacional")}</strong>
+              <span>${escapeHtml(operador)} • ${data}</span>
+            </div>
+            <b class="negative-text">${money(value)}</b>
+          </div>
+        `);
+      }
+    });
+  });
+
+  const lucroLiquido = totalLucroRealizado - totalGastos;
+
+  let alertaTexto = "Operação estável";
+  let alertaClass = "alert-ok";
+
+  if (totalGastos > totalLucroRealizado) {
+    alertaTexto = "Gastos acima do lucro";
+    alertaClass = "alert-danger";
+  }
+
+  if (totalLucroRealizado > totalGastos) {
+    alertaTexto = "Resultado positivo";
+    alertaClass = "alert-success";
+  }
+
+  const rows = filtered.map((item, index) => {
+    const t = item.turno || {};
+    const b = getTurnoBreakdown(t);
+
+    const previousItem = filtered[index + 1];
+    const previousTurno = previousItem?.turno || {};
+
+    const diff = previousItem ? calcularDiffReal(t, previousTurno) : 0;
+
+    const diffClass = diff > 0 ? "positive" : diff < 0 ? "negative" : "neutral";
+    const diffSignal = diff > 0 ? "+" : diff < 0 ? "-" : "";
+
+    return `
+      <div class="receipt-card">
+
+        <div class="turn-header">
+          <div>
+            <span>${formatDateBR(item.fechamentoDate || t.dataFechamento || "")}</span>
+            <strong>${escapeHtml(item.nomeOperador || "Sem nome")}</strong>
+          </div>
+
+          <div class="turn-diff ${diffClass}">
+            Diferença de Caixa&nbsp; ${diffSignal}${money(Math.abs(diff))}
+          </div>
+        </div>
+
+        <div class="receipt-grid">
+          <div class="receipt-column">
+            <div class="column-title green-title">Caixa</div>
+
+            <div class="line-row">
+              <span>Saldo Reca</span>
+              <strong>${money(b.reca)}</strong>
+            </div>
+
+            <div class="line-row">
+              <span>Saídas</span>
+              <strong class="negative-text">${money(b.saidas)}</strong>
+            </div>
+
+            <div class="line-row">
+              <span>Pendentes</span>
+              <strong>${money(b.pendentes)}</strong>
+            </div>
+          </div>
+
+          <div class="receipt-column">
+            <div class="column-title blue-title">Plataformas</div>
+
+            <div class="line-row">
+              <span>Suprema</span>
+              <strong>${Number(t.suprema || 0).toLocaleString("pt-BR", {
+                minimumFractionDigits: 2,
+                maximumFractionDigits: 2
+              })} fichas</strong>
+            </div>
+
+            <div class="line-row">
+              <span>PPPoker</span>
+              <strong>${Number(t.pppoker || 0).toLocaleString("pt-BR", {
+                minimumFractionDigits: 2,
+                maximumFractionDigits: 2
+              })} fichas</strong>
+            </div>
+
+            <div class="line-row">
+              <span>Buffalo</span>
+              <strong>${money(b.buffalo)}</strong>
+            </div>
+
+            <div class="line-row">
+              <span>Ganamos</span>
+              <strong>${money(b.ganamos)}</strong>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    `;
+  }).join("");
+
+  return `
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<title>Relatório Bank King</title>
+
+<style>
+.page{
+  max-width:980px;
+  margin:0 auto;
+}
+
+.header{
+  background:linear-gradient(135deg,#0b1f4d,#163a8a);
+  color:#fff;
+  border-radius:18px;
+  padding:18px 20px;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  margin-bottom:14px;
+}
+
+/* lado esquerdo */
+.header-left{
+  display:flex;
+  align-items:center;
+  gap:12px;
+}
+
+.logo{
+  width:44px;
+  height:44px;
+  border-radius:12px;
+  background:rgba(255,255,255,0.1);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-weight:900;
+  font-size:18px;
+  letter-spacing:.5px;
+}
+
+.brand strong{
+  display:block;
+  font-size:16px;
+  font-weight:900;
+}
+
+.brand span{
+  font-size:10px;
+  opacity:.7;
+  letter-spacing:.06em;
+  text-transform:uppercase;
+}
+
+/* lado direito */
+.header-right{
+  text-align:right;
+  font-size:11px;
+  line-height:1.4;
+  opacity:.85;
+}
+
+  .kpi-grid{
+    display:grid;
+    grid-template-columns:repeat(4,1fr);
+    gap:10px;
+    margin-bottom:14px;
+  }
+
+  .kpi-card{
+    background:#fff;
+    border:1px solid #e5eaf2;
+    border-radius:18px;
+    padding:14px;
+    box-shadow:0 8px 18px rgba(10,16,32,.035);
+  }
+
+  .kpi-card span{
+    display:block;
+    font-size:10px;
+    text-transform:uppercase;
+    letter-spacing:.08em;
+    font-weight:900;
+    color:#667085;
+    margin-bottom:7px;
+  }
+
+  .kpi-card strong{
+    display:block;
+    font-size:20px;
+    font-weight:950;
+    letter-spacing:-.04em;
+  }
+
+  .kpi-card.reca strong{color:#0a1020;}
+  .kpi-card.diff.positive strong{color:#128044;}
+  .kpi-card.diff.negative strong{color:#be2633;}
+  .kpi-card.lucro strong{color:#128044;}
+  .kpi-card.gasto strong{color:#be2633;}
+
+  .alert-success{
+    background:#e8f8ee;
+    border-color:#ccefd8;
+  }
+
+  .alert-success strong,
+  .alert-success span{
+    color:#128044;
+  }
+
+  .alert-danger{
+    background:#fee2e2;
+    border-color:#ffd0d0;
+  }
+
+  .alert-danger strong,
+  .alert-danger span{
+    color:#be2633;
+  }
+
+  .alert-ok{
+    background:#f8fafc;
+  }
+
+  .profit-columns{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:12px;
+    margin-bottom:16px;
+  }
+
+  .profit-summary{
+    background:#ecfdf5;
+    border:1px solid #bbf7d0;
+    border-radius:20px;
+    padding:14px;
+  }
+
+  .profit-summary.red{
+    background:#fff1f2;
+    border-color:#fecdd3;
+  }
+
+  .profit-title{
+    font-size:12px;
+    text-transform:uppercase;
+    letter-spacing:.07em;
+    font-weight:950;
+    margin-bottom:8px;
+  }
+
+  .profit-title.green{color:#128044;}
+  .profit-title.red{color:#be2633;}
+
+  .profit-total{
+    font-size:22px;
+    font-weight:950;
+    margin-bottom:10px;
+  }
+
+  .profit-total.green{color:#128044;}
+  .profit-total.red{color:#be2633;}
+
+  .profit-row{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    gap:10px;
+    background:#fff;
+    border:1px solid rgba(10,16,32,.06);
+    border-radius:14px;
+    padding:10px 12px;
+    margin-top:6px;
+  }
+
+  .profit-row strong{
+    display:block;
+    font-size:13px;
+    color:#0a1020;
+  }
+
+  .profit-row span{
+    display:block;
+    margin-top:3px;
+    font-size:11px;
+    color:#667085;
+    font-weight:700;
+  }
+
+  .profit-row b{
+    font-size:13px;
+    font-weight:950;
+    color:#128044;
+    white-space:nowrap;
+  }
+
+  .section-title{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    margin:18px 0 10px;
+    color:#102a56;
+    font-size:15px;
+    font-weight:950;
+    text-transform:uppercase;
+    letter-spacing:.04em;
+  }
+
+  .section-title::after{
+    content:"";
+    height:1px;
+    background:#dbe3ef;
+    flex:1;
+  }
+
+  .receipt-card{
+    background:#fff;
+    border:1px solid #dfe7f2;
+    border-radius:20px;
+    margin-bottom:12px;
+    overflow:hidden;
+    box-shadow:0 8px 20px rgba(10,16,32,.035);
+    page-break-inside:avoid;
+  }
+
+  .turn-header{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    gap:14px;
+    padding:14px 16px;
+    border-bottom:1px solid #e8eef6;
+    background:#f8fafc;
+  }
+
+  .turn-header span{
+    display:inline-block;
+    color:#475569;
+    font-size:13px;
+    font-weight:900;
+    margin-right:10px;
+  }
+
+  .turn-header strong{
+    font-size:16px;
+    color:#0a1020;
+    font-weight:950;
+  }
+
+  .turn-diff{
+    font-size:13px;
+    font-weight:950;
+    white-space:nowrap;
+  }
+
+  .turn-diff.positive{color:#128044;}
+  .turn-diff.negative{color:#be2633;}
+  .turn-diff.neutral{color:#64748b;}
+
+  .receipt-grid{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:0;
+    padding:14px 16px;
+  }
+
+  .receipt-column{
+    padding:0 16px 0 0;
+  }
+
+  .receipt-column + .receipt-column{
+    border-left:1px solid #dfe7f2;
+    padding:0 0 0 16px;
+  }
+
+  .column-title{
+    font-size:12px;
+    font-weight:950;
+    text-transform:uppercase;
+    letter-spacing:.07em;
+    margin-bottom:10px;
+  }
+
+  .green-title{color:#128044;}
+  .blue-title{color:#2f6eea;}
+
+  .line-row{
+    display:flex;
+    justify-content:space-between;
+    gap:12px;
+    padding:6px 0;
+    font-size:13px;
+  }
+
+  .line-row span{
+    color:#334155;
+    font-weight:750;
+  }
+
+  .line-row strong{
+    color:#0a1020;
+    font-weight:950;
+    white-space:nowrap;
+  }
+
+  .negative-text{
+    color:#be2633!important;
+  }
+
+  .empty-line{
+    background:#fff;
+    border:1px dashed #cbd5e1;
+    border-radius:14px;
+    padding:12px;
+    color:#667085;
+    font-weight:800;
+    font-size:12px;
+  }
+
+  .footer{
+    margin-top:18px;
+    padding:14px 0;
+    border-top:1px solid #e5eaf2;
+    display:flex;
+    justify-content:space-between;
+    gap:12px;
+    color:#475569;
+    font-size:12px;
+    font-weight:800;
+  }
+
+  @media(max-width:700px){
+    body{padding:16px;}
+    .header{display:block;}
+    .header-info{text-align:left;margin-top:12px;}
+    .kpi-grid{grid-template-columns:1fr 1fr;}
+    .profit-columns{grid-template-columns:1fr;}
+    .receipt-grid{grid-template-columns:1fr;}
+    .receipt-column + .receipt-column{
+      border-left:none;
+      border-top:1px solid #dfe7f2;
+      padding:14px 0 0;
+      margin-top:12px;
+    }
+    .receipt-column{padding:0;}
+    .turn-header{align-items:flex-start;display:grid;}
+    .turn-diff{white-space:normal;}
+  }
+
+    @media print{
+    body{
+      background:#fff!important;
+      padding:0!important;
+    }
+
+    .print-btn{
+      display:none!important;
+      visibility:hidden!important;
+      height:0!important;
+      width:0!important;
+      margin:0!important;
+      padding:0!important;
+      overflow:hidden!important;
+    }
+
+    .receipt-card{
+      page-break-inside:avoid;
+      break-inside:avoid;
+    }
+  }
+</style>
+</head>
+
+<body>
+<div class="page">
+
+ <div class="header">
+  <div class="header-left">
+    <div class="logo">BK</div>
+    <div class="brand">
+      <strong>Bank King</strong>
+      <span>Relatório Detalhado</span>
+    </div>
+  </div>
+
+  <div class="header-right">
+    <div>Período: ${formatDateBR(startDate)} até ${formatDateBR(endDate)}</div>
+    <div>Gerado em: ${new Date().toLocaleDateString("pt-BR")} às ${new Date().toLocaleTimeString("pt-BR", { hour:"2-digit", minute:"2-digit" })}</div>
+  </div>
+</div>
+
+  <div class="kpi-grid">
+    <div class="kpi-card reca">
+      <span>Saldo Reca</span>
+      <strong>${money(totalRecaPeriodo)}</strong>
+    </div>
+
+    <div class="kpi-card diff ${diffTotal >= 0 ? "positive" : "negative"}">
+      <span>Diferença Caixa</span>
+      <strong>${diffTotal >= 0 ? "+" : "-"}${money(Math.abs(diffTotal))}</strong>
+    </div>
+
+    <div class="kpi-card lucro">
+      <span>Lucro Realizado</span>
+      <strong>${money(totalLucroRealizado)}</strong>
+    </div>
+
+    <div class="kpi-card ${alertaClass}">
+      <span>Status</span>
+      <strong>${alertaTexto}</strong>
+    </div>
+  </div>
+
+  <div class="profit-columns">
+    <div class="profit-summary">
+      <div class="profit-title green">Lucro realizado</div>
+      <div class="profit-total green">${money(totalLucroRealizado)}</div>
+      ${lucroRows.join("") || `<div class="empty-line">Sem lucro registrado no período.</div>`}
+    </div>
+
+    <div class="profit-summary red">
+      <div class="profit-title red">Gastos operacionais</div>
+      <div class="profit-total red">${money(totalGastos)}</div>
+      ${gastoRows.join("") || `<div class="empty-line">Sem gastos registrados no período.</div>`}
+    </div>
+  </div>
+
+  <div class="section-title">Fechamentos do período</div>
+
+  ${rows || `<div class="receipt-card" style="padding:18px;">Nenhum fechamento encontrado nesse período.</div>`}
+
+  <div class="footer">
+    <span>Controle • Transparência • Resultados</span>
+    <span>Documento interno • Bank King</span>
+  </div>
+
+</div>
+
+</body>
+</html>
+`;
+}
+
+   let lastScrollY = 0;
+
+function handleScrollActionsBar() {
+  const bar = document.querySelector(".actions-section");
+  if (!bar || !bar.classList.contains("active")) return;
+
+  const currentScroll = window.scrollY;
+
+  if (currentScroll > lastScrollY + 10) {
+    // descendo
+    bar.classList.add("hidden-scroll");
+  } else if (currentScroll < lastScrollY - 10) {
+    // subindo
+    bar.classList.remove("hidden-scroll");
+  }
+
+  lastScrollY = currentScroll;
+}
+   // 👇 COLOCA AQUI (fora do DOMContentLoaded)
+let ticking = false;
+   
+window.addEventListener("scroll", () => {
+  if (!ticking) {
+    window.requestAnimationFrame(() => {
+      handleScrollActionsBar();
+      ticking = false;
+    });
+    ticking = true;
+  }
+});
+
+   function handleKeyboard(open) {
+  const bar = document.querySelector(".actions-section");
+  if (!bar) return;
+
+  if (open) {
+    bar.classList.add("keyboard-open");
+  } else {
+    bar.classList.remove("keyboard-open");
+  }
+}
+
+// 👇 detecta foco em inputs
+const isIOS = /iPhone|iPad|iPod/i.test(navigator.userAgent);
+
+if (isIOS) {
+
+  document.addEventListener("focusin", (e) => {
+    if (e.target.matches("input, textarea, select")) {
+      handleKeyboard(true);
+    }
+  });
+
+  document.addEventListener("focusout", () => {
+    setTimeout(() => handleKeyboard(false), 150);
+  });
+}
+
+async function createInternalUser() {
+  const allowed = await requireAdmin();
+  if (!allowed) return;
+
+  const name = byId("adminCreateName")?.value.trim();
+  const email = byId("adminCreateEmail")?.value.trim().toLowerCase();
+  const password = byId("adminCreatePassword")?.value;
+  const role = byId("adminCreateRole")?.value || "operador";
+
+  if (!name || !email || !password) {
+    alert("Preencha nome, email e senha.");
+    return;
+  }
+
+  if (password.length < 6) {
+    alert("A senha precisa ter pelo menos 6 caracteres.");
+    return;
+  }
+
+  try {
+    const secondaryApp = initializeApp(firebaseConfig, `secondary-${Date.now()}`);
+    const secondaryAuth = getAuth(secondaryApp);
+
+    const userCredential = await createUserWithEmailAndPassword(
+      secondaryAuth,
+      email,
+      password
+    );
+
+    await setDoc(doc(db, "users", userCredential.user.uid), {
+      name,
+      email,
+      role,
+      status: "active",
+      createdBy: auth.currentUser?.uid || null,
+      createdAt: serverTimestamp()
+    });
+
+    await signOut(secondaryAuth);
+    await deleteApp(secondaryApp);
+
+    byId("adminCreateName").value = "";
+    byId("adminCreateEmail").value = "";
+    byId("adminCreatePassword").value = "";
+    byId("adminCreateRole").value = "operador";
+
+    alert("Usuário criado com sucesso.");
+    await loadUsers();
+
+  } catch (error) {
+    console.error("Erro ao criar usuário interno:", error);
+    alert(error.message || "Erro ao criar usuário.");
+  }
+}
+    
+   async function loadUsers() {
+  const isAdmin = currentUserData?.role === "admin";
+  const isSupervisor = currentUserData?.role === "supervisor";
+
+  if (!isAdmin && !isSupervisor) {
+    alert("Sem permissão para ver usuários.");
+    return;
+  }
+
+  const usersList = byId("usersList");
+  if (!usersList) return;
+
+  usersList.innerHTML = `<div style="color:#667085;font-weight:850;">Carregando usuários...</div>`;
+
+  try {
+    const snap = await getDocs(collection(db, "users"));
+
+    const users = snap.docs.map((d) => ({
+      id: d.id,
+      ...d.data()
+    }));
+
+    usersList.innerHTML = users.map((u) => `
+      <div style="
+        display:grid;
+        grid-template-columns:1fr;
+        gap:8px;
+        align-items:center;
+        background:#fff;
+        border:1px solid #e5eaf2;
+        border-radius:18px;
+        padding:13px;
+      ">
+        <div>
+          <div style="font-weight:950;">
+            ${escapeHtml(u.name || "Sem nome")}
+          </div>
+
+          <div style="font-size:12px;color:#667085;font-weight:800;">
+            ${escapeHtml(u.email || "Sem email")}
+          </div>
+
+          <div style="font-size:12px;color:#667085;font-weight:800;">
+            Role: ${escapeHtml(u.role || "-")} • Status: ${escapeHtml(u.status || "-")}
+          </div>
+        </div>
+
+        ${isAdmin ? `
+          <button data-user-active="${u.id}" style="padding:10px 12px;border-radius:12px;background:#dcfce7;color:#128044;font-weight:950;">
+            Operador
+          </button>
+
+          <button data-user-supervisor="${u.id}" style="padding:10px 12px;border-radius:12px;background:#e0f2fe;color:#0369a1;font-weight:950;">
+            Supervisor
+          </button>
+
+          <button data-user-admin="${u.id}" style="padding:10px 12px;border-radius:12px;background:#dbeafe;color:#102a56;font-weight:950;">
+            Admin
+          </button>
+
+          <button data-user-block="${u.id}" style="padding:10px 12px;border-radius:12px;background:#fee2e2;color:#be2633;font-weight:950;">
+            Bloquear
+          </button>
+
+          <button data-user-delete="${u.id}" style="padding:10px 12px;border-radius:12px;background:#111827;color:#fff;font-weight:950;">
+            Excluir
+          </button>
+        ` : ""}
+      </div>
+    `).join("") || `<div style="color:#667085;font-weight:800;">Nenhum usuário encontrado.</div>`;
+
+    if (!isAdmin) return;
+
+    document.querySelectorAll("[data-user-active]").forEach((btn) => {
+      btn.onclick = async () => {
+        await updateDoc(doc(db, "users", btn.dataset.userActive), {
+          status: "active",
+          role: "operador"
+        });
+
+        alert("Usuário ativado como operador.");
+        await loadUsers();
+      };
+    });
+
+    document.querySelectorAll("[data-user-supervisor]").forEach((btn) => {
+      btn.onclick = async () => {
+        await updateDoc(doc(db, "users", btn.dataset.userSupervisor), {
+          status: "active",
+          role: "supervisor"
+        });
+
+        alert("Usuário ativado como supervisor.");
+        await loadUsers();
+      };
+    });
+
+    document.querySelectorAll("[data-user-admin]").forEach((btn) => {
+      btn.onclick = async () => {
+        await updateDoc(doc(db, "users", btn.dataset.userAdmin), {
+          status: "active",
+          role: "admin"
+        });
+
+        alert("Usuário ativado como admin.");
+        await loadUsers();
+      };
+    });
+
+    document.querySelectorAll("[data-user-block]").forEach((btn) => {
+      btn.onclick = async () => {
+        await updateDoc(doc(db, "users", btn.dataset.userBlock), {
+          status: "blocked"
+        });
+
+        alert("Usuário bloqueado.");
+        await loadUsers();
+      };
+    });
+
+    document.querySelectorAll("[data-user-delete]").forEach((btn) => {
+      btn.onclick = async () => {
+        const userId = btn.dataset.userDelete;
+
+        if (!confirm("Tem certeza que deseja excluir este usuário do painel?")) return;
+
+        await deleteDoc(doc(db, "users", userId));
+
+        alert("Usuário removido do Firestore. Ele não terá mais acesso ao sistema.");
+        await loadUsers();
+      };
+    });
+
+  } catch (error) {
+    console.error("Erro ao carregar usuários:", error);
+
+    usersList.innerHTML = `
+      <div style="color:#be2633;font-weight:900;">
+        Erro ao carregar usuários. Verifique se sua conta tem permissão para listar usuários.
+      </div>
+    `;
+  }
+}
+
+async function recalculateAllHistory() {
+  const allowed = await requireAdmin();
+  if (!allowed) return false;
+
+  try {
     const q = query(
-      collection(db, "shiftClosures"),
-      orderBy("createdAt", "desc"),
-      limit(1)
+      collection(db, "history"),
+      orderBy("submittedAt", "asc")
     );
 
     const snapshot = await getDocs(q);
-    const balanceRef = doc(db, "companyBalance", "main");
+    if (snapshot.empty) return true;
 
-    if (snapshot.empty) {
-      await updateDoc(balanceRef, {
-        reca: 0,
-        suprema: 0,
-        pppoker: 0,
-        buffalo: 0,
-        ganamos: 0,
-        pendentes: 0,
-        diferencaReal: 0,
-        updatedAt: serverTimestamp()
-      });
-      return;
+    const docs = snapshot.docs;
+    let previousSaldoTotal = null;
+
+    for (let i = 0; i < docs.length; i++) {
+      const item = docs[i];
+
+      try {
+        const data = item.data();
+        const turno = data.turno || {};
+
+        const saldoLiquido = Number(calcularSaldoLiquido(turno)) || 0;
+        const currentSaldoTotal = saldoLiquido;
+
+        const diff =
+          previousSaldoTotal === null
+            ? 0
+            : currentSaldoTotal - previousSaldoTotal;
+
+        await updateDoc(doc(db, "history", item.id), {
+          "turno.saldoLiquido": saldoLiquido,
+          currentSaldoTotal,
+          diff,
+          recalculatedAt: serverTimestamp()
+        });
+
+        previousSaldoTotal = currentSaldoTotal;
+      } catch (e) {
+        console.warn("Histórico ignorado no recálculo:", item.id);
+        continue;
+      }
     }
 
-    const lastClosure = snapshot.docs[0].data();
-    const s = lastClosure.saldosInformados || {};
-
-    await updateDoc(balanceRef, {
-      reca: bkNumber(s.reca),
-      suprema: bkNumber(s.suprema),
-      pppoker: bkNumber(s.pppoker),
-      buffalo: bkNumber(s.buffalo),
-      ganamos: bkNumber(s.ganamos),
-      pendentes: bkNumber(s.pendentes),
-      diferencaReal: bkNumber(lastClosure.diffReal),
-      updatedAt: serverTimestamp()
-    });
-
-  } catch (error) {
-    console.warn("Erro ao reconstruir saldo mestre:", error);
+    return true;
+  } catch (e) {
+    console.warn("Recálculo ignorado:", e);
+    return false;
   }
 }
 
-async function deleteShiftClosure(id) {
-  const confirmDelete = confirm("Tem certeza que deseja excluir este fechamento?");
-  if (!confirmDelete) return;
-
-  try {
-    const ref = doc(db, "shiftClosures", id);
-
-    await deleteDoc(ref);
-    await rebuildMasterBalanceFromLastClosure();
-
-    alert("Fechamento excluído e saldo mestre reconstruído.");
-  } catch (error) {
-    console.warn("Erro ao excluir fechamento:", error);
-    alert("Erro ao excluir fechamento.");
-  }
-}
-
-function fillShiftClosureForm(item) {
-  document.getElementById("shiftOperatorName").value = item.operador || "";
-  document.getElementById("shiftName").value = item.turno || "T1";
-
-  document.getElementById("shiftReca").value = item.saldosInformados?.reca || "";
-  document.getElementById("shiftSuprema").value = item.saldosInformados?.suprema || "";
-  document.getElementById("shiftPppoker").value = item.saldosInformados?.pppoker || "";
-  document.getElementById("shiftBuffalo").value = item.saldosInformados?.buffalo || "";
-  document.getElementById("shiftGanamos").value = item.saldosInformados?.ganamos || "";
-  document.getElementById("shiftPendentes").value = item.saldosInformados?.pendentes || "";
-
-  setText("saveShiftClosureBtn", "Atualizar Fechamento");
-
-  const cancelBtn = document.getElementById("cancelEditClosureBtn");
-  if (cancelBtn) cancelBtn.style.display = "block";
-}
-
-function editShiftClosure(id) {
-  const item = shiftClosuresCache.find(c => c.id === id);
-
-  if (!item) {
-    alert("Fechamento não encontrado.");
-    return;
-  }
-
-  editingClosureId = id;
-  fillShiftClosureForm(item);
-  switchScreen("screenHistory", document.querySelector('[data-screen="screenHistory"]'));
-
-  setText("shiftPreviewDetails", "Editando fechamento salvo.");
-}
-
-function cancelEditClosure() {
-  editingClosureId = null;
-  clearShiftClosureForm();
-
-  setText("saveShiftClosureBtn", "Salvar Fechamento");
-
-  const cancelBtn = document.getElementById("cancelEditClosureBtn");
-  if (cancelBtn) cancelBtn.style.display = "none";
-}
-
-async function updateExistingShiftClosure() {
-  try {
-    const original = shiftClosuresCache.find(c => c.id === editingClosureId);
-
-    if (!original) {
-      alert("Fechamento original não encontrado.");
-      return;
+    function initAuthEvents() {
+      const tabLogin = byId("tabLogin"), tabRegister = byId("tabRegister"), tabPassword = byId("tabPassword");
+      function showAuthForm(formName) {
+        loginForm?.classList.add("hidden"); registerForm?.classList.add("hidden"); forgotPasswordForm?.classList.add("hidden");
+        tabLogin?.classList.remove("active"); tabRegister?.classList.remove("active"); tabPassword?.classList.remove("active");
+        if (formName === "login") { loginForm?.classList.remove("hidden"); tabLogin?.classList.add("active"); }
+        if (formName === "register") { registerForm?.classList.remove("hidden"); tabRegister?.classList.add("active"); }
+        if (formName === "password") { forgotPasswordForm?.classList.remove("hidden"); tabPassword?.classList.add("active"); }
+      }
+      tabLogin?.addEventListener("click", () => showAuthForm("login"));
+      tabRegister?.addEventListener("click", () => showAuthForm("register"));
+      tabPassword?.addEventListener("click", () => showAuthForm("password"));
+      loginForm?.addEventListener("submit", async (e) => { e.preventDefault(); const email = byId("loginEmail")?.value.trim().toLowerCase(); const password = byId("loginPassword")?.value; if (!email || !password) { alert("Preencha email e senha."); return; } try { const userCredential = await signInWithEmailAndPassword(auth, email, password); await validateUserAccess(userCredential.user); } catch (error) { console.error("ERRO LOGIN:", error); alert(error.message || "Erro ao fazer login."); } });
+      registerForm?.addEventListener("submit", async (e) => { e.preventDefault(); const name = byId("registerName")?.value.trim(); const email = byId("registerEmail")?.value.trim().toLowerCase(); const password = byId("registerPassword")?.value; if (!name || !email || !password) { alert("Preencha nome, email e senha."); return; } try { const userCredential = await createUserWithEmailAndPassword(auth, email, password); await setDoc(doc(db, "users", userCredential.user.uid), { name, email, role: "pending", status: "pending", createdAt: serverTimestamp() }); alert("Conta criada com sucesso! Aguarde aprovação do administrador."); await signOut(auth); showAuthForm("login"); } catch (error) { console.error("Erro ao registrar:", error); alert(error.message || "Erro ao registrar usuário."); } });
+      forgotPasswordForm?.addEventListener("submit", async (e) => { e.preventDefault(); const email = byId("resetEmail")?.value.trim().toLowerCase(); if (!email) { alert("Digite seu email."); return; } try { await sendPasswordResetEmail(auth, email); alert("Link de recuperação enviado."); showAuthForm("login"); } catch (error) { console.error(error); alert(error.message || "Erro ao enviar link."); } });
+      showAuthForm("login");
     }
 
-    const turno = getShiftClosureFormData();
+  onAuthStateChanged(auth, async (user) => {
+  if (!user) {
+    currentUserData = null;
 
-    if (!turno.operador) {
-      alert("Informe o nome do operador.");
-      return;
-    }
+    authScreen?.classList.remove("hidden");
+    appShell?.classList.add("hidden");
 
-    const totalInformado = calcularTotalInformadoTurno(turno);
-    const totalMestre = bkNumber(original.totalMestreAnterior);
-    const diffReal = totalInformado - totalMestre;
+    byId("adminOpenBtn")?.classList.add("hidden");
+    byId("adminPanel")?.classList.add("hidden");
 
-    const updatedClosure = {
-      operador: turno.operador,
-      turno: turno.turno,
-      saldosInformados: {
-        reca: turno.reca,
-        suprema: turno.suprema,
-        pppoker: turno.pppoker,
-        buffalo: turno.buffalo,
-        ganamos: turno.ganamos,
-        pendentes: turno.pendentes
-      },
-      totalInformado,
-      diffReal,
-      updatedAt: serverTimestamp(),
-      updatedBy: auth?.currentUser?.email || "operador"
-    };
-
-    await updateDoc(doc(db, "shiftClosures", editingClosureId), updatedClosure);
-    await rebuildMasterBalanceFromLastClosure();
-
-    cancelEditClosure();
-    alert("Fechamento atualizado com sucesso.");
-
-  } catch (error) {
-    console.warn("Erro ao atualizar fechamento:", error);
-    alert("Erro ao atualizar fechamento.");
-  }
-}
-
-function bindClosureHistoryActions() {
-  document.querySelectorAll("[data-delete-closure]").forEach(btn => {
-    btn.addEventListener("click", () => {
-      deleteShiftClosure(btn.dataset.deleteClosure);
-    });
-  });
-
-  document.querySelectorAll("[data-edit-closure]").forEach(btn => {
-    btn.addEventListener("click", () => {
-      editShiftClosure(btn.dataset.editClosure);
-    });
-  });
-}
-
-function switchScreen(id, btn){
-  document.querySelectorAll(".screen").forEach(s => s.classList.remove("active"));
-  document.getElementById(id)?.classList.add("active");
-
-  document.querySelectorAll(".nav-btn").forEach(b => b.classList.remove("active"));
-  btn?.classList.add("active");
-}
-
-// 🔐 LOGIN
-async function loginUser(){
-  console.log("Botão login clicado");
-
-  const email = document.getElementById("loginEmail")?.value.trim();
-  const pass = document.getElementById("loginPassword")?.value;
-
-  if (!email || !pass) {
-    alert("Preencha email e senha.");
     return;
   }
 
   try {
-    const result = await signInWithEmailAndPassword(auth, email, pass);
-    console.log("Login OK:", result.user.email);
-    document.getElementById("loginScreen").style.display = "none";
-  } catch (err){
-    console.error("Erro no login:", err);
-    alert("Erro no login: " + err.message);
-  }
-}
+    const allowed = await validateUserAccess(user);
+    if (!allowed) return;
 
-function protectApp(){
-  onAuthStateChanged(auth, (user) => {
-    const loginScreen = document.getElementById("loginScreen");
+    authScreen?.classList.add("hidden");
+    appShell?.classList.remove("hidden");
 
-    if(user){
-      if (loginScreen) loginScreen.style.display = "none";
-    } else {
-      if (loginScreen) loginScreen.style.display = "flex";
+    const userName =
+      currentUserData?.name ||
+      user.email?.split("@")[0] ||
+      "Usuário";
+
+    const userEmail = user.email || "";
+
+    /* HEADER ANTIGO — agora só preenche se existir */
+    if (byId("activeUserName")) {
+      byId("activeUserName").textContent = userName;
     }
-  });
-}
 
-document.addEventListener("DOMContentLoaded", async () => {
-  console.log("DOM carregado");
+    if (byId("activeUserEmail")) {
+      byId("activeUserEmail").textContent = userEmail;
+    }
 
-  const loginBtn = document.getElementById("loginBtn");
+    if (byId("activeUserRole")) {
+      byId("activeUserRole").textContent =
+        currentUserData?.role?.toUpperCase() || "";
+    }
 
-  if (loginBtn) {
-    loginBtn.addEventListener("click", loginUser);
-    console.log("Login conectado");
-  } else {
-    console.warn("Botão login NÃO encontrado");
-  }
+    /* SIDEBAR */
+    if (byId("sidebarUserName")) {
+      byId("sidebarUserName").textContent = userName;
+    }
 
-  protectApp();
+    if (byId("sidebarUserEmail")) {
+      byId("sidebarUserEmail").textContent = userEmail;
+    }
 
-  document.querySelectorAll(".nav-btn").forEach(btn => {
-    btn.addEventListener("click", () => {
-      switchScreen(btn.dataset.screen, btn);
-    });
-  });
+    applyPermissions(currentUserData);
+    startHistoryRealtimeListener();
+    render();
 
-  document.getElementById("refreshDashboardBtn")?.addEventListener("click", () => {
-    renderDashboardSaldos();
-  });
-
-  document.getElementById("saveAdminMovementBtn")?.addEventListener("click", saveAdminMovement);
-  document.getElementById("previewShiftClosureBtn")?.addEventListener("click", previewShiftClosure);
-  document.getElementById("saveShiftClosureBtn")?.addEventListener("click", saveShiftClosure);
-  document.getElementById("cancelEditClosureBtn")?.addEventListener("click", cancelEditClosure);
-
-  try {
-    setText("dashboardStatus", "Carregando");
-    await criarSaldoMestreSeNaoExistir();
-    startDashboardSaldosRealtime();
-    startShiftClosuresHistory();
   } catch (error) {
-    console.warn("Erro ao iniciar app:", error);
-    setText("dashboardStatus", "Erro");
+    console.error("Erro ao validar sessão:", error);
+    alert("Erro ao validar acesso.");
+    await signOut(auth);
   }
 });
+
+    byId("fecharTurno")?.addEventListener("click", saveTurn);
+    byId("calcular")?.addEventListener("click", render);
+    byId("limparBtn")?.addEventListener("click", () => clearTurn("t2"));
+    [
+  "t2_banco",
+  "t2_suprema",
+  "t2_pppoker",
+  "t2_buffalo",
+  "t2_ganamos",
+  "t2_cargas",
+  "t2_cargas_poker"
+].forEach((id) => {
+  const input = byId(id);
+
+  if (input) {
+    enableSmartMoneyInput(id); // 🔥 usa só essa
+    input.addEventListener("input", render);
+  }
+});
+    byId("t2_nome_operador")?.addEventListener("input", render);
+    byId("t2_data_fechamento")?.addEventListener("input", render);
+    document.querySelectorAll("[data-add-pending]").forEach((btn) => { btn.onclick = () => createPendingRow(btn.dataset.addPending); });
+    document.querySelectorAll("[data-add-outflow]").forEach((btn) => { btn.onclick = () => createDynamicRow(btn.dataset.addOutflow); });
+    document.querySelectorAll("[data-chart-range]").forEach((btn) => { btn.addEventListener("click", () => { document.querySelectorAll("[data-chart-range]").forEach((b) => b.classList.remove("active")); btn.classList.add("active"); renderRanking(btn.dataset.chartRange); }); });
+    byId("logoutBtn")?.addEventListener("click", async () => { try { if (historyUnsubscribe) historyUnsubscribe(); await signOut(auth); } catch (error) { console.error("Erro ao sair:", error); alert("Erro ao sair."); } });
+
+
+/* =========================================================
+   SIDEBAR — MOBILE + DESKTOP SEM BUG
+========================================================= */
+
+const bkSideBar = byId("sideBar");
+const bkSidebarBackdrop = byId("sidebarBackdrop");
+
+function openBkSidebar() {
+  bkSideBar?.classList.add("open");
+  bkSidebarBackdrop?.classList.add("show");
+  document.body.classList.add("sidebar-open");
+}
+
+function closeBkSidebar() {
+  bkSideBar?.classList.remove("open");
+  bkSidebarBackdrop?.classList.remove("show");
+  document.body.classList.remove("sidebar-open");
+}
+
+function closeMenu() {
+  closeBkSidebar();
+}
+
+byId("menuToggle")?.addEventListener("click", (e) => {
+  e.preventDefault();
+  e.stopPropagation();
+  openBkSidebar();
+});
+
+bkSidebarBackdrop?.addEventListener("click", closeBkSidebar);
+
+/* =========================================================
+   SIDEBAR ACTIONS — CLEAN + SEM ERRO
+========================================================= */
+
+/* ===== FECHAR META (CORRETO) ===== */
+function closeGoal() {
+  byId("goalModal")?.classList.add("hidden");
+}
+
+/* botão fechar */
+byId("closeGoalModal")?.addEventListener("click", closeGoal);
+
+/* clicar fora (backdrop) */
+byId("goalModalBackdrop")?.addEventListener("click", closeGoal);
+  
+/* ===== PERMISSÕES ===== */
+function hasPermission(feature) {
+  const role = currentUserData?.role;
+
+  if (!role) return false;
+
+  const permissions = {
+    admin: ["home","history","goal","ranking","pdf","admin"],
+    supervisor: ["home","history","goal","ranking","pdf"],
+    operador: ["home","history"]
+  };
+
+  return permissions[role]?.includes(feature);
+}
+
+/* ===== BIND UNIVERSAL ===== */
+function bindSidebarBtn(id, callback) {
+  const btn = byId(id);
+  if (!btn || btn.dataset.bound === "true") return;
+
+  btn.dataset.bound = "true";
+
+  btn.addEventListener("click", (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+
+    if (!currentUserData) {
+      showToast("Carregando usuário...", "error");
+      return;
+    }
+
+    callback();
+  });
+}
+
+/* ===== HOME ===== */
+bindSidebarBtn("sideHomeBtn", () => {
+  closeBkSidebar();
+  window.scrollTo({ top: 0, behavior: "smooth" });
+});
+
+/* ===== HISTÓRICO ===== */
+bindSidebarBtn("sideHistoryBtn", () => {
+  if (!hasPermission("history")) {
+    showToast("Sem permissão.", "error");
+    return;
+  }
+
+  closeBkSidebar();
+  setHistoryVisible?.(true);
+
+  setTimeout(() => {
+    byId("historySection")?.scrollIntoView({
+      behavior: "smooth",
+      block: "start"
+    });
+  }, 200);
+});
+
+/* ===== META MENSAL ===== */
+bindSidebarBtn("sideGoalBtn", () => {
+  if (!hasPermission("goal")) {
+    showToast("Sem permissão.", "error");
+    return;
+  }
+
+  closeBkSidebar();
+  renderMonthlyGoalCard?.();
+
+  const goalModal = byId("goalModal");
+  const goalCard = byId("monthlyGoalCard");
+
+  if (goalModal) {
+    goalModal.classList.remove("hidden");
+    return;
+  }
+
+  if (goalCard) {
+    goalCard.classList.remove("hidden");
+
+    setTimeout(() => {
+      goalCard.scrollIntoView({
+        behavior: "smooth",
+        block: "start"
+      });
+    }, 200);
+  }
+});
+bindSidebarBtn("sideRankingBtn", () => {
+  if (!hasPermission("ranking")) return showToast("Sem permissão.", "error");
+
+  closeBkSidebar();
+  byId("openRankingBtn")?.click();
+});
+
+bindSidebarBtn("sidePdfBtn", () => {
+  if (!hasPermission("pdf")) return showToast("Sem permissão.", "error");
+
+  closeBkSidebar();
+  byId("openPdfCustomBtn")?.click();
+});
+
+bindSidebarBtn("sideAdminBtn", () => {
+  if (!hasPermission("admin")) return showToast("Sem permissão.", "error");
+
+  closeBkSidebar();
+  byId("adminOpenBtn")?.click();
+});
+
+bindSidebarBtn("sideLogoutBtn", async () => {
+  closeBkSidebar();
+
+  try {
+    if (historyUnsubscribe) historyUnsubscribe();
+
+    await signOut(auth);
+
+    showToast("Saiu com sucesso.", "success");
+
+  } catch (error) {
+    console.error("Erro ao sair:", error);
+    showToast("Erro ao sair.", "error");
+  }
+});
+/* compatibilidade com botões antigos */
+function closeSidebarMenu() {
+  closeBkSidebar();
+}
+  
+/* =========================================================
+   HISTÓRICO — VER / OCULTAR
+========================================================= */
+
+const historySection = byId("historySection");
+const historyText = byId("historyEyeText");
+const toggleHistoryBtn = byId("toggleHistoryBtn");
+
+function setHistoryVisible(show) {
+  if (!historySection) return;
+
+  historySection.classList.toggle("history-hidden", !show);
+
+  toggleHistoryBtn?.classList.toggle("active", show);
+
+  if (historyText) {
+    historyText.textContent = show ? "Ocultar" : "Ver";
+  }
+
+  if (show && typeof renderHistory === "function") {
+    renderHistory();
+  }
+}
+
+toggleHistoryBtn?.addEventListener("click", () => {
+  const isHidden = historySection?.classList.contains("history-hidden");
+  setHistoryVisible(isHidden);
+});
+
+document.addEventListener("click", (e) => {
+  const card = e.target.closest("[data-history-open]");
+  if (!card) return;
+
+  const index = Number(card.dataset.historyOpen);
+  if (Number.isInteger(index)) {
+    openHistoryModal(index);
+  }
+});
+
+byId("closeHistoryModal")?.addEventListener("click", () => {
+  byId("historyModal")?.classList.add("hidden");
+});
+
+byId("historyModalBackdrop")?.addEventListener("click", () => {
+  byId("historyModal")?.classList.add("hidden");
+});
+
+
+/* =========================================================
+   COMPARATIVO — VER / OCULTAR
+========================================================= */
+
+const toggleCompareBtn = byId("toggleCompareBtn");
+const compareText = byId("compareEyeText");
+
+toggleCompareBtn?.addEventListener("click", () => {
+  const section = document.querySelector(".compare-section");
+  if (!section) return;
+
+  section.classList.toggle("compare-hidden");
+
+  if (compareText) {
+    compareText.textContent = section.classList.contains("compare-hidden")
+      ? "Ver"
+      : "Ocultar";
+  }
+});
+
+
+/* =========================================================
+   PDF
+========================================================= */
+
+byId("openPdfCustomBtn")?.addEventListener("click", async () => {
+  const allowed = await requireReportsAccess();
+  if (!allowed) return;
+
+  const today = getTodayDateInput();
+  const start = byId("pdfDateStart");
+  const end = byId("pdfDateEnd");
+
+  if (end) end.value = today;
+
+  const d = new Date();
+  d.setDate(d.getDate() - 7);
+
+  const local = new Date(d.getTime() - d.getTimezoneOffset() * 60000);
+  if (start) start.value = local.toISOString().split("T")[0];
+
+  byId("pdfRangeModal")?.classList.remove("hidden");
+});
+
+byId("closePdfRangeModal")?.addEventListener("click", () => {
+  byId("pdfRangeModal")?.classList.add("hidden");
+});
+
+byId("pdfRangeBackdrop")?.addEventListener("click", () => {
+  byId("pdfRangeModal")?.classList.add("hidden");
+});
+
+byId("confirmExportPdf")?.addEventListener("click", async () => {
+  const allowed = await requireReportsAccess();
+  if (!allowed) return;
+
+  const startDate = byId("pdfDateStart")?.value;
+  const endDate = byId("pdfDateEnd")?.value;
+
+  if (!startDate || !endDate) {
+    alert("Selecione data inicial e final.");
+    return;
+  }
+
+  const html = buildPremiumBankReceiptPdf(startDate, endDate);
+
+  if (!html || !html.trim()) {
+    alert("Relatório vazio. Verifique o período selecionado.");
+    return;
+  }
+
+  const w = window.open("", "_blank", "width=1280,height=900");
+
+  if (!w) {
+    alert("Não foi possível abrir a janela.");
+    return;
+  }
+
+  w.document.open();
+  w.document.write(html);
+  w.document.close();
+
+  byId("pdfRangeModal")?.classList.add("hidden");
+
+setTimeout(() => {
+  w.focus();
+
+  const printBtn = w.document.createElement("button");
+  printBtn.innerText = "Salvar / Exportar PDF";
+
+  printBtn.style.cssText = `
+    position:fixed;
+    right:20px;
+    bottom:20px;
+    z-index:999999;
+    padding:14px 20px;
+    border-radius:18px;
+    border:none;
+    background:linear-gradient(135deg,#0b1f4d,#163a8a);
+    color:#fff;
+    font-weight:900;
+    font-size:14px;
+    box-shadow:0 12px 30px rgba(0,0,0,.25);
+    cursor:pointer;
+  `;
+
+  const backBtn = w.document.createElement("button");
+  backBtn.innerText = "← Voltar";
+
+  backBtn.style.cssText = `
+    position:fixed;
+    left:20px;
+    bottom:20px;
+    z-index:999999;
+    padding:14px 20px;
+    border-radius:18px;
+    border:none;
+    background:#ffffff;
+    color:#0b1f4d;
+    font-weight:900;
+    font-size:14px;
+    box-shadow:0 12px 30px rgba(0,0,0,.15);
+    cursor:pointer;
+  `;
+
+  printBtn.onclick = () => {
+    printBtn.style.display = "none";
+    backBtn.style.display = "none";
+
+    w.print();
+
+    setTimeout(() => {
+      printBtn.style.display = "block";
+      backBtn.style.display = "block";
+    }, 1200);
+  };
+
+  backBtn.onclick = () => {
+    w.close();
+  };
+
+  w.document.body.appendChild(printBtn);
+  w.document.body.appendChild(backBtn);
+
+  w.scrollTo(0, 0);
+}, 1000);
+
+  /* ===== BOTÃO PRINT ===== */
+const printBtn = w.document.createElement("button");
+printBtn.innerText = "Salvar / Exportar PDF";
+
+printBtn.style.cssText = `
+  position:fixed;
+  right:20px;
+  bottom:20px;
+  z-index:999999;
+  padding:14px 20px;
+  border-radius:18px;
+  border:none;
+  background:linear-gradient(135deg,#0b1f4d,#163a8a);
+  color:#fff;
+  font-weight:900;
+  font-size:14px;
+  box-shadow:0 12px 30px rgba(0,0,0,.25);
+  cursor:pointer;
+`;
+
+/* ===== BOTÃO VOLTAR ===== */
+const backBtn = w.document.createElement("button");
+backBtn.innerText = "← Voltar";
+
+backBtn.style.cssText = `
+  position:fixed;
+  left:20px;
+  bottom:20px;
+  z-index:999999;
+  padding:14px 20px;
+  border-radius:18px;
+  border:none;
+  background:#ffffff;
+  color:#0b1f4d;
+  font-weight:900;
+  font-size:14px;
+  box-shadow:0 12px 30px rgba(0,0,0,.15);
+  cursor:pointer;
+`;
+
+printBtn.onclick = () => {
+  printBtn.style.display = "none";
+  backBtn.style.display = "none";
+
+  w.print();
+
+  setTimeout(() => {
+    printBtn.style.display = "block";
+    backBtn.style.display = "block";
+  }, 1200);
+};
+
+backBtn.onclick = () => {
+  w.close();
+};
+
+w.document.body.appendChild(printBtn);
+w.document.body.appendChild(backBtn);
+
+w.scrollTo(0, 0);
+
+}, 1000);
+/* =========================================================
+   RANKING
+========================================================= */
+
+byId("openRankingBtn")?.addEventListener("click", async () => {
+  const allowed = await requireReportsAccess();
+  if (!allowed) return;
+
+  closeSidebarMenu();
+
+  const section = byId("rankingChartSection");
+  if (!section) return;
+
+  section.classList.toggle("hidden");
+
+  renderRanking();
+
+  if (!section.classList.contains("hidden")) {
+    section.scrollIntoView({
+      behavior: "smooth",
+      block: "start"
+    });
+  }
+});
+
+
+/* =========================================================
+   ADMIN
+========================================================= */
+
+byId("adminOpenBtn")?.addEventListener("click", async () => {
+  const allowed = await requireAdmin();
+  if (!allowed) return;
+
+  closeSidebarMenu();
+
+  const panel = byId("adminPanel");
+  if (!panel) return;
+
+  panel.classList.toggle("hidden");
+
+  if (!panel.classList.contains("hidden")) {
+    await loadUsers();
+  }
+});
+
+byId("adminCreateUserBtn")?.addEventListener("click", async () => {
+  if (typeof createInternalUser === "function") {
+    await createInternalUser();
+  }
+});
+
+byId("recalculateHistoryBtn")?.addEventListener("click", async () => {
+  const allowed = await requireAdmin();
+  if (!allowed) return;
+
+  if (typeof recalcAllHistory === "function") {
+    await recalcAllHistory();
+    showToast("Histórico recalculado.", "success");
+  }
+});
+
+
+/* =========================================================
+   INPUT MONEY PREMIUM
+========================================================= */
+
+function enableSmartMoneyInput(id) {
+  const input = byId(id);
+  if (!input || input.dataset.smartMoney === "true") return;
+
+  input.dataset.smartMoney = "true";
+  input.autocomplete = "off";
+  input.inputMode = "decimal";
+
+  function parseSmartMoney(value) {
+    let text = String(value || "")
+      .trim()
+      .replace(/\s/g, "")
+      .replace(/[^\d.,-]/g, "");
+
+    if (!text) return NaN;
+
+    const hasComma = text.includes(",");
+    const hasDot = text.includes(".");
+
+    if (hasComma) {
+      text = text.replace(/\./g, "").replace(",", ".");
+      return Number(text);
+    }
+
+    if (hasDot) {
+      const parts = text.split(".");
+      const last = parts[parts.length - 1];
+
+      if (last.length === 1 || last.length === 2) {
+        text = parts.slice(0, -1).join("") + "." + last;
+      } else {
+        text = text.replace(/\./g, "");
+      }
+
+      return Number(text);
+    }
+
+    return Number(text);
+  }
+
+  function formatBR(number) {
+    if (!Number.isFinite(number)) return "";
+
+    return number.toLocaleString("pt-BR", {
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2
+    });
+  }
+
+  function applyValue(value) {
+    const number = parseSmartMoney(value);
+
+    if (!Number.isFinite(number)) {
+      input.value = "";
+      input.dataset.raw = "";
+      input.dispatchEvent(new Event("input", { bubbles:true }));
+      return;
+    }
+
+    input.value = formatBR(number);
+    input.dataset.raw = String(number);
+    input.dataset.edited = "true";
+
+    input.dispatchEvent(new Event("input", { bubbles:true }));
+  }
+
+  input.addEventListener("focus", () => {
+    setTimeout(() => input.select(), 30);
+  });
+
+  input.addEventListener("click", () => {
+    input.select();
+  });
+
+  input.addEventListener("paste", (e) => {
+    e.preventDefault();
+
+    const text =
+      (e.clipboardData || window.clipboardData)?.getData("text") || "";
+
+    applyValue(text);
+  });
+
+  input.addEventListener("blur", () => {
+    applyValue(input.value);
+    delete input.dataset.edited;
+  });
+}
+
+
+/* =========================================================
+   LOADING / TOAST
+========================================================= */
+
+function setFinalizarLoading(state, text = "Finalizar") {
+  const btn = byId("fecharTurno");
+  if (!btn) return;
+
+  if (state) {
+    btn.disabled = true;
+    btn.innerHTML = `
+      <span class="bank-action-title">${text}...</span>
+      <span class="bank-action-sub">Aguarde</span>
+    `;
+    btn.style.opacity = "0.7";
+  } else {
+    btn.disabled = false;
+    btn.innerHTML = `
+      <span class="bank-action-title">Finalizar</span>
+      <span class="bank-action-sub">Salvar turno</span>
+    `;
+    btn.style.opacity = "1";
+  }
+}
+
+function showToast(message, type = "success") {
+  const toast = document.createElement("div");
+
+  toast.className = `ck-toast ${type}`;
+  toast.textContent = message;
+
+  document.body.appendChild(toast);
+
+  requestAnimationFrame(() => {
+    toast.classList.add("show");
+  });
+
+  setTimeout(() => {
+    toast.classList.remove("show");
+
+    setTimeout(() => {
+      toast.remove();
+    }, 300);
+  }, 2600);
+}
+
+
+/* =========================================================
+   BOOT
+========================================================= */
+
+document.addEventListener("DOMContentLoaded", () => {
+  const moneyFields = [
+    "t2_banco",
+    "t2_suprema",
+    "t2_pppoker",
+    "t2_buffalo",
+    "t2_ganamos",
+    "t2_cargas",
+    "t2_cargas_poker"
+  ];
+
+  moneyFields.forEach((id) => {
+    enableSmartMoneyInput(id);
+    byId(id)?.addEventListener("input", render);
+  });
+
+  byId("t2_nome_operador")?.addEventListener("input", render);
+  byId("t2_data_fechamento")?.addEventListener("input", render);
+
+  byId("fecharTurno")?.addEventListener("click", saveTurn);
+  byId("calcular")?.addEventListener("click", render);
+  byId("limparBtn")?.addEventListener("click", () => clearTurn("t2"));
+
+
+// 🔥 BOTÃO INÍCIO = RECALCULAR + RECARREGAR
+byId("sideHomeBtn")?.addEventListener("click", async () => {
+  const loader = byId("appReloadLoader");
+
+  loader?.classList.add("active");
+
+  try {
+    if (typeof recalculateAllHistory === "function") {
+      await recalculateAllHistory();
+    }
+  } catch (e) {
+    console.warn("Falha silenciosa ao recalcular:", e);
+  }
+
+  location.reload();
+});
+
+  document.querySelectorAll("[data-add-pending]").forEach((btn) => {
+    btn.onclick = () => {
+      createPendingRow(btn.dataset.addPending);
+      updateActionsVisibility();
+    };
+  });
+
+  document.querySelectorAll("[data-add-outflow]").forEach((btn) => {
+    btn.onclick = () => {
+      createDynamicRow(btn.dataset.addOutflow);
+      updateActionsVisibility();
+    };
+  });
+
+  document.querySelectorAll("[data-chart-range]").forEach((btn) => {
+    btn.addEventListener("click", () => {
+      document
+        .querySelectorAll("[data-chart-range]")
+        .forEach((b) => b.classList.remove("active"));
+
+      btn.classList.add("active");
+      renderRanking(btn.dataset.chartRange);
+    });
+  });
+
+  byId("logoutBtn")?.addEventListener("click", async () => {
+    try {
+      if (historyUnsubscribe) historyUnsubscribe();
+      await signOut(auth);
+    } catch (error) {
+      console.error("Erro ao sair:", error);
+      alert("Erro ao sair.");
+    }
+  });
+
+   if (typeof initAuthEvents === "function") {
+    initAuthEvents();
+  }
+
+  updateActionsVisibility();
+});
 </script>
+
+<script>
+if ("serviceWorker" in navigator) {
+  window.addEventListener("load", () => {
+    navigator.serviceWorker.register("/service-worker.js")
+      .then(() => console.log("PWA ativo"))
+      .catch((error) => console.error("Erro no PWA:", error));
+  });
+}
+</script>
+
+<!-- 🔥 LOADER -->
+<div id="appReloadLoader" class="app-reload-loader">
+  <div class="reload-card">
+    <div class="reload-spinner"></div>
+    <strong>Atualizando sistema</strong>
+    <span>Recalculando histórico...</span>
+  </div>
+</div>
+
+</body>
+</html>
