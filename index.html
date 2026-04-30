@@ -168,7 +168,7 @@
 
         <div id="quickChargePanel" class="admin-create-panel">
           <div class="form-grid" style="margin-top:14px;">
-            <div class="field"><label>Carga fichas poker ×400</label><input id="quickCargaPoker" class="money-input" inputmode="decimal" placeholder="0,00" /></div>
+            <div class="field"><label>Carga fichas poker</label><input id="quickCargaPoker" inputmode="decimal" placeholder="Quantidade de fichas" /></div>
             <div class="field"><label>Carga casino / dinheiro</label><input id="quickCargaCasino" class="money-input" inputmode="decimal" placeholder="0,00" /></div>
             <div class="field"><label>Motivo</label><input id="quickCargaMotivo" placeholder="Ex: aporte de caixa / reposição banca" /></div>
             <div class="field"><label>Operador responsável</label><input id="quickCargaOperador" placeholder="Admin / responsável" /></div>
@@ -418,6 +418,7 @@
     function renderChipsComparison(last, prev){
       const box = $("chipsComparison");
       if(!box) return;
+
       if(!last){
         box.innerHTML = `<div class="muted">Nenhum fechamento para comparar.</div>`;
         return;
@@ -425,36 +426,48 @@
 
       const lt = last.turno || {};
       const pt = prev?.turno || {};
+
       const items = [
-        { label:"Suprema", key:"suprema", factor:400 },
-        { label:"PPPoker", key:"pppoker", factor:400 },
-        { label:"Buffalo", key:"buffalo", factor:1 },
-        { label:"Ganamos", key:"ganamos", factor:1 }
+        { label:"Suprema", key:"suprema", factor:400, type:"chips" },
+        { label:"PPPoker", key:"pppoker", factor:400, type:"chips" },
+        { label:"Buffalo", key:"buffalo", factor:1, type:"money" },
+        { label:"Ganamos", key:"ganamos", factor:1, type:"money" }
       ];
 
       box.innerHTML = items.map(item=>{
-        const atualBruto = moneyToNumber(lt[item.key] ?? 0);
-        const anteriorBruto = moneyToNumber(pt[item.key] ?? 0);
-        const diffBruto = atualBruto - anteriorBruto;
-        const atualMoney = atualBruto * item.factor;
-        const diffMoney = diffBruto * item.factor;
-        const positive = diffBruto >= 0;
+        const atual = moneyToNumber(lt[item.key] ?? 0);
+        const anterior = moneyToNumber(pt[item.key] ?? 0);
+        const diff = atual - anterior;
+        const positive = diff >= 0;
+
+        const atualLabel = item.type === "chips"
+          ? `${atual.toLocaleString("pt-BR",{minimumFractionDigits:2,maximumFractionDigits:2})} fichas`
+          : formatMoney(atual);
+
+        const anteriorLabel = item.type === "chips"
+          ? `${anterior.toLocaleString("pt-BR",{minimumFractionDigits:2,maximumFractionDigits:2})} fichas`
+          : formatMoney(anterior);
+
+        const diffLabel = item.type === "chips"
+          ? `${positive ? "+" : ""}${diff.toLocaleString("pt-BR",{minimumFractionDigits:2,maximumFractionDigits:2})} fichas`
+          : `${positive ? "+" : ""}${formatMoney(diff)}`;
 
         return `<div class="history-item" style="box-shadow:none;">
           <div class="history-top">
             <strong>${item.label}</strong>
-            <span style="color:${positive ? '#10b981' : '#ef4444'}">${positive ? '+' : ''}${diffBruto.toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2})}</span>
+            <span style="color:${positive ? '#10b981' : '#ef4444'}">${diffLabel}</span>
           </div>
+
           <div class="history-values">
-            <div><span class="muted">Atual</span><b>${atualBruto.toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2})}</b></div>
-            <div><span class="muted">Anterior</span><b>${anteriorBruto.toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2})}</b></div>
-            <div><span class="muted">Valor atual</span><b>${formatMoney(atualMoney)}</b></div>
-            <div><span class="muted">Diferença $</span><b style="color:${positive ? '#10b981' : '#ef4444'}">${formatMoney(diffMoney)}</b></div>
+            <div><span class="muted">Atual</span><b>${atualLabel}</b></div>
+            <div><span class="muted">Anterior</span><b>${anteriorLabel}</b></div>
+            <div><span class="muted">${item.type === "chips" ? "Equivalente $" : "Valor atual"}</span><b>${formatMoney(atual * item.factor)}</b></div>
+            <div><span class="muted">Diferença $</span><b style="color:${positive ? '#10b981' : '#ef4444'}">${formatMoney(diff * item.factor)}</b></div>
           </div>
         </div>`;
       }).join("");
     }
-
+    
     function renderHistory(){ const search=$("historySearch")?.value.trim().toLowerCase()||"", date=$("historyDate")?.value||""; let list=visibleHistory(); if(search) list=list.filter(x=>(x.operatorName||x.turno?.operatorName||"").toLowerCase().includes(search)); if(date) list=list.filter(x=>{const d=x.submittedAt?.toDate?x.submittedAt.toDate():new Date(x.turno?.closingDate||x.createdAt||0); return !isNaN(d)&&d.toISOString().slice(0,10)===date;}); $("historyCount").textContent=`${list.length} registros`; $("historyList").innerHTML=list.map(item=>{const t=item.turno||{}, operator=item.operatorName||t.operatorName||"Sem operador", saldo=t.saldoLiquido??item.currentSaldoTotal??0, diff=item.diff??0, adminActions=isAdmin()?`<button class="small-btn" data-edit="${item.id}">Editar</button><button class="small-btn danger" data-delete="${item.id}">Excluir</button>`:""; return `<div class="history-item" data-receipt="${item.id}" style="cursor:pointer;"><div class="history-top"><strong>${operator}</strong><span>${dateLabel(item.submittedAt||t.closingDate)}</span></div><div class="history-values"><div><span class="muted">Saldo líquido</span><b>${formatMoney(saldo)}</b></div><div><span class="muted">Diferença</span><b style="color:${diff<0?'#ef4444':'#10b981'}">${formatMoney(diff)}</b></div></div><div class="history-actions">${adminActions}</div></div>`;}).join("")||`<div class="history-item">Nenhum fechamento encontrado.</div>`; document.querySelectorAll("[data-delete]").forEach(btn=>btn.onclick=(ev)=>{ev.stopPropagation();deleteHistory(btn.dataset.delete);}); document.querySelectorAll("[data-edit]").forEach(btn=>btn.onclick=(ev)=>{ev.stopPropagation();openEditHistory(btn.dataset.edit);}); document.querySelectorAll("[data-receipt]").forEach(card=>card.onclick=()=>openHistoryReceipt(card.dataset.receipt)); }
 
     function periodStart(range){ const now=new Date(), d=new Date(now); if(range==="day") d.setHours(0,0,0,0); if(range==="week") d.setDate(now.getDate()-7); if(range==="month") d.setMonth(now.getMonth()-1); if(range==="all") return null; return d; }
@@ -708,7 +721,7 @@
       });
     }
 
-    function bindEvents(){ applyBankMoneyMaskAll(document); ["webReca","suprema","pppoker","buffalo","ganamos","cargasPoker","cargasCasino","quickCargaPoker","quickCargaCasino","operatorName","closingDate","editWebReca","editSuprema","editPppoker","editBuffalo","editGanamos","editCargasPoker","editCargasCasino"].forEach(id=>$(id)?.addEventListener("input",renderCalculations)); document.addEventListener("bankmoney", renderCalculations); $("addPendingBtn").onclick=()=>createDynamicRow("pendingList","Nome / motivo"); $("addOutflowBtn").onclick=()=>createDynamicRow("outflowList","Descrição");
+    function bindEvents(){ applyBankMoneyMaskAll(document); ["webReca","suprema","pppoker","buffalo","ganamos","cargasPoker","cargasCasino","quickCargaCasino","operatorName","closingDate","editWebReca","editSuprema","editPppoker","editBuffalo","editGanamos","editCargasPoker","editCargasCasino"].forEach(id=>$(id)?.addEventListener("input",renderCalculations)); document.addEventListener("bankmoney", renderCalculations); $("addPendingBtn").onclick=()=>createDynamicRow("pendingList","Nome / motivo"); $("addOutflowBtn").onclick=()=>createDynamicRow("outflowList","Descrição");
       $("quickChargeBtn") && ($("quickChargeBtn").onclick=addQuickCapitalInjection);
       $("toggleQuickChargeBtn") && ($("toggleQuickChargeBtn").onclick=()=>{
         const panel = $("quickChargePanel");
