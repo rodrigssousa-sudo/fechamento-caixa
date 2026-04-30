@@ -104,7 +104,9 @@
         <div class="form-grid">
           <div class="field">
             <label>Operador</label>
-            <input id="operatorName" placeholder
+            <input id="operatorName" placeholder="Nome do operador" readonly />
+            <div class="muted" id="operatorEmailLabel" style="margin-top:4px;"></div>
+          </div>
           <div class="field"><label>Data do fechamento</label><input id="closingDate" type="datetime-local" /></div>
           <div class="field"><label>Saldo Reca</label><input id="webReca" class="money-input" inputmode="decimal" placeholder="0,00" /></div>
           <div class="field"><label>Saldo real conferido</label><input id="saldoRealConferido" class="money-input" inputmode="decimal" placeholder="Opcional" /></div>
@@ -426,17 +428,20 @@
     }
     function calcularSaldoLiquido(turno={}){ const webReca=moneyToNumber(turno.webReca??turno.reca??turno.banco??0), suprema=moneyToNumber(turno.suprema??0)*400, pppoker=moneyToNumber(turno.pppoker??0)*400, buffalo=moneyToNumber(turno.buffalo??0), ganamos=moneyToNumber(turno.ganamos??0), cargasPoker=moneyToNumber(turno.cargasPoker??0)*400, cargasCasino=moneyToNumber(turno.cargasCasino??turno.cargas??0), pendentes=moneyToNumber(turno.pendentesTotal??(turno.pendings||[]).reduce((s,x)=>s+moneyToNumber(x.value),0)), saidas=moneyToNumber(turno.saidasTotal??(turno.outflows||[]).reduce((s,x)=>s+moneyToNumber(x.value),0)); return webReca+suprema+pppoker+buffalo+ganamos+cargasPoker+cargasCasino-pendentes+saidas; }
     function fillOperatorFromProfile(){
+      const name = profileName() || currentUser?.email?.split("@")[0] || "";
+
       if($("operatorName")){
-        $("operatorName").value = profileName() || "";
+        $("operatorName").value = name;
+        $("operatorName").readOnly = true;
       }
+
       if($("operatorEmailLabel")){
         $("operatorEmailLabel").textContent = currentUser?.email || "";
       }
     }
-    }
 
     function clearClosingForm(){
-      ["operatorName","webReca","saldoRealConferido","suprema","pppoker","buffalo","ganamos","cargasPoker","cargasCasino"].forEach(id=>{
+      ["webReca","saldoRealConferido","suprema","pppoker","buffalo","ganamos","cargasPoker","cargasCasino"].forEach(id=>{
         if($(id)) $(id).value = "";
       });
 
@@ -1017,10 +1022,12 @@
 
     function bindEvents(){
       // logo volta para início
-      $("logoRefreshBtn").onclick = () => {
-        showScreen("Home");
-        refreshInternal();
-      }; applyBankMoneyMaskAll(document); enableClearOnFocus(); ["webReca","saldoRealConferido","suprema","pppoker","buffalo","ganamos","cargasPoker","cargasCasino","quickCargaCasino","operatorName","closingDate","editWebReca","editSuprema","editPppoker","editBuffalo","editGanamos","editCargasPoker","editCargasCasino"].forEach(id=>$(id)?.addEventListener("input",renderCalculations)); document.addEventListener("bankmoney", renderCalculations); $("togglePendingBtn") && ($("togglePendingBtn").onclick=()=>{ const panel=$("pendingPanel"); panel?.classList.toggle("active"); $("togglePendingBtn").textContent = panel?.classList.contains("active") ? "Ocultar" : "Abrir"; });
+      if($("logoRefreshBtn")){
+        $("logoRefreshBtn").onclick = () => {
+          showScreen("Home");
+          refreshInternal();
+        };
+      } applyBankMoneyMaskAll(document); enableClearOnFocus(); ["webReca","saldoRealConferido","suprema","pppoker","buffalo","ganamos","cargasPoker","cargasCasino","quickCargaCasino","operatorName","closingDate","editWebReca","editSuprema","editPppoker","editBuffalo","editGanamos","editCargasPoker","editCargasCasino"].forEach(id=>$(id)?.addEventListener("input",renderCalculations)); document.addEventListener("bankmoney", renderCalculations); $("togglePendingBtn") && ($("togglePendingBtn").onclick=()=>{ const panel=$("pendingPanel"); panel?.classList.toggle("active"); $("togglePendingBtn").textContent = panel?.classList.contains("active") ? "Ocultar" : "Abrir"; });
       $("toggleOutflowBtn") && ($("toggleOutflowBtn").onclick=()=>{ const panel=$("outflowPanel"); panel?.classList.toggle("active"); $("toggleOutflowBtn").textContent = panel?.classList.contains("active") ? "Ocultar" : "Abrir"; });
       $("addPendingBtn").onclick=()=>createDynamicRow("pendingList","Nome / motivo"); $("addOutflowBtn").onclick=()=>createDynamicRow("outflowList","Descrição");
       $("quickChargeBtn") && ($("quickChargeBtn").onclick=addQuickCapitalInjection);
