@@ -3124,7 +3124,7 @@ async function validateUserAccess(user) {
 
   return true;
 }
- function calcularSaldoBase(turno) {
+  function calcularSaldoBase(turno = {}) {
   return (
     Number(turno.reca || 0) +
     Number(turno.suprema || 0) * 400 +
@@ -3137,23 +3137,47 @@ async function validateUserAccess(user) {
   );
 }
 
-function calcularSaldoCaixa(turno) {
+function calcularSaldoCaixa(turno = {}) {
   return (
     calcularSaldoBase(turno) -
     Number(turno.saidas || turno.saidasTotal || 0)
   );
 }
 
-function calcularDiffReal(turnoAtual, turnoAnterior) {
+function calcularSaldo(turno = {}) {
+  return calcularSaldoCaixa(turno);
+}
+
+function calcularSaldoLiquido(turno = {}) {
+  return calcularSaldoCaixa(turno);
+}
+
+function calcularDiffReal(turnoAtual = {}, turnoAnterior = {}) {
   return calcularSaldoCaixa(turnoAtual) - calcularSaldoCaixa(turnoAnterior);
 }
 
-function calcularSaldo(turno) {
-  return calcularSaldoCaixa(turno);
-}
+function getTurnoBreakdown(t = {}) {
+  return {
+    reca: Number(t.reca || 0),
 
-function calcularSaldoLiquido(turno) {
-  return calcularSaldoCaixa(turno);
+    supremaFichas: Number(t.suprema || 0),
+    supremaValor: Number(t.suprema || 0) * 400,
+
+    pppokerFichas: Number(t.pppoker || 0),
+    pppokerValor: Number(t.pppoker || 0) * 400,
+
+    buffalo: Number(t.buffalo || 0),
+    ganamos: Number(t.ganamos || 0),
+
+    cargaFichas: Number(t.cargaFichas || 0),
+    cargaPoker: Number(t.cargaPoker || 0),
+
+    pendentes: Number(t.pendentesTotal || t.pendentes || 0),
+    saidas: Number(t.saidasTotal || t.saidas || 0),
+
+    base: calcularSaldoBase(t),
+    caixa: calcularSaldoCaixa(t)
+  };
 }
 
     function getRankingStartDate(range) {
@@ -5066,23 +5090,6 @@ async function recalculateAllHistory() {
             ? 0
             : currentSaldoTotal - previousSaldoTotal;
 
-        console.log("RECALCULANDO HISTÓRICO:", {
-          id: item.id,
-          operador: data.nomeOperador,
-          data: data.fechamentoDate,
-          reca: turno.reca,
-          suprema: turno.suprema,
-          pppoker: turno.pppoker,
-          buffalo: turno.buffalo,
-          ganamos: turno.ganamos,
-          pendentesTotal: turno.pendentesTotal,
-          saidasTotal: turno.saidasTotal,
-          saldoLiquido,
-          previousSaldoTotal,
-          currentSaldoTotal,
-          diff
-        });
-
         await updateDoc(doc(db, "history", item.id), {
           "turno.saldoLiquido": saldoLiquido,
           currentSaldoTotal,
@@ -5092,16 +5099,14 @@ async function recalculateAllHistory() {
 
         previousSaldoTotal = currentSaldoTotal;
       } catch (e) {
-        console.warn("Histórico ignorado no recálculo:", item.id, e);
+        console.warn("Histórico ignorado no recálculo:", item.id);
         continue;
       }
     }
 
-    alert("Histórico recalculado com sucesso.");
     return true;
   } catch (e) {
     console.warn("Recálculo ignorado:", e);
-    alert("Erro ao recalcular histórico.");
     return false;
   }
 }
