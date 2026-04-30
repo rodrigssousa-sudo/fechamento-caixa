@@ -108,6 +108,21 @@
         </div>
       </div>
       <div class="grid two"><div class="card"><div class="card-title"><h2>Pagos pendentes</h2><button id="addPendingBtn" class="small-btn">+ Adicionar</button></div><div id="pendingList" class="dynamic-list"></div></div><div class="card"><div class="card-title"><h2>Retiradas</h2><button id="addOutflowBtn" class="small-btn">+ Adicionar</button></div><div id="outflowList" class="dynamic-list"></div></div></div>
+
+      <div id="quickChargeCard" class="card" style="margin-top:14px;">
+        <div class="card-title">
+          <h2>Carga rápida automática</h2>
+          <span>Admin • Ajuste auditável</span>
+        </div>
+        <div class="form-grid">
+          <div class="field"><label>Carga fichas poker ×400</label><input id="quickCargaPoker" class="money-input" inputmode="decimal" placeholder="0,00" /></div>
+          <div class="field"><label>Carga casino / dinheiro</label><input id="quickCargaCasino" class="money-input" inputmode="decimal" placeholder="0,00" /></div>
+          <div class="field"><label>Motivo</label><input id="quickCargaMotivo" placeholder="Ex: aporte de caixa / reposição banca" /></div>
+          <div class="field"><label>Operador responsável</label><input id="quickCargaOperador" placeholder="Admin / responsável" /></div>
+        </div>
+        <button id="quickChargeBtn" class="btn full" style="margin-top:14px;">Adicionar carga ao sistema</button>
+        <div class="muted" style="margin-top:10px;">Cria um ajuste separado no histórico, sem alterar fechamentos antigos.</div>
+      </div>
       <div class="card summary-panel">
         <div class="summary-head">
           <div>
@@ -292,7 +307,74 @@
     function renderRanking(){ const start=periodStart(currentRankRange); let list=visibleHistory(); if(start) list=list.filter(x=>{const d=x.submittedAt?.toDate?x.submittedAt.toDate():new Date(x.turno?.closingDate||x.createdAt||0); return d>=start;}); const map=new Map(); list.forEach(x=>{const name=x.operatorName||x.turno?.operatorName||"Sem operador", lucro=moneyToNumber(x.diff??0), prev=map.get(name)||{name,total:0,count:0}; prev.total+=lucro; prev.count+=1; map.set(name,prev);}); const ranking=[...map.values()].sort((a,b)=>b.total-a.total); $("rankingList").innerHTML=ranking.map((r,i)=>`<div class="rank-item"><div class="rank-left"><div class="rank-pos">${i+1}</div><div><strong>${r.name}</strong><div class="muted">${r.count} fechamentos</div></div></div><strong style="color:${r.total<0?'#ef4444':'#10b981'}">${formatMoney(r.total)}</strong></div>`).join("")||`<div class="rank-item">Sem dados para ranking.</div>`; }
     function renderAll(){ try{renderCalculations();renderHome();renderHistory();renderRanking();previewReport();}catch(e){console.warn("Render ignorou erro:",e);} }
 
-    async function saveClosing(){ try{ const turno=getTurnFromForm(); if(!turno.operatorName) return alert("Informe o operador."); turno.supervisorUid=currentProfile?.supervisorUid||(isSupervisor()?currentUser?.uid:null)||null; turno.supervisorEmail=currentProfile?.supervisorEmail||(isSupervisor()?currentUser?.email:null)||null; turno.supervisorName=currentProfile?.supervisorName||(isSupervisor()?profileName():null)||null; const view=visibleHistory(); const lastSaldo=view[0]?.turno?.saldoLiquido??view[0]?.currentSaldoTotal??null; const diff=lastSaldo===null?0:turno.saldoLiquido-lastSaldo; await addDoc(collection(db,"history"),{turno,operatorName:turno.operatorName,supervisorUid:turno.supervisorUid,supervisorEmail:turno.supervisorEmail,supervisorName:turno.supervisorName,currentSaldoTotal:turno.saldoLiquido,diff,submittedAt:serverTimestamp(),createdBy:currentUser?.uid||null,createdByEmail:currentUser?.email||null}); await addAudit("save_closing",`Fechamento salvo por ${turno.operatorName}`); alert("Fechamento salvo com sucesso."); }catch(e){ alert(friendlyError(e)); } }
+    async function saveClosing(){ try{ const turno=getTurnFromForm(); if(!turno.operatorName) return alert("Informe o operador."); turno.supervisorUid=currentProfile?.supervisorUid||(isSupervisor()?currentUser?.uid:null)||null; turno.supervisorEmail=currentProfile?.supervisorEmail||(isSupervisor()?currentUser?.email:null)||null; turno.supervisorName=currentProfile?.supervisorName||(isSupervisor()?profileName():null)||null; const view=visibleHistory(); const lastSaldo=view[0]?.turno?.saldoLiquido??view[0]?.currentSaldoTotal??null; const diff=lastSaldo===null?0:turno.saldoLiquido-lastSaldo; await addDoc(collection(db,"history"),{type:"closing",turno,operatorName:turno.operatorName,supervisorUid:turno.supervisorUid,supervisorEmail:turno.supervisorEmail,supervisorName:turno.supervisorName,currentSaldoTotal:turno.saldoLiquido,diff,submittedAt:serverTimestamp(),createdBy:currentUser?.uid||null,createdByEmail:currentUser?.email||null}); await addAudit("save_closing",`Fechamento salvo por ${turno.operatorName}`); alert("Fechamento salvo com sucesso."); }catch(e){ alert(friendlyError(e)); } }
+
+    async function addQuickCapitalInjection(){
+      if(!await requireAdmin()) return;
+
+      const cargasPoker = moneyToNumber($("quickCargaPoker")?.value || 0);
+      const cargasCasino = moneyToNumber($("quickCargaCasino")?.value || 0);
+      const motivo = $("quickCargaMotivo")?.value.trim() || "Carga rápida de caixa";
+      const operador = $("quickCargaOperador")?.value.trim() || profileName() || "Admin";
+      const totalAjuste = (cargasPoker * 400) + cargasCasino;
+
+      if(totalAjuste <= 0){
+        alert("Informe uma carga poker ou casino maior que zero.");
+        return;
+      }
+
+      const view = visibleHistory();
+      const lastSaldo = view[0]?.turno?.saldoLiquido ?? view[0]?.currentSaldoTotal ?? null;
+
+      const turno = {
+        operatorName: operador,
+        closingDate: new Date().toISOString(),
+        webReca: 0,
+        suprema: 0,
+        pppoker: 0,
+        buffalo: 0,
+        ganamos: 0,
+        cargasPoker,
+        cargasCasino,
+        pendings: [],
+        outflows: [],
+        pendentesTotal: 0,
+        saidasTotal: 0,
+        retiradaLucroTotal: 0,
+        custoOperacionalTotal: 0,
+        ajusteTipo: "carga_rapida",
+        ajusteMotivo: motivo,
+        saldoLiquido: totalAjuste
+      };
+
+      const diff = lastSaldo === null ? totalAjuste : totalAjuste;
+
+      try{
+        await addDoc(collection(db,"history"), {
+          type:"capital_injection",
+          adjustment:true,
+          adjustmentType:"carga_rapida",
+          adjustmentReason:motivo,
+          turno,
+          operatorName:operador,
+          currentSaldoTotal:totalAjuste,
+          diff,
+          submittedAt:serverTimestamp(),
+          createdBy:currentUser?.uid || null,
+          createdByEmail:currentUser?.email || null
+        });
+
+        await addAudit("quick_capital_injection", `Carga rápida adicionada: ${formatMoney(totalAjuste)} • ${motivo}`);
+
+        ["quickCargaPoker","quickCargaCasino","quickCargaMotivo","quickCargaOperador"].forEach(id=>{ if($(id)) $(id).value=""; });
+
+        await recalculateAllHistory();
+        alert("Carga adicionada ao sistema como ajuste auditável.");
+      }catch(e){
+        alert(friendlyError(e));
+      }
+    }
+
     async function deleteHistory(id){ if(!await requireAdmin()) return; if(!confirm("Excluir este fechamento?")) return; try{await deleteDoc(doc(db,"history",id)); await addAudit("delete_history",`Fechamento excluído: ${id}`);}catch(e){alert(friendlyError(e));} }
 
     async function openEditHistory(id){ if(!await requireAdmin()) return; const item=historyCache.find(x=>x.id===id); if(!item) return alert("Fechamento não encontrado no cache."); const t=item.turno||{}; $("editHistoryId").value=id; $("editOperatorName").value=item.operatorName||t.operatorName||""; $("editClosingDate").value=toDateInputValue(t.closingDate||item.submittedAt); $("editWebReca").value=t.webReca??t.reca??0; $("editSuprema").value=t.suprema??0; $("editPppoker").value=t.pppoker??0; $("editBuffalo").value=t.buffalo??0; $("editGanamos").value=t.ganamos??0; $("editCargasPoker").value=t.cargasPoker??0; $("editCargasCasino").value=t.cargasCasino??t.cargas??0; setDynamicRows("editPendingList",t.pendings||[]); setDynamicRows("editOutflowList",t.outflows||[]); $("editHistoryModal").classList.add("active"); }
@@ -326,7 +408,8 @@
         "cargasPoker",
         "cargasCasino",
         "editCargasPoker",
-        "editCargasCasino"
+        "editCargasCasino",
+        "quickChargeCard"
       ];
 
       adminOnlyIds.forEach(id => {
@@ -336,7 +419,8 @@
       });
     }
 
-    function bindEvents(){ applyBankMoneyMaskAll(document); ["webReca","suprema","pppoker","buffalo","ganamos","cargasPoker","cargasCasino","operatorName","closingDate","editWebReca","editSuprema","editPppoker","editBuffalo","editGanamos","editCargasPoker","editCargasCasino"].forEach(id=>$(id)?.addEventListener("input",renderCalculations)); document.addEventListener("bankmoney", renderCalculations); $("addPendingBtn").onclick=()=>createDynamicRow("pendingList","Nome / motivo"); $("addOutflowBtn").onclick=()=>createDynamicRow("outflowList","Descrição"); $("saveClosingBtn").onclick=saveClosing; $("refreshBtn").onclick=refreshInternal; $("logoRefreshBtn").onclick=refreshInternal; $("recalculateBtn").onclick=recalculateAllHistory; $("pdfReportBtn").onclick=generateBankPdfReport; $("previewReportBtn").onclick=previewReport; $("generateReportBtn").onclick=generateBankPdfReport; ["reportStart","reportEnd","reportOperator","reportSupervisor"].forEach(id=>$(id)?.addEventListener("input",previewReport)); $("loadUsersBtn").onclick=loadUsers; $("createUserBtn").onclick=createInternalUser; $("historySearch").addEventListener("input",renderHistory); $("historyDate").addEventListener("input",renderHistory); document.querySelectorAll(".nav-btn").forEach(btn=>btn.onclick=()=>showScreen(btn.dataset.screen)); document.querySelectorAll("[data-rank]").forEach(btn=>btn.onclick=()=>{document.querySelectorAll("[data-rank]").forEach(b=>b.classList.remove("active")); btn.classList.add("active"); currentRankRange=btn.dataset.rank; renderRanking();}); $("logoutBtn").onclick=async()=>{if(historyUnsubscribe)historyUnsubscribe();if(systemUnsubscribe)systemUnsubscribe();await signOut(auth);}; $("loginBtn").onclick=async()=>{try{hideNotice("loginNotice");await signInWithEmailAndPassword(auth,$("loginEmail").value.trim(),$("loginPassword").value);}catch(e){showNotice("loginNotice",friendlyError(e),"error");}}; $("registerBtn").onclick=registerAccess; $("resetPasswordBtn").onclick=async()=>{try{const email=$("loginEmail").value.trim(); if(!email) return showNotice("loginNotice","Informe o email.","error"); await sendPasswordResetEmail(auth,email); showNotice("loginNotice","Email de recuperação enviado.","ok");}catch(e){showNotice("loginNotice",friendlyError(e),"error");}}; $("editCloseBtn").onclick=closeEdit; $("cancelEditBtn").onclick=closeEdit; $("saveEditBtn").onclick=saveEdit; $("editAddPendingBtn").onclick=()=>createDynamicRow("editPendingList","Nome / motivo"); $("editAddOutflowBtn").onclick=()=>createDynamicRow("editOutflowList","Descrição"); }
+    function bindEvents(){ applyBankMoneyMaskAll(document); ["webReca","suprema","pppoker","buffalo","ganamos","cargasPoker","cargasCasino","quickCargaPoker","quickCargaCasino","operatorName","closingDate","editWebReca","editSuprema","editPppoker","editBuffalo","editGanamos","editCargasPoker","editCargasCasino"].forEach(id=>$(id)?.addEventListener("input",renderCalculations)); document.addEventListener("bankmoney", renderCalculations); $("addPendingBtn").onclick=()=>createDynamicRow("pendingList","Nome / motivo"); $("addOutflowBtn").onclick=()=>createDynamicRow("outflowList","Descrição");
+      $("quickChargeBtn") && ($("quickChargeBtn").onclick=addQuickCapitalInjection); $("saveClosingBtn").onclick=saveClosing; $("refreshBtn").onclick=refreshInternal; $("logoRefreshBtn").onclick=refreshInternal; $("recalculateBtn").onclick=recalculateAllHistory; $("pdfReportBtn").onclick=generateBankPdfReport; $("previewReportBtn").onclick=previewReport; $("generateReportBtn").onclick=generateBankPdfReport; ["reportStart","reportEnd","reportOperator","reportSupervisor"].forEach(id=>$(id)?.addEventListener("input",previewReport)); $("loadUsersBtn").onclick=loadUsers; $("createUserBtn").onclick=createInternalUser; $("historySearch").addEventListener("input",renderHistory); $("historyDate").addEventListener("input",renderHistory); document.querySelectorAll(".nav-btn").forEach(btn=>btn.onclick=()=>showScreen(btn.dataset.screen)); document.querySelectorAll("[data-rank]").forEach(btn=>btn.onclick=()=>{document.querySelectorAll("[data-rank]").forEach(b=>b.classList.remove("active")); btn.classList.add("active"); currentRankRange=btn.dataset.rank; renderRanking();}); $("logoutBtn").onclick=async()=>{if(historyUnsubscribe)historyUnsubscribe();if(systemUnsubscribe)systemUnsubscribe();await signOut(auth);}; $("loginBtn").onclick=async()=>{try{hideNotice("loginNotice");await signInWithEmailAndPassword(auth,$("loginEmail").value.trim(),$("loginPassword").value);}catch(e){showNotice("loginNotice",friendlyError(e),"error");}}; $("registerBtn").onclick=registerAccess; $("resetPasswordBtn").onclick=async()=>{try{const email=$("loginEmail").value.trim(); if(!email) return showNotice("loginNotice","Informe o email.","error"); await sendPasswordResetEmail(auth,email); showNotice("loginNotice","Email de recuperação enviado.","ok");}catch(e){showNotice("loginNotice",friendlyError(e),"error");}}; $("editCloseBtn").onclick=closeEdit; $("cancelEditBtn").onclick=closeEdit; $("saveEditBtn").onclick=saveEdit; $("editAddPendingBtn").onclick=()=>createDynamicRow("editPendingList","Nome / motivo"); $("editAddOutflowBtn").onclick=()=>createDynamicRow("editOutflowList","Descrição"); }
     function initDate(){ const now=new Date(); now.setMinutes(now.getMinutes()-now.getTimezoneOffset()); $("closingDate").value=now.toISOString().slice(0,16); }
 
     onAuthStateChanged(auth,async(user)=>{ currentUser=user; if(!user){$("loginScreen").classList.remove("hidden");$("appShell").classList.add("hidden");$("bottomNav").classList.add("hidden");return;} currentProfile=await loadProfile(user); if(currentProfile.blocked){await signOut(auth);return alert("Usuário bloqueado.");} if(currentProfile.approved===false){$("loginScreen").classList.remove("hidden");$("appShell").classList.add("hidden");$("bottomNav").classList.add("hidden");showNotice("loginNotice","Usuário aguardando aprovação do admin.","error");return;} $("loginScreen").classList.add("hidden");$("appShell").classList.remove("hidden");$("bottomNav").classList.remove("hidden");$("topUserLabel").textContent=`${currentProfile.name||user.email} • ${isAdmin()?"Admin":isSupervisor()?"Supervisor":"Operador"}`; $("adminStatus").textContent=isAdmin()?"Admin ativo":"Somente admin";
