@@ -39,7 +39,7 @@
     .dynamic-list{display:grid;gap:8px}.row-item{display:grid;grid-template-columns:1fr 150px 40px;gap:8px;align-items:center}.row-item.outflow-row{grid-template-columns:1fr 150px 150px 40px}.row-item input,.row-item select{height:44px;border-radius:14px;border:1px solid var(--border);padding:0 12px;background:#f8fbff;font-weight:800;color:var(--text);outline:0}.row-item select{appearance:none;background-image:linear-gradient(45deg,transparent 50%,#64748b 50%),linear-gradient(135deg,#64748b 50%,transparent 50%);background-position:calc(100% - 16px) 18px,calc(100% - 11px) 18px;background-size:5px 5px,5px 5px;background-repeat:no-repeat;padding-right:28px}.remove-row{height:40px;border-radius:13px;background:#fee2e2;color:#991b1b;font-weight:950}
     .history-tools{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px}.history-list{display:grid;gap:10px}.history-item{background:#fff;border:1px solid var(--border);border-radius:20px;padding:14px;box-shadow:0 10px 24px rgba(15,42,107,.06)}.history-top{display:flex;justify-content:space-between;gap:10px;margin-bottom:8px}.history-top strong{font-size:14px}.history-top span{font-size:12px;color:var(--muted);font-weight:800}.history-values{display:grid;grid-template-columns:1fr 1fr;gap:8px;font-size:12px}.history-values b{display:block;font-size:15px;margin-top:3px}.history-actions{display:flex;gap:8px;margin-top:10px;flex-wrap:wrap}.small-btn{height:34px;border-radius:12px;padding:0 10px;font-size:12px;font-weight:950;background:#eef4ff;color:#0F2A6B}.small-btn.danger{background:#fee2e2;color:#991b1b}
     .rank-tabs{display:flex;gap:8px;overflow:auto;margin-bottom:12px}.rank-tabs button{height:38px;border-radius:13px;padding:0 14px;background:#fff;color:var(--primary-dark);font-weight:950;border:1px solid var(--border);white-space:nowrap}.rank-tabs button.active{background:var(--primary);color:#fff}.rank-list{display:grid;gap:9px}.rank-item{display:flex;align-items:center;justify-content:space-between;background:#fff;border:1px solid var(--border);border-radius:18px;padding:12px}.rank-left{display:flex;align-items:center;gap:10px}.rank-pos{width:32px;height:32px;border-radius:12px;background:#eef4ff;display:flex;align-items:center;justify-content:center;font-weight:950;color:var(--primary-dark)}
-    .admin-grid{display:grid;gap:12px}.user-item{display:flex;justify-content:space-between;align-items:center;gap:10px;background:#fff;border:1px solid var(--border);border-radius:18px;padding:12px}.user-item strong{font-size:13px}.badge{font-size:11px;font-weight:950;border-radius:999px;padding:5px 8px;background:#eef4ff;color:#0F2A6B}.badge.ok{background:#dcfce7;color:#166534}.badge.off{background:#fee2e2;color:#991b1b}
+    .admin-grid{display:grid;gap:12px}.user-item{display:grid;grid-template-columns:1fr auto;align-items:center;gap:12px;background:#fff;border:1px solid var(--border);border-radius:18px;padding:12px}.user-item strong{font-size:13px}.user-actions{display:grid;grid-template-columns:150px 150px 110px;gap:8px;align-items:center}.user-actions select,.user-actions button{height:38px;border-radius:13px;font-size:12px;font-weight:950}.user-actions select{border:1px solid var(--border);background:#eef4ff;color:#0F2A6B;padding:0 10px;outline:0}.admin-create-panel{display:none}.admin-create-panel.active{display:block}.admin-toggle{height:38px;border-radius:13px;background:#eef4ff;color:#0F2A6B;font-size:12px;font-weight:950;padding:0 12px}@media(max-width:640px){.user-item{grid-template-columns:1fr}.user-actions{grid-template-columns:1fr}.user-actions select,.user-actions button{width:100%}}.badge{font-size:11px;font-weight:950;border-radius:999px;padding:5px 8px;background:#eef4ff;color:#0F2A6B}.badge.ok{background:#dcfce7;color:#166534}.badge.off{background:#fee2e2;color:#991b1b}
     .bottom-nav{position:fixed;left:50%;bottom:calc(10px + env(safe-area-inset-bottom));transform:translateX(-50%);width:min(960px,calc(100% - 20px));height:72px;border-radius:26px;background:rgba(255,255,255,.88);backdrop-filter:blur(22px);box-shadow:0 24px 80px rgba(15,42,107,.18);border:1px solid rgba(255,255,255,.78);display:grid;grid-template-columns:repeat(6,1fr);z-index:80;padding:7px}.nav-btn{border-radius:19px;background:transparent;color:#64748b;font-weight:950;font-size:11px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px}.nav-btn b{font-size:18px;line-height:1}.nav-btn.active{background:linear-gradient(145deg,#0F2A6B,#006BFF);color:#fff;box-shadow:0 12px 28px rgba(0,107,255,.23)}
     .login-screen{position:fixed;inset:0;z-index:100000;background:linear-gradient(180deg,#06152e,#0F2A6B 55%,#006BFF);display:flex;align-items:center;justify-content:center;padding:18px;color:#fff}.login-card{width:min(410px,100%);background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.18);backdrop-filter:blur(20px);border-radius:30px;padding:24px;box-shadow:0 30px 90px rgba(0,0,0,.26)}.login-logo{width:76px;height:76px;border-radius:24px;background:#fff;color:#006BFF;display:flex;align-items:center;justify-content:center;font-size:26px;font-weight:950;margin:0 auto 14px}.login-card h1{text-align:center;margin:0;font-size:28px}.login-card p{text-align:center;opacity:.78;font-weight:700;margin:6px 0 22px}.login-card input{width:100%;height:52px;margin-bottom:10px;border-radius:17px;border:1px solid rgba(255,255,255,.18);background:rgba(255,255,255,.12);color:#fff;padding:0 14px;font-weight:850;outline:0}.login-card input::placeholder{color:rgba(255,255,255,.62)}
     .app-splash,.app-reload-loader{position:fixed;inset:0;z-index:999999;display:flex;align-items:center;justify-content:center;background:radial-gradient(circle at 50% 20%,rgba(59,130,246,.45),transparent 38%),linear-gradient(180deg,#06152e,#0b2f7a 55%,#006BFF);color:#fff;transition:.7s ease}.app-splash.hide{opacity:0;transform:scale(1.04);pointer-events:none}.splash-content{text-align:center;animation:splashEnter .9s cubic-bezier(.2,.9,.2,1)}.splash-logo{width:86px;height:86px;margin:0 auto 18px;border-radius:26px;display:flex;align-items:center;justify-content:center;background:linear-gradient(145deg,#fff,#dbeafe);color:#0052cc;font-size:28px;font-weight:950;box-shadow:0 24px 60px rgba(0,0,0,.35)}.splash-content h1{margin:0;font-size:30px;font-weight:950}.splash-content p{margin:6px 0 24px;font-size:14px;font-weight:800;opacity:.78}.splash-loader{width:150px;height:5px;margin:0 auto;border-radius:999px;background:rgba(255,255,255,.18);overflow:hidden}.splash-loader span{display:block;width:45%;height:100%;border-radius:999px;background:#fff;animation:loaderMove 1.1s ease-in-out infinite}.app-reload-loader{z-index:999998;background:rgba(3,12,30,.62);backdrop-filter:blur(14px);display:none}.app-reload-loader.active{display:flex}.reload-card{width:min(320px,88vw);padding:28px 22px;border-radius:26px;background:linear-gradient(180deg,rgba(255,255,255,.96),rgba(240,246,255,.94));box-shadow:0 30px 80px rgba(0,0,0,.28);border:1px solid rgba(255,255,255,.65);text-align:center;color:#07152f}.reload-spinner{width:48px;height:48px;margin:0 auto 16px;border-radius:50%;border:4px solid rgba(0,107,255,.16);border-top-color:#006BFF;animation:spin .8s linear infinite}.reload-card strong{display:block;font-size:17px;font-weight:950}.reload-card span{display:block;font-size:13px;color:#64748b;font-weight:800;margin-top:6px}
@@ -159,17 +159,23 @@
 
       <div id="quickChargeCard" class="card" style="margin-top:14px;">
         <div class="card-title">
-          <h2>Carga rápida automática</h2>
-          <span>Admin • Ajuste auditável</span>
+          <div>
+            <h2>Carga rápida automática</h2>
+            <span>Admin • Ajuste auditável</span>
+          </div>
+          <button id="toggleQuickChargeBtn" class="admin-toggle">Mostrar carga rápida</button>
         </div>
-        <div class="form-grid">
-          <div class="field"><label>Carga fichas poker ×400</label><input id="quickCargaPoker" class="money-input" inputmode="decimal" placeholder="0,00" /></div>
-          <div class="field"><label>Carga casino / dinheiro</label><input id="quickCargaCasino" class="money-input" inputmode="decimal" placeholder="0,00" /></div>
-          <div class="field"><label>Motivo</label><input id="quickCargaMotivo" placeholder="Ex: aporte de caixa / reposição banca" /></div>
-          <div class="field"><label>Operador responsável</label><input id="quickCargaOperador" placeholder="Admin / responsável" /></div>
+
+        <div id="quickChargePanel" class="admin-create-panel">
+          <div class="form-grid" style="margin-top:14px;">
+            <div class="field"><label>Carga fichas poker ×400</label><input id="quickCargaPoker" class="money-input" inputmode="decimal" placeholder="0,00" /></div>
+            <div class="field"><label>Carga casino / dinheiro</label><input id="quickCargaCasino" class="money-input" inputmode="decimal" placeholder="0,00" /></div>
+            <div class="field"><label>Motivo</label><input id="quickCargaMotivo" placeholder="Ex: aporte de caixa / reposição banca" /></div>
+            <div class="field"><label>Operador responsável</label><input id="quickCargaOperador" placeholder="Admin / responsável" /></div>
+          </div>
+          <button id="quickChargeBtn" class="btn full" style="margin-top:14px;">Adicionar carga ao sistema</button>
+          <div class="muted" style="margin-top:10px;">Cria um ajuste separado no histórico, sem alterar fechamentos antigos.</div>
         </div>
-        <button id="quickChargeBtn" class="btn full" style="margin-top:14px;">Adicionar carga ao sistema</button>
-        <div class="muted" style="margin-top:10px;">Cria um ajuste separado no histórico, sem alterar fechamentos antigos.</div>
       </div>
     </section>
 
@@ -179,7 +185,32 @@
 
     <section id="screenReports" class="screen"><div class="card"><div class="card-title"><h2>Relatórios premium</h2><span>PDF nível banco</span></div><div class="form-grid"><div class="field"><label>Data inicial</label><input id="reportStart" type="date" /></div><div class="field"><label>Data final</label><input id="reportEnd" type="date" /></div><div class="field"><label>Operador</label><input id="reportOperator" placeholder="Todos" /></div><div class="field"><label>Supervisor</label><input id="reportSupervisor" placeholder="Todos" /></div></div><div class="grid three"><div class="card" style="box-shadow:none;"><div class="muted">Fechamentos</div><div id="reportPreviewCount" class="metric">0</div></div><div class="card" style="box-shadow:none;"><div class="muted">Saldo líquido</div><div id="reportPreviewSaldo" class="metric">$ 0,00</div></div><div class="card" style="box-shadow:none;"><div class="muted">Diferença</div><div id="reportPreviewDiff" class="metric">$ 0,00</div></div></div><button id="previewReportBtn" class="btn secondary full" style="margin-top:14px;">Pré-visualizar resumo</button><button id="generateReportBtn" class="btn full" style="margin-top:10px;">Gerar PDF</button></div></section>
 
-    <section id="screenAdmin" class="screen"><div class="card"><div class="card-title"><h2>Painel Admin</h2><span id="adminStatus">Protegido</span></div><div class="form-grid"><div class="field"><label>Email do novo usuário</label><input id="newUserEmail" type="email" placeholder="usuario@email.com" /></div><div class="field"><label>Senha temporária</label><input id="newUserPassword" type="password" placeholder="mínimo 6 caracteres" /></div><div class="field"><label>Nome</label><input id="newUserName" placeholder="Nome do operador" /></div><div class="field"><label>Função</label><select id="newUserRole"><option value="operator">Operador</option><option value="supervisor">Supervisor</option><option value="admin">Admin</option></select></div><div class="field"><label>Supervisor</label><input id="newUserSupervisor" placeholder="Só para operador" /></div></div><button id="createUserBtn" class="btn full" style="margin-top:14px;">Criar usuário</button></div><div class="card"><div class="card-title"><h2>Usuários</h2><button id="loadUsersBtn" class="small-btn">Atualizar</button></div><div id="usersList" class="admin-grid"></div></div><div class="card"><div class="card-title"><h2>Auditoria</h2><span>Últimas ações</span></div><div id="auditList" class="history-list"></div></div></section>
+    <section id="screenAdmin" class="screen">
+      <div class="card">
+        <div class="card-title">
+          <h2>Painel Admin</h2>
+          <button id="toggleCreateUserBtn" class="admin-toggle">Mostrar criar usuário</button>
+        </div>
+        <span id="adminStatus" class="muted">Protegido</span>
+        <div id="createUserPanel" class="admin-create-panel">
+          <div class="form-grid" style="margin-top:14px;">
+            <div class="field"><label>Email do novo usuário</label><input id="newUserEmail" type="email" placeholder="usuario@email.com" /></div>
+            <div class="field"><label>Senha temporária</label><input id="newUserPassword" type="password" placeholder="mínimo 6 caracteres" /></div>
+            <div class="field"><label>Nome</label><input id="newUserName" placeholder="Nome do operador" /></div>
+            <div class="field"><label>Função</label><select id="newUserRole"><option value="operator">Operador</option><option value="supervisor">Supervisor</option><option value="admin">Admin</option></select></div>
+            <div class="field"><label>Supervisor</label><input id="newUserSupervisor" placeholder="Só para operador" /></div>
+          </div>
+          <button id="createUserBtn" class="btn full" style="margin-top:14px;">Criar usuário</button>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title"><h2>Usuários</h2><button id="loadUsersBtn" class="small-btn">Atualizar</button></div>
+        <div id="usersList" class="admin-grid"></div>
+      </div>
+
+      <div class="card"><div class="card-title"><h2>Auditoria</h2><span>Últimas ações</span></div><div id="auditList" class="history-list"></div></div>
+    </section>
   </main>
 
   <nav id="bottomNav" class="bottom-nav hidden"><button class="nav-btn active" data-screen="Home"><b>⌂</b>Início</button><button class="nav-btn" data-screen="Close"><b>＋</b>Fechar</button><button class="nav-btn" data-screen="History"><b>≡</b>Histórico</button><button class="nav-btn" data-screen="Ranking"><b>★</b>Ranking</button><button class="nav-btn" data-screen="Reports"><b>▣</b>Relatórios</button><button class="nav-btn" data-screen="Admin"><b>⚙</b>Admin</button></nav>
@@ -590,64 +621,68 @@
 
     async function loadUsers(){
       if(!await requireAdmin()) return;
-
       try{
         const snap = await getDocs(collection(db,"users"));
 
         $("usersList").innerHTML = snap.docs.map(d=>{
           const u = d.data();
           const role = u.role || "operator";
+          const status = u.blocked ? "Bloqueado" : (u.approved ? "Aprovado" : "Pendente");
 
           return `<div class="user-item">
             <div>
-              <strong>${u.name || u.email || d.id}</strong>
-              <div class="muted">${u.email || ""}<br>${d.id}</div>
-              <div class="muted">Cargo atual: <b>${role}</b></div>
+              <strong>${u.name || u.email || "Usuário"}</strong>
+              <div class="muted">${u.email || ""}</div>
+              <div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:7px;">
+                <span class="badge ${u.approved?'ok':'off'}">${u.approved?'Aprovado':'Pendente'}</span>
+                <span class="badge ${u.blocked?'off':'ok'}">${u.blocked?'Bloqueado':'Ativo'}</span>
+                <span class="badge">${role}</span>
+              </div>
             </div>
-            <div style="display:flex;gap:6px;align-items:center;flex-wrap:wrap;justify-content:flex-end">
-              <span class="badge ${u.approved?'ok':'off'}">${u.approved?'Aprovado':'Pendente'}</span>
-              <span class="badge ${u.blocked?'off':'ok'}">${u.blocked?'Bloqueado':'Ativo'}</span>
 
-              <select class="small-btn" data-role-select="${d.id}" style="height:34px;border:0;outline:0;background:#eef4ff;color:#0F2A6B;">
+            <div class="user-actions">
+              <select data-role-select="${d.id}">
                 <option value="operator" ${role === "operator" ? "selected" : ""}>Operador</option>
                 <option value="supervisor" ${role === "supervisor" ? "selected" : ""}>Supervisor</option>
                 <option value="admin" ${role === "admin" ? "selected" : ""}>Admin</option>
               </select>
 
-              <button class="small-btn" data-save-role="${d.id}">Salvar cargo</button>
-              <button class="small-btn" data-approve="${d.id}">Aprovar</button>
-              <button class="small-btn danger" data-block="${d.id}">${u.blocked?'Desbloq.':'Bloquear'}</button>
+              <select data-action-select="${d.id}">
+                <option value="approve">Aprovar com cargo</option>
+                <option value="save_role">Salvar cargo</option>
+                <option value="block">${u.blocked ? "Desbloquear" : "Bloquear"}</option>
+              </select>
+
+              <button class="small-btn" data-run-user-action="${d.id}">Executar</button>
             </div>
           </div>`;
         }).join("") || `<div class="user-item">Nenhum usuário encontrado.</div>`;
 
-        document.querySelectorAll("[data-save-role]").forEach(btn=>btn.onclick=async()=>{
-          const id = btn.dataset.saveRole;
-          const select = document.querySelector(`[data-role-select="${id}"]`);
-          const role = select?.value || "operator";
-          await updateDoc(doc(db,"users",id), { role });
-          await addAudit("update_user_role", `Cargo alterado para ${role}: ${id}`);
-          loadUsers();
-        });
+        document.querySelectorAll("[data-run-user-action]").forEach(btn=>btn.onclick=async()=>{
+          const id = btn.dataset.runUserAction;
+          const role = document.querySelector(`[data-role-select="${id}"]`)?.value || "operator";
+          const action = document.querySelector(`[data-action-select="${id}"]`)?.value || "approve";
 
-        document.querySelectorAll("[data-approve]").forEach(btn=>btn.onclick=async()=>{
-          const id = btn.dataset.approve;
-          const select = document.querySelector(`[data-role-select="${id}"]`);
-          const role = select?.value || "operator";
-          await updateDoc(doc(db,"users",id), { approved:true, role });
-          await addAudit("approve_user", `Usuário aprovado como ${role}: ${id}`);
-          loadUsers();
-        });
+          if(action === "approve"){
+            await updateDoc(doc(db,"users",id), { approved:true, role });
+            await addAudit("approve_user", `Usuário aprovado como ${role}`);
+          }
 
-        document.querySelectorAll("[data-block]").forEach(btn=>btn.onclick=async()=>{
-          const id = btn.dataset.block;
-          const s = await getDoc(doc(db,"users",id));
-          await updateDoc(doc(db,"users",id), { blocked:!s.data()?.blocked });
-          await addAudit("toggle_user_block", `Bloqueio alterado: ${id}`);
+          if(action === "save_role"){
+            await updateDoc(doc(db,"users",id), { role });
+            await addAudit("update_user_role", `Cargo alterado para ${role}`);
+          }
+
+          if(action === "block"){
+            const s = await getDoc(doc(db,"users",id));
+            await updateDoc(doc(db,"users",id), { blocked:!s.data()?.blocked });
+            await addAudit("toggle_user_block", `Status de bloqueio alterado`);
+          }
+
           loadUsers();
         });
       }catch(e){
-        $("usersList").innerHTML = `<div class="notice error">${friendlyError(e)}</div>`;
+        $("usersList").innerHTML=`<div class="notice error">${friendlyError(e)}</div>`;
       }
     }
 
@@ -674,7 +709,18 @@
     }
 
     function bindEvents(){ applyBankMoneyMaskAll(document); ["webReca","suprema","pppoker","buffalo","ganamos","cargasPoker","cargasCasino","quickCargaPoker","quickCargaCasino","operatorName","closingDate","editWebReca","editSuprema","editPppoker","editBuffalo","editGanamos","editCargasPoker","editCargasCasino"].forEach(id=>$(id)?.addEventListener("input",renderCalculations)); document.addEventListener("bankmoney", renderCalculations); $("addPendingBtn").onclick=()=>createDynamicRow("pendingList","Nome / motivo"); $("addOutflowBtn").onclick=()=>createDynamicRow("outflowList","Descrição");
-      $("quickChargeBtn") && ($("quickChargeBtn").onclick=addQuickCapitalInjection); $("saveClosingBtn").onclick=saveClosing; $("refreshBtn").onclick=refreshInternal; $("logoRefreshBtn").onclick=refreshInternal; $("recalculateBtn").onclick=recalculateAllHistory; $("pdfReportBtn").onclick=generateBankPdfReport; $("previewReportBtn").onclick=previewReport; $("generateReportBtn").onclick=generateBankPdfReport; ["reportStart","reportEnd","reportOperator","reportSupervisor"].forEach(id=>$(id)?.addEventListener("input",previewReport)); $("loadUsersBtn").onclick=loadUsers; $("createUserBtn").onclick=createInternalUser; $("historySearch").addEventListener("input",renderHistory); $("historyDate").addEventListener("input",renderHistory); document.querySelectorAll(".nav-btn").forEach(btn=>btn.onclick=()=>showScreen(btn.dataset.screen)); document.querySelectorAll("[data-rank]").forEach(btn=>btn.onclick=()=>{document.querySelectorAll("[data-rank]").forEach(b=>b.classList.remove("active")); btn.classList.add("active"); currentRankRange=btn.dataset.rank; renderRanking();}); $("logoutBtn").onclick=async()=>{if(historyUnsubscribe)historyUnsubscribe();if(systemUnsubscribe)systemUnsubscribe();await signOut(auth);}; $("loginBtn").onclick=async()=>{try{hideNotice("loginNotice");await signInWithEmailAndPassword(auth,$("loginEmail").value.trim(),$("loginPassword").value);}catch(e){showNotice("loginNotice",friendlyError(e),"error");}}; $("registerBtn").onclick=registerAccess; $("resetPasswordBtn").onclick=async()=>{try{const email=$("loginEmail").value.trim(); if(!email) return showNotice("loginNotice","Informe o email.","error"); await sendPasswordResetEmail(auth,email); showNotice("loginNotice","Email de recuperação enviado.","ok");}catch(e){showNotice("loginNotice",friendlyError(e),"error");}}; $("receiptCloseBtn") && ($("receiptCloseBtn").onclick=closeHistoryReceipt);
+      $("quickChargeBtn") && ($("quickChargeBtn").onclick=addQuickCapitalInjection);
+      $("toggleQuickChargeBtn") && ($("toggleQuickChargeBtn").onclick=()=>{
+        const panel = $("quickChargePanel");
+        panel?.classList.toggle("active");
+        $("toggleQuickChargeBtn").textContent = panel?.classList.contains("active") ? "Ocultar carga rápida" : "Mostrar carga rápida";
+      }); $("saveClosingBtn").onclick=saveClosing; $("refreshBtn").onclick=refreshInternal; $("logoRefreshBtn").onclick=refreshInternal; $("recalculateBtn").onclick=recalculateAllHistory; $("pdfReportBtn").onclick=generateBankPdfReport; $("previewReportBtn").onclick=previewReport; $("generateReportBtn").onclick=generateBankPdfReport; ["reportStart","reportEnd","reportOperator","reportSupervisor"].forEach(id=>$(id)?.addEventListener("input",previewReport)); $("loadUsersBtn").onclick=loadUsers;
+      $("toggleCreateUserBtn") && ($("toggleCreateUserBtn").onclick=()=>{
+        const panel = $("createUserPanel");
+        panel?.classList.toggle("active");
+        $("toggleCreateUserBtn").textContent = panel?.classList.contains("active") ? "Ocultar criar usuário" : "Mostrar criar usuário";
+      });
+      $("createUserBtn").onclick=createInternalUser; $("historySearch").addEventListener("input",renderHistory); $("historyDate").addEventListener("input",renderHistory); document.querySelectorAll(".nav-btn").forEach(btn=>btn.onclick=()=>showScreen(btn.dataset.screen)); document.querySelectorAll("[data-rank]").forEach(btn=>btn.onclick=()=>{document.querySelectorAll("[data-rank]").forEach(b=>b.classList.remove("active")); btn.classList.add("active"); currentRankRange=btn.dataset.rank; renderRanking();}); $("logoutBtn").onclick=async()=>{if(historyUnsubscribe)historyUnsubscribe();if(systemUnsubscribe)systemUnsubscribe();await signOut(auth);}; $("loginBtn").onclick=async()=>{try{hideNotice("loginNotice");await signInWithEmailAndPassword(auth,$("loginEmail").value.trim(),$("loginPassword").value);}catch(e){showNotice("loginNotice",friendlyError(e),"error");}}; $("registerBtn").onclick=registerAccess; $("resetPasswordBtn").onclick=async()=>{try{const email=$("loginEmail").value.trim(); if(!email) return showNotice("loginNotice","Informe o email.","error"); await sendPasswordResetEmail(auth,email); showNotice("loginNotice","Email de recuperação enviado.","ok");}catch(e){showNotice("loginNotice",friendlyError(e),"error");}}; $("receiptCloseBtn") && ($("receiptCloseBtn").onclick=closeHistoryReceipt);
       $("editCloseBtn").onclick=closeEdit; $("cancelEditBtn").onclick=closeEdit; $("saveEditBtn").onclick=saveEdit; $("editAddPendingBtn").onclick=()=>createDynamicRow("editPendingList","Nome / motivo"); $("editAddOutflowBtn").onclick=()=>createDynamicRow("editOutflowList","Descrição"); }
     function initDate(){ const now=new Date(); now.setMinutes(now.getMinutes()-now.getTimezoneOffset()); $("closingDate").value=now.toISOString().slice(0,16); }
 
