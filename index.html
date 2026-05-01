@@ -1404,101 +1404,101 @@
       }
 
       const btn = $("receiptExportPngBtn");
+      const originalBtnText = btn ? btn.textContent : "";
+
+      function resetButton(){
+        if(btn){
+          btn.disabled = false;
+          btn.textContent = originalBtnText || "Exportar resumo PNG";
+        }
+      }
+
+      function restorePanel(originalMaxHeight, originalOverflow, hiddenEls){
+        panel.style.maxHeight = originalMaxHeight;
+        panel.style.overflow = originalOverflow;
+        hiddenEls.forEach(function(el){
+          el.style.display = el.getAttribute("data-old-display") || "";
+          el.removeAttribute("data-old-display");
+        });
+      }
+
       if(btn){
         btn.disabled = true;
         btn.textContent = "Gerando PNG...";
       }
 
-      function finishButton(){
-        if(btn){
-          btn.disabled = false;
-          btn.textContent = "Exportar resumo PNG";
-        }
-      }
-
-      function loadHtml2Canvas(callback){
-        if(window.html2canvas){
-          callback();
-          return;
-        }
-
-        const script = document.createElement("script");
-        script.src = "https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js";
-        script.onload = callback;
-        script.onerror = function(){
-          finishButton();
-          alert("Não foi possível carregar o exportador PNG. Verifique a internet e tente novamente.");
-        };
-        document.head.appendChild(script);
-      }
-
-      loadHtml2Canvas(function(){
+      function startExport(){
         const originalMaxHeight = panel.style.maxHeight;
         const originalOverflow = panel.style.overflow;
+        const hiddenEls = Array.from(panel.querySelectorAll("button, .receipt-actions, #receiptAdminActions"));
+
+        hiddenEls.forEach(function(el){
+          el.setAttribute("data-old-display", el.style.display || "");
+          el.style.display = "none";
+        });
 
         panel.style.maxHeight = "none";
         panel.style.overflow = "visible";
 
         setTimeout(function(){
-          const hiddenActions = panel.querySelectorAll("button, .receipt-actions, #receiptAdminActions");
-          hiddenActions.forEach(el=>el.style.display="none");
-
-          const hiddenActions = panel.querySelectorAll("button, .receipt-actions, #receiptAdminActions");
-          hiddenActions.forEach(el=>el.style.display="none");
-
-          const hiddenPngActions = panel.querySelectorAll('button, .receipt-actions, #receiptAdminActions');
-          hiddenPngActions.forEach(function(el){ el.dataset.oldDisplay = el.style.display || ''; el.style.display = 'none'; });
-
           window.html2canvas(panel, {
             backgroundColor: "#ffffff",
             scale: Math.min(3, window.devicePixelRatio || 2),
             useCORS: true,
             logging: false
           }).then(function(canvas){
-            panel.style.maxHeight = originalMaxHeight;
-            panel.style.overflow = originalOverflow;
-            hiddenActions.forEach(el=>el.style.display="");
+            restorePanel(originalMaxHeight, originalOverflow, hiddenEls);
 
             const fileName = "bank-king-resumo-" + Date.now() + ".png";
 
             if(canvas.toBlob){
               canvas.toBlob(function(blob){
-                if(!blob){
-                  const aFallback = document.createElement("a");
-                  aFallback.href = canvas.toDataURL("image/png");
-                  aFallback.download = fileName;
-                  aFallback.click();
-                  finishButton();
-                  return;
+                if(blob){
+                  const url = URL.createObjectURL(blob);
+                  const a = document.createElement("a");
+                  a.href = url;
+                  a.download = fileName;
+                  document.body.appendChild(a);
+                  a.click();
+                  a.remove();
+                  setTimeout(function(){ URL.revokeObjectURL(url); }, 1000);
+                }else{
+                  const a = document.createElement("a");
+                  a.href = canvas.toDataURL("image/png");
+                  a.download = fileName;
+                  a.click();
                 }
-
-                const url = URL.createObjectURL(blob);
-                const a = document.createElement("a");
-                a.href = url;
-                a.download = fileName;
-                document.body.appendChild(a);
-                a.click();
-                a.remove();
-                setTimeout(function(){ URL.revokeObjectURL(url); }, 1000);
-                finishButton();
+                resetButton();
               }, "image/png", 1);
             }else{
               const a = document.createElement("a");
               a.href = canvas.toDataURL("image/png");
               a.download = fileName;
               a.click();
-              finishButton();
+              resetButton();
             }
           }).catch(function(error){
             console.error("Erro PNG:", error);
-            panel.style.maxHeight = originalMaxHeight;
-            panel.style.overflow = originalOverflow;
-            hiddenActions.forEach(el=>el.style.display="");
-            finishButton();
+            restorePanel(originalMaxHeight, originalOverflow, hiddenEls);
+            resetButton();
             alert("Não consegui gerar o PNG neste navegador.");
           });
         }, 150);
-      });
+      }
+
+      if(window.html2canvas){
+        startExport();
+        return;
+      }
+
+      const script = document.createElement("script");
+      script.src = "https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js";
+      script.onload = startExport;
+      script.onerror = function(){
+        resetButton();
+        alert("Não foi possível carregar o exportador PNG. Verifique a internet e tente novamente.");
+      };
+      document.head.appendChild(script);
     }
 
     function openHomeMetricDetail(type){
