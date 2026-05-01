@@ -774,10 +774,58 @@
 
     function canAccessHistoryItem(item){
       // Histórico liberado para todos os usuários aprovados.
-      // Somente admin pode editar, excluir, recalcular e gerenciar usuários.
+      // Admin pode gerenciar tudo. Operador só edita o próprio último fechamento real.
       return true;
     }
+
     function visibleHistory(){ return historyCache.filter(canAccessHistoryItem); }
+
+    function historyItemOwnerEmail(item){
+      const t = item?.turno || {};
+      return String(
+        item?.operatorEmail ||
+        item?.createdByEmail ||
+        item?.email ||
+        t.operatorEmail ||
+        t.createdByEmail ||
+        ""
+      ).toLowerCase();
+    }
+
+    function isOwnHistoryItem(item){
+      const currentEmail = String(currentUser?.email || "").toLowerCase();
+      const ownerEmail = historyItemOwnerEmail(item);
+      return !!currentEmail && !!ownerEmail && currentEmail === ownerEmail;
+    }
+
+    function lastOwnRealClosing(){
+      const currentEmail = String(currentUser?.email || "").toLowerCase();
+      if(!currentEmail) return null;
+
+      return visibleHistory().find(item => {
+        if(isAdjustmentItem(item)) return false;
+        return historyItemOwnerEmail(item) === currentEmail;
+      }) || null;
+    }
+
+    function canEditHistoryItem(item){
+      if(!item) return false;
+
+      // Admin sempre edita.
+      if(isAdmin()) return true;
+
+      // Ajustes/carga rápida ficam somente para admin.
+      if(isAdjustmentItem(item)) return false;
+
+      // Operador só edita o próprio último fechamento real.
+      const lastOwn = lastOwnRealClosing();
+      return !!lastOwn && lastOwn.id === item.id && isOwnHistoryItem(item);
+    }
+
+    function canDeleteHistoryItem(item){
+      // Exclusão fica somente para admin.
+      return isAdmin();
+    }
 
     function isAdjustmentItem(item){
       const t = item?.turno || {};
@@ -1139,16 +1187,85 @@
       }).join("");
     }
     
-    function renderHistory(){ const search=$("historySearch")?.value.trim().toLowerCase()||"", date=$("historyDate")?.value||""; let list=visibleHistory(); if(search) list=list.filter(x=>(x.operatorName||x.turno?.operatorName||"").toLowerCase().includes(search)); if(date) list=list.filter(x=>{const d=x.submittedAt?.toDate?x.submittedAt.toDate():new Date(x.turno?.closingDate||x.createdAt||0); return !isNaN(d)&&d.toISOString().slice(0,10)===date;}); const totalList=list.length; list=list.slice(0, Math.min(historyRenderLimit,100)); $("historyCount").textContent=`${list.length} de ${Math.min(totalList,100)} registros`; $("historyList").innerHTML=list.map(item=>{const t=item.turno||{}, operator=item.operatorName||t.operatorName||"Sem operador", ajuste=isAdjustmentItem(item), saldo=ajuste ? adjustmentImpact(item) : (t.saldoLiquido??item.currentSaldoTotal??0), diff=displayCashDiff(item), adminActions=isAdmin()?`<button class="small-btn" data-edit="${item.id}">Editar</button><button class="small-btn danger" data-delete="${item.id}">Excluir</button>`:""; return `<div class="history-item" data-receipt="${item.id}" style="cursor:pointer;"><div class="history-top"><strong>${operator} ${ajuste ? '<span class="badge" style="margin-left:6px;">AJUSTE</span>' : ''}</strong><span>${dateLabel(item.submittedAt||t.closingDate)}</span></div><div class="history-values"><div><span class="muted">Saldo líquido</span><b>${formatMoney(saldo)}</b></div><div><span class="muted">Diferença</span><b style="color:${diff<0?'#ef4444':'#10b981'}">${formatMoney(diff)}</b></div></div><div class="history-actions">${adminActions}</div></div>`;}).join("")||`<div class="history-item">Nenhum fechamento encontrado.</div>`; document.querySelectorAll("[data-delete]").forEach(btn=>btn.onclick=(ev)=>{ev.stopPropagation();deleteHistory(btn.dataset.delete);}); document.querySelectorAll("[data-edit]").forEach(btn=>btn.onclick=(ev)=>{ev.stopPropagation();openEditHistory(btn.dataset.edit);}); document.querySelectorAll("[data-receipt]").forEach(card=>card.onclick=()=>openHistoryReceipt(card.dataset.receipt));
-      const totalAvailable = Math.min(visibleHistory().filter(x=>{
-        const search=$("historySearch")?.value.trim().toLowerCase()||"", date=$("historyDate")?.value||"";
-        if(search && !(x.operatorName||x.turno?.operatorName||"").toLowerCase().includes(search)) return false;
-        if(date){ const d=x.submittedAt?.toDate?x.submittedAt.toDate():new Date(x.turno?.closingDate||x.createdAt||0); if(isNaN(d)||d.toISOString().slice(0,10)!==date) return false; }
+    function renderHistory(){
+      const search = $("historySearch")?.value.trim().toLowerCase() || "";
+      const date = $("historyDate")?.value || "";
+      let list = visibleHistory();
+
+      if(search){
+        list = list.filter(x => (x.operatorName || x.turno?.operatorName || "").toLowerCase().includes(search));
+      }
+
+      if(date){
+        list = list.filter(x => {
+          const d = x.submittedAt?.toDate ? x.submittedAt.toDate() : new Date(x.turno?.closingDate || x.createdAt || 0);
+          return !isNaN(d) && d.toISOString().slice(0,10) === date;
+        });
+      }
+
+      const totalList = list.length;
+      list = list.slice(0, Math.min(historyRenderLimit, 100));
+
+      if($("historyCount")) $("historyCount").textContent = `${list.length} de ${Math.min(totalList,100)} registros`;
+
+      const html = list.map(item => {
+        const t = item.turno || {};
+        const operator = item.operatorName || t.operatorName || "Sem operador";
+        const ajuste = isAdjustmentItem(item);
+        const saldo = ajuste ? adjustmentImpact(item) : (t.saldoLiquido ?? item.currentSaldoTotal ?? 0);
+        const diff = displayCashDiff(item);
+        const canEdit = canEditHistoryItem(item);
+        const canDelete = canDeleteHistoryItem(item);
+        const lastEditableBadge = canEdit && !isAdmin() ? `<span class="badge ok" style="margin-left:6px;">ÚLTIMO EDITÁVEL</span>` : "";
+        const adminActions = `
+          ${canEdit ? `<button class="small-btn" data-edit="${item.id}">Editar</button>` : ""}
+          ${canDelete ? `<button class="small-btn danger" data-delete="${item.id}">Excluir</button>` : ""}
+        `;
+
+        return `<div class="history-item" data-receipt="${item.id}" style="cursor:pointer;">
+          <div class="history-top">
+            <strong>${operator} ${ajuste ? '<span class="badge" style="margin-left:6px;">AJUSTE</span>' : ''}${lastEditableBadge}</strong>
+            <span>${dateLabel(item.submittedAt || t.closingDate)}</span>
+          </div>
+          <div class="history-values">
+            <div><span class="muted">Saldo líquido</span><b>${formatMoney(saldo)}</b></div>
+            <div><span class="muted">Diferença</span><b style="color:${diff<0?'#ef4444':'#10b981'}">${formatMoney(diff)}</b></div>
+          </div>
+          <div class="history-actions">${adminActions}</div>
+        </div>`;
+      }).join("") || `<div class="history-item">Nenhum fechamento encontrado.</div>`;
+
+      if($("historyList")) $("historyList").innerHTML = html;
+
+      document.querySelectorAll("[data-delete]").forEach(btn => btn.onclick = (ev) => {
+        ev.stopPropagation();
+        deleteHistory(btn.dataset.delete);
+      });
+
+      document.querySelectorAll("[data-edit]").forEach(btn => btn.onclick = (ev) => {
+        ev.stopPropagation();
+        openEditHistory(btn.dataset.edit);
+      });
+
+      document.querySelectorAll("[data-receipt]").forEach(card => card.onclick = () => openHistoryReceipt(card.dataset.receipt));
+
+      const totalAvailable = Math.min(visibleHistory().filter(x => {
+        const searchNow = $("historySearch")?.value.trim().toLowerCase() || "";
+        const dateNow = $("historyDate")?.value || "";
+        if(searchNow && !(x.operatorName || x.turno?.operatorName || "").toLowerCase().includes(searchNow)) return false;
+        if(dateNow){
+          const d = x.submittedAt?.toDate ? x.submittedAt.toDate() : new Date(x.turno?.closingDate || x.createdAt || 0);
+          if(isNaN(d) || d.toISOString().slice(0,10) !== dateNow) return false;
+        }
         return true;
-      }).length,100);
-      if(historyRenderLimit < totalAvailable){
+      }).length, 100);
+
+      if(historyRenderLimit < totalAvailable && $("historyList")){
         $("historyList").insertAdjacentHTML("beforeend", `<button id="loadMoreHistoryBtn" class="btn secondary full" style="margin-top:6px;">Carregar mais</button>`);
-        $("loadMoreHistoryBtn").onclick = ()=>{ historyRenderLimit = Math.min(100, historyRenderLimit + 20); renderHistory(); };
+        $("loadMoreHistoryBtn").onclick = () => {
+          historyRenderLimit = Math.min(100, historyRenderLimit + 20);
+          renderHistory();
+        };
       }
     }
 
@@ -1250,8 +1367,13 @@
         await addDoc(collection(db,"history"),{
           type:"closing",
           adjustment:false,
-          turno,
+          turno:{
+            ...turno,
+            operatorEmail:currentUser?.email || null,
+            createdByEmail:currentUser?.email || null
+          },
           operatorName:turno.operatorName,
+          operatorEmail:currentUser?.email || null,
           supervisorUid:turno.supervisorUid,
           supervisorEmail:turno.supervisorEmail,
           supervisorName:turno.supervisorName,
@@ -1406,12 +1528,18 @@
       `;
 
       const adminActions = $("receiptAdminActions");
-      adminActions?.classList.toggle("hidden", !isAdmin());
+      adminActions?.classList.toggle("hidden", !(canEditHistoryItem(item) || canDeleteHistoryItem(item)));
 
       const editBtn = $("receiptEditBtn");
       const deleteBtn = $("receiptDeleteBtn");
-      if(editBtn) editBtn.onclick = () => { closeHistoryReceipt(); openEditHistory(item.id); };
-      if(deleteBtn) deleteBtn.onclick = () => { closeHistoryReceipt(); deleteHistory(item.id); };
+      if(editBtn){
+        editBtn.style.display = canEditHistoryItem(item) ? "" : "none";
+        editBtn.onclick = () => { closeHistoryReceipt(); openEditHistory(item.id); };
+      }
+      if(deleteBtn){
+        deleteBtn.style.display = canDeleteHistoryItem(item) ? "" : "none";
+        deleteBtn.onclick = () => { closeHistoryReceipt(); deleteHistory(item.id); };
+      }
 
       $("receiptModal").classList.add("active");
     }
@@ -1450,12 +1578,18 @@
       `;
 
       const adminActions = $("receiptAdminActions");
-      adminActions?.classList.toggle("hidden", !isAdmin());
+      adminActions?.classList.toggle("hidden", !(canEditHistoryItem(item) || canDeleteHistoryItem(item)));
 
       const editBtn = $("receiptEditBtn");
       const deleteBtn = $("receiptDeleteBtn");
-      if(editBtn) editBtn.onclick = () => { closeHistoryReceipt(); openEditHistory(item.id); };
-      if(deleteBtn) deleteBtn.onclick = () => { closeHistoryReceipt(); deleteHistory(item.id); };
+      if(editBtn){
+        editBtn.style.display = canEditHistoryItem(item) ? "" : "none";
+        editBtn.onclick = () => { closeHistoryReceipt(); openEditHistory(item.id); };
+      }
+      if(deleteBtn){
+        deleteBtn.style.display = canDeleteHistoryItem(item) ? "" : "none";
+        deleteBtn.onclick = () => { closeHistoryReceipt(); deleteHistory(item.id); };
+      }
 
       $("receiptModal").classList.add("active");
     }
@@ -1640,9 +1774,9 @@
       $("receiptModal").classList.add("active");
     }
 
-    async function openEditHistory(id){ if(!await requireAdmin()) return; const item=historyCache.find(x=>x.id===id); if(!item) return alert("Fechamento não encontrado no cache."); const t=item.turno||{}; $("editHistoryId").value=id; $("editOperatorName").value=item.operatorName||t.operatorName||""; $("editClosingDate").value=toDateInputValue(t.closingDate||item.submittedAt); $("editWebReca").value=t.webReca??t.reca??0; $("editSuprema").value=t.suprema??0; $("editPppoker").value=t.pppoker??0; $("editBuffalo").value=t.buffalo??0; $("editGanamos").value=t.ganamos??0; $("editCargasPoker").value=t.cargasPoker??0; $("editCargasCasino").value=t.cargasCasino??t.cargas??0; setDynamicRows("editPendingList",t.pendings||[]); setDynamicRows("editOutflowList",t.outflows||[]); $("editHistoryModal").classList.add("active"); }
+    async function openEditHistory(id){ const item=historyCache.find(x=>x.id===id); if(!item) return alert("Fechamento não encontrado no cache."); if(!canEditHistoryItem(item)) return alert("Você só pode editar o seu último fechamento de turno."); const t=item.turno||{}; $("editHistoryId").value=id; $("editOperatorName").value=item.operatorName||t.operatorName||""; $("editClosingDate").value=toDateInputValue(t.closingDate||item.submittedAt); $("editWebReca").value=t.webReca??t.reca??0; $("editSuprema").value=t.suprema??0; $("editPppoker").value=t.pppoker??0; $("editBuffalo").value=t.buffalo??0; $("editGanamos").value=t.ganamos??0; $("editCargasPoker").value=t.cargasPoker??0; $("editCargasCasino").value=t.cargasCasino??t.cargas??0; setDynamicRows("editPendingList",t.pendings||[]); setDynamicRows("editOutflowList",t.outflows||[]); $("editHistoryModal").classList.add("active"); }
     function closeEdit(){ $("editHistoryModal").classList.remove("active"); }
-    async function saveEdit(){ if(!await requireAdmin()) return; const id=$("editHistoryId").value; const ref=doc(db,"history",id); const original=historyCache.find(x=>x.id===id)||{}; const t={...(original.turno||{}),operatorName:$("editOperatorName").value.trim(),closingDate:$("editClosingDate").value||new Date().toISOString(),webReca:moneyToNumber($("editWebReca").value),suprema:moneyToNumber($("editSuprema").value),pppoker:moneyToNumber($("editPppoker").value),buffalo:moneyToNumber($("editBuffalo").value),ganamos:moneyToNumber($("editGanamos").value),cargasPoker:moneyToNumber($("editCargasPoker").value),cargasCasino:moneyToNumber($("editCargasCasino").value),pendings:getDynamicRows("editPendingList"),outflows:getDynamicRows("editOutflowList")}; t.pendentesTotal=t.pendings.reduce((s,x)=>s+x.value,0); t.saidasTotal=t.outflows.reduce((s,x)=>s+x.value,0); t.retiradaLucroTotal=t.outflows.filter(x=>x.category==="lucro").reduce((s,x)=>s+x.value,0); t.custoOperacionalTotal=t.outflows.filter(x=>x.category==="custo_operacional").reduce((s,x)=>s+x.value,0); t.saldoLiquido=calcularSaldoLiquido(t); try{await updateDoc(ref,{turno:t,operatorName:t.operatorName,currentSaldoTotal:t.saldoLiquido,editedAt:serverTimestamp(),editedBy:currentUser?.uid||null}); await addAudit("edit_history",`Fechamento editado: ${id}`); closeEdit(); await recalculateAllHistory(); alert("Fechamento editado e histórico recalculado.");}catch(e){alert(friendlyError(e));} }
+    async function saveEdit(){ const id=$("editHistoryId").value; const ref=doc(db,"history",id); const original=historyCache.find(x=>x.id===id)||{}; if(!canEditHistoryItem(original)) return alert("Você só pode editar o seu último fechamento de turno."); const t={...(original.turno||{}),operatorName:$("editOperatorName").value.trim(),closingDate:$("editClosingDate").value||new Date().toISOString(),webReca:moneyToNumber($("editWebReca").value),suprema:moneyToNumber($("editSuprema").value),pppoker:moneyToNumber($("editPppoker").value),buffalo:moneyToNumber($("editBuffalo").value),ganamos:moneyToNumber($("editGanamos").value),cargasPoker:moneyToNumber($("editCargasPoker").value),cargasCasino:moneyToNumber($("editCargasCasino").value),pendings:getDynamicRows("editPendingList"),outflows:getDynamicRows("editOutflowList")}; t.pendentesTotal=t.pendings.reduce((s,x)=>s+x.value,0); t.saidasTotal=t.outflows.reduce((s,x)=>s+x.value,0); t.retiradaLucroTotal=t.outflows.filter(x=>x.category==="lucro").reduce((s,x)=>s+x.value,0); t.custoOperacionalTotal=t.outflows.filter(x=>x.category==="custo_operacional").reduce((s,x)=>s+x.value,0); t.saldoLiquido=calcularSaldoLiquido(t); try{await updateDoc(ref,{turno:t,operatorName:t.operatorName,currentSaldoTotal:t.saldoLiquido,editedAt:serverTimestamp(),editedBy:currentUser?.uid||null,editedByEmail:currentUser?.email||null}); await addAudit("edit_history",`Fechamento editado: ${id}`); closeEdit(); if(isAdmin()) await recalculateAllHistory(); else renderAll(); alert("Fechamento editado com sucesso.");}catch(e){alert(friendlyError(e));} }
 
     async function recalculateAllHistory(){
       if(!await requireAdmin()) return false;
