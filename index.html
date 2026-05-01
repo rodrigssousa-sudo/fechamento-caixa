@@ -95,12 +95,45 @@
 }
 
 .hero-mini{
-  background: rgba(255,255,255,0.10);
-  backdrop-filter: blur(12px);
+  background: linear-gradient(180deg, rgba(255,255,255,0.18), rgba(255,255,255,0.08));
+  backdrop-filter: blur(14px);
   border-radius:20px;
-  padding:16px;
-  border:1px solid rgba(255,255,255,0.18);
+  padding:18px;
+  border:1px solid rgba(255,255,255,0.28);
   transition:.25s;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.25), 0 8px 20px rgba(0,0,0,0.15);
+}
+
+.hero-mini:hover{
+  transform:translateY(-3px);
+  background: linear-gradient(180deg, rgba(255,255,255,0.22), rgba(255,255,255,0.10));
+}
+
+.hero-mini span{
+  display:block;
+  font-size:12px;
+  opacity:0.95;
+  margin-bottom:6px;
+  font-weight:700;
+  color:#EAF2FF;
+}
+
+.hero-mini strong{
+  font-size:20px;
+  font-weight:900;
+  letter-spacing:.3px;
+  color:#FFFFFF;
+}
+
+/* ajuste de cores fortes e nítidas */
+.hero-mini .positive{
+  color:#00FF9C !important;
+  font-weight:900;
+}
+
+.hero-mini .negative{
+  color:#FF4D6D !important;
+  font-weight:900;
 }
 
 .hero-mini:hover{
