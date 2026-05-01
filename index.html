@@ -871,14 +871,31 @@
           return adjustmentImpact(item);
         }
 
+        const view = visibleHistory();
+        const currentIndex = view.findIndex(x => x.id === item.id);
         const currentSaldo = moneyToNumber(item.turno?.saldoLiquido ?? item.currentSaldoTotal ?? 0);
-        const prevReal = previousRealClosingAfter(item);
 
-        if(!prevReal) return 0;
+        if(currentIndex < 0) return moneyToNumber(item.diff ?? 0);
 
-        // Para exibição simples do histórico, mostra fechamento atual vs base real anterior.
-        const prevBase = moneyToNumber(prevReal.turno?.baseOperacional ?? prevReal.operationalBase ?? calcularBaseOperacional(prevReal.turno || {}));
-        return currentSaldo - prevBase;
+        const prevRealIndex = view.findIndex((x, idx) => idx > currentIndex && !isAdjustmentItem(x));
+        if(prevRealIndex < 0) return 0;
+
+        const prevReal = view[prevRealIndex];
+        const prevBase = moneyToNumber(
+          prevReal.turno?.baseOperacional ??
+          prevReal.operationalBase ??
+          calcularBaseOperacional(prevReal.turno || {})
+        );
+
+        // Ajustes internos entre o fechamento anterior e o fechamento atual
+        // entram na base, mas não entram como lucro/diferença operacional.
+        const internalAdjustments = view
+          .slice(currentIndex + 1, prevRealIndex)
+          .filter(isAdjustmentItem)
+          .reduce((s,x)=>s + adjustmentImpact(x), 0);
+
+        const baseComparacao = prevBase + internalAdjustments;
+        return currentSaldo - baseComparacao;
       }catch(e){
         console.warn("Erro displayCashDiff:", e);
         return 0;
@@ -1917,3 +1934,4 @@
   </script>
 </body>
 </html>
+
