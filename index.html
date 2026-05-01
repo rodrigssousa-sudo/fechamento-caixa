@@ -393,6 +393,57 @@
   font-weight:850;
 }
 
+.chips-simple-head{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  margin-bottom:12px;
+}
+
+.chips-simple-head strong{
+  font-size:16px;
+  color:#07152f;
+  font-weight:950;
+  letter-spacing:-.25px;
+}
+
+.chips-stack{
+  display:grid;
+  gap:9px;
+}
+
+.chips-row{
+  border-radius:15px;
+  background:#f3f7ff;
+  border:1px solid rgba(11,31,77,.06);
+  padding:11px 12px;
+}
+
+.chips-row span{
+  display:block;
+  font-size:10px;
+  color:#64748b;
+  font-weight:950;
+  text-transform:uppercase;
+  letter-spacing:.28px;
+}
+
+.chips-row strong{
+  display:block;
+  margin-top:5px;
+  font-size:15px;
+  color:#07152f;
+  font-weight:950;
+}
+
+.chips-diff-row{
+  background:#ffffff;
+  border-color:rgba(0,91,255,.12);
+}
+
+.chips-good{color:#059669!important;}
+.chips-bad{color:#E3314B!important;}
+
 @media(max-width:640px){
   #chipsComparison{grid-template-columns:1fr;}
   .hero-value{font-size:34px;}
@@ -975,25 +1026,8 @@ function updateHeroBalance(newValue){
           <div class="field"><label>Data do fechamento</label><input id="closingDate" type="datetime-local" /></div>
           <div class="field"><label>Saldo Reca</label><input id="webReca" class="money-input" inputmode="decimal" placeholder="0,00" /></div>
           
-          <div class="field"><label>Suprema
-Atual
-<span id="supremaAtual">860,49 fichas</span>
-
-Anterior
-<span id="supremaAnterior">753,24 fichas</span>
-
-Fichas Diferença
-<span id="supremaDiff" class="balance-positive">+107,25 fichas</span>
-
-PPPoker
-Atual
-<span id="pppokerAtual">7.967,64 fichas</span>
-
-Anterior
-<span id="pppokerAnterior">9.513,64 fichas</span>
-
-Fichas Diferença
-<span id="pppokerDiff" class="balance-negative">-1.546,00 fichas</span></label><input id="pppoker" class="money-input" inputmode="decimal" placeholder="0,00" /></div>
+          <div class="field"><label>Suprema</label><input id="suprema" class="money-input" inputmode="decimal" placeholder="0,00" /></div>
+          <div class="field"><label>PPPoker</label><input id="pppoker" class="money-input" inputmode="decimal" placeholder="0,00" /></div>
           <div class="field"><label>Buffalo</label><input id="buffalo" class="money-input" inputmode="decimal" placeholder="0,00" /></div>
           <div class="field"><label>Ganamos</label><input id="ganamos" class="money-input" inputmode="decimal" placeholder="0,00" /></div>
           
@@ -1685,37 +1719,38 @@ Fichas Diferença
       const pt = prev?.turno || {};
 
       const items = [
-        { label:"Suprema", key:"suprema", type:"chips", multiplier:400 },
-        { label:"PPPoker", key:"pppoker", type:"chips", multiplier:400 },
-        { label:"Buffalo", key:"buffalo", type:"money", multiplier:1 },
-        { label:"Ganamos", key:"ganamos", type:"money", multiplier:1 }
+        { label:"Suprema", key:"suprema", type:"chips" },
+        { label:"PPPoker", key:"pppoker", type:"chips" },
+        { label:"Buffalo", key:"buffalo", type:"money" },
+        { label:"Ganamos", key:"ganamos", type:"money" }
       ];
 
-      const fmtChips = (value) => `${value.toLocaleString("pt-BR",{minimumFractionDigits:2,maximumFractionDigits:2})} fichas`;
-      const fmtBase = (item, value) => item.type === "chips" ? fmtChips(value) : formatMoney(value);
+      const fmtChips = (value) => `${moneyToNumber(value).toLocaleString("pt-BR",{minimumFractionDigits:2,maximumFractionDigits:2})} fichas`;
+      const signText = (value) => value > 0 ? "+" : "";
 
-      box.innerHTML = items.map(item=>{
-        const atualRaw = moneyToNumber(lt[item.key] ?? 0);
-        const anteriorRaw = moneyToNumber(pt[item.key] ?? 0);
-        const diffRaw = atualRaw - anteriorRaw;
-        const diffMoney = diffRaw * item.multiplier;
-        const positive = diffRaw >= 0;
+      box.innerHTML = items.map(item => {
+        const atual = moneyToNumber(lt[item.key] ?? 0);
+        const anterior = moneyToNumber(pt[item.key] ?? 0);
+        const diff = atual - anterior;
+        const positive = diff >= 0;
 
-        const diffLabel = item.type === "chips"
-          ? `${positive ? "+" : ""}${fmtChips(diffRaw)} • ${positive ? "+" : ""}${formatMoney(diffMoney)}`
-          : `${positive ? "+" : ""}${formatMoney(diffRaw)}`;
+        if(item.type === "chips"){
+          return `<div class="chips-item ${positive ? "chips-positive" : "chips-negative"}">
+            <div class="chips-simple-head"><strong>${item.label}</strong></div>
+            <div class="chips-stack">
+              <div class="chips-row"><span>Atual</span><strong>${fmtChips(atual)}</strong></div>
+              <div class="chips-row"><span>Anterior</span><strong>${fmtChips(anterior)}</strong></div>
+              <div class="chips-row chips-diff-row"><span>Fichas Diferença</span><strong class="${positive ? "chips-good" : "chips-bad"}">${signText(diff)}${fmtChips(diff)}</strong></div>
+            </div>
+          </div>`;
+        }
 
         return `<div class="chips-item ${positive ? "chips-positive" : "chips-negative"}">
-          <div class="chips-head">
-            <div>
-              <strong>${item.label}</strong>
-              <span>${item.type === "chips" ? "Fichas e valor convertido" : "Saldo financeiro"}</span>
-            </div>
-            <b>${diffLabel}</b>
-          </div>
-          <div class="chips-values">
-            <div><span>Atual</span><strong>${fmtBase(item, atualRaw)}</strong></div>
-            <div><span>Anterior</span><strong>${fmtBase(item, anteriorRaw)}</strong></div>
+          <div class="chips-simple-head"><strong>${item.label}</strong></div>
+          <div class="chips-stack">
+            <div class="chips-row"><span>Atual</span><strong>${formatMoney(atual)}</strong></div>
+            <div class="chips-row"><span>Anterior</span><strong>${formatMoney(anterior)}</strong></div>
+            <div class="chips-row chips-diff-row"><span>Diferença</span><strong class="${positive ? "chips-good" : "chips-bad"}">${signText(diff)}${formatMoney(diff)}</strong></div>
           </div>
         </div>`;
       }).join("");
@@ -2309,6 +2344,7 @@ Fichas Diferença
             ${receiptLine("Ganamos", formatMoney(t.ganamos || 0))}
             ${receiptLine("Pagos pendentes", "- " + formatMoney(t.pendentesTotal || 0))}
             ${receiptLine("Retiradas", "+ " + formatMoney(t.saidasTotal || 0))}
+            ${receiptLine("Data do fechamento", last ? dateLabel(last.submittedAt || last.createdAt || t.closingDate) : "-")}
           </div></div>`;
       }
 
