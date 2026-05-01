@@ -987,12 +987,12 @@
       card.classList.toggle("hidden", !allowed);
       if(!allowed) return;
 
-      const target = moneyToNumber(currentProfile?.monthlyGoal || currentProfile?.metaMensal || 10000000);
+      const target = moneyToNumber(currentProfile?.monthlyGoal || currentProfile?.metaMensal || 45000000);
       const now = new Date();
       const monthStart = new Date(now.getFullYear(), now.getMonth(), 1);
 
       const monthItems = monthlyOperationalHistory();
-      const done = monthItems.reduce((s,x)=>s + Math.max(0, moneyToNumber(x.diff ?? 0)), 0);
+      const done = monthItems.reduce((s,x)=>s + moneyToNumber(x.turno?.retiradaLucroTotal ?? 0), 0);
       const percent = target > 0 ? Math.max(0, Math.min(100, (done / target) * 100)) : 0;
       const remaining = Math.max(0, target - done);
 
@@ -1440,6 +1440,15 @@
         panel.style.overflow = "visible";
 
         setTimeout(function(){
+          const hiddenActions = panel.querySelectorAll("button, .receipt-actions, #receiptAdminActions");
+          hiddenActions.forEach(el=>el.style.display="none");
+
+          const hiddenActions = panel.querySelectorAll("button, .receipt-actions, #receiptAdminActions");
+          hiddenActions.forEach(el=>el.style.display="none");
+
+          const hiddenPngActions = panel.querySelectorAll('button, .receipt-actions, #receiptAdminActions');
+          hiddenPngActions.forEach(function(el){ el.dataset.oldDisplay = el.style.display || ''; el.style.display = 'none'; });
+
           window.html2canvas(panel, {
             backgroundColor: "#ffffff",
             scale: Math.min(3, window.devicePixelRatio || 2),
@@ -1448,6 +1457,7 @@
           }).then(function(canvas){
             panel.style.maxHeight = originalMaxHeight;
             panel.style.overflow = originalOverflow;
+            hiddenActions.forEach(el=>el.style.display="");
 
             const fileName = "bank-king-resumo-" + Date.now() + ".png";
 
@@ -1483,6 +1493,7 @@
             console.error("Erro PNG:", error);
             panel.style.maxHeight = originalMaxHeight;
             panel.style.overflow = originalOverflow;
+            hiddenActions.forEach(el=>el.style.display="");
             finishButton();
             alert("Não consegui gerar o PNG neste navegador.");
           });
