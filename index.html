@@ -1359,22 +1359,32 @@
       const item = historyCache.find(x=>x.id===id);
       if(!item) return alert("Fechamento não encontrado.");
 
+      if(isAdjustmentItem(item)){
+        openQuickAdjustmentReceipt(item);
+        return;
+      }
+
+      openFullClosingReceipt(item);
+    }
+
+    function openFullClosingReceipt(item){
       const t = item.turno || {};
+      const id = item.id || "";
       const saldo = t.saldoLiquido ?? item.currentSaldoTotal ?? 0;
-      const diff = item.diff ?? 0;
+      const diff = displayCashDiff(item);
       const cargaPokerMoney = moneyToNumber(t.cargasPoker || 0) * 400;
       const cargaCasino = moneyToNumber(t.cargasCasino ?? t.cargas ?? 0);
 
       $("receiptSaldoLiquido").textContent = formatMoney(saldo);
-      $("receiptSubtitle").textContent = `${item.type === "capital_injection" ? "Ajuste de carga" : "Fechamento de turno"} • ${dateLabel(item.submittedAt || t.closingDate)}`;
-      $("receiptCode").textContent = `ID: ${id.slice(0,8)} • ${item.type || "closing"}`;
+      $("receiptSubtitle").textContent = `Fechamento completo • ${dateLabel(item.submittedAt || t.closingDate)}`;
+      $("receiptCode").textContent = `ID: ${String(id).slice(0,8)} • fechamento`;
 
       $("receiptContent").innerHTML = `
         <div class="receipt-grid">
           <div class="receipt-row"><span>Operador</span><b>${item.operatorName || t.operatorName || "-"}</b></div>
           <div class="receipt-row"><span>Supervisor</span><b>${item.supervisorName || t.supervisorName || item.supervisorEmail || "-"}</b></div>
           <div class="receipt-row"><span>Data</span><b>${dateLabel(item.submittedAt || t.closingDate)}</b></div>
-          <div class="receipt-row"><span>Diferença</span><b style="color:${diff<0?'#ef4444':'#10b981'}">${formatMoney(diff)}</b></div>
+          <div class="receipt-row"><span>Diferença de caixa</span><b style="color:${diff<0?'#ef4444':'#10b981'}">${formatMoney(diff)}</b></div>
         </div>
 
         <div class="receipt-section">
@@ -1388,14 +1398,11 @@
             ${receiptLine("Carga poker ×400", formatMoney(cargaPokerMoney))}
             ${receiptLine("Carga casino", formatMoney(cargaCasino))}
             ${receiptLine("Pagos pendentes", formatMoney(t.pendentesTotal || 0))}
-            
           </div>
         </div>
 
         ${renderReceiptRows("Pagos pendentes detalhados", t.pendings, "Sem pagos pendentes")}
         ${renderReceiptRows("Retiradas detalhadas", t.outflows, "Sem retiradas")}
-
-        ${t.ajusteMotivo || item.adjustmentReason ? `<div class="receipt-section"><h3>Motivo do ajuste</h3><div class="receipt-line"><span>${t.ajusteMotivo || item.adjustmentReason}</span><b>Ajuste</b></div></div>` : ""}
       `;
 
       const adminActions = $("receiptAdminActions");
@@ -1403,8 +1410,52 @@
 
       const editBtn = $("receiptEditBtn");
       const deleteBtn = $("receiptDeleteBtn");
-      if(editBtn) editBtn.onclick = () => { closeHistoryReceipt(); openEditHistory(id); };
-      if(deleteBtn) deleteBtn.onclick = () => { closeHistoryReceipt(); deleteHistory(id); };
+      if(editBtn) editBtn.onclick = () => { closeHistoryReceipt(); openEditHistory(item.id); };
+      if(deleteBtn) deleteBtn.onclick = () => { closeHistoryReceipt(); deleteHistory(item.id); };
+
+      $("receiptModal").classList.add("active");
+    }
+
+    function openQuickAdjustmentReceipt(item){
+      const t = item.turno || {};
+      const id = item.id || "";
+      const impacto = adjustmentImpact(item);
+      const parts = getAdjustmentParts(item);
+      const motivo = t.ajusteMotivo || item.adjustmentReason || "Ajuste interno";
+      const operador = item.operatorName || t.operatorName || "-";
+      const data = dateLabel(item.submittedAt || t.closingDate || item.createdAt);
+      const tipoRetirada = t.retiradaTipo === "custo_operacional" ? "Custo operacional" : (t.retiradaTipo === "lucro" ? "Lucro" : "-");
+
+      $("receiptSaldoLiquido").textContent = formatMoney(impacto);
+      $("receiptSubtitle").textContent = `Carga rápida / ajuste • ${data}`;
+      $("receiptCode").textContent = `ID: ${String(id).slice(0,8)} • ajuste rápido`;
+
+      $("receiptContent").innerHTML = `
+        <div class="receipt-grid">
+          <div class="receipt-row"><span>Operador</span><b>${operador}</b></div>
+          <div class="receipt-row"><span>Data</span><b>${data}</b></div>
+          <div class="receipt-row"><span>Motivo</span><b>${motivo}</b></div>
+          <div class="receipt-row"><span>Impacto no caixa</span><b style="color:${impacto<0?'#ef4444':'#10b981'}">${formatMoney(impacto)}</b></div>
+        </div>
+
+        <div class="receipt-section">
+          <h3>Dados do ajuste</h3>
+          <div class="receipt-list">
+            ${receiptLine("Carga poker ×400", formatMoney(parts.cargaPoker))}
+            ${receiptLine("Carga casino / dinheiro", formatMoney(parts.cargaCasino))}
+            ${receiptLine("Retirada do caixa", formatMoney(parts.retiradaCaixa))}
+            ${receiptLine("Tipo da retirada", tipoRetirada)}
+          </div>
+        </div>
+      `;
+
+      const adminActions = $("receiptAdminActions");
+      adminActions?.classList.toggle("hidden", !isAdmin());
+
+      const editBtn = $("receiptEditBtn");
+      const deleteBtn = $("receiptDeleteBtn");
+      if(editBtn) editBtn.onclick = () => { closeHistoryReceipt(); openEditHistory(item.id); };
+      if(deleteBtn) deleteBtn.onclick = () => { closeHistoryReceipt(); deleteHistory(item.id); };
 
       $("receiptModal").classList.add("active");
     }
@@ -1934,4 +1985,3 @@
   </script>
 </body>
 </html>
-
