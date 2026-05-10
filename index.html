@@ -1728,7 +1728,7 @@ function updateHeroBalance(newValue){
     const $ = (id) => document.getElementById(id);
 
     let currentUser = null, currentProfile = null, historyCache = [], historyUnsubscribe = null, systemUnsubscribe = null, currentRankRange = "day";
-    let historyRenderLimit = 30;
+    let historyRenderLimit = 6;
 
     function showNotice(targetId, message, type="error"){
       const el = $(targetId); if(!el) return;
@@ -2427,9 +2427,9 @@ function updateHeroBalance(newValue){
       }
 
       const totalList = list.length;
-      list = list.slice(0, Math.min(historyRenderLimit, 100));
+      list = list.slice(0, historyRenderLimit);
 
-      if($("historyCount")) $("historyCount").textContent = `${list.length} de ${Math.min(totalList,100)} registros`;
+      if($("historyCount")) $("historyCount").textContent = `${list.length} de ${totalList} registros`;
 
       const html = list.map(item => {
         const t = item.turno || {};
@@ -2472,7 +2472,7 @@ function updateHeroBalance(newValue){
 
       document.querySelectorAll("[data-receipt]").forEach(card => card.onclick = () => openHistoryReceipt(card.dataset.receipt));
 
-      const totalAvailable = Math.min(visibleHistory().filter(x => {
+      const totalAvailable = visibleHistory().filter(x => {
         const searchNow = $("historySearch")?.value.trim().toLowerCase() || "";
         const dateNow = $("historyDate")?.value || "";
         if(searchNow && !getOperadorName(x).toLowerCase().includes(searchNow)) return false;
@@ -2481,12 +2481,12 @@ function updateHeroBalance(newValue){
           if(isNaN(d) || d.toISOString().slice(0,10) !== dateNow) return false;
         }
         return true;
-      }).length, 100);
+      }).length;
 
       if(historyRenderLimit < totalAvailable && $("historyList")){
-        $("historyList").insertAdjacentHTML("beforeend", `<button id="loadMoreHistoryBtn" class="btn secondary full" style="margin-top:6px;">Carregar mais</button>`);
+        $("historyList").insertAdjacentHTML("beforeend", `<button id="loadMoreHistoryBtn" class="btn secondary full" style="margin-top:6px;">Ver mais antigos</button>`);
         $("loadMoreHistoryBtn").onclick = () => {
-          historyRenderLimit = Math.min(100, historyRenderLimit + 20);
+          historyRenderLimit += 6;
           renderHistory();
         };
       }
