@@ -507,6 +507,216 @@ html,body{background:#ffffff!important;color:var(--text)!important;}
 .top-user-avatar,.side-drawer-avatar{display:none!important;}
 .chart-card,.chart-wrap,#weeklyProfitChart{display:none!important;}
 
+
+
+/* =========================================================
+   COMPARATIVO DE FICHAS — DINÂMICO, CLEAN E BANCÁRIO
+========================================================= */
+.comparativo-card{
+  padding:22px!important;
+  border-radius:22px!important;
+  background:#fff!important;
+  border:1px solid var(--line)!important;
+  box-shadow:var(--shadow-1)!important;
+}
+#comparativoSection{margin-top:18px!important;}
+#chipsComparison{
+  display:grid!important;
+  grid-template-columns:repeat(2,minmax(0,1fr))!important;
+  gap:14px!important;
+  margin-top:0!important;
+}
+.chips-empty{
+  grid-column:1/-1;
+  padding:18px;
+  border-radius:18px;
+  border:1px solid var(--line);
+  background:#fafafa;
+  color:var(--muted);
+  font-weight:900;
+}
+.chips-item.chips-dynamic{
+  position:relative!important;
+  overflow:hidden!important;
+  padding:18px 18px 16px!important;
+  border-radius:20px!important;
+  background:#fff!important;
+  border:1px solid var(--line)!important;
+  box-shadow:0 1px 2px rgba(0,0,0,.035),0 10px 28px rgba(0,0,0,.055)!important;
+}
+.chips-status-bar{
+  position:absolute;
+  left:0;
+  top:0;
+  height:5px;
+  border-radius:0 999px 999px 0;
+  transition:width .55s cubic-bezier(.4,0,.2,1);
+}
+.chips-status-bar.good{background:linear-gradient(90deg,#087f5b,#18b981);}
+.chips-status-bar.bad{background:linear-gradient(90deg,#b42338,#ef4444);}
+.chips-simple-head{
+  display:flex!important;
+  align-items:flex-start!important;
+  justify-content:space-between!important;
+  gap:12px!important;
+  margin-bottom:14px!important;
+}
+.chips-simple-head strong{
+  font-size:17px!important;
+  font-weight:950!important;
+  letter-spacing:-.35px!important;
+  color:var(--text)!important;
+}
+.chips-diff-pill{
+  border-radius:999px;
+  padding:7px 10px;
+  font-size:12px;
+  line-height:1;
+  font-weight:950;
+  white-space:nowrap;
+  font-variant-numeric:tabular-nums lining-nums;
+}
+.chips-diff-pill.good{background:#e9f7f1;color:#087f5b;}
+.chips-diff-pill.bad{background:#fff1f3;color:#b42338;}
+.chips-dynamic-grid{
+  display:grid!important;
+  grid-template-columns:1fr 1fr!important;
+  gap:10px!important;
+}
+.chips-row{
+  border-radius:16px!important;
+  background:#fafafa!important;
+  border:1px solid rgba(0,0,0,.06)!important;
+  padding:12px!important;
+}
+.chips-row span{
+  display:block!important;
+  margin-bottom:6px!important;
+  font-size:10px!important;
+  color:var(--muted)!important;
+  font-weight:950!important;
+  text-transform:uppercase!important;
+  letter-spacing:.55px!important;
+}
+.chips-row strong{
+  display:block!important;
+  font-size:14px!important;
+  line-height:1.18!important;
+  font-weight:950!important;
+  color:var(--text)!important;
+  word-break:break-word!important;
+  font-variant-numeric:tabular-nums lining-nums!important;
+}
+.chips-diff-row{
+  grid-column:1/-1!important;
+  background:#fff!important;
+}
+.chips-good{color:#087f5b!important;font-weight:950!important;}
+.chips-bad{color:#b42338!important;font-weight:950!important;}
+.chips-positive{border-color:rgba(8,127,91,.18)!important;}
+.chips-negative{border-color:rgba(180,35,56,.18)!important;}
+@media(max-width:760px){
+  #chipsComparison{grid-template-columns:1fr!important;gap:10px!important;}
+  .comparativo-card{border-left:none!important;border-right:none!important;border-radius:0!important;box-shadow:none!important;}
+  .chips-dynamic-grid{grid-template-columns:1fr!important;}
+}
+
+
+
+/* =========================================================
+   BANK KING — AJUSTES UX: HAMBÚRGUER TOPO + PERFIL + FORMS
+========================================================= */
+.topbar{padding-right:64px!important;}
+.bottom-nav{
+  position:fixed!important;
+  top:calc(13px + env(safe-area-inset-top))!important;
+  right:16px!important;
+  left:auto!important;
+  bottom:auto!important;
+  transform:none!important;
+  width:44px!important;
+  height:44px!important;
+  display:flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+  padding:0!important;
+  background:transparent!important;
+  border:0!important;
+  box-shadow:none!important;
+  backdrop-filter:none!important;
+  -webkit-backdrop-filter:none!important;
+  z-index:130!important;
+}
+.menu-launcher{
+  width:44px!important;
+  height:44px!important;
+  border-radius:0!important;
+  background:transparent!important;
+  color:var(--primary2)!important;
+  border:0!important;
+  box-shadow:none!important;
+  padding:0!important;
+}
+.menu-launcher svg{width:27px!important;height:27px!important;stroke-width:2.7!important;}
+.menu-launcher span{display:none!important;}
+.menu-launcher:active{transform:scale(.92)!important;background:transparent!important;}
+
+.side-drawer-head{align-items:flex-start!important;}
+.side-drawer-brand{display:grid!important;grid-template-columns:74px 1fr!important;gap:14px!important;align-items:start!important;width:100%!important;}
+.side-drawer-avatar.photo-slot{
+  display:flex!important;
+  width:74px!important;
+  height:74px!important;
+  border-radius:22px!important;
+  background:#f4f4f6!important;
+  color:var(--primary2)!important;
+  border:1px dashed rgba(0,0,0,.16)!important;
+  box-shadow:none!important;
+  font-size:18px!important;
+  background-size:cover!important;
+  background-position:center!important;
+  flex:0 0 auto!important;
+}
+.side-drawer-avatar.photo-slot.has-photo{color:transparent!important;border-style:solid!important;}
+.side-drawer-title strong{font-size:18px!important;letter-spacing:-.45px!important;}
+.side-drawer-title > span{font-size:12px!important;font-weight:900!important;color:var(--primary2)!important;text-transform:uppercase;letter-spacing:.4px!important;}
+.side-drawer-data{display:grid!important;gap:6px!important;margin-top:10px!important;}
+.side-drawer-data div{display:grid!important;grid-template-columns:58px 1fr!important;gap:8px!important;align-items:center!important;min-width:0!important;}
+.side-drawer-data b{font-size:10px!important;text-transform:uppercase!important;letter-spacing:.55px!important;color:var(--muted)!important;font-weight:950!important;}
+.side-drawer-data span{font-size:12px!important;color:var(--text)!important;font-weight:850!important;white-space:nowrap!important;overflow:hidden!important;text-overflow:ellipsis!important;}
+.side-drawer-close{background:transparent!important;box-shadow:none!important;}
+
+#screenAdmin .admin-grid{grid-template-columns:1fr!important;}
+#screenAdmin .user-item{grid-template-columns:1fr!important;align-items:stretch!important;}
+#screenAdmin .user-actions{grid-template-columns:1fr!important;width:100%!important;}
+#screenAdmin .user-actions select,#screenAdmin .user-actions button{width:100%!important;}
+
+#screenClose > .grid.two{grid-template-columns:1fr!important;gap:14px!important;}
+#pendingList.dynamic-list,#outflowList.dynamic-list,#editPendingList.dynamic-list,#editOutflowList.dynamic-list{gap:12px!important;}
+#pendingList .row-item,#outflowList .row-item,#editPendingList .row-item,#editOutflowList .row-item,
+#pendingList .row-item.outflow-row,#outflowList .row-item.outflow-row,#editPendingList .row-item.outflow-row,#editOutflowList .row-item.outflow-row{
+  display:grid!important;
+  grid-template-columns:1fr!important;
+  gap:10px!important;
+  padding:12px!important;
+  border:1px solid var(--line)!important;
+  border-radius:16px!important;
+  background:#fff!important;
+}
+#pendingList .row-item input,#outflowList .row-item input,#outflowList .row-item select,
+#editPendingList .row-item input,#editOutflowList .row-item input,#editOutflowList .row-item select{width:100%!important;}
+#pendingList .remove-row,#outflowList .remove-row,#editPendingList .remove-row,#editOutflowList .remove-row{
+  width:100%!important;
+  height:42px!important;
+  border-radius:14px!important;
+}
+@media(max-width:760px){
+  .topbar{padding-right:60px!important;}
+  .bottom-nav{top:calc(10px + env(safe-area-inset-top))!important;right:10px!important;}
+  .side-drawer-brand{grid-template-columns:62px 1fr!important;gap:12px!important;}
+  .side-drawer-avatar.photo-slot{width:62px!important;height:62px!important;border-radius:20px!important;}
+}
+
 </style>
 
 <script>
@@ -815,7 +1025,6 @@ function updateHeroBalance(newValue){
   <nav id="bottomNav" class="bottom-nav hidden" aria-label="Abrir menu lateral">
     <button class="menu-launcher" id="sideMenuBtn" type="button" title="Abrir menu">
       <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16"/><path d="M4 12h16"/><path d="M4 17h16"/></svg>
-      <span aria-hidden="true"></span>
     </button>
   </nav>
 
@@ -823,9 +1032,15 @@ function updateHeroBalance(newValue){
   <aside id="sideDrawer" class="side-drawer" aria-label="Menu principal">
     <div class="side-drawer-head">
       <div class="side-drawer-brand">
+        <div id="sideDrawerAvatar" class="side-drawer-avatar photo-slot">BK</div>
         <div class="side-drawer-title">
           <strong id="sideDrawerName">Bank King</strong>
           <span id="sideDrawerRole">Sistema financeiro</span>
+          <div class="side-drawer-data">
+            <div><b>Email</b><span id="sideDrawerEmail">-</span></div>
+            <div><b>Data</b><span id="sideDrawerDate">-</span></div>
+            <div><b>Horário</b><span id="sideDrawerTime">-</span></div>
+          </div>
         </div>
       </div>
       <button id="sideDrawerClose" class="side-drawer-close" type="button" title="Fechar menu">×</button>
@@ -1551,32 +1766,39 @@ function updateHeroBalance(newValue){
         { label:"Ganamos", key:"ganamos", type:"money" }
       ];
 
-      const fmtChips = (value) => `${moneyToNumber(value).toLocaleString("pt-BR",{minimumFractionDigits:2,maximumFractionDigits:2})} fichas`;
-      const signText = (value) => value > 0 ? "+" : "";
-
-      box.innerHTML = items.map(item => {
+      const calc = items.map(item => {
         const atual = moneyToNumber(lt[item.key] ?? 0);
         const anterior = moneyToNumber(pt[item.key] ?? 0);
         const diff = atual - anterior;
-        const positive = diff >= 0;
+        return { ...item, atual, anterior, diff, positive: diff >= 0 };
+      });
 
-        if(item.type === "chips"){
-          return `<div class="chips-item ${positive ? "chips-positive" : "chips-negative"}">
-            <div class="chips-simple-head"><strong>${item.label}</strong></div>
-            <div class="chips-stack">
-              <div class="chips-row"><span>Atual</span><strong>${fmtChips(atual)}</strong></div>
-              <div class="chips-row"><span>Anterior</span><strong>${fmtChips(anterior)}</strong></div>
-              <div class="chips-row chips-diff-row"><span>Fichas Diferença</span><strong class="${positive ? "chips-good" : "chips-bad"}">${signText(diff)}${fmtChips(diff)}</strong></div>
+      const maxAbs = Math.max(...calc.map(x => Math.abs(x.diff)), 1);
+      const fmtChips = (value) => `${moneyToNumber(value).toLocaleString("pt-BR",{minimumFractionDigits:2,maximumFractionDigits:2})} fichas`;
+      const fmtValue = (item, value) => item.type === "chips" ? fmtChips(value) : formatMoney(value);
+      const signText = (value) => value > 0 ? "+" : "";
+
+      box.innerHTML = calc.map(item => {
+        const pct = Math.max(7, Math.min(100, Math.round((Math.abs(item.diff) / maxAbs) * 100)));
+        return `<div class="chips-item chips-dynamic ${item.positive ? "chips-positive" : "chips-negative"}">
+          <div class="chips-status-bar ${item.positive ? "good" : "bad"}" style="width:${pct}%"></div>
+          <div class="chips-simple-head">
+            <strong>${item.label}</strong>
+            <b class="chips-diff-pill ${item.positive ? "good" : "bad"}">${signText(item.diff)}${fmtValue(item, item.diff)}</b>
+          </div>
+          <div class="chips-stack chips-dynamic-grid">
+            <div class="chips-row">
+              <span>Atual</span>
+              <strong>${fmtValue(item, item.atual)}</strong>
             </div>
-          </div>`;
-        }
-
-        return `<div class="chips-item ${positive ? "chips-positive" : "chips-negative"}">
-          <div class="chips-simple-head"><strong>${item.label}</strong></div>
-          <div class="chips-stack">
-            <div class="chips-row"><span>Atual</span><strong>${formatMoney(atual)}</strong></div>
-            <div class="chips-row"><span>Anterior</span><strong>${formatMoney(anterior)}</strong></div>
-            <div class="chips-row chips-diff-row"><span>Diferença</span><strong class="${positive ? "chips-good" : "chips-bad"}">${signText(diff)}${formatMoney(diff)}</strong></div>
+            <div class="chips-row">
+              <span>Anterior</span>
+              <strong>${fmtValue(item, item.anterior)}</strong>
+            </div>
+            <div class="chips-row chips-diff-row">
+              <span>Diferença</span>
+              <strong class="${item.positive ? "chips-good" : "chips-bad"}">${signText(item.diff)}${fmtValue(item, item.diff)}</strong>
+            </div>
           </div>
         </div>`;
       }).join("");
@@ -2525,9 +2747,22 @@ alert("Carga adicionada ao sistema como ajuste auditável.");
     function updateSideDrawerProfile(){
       const name = currentProfile?.name || currentUser?.email?.split("@")[0] || "Bank King";
       const role = isAdmin() ? "Admin" : isSupervisor() ? "Supervisor" : "Operador";
+      const email = currentUser?.email || "-";
+      const now = new Date();
       const initials = String(name || "BK").trim().split(/\s+/).slice(0,2).map(p=>p[0]).join("").toUpperCase() || "BK";
+      const photoUrl = currentProfile?.photoURL || currentProfile?.photoUrl || currentUser?.photoURL || "";
+
       if($("sideDrawerName")) $("sideDrawerName").textContent = name;
-      if($("sideDrawerRole")) $("sideDrawerRole").textContent = `${role} • ${currentUser?.email || ""}`;
+      if($("sideDrawerRole")) $("sideDrawerRole").textContent = role;
+      if($("sideDrawerEmail")) $("sideDrawerEmail").textContent = email;
+      if($("sideDrawerDate")) $("sideDrawerDate").textContent = now.toLocaleDateString("pt-BR");
+      if($("sideDrawerTime")) $("sideDrawerTime").textContent = now.toLocaleTimeString("pt-BR", {hour:"2-digit", minute:"2-digit"});
+      if($("sideDrawerAvatar")){
+        const avatar = $("sideDrawerAvatar");
+        avatar.textContent = initials;
+        avatar.style.backgroundImage = photoUrl ? `url('${photoUrl}')` : "";
+        avatar.classList.toggle("has-photo", !!photoUrl);
+      }
     }
 
     function bindEvents(){
