@@ -2,533 +2,221 @@
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover"
+  />
   <title>Bank King Pro</title>
 
+  <meta name="theme-color" content="#0b1220" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="apple-mobile-web-app-title" content="Bank King Pro" />
+  <meta
+    name="description"
+    content="Painel operacional Bank King Pro com fechamento, histórico, metas, ranking e relatórios."
+  />
+
+  <link rel="manifest" href="./manifest.json" />
+
   <link rel="preload" href="./assets/css/styles.css" as="style" />
+  <link rel="preload" href="./assets/css/theme-clean.css" as="style" />
+
   <link rel="stylesheet" href="./assets/css/styles.css" />
   <link rel="stylesheet" href="./assets/css/theme-clean.css" />
 
-  <link rel="manifest" href="./manifest.json" />
-  <meta name="theme-color" content="#0a2c75" />
-  <meta name="apple-mobile-web-app-capable" content="yes" />
-  <meta name="apple-mobile-web-app-title" content="Bank King" />
-  <script defer src="./assets/js/ui-effects.js"></script>
+  <script src="./assets/js/ui-effects.js" defer></script>
 </head>
-<body>
-  <div id="globalLoading" class="loading-overlay">
-    <div class="loading-box">
-      <div class="loading-spinner"></div>
-      <strong id="globalLoadingTitle">Processando</strong>
-      <span id="globalLoadingText">Aguarde, salvando com segurança...</span>
+<body class="theme-bank">
+
+  <!-- GLOBAL LOADING -->
+  <div id="globalLoading" class="global-loading-overlay hidden" aria-hidden="true">
+    <div class="global-loading-backdrop"></div>
+    <div class="global-loading-card">
+      <div class="global-loading-brand">
+        <div class="brand-mark brand-mark-loading">
+          <span class="brand-mark-ring"></span>
+          <span class="brand-mark-core"></span>
+        </div>
+        <div class="brand-copy">
+          <span class="brand-overline">BANK KING PRO</span>
+          <strong id="globalLoadingTitle">Processando</strong>
+        </div>
+      </div>
+
+      <div class="global-loading-progress">
+        <div class="global-loading-bar">
+          <span class="global-loading-bar-fill"></span>
+        </div>
+        <p id="globalLoadingText">Aguarde enquanto carregamos seus dados...</p>
+      </div>
     </div>
   </div>
 
-  <div id="loginScreen" class="login-screen">
-    <div class="login-card">
-      <div class="login-logo">BK</div>
-      <h1>Bank King Pro</h1>
-      <p>Controle de fechamento, conferência e acompanhamento operacional em um ambiente financeiro mais organizado.</p>
-      <div id="loginNotice" class="notice hidden"></div>
-      <input id="loginEmail" type="email" placeholder="Email" autocomplete="email" />
-      <input id="loginPassword" type="password" placeholder="Senha" autocomplete="current-password" />
-      <button id="loginBtn" class="btn full">Entrar</button>
-      <button id="registerBtn" class="btn secondary full" style="margin-top:10px;">Criar conta / solicitar acesso</button>
-      <button id="resetPasswordBtn" class="btn secondary full" style="margin-top:10px;">Recuperar senha</button>
+  <!-- LOGIN SCREEN -->
+  <section id="loginScreen" class="auth-shell">
+    <div class="auth-bg">
+      <div class="auth-orb auth-orb-1"></div>
+      <div class="auth-orb auth-orb-2"></div>
+      <div class="auth-grid"></div>
     </div>
-  </div>
 
-  <div id="appSplash" class="app-splash">
-    <div class="splash-content"><div class="splash-logo">BK</div><h1>Bank King Pro</h1><p>Controle financeiro seguro, organizado e ágil</p><div class="splash-loader"><span></span></div></div>
-  </div>
+    <div class="auth-container">
+      <div class="auth-hero">
+        <div class="hero-badge">Plataforma Operacional</div>
+        <h1 class="hero-title">
+          Gestão financeira com presença de
+          <span>instituição premium</span>
+        </h1>
+        <p class="hero-subtitle">
+          Um painel mais sólido, elegante e confiável para fechamento, acompanhamento
+          de indicadores, metas e auditoria operacional.
+        </p>
 
+        <div class="hero-highlights">
+          <div class="hero-highlight-card">
+            <span class="hero-highlight-label">Controle</span>
+            <strong>Fechamento seguro</strong>
+            <small>Rotina operacional com leitura rápida e visual limpo</small>
+          </div>
+          <div class="hero-highlight-card">
+            <span class="hero-highlight-label">Performance</span>
+            <strong>Indicadores claros</strong>
+            <small>Resultados, metas e comparação em uma interface objetiva</small>
+          </div>
+          <div class="hero-highlight-card">
+            <span class="hero-highlight-label">Confiabilidade</span>
+            <strong>Padrão institucional</strong>
+            <small>Estética inspirada em fintech e operações financeiras</small>
+          </div>
+        </div>
+      </div>
+
+      <div class="auth-panel">
+        <div class="auth-panel-top">
+          <div class="brand-lockup">
+            <div class="brand-mark">
+              <span class="brand-mark-ring"></span>
+              <span class="brand-mark-core"></span>
+            </div>
+            <div class="brand-text">
+              <span class="brand-overline">BANK KING PRO</span>
+              <strong class="brand-title">Acesso à plataforma</strong>
+            </div>
+          </div>
+
+          <div class="auth-status-pill">
+            <span class="status-dot"></span>
+            <span>Ambiente protegido</span>
+          </div>
+        </div>
+
+        <div class="auth-card">
+          <div class="auth-card-header">
+            <h2>Entrar</h2>
+            <p>
+              Use suas credenciais para acessar o painel operacional.
+            </p>
+          </div>
+
+          <div class="auth-form">
+            <label class="field-group" for="email">
+              <span class="field-label">E-mail</span>
+              <div class="field-control">
+                <span class="field-icon" aria-hidden="true">
+                  <svg viewBox="0 0 24 24" fill="none">
+                    <path d="M4 7.5C4 6.67157 4.67157 6 5.5 6H18.5C19.3284 6 20 6.67157 20 7.5V16.5C20 17.3284 19.3284 18 18.5 18H5.5C4.67157 18 4 17.3284 4 16.5V7.5Z" stroke="currentColor" stroke-width="1.7"/>
+                    <path d="M5 7L12 12.25L19 7" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/>
+                  </svg>
+                </span>
+                <input
+                  id="email"
+                  type="email"
+                  autocomplete="email"
+                  placeholder="seuemail@empresa.com"
+                />
+              </div>
+            </label>
+
+            <label class="field-group" for="password">
+              <span class="field-label">Senha</span>
+              <div class="field-control">
+                <span class="field-icon" aria-hidden="true">
+                  <svg viewBox="0 0 24 24" fill="none">
+                    <path d="M7 10V8.5C7 5.73858 9.23858 3.5 12 3.5C14.7614 3.5 17 5.73858 17 8.5V10" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/>
+                    <rect x="5" y="10" width="14" height="10" rx="2" stroke="currentColor" stroke-width="1.7"/>
+                    <circle cx="12" cy="15" r="1.2" fill="currentColor"/>
+                  </svg>
+                </span>
+                <input
+                  id="password"
+                  type="password"
+                  autocomplete="current-password"
+                  placeholder="Digite sua senha"
+                />
+              </div>
+            </label>
+
+            <div id="loginNotice" class="auth-notice hidden"></div>
+
+            <div class="auth-actions">
+              <button id="loginBtn" class="btn btn-primary btn-xl" type="button">
+                <span class="btn-label">Entrar</span>
+              </button>
+
+              <div class="auth-secondary-actions">
+                <button id="createAccountBtn" class="btn btn-secondary" type="button">
+                  Criar conta
+                </button>
+                <button id="forgotPasswordBtn" class="btn btn-ghost" type="button">
+                  Recuperar senha
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="auth-footer-card">
+          <div class="footer-stat">
+            <span class="footer-stat-label">Camada visual</span>
+            <strong>Institutional Finance UI</strong>
+          </div>
+          <div class="footer-stat-divider"></div>
+          <div class="footer-stat">
+            <span class="footer-stat-label">Foco</span>
+            <strong>Clareza, confiança e leitura rápida</strong>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SPLASH -->
+  <section id="appSplash" class="app-splash hidden" aria-hidden="true">
+    <div class="app-splash-backdrop"></div>
+    <div class="app-splash-card">
+      <div class="brand-lockup brand-lockup-centered">
+        <div class="brand-mark brand-mark-lg">
+          <span class="brand-mark-ring"></span>
+          <span class="brand-mark-core"></span>
+        </div>
+        <div class="brand-text">
+          <span class="brand-overline">BANK KING PRO</span>
+          <strong class="brand-title">Preparando ambiente operacional</strong>
+        </div>
+      </div>
+
+      <div class="app-splash-loader">
+        <span class="app-splash-line"></span>
+        <span class="app-splash-line"></span>
+        <span class="app-splash-line"></span>
+      </div>
+
+      <p class="app-splash-text">
+        Carregando módulos, indicadores e permissões de acesso...
+      </p>
+    </div>
+  </section>
+
+  <!-- APP SHELL -->
   <main id="appShell" class="app-shell hidden">
-    <header class="topbar">
-      <div class="brand"><div class="logo-box" id="logoRefreshBtn">BK</div><div><h1>Bank King Pro</h1><span id="topUserLabel">Sistema financeiro</span></div></div>
-      <div class="top-actions"><button id="refreshBtn" class="icon-btn" title="Atualizar">↻</button><button id="logoutBtn" class="icon-btn" title="Sair">⎋</button></div>
-    </header>
-    <div id="appNotice" class="notice hidden"></div>
-
-    <section id="screenHome" class="screen active">
-      <div class="home-shell">
-        <div class="hero-card">
-          <div class="hero-topline">
-            <div>
-              <div class="hero-label">Saldo de caixa</div>
-            </div>
-            <div class="hero-badge">Atualização em tempo real</div>
-          </div>
-          <div id="homeSaldoReca" class="hero-value">$ 0,00</div>
-          <div id="homeUpdatedAt" class="hero-sub">Aguardando atualização</div>
-
-          <div class="hero-grid">
-            <div id="homeAdjustmentCard" class="hero-mini close-admin-field" data-role-visibility="admin-only"><span>Ajuste interno</span><strong id="homeInternalAdjustment">$ 0,00</strong></div>
-            <div class="hero-mini"><span>Operador</span><strong id="homeOperator">-</strong></div>
-            <div class="hero-mini"><span>Último fechamento</span><strong id="homeLastClose">-</strong></div>
-            <div class="hero-mini"><span>Diferença de caixa</span><strong id="homeDiff">$ 0,00</strong></div>
-          </div>
-        </div>
-
-        <div class="home-section-head">
-          <div>
-            <h2>Indicadores financeiros</h2>
-          </div>
-          <span class="home-section-pill">Visão consolidada</span>
-        </div>
-
-        <div class="grid two home-metrics-grid">
-          <div class="card home-metric-card" data-home-detail="saldo" style="cursor:pointer;">
-            <div class="card-title"><h2>Saldo líquido</h2><span>Posição atual</span></div>
-            <div id="homeSaldoLiquido" class="metric">$ 0,00</div>
-          </div>
-
-          <div class="card home-metric-card" data-home-detail="pendentes" style="cursor:pointer;">
-            <div class="card-title"><h2>Pendentes</h2><span>Em aberto</span></div>
-            <div id="homePendentes" class="metric bad">$ 0,00</div>
-          </div>
-
-          <div id="todayResultCard" class="card home-metric-card" data-home-detail="lucroHoje" style="cursor:pointer;">
-            <div class="card-title"><h2>Lucro hoje</h2><span>No dia</span></div>
-            <div id="homeTodayResult" class="metric">$ 0,00</div>
-          </div>
-
-          <div id="weekResultCard" class="card home-metric-card" data-home-detail="lucroSemana" style="cursor:pointer;">
-            <div class="card-title"><h2>Lucro semana</h2><span>Últimos 7 dias</span></div>
-            <div id="homeWeekResult" class="metric">$ 0,00</div>
-          </div>
-        </div>
-
-        <div class="card comparativo-card home-comparison-card" style="margin-top:18px;">
-          <div class="card-title">
-            <div>
-              <h2>Comparativo de fichas</h2>
-            </div>
-            <button id="toggleComparativoBtn" class="small-btn" type="button">Abrir comparativo</button>
-          </div>
-          <div id="comparativoSection" class="hidden">
-            <div id="chipsComparison" class="grid two"></div>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <section id="screenClose" class="screen">
-      <div class="close-shell">
-        <div class="card close-hero-card">
-          <div class="close-hero-top">
-            <div>
-              <span class="close-kicker">Fechamento financeiro</span>
-              <h2>Fechamento do turno</h2>
-            </div>
-            <span id="closeStatusBadge" class="close-status-badge is-idle">Aguardando dados</span>
-          </div>
-          <div class="close-hero-grid">
-            <div class="close-hero-metric">
-              <span>Campos preenchidos</span>
-              <strong id="closeFilledCount">0 / 7</strong>
-            </div>
-            <div class="close-hero-metric">
-              <span>Pendentes</span>
-              <strong id="closePendingCount">0 itens</strong>
-            </div>
-            <div class="close-hero-metric">
-              <span>Retiradas</span>
-              <strong id="closeOutflowCount">0 itens</strong>
-            </div>
-          </div>
-        </div>
-
-        <div class="close-layout">
-          <div class="close-main-stack">
-            <div class="card close-form-card">
-              <div class="card-title close-card-title">
-                <div>
-                  <h2>Dados do fechamento</h2>
-                </div>
-                <span class="close-section-badge">Preenchimento assistido</span>
-              </div>
-
-              <div class="close-form-groups">
-                <div class="close-group-block">
-                  <div class="close-group-head">
-                    <h3>Contexto operacional</h3>
-                    <p>Informações de operador e horário de referência do fechamento.</p>
-                  </div>
-                  <div class="form-grid close-form-grid close-form-grid-top">
-                    <div class="field field-highlight">
-                      <label>Operador</label>
-                      <input id="operatorName" placeholder="Nome do operador" readonly />
-                      <div class="muted" id="operatorEmailLabel" style="margin-top:4px;"></div>
-                    </div>
-                    <div class="field">
-                      <label>Data do fechamento</label>
-                      <input id="closingDate" type="datetime-local" />
-                    </div>
-                  </div>
-                </div>
-
-                <div class="close-group-block">
-                  <div class="close-group-head">
-                    <h3>Base financeira</h3>
-                    <p>Valores que compõem a posição financeira do turno.</p>
-                  </div>
-                  <div class="form-grid close-form-grid close-form-grid-money">
-                    <div class="field field-highlight">
-                      <label>Saldo Reca</label>
-                      <input id="webReca" class="money-input" inputmode="decimal" placeholder="0,00" />
-                    </div>
-                    <div class="field"><label>Suprema</label><input id="suprema" class="money-input" inputmode="decimal" placeholder="0,00" /></div>
-                    <div class="field"><label>PPPoker</label><input id="pppoker" class="money-input" inputmode="decimal" placeholder="0,00" /></div>
-                    <div class="field"><label>Buffalo</label><input id="buffalo" class="money-input" inputmode="decimal" placeholder="0,00" /></div>
-                    <div class="field"><label>Ganamos</label><input id="ganamos" class="money-input" inputmode="decimal" placeholder="0,00" /></div>
-                    <div class="field close-admin-field" data-role-visibility="admin-only"><label>Carga poker</label><input id="cargasPoker" class="money-input" inputmode="decimal" placeholder="0,00" /><div class="muted" style="margin-top:4px;">Campo administrativo</div></div>
-                    <div class="field close-admin-field" data-role-visibility="admin-only"><label>Carga casino</label><input id="cargasCasino" class="money-input" inputmode="decimal" placeholder="0,00" /><div class="muted" style="margin-top:4px;">Campo administrativo</div></div>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <div class="grid two close-motion-grid">
-              <div id="pendingCard" class="card close-motion-card">
-                <div class="card-title close-card-title">
-                  <div>
-                    <h2>Pendências financeiras</h2>
-                    <span id="pendingCounter">0 itens aguardando baixa</span>
-                  </div>
-                  <button id="togglePendingBtn" class="small-btn" type="button">Abrir</button>
-                </div>
-                <div id="pendingPanel" class="admin-create-panel close-panel-body">
-                  <div class="close-panel-toolbar">
-                    <button id="addPendingBtn" class="small-btn" type="button">+ Adicionar pendência</button>
-                    <span class="close-panel-note">Inclua somente valores ainda não compensados.</span>
-                  </div>
-                  <div id="pendingList" class="dynamic-list close-dynamic-list" data-empty-text="Nenhuma pendência adicionada ainda"></div>
-                </div>
-              </div>
-
-              <div id="outflowCard" class="card close-motion-card">
-                <div class="card-title close-card-title">
-                  <div>
-                    <h2>Retiradas</h2>
-                    <span id="outflowCounter">0 itens lançados</span>
-                  </div>
-                  <button id="toggleOutflowBtn" class="small-btn" type="button">Abrir</button>
-                </div>
-                <div id="outflowPanel" class="admin-create-panel close-panel-body">
-                  <div class="close-panel-toolbar">
-                    <button id="addOutflowBtn" class="small-btn" type="button">+ Adicionar retirada</button>
-                    <span class="close-panel-note">Classifique corretamente lucro, custo operacional e Taxas Reba.</span>
-                  </div>
-                  <div id="outflowList" class="dynamic-list close-dynamic-list" data-empty-text="Nenhuma retirada adicionada ainda"></div>
-                </div>
-              </div>
-            </div>
-
-            <div id="quickChargeCard" class="card close-quick-card close-admin-field" data-role-visibility="admin-only" style="margin-top:14px;">
-              <div class="card-title close-card-title">
-                <div>
-                  <h2>Ajuste administrativo</h2>
-                </div>
-                <button id="toggleQuickChargeBtn" class="admin-toggle" type="button">Mostrar</button>
-              </div>
-
-              <div id="quickChargePanel" class="admin-create-panel close-panel-body">
-                <div class="close-panel-intro">
-                  <strong>Uso administrativo</strong>
-                </div>
-                <div class="form-grid close-form-grid close-form-grid-money" style="margin-top:14px;">
-                  <div class="field"><label>Carga fichas poker</label><input id="quickCargaPoker" inputmode="decimal" placeholder="Quantidade de fichas" /></div>
-                  <div class="field"><label>Carga casino</label><input id="quickCargaCasino" class="money-input" inputmode="decimal" placeholder="0,00" /></div>
-                  <div class="field"><label>Retirada do caixa</label><input id="quickRetiradaCaixa" class="money-input" inputmode="decimal" placeholder="0,00" /></div>
-                  <div class="field"><label>Tipo da retirada</label><select id="quickRetiradaTipo"><option value="lucro">Lucro</option><option value="custo_operacional">Custo operacional</option><option value="taxas_reba">Taxas Reba</option></select></div>
-                  <div class="field"><label>Motivo</label><input id="quickCargaMotivo" placeholder="Ex: ajuste de caixa / reposição operacional" /></div>
-                  <div class="field"><label>Responsável</label><input id="quickCargaOperador" placeholder="Admin / responsável" /></div>
-                </div>
-                <button id="quickChargeBtn" class="btn full" style="margin-top:14px;">Registrar ajuste</button>
-              </div>
-            </div>
-          </div>
-
-          <div class="close-side-stack">
-            <div class="card summary-panel close-summary-card">
-              <div class="summary-head close-summary-head">
-                <div>
-                  <h2>Resumo calculado</h2>
-                  <span>Apuração automática preservada</span>
-                </div>
-                <div class="summary-live">Atualizado</div>
-              </div>
-              <div class="summary-main close-summary-main">
-                <div class="summary-total close-summary-total">
-                  <span>Saldo líquido final</span>
-                  <strong id="calcSaldoLiquido">$ 0,00</strong>
-                  <small id="closeActionHint" class="close-action-hint">Preencha os valores do turno para revisar o fechamento.</small>
-                </div>
-                <div class="summary-breakdown">
-                  <div class="summary-box danger"><span>Pendentes</span><b id="calcPendentes">$ 0,00</b></div>
-                  <div class="summary-box"><span>Retiradas total</span><b id="calcSaidas">$ 0,00</b></div>
-                  <div class="summary-box good"><span>Retirada lucro</span><b id="calcLucroSaida">$ 0,00</b></div>
-                  <div class="summary-box gold"><span>Custo operacional</span><b id="calcCustoSaida">$ 0,00</b></div>
-                </div>
-                <div id="adminSummaryNote" class="summary-note close-summary-note close-admin-field" data-role-visibility="admin-only">
-                  <span>Carga poker: <b id="calcCargaPoker">$ 0,00</b></span>
-                  <span>Carga casino: <b id="calcCargaCasino">$ 0,00</b></span>
-                </div>
-                <div class="close-progress-card">
-                  <div class="close-progress-top">
-                    <span>Andamento do preenchimento</span>
-                    <b id="closeProgressLabel">0%</b>
-                  </div>
-                  <div class="close-progress-track"><div id="closeProgressFill" class="close-progress-fill"></div></div>
-                </div>
-                <div class="close-action-grid">
-                  <button id="clearClosingBtn" class="btn secondary full">Limpar dados</button>
-                  <button id="saveClosingBtn" class="btn full">Salvar fechamento</button>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <section id="screenHistory" class="screen">
-      <div class="history-shell">
-        <div class="card history-hero-card">
-          <div class="history-hero-top">
-            <div>
-              <span class="history-kicker">Consulta operacional</span>
-              <h2>Histórico</h2>
-            </div>
-            <span id="historyCount" class="history-count-pill">0 registros</span>
-          </div>
-        </div>
-
-        <div class="card history-main-card">
-          <div class="card-title">
-            <div>
-              <h2>Histórico de operações</h2>
-            </div>
-            <span class="history-toolbar-label">Consulta em tempo real</span>
-          </div>
-          <div class="history-tools">
-            <div class="field"><input id="historySearch" placeholder="Buscar operador" /></div>
-            <div class="field"><input id="historyDate" type="date" /></div>
-            <button id="recalculateBtn" class="btn secondary">Recalcular</button>
-            <button id="pdfReportBtn" class="btn secondary">Relatório PDF</button>
-          </div>
-          <div id="historyList" class="history-list"></div>
-          <div id="historyLoadMoreWrap" class="history-load-more-wrap"></div>
-        </div>
-      </div>
-    </section>
-
-    <section id="screenGoals" class="screen">
-      <div id="monthlyGoalCard" class="goal-card">
-        <div class="goal-top">
-          <div>
-            <h2>Meta mensal</h2>
-            <span>Acompanhamento interno</span>
-          </div>
-          <div id="monthlyGoalPercent" class="goal-badge">0%</div>
-        </div>
-        <div class="goal-values">
-          <div class="goal-box"><span>Realizado no mês</span><b id="monthlyGoalDone">$ 0,00</b></div>
-          <div class="goal-box"><span>Meta definida</span><b id="monthlyGoalTarget">$ 0,00</b></div>
-        </div>
-        <div class="goal-bar"><div id="monthlyGoalFill" class="goal-fill"></div></div>
-        <div class="goal-footer">
-          <span id="monthlyGoalRemaining">Faltam $ 0,00</span>
-          <span id="monthlyGoalStatus">Em andamento</span>
-        </div>
-      </div>
-    </section>
-
-    <section id="screenRanking" class="screen"><div class="card"><div class="card-title"><h2>Ranking operadores</h2><span>Desempenho por operador</span></div><div class="rank-tabs"><button class="active" data-rank="day">Diário</button><button data-rank="week">Semanal</button><button data-rank="month">Mensal</button><button data-rank="all">Total</button></div><div id="rankingList" class="rank-list"></div></div></section>
-
-    <section id="screenReports" class="screen">
-      <div class="reports-shell">
-        <div class="card reports-hero">
-          <div class="card-title reports-title">
-            <div>
-              <span class="reports-kicker">Relatórios financeiros</span>
-              <h2>Relatório consolidado para exportação</h2>
-            </div>
-            <span class="reports-badge">Baseado nos dados do sistema</span>
-          </div>
-          <p class="reports-description">Utilize os dados registrados no sistema para gerar um relatório financeiro mais limpo, consistente e adequado para conferência e impressão.</p>
-          <div class="reports-highlights">
-            <div class="reports-highlight"><strong>Visual institucional</strong><span>leitura mais profissional</span></div>
-            <div class="reports-highlight"><strong>Conferência rápida</strong><span>resumo claro dos principais números</span></div>
-            <div class="reports-highlight"><strong>Compatibilidade</strong><span>integração com Firebase, Firestore e PDF</span></div>
-          </div>
-        </div>
-
-        <div class="card reports-filters-card">
-          <div class="card-title">
-            <h2>Filtros do relatório</h2>
-            <span id="reportPreviewRange">Todos os registros disponíveis</span>
-          </div>
-          <div class="form-grid reports-form-grid">
-            <div class="field"><label>Data inicial</label><input id="reportStart" type="date" /></div>
-            <div class="field"><label>Data final</label><input id="reportEnd" type="date" /></div>
-            <div class="field"><label>Operador</label><input id="reportOperator" placeholder="Todos" /></div>
-            <div class="field"><label>Supervisor</label><input id="reportSupervisor" placeholder="Todos" /></div>
-          </div>
-        </div>
-
-        <div class="report-stats-grid">
-          <div class="report-stat">
-            <span>Fechamentos</span>
-            <strong id="reportPreviewCount" class="metric">0</strong>
-          </div>
-          <div class="report-stat">
-            <span>Saldo líquido</span>
-            <strong id="reportPreviewSaldo" class="metric">$ 0,00</strong>
-          </div>
-          <div class="report-stat">
-            <span>Diferença</span>
-            <strong id="reportPreviewDiff" class="metric">$ 0,00</strong>
-          </div>
-          <div class="report-stat">
-            <span>Lucro retirado</span>
-            <strong id="reportPreviewLucro" class="metric">$ 0,00</strong>
-          </div>
-          <div class="report-stat">
-            <span>Ajustes internos</span>
-            <strong id="reportPreviewAjustes" class="metric">$ 0,00</strong>
-          </div>
-          <div class="report-stat">
-            <span>Média por fechamento</span>
-            <strong id="reportPreviewAvg" class="metric">$ 0,00</strong>
-          </div>
-        </div>
-
-        <div class="card reports-preview-card">
-          <div class="card-title">
-            <h2>Prévia do relatório</h2>
-            <span>Últimos itens do filtro atual</span>
-          </div>
-          <div id="reportPreviewList" class="report-preview-list"></div>
-        </div>
-
-        <div class="report-actions">
-          <button id="previewReportBtn" class="btn secondary full">Atualizar prévia</button>
-          <button id="generateReportBtn" class="btn full">Gerar PDF</button>
-        </div>
-      </div>
-    </section>
-
-    <section id="screenAdmin" class="screen">
-      <div class="admin-shell">
-        <div class="card admin-card admin-header-card">
-          <div class="card-title">
-            <div>
-              <h2>Painel Admin</h2>
-              <span>Gestão de acessos e acompanhamento interno</span>
-            </div>
-            <button id="toggleCreateUserBtn" class="admin-toggle">Ocultar criar usuário</button>
-          </div>
-          <span id="adminStatus" class="muted">Protegido</span>
-          <p class="admin-panel-copy">Gerencie usuários, permissões e acompanhe as movimentações administrativas em um ambiente mais claro e organizado.</p>
-          <div id="createUserPanel" class="admin-create-panel active">
-            <div class="form-grid admin-form-grid" style="margin-top:14px;">
-              <div class="field"><label>Email</label><input id="newUserEmail" type="email" placeholder="usuario@email.com" /></div>
-              <div class="field"><label>Senha temporária</label><input id="newUserPassword" type="password" placeholder="mínimo 6 caracteres" /></div>
-              <div class="field"><label>Nome</label><input id="newUserName" placeholder="Nome do operador" /></div>
-              <div class="field"><label>Função</label><select id="newUserRole"><option value="operator">Operador</option><option value="supervisor">Supervisor</option><option value="admin">Admin</option></select></div>
-              <div class="field"><label>Supervisor</label><input id="newUserSupervisor" placeholder="Só para operador" /></div>
-            </div>
-            <button id="createUserBtn" class="btn full" style="margin-top:14px;">Criar usuário</button>
-          </div>
-        </div>
-
-        <div class="card admin-card">
-          <div class="card-title">
-            <div>
-              <h2>Usuários</h2>
-              <span>Lista de acessos, funções e status</span>
-            </div>
-            <button id="loadUsersBtn" class="small-btn">Atualizar</button>
-          </div>
-          <div id="usersList" class="admin-grid"></div>
-        </div>
-
-        <div class="card admin-card">
-          <div class="card-title">
-            <div>
-              <h2>Auditoria</h2>
-              <span>Últimas ações registradas</span>
-            </div>
-          </div>
-          <div id="auditList" class="history-list"></div>
-        </div>
-      </div>
-    </section>
-
-  </main>
-
-  <nav id="bottomNav" class="bottom-nav hidden"><button class="nav-btn active" data-screen="Home"><b>⌂</b>Início</button><button class="nav-btn" data-screen="Close"><b>＋</b>Fechar</button><button class="nav-btn" data-screen="History"><b>≡</b>Histórico</button><button class="nav-btn" id="moreMenuBtn" type="button"><b>☰</b>Mais</button></nav>
-
-  <div id="moreMenu" class="more-menu">
-    <div class="more-menu-title">Ações do sistema</div>
-    <div class="more-menu-grid">
-      <button class="more-menu-btn" data-more-screen="Goals" id="moreGoalsBtn">Meta mensal <span>acompanhamento</span></button>
-      <button class="more-menu-btn" data-more-screen="Ranking">Ranking <span>desempenho</span></button>
-      <button class="more-menu-btn" data-more-screen="Reports">Relatórios <span>exportação PDF</span></button>
-      <button class="more-menu-btn" data-more-screen="Admin" id="moreAdminBtn">Admin <span>gestão</span></button>
-    </div>
-  </div>
-
-  <div id="receiptModal" class="receipt-modal">
-    <div class="receipt-panel">
-      <div class="receipt-head">
-        <div class="receipt-brand">
-          <div class="receipt-logo">BK</div>
-          <div>
-            <div class="receipt-kicker">Comprovante interno</div>
-            <h2>Comprovante Bank King</h2>
-            <span id="receiptSubtitle">Fechamento detalhado</span>
-          </div>
-        </div>
-        <button id="receiptCloseBtn" class="receipt-close">×</button>
-      </div>
-
-      <div class="receipt-total">
-        <span>Saldo líquido do fechamento</span>
-        <strong id="receiptSaldoLiquido">$ 0,00</strong>
-      </div>
-
-      <div class="receipt-note-bar">
-        <span id="receiptCode">Código interno</span>
-        <span>Documento interno • pronto para compartilhar</span>
-      </div>
-
-      <div class="receipt-content-shell">
-        <div id="receiptContent"></div>
-      </div>
-
-      <div class="receipt-footer">
-        <span>Bank King Pro</span>
-        <span>Resumo validado pela tela atual</span>
-      </div>
-
-      <div class="receipt-actions">
-        <button id="receiptExportPngBtn" class="btn full">Exportar resumo PNG</button>
-      </div>
-
-      <div id="receiptAdminActions" class="receipt-actions hidden">
-        <button id="receiptEditBtn" class="btn secondary">Editar fechamento</button>
-        <button id="receiptDeleteBtn" class="btn danger">Excluir fechamento</button>
-      </div>
-    </div>
-  </div>
-
-  <div id="editHistoryModal" class="edit-modal"><div class="edit-panel"><div class="edit-panel-head"><h2>Editar fechamento</h2><button id="editCloseBtn" class="edit-close">×</button></div><input id="editHistoryId" type="hidden" /><div class="form-grid"><div class="field"><label>Operador</label><input id="editOperatorName" /></div><div class="field"><label>Data do fechamento</label><input id="editClosingDate" type="datetime-local" /></div><div class="field"><label>Reca</label><input id="editWebReca" class="money-input" inputmode="decimal" /></div>
-        <div class="field"><label>Suprema</label><input id="editSuprema" class="money-input" inputmode="decimal" /></div><div class="field"><label>PPPoker</label><input id="editPppoker" class="money-input" inputmode="decimal" /></div><div class="field"><label>Buffalo</label><input id="editBuffalo" class="money-input" inputmode="decimal" /></div><div class="field"><label>Ganamos</label><input id="editGanamos" class="money-input" inputmode="decimal" /></div><div class="field close-admin-field" data-role-visibility="admin-only"><label>Carga poker</label><input id="editCargasPoker" class="money-input" inputmode="decimal" /></div><div class="field close-admin-field" data-role-visibility="admin-only"><label>Carga casino</label><input id="editCargasCasino" class="money-input" inputmode="decimal" /></div></div><div class="grid two"><div class="card" style="box-shadow:none;margin-top:12px;"><div class="card-title"><h2>Pendências financeiras</h2><button id="editAddPendingBtn" class="small-btn">+ Adicionar</button></div><div id="editPendingList" class="dynamic-list"></div></div><div class="card" style="box-shadow:none;margin-top:12px;"><div class="card-title"><h2>Retiradas</h2><button id="editAddOutflowBtn" class="small-btn">+ Adicionar</button></div><div id="editOutflowList" class="dynamic-list"></div></div></div><div class="edit-actions"><button id="saveEditBtn" class="btn">Salvar alterações</button><button id="cancelEditBtn" class="btn secondary">Cancelar</button></div></div></div>
-
-  <div id="appReloadLoader" class="app-reload-loader"><div class="reload-card"><div class="reload-spinner"></div><strong>Atualizando sistema</strong><span>Recalculando dados...</span></div></div>
-
-  <script type="module" src="./assets/js/app.js"></script>
-</body>
-</html>
