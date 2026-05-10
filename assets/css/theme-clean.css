@@ -1162,3 +1162,398 @@ body::before{
   .close-hero-top h2{font-size:20px!important;}
   .close-status-badge{min-height:36px;}
 }
+
+/* ===== Round 6: softer visual refresh ===== */
+:root{
+  --surface-0:#f6f8fc;
+  --surface-1:rgba(255,255,255,.88);
+  --surface-2:#ffffff;
+  --surface-3:#f3f7fe;
+  --text-soft:#667791;
+  --line-soft:rgba(15,23,42,.07);
+  --line-strong:rgba(15,23,42,.12);
+  --shadow-soft:0 16px 36px rgba(15,23,42,.06);
+  --shadow-strong:0 24px 56px rgba(15,23,42,.09);
+}
+html,body{
+  background:
+    radial-gradient(circle at top left, rgba(96,165,250,.10), transparent 30%),
+    radial-gradient(circle at top right, rgba(125,211,252,.08), transparent 24%),
+    linear-gradient(180deg,#fbfdff 0%,#f2f6fb 100%);
+}
+body::before{
+  background:linear-gradient(180deg, rgba(255,255,255,.34), transparent 22%);
+}
+.topbar{
+  background:linear-gradient(180deg, rgba(251,253,255,.95), rgba(251,253,255,.80));
+  border-bottom:1px solid rgba(15,23,42,.04);
+}
+.logo-box,
+.login-logo,
+.splash-logo{
+  background:linear-gradient(145deg,#17336f,#3b82f6 72%,#93c5fd 100%);
+  box-shadow:0 14px 30px rgba(59,130,246,.18);
+}
+.card,
+.login-card,
+.edit-panel,
+.receipt-panel,
+.more-menu,
+.loading-box{
+  background:var(--surface-1)!important;
+  box-shadow:var(--shadow-soft)!important;
+  backdrop-filter:blur(14px);
+}
+.hero-card,
+.reports-hero,
+.close-hero-card{
+  box-shadow:0 22px 48px rgba(15,23,42,.16)!important;
+}
+.hero-card{
+  background:
+    radial-gradient(circle at top right, rgba(191,219,254,.24), transparent 26%),
+    linear-gradient(145deg,#153063 0%,#244d94 46%,#5b8ff7 100%)!important;
+}
+.reports-hero{
+  background:
+    radial-gradient(circle at top right, rgba(191,219,254,.22), transparent 24%),
+    linear-gradient(135deg,#18325f 0%,#2c4f93 46%,#6b9bff 100%)!important;
+}
+.close-hero-card{
+  background:
+    radial-gradient(circle at top right, rgba(191,219,254,.20), transparent 26%),
+    linear-gradient(135deg,#172d59 0%,#274a8d 44%,#6a98f8 100%)!important;
+  box-shadow:0 24px 50px rgba(23,45,89,.18)!important;
+}
+.hero-card::before,
+.reports-hero::before,
+.close-hero-card::before{
+  background:linear-gradient(180deg,rgba(255,255,255,.10),transparent 42%)!important;
+}
+.hero-sub,
+.hero-caption,
+.reports-description,
+.close-hero-top p,
+.close-hero-metric span{
+  color:rgba(255,255,255,.82)!important;
+}
+.hero-mini,
+.reports-highlight,
+.close-hero-metric{
+  background:rgba(255,255,255,.12)!important;
+  border-color:rgba(255,255,255,.14)!important;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.10);
+}
+.hero-mini:hover,
+.close-shell .card:hover,
+.history-item:hover{
+  transform:translateY(-1px);
+}
+.hero-badge,
+.close-kicker,
+.reports-badge{
+  background:rgba(255,255,255,.14)!important;
+  border-color:rgba(255,255,255,.16)!important;
+  color:rgba(255,255,255,.92)!important;
+}
+.btn,
+.nav-btn.active,
+.more-menu-btn.active,
+.close-action-grid .btn.full:not(.secondary){
+  background:linear-gradient(145deg,#3b82f6,#60a5fa)!important;
+  box-shadow:0 12px 24px rgba(59,130,246,.20)!important;
+}
+.btn.secondary,
+.small-btn,
+.more-menu-btn,
+.icon-btn,
+.nav-btn,
+.close-action-grid .btn.secondary{
+  background:linear-gradient(180deg,#ffffff,#f7faff)!important;
+}
+.field input,
+.field select,
+.field textarea,
+#loginEmail,
+#loginPassword,
+.money-input,
+.close-panel-body .row-item,
+.summary-box,
+.history-values > div,
+.receipt-note-bar,
+.report-preview-item,
+.report-stat,
+.close-group-block,
+.close-progress-card,
+.close-quick-card .close-panel-intro{
+  background:linear-gradient(180deg,#ffffff,#f9fbff)!important;
+}
+.field input:focus,
+.field select:focus,
+.field textarea:focus,
+#loginEmail:focus,
+#loginPassword:focus,
+.money-input:focus{
+  border-color:rgba(96,165,250,.40)!important;
+  box-shadow:0 0 0 4px rgba(96,165,250,.12), inset 0 1px 0 rgba(255,255,255,.9)!important;
+}
+.bottom-nav{
+  background:rgba(255,255,255,.84)!important;
+  border-color:rgba(255,255,255,.92)!important;
+  box-shadow:0 18px 40px rgba(15,23,42,.10)!important;
+}
+.home-metric-card::before,
+.close-progress-fill{
+  opacity:.78;
+}
+.close-section-badge,
+.history-kicker,
+.receipt-kicker,
+.history-pill,
+.home-section-pill,
+.history-toolbar-label,
+.history-count-pill{
+  box-shadow:none!important;
+}
+.close-group-block:nth-child(1) .close-group-head h3::before,
+.close-group-block:nth-child(2) .close-group-head h3::before,
+#pendingCard .close-card-title h2::before,
+#outflowCard .close-card-title h2::before,
+.close-summary-head h2::before,
+.close-quick-card .close-card-title h2::before{
+  background:linear-gradient(180deg,#fbfdff,#f3f7ff);
+  box-shadow:0 6px 14px rgba(59,130,246,.08);
+}
+.close-status-badge{
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.12), 0 8px 18px rgba(15,23,42,.10);
+}
+.close-dynamic-list:empty,
+.report-preview-empty{
+  background:linear-gradient(180deg,#fcfdff,#f8fbff);
+  border-style:dashed;
+}
+.loading-overlay{
+  background:rgba(246,248,252,.62)!important;
+}
+@media (max-width:640px){
+  .hero-card,
+  .reports-hero,
+  .close-hero-card,
+  .card,
+  .login-card{border-radius:22px!important;}
+}
+
+/* ===== Round 7: developer mode softer refinement ===== */
+:root{
+  --surface-1:rgba(255,255,255,.92);
+  --surface-3:#f6f9ff;
+  --text-soft:#70819b;
+  --line-soft:rgba(15,23,42,.065);
+  --shadow-soft:0 14px 30px rgba(15,23,42,.055);
+  --shadow-strong:0 20px 44px rgba(15,23,42,.08);
+}
+html,body{
+  background:
+    radial-gradient(circle at 12% 0%, rgba(147,197,253,.16), transparent 30%),
+    radial-gradient(circle at 88% 0%, rgba(191,219,254,.14), transparent 26%),
+    linear-gradient(180deg,#fcfdff 0%,#f5f8fd 100%);
+}
+body{letter-spacing:-.008em;}
+.card,
+.login-card,
+.edit-panel,
+.receipt-panel,
+.more-menu,
+.loading-box,
+.bottom-nav{
+  backdrop-filter:blur(12px);
+}
+.card,
+.login-card,
+.edit-panel,
+.receipt-panel,
+.more-menu,
+.loading-box{
+  border-color:rgba(15,23,42,.055)!important;
+}
+.hero-card,
+.reports-hero,
+.close-hero-card{
+  border-color:rgba(255,255,255,.10)!important;
+}
+.hero-card{
+  background:
+    radial-gradient(circle at top right, rgba(219,234,254,.18), transparent 28%),
+    linear-gradient(145deg,#1a3566 0%,#345d9f 50%,#7ba7fb 100%)!important;
+}
+.reports-hero{
+  background:
+    radial-gradient(circle at top right, rgba(219,234,254,.17), transparent 26%),
+    linear-gradient(135deg,#213b69 0%,#3c619f 48%,#88adff 100%)!important;
+}
+.close-hero-card{
+  background:
+    radial-gradient(circle at top right, rgba(219,234,254,.16), transparent 28%),
+    linear-gradient(135deg,#203862 0%,#3b5f99 48%,#86acff 100%)!important;
+  box-shadow:0 20px 40px rgba(32,56,98,.14)!important;
+}
+.hero-mini,
+.reports-highlight,
+.close-hero-metric{
+  background:rgba(255,255,255,.14)!important;
+  border-color:rgba(255,255,255,.15)!important;
+}
+.hero-badge,
+.close-kicker,
+.reports-badge,
+.close-status-badge,
+.close-section-badge,
+.history-kicker,
+.receipt-kicker,
+.history-pill,
+.home-section-pill,
+.history-toolbar-label,
+.history-count-pill{
+  filter:saturate(.88);
+}
+.close-shell .card:hover,
+.history-item:hover,
+.hero-mini:hover,
+.icon-btn:hover,
+.small-btn:hover,
+.btn:hover,
+.nav-btn:hover,
+.more-menu-btn:hover{
+  transform:translateY(-1px);
+}
+.icon-btn,
+.small-btn,
+.more-menu-btn,
+.nav-btn,
+.btn.secondary,
+.close-action-grid .btn.secondary{
+  color:#17324f!important;
+  border-color:rgba(15,23,42,.07)!important;
+}
+.btn,
+.nav-btn.active,
+.more-menu-btn.active,
+.close-action-grid .btn.full:not(.secondary){
+  background:linear-gradient(145deg,#4a8df7,#7cb3ff)!important;
+  box-shadow:0 10px 20px rgba(74,141,247,.18)!important;
+}
+.field input,
+.field select,
+.field textarea,
+#loginEmail,
+#loginPassword,
+.money-input,
+.close-panel-body .row-item,
+.summary-box,
+.history-values > div,
+.receipt-note-bar,
+.report-preview-item,
+.report-stat,
+.close-group-block,
+.close-progress-card,
+.close-quick-card .close-panel-intro,
+.receipt-section,
+.receipt-row,
+.chips-item{
+  border-color:rgba(15,23,42,.06)!important;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.94)!important;
+}
+.field input:focus,
+.field select:focus,
+.field textarea:focus,
+#loginEmail:focus,
+#loginPassword:focus,
+.money-input:focus{
+  border-color:rgba(125,211,252,.55)!important;
+  box-shadow:0 0 0 4px rgba(147,197,253,.14), inset 0 1px 0 rgba(255,255,255,.96)!important;
+}
+.close-progress-track{
+  background:#edf3fe;
+}
+.close-progress-fill,
+.home-metric-card::before{
+  opacity:.68;
+}
+.summary-box.good{background:rgba(16,185,129,.06)!important;}
+.summary-box.danger{background:rgba(239,68,68,.06)!important;}
+.summary-box.gold{background:rgba(245,158,11,.08)!important;}
+.notice.ok{background:rgba(16,185,129,.06)!important;}
+.notice.error{background:rgba(239,68,68,.055)!important;}
+.loading-overlay{background:rgba(248,250,252,.68)!important;}
+@media (max-width:640px){
+  .topbar{background:linear-gradient(180deg, rgba(252,253,255,.94), rgba(252,253,255,.84));}
+  .hero-card,
+  .reports-hero,
+  .close-hero-card,
+  .card,
+  .login-card{padding:18px!important;}
+}
+
+/* ===== Round 8: home readability hotfix ===== */
+#screenHome .hero-card,
+#screenHome .hero-mini,
+#screenHome .grid.two > .card[data-home-detail]{
+  isolation:isolate;
+}
+#screenHome .hero-card{
+  background:
+    radial-gradient(circle at top right, rgba(255,255,255,.18), transparent 30%),
+    linear-gradient(145deg,#18335f 0%,#325b9e 52%,#7ea8fb 100%)!important;
+  box-shadow:0 20px 42px rgba(24,51,95,.16)!important;
+}
+#screenHome .hero-card::before{
+  background:linear-gradient(180deg, rgba(255,255,255,.14), transparent 42%)!important;
+}
+#screenHome .hero-label,
+#screenHome .hero-caption,
+#screenHome .hero-sub,
+#screenHome .hero-badge,
+#screenHome .hero-mini span{
+  color:rgba(255,255,255,.92)!important;
+}
+#screenHome .hero-value,
+#screenHome .hero-mini strong,
+#screenHome #homeOperator,
+#screenHome #homeLastClose{
+  color:#ffffff!important;
+}
+#screenHome .hero-mini{
+  background:rgba(7,21,47,.16)!important;
+  border:1px solid rgba(255,255,255,.18)!important;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.10)!important;
+  backdrop-filter:none!important;
+  -webkit-backdrop-filter:none!important;
+}
+#screenHome .hero-mini strong{
+  text-shadow:0 1px 2px rgba(7,21,47,.10)!important;
+}
+#screenHome .grid.two > .card[data-home-detail]{
+  background:linear-gradient(180deg,#ffffff 0%,#fbfdff 100%)!important;
+  border:1px solid rgba(15,23,42,.08)!important;
+  box-shadow:0 14px 30px rgba(15,23,42,.08)!important;
+}
+#screenHome .grid.two > .card[data-home-detail] .card-title,
+#screenHome .grid.two > .card[data-home-detail] .metric{
+  position:relative!important;
+  z-index:3!important;
+}
+#screenHome .grid.two > .card[data-home-detail] .card-title h2{
+  color:#0b172a!important;
+}
+#screenHome .grid.two > .card[data-home-detail] .card-title span{
+  color:#5f7089!important;
+}
+#screenHome .grid.two > .card[data-home-detail] .metric,
+#screenHome #homeSaldoLiquido,
+#screenHome #homeTodayResult,
+#screenHome #homeWeekResult{
+  color:#081529!important;
+}
+#screenHome #homePendentes.metric.bad{
+  color:#d92d20!important;
+}
