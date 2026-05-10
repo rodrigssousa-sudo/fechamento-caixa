@@ -1763,3 +1763,135 @@ body::before{display:none!important;}
   #screenHome .hero-value{font-size:34px!important;}
   .bottom-nav{height:62px!important;}
 }
+
+/* ===== Round 10: cleaner mobile banking layout ===== */
+#screenHome .hero-mini,
+#screenHome .hero-mini:hover,
+#screenHome .hero-mini:focus-within{
+  background:#ffffff!important;
+  border:1px solid rgba(226,232,240,.92)!important;
+  box-shadow:0 8px 18px rgba(15,23,42,.08)!important;
+  transform:none!important;
+}
+#screenHome .hero-mini span,
+#screenHome .hero-mini:hover span,
+#screenHome .hero-mini:focus-within span{
+  color:#667085!important;
+}
+#screenHome .hero-mini strong,
+#screenHome .hero-mini:hover strong,
+#screenHome .hero-mini:focus-within strong,
+#screenHome #homeOperator,
+#screenHome #homeLastClose,
+#screenHome #homeSaldoReca{
+  color:#0f172a!important;
+  text-shadow:none!important;
+}
+#screenHome #homeSaldoReca{
+  color:#ffffff!important;
+}
+#screenHome .grid.two > .card[data-home-detail],
+#screenHome .grid.two > .card[data-home-detail]:hover,
+#screenHome .grid.two > .card[data-home-detail]:focus-within{
+  background:#ffffff!important;
+  transform:none!important;
+}
+#screenHome .home-card-footer,
+#screenHome .hero-caption,
+#screenClose .close-hero-top p,
+#screenHistory .history-hero-top p,
+#screenHistory .card-title > div span,
+#screenHome .home-section-head p,
+#screenHome .comparativo-card .card-title > div span,
+#screenClose .close-form-card .close-card-title > div span,
+#quickChargeCard .card-title > div span,
+#quickChargeCard .close-panel-intro span{
+  display:none!important;
+}
+#screenHome .home-section-head{
+  margin-top:2px!important;
+}
+#screenHome .grid.two.home-metrics-grid{
+  gap:12px!important;
+}
+@media (max-width:760px){
+  .app-shell{
+    max-width:100%!important;
+    padding:8px 0 calc(var(--bottom) + 8px)!important;
+  }
+  .topbar{
+    padding:10px 14px 12px!important;
+    margin-bottom:10px!important;
+  }
+  .home-shell,
+  .close-shell,
+  .history-shell,
+  .reports-shell{
+    gap:10px!important;
+  }
+  #screenHome .hero-card,
+  #screenHome .grid.two > .card[data-home-detail],
+  #screenHome .comparativo-card,
+  #screenClose .card,
+  #screenHistory .card,
+  #screenRanking .card,
+  #screenReports .card,
+  #screenGoals .goal-card{
+    width:100%!important;
+    margin-left:0!important;
+    margin-right:0!important;
+    border-radius:0!important;
+    border-left:0!important;
+    border-right:0!important;
+    box-shadow:none!important;
+  }
+  #screenHome .hero-card{
+    padding:18px 16px!important;
+  }
+  #screenHome .hero-topline,
+  .close-hero-top,
+  .history-hero-top,
+  .reports-title{
+    align-items:flex-start!important;
+    flex-direction:column!important;
+  }
+  #screenHome .hero-badge,
+  .close-status-badge,
+  .history-count-pill{
+    align-self:flex-start!important;
+  }
+  #screenHome .hero-grid,
+  #screenHome .grid.two.home-metrics-grid,
+  .close-motion-grid,
+  .grid.two,
+  .grid.three,
+  .reports-grid,
+  .detail-grid,
+  .receipt-grid,
+  .close-hero-grid,
+  .close-action-grid,
+  .history-tools{
+    grid-template-columns:1fr!important;
+  }
+  #screenHome .grid.two.home-metrics-grid{
+    gap:0!important;
+  }
+  #screenHome .grid.two > .card[data-home-detail]{
+    min-height:auto!important;
+    padding:16px!important;
+    border-top:1px solid rgba(15,23,42,.06)!important;
+  }
+  #screenHome .grid.two > .card[data-home-detail]:first-child{
+    border-top:0!important;
+  }
+  #screenHome .grid.two > .card[data-home-detail]::before{
+    inset:0 auto 0 0!important;
+    width:3px!important;
+    height:auto!important;
+  }
+  .bottom-nav{
+    width:calc(100% - 10px)!important;
+    bottom:calc(4px + env(safe-area-inset-bottom))!important;
+    border-radius:18px!important;
+  }
+}
