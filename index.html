@@ -122,94 +122,186 @@
         </div>
       </div>
     </section>
-
     <section id="screenClose" class="screen">
-      <div class="card"><div class="card-title"><h2>Fechamento de turno</h2><span>Automático</span></div>
-        <div class="form-grid">
-          <div class="field">
-            <label>Operador</label>
-            <input id="operatorName" placeholder="Nome do operador" readonly />
-            <div class="muted" id="operatorEmailLabel" style="margin-top:4px;"></div>
+      <div class="close-shell">
+        <div class="card close-hero-card">
+          <div class="close-hero-top">
+            <div>
+              <span class="close-kicker">Fechamento premium</span>
+              <h2>Conferência do turno com leitura mais clara</h2>
+              <p>Mesmo cálculo, mesma integração e mais hierarquia visual para revisar o fechamento antes de salvar.</p>
+            </div>
+            <span id="closeStatusBadge" class="close-status-badge is-idle">Aguardando dados</span>
           </div>
-          <div class="field"><label>Data do fechamento</label><input id="closingDate" type="datetime-local" /></div>
-          <div class="field"><label>Saldo Reca</label><input id="webReca" class="money-input" inputmode="decimal" placeholder="0,00" /></div>
-          
-          <div class="field"><label>Suprema</label><input id="suprema" class="money-input" inputmode="decimal" placeholder="0,00" /></div>
-          <div class="field"><label>PPPoker</label><input id="pppoker" class="money-input" inputmode="decimal" placeholder="0,00" /></div>
-          <div class="field"><label>Buffalo</label><input id="buffalo" class="money-input" inputmode="decimal" placeholder="0,00" /></div>
-          <div class="field"><label>Ganamos</label><input id="ganamos" class="money-input" inputmode="decimal" placeholder="0,00" /></div>
-          
-          
-        </div>
-      </div>
-      <div class="grid two">
-        <div class="card">
-          <div class="card-title"><h2>Pagos pendentes</h2><button id="togglePendingBtn" class="small-btn">Abrir</button></div>
-          <div id="pendingPanel" class="admin-create-panel">
-            <button id="addPendingBtn" class="small-btn" style="margin-bottom:10px;">+ Adicionar pendente</button>
-            <div id="pendingList" class="dynamic-list"></div>
+          <div class="close-hero-grid">
+            <div class="close-hero-metric">
+              <span>Campos com valor</span>
+              <strong id="closeFilledCount">0 / 7</strong>
+            </div>
+            <div class="close-hero-metric">
+              <span>Pendentes</span>
+              <strong id="closePendingCount">0 itens</strong>
+            </div>
+            <div class="close-hero-metric">
+              <span>Retiradas</span>
+              <strong id="closeOutflowCount">0 itens</strong>
+            </div>
           </div>
-        </div>
-        <div class="card">
-          <div class="card-title"><h2>Retiradas</h2><button id="toggleOutflowBtn" class="small-btn">Abrir</button></div>
-          <div id="outflowPanel" class="admin-create-panel">
-            <button id="addOutflowBtn" class="small-btn" style="margin-bottom:10px;">+ Adicionar retirada</button>
-            <div id="outflowList" class="dynamic-list"></div>
-          </div>
-        </div>
-      </div>
-
-       <div class="card summary-panel">
-        <div class="summary-head">
-          <div>
-            <h2>Resumo calculado</h2>
-            <span>Conferência automática</span>
-          </div>
-          <div class="summary-live">Tempo real</div>
-        </div>
-        <div class="summary-main">
-          <div class="summary-total">
-            <span>Saldo líquido final</span>
-            <strong id="calcSaldoLiquido">$ 0,00</strong>
-          </div>
-          <div class="summary-breakdown">
-            <div class="summary-box danger"><span>Pendentes</span><b id="calcPendentes">$ 0,00</b></div>
-            <div class="summary-box"><span>Retiradas total</span><b id="calcSaidas">$ 0,00</b></div>
-            <div class="summary-box good"><span>Retirada lucro</span><b id="calcLucroSaida">$ 0,00</b></div>
-            <div class="summary-box gold"><span>Custo operacional</span><b id="calcCustoSaida">$ 0,00</b></div>
-          </div>
-          <div class="summary-note">
-            <span>Carga poker: <b id="calcCargaPoker">$ 0,00</b></span>
-            <span>Carga casino: <b id="calcCargaCasino">$ 0,00</b></span>
-            
-          </div>
-          <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:16px;">
-          <button id="clearClosingBtn" class="btn secondary full">Limpar</button>
-          <button id="saveClosingBtn" class="btn full">Salvar</button>
-        </div>
-        </div>
-      </div>
-
-      <div id="quickChargeCard" class="card" style="margin-top:14px;">
-        <div class="card-title">
-          <div>
-            <h2>Carga rápida</h2>
-            <span>Interno</span>
-          </div>
-          <button id="toggleQuickChargeBtn" class="admin-toggle">Mostrar</button>
         </div>
 
-        <div id="quickChargePanel" class="admin-create-panel">
-          <div class="form-grid" style="margin-top:14px;">
-            <div class="field"><label>Carga fichas poker</label><input id="quickCargaPoker" inputmode="decimal" placeholder="Quantidade de fichas" /></div>
-            <div class="field"><label>Carga casino</label><input id="quickCargaCasino" class="money-input" inputmode="decimal" placeholder="0,00" /></div>
-            <div class="field"><label>Retirada do caixa</label><input id="quickRetiradaCaixa" class="money-input" inputmode="decimal" placeholder="0,00" /></div>
-            <div class="field"><label>Tipo da retirada</label><select id="quickRetiradaTipo"><option value="lucro">Lucro</option><option value="custo_operacional">Custo operacional</option></select></div>
-            <div class="field"><label>Motivo</label><input id="quickCargaMotivo" placeholder="Ex: aporte de caixa / reposição banca" /></div>
-            <div class="field"><label>Responsável</label><input id="quickCargaOperador" placeholder="Admin / responsável" /></div>
+        <div class="close-layout">
+          <div class="close-main-stack">
+            <div class="card close-form-card">
+              <div class="card-title close-card-title">
+                <div>
+                  <h2>Dados base do fechamento</h2>
+                  <span>Preencha os valores do caixa e das plataformas sem alterar a regra atual do sistema</span>
+                </div>
+                <span class="close-section-badge">Atualização em tempo real</span>
+              </div>
+
+              <div class="close-form-groups">
+                <div class="close-group-block">
+                  <div class="close-group-head">
+                    <h3>Contexto do turno</h3>
+                    <p>Informações principais de operador e data.</p>
+                  </div>
+                  <div class="form-grid close-form-grid close-form-grid-top">
+                    <div class="field field-highlight">
+                      <label>Operador</label>
+                      <input id="operatorName" placeholder="Nome do operador" readonly />
+                      <div class="muted" id="operatorEmailLabel" style="margin-top:4px;"></div>
+                    </div>
+                    <div class="field">
+                      <label>Data do fechamento</label>
+                      <input id="closingDate" type="datetime-local" />
+                    </div>
+                  </div>
+                </div>
+
+                <div class="close-group-block">
+                  <div class="close-group-head">
+                    <h3>Base financeira</h3>
+                    <p>Valores que compõem o fechamento do turno.</p>
+                  </div>
+                  <div class="form-grid close-form-grid close-form-grid-money">
+                    <div class="field field-highlight">
+                      <label>Saldo Reca</label>
+                      <input id="webReca" class="money-input" inputmode="decimal" placeholder="0,00" />
+                    </div>
+                    <div class="field"><label>Suprema</label><input id="suprema" class="money-input" inputmode="decimal" placeholder="0,00" /></div>
+                    <div class="field"><label>PPPoker</label><input id="pppoker" class="money-input" inputmode="decimal" placeholder="0,00" /></div>
+                    <div class="field"><label>Buffalo</label><input id="buffalo" class="money-input" inputmode="decimal" placeholder="0,00" /></div>
+                    <div class="field"><label>Ganamos</label><input id="ganamos" class="money-input" inputmode="decimal" placeholder="0,00" /></div>
+                    <div class="field close-admin-field"><label>Carga poker</label><input id="cargasPoker" class="money-input" inputmode="decimal" placeholder="0,00" /><div class="muted" style="margin-top:4px;">Campo administrativo</div></div>
+                    <div class="field close-admin-field"><label>Carga casino</label><input id="cargasCasino" class="money-input" inputmode="decimal" placeholder="0,00" /><div class="muted" style="margin-top:4px;">Campo administrativo</div></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="grid two close-motion-grid">
+              <div id="pendingCard" class="card close-motion-card">
+                <div class="card-title close-card-title">
+                  <div>
+                    <h2>Pagos pendentes</h2>
+                    <span id="pendingCounter">0 itens aguardando baixa</span>
+                  </div>
+                  <button id="togglePendingBtn" class="small-btn" type="button">Abrir</button>
+                </div>
+                <div id="pendingPanel" class="admin-create-panel close-panel-body">
+                  <div class="close-panel-toolbar">
+                    <button id="addPendingBtn" class="small-btn" type="button">+ Adicionar pendente</button>
+                    <span class="close-panel-note">Inclua somente itens que ainda precisam ser compensados.</span>
+                  </div>
+                  <div id="pendingList" class="dynamic-list close-dynamic-list" data-empty-text="Nenhum pendente adicionado ainda"></div>
+                </div>
+              </div>
+
+              <div id="outflowCard" class="card close-motion-card">
+                <div class="card-title close-card-title">
+                  <div>
+                    <h2>Retiradas</h2>
+                    <span id="outflowCounter">0 itens lançados</span>
+                  </div>
+                  <button id="toggleOutflowBtn" class="small-btn" type="button">Abrir</button>
+                </div>
+                <div id="outflowPanel" class="admin-create-panel close-panel-body">
+                  <div class="close-panel-toolbar">
+                    <button id="addOutflowBtn" class="small-btn" type="button">+ Adicionar retirada</button>
+                    <span class="close-panel-note">Separe lucro e custo operacional para manter a leitura organizada.</span>
+                  </div>
+                  <div id="outflowList" class="dynamic-list close-dynamic-list" data-empty-text="Nenhuma retirada adicionada ainda"></div>
+                </div>
+              </div>
+            </div>
+
+            <div id="quickChargeCard" class="card close-quick-card" style="margin-top:14px;">
+              <div class="card-title close-card-title">
+                <div>
+                  <h2>Carga rápida</h2>
+                  <span>Ajuste interno auditável, separado dos fechamentos</span>
+                </div>
+                <button id="toggleQuickChargeBtn" class="admin-toggle" type="button">Mostrar</button>
+              </div>
+
+              <div id="quickChargePanel" class="admin-create-panel close-panel-body">
+                <div class="close-panel-intro">
+                  <strong>Uso administrativo</strong>
+                  <span>Cria um ajuste independente no histórico sem alterar fechamentos antigos.</span>
+                </div>
+                <div class="form-grid close-form-grid close-form-grid-money" style="margin-top:14px;">
+                  <div class="field"><label>Carga fichas poker</label><input id="quickCargaPoker" inputmode="decimal" placeholder="Quantidade de fichas" /></div>
+                  <div class="field"><label>Carga casino</label><input id="quickCargaCasino" class="money-input" inputmode="decimal" placeholder="0,00" /></div>
+                  <div class="field"><label>Retirada do caixa</label><input id="quickRetiradaCaixa" class="money-input" inputmode="decimal" placeholder="0,00" /></div>
+                  <div class="field"><label>Tipo da retirada</label><select id="quickRetiradaTipo"><option value="lucro">Lucro</option><option value="custo_operacional">Custo operacional</option></select></div>
+                  <div class="field"><label>Motivo</label><input id="quickCargaMotivo" placeholder="Ex: aporte de caixa / reposição banca" /></div>
+                  <div class="field"><label>Responsável</label><input id="quickCargaOperador" placeholder="Admin / responsável" /></div>
+                </div>
+                <button id="quickChargeBtn" class="btn full" style="margin-top:14px;">Adicionar carga ao sistema</button>
+              </div>
+            </div>
           </div>
-          <button id="quickChargeBtn" class="btn full" style="margin-top:14px;">Adicionar carga ao sistema</button>
-          <div class="muted" style="margin-top:10px;">Cria um ajuste separado no histórico, sem alterar fechamentos antigos.</div>
+
+          <div class="close-side-stack">
+            <div class="card summary-panel close-summary-card">
+              <div class="summary-head close-summary-head">
+                <div>
+                  <h2>Resumo calculado</h2>
+                  <span>Conferência automática preservada</span>
+                </div>
+                <div class="summary-live">Tempo real</div>
+              </div>
+              <div class="summary-main close-summary-main">
+                <div class="summary-total close-summary-total">
+                  <span>Saldo líquido final</span>
+                  <strong id="calcSaldoLiquido">$ 0,00</strong>
+                  <small id="closeActionHint" class="close-action-hint">Preencha os valores do turno para revisar o fechamento.</small>
+                </div>
+                <div class="summary-breakdown">
+                  <div class="summary-box danger"><span>Pendentes</span><b id="calcPendentes">$ 0,00</b></div>
+                  <div class="summary-box"><span>Retiradas total</span><b id="calcSaidas">$ 0,00</b></div>
+                  <div class="summary-box good"><span>Retirada lucro</span><b id="calcLucroSaida">$ 0,00</b></div>
+                  <div class="summary-box gold"><span>Custo operacional</span><b id="calcCustoSaida">$ 0,00</b></div>
+                </div>
+                <div class="summary-note close-summary-note">
+                  <span>Carga poker: <b id="calcCargaPoker">$ 0,00</b></span>
+                  <span>Carga casino: <b id="calcCargaCasino">$ 0,00</b></span>
+                </div>
+                <div class="close-progress-card">
+                  <div class="close-progress-top">
+                    <span>Preenchimento visual do fechamento</span>
+                    <b id="closeProgressLabel">0%</b>
+                  </div>
+                  <div class="close-progress-track"><div id="closeProgressFill" class="close-progress-fill"></div></div>
+                </div>
+                <div class="close-action-grid">
+                  <button id="clearClosingBtn" class="btn secondary full">Limpar</button>
+                  <button id="saveClosingBtn" class="btn full">Salvar</button>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </section>

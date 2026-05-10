@@ -356,6 +356,62 @@ import { initializeApp, deleteApp } from "https://www.gstatic.com/firebasejs/12.
       // Desativado: os campos não devem zerar ao clicar/focar,
       // para permitir sair do app e voltar sem perder os números digitados.
     }
+    function setClosePanelState(panelId, buttonId, cardId, closedText="Abrir", openText="Ocultar"){
+      const panel = $(panelId);
+      const button = $(buttonId);
+      const card = $(cardId);
+      const open = !!panel?.classList.contains("active");
+      card?.classList.toggle("is-open", open);
+      if(button) button.textContent = open ? openText : closedText;
+    }
+
+    function updateCloseVisualState(turno = getTurnFromForm()){
+      const monitoredIds = ["webReca","suprema","pppoker","buffalo","ganamos","cargasPoker","cargasCasino"];
+      const filledCount = monitoredIds.filter(id => moneyToNumber($(id)?.value || 0) > 0).length;
+      const pendingCount = (turno.pendings || []).length;
+      const outflowCount = (turno.outflows || []).length;
+      const visualSteps = monitoredIds.length + 2;
+      const doneSteps = filledCount + (pendingCount > 0 ? 1 : 0) + (outflowCount > 0 ? 1 : 0);
+      const progress = Math.max(0, Math.min(100, Math.round((doneSteps / visualSteps) * 100)));
+      const hasBaseValues = [turno.webReca, turno.suprema, turno.pppoker, turno.buffalo, turno.ganamos, turno.cargasPoker, turno.cargasCasino].some(v => moneyToNumber(v) > 0);
+
+      const statusEl = $("closeStatusBadge");
+      if(statusEl){
+        statusEl.classList.remove("is-idle","is-ready","is-alert");
+        if(!hasBaseValues){
+          statusEl.textContent = "Aguardando dados";
+          statusEl.classList.add("is-idle");
+        }else if(turno.saldoLiquido < 0){
+          statusEl.textContent = "Conferir saldo";
+          statusEl.classList.add("is-alert");
+        }else{
+          statusEl.textContent = "Pronto para revisar";
+          statusEl.classList.add("is-ready");
+        }
+      }
+
+      if($("closeFilledCount")) $("closeFilledCount").textContent = `${filledCount} / ${monitoredIds.length}`;
+      if($("closePendingCount")) $("closePendingCount").textContent = `${pendingCount} ${pendingCount === 1 ? "item" : "itens"}`;
+      if($("closeOutflowCount")) $("closeOutflowCount").textContent = `${outflowCount} ${outflowCount === 1 ? "item" : "itens"}`;
+      if($("pendingCounter")) $("pendingCounter").textContent = pendingCount ? `${pendingCount} ${pendingCount === 1 ? "item aguardando baixa" : "itens aguardando baixa"}` : "0 itens aguardando baixa";
+      if($("outflowCounter")) $("outflowCounter").textContent = outflowCount ? `${outflowCount} ${outflowCount === 1 ? "item lançado" : "itens lançados"}` : "0 itens lançados";
+      if($("closeProgressLabel")) $("closeProgressLabel").textContent = `${progress}%`;
+      if($("closeProgressFill")) $("closeProgressFill").style.width = `${progress}%`;
+
+      if($("closeActionHint")){
+        $("closeActionHint").textContent = !hasBaseValues
+          ? "Preencha os valores do turno para revisar o fechamento."
+          : (turno.pendentesTotal || turno.saidasTotal)
+            ? "Revise pendentes e retiradas antes de salvar para conferir o resumo final."
+            : "Resumo pronto para conferência final e salvamento.";
+      }
+
+      setClosePanelState("pendingPanel", "togglePendingBtn", "pendingCard", "Abrir", "Ocultar");
+      setClosePanelState("outflowPanel", "toggleOutflowBtn", "outflowCard", "Abrir", "Ocultar");
+      setClosePanelState("quickChargePanel", "toggleQuickChargeBtn", "quickChargeCard", "Mostrar", "Ocultar carga rápida");
+    }
+
+
 
     function renderCalculations(){
       const turno = getTurnFromForm();
@@ -375,6 +431,7 @@ import { initializeApp, deleteApp } from "https://www.gstatic.com/firebasejs/12.
       }
 
       if($("homeOperator")) $("homeOperator").textContent = profileName() || "-";
+      updateCloseVisualState(turno);
     }
 
  function renderMonthlyGoal(view){
@@ -1541,15 +1598,15 @@ alert("Carga adicionada ao sistema como ajuste auditável.");
           showScreen("Home");
           refreshInternal();
         };
-      } applyBankMoneyMaskAll(document); enableClearOnFocus(); ["webReca","suprema","pppoker","buffalo","ganamos","cargasPoker","cargasCasino","quickCargaCasino","quickRetiradaCaixa","operatorName","closingDate","editWebReca","editSuprema","editPppoker","editBuffalo","editGanamos","editCargasPoker","editCargasCasino"].forEach(id=>$(id)?.addEventListener("input",renderCalculations)); document.addEventListener("bankmoney", renderCalculations); $("togglePendingBtn") && ($("togglePendingBtn").onclick=()=>{ const panel=$("pendingPanel"); panel?.classList.toggle("active"); $("togglePendingBtn").textContent = panel?.classList.contains("active") ? "Ocultar" : "Abrir"; });
-      $("toggleOutflowBtn") && ($("toggleOutflowBtn").onclick=()=>{ const panel=$("outflowPanel"); panel?.classList.toggle("active"); $("toggleOutflowBtn").textContent = panel?.classList.contains("active") ? "Ocultar" : "Abrir"; });
+      } applyBankMoneyMaskAll(document); enableClearOnFocus(); ["webReca","suprema","pppoker","buffalo","ganamos","cargasPoker","cargasCasino","quickCargaCasino","quickRetiradaCaixa","operatorName","closingDate","editWebReca","editSuprema","editPppoker","editBuffalo","editGanamos","editCargasPoker","editCargasCasino"].forEach(id=>$(id)?.addEventListener("input",renderCalculations)); document.addEventListener("bankmoney", renderCalculations); $("togglePendingBtn") && ($("togglePendingBtn").onclick=()=>{ const panel=$("pendingPanel"); panel?.classList.toggle("active"); setClosePanelState("pendingPanel", "togglePendingBtn", "pendingCard", "Abrir", "Ocultar"); });
+      $("toggleOutflowBtn") && ($("toggleOutflowBtn").onclick=()=>{ const panel=$("outflowPanel"); panel?.classList.toggle("active"); setClosePanelState("outflowPanel", "toggleOutflowBtn", "outflowCard", "Abrir", "Ocultar"); });
       $("addPendingBtn") && ($("addPendingBtn").onclick=()=>createDynamicRow("pendingList","Nome / motivo"));
       $("addOutflowBtn") && ($("addOutflowBtn").onclick=()=>createDynamicRow("outflowList","Descrição"));
       $("quickChargeBtn") && ($("quickChargeBtn").onclick=addQuickCapitalInjection);
       $("toggleQuickChargeBtn") && ($("toggleQuickChargeBtn").onclick=()=>{
         const panel = $("quickChargePanel");
         panel?.classList.toggle("active");
-        $("toggleQuickChargeBtn").textContent = panel?.classList.contains("active") ? "Ocultar carga rápida" : "Mostrar carga rápida";
+        setClosePanelState("quickChargePanel", "toggleQuickChargeBtn", "quickChargeCard", "Mostrar", "Ocultar carga rápida");
       }); $("clearClosingBtn") && ($("clearClosingBtn").onclick=clearClosingForm);
       $("saveClosingBtn") && ($("saveClosingBtn").onclick=saveClosing);
       $("refreshBtn") && ($("refreshBtn").onclick=refreshInternal);
@@ -1629,6 +1686,7 @@ alert("Carga adicionada ao sistema como ajuste auditável.");
     document.addEventListener("DOMContentLoaded",()=>{
       bindEvents();
       initDate();
+      updateCloseVisualState();
       document.body.classList.add("app-ready");
       if ("serviceWorker" in navigator) {
         window.addEventListener("load", () => {
