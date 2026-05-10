@@ -1260,15 +1260,83 @@ alert("Carga adicionada ao sistema como ajuste auditável.");
     }
     async function refreshInternal(){ const loader=$("appReloadLoader"); loader?.classList.add("active"); renderAll(); setTimeout(()=>loader?.classList.remove("active"),650); }
 
-    function getReportItems(){ let items=visibleHistory(); const start=$("reportStart")?.value, end=$("reportEnd")?.value, operator=($("reportOperator")?.value||"").trim().toLowerCase(), supervisor=($("reportSupervisor")?.value||"").trim().toLowerCase(); if(start) items=items.filter(x=>{const d=x.submittedAt?.toDate?x.submittedAt.toDate():new Date(x.turno?.closingDate||x.createdAt||0); return !isNaN(d)&&d.toISOString().slice(0,10)>=start;}); if(end) items=items.filter(x=>{const d=x.submittedAt?.toDate?x.submittedAt.toDate():new Date(x.turno?.closingDate||x.createdAt||0); return !isNaN(d)&&d.toISOString().slice(0,10)<=end;}); if(operator) items=items.filter(x=>String(x.operatorName||x.turno?.operatorName||"").toLowerCase().includes(operator)); if(supervisor) items=items.filter(x=>String(x.supervisorName||x.turno?.supervisorName||x.supervisorEmail||x.turno?.supervisorEmail||"").toLowerCase().includes(supervisor)); return items; }
-    function previewReport(){ if(!$("reportPreviewCount")) return; const items=getReportItems(), totalSaldo=items.reduce((s,x)=>s+moneyToNumber(x.turno?.saldoLiquido??x.currentSaldoTotal),0), totalDiff=items.reduce((s,x)=>s+moneyToNumber(x.diff),0); $("reportPreviewCount").textContent=items.length; $("reportPreviewSaldo").textContent=formatMoney(totalSaldo); $("reportPreviewDiff").textContent=formatMoney(totalDiff); }
+    function getReportFiltersSummary(){
+      const start = $("reportStart")?.value || "";
+      const end = $("reportEnd")?.value || "";
+      const operator = ($("reportOperator")?.value || "").trim();
+      const supervisor = ($("reportSupervisor")?.value || "").trim();
+      const parts = [];
+      if(start || end) parts.push(`Período: ${start || "início"} → ${end || "hoje"}`);
+      if(operator) parts.push(`Operador: ${operator}`);
+      if(supervisor) parts.push(`Supervisor: ${supervisor}`);
+      return {
+        start,
+        end,
+        operator,
+        supervisor,
+        text: parts.join(" • ") || "Todos os registros disponíveis"
+      };
+    }
+    function getReportItems(){
+      const filters = getReportFiltersSummary();
+      let items = visibleHistory();
+      if(filters.start) items = items.filter(x=>{const d=x.submittedAt?.toDate?x.submittedAt.toDate():new Date(x.turno?.closingDate||x.createdAt||0); return !isNaN(d) && d.toISOString().slice(0,10) >= filters.start;});
+      if(filters.end) items = items.filter(x=>{const d=x.submittedAt?.toDate?x.submittedAt.toDate():new Date(x.turno?.closingDate||x.createdAt||0); return !isNaN(d) && d.toISOString().slice(0,10) <= filters.end;});
+      if(filters.operator) items = items.filter(x=>String(x.operatorName||x.turno?.operatorName||"").toLowerCase().includes(filters.operator.toLowerCase()));
+      if(filters.supervisor) items = items.filter(x=>String(x.supervisorName||x.turno?.supervisorName||x.supervisorEmail||x.turno?.supervisorEmail||"").toLowerCase().includes(filters.supervisor.toLowerCase()));
+      return items;
+    }
+    function previewReport(){
+      if(!$("reportPreviewCount")) return;
+      const items = getReportItems();
+      const filters = getReportFiltersSummary();
+      const totalSaldo = items.reduce((s,x)=>s + moneyToNumber(x.turno?.saldoLiquido ?? x.currentSaldoTotal), 0);
+      const totalDiff = items.reduce((s,x)=>s + moneyToNumber(x.diff), 0);
+      const totalLucro = items.reduce((s,x)=>s + moneyToNumber(x.turno?.retiradaLucroTotal), 0);
+      const totalAjustes = items.filter(isAdjustmentItem).reduce((s,x)=>s + adjustmentImpact(x), 0);
+      const avgTicket = items.length ? totalSaldo / items.length : 0;
+      $("reportPreviewCount").textContent = items.length;
+      $("reportPreviewSaldo").textContent = formatMoney(totalSaldo);
+      $("reportPreviewDiff").textContent = formatMoney(totalDiff);
+      if($("reportPreviewLucro")) $("reportPreviewLucro").textContent = formatMoney(totalLucro);
+      if($("reportPreviewAjustes")) $("reportPreviewAjustes").textContent = formatMoney(totalAjustes);
+      if($("reportPreviewAvg")) $("reportPreviewAvg").textContent = formatMoney(avgTicket);
+      if($("reportPreviewRange")) $("reportPreviewRange").textContent = filters.text;
+
+      const list = $("reportPreviewList");
+      if(!list) return;
+      if(!items.length){
+        list.innerHTML = `<div class="report-preview-empty">Nenhum fechamento encontrado com os filtros atuais.</div>`;
+        return;
+      }
+
+      list.innerHTML = items.slice(0, 6).map((item, index) => {
+        const t = item.turno || {};
+        const ajuste = isAdjustmentItem(item);
+        const saldo = moneyToNumber(t.saldoLiquido ?? item.currentSaldoTotal ?? 0);
+        const diff = ajuste ? adjustmentImpact(item) : displayCashDiff(item);
+        const positive = diff >= 0;
+        const operator = item.operatorName || t.operatorName || "Sem operador";
+        const subtitle = ajuste ? "Ajuste interno" : (item.supervisorName || t.supervisorName || item.supervisorEmail || "Fechamento");
+        return `<div class="report-preview-item">
+          <div>
+            <div class="report-preview-title">#${index + 1} • ${operator}</div>
+            <div class="report-preview-meta">${subtitle} • ${dateLabel(item.submittedAt || t.closingDate || item.createdAt)}</div>
+          </div>
+          <div class="report-preview-balance">${formatMoney(saldo)}</div>
+          <div class="report-preview-diff ${positive ? "is-positive" : "is-negative"}">${positive ? "+" : ""}${formatMoney(diff)}</div>
+        </div>`;
+      }).join("");
+    }
     function buildBankPdfHtml(items){
+      const filters = getReportFiltersSummary();
       const generatedAt = new Date().toLocaleString("pt-BR");
       const reportCode = "BK-" + Date.now().toString().slice(-8);
       const totalSaldo = items.reduce((s,x)=>s + moneyToNumber(x.turno?.saldoLiquido ?? x.currentSaldoTotal), 0);
       const totalDiff = items.filter(x=>!isAdjustmentItem(x)).reduce((s,x)=>s + displayCashDiff(x), 0);
       const totalAjustes = items.filter(isAdjustmentItem).reduce((s,x)=>s + adjustmentImpact(x), 0);
       const totalLucro = items.reduce((s,x)=>s + moneyToNumber(x.turno?.retiradaLucroTotal), 0);
+      const avgSaldo = items.length ? totalSaldo / items.length : 0;
 
       const blocks = items.map((item, index)=>{
         const t = item.turno || {};
@@ -1279,6 +1347,7 @@ alert("Carga adicionada ao sistema como ajuste auditável.");
         const positive = diff >= 0;
         const titulo = ajuste ? "Ajuste interno" : "Fechamento de turno";
         const operador = item.operatorName || t.operatorName || "Sem operador";
+        const supervisor = item.supervisorName || t.supervisorName || item.supervisorEmail || "-";
         const data = dateLabel(item.submittedAt || t.closingDate);
         const motivo = t.ajusteMotivo || item.adjustmentReason || "-";
         const cargaPoker = moneyToNumber(t.cargasPoker || 0) * 400;
@@ -1289,7 +1358,11 @@ alert("Carga adicionada ao sistema como ajuste auditável.");
 
         return `<section class="close-block">
           <div class="close-head">
-            <div><span class="kicker">${titulo} #${index+1}</span><h2>${operador}</h2><p>${data}</p></div>
+            <div>
+              <span class="kicker">${titulo} #${index + 1}</span>
+              <h2>${operador}</h2>
+              <p>${data} • Supervisor: ${supervisor}</p>
+            </div>
             <div class="diff ${positive ? "pos" : "neg"}">${positive ? "+" : ""}${formatMoney(diff)}</div>
           </div>
 
@@ -1297,18 +1370,18 @@ alert("Carga adicionada ao sistema como ajuste auditável.");
             <div><span>Saldo líquido</span><strong>${formatMoney(saldo)}</strong></div>
             <div><span>Diferença de caixa</span><strong class="${positive ? "txt-pos" : "txt-neg"}">${positive ? "+" : ""}${formatMoney(diff)}</strong></div>
             <div><span>Base operacional</span><strong>${formatMoney(base)}</strong></div>
-            <div><span>Tipo</span><strong>${ajuste ? "Ajuste" : "Fechamento"}</strong></div>
+            <div><span>Lucro retirado</span><strong>${formatMoney(t.retiradaLucroTotal || 0)}</strong></div>
           </div>
 
           <div class="detail-grid">
-            <div class="detail-card"><h3>Saldos</h3>
-              <div class="line"><span>Reca</span><b>${formatMoney(t.webReca ?? t.reca ?? 0)}</b></div>
-              <div class="line"><span>Suprema ×400</span><b>${formatMoney(moneyToNumber(t.suprema||0)*400)}</b></div>
-              <div class="line"><span>PPPoker ×400</span><b>${formatMoney(moneyToNumber(t.pppoker||0)*400)}</b></div>
+            <div class="detail-card"><h3>Composição do saldo</h3>
+              <div class="line"><span>Saldo Reca</span><b>${formatMoney(t.webReca ?? t.reca ?? 0)}</b></div>
+              <div class="line"><span>Suprema ×400</span><b>${formatMoney(moneyToNumber(t.suprema || 0) * 400)}</b></div>
+              <div class="line"><span>PPPoker ×400</span><b>${formatMoney(moneyToNumber(t.pppoker || 0) * 400)}</b></div>
               <div class="line"><span>Buffalo</span><b>${formatMoney(t.buffalo || 0)}</b></div>
               <div class="line"><span>Ganamos</span><b>${formatMoney(t.ganamos || 0)}</b></div>
             </div>
-            <div class="detail-card"><h3>Movimentos</h3>
+            <div class="detail-card"><h3>Movimentos operacionais</h3>
               <div class="line"><span>Carga poker</span><b>${formatMoney(cargaPoker)}</b></div>
               <div class="line"><span>Carga casino</span><b>${formatMoney(cargaCasino)}</b></div>
               <div class="line"><span>Pendentes</span><b>${formatMoney(t.pendentesTotal || 0)}</b></div>
@@ -1317,7 +1390,7 @@ alert("Carga adicionada ao sistema como ajuste auditável.");
             </div>
           </div>
 
-          <div class="detail-card full"><h3>${ajuste ? "Detalhe do ajuste" : "Detalhes"}</h3>
+          <div class="detail-card full"><h3>${ajuste ? "Detalhe do ajuste" : "Detalhamento"}</h3>
             ${ajuste ? `<div class="line"><span>Motivo</span><b>${motivo}</b></div>` : ""}
             ${pendentes}
             ${retiradas}
@@ -1326,11 +1399,19 @@ alert("Carga adicionada ao sistema como ajuste auditável.");
       }).join("");
 
       return `<!DOCTYPE html><html><head><meta charset="UTF-8"><title>Relatório Bank King</title><style>
-        *{box-sizing:border-box}body{margin:0;background:#f3f7ff;color:#07152f;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif;padding:20px}.toolbar{position:sticky;top:0;z-index:10;background:rgba(255,255,255,.92);backdrop-filter:blur(18px);border:1px solid #dbe5f2;border-radius:18px;padding:12px 14px;margin-bottom:14px;display:flex;align-items:center;justify-content:space-between;gap:12px}.toolbar strong{font-size:14px}.toolbar-actions{display:flex;gap:8px}.tool-btn{height:38px;border:0;border-radius:12px;padding:0 14px;font-weight:900;cursor:pointer}.primary{background:#005BFF;color:#fff}.secondary{background:#eef4ff;color:#07328E}.cover{background:linear-gradient(135deg,#006BFF,#0047D9);color:#fff;border-radius:28px;padding:26px;margin-bottom:16px;box-shadow:0 24px 70px rgba(0,91,255,.24)}.cover-top{display:flex;justify-content:space-between;gap:20px}.logo{width:54px;height:54px;border-radius:17px;background:#fff;color:#005BFF;display:flex;align-items:center;justify-content:center;font-weight:950;font-size:20px}.brand{display:flex;gap:12px;align-items:center}.brand h1{margin:0;font-size:30px}.brand p,.meta{margin:4px 0 0;color:rgba(255,255,255,.78);font-weight:800;font-size:12px}.meta{text-align:right;line-height:1.55}.totals{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-top:18px}.total{background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.18);border-radius:16px;padding:12px}.total span{display:block;font-size:10px;text-transform:uppercase;opacity:.75;font-weight:900}.total b{display:block;margin-top:5px;font-size:15px}.close-block{background:#fff;border:1px solid #dbe5f2;border-radius:24px;padding:18px;margin-bottom:14px;box-shadow:0 16px 44px rgba(11,31,77,.09);break-inside:avoid;page-break-inside:avoid}.close-head{display:flex;justify-content:space-between;gap:14px;align-items:flex-start;margin-bottom:14px}.kicker{font-size:10px;color:#005BFF;font-weight:950;text-transform:uppercase;letter-spacing:.5px}.close-head h2{margin:3px 0;font-size:20px}.close-head p{margin:0;color:#64748b;font-size:12px;font-weight:800}.diff{border-radius:999px;padding:9px 12px;font-size:13px;font-weight:950;white-space:nowrap}.pos{background:#dcfce7;color:#047857}.neg{background:#fee2e2;color:#b91c1c}.main-card{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;border-radius:20px;background:linear-gradient(135deg,#07152f,#07328E);color:#fff;padding:14px;margin-bottom:12px}.main-card span{display:block;font-size:10px;opacity:.76;font-weight:900;text-transform:uppercase}.main-card strong{display:block;margin-top:5px;font-size:17px}.txt-pos{color:#6EE7B7!important}.txt-neg{color:#FCA5A5!important}.detail-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}.detail-card{border:1px solid #e8eef8;border-radius:18px;background:#fbfdff;padding:12px}.detail-card.full{margin-top:10px}.detail-card h3{margin:0 0 8px;font-size:13px;color:#07328E}.line{display:flex;justify-content:space-between;gap:10px;padding:7px 0;border-top:1px solid #edf2f7;font-size:12px}.line:first-of-type{border-top:0}.line span{color:#64748b;font-weight:800}.line b{font-weight:950;text-align:right}.muted-line{opacity:.75}@media(max-width:760px){body{padding:10px}.cover-top{flex-direction:column}.meta{text-align:left}.totals,.main-card,.detail-grid{grid-template-columns:1fr}.toolbar{align-items:flex-start;flex-direction:column}.toolbar-actions{width:100%;display:grid;grid-template-columns:1fr 1fr 1fr}.tool-btn{width:100%}}@media print{@page{size:A4 portrait;margin:10mm}body{background:#fff;padding:0}.toolbar{display:none}.cover{border-radius:0;margin:0 0 8mm;box-shadow:none}.close-block{box-shadow:none;border-radius:18px;margin-bottom:8mm}.close-block{page-break-inside:avoid}.totals{grid-template-columns:repeat(4,1fr)}.main-card{grid-template-columns:repeat(4,1fr)}.detail-grid{grid-template-columns:1fr 1fr}}
-      </style></head><body><div class="toolbar"><strong>Relatório Bank King • ${reportCode}</strong><div class="toolbar-actions"><button class="tool-btn secondary" onclick="window.close()">Voltar</button><button class="tool-btn secondary" onclick="window.print()">Imprimir</button><button class="tool-btn primary" onclick="window.print()">Salvar PDF</button></div></div><header class="cover"><div class="cover-top"><div class="brand"><div class="logo">BK</div><div><h1>Bank King</h1><p>Relatório financeiro interno</p></div></div><div class="meta">Código: ${reportCode}<br>Gerado em: ${generatedAt}<br>Usuário: ${currentProfile?.name || currentUser?.email || "-"}</div></div><div class="totals"><div class="total"><span>Registros</span><b>${items.length}</b></div><div class="total"><span>Saldo somado</span><b>${formatMoney(totalSaldo)}</b></div><div class="total"><span>Diferença caixa</span><b>${formatMoney(totalDiff)}</b></div><div class="total"><span>Ajustes / Lucro</span><b>${formatMoney(totalAjustes)} / ${formatMoney(totalLucro)}</b></div></div></header><main>${blocks || `<section class="close-block">Nenhum fechamento encontrado.</section>`}</main></body></html>`;
+        *{box-sizing:border-box}body{margin:0;background:#eef4fb;color:#07152f;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif;padding:20px}.toolbar{position:sticky;top:0;z-index:10;background:rgba(255,255,255,.92);backdrop-filter:blur(18px);border:1px solid #dbe5f2;border-radius:18px;padding:12px 14px;margin-bottom:14px;display:flex;align-items:center;justify-content:space-between;gap:12px}.toolbar strong{font-size:14px}.toolbar-actions{display:flex;gap:8px}.tool-btn{height:38px;border:0;border-radius:12px;padding:0 14px;font-weight:900;cursor:pointer}.primary{background:#005BFF;color:#fff}.secondary{background:#eef4ff;color:#07328E}.cover{background:radial-gradient(circle at top right,rgba(96,165,250,.22),transparent 26%),linear-gradient(135deg,#071225 0%,#0a1f4f 42%,#0d3b97 100%);color:#fff;border-radius:28px;padding:26px;margin-bottom:16px;box-shadow:0 24px 70px rgba(0,91,255,.20)}.cover-top{display:flex;justify-content:space-between;gap:20px}.logo{width:54px;height:54px;border-radius:17px;background:#fff;color:#005BFF;display:flex;align-items:center;justify-content:center;font-weight:950;font-size:20px}.brand{display:flex;gap:12px;align-items:center}.brand h1{margin:0;font-size:30px}.brand p,.meta{margin:4px 0 0;color:rgba(255,255,255,.78);font-weight:800;font-size:12px}.meta{text-align:right;line-height:1.55}.filter-line{margin-top:16px;padding:12px 14px;border-radius:16px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.12);font-size:12px;font-weight:800;color:rgba(255,255,255,.82)}.totals{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;margin-top:18px}.total{background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.18);border-radius:16px;padding:12px}.total span{display:block;font-size:10px;text-transform:uppercase;opacity:.75;font-weight:900}.total b{display:block;margin-top:5px;font-size:15px}.close-block{background:#fff;border:1px solid #dbe5f2;border-radius:24px;padding:18px;margin-bottom:14px;box-shadow:0 16px 44px rgba(11,31,77,.09);break-inside:avoid;page-break-inside:avoid}.close-head{display:flex;justify-content:space-between;gap:14px;align-items:flex-start;margin-bottom:14px}.kicker{font-size:10px;color:#005BFF;font-weight:950;text-transform:uppercase;letter-spacing:.5px}.close-head h2{margin:3px 0;font-size:20px}.close-head p{margin:0;color:#64748b;font-size:12px;font-weight:800}.diff{border-radius:999px;padding:9px 12px;font-size:13px;font-weight:950;white-space:nowrap}.pos{background:#dcfce7;color:#047857}.neg{background:#fee2e2;color:#b91c1c}.main-card{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;border-radius:20px;background:linear-gradient(135deg,#07152f,#07328E);color:#fff;padding:14px;margin-bottom:12px}.main-card span{display:block;font-size:10px;opacity:.76;font-weight:900;text-transform:uppercase}.main-card strong{display:block;margin-top:5px;font-size:17px}.txt-pos{color:#6EE7B7!important}.txt-neg{color:#FCA5A5!important}.detail-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}.detail-card{border:1px solid #e8eef8;border-radius:18px;background:#fbfdff;padding:12px}.detail-card.full{margin-top:10px}.detail-card h3{margin:0 0 8px;font-size:13px;color:#07328E}.line{display:flex;justify-content:space-between;gap:10px;padding:7px 0;border-top:1px solid #edf2f7;font-size:12px}.line:first-of-type{border-top:0}.line span{color:#64748b;font-weight:800}.line b{font-weight:950;text-align:right}.muted-line{opacity:.75}@media(max-width:760px){body{padding:10px}.cover-top{flex-direction:column}.meta{text-align:left}.totals,.main-card,.detail-grid{grid-template-columns:1fr}.toolbar{align-items:flex-start;flex-direction:column}.toolbar-actions{width:100%;display:grid;grid-template-columns:1fr 1fr 1fr}.tool-btn{width:100%}}@media print{@page{size:A4 portrait;margin:10mm}body{background:#fff;padding:0}.toolbar{display:none}.cover{border-radius:0;margin:0 0 8mm;box-shadow:none}.close-block{box-shadow:none;border-radius:18px;margin-bottom:8mm}.close-block{page-break-inside:avoid}.totals{grid-template-columns:repeat(5,1fr)}.main-card{grid-template-columns:repeat(4,1fr)}.detail-grid{grid-template-columns:1fr 1fr}}
+      </style></head><body><div class="toolbar"><strong>Relatório Bank King • ${reportCode}</strong><div class="toolbar-actions"><button class="tool-btn secondary" onclick="window.close()">Voltar</button><button class="tool-btn secondary" onclick="window.print()">Imprimir</button><button class="tool-btn primary" onclick="window.print()">Salvar PDF</button></div></div><header class="cover"><div class="cover-top"><div class="brand"><div class="logo">BK</div><div><h1>Bank King Pro</h1><p>Relatório financeiro interno</p></div></div><div class="meta">Código: ${reportCode}<br>Gerado em: ${generatedAt}<br>Usuário: ${currentProfile?.name || currentUser?.email || "-"}</div></div><div class="filter-line">${filters.text}</div><div class="totals"><div class="total"><span>Registros</span><b>${items.length}</b></div><div class="total"><span>Saldo somado</span><b>${formatMoney(totalSaldo)}</b></div><div class="total"><span>Diferença caixa</span><b>${formatMoney(totalDiff)}</b></div><div class="total"><span>Ajustes</span><b>${formatMoney(totalAjustes)}</b></div><div class="total"><span>Média por fechamento</span><b>${formatMoney(avgSaldo)}</b></div></div></header><main>${blocks || `<section class="close-block">Nenhum fechamento encontrado.</section>`}</main></body></html>`;
     }
 
-    function generateBankPdfReport(){ const items=$("reportStart")?getReportItems():visibleHistory(); const win=window.open("","_blank"); if(!win) return alert("Permita pop-ups para gerar o PDF."); win.document.open(); win.document.write(buildBankPdfHtml(items)); win.document.close(); setTimeout(()=>{win.focus();win.print();},500); }
+    function generateBankPdfReport(){
+      const items = $("reportStart") ? getReportItems() : visibleHistory();
+      const win = window.open("", "_blank");
+      if(!win) return alert("Permita pop-ups para gerar o PDF.");
+      win.document.open();
+      win.document.write(buildBankPdfHtml(items));
+      win.document.close();
+      setTimeout(()=>{ win.focus(); win.print(); }, 500);
+    }
 
     function startHistoryRealtimeListener(){ if(historyUnsubscribe) historyUnsubscribe(); const qh=query(collection(db,"history"),orderBy("submittedAt","desc"),limit(300)); historyUnsubscribe=onSnapshot(qh,snap=>{historyCache=snap.docs.map(d=>({id:d.id,...d.data()})); hideNotice("appNotice"); renderAll();},error=>{console.warn("History permission/listener:",error); showNotice("appNotice",friendlyError(error),"error"); historyCache=[]; renderAll();}); }
     function startSystemRealtime(){ if(systemUnsubscribe) systemUnsubscribe(); systemUnsubscribe=onSnapshot(doc(db,"system","saldoReca"),snap=>{ if(!snap.exists()) return; const data=snap.data(); if(data.valor!==undefined){$("homeSaldoReca").textContent=formatMoney(data.valor); $("homeUpdatedAt").textContent="Saldo realtime: "+dateLabel(data.updatedAt);}},error=>console.warn("Saldo Reca realtime não configurado:",error)); }
