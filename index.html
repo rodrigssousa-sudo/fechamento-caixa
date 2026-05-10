@@ -259,6 +259,254 @@ html,body{
   #screenHome .grid.two>.card[data-home-detail]{border-radius:0!important;}
 }
 
+
+
+/* =========================================================
+   BANK KING — CLEAN WHITE BANK PATCH FINAL
+   Fundo branco, divisórias, grafite escuro, sem ruído visual
+========================================================= */
+:root{
+  --bg:#ffffff!important;
+  --bg2:#f7f7f8!important;
+  --card:#ffffff!important;
+  --card2:#fbfbfc!important;
+  --text:#0d0d14!important;
+  --muted:#8a8a9a!important;
+  --line:rgba(0,0,0,.08)!important;
+  --line2:rgba(0,0,0,.055)!important;
+  --primary:#1a1a2e!important;
+  --primary2:#11111e!important;
+  --navy:#1a1a2e!important;
+  --navy2:#0d0d18!important;
+  --success:#087f5b!important;
+  --danger:#b42338!important;
+  --warning:#b7791f!important;
+  --shadow-1:0 1px 2px rgba(0,0,0,.04),0 8px 22px rgba(0,0,0,.05)!important;
+  --shadow-2:0 2px 4px rgba(0,0,0,.05),0 16px 40px rgba(0,0,0,.08)!important;
+  --focus:rgba(26,26,46,.10)!important;
+}
+html,body{background:#ffffff!important;color:var(--text)!important;}
+.topbar{background:rgba(255,255,255,.96)!important;border-bottom:1px solid var(--line)!important;}
+.logo-box,.btn,.small-btn,.nav-btn.active,.more-menu-btn .mmb-icon,.summary-head,.receipt-total{
+  background:linear-gradient(145deg,#1a1a2e,#11111e)!important;
+  color:#fff!important;
+}
+.hero-card{
+  background:linear-gradient(135deg,#030915 0%,#071833 42%,#1a1a2e 100%)!important;
+  border:1px solid rgba(255,255,255,.12)!important;
+  box-shadow:var(--shadow-2)!important;
+}
+.card,.goal-card,.chips-item,.user-item{
+  background:#fff!important;
+  border:1px solid var(--line)!important;
+  box-shadow:var(--shadow-1)!important;
+}
+.history-list,.rank-list{background:#fff!important;border:1px solid var(--line)!important;box-shadow:none!important;overflow:hidden!important;}
+.history-item,.rank-item{background:#fff!important;border:none!important;border-bottom:1px solid var(--line)!important;border-radius:0!important;box-shadow:none!important;}
+.history-item:last-child,.rank-item:last-child{border-bottom:none!important;}
+/* Remover alertas/desenhos/sinais coloridos dos cards iniciais */
+#screenHome .grid.two>.card[data-home-detail]{border:1px solid var(--line)!important;border-top:1px solid var(--line)!important;box-shadow:var(--shadow-1)!important;}
+#screenHome .grid.two>.card[data-home-detail]::before,
+#screenHome .grid.two>.card[data-home-detail]::after{content:none!important;display:none!important;}
+.card-indicator{display:none!important;}
+/* Ranking limpo sem medalhas */
+.rank-pos.medal{font-size:inherit!important;background:#f4f4f6!important;color:var(--primary2)!important;}
+/* Topbar avatar */
+.top-user-avatar{width:34px;height:34px;border-radius:12px;background:#1a1a2e;color:#fff;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:950;letter-spacing:.2px;box-shadow:var(--shadow-1);margin-left:2px;}
+#topUserLabel{display:none!important;}
+/* Chart home */
+.chart-card{padding:18px!important;}
+.chart-wrap{height:220px;position:relative;}
+.chart-card canvas{width:100%!important;height:100%!important;}
+@media(max-width:760px){.chart-wrap{height:190px}.app-shell{background:#fff!important;}}
+
+
+
+/* =========================================================
+   BANK KING — MENU LATERAL DE AÇÕES (SUBSTITUI BARRA INFERIOR)
+========================================================= */
+.top-actions{display:none!important;}
+
+.bottom-nav{
+  position:fixed!important;
+  right:18px!important;
+  left:auto!important;
+  bottom:calc(18px + env(safe-area-inset-bottom))!important;
+  transform:none!important;
+  width:auto!important;
+  height:auto!important;
+  display:flex!important;
+  grid-template-columns:none!important;
+  padding:0!important;
+  border:0!important;
+  background:transparent!important;
+  box-shadow:none!important;
+  backdrop-filter:none!important;
+  -webkit-backdrop-filter:none!important;
+  z-index:120!important;
+}
+
+.menu-launcher{
+  width:64px;
+  height:64px;
+  border-radius:22px;
+  background:linear-gradient(145deg,var(--primary),var(--primary2));
+  color:#fff;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  box-shadow:0 14px 34px rgba(0,0,0,.20);
+  border:1px solid rgba(255,255,255,.18);
+  position:relative;
+  overflow:hidden;
+}
+.menu-launcher svg{width:26px;height:26px;stroke:currentColor;stroke-width:2.4;fill:none;}
+.menu-launcher span{position:absolute;right:10px;bottom:8px;width:8px;height:8px;border-radius:50%;background:#18b981;box-shadow:0 0 0 4px rgba(24,185,129,.16);}
+
+.side-drawer-overlay{
+  position:fixed;
+  inset:0;
+  z-index:118;
+  background:rgba(0,0,0,.30);
+  backdrop-filter:blur(10px);
+  -webkit-backdrop-filter:blur(10px);
+  opacity:0;
+  pointer-events:none;
+  transition:.24s ease;
+}
+.side-drawer-overlay.active{opacity:1;pointer-events:auto;}
+
+.side-drawer{
+  position:fixed;
+  top:0;
+  right:0;
+  z-index:119;
+  width:min(390px,88vw);
+  height:100vh;
+  padding:calc(18px + env(safe-area-inset-top)) 16px calc(20px + env(safe-area-inset-bottom));
+  background:#fff;
+  border-left:1px solid var(--line);
+  box-shadow:-22px 0 70px rgba(0,0,0,.16);
+  transform:translateX(104%);
+  transition:transform .28s cubic-bezier(.2,.8,.2,1);
+  display:flex;
+  flex-direction:column;
+  gap:14px;
+}
+.side-drawer.active{transform:translateX(0);}
+
+.side-drawer-head{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:12px;
+  padding-bottom:14px;
+  border-bottom:1px solid var(--line);
+}
+.side-drawer-brand{display:flex;align-items:center;gap:10px;min-width:0;}
+.side-drawer-avatar{
+  width:44px;height:44px;border-radius:16px;
+  background:linear-gradient(145deg,var(--primary),var(--primary2));
+  color:#fff;display:flex;align-items:center;justify-content:center;
+  font-weight:950;letter-spacing:-.5px;box-shadow:var(--shadow-1);
+  flex:0 0 auto;
+}
+.side-drawer-title{min-width:0;}
+.side-drawer-title strong{display:block;font-size:15px;font-weight:950;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.side-drawer-title span{display:block;margin-top:2px;font-size:12px;font-weight:780;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.side-drawer-close{
+  width:40px;height:40px;border-radius:14px;background:#f4f4f6;color:var(--primary2);font-size:22px;font-weight:900;
+  display:flex;align-items:center;justify-content:center;flex:0 0 auto;
+}
+
+.side-drawer-section{display:grid;gap:8px;}
+.side-drawer-label{font-size:11px;font-weight:950;color:var(--muted);letter-spacing:.8px;text-transform:uppercase;margin:4px 4px 2px;}
+.side-menu-btn{
+  min-height:56px;
+  border-radius:16px;
+  background:#fff;
+  color:var(--text);
+  border:1px solid var(--line);
+  box-shadow:var(--shadow-1);
+  display:grid;
+  grid-template-columns:42px 1fr auto;
+  align-items:center;
+  gap:10px;
+  padding:0 13px;
+  text-align:left;
+  font-weight:900;
+  position:relative;
+  overflow:hidden;
+}
+.side-menu-btn .mmb-icon{
+  width:36px;height:36px;border-radius:14px;
+  background:#f4f4f6;color:var(--primary2);
+  display:flex;align-items:center;justify-content:center;
+  font-size:17px;font-weight:950;
+}
+.side-menu-btn strong{font-size:14px;font-weight:950;line-height:1.1;}
+.side-menu-btn span:not(.mmb-icon){font-size:11px;color:var(--muted);font-weight:760;}
+.side-menu-btn::after{content:"›";font-size:24px;color:var(--muted);font-weight:950;}
+.side-menu-btn.active{background:linear-gradient(145deg,var(--primary),var(--primary2));color:#fff;border-color:transparent;}
+.side-menu-btn.active .mmb-icon{background:rgba(255,255,255,.14);color:#fff;}
+.side-menu-btn.active span:not(.mmb-icon),.side-menu-btn.active::after{color:rgba(255,255,255,.68);}
+.side-menu-btn.danger{color:var(--danger);}
+.side-menu-btn.danger .mmb-icon{background:#fff1f3;color:var(--danger);}
+.side-menu-btn.danger::after{content:"";}
+.side-menu-btn.utility::after{content:"";}
+.side-drawer-footer{
+  margin-top:auto;
+  padding-top:12px;
+  border-top:1px solid var(--line);
+  color:var(--muted);
+  font-size:11px;
+  font-weight:760;
+  line-height:1.35;
+}
+
+.more-menu{display:none!important;}
+
+@media(max-width:760px){
+  .bottom-nav{right:14px!important;bottom:calc(14px + env(safe-area-inset-bottom))!important;}
+  .menu-launcher{width:60px;height:60px;border-radius:20px;}
+  .side-drawer{width:min(360px,90vw);}
+}
+@media(prefers-color-scheme:dark){
+  .side-drawer{background:var(--card);border-left-color:var(--line);}
+  .side-drawer-close,.side-menu-btn .mmb-icon{background:#1a1a28;}
+  .side-menu-btn{background:var(--card);}
+  .side-drawer-overlay{background:rgba(0,0,0,.46);}
+}
+
+
+/* FORCE SAFE RELOAD LOADER */
+.app-reload-loader{display:none!important;opacity:0!important;pointer-events:none!important}
+.app-reload-loader.active{display:flex!important;opacity:1!important;pointer-events:auto!important}
+
+
+/* =========================================================
+   CLEAN SIDE MENU + HOME CARDS — sem ícones/desenhos
+========================================================= */
+#screenHome .grid.two > .card[data-home-detail]::after,
+#screenHome .grid.two > .card[data-home-detail]::before{
+  content:none!important;
+  display:none!important;
+}
+#screenHome .grid.two > .card[data-home-detail]{
+  border-top:none!important;
+}
+.side-menu-btn{
+  grid-template-columns:1fr auto!important;
+  padding:0 16px!important;
+}
+.side-menu-btn .mmb-icon{display:none!important;}
+.side-menu-btn strong{grid-column:1!important;}
+.side-menu-btn span{grid-column:2!important;text-align:right!important;}
+.side-menu-btn::after{display:none!important;content:none!important;}
+.side-drawer-brand{gap:0!important;}
+.top-user-avatar,.side-drawer-avatar{display:none!important;}
+.chart-card,.chart-wrap,#weeklyProfitChart{display:none!important;}
+
 </style>
 
 <script>
@@ -399,7 +647,6 @@ function updateHeroBalance(newValue){
           <div id="homeWeekResult" class="metric">$ 0,00</div>
         </div>
       </div>
-
       <div class="section-divider">Desempenho</div>
       <div class="card comparativo-card" style="margin-top:18px;">
         <div class="card-title">
@@ -565,22 +812,48 @@ function updateHeroBalance(newValue){
 
   </main>
 
-  <nav id="bottomNav" class="bottom-nav hidden">
-    <button class="nav-btn active" data-screen="Home" type="button"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 10.5 12 3l9 7.5"/><path d="M5 10v10h14V10"/><path d="M9 20v-6h6v6"/></svg>Início</button>
-    <button class="nav-btn" data-screen="Close" type="button"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14"/><path d="M5 12h14"/></svg>Fechar</button>
-    <button class="nav-btn" data-screen="History" type="button"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 6h16"/><path d="M4 12h16"/><path d="M4 18h10"/></svg>Histórico</button>
-    <button class="nav-btn" id="moreMenuBtn" type="button"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="5" cy="12" r="1.7"/><circle cx="12" cy="12" r="1.7"/><circle cx="19" cy="12" r="1.7"/></svg>Mais</button>
+  <nav id="bottomNav" class="bottom-nav hidden" aria-label="Abrir menu lateral">
+    <button class="menu-launcher" id="sideMenuBtn" type="button" title="Abrir menu">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16"/><path d="M4 12h16"/><path d="M4 17h16"/></svg>
+      <span aria-hidden="true"></span>
+    </button>
   </nav>
 
-  <div id="moreMenu" class="more-menu">
-    <div class="more-menu-title">Ações avançadas</div>
-    <div class="more-menu-grid">
-      <button class="more-menu-btn" data-more-screen="Goals" id="moreGoalsBtn"><span class="mmb-icon">◎</span><strong>Meta mensal</strong><span>progresso</span></button>
-      <button class="more-menu-btn" data-more-screen="Ranking"><span class="mmb-icon">♛</span><strong>Ranking</strong><span>comparativo</span></button>
-      <button class="more-menu-btn" data-more-screen="Reports"><span class="mmb-icon">▤</span><strong>Relatórios</strong><span>Exporta PDF</span></button>
-      <button class="more-menu-btn" data-more-screen="Admin" id="moreAdminBtn"><span class="mmb-icon">⚙</span><strong>Admin</strong><span>gestão</span></button>
+  <div id="sideDrawerOverlay" class="side-drawer-overlay"></div>
+  <aside id="sideDrawer" class="side-drawer" aria-label="Menu principal">
+    <div class="side-drawer-head">
+      <div class="side-drawer-brand">
+        <div class="side-drawer-title">
+          <strong id="sideDrawerName">Bank King</strong>
+          <span id="sideDrawerRole">Sistema financeiro</span>
+        </div>
+      </div>
+      <button id="sideDrawerClose" class="side-drawer-close" type="button" title="Fechar menu">×</button>
     </div>
-  </div>
+
+    <div class="side-drawer-section">
+      <div class="side-drawer-label">Principal</div>
+      <button class="side-menu-btn active" data-screen="Home" type="button"><strong>Início</strong><span>visão geral</span></button>
+      <button class="side-menu-btn" data-screen="Close" type="button"><strong>Fechar turno</strong><span>novo fechamento</span></button>
+      <button class="side-menu-btn" data-screen="History" type="button"><strong>Histórico</strong><span>extrato</span></button>
+    </div>
+
+    <div class="side-drawer-section">
+      <div class="side-drawer-label">Gestão</div>
+      <button class="side-menu-btn" data-more-screen="Goals" id="sideGoalsBtn" type="button"><strong>Meta mensal</strong><span>progresso</span></button>
+      <button class="side-menu-btn" data-more-screen="Ranking" type="button"><strong>Ranking</strong><span>comparativo</span></button>
+      <button class="side-menu-btn" data-more-screen="Reports" type="button"><strong>Relatórios</strong><span>PDF banco</span></button>
+      <button class="side-menu-btn" data-more-screen="Admin" id="sideAdminBtn" type="button"><strong>Admin</strong><span>usuários</span></button>
+    </div>
+
+    <div class="side-drawer-section">
+      <div class="side-drawer-label">Sistema</div>
+      <button class="side-menu-btn utility" id="sideRefreshBtn" type="button"><strong>Recarregar página</strong><span>sincronizar dados</span></button>
+      <button class="side-menu-btn danger" id="sideLogoutBtn" type="button"><strong>Sair</strong><span>encerrar sessão</span></button>
+    </div>
+
+    <div class="side-drawer-footer">Bank King • menu lateral premium<br>Todos os atalhos do app em uma área limpa.</div>
+  </aside>
 
   <div id="receiptModal" class="receipt-modal">
     <div class="receipt-panel">
@@ -1155,28 +1428,18 @@ function updateHeroBalance(newValue){
 
 
     function setCardIndicator(cardEl, value, max){
-      if(!cardEl) return;
-      const old = cardEl.querySelector('.card-indicator');
-      if(old) old.remove();
-
-      if(value === null || value === undefined || !max) return;
-
-      const percent = Math.min(100, (Math.abs(value) / Math.abs(max)) * 100);
-      const isGood = value >= 0;
-
-      const bar = document.createElement('div');
-      bar.className = 'card-indicator';
-      bar.innerHTML = `<div class="card-indicator-fill ${isGood ? 'good' : 'bad'}" style="width:0%"></div>`;
-      cardEl.appendChild(bar);
-
-      requestAnimationFrame(() => {
-        requestAnimationFrame(() => {
-          const fill = bar.querySelector('.card-indicator-fill');
-          if(fill) fill.style.width = percent + '%';
-        });
-      });
+      // Desativado: cards iniciais sem barras/alertas visuais no modo clean white.
+      cardEl?.querySelector?.('.card-indicator')?.remove();
     }
 
+
+    function getInitials(nameOrEmail){
+      const raw = String(nameOrEmail || "BK").trim();
+      const name = raw.includes("@") ? raw.split("@")[0] : raw;
+      const parts = name.replace(/[._-]+/g," ").split(/\s+/).filter(Boolean);
+      const initials = (parts[0]?.[0] || "B") + (parts[1]?.[0] || parts[0]?.[1] || "K");
+      return initials.toUpperCase().slice(0,2);
+    }
     function renderHome(){
       const view = visibleHistory();
       const last = lastRealClosing() || view[0];
@@ -1210,7 +1473,7 @@ function updateHeroBalance(newValue){
         return !isNaN(d) && d >= weekStart;
       }).reduce((s,x)=>s + lucroFromItem(x), 0);
 
-      if($("homeSaldoReca")) $("homeSaldoReca").textContent = formatMoney(saldoReca);
+      if($("homeSaldoReca")) updateHeroBalance(moneyToNumber(saldoReca));
       if($("homeSaldoLiquido")) $("homeSaldoLiquido").textContent = formatMoney(saldoLiquido);
       if($("homePendentes")) $("homePendentes").textContent = formatMoney(pendentes);
       const pendCard = document.querySelector('[data-home-detail="pendentes"]');
@@ -1430,13 +1693,12 @@ function updateHeroBalance(newValue){
         const percent = Math.min(100, (Math.abs(r.total) / maxAbs) * 100);
         const positive = r.total >= 0;
         const status = positive ? "Caixa positivo" : "Caixa negativo";
-        const medal = i === 0 ? "🥇" : i === 1 ? "🥈" : i === 2 ? "🥉" : (i + 1);
-        const medalClass = i < 3 ? "rank-pos medal" : "rank-pos";
+        const position = i + 1;
 
         return `<div class="rank-item">
           <div class="rank-head">
             <div class="rank-left">
-              <div class="${medalClass}">${medal}</div>
+              <div class="rank-pos">${position}</div>
               <div>
                 <div class="rank-name">${r.name}</div>
                 <div class="rank-meta">${r.count} fechamentos</div>
@@ -2130,7 +2392,7 @@ alert("Carga adicionada ao sistema como ajuste auditável.");
     function generateBankPdfReport(){ const items=$("reportStart")?getReportItems():visibleHistory(); const win=window.open("","_blank"); if(!win) return alert("Permita pop-ups para gerar o PDF."); win.document.open(); win.document.write(buildBankPdfHtml(items)); win.document.close(); setTimeout(()=>{win.focus();win.print();},500); }
 
     function startHistoryRealtimeListener(){ if(historyUnsubscribe) historyUnsubscribe(); const qh=query(collection(db,"history"),orderBy("submittedAt","desc"),limit(300)); historyUnsubscribe=onSnapshot(qh,snap=>{historyCache=snap.docs.map(d=>({id:d.id,...d.data()})); hideNotice("appNotice"); renderAll();},error=>{console.warn("History permission/listener:",error); showNotice("appNotice",friendlyError(error),"error"); historyCache=[]; renderAll();}); }
-    function startSystemRealtime(){ if(systemUnsubscribe) systemUnsubscribe(); systemUnsubscribe=onSnapshot(doc(db,"system","saldoReca"),snap=>{ if(!snap.exists()) return; const data=snap.data(); if(data.valor!==undefined){$("homeSaldoReca").textContent=formatMoney(data.valor); $("homeUpdatedAt").textContent="Saldo realtime: "+dateLabel(data.updatedAt);}},error=>console.warn("Saldo Reca realtime não configurado:",error)); }
+    function startSystemRealtime(){ if(systemUnsubscribe) systemUnsubscribe(); systemUnsubscribe=onSnapshot(doc(db,"system","saldoReca"),snap=>{ if(!snap.exists()) return; const data=snap.data(); if(data.valor!==undefined){updateHeroBalance(moneyToNumber(data.valor)); $("homeUpdatedAt").textContent="Saldo realtime: "+dateLabel(data.updatedAt);}},error=>console.warn("Saldo Reca realtime não configurado:",error)); }
 
     async function safeSetUserProfile(user, profile){ try{ await setDoc(doc(db,"users",user.uid), profile, { merge:true }); return true; }catch(e){ console.warn("Não conseguiu gravar perfil:",e); showNotice("appNotice",friendlyError(e),"error"); return false; } }
     async function loadProfile(user){ const ref=doc(db,"users",user.uid); try{ const snap=await getDoc(ref); if(snap.exists()) return snap.data(); const bootstrap=isBootstrapEmail(user.email); const profile={email:user.email,name:user.email.split("@")[0],role:bootstrap?"admin":"operador",status:bootstrap?"active":"pending",approved:bootstrap?true:false,blocked:false,createdAt:serverTimestamp()}; await safeSetUserProfile(user,profile); return profile; }catch(e){ console.warn("Erro ao ler perfil:",e); if(isBootstrapEmail(user.email)){ return {email:user.email,name:user.email.split("@")[0],role:"admin",approved:true,blocked:false,localOnly:true}; } showNotice("appNotice",friendlyError(e),"error"); return {email:user.email,name:user.email.split("@")[0],role:"operador",status:"pending",approved:false,blocked:false,permissionError:true}; } }
@@ -2217,8 +2479,13 @@ alert("Carga adicionada ao sistema como ajuste auditável.");
       document.querySelectorAll(".screen").forEach(s=>s.classList.remove("active"));
       $("screen"+name)?.classList.add("active");
       document.querySelectorAll(".nav-btn").forEach(b=>b.classList.toggle("active",b.dataset.screen===name));
+      document.querySelectorAll(".side-menu-btn[data-screen], .side-menu-btn[data-more-screen]").forEach(b=>{
+        const target = b.dataset.screen || b.dataset.moreScreen;
+        b.classList.toggle("active", target === name);
+      });
       $("moreMenuBtn")?.classList.toggle("active", ["Ranking","Reports","Admin"].includes(name));
       $("moreMenu")?.classList.remove("active");
+      closeSideDrawer();
 
       if(name==="Admin"){loadUsers();loadAudit();}
       if(name==="Ranking") renderRanking(); setTimeout(initBankMicroUX, 30);
@@ -2242,6 +2509,25 @@ alert("Carga adicionada ao sistema como ajuste auditável.");
       const canSeeProfitCards = isAdmin() || isSupervisor();
       if($("todayResultCard")) $("todayResultCard").classList.toggle("hidden", !canSeeProfitCards);
       if($("weekResultCard")) $("weekResultCard").classList.toggle("hidden", !canSeeProfitCards);
+    }
+
+
+    function openSideDrawer(){
+      $("sideDrawer")?.classList.add("active");
+      $("sideDrawerOverlay")?.classList.add("active");
+    }
+
+    function closeSideDrawer(){
+      $("sideDrawer")?.classList.remove("active");
+      $("sideDrawerOverlay")?.classList.remove("active");
+    }
+
+    function updateSideDrawerProfile(){
+      const name = currentProfile?.name || currentUser?.email?.split("@")[0] || "Bank King";
+      const role = isAdmin() ? "Admin" : isSupervisor() ? "Supervisor" : "Operador";
+      const initials = String(name || "BK").trim().split(/\s+/).slice(0,2).map(p=>p[0]).join("").toUpperCase() || "BK";
+      if($("sideDrawerName")) $("sideDrawerName").textContent = name;
+      if($("sideDrawerRole")) $("sideDrawerRole").textContent = `${role} • ${currentUser?.email || ""}`;
     }
 
     function bindEvents(){
@@ -2280,6 +2566,13 @@ alert("Carga adicionada ao sistema como ajuste auditável.");
       $("createUserBtn") && ($("createUserBtn").onclick=createInternalUser);
       $("historySearch")?.addEventListener("input",()=>{ historyRenderLimit=30; renderHistory(); });
       $("historyDate")?.addEventListener("input",()=>{ historyRenderLimit=30; renderHistory(); }); document.querySelectorAll(".nav-btn[data-screen]").forEach(btn=>btn.onclick=()=>showScreen(btn.dataset.screen));
+      $("sideMenuBtn") && ($("sideMenuBtn").onclick=(ev)=>{ ev.stopPropagation(); openSideDrawer(); });
+      $("sideDrawerClose") && ($("sideDrawerClose").onclick=closeSideDrawer);
+      $("sideDrawerOverlay") && ($("sideDrawerOverlay").onclick=closeSideDrawer);
+      document.querySelectorAll(".side-menu-btn[data-screen]").forEach(btn=>btn.onclick=()=>showScreen(btn.dataset.screen));
+      document.querySelectorAll(".side-menu-btn[data-more-screen]").forEach(btn=>btn.onclick=()=>showScreen(btn.dataset.moreScreen));
+      $("sideRefreshBtn") && ($("sideRefreshBtn").onclick=()=>{ closeSideDrawer(); refreshInternal(); });
+      $("sideLogoutBtn") && ($("sideLogoutBtn").onclick=async()=>{ closeSideDrawer(); if(historyUnsubscribe)historyUnsubscribe(); if(systemUnsubscribe)systemUnsubscribe(); await signOut(auth); });
       document.querySelectorAll("[data-home-detail]").forEach(card=>{
         card.onclick = () => openHomeMetricDetail(card.dataset.homeDetail);
       });
@@ -2311,8 +2604,8 @@ alert("Carga adicionada ao sistema como ajuste auditável.");
       $("editCloseBtn").onclick=closeEdit; $("cancelEditBtn").onclick=closeEdit; $("saveEditBtn").onclick=saveEdit; $("editAddPendingBtn").onclick=()=>createDynamicRow("editPendingList","Nome / motivo"); $("editAddOutflowBtn").onclick=()=>createDynamicRow("editOutflowList","Descrição"); }
     function initDate(){ const now=new Date(); now.setMinutes(now.getMinutes()-now.getTimezoneOffset()); $("closingDate").value=now.toISOString().slice(0,16); }
 
-    onAuthStateChanged(auth,async(user)=>{ currentUser=user; if(!user){$("loginScreen").classList.remove("hidden");$("appShell").classList.add("hidden");$("bottomNav").classList.add("hidden");return;} currentProfile=await loadProfile(user); if(currentProfile.blocked){await signOut(auth);return alert("Usuário bloqueado.");} if(currentProfile.approved===false){$("loginScreen").classList.remove("hidden");$("appShell").classList.add("hidden");$("bottomNav").classList.add("hidden");showNotice("loginNotice","Usuário aguardando aprovação do admin.","error");return;} $("loginScreen").classList.add("hidden");$("appShell").classList.remove("hidden");$("bottomNav").classList.remove("hidden");$("topUserLabel").textContent=`${currentProfile.name||user.email} • ${isAdmin()?"Admin":isSupervisor()?"Supervisor":"Operador"}`; $("adminStatus").textContent=isAdmin()?"Admin ativo":"Somente admin";
-      if($("moreAdminBtn")) $("moreAdminBtn").style.display = isAdmin() ? "flex" : "none";
+    onAuthStateChanged(auth,async(user)=>{ currentUser=user; if(!user){$("loginScreen").classList.remove("hidden");$("appShell").classList.add("hidden");$("bottomNav").classList.add("hidden");return;} currentProfile=await loadProfile(user); if(currentProfile.blocked){await signOut(auth);return alert("Usuário bloqueado.");} if(currentProfile.approved===false){$("loginScreen").classList.remove("hidden");$("appShell").classList.add("hidden");$("bottomNav").classList.add("hidden");showNotice("loginNotice","Usuário aguardando aprovação do admin.","error");return;} $("loginScreen").classList.add("hidden");$("appShell").classList.remove("hidden");$("bottomNav").classList.remove("hidden");$("topUserLabel").textContent=`${currentProfile.name||user.email} • ${isAdmin()?"Admin":isSupervisor()?"Supervisor":"Operador"}`;  $("adminStatus").textContent=isAdmin()?"Admin ativo":"Somente admin";
+      if($("moreAdminBtn")) $("moreAdminBtn").style.display = isAdmin() ? "flex" : "none"; if($("sideAdminBtn")) $("sideAdminBtn").style.display = isAdmin() ? "grid" : "none"; updateSideDrawerProfile();
 
       updateRoleVisibility(); if(currentProfile.permissionError) showNotice("appNotice","Seu login entrou, mas o Firestore negou acesso ao perfil. Ajuste as regras ou coloque seu email em BOOTSTRAP_ADMIN_EMAILS.","error"); startHistoryRealtimeListener(); startSystemRealtime(); fillOperadorFromProfile(); renderAll(); });
 
