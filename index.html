@@ -1013,6 +1013,166 @@ html,body{background:#ffffff!important;}
 .icon-btn svg,
 .nav-btn svg{stroke:currentColor!important;}
 
+
+
+/* =========================================================
+   BANK KING — LOGIN DELICADO / HARMÔNICO / PREMIUM COMPACTO
+   Ajuste visual aplicado por cima sem alterar lógica JS
+========================================================= */
+.login-screen{
+  padding:24px!important;
+  background:
+    radial-gradient(circle at 50% 2%,rgba(255,255,255,.045),transparent 30%),
+    radial-gradient(circle at 50% 34%,rgba(88,88,110,.11),transparent 36%),
+    linear-gradient(135deg,#050812 0%,#0a0d18 48%,#101018 100%)!important;
+}
+.login-card{
+  width:min(356px,calc(100vw - 40px))!important;
+  padding:24px 24px 22px!important;
+  border-radius:22px!important;
+  background:rgba(255,255,255,.075)!important;
+  border:1px solid rgba(255,255,255,.115)!important;
+  box-shadow:
+    0 1px 0 rgba(255,255,255,.06) inset,
+    0 18px 50px rgba(0,0,0,.28)!important;
+  backdrop-filter:blur(22px)!important;
+  -webkit-backdrop-filter:blur(22px)!important;
+}
+.login-logo{
+  width:54px!important;
+  height:54px!important;
+  border-radius:16px!important;
+  margin:2px auto 16px!important;
+  font-size:21px!important;
+  font-weight:900!important;
+  letter-spacing:-.7px!important;
+  background:linear-gradient(145deg,#242436,#10101a)!important;
+  color:#fff!important;
+  border:1px solid rgba(255,255,255,.10)!important;
+  box-shadow:0 10px 28px rgba(0,0,0,.20)!important;
+}
+.login-card h1{
+  font-size:25px!important;
+  line-height:1.05!important;
+  font-weight:850!important;
+  letter-spacing:-.75px!important;
+  margin:0!important;
+  color:rgba(255,255,255,.96)!important;
+}
+.login-card p{
+  margin:8px 0 22px!important;
+  font-size:13px!important;
+  line-height:1.2!important;
+  font-weight:650!important;
+  color:rgba(255,255,255,.62)!important;
+  opacity:1!important;
+}
+.login-card input:not([type="checkbox"]){
+  height:44px!important;
+  min-height:44px!important;
+  margin-bottom:10px!important;
+  border-radius:14px!important;
+  padding:0 14px!important;
+  font-size:14px!important;
+  font-weight:650!important;
+  color:rgba(255,255,255,.94)!important;
+  background:rgba(255,255,255,.085)!important;
+  border:1px solid rgba(255,255,255,.13)!important;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.045)!important;
+}
+.login-card input:not([type="checkbox"]:focus){
+  background:rgba(255,255,255,.115)!important;
+  border-color:rgba(255,255,255,.22)!important;
+  box-shadow:0 0 0 3px rgba(255,255,255,.055)!important;
+}
+.login-card input::placeholder{
+  color:rgba(255,255,255,.42)!important;
+  font-weight:650!important;
+}
+.remember-login-row{
+  display:flex!important;
+  align-items:center!important;
+  gap:10px!important;
+  margin:4px 0 14px!important;
+  cursor:pointer!important;
+  color:rgba(255,255,255,.72)!important;
+  font-size:12.5px!important;
+  line-height:1.25!important;
+  font-weight:560!important;
+}
+.remember-login-row input[type="checkbox"]{
+  appearance:none!important;
+  -webkit-appearance:none!important;
+  width:20px!important;
+  height:20px!important;
+  min-width:20px!important;
+  min-height:20px!important;
+  margin:0!important;
+  padding:0!important;
+  border-radius:7px!important;
+  background:rgba(255,255,255,.09)!important;
+  border:1px solid rgba(255,255,255,.20)!important;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.06)!important;
+  display:inline-grid!important;
+  place-items:center!important;
+  flex:0 0 auto!important;
+}
+.remember-login-row input[type="checkbox"]:checked{
+  background:linear-gradient(145deg,#ffffff,#e8eaf0)!important;
+  border-color:rgba(255,255,255,.85)!important;
+}
+.remember-login-row input[type="checkbox"]:checked::after{
+  content:"";
+  width:9px;
+  height:5px;
+  border-left:2px solid #11111e;
+  border-bottom:2px solid #11111e;
+  transform:rotate(-45deg) translateY(-1px);
+}
+.login-card .btn{
+  height:44px!important;
+  min-height:44px!important;
+  border-radius:14px!important;
+  font-size:13px!important;
+  font-weight:800!important;
+  letter-spacing:-.15px!important;
+  box-shadow:0 12px 26px rgba(0,0,0,.20)!important;
+}
+.login-card .btn.full{
+  background:linear-gradient(145deg,#181827,#0d0d16)!important;
+  border:1px solid rgba(255,255,255,.10)!important;
+}
+.login-secondary-row{
+  display:grid!important;
+  grid-template-columns:1fr 1fr!important;
+  gap:9px!important;
+  margin-top:10px!important;
+}
+.login-secondary-row .btn.secondary{
+  height:40px!important;
+  min-height:40px!important;
+  border-radius:13px!important;
+  font-size:12px!important;
+  font-weight:780!important;
+  color:rgba(18,18,30,.92)!important;
+  background:rgba(255,255,255,.92)!important;
+  border:1px solid rgba(255,255,255,.70)!important;
+  box-shadow:0 8px 20px rgba(0,0,0,.14)!important;
+}
+.login-card .notice{
+  margin:0 0 12px!important;
+  padding:9px 11px!important;
+  border-radius:12px!important;
+  font-size:11px!important;
+}
+@media(max-width:430px){
+  .login-screen{padding:18px!important;align-items:center!important;}
+  .login-card{width:100%!important;padding:22px 18px 20px!important;border-radius:20px!important;}
+  .login-logo{width:50px!important;height:50px!important;font-size:19px!important;}
+  .login-card h1{font-size:23px!important;}
+  .login-secondary-row{grid-template-columns:1fr!important;}
+}
+
 </style>
 
 <script>
@@ -1099,9 +1259,15 @@ function updateHeroBalance(newValue){
       <div id="loginNotice" class="notice hidden"></div>
       <input id="loginEmail" type="email" placeholder="Email" autocomplete="email" />
       <input id="loginPassword" type="password" placeholder="Senha" autocomplete="current-password" />
+      <label class="remember-login-row" for="rememberLogin">
+        <input id="rememberLogin" type="checkbox" />
+        <span>Manter app logado neste dispositivo</span>
+      </label>
       <button id="loginBtn" class="btn full">Entrar</button>
-      <button id="registerBtn" class="btn secondary full" style="margin-top:10px;">Criar conta / solicitar acesso</button>
-      <button id="resetPasswordBtn" class="btn secondary full" style="margin-top:10px;">Recuperar senha</button>
+      <div class="login-secondary-row">
+        <button id="registerBtn" class="btn secondary" type="button">Registrar</button>
+        <button id="resetPasswordBtn" class="btn secondary" type="button">Esqueci senha</button>
+      </div>
     </div>
   </div>
 
@@ -1314,6 +1480,15 @@ function updateHeroBalance(newValue){
         </div>
       </div>
 
+      <div class="card permissions-card">
+        <div class="card-title"><h2>Permissões por função</h2><span>Controle de acesso</span></div>
+        <div class="permissions-grid">
+          <div class="perm-row"><strong>Operador</strong><span>Salva fechamento, vê início, histórico e comparativo. Não vê lucro diário, lucro semanal, ranking, relatórios, admin, ajustes rápidos/cargas internas nem edição de usuários.</span></div>
+          <div class="perm-row"><strong>Supervisor</strong><span>Vê lucro diário/semanal, ranking, relatórios e histórico. Não cria usuários, não edita usuários e não usa ajustes rápidos/cargas internas.</span></div>
+          <div class="perm-row"><strong>Admin</strong><span>Acesso total: usuários, relatórios, ranking, histórico, recalcular, editar/excluir fechamento, cargas, custos, ajustes rápidos e auditoria.</span></div>
+        </div>
+      </div>
+
       <div class="card">
         <div class="card-title"><h2>Usuários</h2><button id="loadUsersBtn" class="small-btn">Atualizar</button></div>
         <div id="usersList" class="admin-grid"></div>
@@ -1451,7 +1626,7 @@ function updateHeroBalance(newValue){
 
   <script type="module">
     import { initializeApp, deleteApp } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-app.js";
-    import { getAuth, onAuthStateChanged, signInWithEmailAndPassword, signOut, sendPasswordResetEmail, createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-auth.js";
+    import { getAuth, onAuthStateChanged, signInWithEmailAndPassword, signOut, sendPasswordResetEmail, createUserWithEmailAndPassword, setPersistence, browserLocalPersistence, browserSessionPersistence } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-auth.js";
     import { getFirestore, collection, doc, getDoc, getDocs, addDoc, setDoc, updateDoc, deleteDoc, onSnapshot, query, orderBy, limit, serverTimestamp } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-firestore.js";
 
     const firebaseConfig = {
@@ -1473,6 +1648,12 @@ function updateHeroBalance(newValue){
 
     const app = initializeApp(firebaseConfig);
     const auth = getAuth(app);
+    function rememberLoginSelected(){ return $("rememberLogin")?.checked === true; }
+    async function applyLoginPersistence(){
+      const keep = rememberLoginSelected();
+      localStorage.setItem("bankKingRememberLogin", keep ? "1" : "0");
+      await setPersistence(auth, keep ? browserLocalPersistence : browserSessionPersistence);
+    }
     const db = getFirestore(app);
     const $ = (id) => document.getElementById(id);
 
@@ -3110,7 +3291,348 @@ alert("Carga adicionada ao sistema como ajuste auditável.");
   background-image:none!important;
   color:#ffffff!important;
 }
-</style></head><body><div class="toolbar"><strong>Relatório Bank King • ${reportCode}</strong><div class="toolbar-actions"><button class="tool-btn secondary" onclick="window.close()">Voltar</button><button class="tool-btn secondary" onclick="window.print()">Imprimir</button><button class="tool-btn primary" onclick="window.print()">Salvar PDF</button></div></div><header class="cover"><div class="cover-top"><div class="brand"><div class="logo">BK</div><div><h1>Bank King</h1><p>Relatório financeiro interno</p></div></div><div class="meta">Código: ${reportCode}<br>Gerado em: ${generatedAt}<br>Usuário: ${currentProfile?.name || currentUser?.email || "-"}</div></div><div class="totals"><div class="total"><span>Custo operacional</span><b>${formatMoney(totalCustoOperacional)}</b></div><div class="total"><span>Custo Reca</span><b>${formatMoney(totalCustoReca)}</b></div><div class="total"><span>Diferenças de caixa</span><b>${formatMoney(totalDiff)}</b></div><div class="total"><span>Registros</span><b>${items.length}</b></div><div class="total"><span>Lucro</span><b>${formatMoney(totalLucro)}</b></div><div class="total"><span>Ajustes</span><b>${formatMoney(totalAjustes)}</b></div><div class="total"><span>Carga Buffalo</span><b>${formatMoney(totalCargaBuffalo)}</b></div><div class="total"><span>Carga Ganamos</span><b>${formatMoney(totalCargaGanamos)}</b></div><div class="total"><span>Carga Poker</span><b>${formatMoney(totalCargaPoker)}</b></div></div></header><main>${blocks || `<section class="close-block">Nenhum fechamento encontrado.</section>`}</main></body></html>`;
+
+
+
+/* =========================================================
+   PDF PREMIUM — EXECUTIVE FINANCIAL DASHBOARD FINAL
+   Menos altura, mais contraste, valor maior, glow interno,
+   divisórias suaves e números alinhados
+========================================================= */
+.pdf-kpi-wrapper{
+  display:grid;
+  gap:14px;
+  margin-top:16px;
+}
+.pdf-kpi-grid{
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:12px;
+}
+.pdf-kpi-card{
+  position:relative!important;
+  overflow:hidden!important;
+  min-height:92px!important;
+  padding:15px 17px 14px!important;
+  border-radius:19px!important;
+  background:#242424!important;
+  background-image:
+    radial-gradient(circle at 12% 0%,rgba(255,255,255,.105),transparent 42%),
+    linear-gradient(180deg,rgba(255,255,255,.035),rgba(255,255,255,0))!important;
+  border:1px solid rgba(255,255,255,.115)!important;
+  color:#fff!important;
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,.08),
+    inset 0 -18px 38px rgba(255,255,255,.025),
+    0 10px 28px rgba(0,0,0,.18)!important;
+  display:flex!important;
+  flex-direction:column!important;
+  justify-content:center!important;
+}
+.pdf-kpi-card::before{
+  content:"";
+  position:absolute;
+  left:16px;
+  right:16px;
+  top:39px;
+  height:1px;
+  background:linear-gradient(90deg,transparent,rgba(255,255,255,.12),transparent);
+  pointer-events:none;
+}
+.pdf-kpi-card::after{
+  content:"";
+  position:absolute;
+  inset:auto 12px 9px 12px;
+  height:18px;
+  border-radius:999px;
+  background:radial-gradient(ellipse at center,rgba(255,255,255,.08),transparent 68%);
+  pointer-events:none;
+}
+.pdf-kpi-card span{
+  position:relative;
+  z-index:2;
+  display:block;
+  margin-bottom:15px!important;
+  font-size:9.5px!important;
+  line-height:1!important;
+  text-transform:uppercase;
+  letter-spacing:.82px!important;
+  font-weight:950;
+  color:rgba(255,255,255,.58)!important;
+  white-space:nowrap;
+  overflow:hidden;
+  text-overflow:ellipsis;
+}
+.pdf-kpi-card b{
+  position:relative;
+  z-index:2;
+  display:block;
+  font-size:32px!important;
+  line-height:.92!important;
+  font-weight:950;
+  letter-spacing:-1.7px!important;
+  color:#fff!important;
+  font-variant-numeric:tabular-nums lining-nums!important;
+  font-feature-settings:"tnum" 1,"lnum" 1!important;
+  white-space:nowrap;
+}
+.pdf-kpi-card.positive b{color:#23c483!important;}
+.pdf-kpi-card.negative b{color:#ff5f7a!important;}
+
+.pdf-section-card{
+  position:relative!important;
+  overflow:hidden!important;
+  background:#242424!important;
+  background-image:radial-gradient(circle at 50% -20%,rgba(255,255,255,.09),transparent 44%)!important;
+  border-radius:22px;
+  padding:17px!important;
+  border:1px solid rgba(255,255,255,.11)!important;
+  color:#fff!important;
+  box-shadow:0 10px 28px rgba(0,0,0,.16)!important;
+}
+.pdf-section-title{
+  font-size:10px!important;
+  line-height:1;
+  text-transform:uppercase;
+  letter-spacing:1.15px!important;
+  font-weight:950;
+  color:rgba(255,255,255,.62)!important;
+  margin-bottom:13px!important;
+  text-align:left!important;
+  padding-bottom:10px;
+  border-bottom:1px solid rgba(255,255,255,.09);
+}
+.pdf-cargas-grid{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:11px;
+}
+.pdf-carga-box{
+  background:rgba(255,255,255,.065)!important;
+  border:1px solid rgba(255,255,255,.10)!important;
+  border-radius:17px;
+  padding:13px 14px!important;
+  color:#fff!important;
+}
+.pdf-carga-box span{
+  display:block;
+  margin-bottom:7px;
+  font-size:9.5px!important;
+  line-height:1;
+  text-transform:uppercase;
+  font-weight:950;
+  letter-spacing:.75px!important;
+  color:rgba(255,255,255,.60)!important;
+}
+.pdf-carga-box b{
+  display:block;
+  color:#fff!important;
+  font-size:22px!important;
+  line-height:1!important;
+  font-weight:950;
+  letter-spacing:-.9px;
+  font-variant-numeric:tabular-nums lining-nums!important;
+  font-feature-settings:"tnum" 1,"lnum" 1!important;
+  white-space:nowrap;
+}
+.pdf-profit-card{
+  position:relative!important;
+  overflow:hidden!important;
+  background:#242424!important;
+  background-image:
+    radial-gradient(circle at 50% -8%,rgba(35,196,131,.16),transparent 48%),
+    linear-gradient(180deg,rgba(255,255,255,.045),rgba(255,255,255,0))!important;
+  border-radius:24px;
+  padding:22px 24px!important;
+  text-align:left!important;
+  border:1px solid rgba(255,255,255,.12)!important;
+  box-shadow:0 14px 36px rgba(0,0,0,.22)!important;
+  color:#fff!important;
+}
+.pdf-profit-card::before{
+  content:"";
+  position:absolute;
+  left:24px;
+  right:24px;
+  top:53px;
+  height:1px;
+  background:linear-gradient(90deg,rgba(255,255,255,.12),transparent);
+}
+.pdf-profit-card span{
+  display:block;
+  margin-bottom:18px!important;
+  font-size:10px!important;
+  line-height:1;
+  text-transform:uppercase;
+  letter-spacing:1.1px!important;
+  font-weight:950;
+  color:rgba(255,255,255,.62)!important;
+}
+.pdf-profit-card b{
+  display:block;
+  font-size:52px!important;
+  line-height:.90!important;
+  font-weight:950;
+  letter-spacing:-2.4px!important;
+  font-variant-numeric:tabular-nums lining-nums!important;
+  font-feature-settings:"tnum" 1,"lnum" 1!important;
+}
+.positive-text{color:#23c483!important;}
+.negative-text{color:#ff5f7a!important;}
+
+.cover .totals{display:none!important;}
+.cover{
+  background:#242424!important;
+  background-image:
+    radial-gradient(circle at 9% 0%,rgba(255,255,255,.10),transparent 34%),
+    radial-gradient(circle at 95% 5%,rgba(35,196,131,.10),transparent 30%)!important;
+  padding:21px 24px!important;
+  border-radius:24px!important;
+}
+.cover .brand h1{
+  font-size:24px!important;
+  letter-spacing:-.8px!important;
+}
+.cover .brand p{
+  font-size:10px!important;
+  letter-spacing:.8px!important;
+  text-transform:uppercase!important;
+  color:rgba(255,255,255,.60)!important;
+}
+.cover .meta{
+  font-size:10.5px!important;
+  color:rgba(255,255,255,.64)!important;
+}
+.main-card{
+  background:#242424!important;
+  background-image:radial-gradient(circle at 8% 0%,rgba(255,255,255,.075),transparent 36%)!important;
+  color:#fff!important;
+  padding:12px!important;
+  gap:9px!important;
+}
+.main-card span{
+  font-size:9px!important;
+  color:rgba(255,255,255,.58)!important;
+}
+.main-card strong{
+  font-size:20px!important;
+  font-variant-numeric:tabular-nums lining-nums!important;
+  font-feature-settings:"tnum" 1,"lnum" 1!important;
+}
+@media(max-width:900px){
+  .pdf-kpi-grid{grid-template-columns:1fr 1fr;}
+  .pdf-cargas-grid{grid-template-columns:1fr;}
+}
+@media(max-width:560px){
+  .pdf-kpi-grid{grid-template-columns:1fr;}
+  .pdf-kpi-card b{font-size:30px!important;}
+  .pdf-profit-card b{font-size:40px!important;}
+}
+
+
+/* =========================================================
+   LOGIN + HAMBÚRGUER LIMPO + PERMISSÕES
+========================================================= */
+.remember-login-row{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  margin:2px 0 14px;
+  color:rgba(255,255,255,.78);
+  font-size:13px;
+  font-weight:800;
+  cursor:pointer;
+  user-select:none;
+}
+.remember-login-row input{
+  width:18px!important;
+  height:18px!important;
+  min-height:18px!important;
+  margin:0!important;
+  accent-color:#242424;
+  box-shadow:none!important;
+}
+.login-secondary-row{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:10px;
+  margin-top:10px;
+}
+.login-secondary-row .btn{
+  width:100%;
+  height:46px;
+  min-height:46px;
+  margin:0!important;
+  font-size:13px;
+  border-radius:16px;
+}
+.menu-launcher,
+.bottom-nav .menu-launcher,
+body .menu-launcher{
+  background:transparent!important;
+  background-image:none!important;
+  box-shadow:none!important;
+  border:0!important;
+  color:#242424!important;
+}
+.menu-launcher svg path{
+  stroke:#242424!important;
+  stroke-linecap:round!important;
+}
+body.side-drawer-open .menu-launcher,
+body.side-drawer-open #sideMenuBtn{
+  display:none!important;
+  opacity:0!important;
+  pointer-events:none!important;
+}
+.permissions-card{margin-top:14px!important;}
+.permissions-grid{display:grid;gap:10px;}
+.perm-row{
+  border:1px solid var(--line);
+  border-radius:16px;
+  background:#fff;
+  padding:13px 14px;
+  display:grid;
+  gap:5px;
+}
+.perm-row strong{
+  color:#242424;
+  font-size:14px;
+  font-weight:950;
+  letter-spacing:-.25px;
+}
+.perm-row span{
+  color:var(--muted);
+  font-size:12px;
+  line-height:1.35;
+  font-weight:760;
+}
+@media(max-width:420px){
+  .login-secondary-row{grid-template-columns:1fr 1fr;gap:8px;}
+  .login-secondary-row .btn{font-size:12px;padding:0 8px;}
+}
+</style></head><body><div class="toolbar"><strong>Relatório Bank King • ${reportCode}</strong><div class="toolbar-actions"><button class="tool-btn secondary" onclick="window.close()">Voltar</button><button class="tool-btn secondary" onclick="window.print()">Imprimir</button><button class="tool-btn primary" onclick="window.print()">Salvar PDF</button></div></div><header class="cover"><div class="cover-top"><div class="brand"><div class="logo">BK</div><div><h1>Bank King</h1><p>Financial Internal Report</p></div></div><div class="meta">Código: ${reportCode}<br>Gerado em: ${generatedAt}<br>Usuário: ${currentProfile?.name || currentUser?.email || "-"}</div></div><div class="pdf-kpi-wrapper">
+  <div class="pdf-kpi-grid">
+    <div class="pdf-kpi-card"><span>Custo operacional</span><b>${formatMoney(totalCustoOperacional)}</b></div>
+    <div class="pdf-kpi-card"><span>Custo RECA</span><b>${formatMoney(totalCustoReca)}</b></div>
+    <div class="pdf-kpi-card ${totalDiff < 0 ? "negative" : "positive"}"><span>Divergência de caixa</span><b>${formatMoney(totalDiff)}</b></div>
+    <div class="pdf-kpi-card"><span>Registros</span><b>${items.length}</b></div>
+  </div>
+
+  <div class="pdf-section-card">
+    <div class="pdf-section-title">Cargas</div>
+    <div class="pdf-cargas-grid">
+      <div class="pdf-carga-box"><span>Poker</span><b>${formatMoney(totalCargaPoker)}</b></div>
+      <div class="pdf-carga-box"><span>Buffalo</span><b>${formatMoney(totalCargaBuffalo)}</b></div>
+      <div class="pdf-carga-box"><span>Ganamos</span><b>${formatMoney(totalCargaGanamos)}</b></div>
+    </div>
+  </div>
+
+  <div class="pdf-profit-card">
+    <span>Lucro</span>
+    <b class="${totalLucro < 0 ? "negative-text" : "positive-text"}">${formatMoney(totalLucro)}</b>
+  </div>
+</div></header><main>${blocks || `<section class="close-block">Nenhum fechamento encontrado.</section>`}</main></body></html>`;
     }
 
     function generateBankPdfReport(){ const items=$("reportStart")?getReportItems():visibleHistory(); const win=window.open("","_blank"); if(!win) return alert("Permita pop-ups para gerar o PDF."); win.document.open(); win.document.write(buildBankPdfHtml(items)); win.document.close(); setTimeout(()=>{win.focus();win.print();},500); }
@@ -3192,7 +3714,7 @@ alert("Carga adicionada ao sistema como ajuste auditável.");
     async function loadAudit(){ if(!isAdmin()) return; try{ const qh=query(collection(db,"audit_logs"),orderBy("createdAt","desc"),limit(20)); const snap=await getDocs(qh); $("auditList").innerHTML=snap.docs.map(d=>{const a=d.data(); return `<div class="history-item"><div class="history-top"><strong>${a.action}</strong><span>${dateLabel(a.createdAt)}</span></div><div class="muted">${a.description||""}<br>${a.email||""}</div></div>`;}).join("")||`<div class="history-item">Sem auditoria.</div>`; }catch(e){ $("auditList").innerHTML=`<div class="notice error">${friendlyError(e)}</div>`; } }
 
     async function createInternalUser(){ if(!await requireAdmin()) return; const email=$("newUserEmail").value.trim(), password=$("newUserPassword").value, name=$("newUserName").value.trim(), role=$("newUserRole").value, supervisorRaw=$("newUserSupervisor")?.value.trim()||""; if(!email||!password) return alert("Informe email e senha."); if(password.length<6) return alert("A senha precisa ter pelo menos 6 caracteres."); const secondaryApp=initializeApp(firebaseConfig,"SecondaryUserCreator"+Date.now()), secondaryAuth=getAuth(secondaryApp); try{ const cred=await createUserWithEmailAndPassword(secondaryAuth,email,password); await setDoc(doc(db,"users",cred.user.uid),{email,name:name||email.split("@")[0],role,supervisorUid:role==="operador"&&!supervisorRaw.includes("@")?(supervisorRaw||null):null,supervisorEmail:role==="operador"&&supervisorRaw.includes("@")?supervisorRaw:null,approved:true,blocked:false,createdAt:serverTimestamp(),createdBy:currentUser?.uid||null}); await signOut(secondaryAuth); await deleteApp(secondaryApp); await addAudit("create_user",`Usuário criado: ${email}`); ["newUserEmail","newUserPassword","newUserName","newUserSupervisor"].forEach(id=>{if($(id)) $(id).value="";}); await loadUsers(); alert("Usuário criado com sucesso."); }catch(e){ try{await signOut(secondaryAuth);await deleteApp(secondaryApp);}catch(_ignored){} alert(friendlyError(e)); } }
-    async function registerAccess(){ const email=$("loginEmail").value.trim(), password=$("loginPassword").value; if(!email||!password) return showNotice("loginNotice","Informe email e senha para criar acesso.","error"); if(password.length<6) return showNotice("loginNotice","A senha precisa ter pelo menos 6 caracteres.","error"); try{ const bootstrap=isBootstrapEmail(email); const cred=await createUserWithEmailAndPassword(auth,email,password); const profile={email,name:email.split("@")[0],role:bootstrap?"admin":"operador",status:bootstrap?"active":"pending",approved:bootstrap?true:false,blocked:false,createdAt:serverTimestamp()}; await safeSetUserProfile(cred.user,profile); showNotice("loginNotice",bootstrap?"Conta admin criada. Entrando...":"Conta criada. Aguarde aprovação do admin.",bootstrap?"ok":"error"); }catch(e){ showNotice("loginNotice",friendlyError(e),"error"); } }
+    async function registerAccess(){ const email=$("loginEmail").value.trim(), password=$("loginPassword").value; if(!email||!password) return showNotice("loginNotice","Informe email e senha para criar acesso.","error"); if(password.length<6) return showNotice("loginNotice","A senha precisa ter pelo menos 6 caracteres.","error"); try{ const bootstrap=isBootstrapEmail(email); await applyLoginPersistence(); const cred=await createUserWithEmailAndPassword(auth,email,password); const profile={email,name:email.split("@")[0],role:bootstrap?"admin":"operador",status:bootstrap?"active":"pending",approved:bootstrap?true:false,blocked:false,createdAt:serverTimestamp()}; await safeSetUserProfile(cred.user,profile); showNotice("loginNotice",bootstrap?"Conta admin criada. Entrando...":"Conta criada. Aguarde aprovação do admin.",bootstrap?"ok":"error"); }catch(e){ showNotice("loginNotice",friendlyError(e),"error"); } }
 
     function showScreen(name){
       if(name === "Admin" && !isAdmin()){
@@ -3233,6 +3755,9 @@ alert("Carga adicionada ao sistema como ajuste auditável.");
       const canSeeProfitCards = isAdmin() || isSupervisor();
       if($("todayResultCard")) $("todayResultCard").classList.toggle("hidden", !canSeeProfitCards);
       if($("weekResultCard")) $("weekResultCard").classList.toggle("hidden", !canSeeProfitCards);
+      const canSeeReports = isAdmin() || isSupervisor();
+      document.querySelectorAll('[data-more-screen="Ranking"],[data-more-screen="Reports"]').forEach(el=>{ el.style.display = canSeeReports ? "grid" : "none"; });
+      if($("sideAdminBtn")) $("sideAdminBtn").style.display = isAdmin() ? "grid" : "none";
     }
 
 
@@ -3344,6 +3869,7 @@ alert("Carga adicionada ao sistema como ajuste auditável.");
     }
 
     function bindEvents(){
+      if($("rememberLogin")){ $("rememberLogin").checked = localStorage.getItem("bankKingRememberLogin") === "1"; }
       if(bindEvents._bound) return;
       bindEvents._bound = true;
       // logo volta para início
@@ -3424,7 +3950,7 @@ alert("Carga adicionada ao sistema como ajuste auditável.");
         if(menu.contains(ev.target) || $("moreMenuBtn")?.contains(ev.target)) return;
         menu.classList.remove("active");
       });
-      document.querySelectorAll("[data-more-screen]").forEach(btn=>btn.onclick=(ev)=>{ ev.stopPropagation(); showScreen(btn.dataset.moreScreen); }); document.querySelectorAll("[data-rank]").forEach(btn=>btn.onclick=()=>{document.querySelectorAll("[data-rank]").forEach(b=>b.classList.remove("active")); btn.classList.add("active"); currentRankRange=btn.dataset.rank; renderRanking();}); $("logoutBtn").onclick=async()=>{if(historyUnsubscribe)historyUnsubscribe();if(systemUnsubscribe)systemUnsubscribe();await signOut(auth);}; $("loginBtn").onclick=async()=>{try{hideNotice("loginNotice");await signInWithEmailAndPassword(auth,$("loginEmail").value.trim(),$("loginPassword").value);}catch(e){showNotice("loginNotice",friendlyError(e),"error");}}; $("registerBtn").onclick=registerAccess; $("resetPasswordBtn").onclick=async()=>{try{const email=$("loginEmail").value.trim(); if(!email) return showNotice("loginNotice","Informe o email.","error"); await sendPasswordResetEmail(auth,email); showNotice("loginNotice","Email de recuperação enviado.","ok");}catch(e){showNotice("loginNotice",friendlyError(e),"error");}}; $("receiptCloseBtn") && ($("receiptCloseBtn").onclick=closeHistoryReceipt);
+      document.querySelectorAll("[data-more-screen]").forEach(btn=>btn.onclick=(ev)=>{ ev.stopPropagation(); showScreen(btn.dataset.moreScreen); }); document.querySelectorAll("[data-rank]").forEach(btn=>btn.onclick=()=>{document.querySelectorAll("[data-rank]").forEach(b=>b.classList.remove("active")); btn.classList.add("active"); currentRankRange=btn.dataset.rank; renderRanking();}); $("logoutBtn").onclick=async()=>{if(historyUnsubscribe)historyUnsubscribe();if(systemUnsubscribe)systemUnsubscribe();await signOut(auth);}; $("loginBtn").onclick=async()=>{try{hideNotice("loginNotice");await applyLoginPersistence();await signInWithEmailAndPassword(auth,$("loginEmail").value.trim(),$("loginPassword").value);}catch(e){showNotice("loginNotice",friendlyError(e),"error");}}; $("registerBtn").onclick=registerAccess; $("resetPasswordBtn").onclick=async()=>{try{const email=$("loginEmail").value.trim(); if(!email) return showNotice("loginNotice","Informe o email.","error"); await sendPasswordResetEmail(auth,email); showNotice("loginNotice","Email de recuperação enviado.","ok");}catch(e){showNotice("loginNotice",friendlyError(e),"error");}}; $("receiptCloseBtn") && ($("receiptCloseBtn").onclick=closeHistoryReceipt);
       $("receiptExportPngBtn") && ($("receiptExportPngBtn").onclick=exportReceiptAsPng);
       $("editCloseBtn").onclick=closeEdit; $("cancelEditBtn").onclick=closeEdit; $("saveEditBtn").onclick=saveEdit; $("editAddPendingBtn").onclick=()=>createDynamicRow("editPendingList","Nome / motivo"); $("editAddOutflowBtn").onclick=()=>createDynamicRow("editOutflowList","Descrição"); }
     function initDate(){ const now=new Date(); now.setMinutes(now.getMinutes()-now.getTimezoneOffset()); $("closingDate").value=now.toISOString().slice(0,16); }
