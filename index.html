@@ -1156,6 +1156,300 @@ html,body{
 @media(max-width:900px){.summary-breakdown{grid-template-columns:repeat(2,1fr)!important;}}
 @media(max-width:520px){.summary-breakdown{grid-template-columns:1fr 1fr!important;}}
 
+
+
+/* =========================================================
+   BANK KING — BANKING ULTRA PREMIUM POLISH v3
+   Camada estética final: mais banco, menos sistema antigo
+========================================================= */
+:root{
+  --bg:#eef3fb!important;
+  --card:#ffffff!important;
+  --text:#071427!important;
+  --muted:#748095!important;
+  --border:rgba(12,31,66,.075)!important;
+  --primary:#063f91!important;
+  --primary-dark:#07265a!important;
+  --primary-deep:#020a1c!important;
+  --success:#008c5a!important;
+  --danger:#d92d45!important;
+  --warning:#d89100!important;
+  --shadow:0 18px 48px rgba(8,24,54,.085)!important;
+  --radius:28px!important;
+}
+
+html,body{
+  background:
+    radial-gradient(circle at 14% -8%, rgba(6,63,145,.11), transparent 34%),
+    radial-gradient(circle at 88% 4%, rgba(0,140,90,.075), transparent 28%),
+    linear-gradient(180deg,#f7faff 0%,#eef3fb 48%,#eaf0f8 100%)!important;
+  color:var(--text)!important;
+}
+
+.app-shell{
+  max-width:1180px!important;
+  padding-left:18px!important;
+  padding-right:18px!important;
+}
+
+/* Topbar institucional */
+.topbar{
+  margin:0 -4px 10px!important;
+  padding:12px 4px 16px!important;
+  background:linear-gradient(180deg,rgba(247,250,255,.94),rgba(247,250,255,.70))!important;
+  border-bottom:1px solid rgba(7,20,39,.045)!important;
+}
+.logo-box,.login-logo,.splash-logo,.receipt-logo{
+  background:linear-gradient(145deg,#02122f 0%,#063f91 58%,#0a63d8 100%)!important;
+  color:#fff!important;
+  box-shadow:0 16px 34px rgba(6,63,145,.23), inset 0 1px 0 rgba(255,255,255,.22)!important;
+}
+.brand h1{
+  color:#071427!important;
+  font-size:18px!important;
+  letter-spacing:-.55px!important;
+}
+.brand span,#topUserLabel{
+  color:#748095!important;
+  font-size:11px!important;
+  text-transform:uppercase!important;
+  letter-spacing:.36px!important;
+}
+.icon-btn{
+  background:rgba(255,255,255,.76)!important;
+  border:1px solid rgba(12,31,66,.08)!important;
+  color:#07265a!important;
+  box-shadow:0 12px 28px rgba(8,24,54,.07)!important;
+}
+.icon-btn:hover{transform:translateY(-1px);box-shadow:0 16px 34px rgba(8,24,54,.10)!important;}
+
+/* Hero banco private */
+.hero-card{
+  padding:32px 30px!important;
+  border-radius:34px!important;
+  background:
+    radial-gradient(circle at 86% 8%,rgba(255,255,255,.18),transparent 25%),
+    linear-gradient(135deg,#020817 0%,#07152f 35%,#082b64 72%,#0648a8 100%)!important;
+  border:1px solid rgba(255,255,255,.13)!important;
+  box-shadow:0 28px 72px rgba(2,8,23,.30), 0 10px 24px rgba(6,63,145,.12)!important;
+}
+.hero-card::before{
+  background:
+    linear-gradient(180deg,rgba(255,255,255,.08),transparent 42%),
+    linear-gradient(90deg,transparent,rgba(255,255,255,.045),transparent)!important;
+}
+.hero-label{
+  font-size:12px!important;
+  letter-spacing:.72px!important;
+  color:rgba(255,255,255,.74)!important;
+}
+.hero-value{
+  font-size:54px!important;
+  letter-spacing:-2.4px!important;
+  font-weight:950!important;
+}
+.hero-sub{
+  color:rgba(255,255,255,.76)!important;
+  font-size:12px!important;
+  letter-spacing:.1px!important;
+}
+.hero-grid{gap:12px!important;}
+.hero-mini{
+  min-height:98px!important;
+  border-radius:24px!important;
+  padding:18px!important;
+  background:linear-gradient(180deg,rgba(255,255,255,.105),rgba(255,255,255,.062))!important;
+  border:1px solid rgba(255,255,255,.14)!important;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.10)!important;
+}
+.hero-mini span{
+  color:rgba(255,255,255,.62)!important;
+  font-size:10px!important;
+  text-transform:uppercase!important;
+  letter-spacing:.55px!important;
+}
+.hero-mini strong{font-size:18px!important;letter-spacing:-.55px!important;}
+
+/* Cards delicados estilo app bancário */
+.card,.goal-card,.history-item,.rank-item,.chips-item,.summary-panel{
+  border-radius:30px!important;
+  background:linear-gradient(180deg,rgba(255,255,255,.98),rgba(250,252,255,.96))!important;
+  border:1px solid rgba(12,31,66,.07)!important;
+  box-shadow:0 16px 42px rgba(8,24,54,.075)!important;
+}
+.card::after,.goal-card::after{
+  content:"";
+  position:absolute;
+  inset:0;
+  border-radius:inherit;
+  pointer-events:none;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.74);
+}
+.card-title h2,.goal-top h2{
+  font-size:16px!important;
+  letter-spacing:-.45px!important;
+  color:#071427!important;
+}
+.card-title span,.goal-top span,.muted{
+  color:#748095!important;
+  font-weight:800!important;
+}
+.metric{
+  font-size:28px!important;
+  letter-spacing:-1.05px!important;
+  color:#071427!important;
+}
+#screenHome .grid.two > .card[data-home-detail]{
+  min-height:124px!important;
+  padding:19px!important;
+  border-radius:28px!important;
+  background:linear-gradient(180deg,#ffffff 0%,#fbfdff 100%)!important;
+  box-shadow:0 14px 34px rgba(8,24,54,.065)!important;
+  border-bottom-width:3px!important;
+}
+#screenHome .grid.two > .card[data-home-detail] .metric{
+  font-size:27px!important;
+}
+#screenHome .grid.two > .card[data-home-detail]:hover{
+  transform:translateY(-2px);
+  box-shadow:0 22px 52px rgba(8,24,54,.105)!important;
+}
+
+/* Painel resumo com cara de extrato */
+.summary-head{
+  background:linear-gradient(135deg,#020817,#061a45 62%,#063f91)!important;
+  padding:20px!important;
+}
+.summary-main{padding:20px!important;}
+.summary-total{
+  border-radius:26px!important;
+  background:linear-gradient(180deg,#f8fbff,#ffffff)!important;
+  border:1px solid rgba(6,63,145,.10)!important;
+}
+.summary-total strong{font-size:34px!important;color:#071427!important;}
+.summary-box,.goal-box,.chips-values div,.chips-row{
+  border-radius:20px!important;
+  background:#ffffff!important;
+  border:1px solid rgba(12,31,66,.065)!important;
+  box-shadow:0 9px 22px rgba(8,24,54,.045)!important;
+}
+.summary-note{
+  background:#f1f6ff!important;
+  border:1px solid rgba(6,63,145,.075)!important;
+  border-radius:18px!important;
+}
+
+/* Inputs e botões banco */
+.field input,.field select,.field textarea,.row-item input,.row-item select{
+  border-radius:18px!important;
+  background:#ffffff!important;
+  border:1px solid rgba(12,31,66,.09)!important;
+  box-shadow:0 8px 18px rgba(8,24,54,.035)!important;
+  color:#071427!important;
+}
+.field label{
+  color:#27364c!important;
+  font-size:11px!important;
+  letter-spacing:.18px!important;
+  text-transform:uppercase!important;
+}
+.money-input{
+  background:linear-gradient(180deg,#ffffff,#fbfdff)!important;
+  border-color:rgba(6,63,145,.13)!important;
+}
+.btn{
+  border-radius:18px!important;
+  background:linear-gradient(135deg,#063f91,#0a63d8)!important;
+  box-shadow:0 14px 28px rgba(6,63,145,.22)!important;
+}
+.btn.secondary,.small-btn,.admin-toggle{
+  background:#ffffff!important;
+  color:#07265a!important;
+  border:1px solid rgba(12,31,66,.09)!important;
+  box-shadow:0 10px 22px rgba(8,24,54,.055)!important;
+}
+.btn.danger,.small-btn.danger{background:#d92d45!important;color:#fff!important;}
+.btn:hover,.small-btn:hover,.admin-toggle:hover{transform:translateY(-1px);}
+
+/* Histórico / ranking com aparência de lançamento bancário */
+.history-item,.rank-item{
+  padding:16px!important;
+  border-radius:26px!important;
+}
+.history-top strong,.rank-name{color:#071427!important;}
+.history-values{
+  background:#f7faff!important;
+  border-radius:18px!important;
+  padding:10px!important;
+  border:1px solid rgba(12,31,66,.055)!important;
+}
+.rank-pos{
+  background:linear-gradient(145deg,#eef5ff,#ffffff)!important;
+  color:#063f91!important;
+  border:1px solid rgba(6,63,145,.10)!important;
+}
+.rank-tabs button{
+  background:#fff!important;
+  color:#536176!important;
+  border-color:rgba(12,31,66,.08)!important;
+}
+.rank-tabs button.active{
+  background:linear-gradient(135deg,#07152f,#063f91)!important;
+  color:#fff!important;
+}
+
+/* Bottom nav mais app nativo/banco */
+.bottom-nav{
+  height:76px!important;
+  padding:8px!important;
+  border-radius:30px!important;
+  background:rgba(255,255,255,.88)!important;
+  border:1px solid rgba(255,255,255,.90)!important;
+  box-shadow:0 24px 70px rgba(8,24,54,.18)!important;
+}
+.nav-btn{
+  border-radius:22px!important;
+  color:#748095!important;
+  letter-spacing:-.15px!important;
+}
+.nav-btn b{font-size:17px!important;}
+.nav-btn.active{
+  background:linear-gradient(135deg,#07152f,#063f91 68%,#0a63d8)!important;
+  color:#fff!important;
+  box-shadow:0 13px 26px rgba(6,63,145,.25)!important;
+}
+
+/* Login e splash com cara de banco */
+.login-screen,.app-splash{
+  background:
+    radial-gradient(circle at 50% 0%,rgba(10,99,216,.32),transparent 35%),
+    linear-gradient(180deg,#020817,#061a45 58%,#063f91)!important;
+}
+.login-card{
+  background:rgba(255,255,255,.105)!important;
+  border:1px solid rgba(255,255,255,.16)!important;
+  box-shadow:0 32px 90px rgba(0,0,0,.30)!important;
+}
+.login-card input{
+  background:rgba(255,255,255,.13)!important;
+  border-color:rgba(255,255,255,.18)!important;
+}
+
+/* Responsivo mais delicado */
+@media(max-width:760px){
+  .app-shell{padding-left:14px!important;padding-right:14px!important;}
+  .hero-card{padding:27px 20px!important;border-radius:32px!important;}
+  .hero-value{font-size:42px!important;letter-spacing:-1.7px!important;}
+  .card,.goal-card,.summary-panel{border-radius:28px!important;padding:18px!important;}
+  .summary-panel{padding:0!important;}
+  .bottom-nav{width:calc(100% - 18px)!important;height:74px!important;}
+}
+@media(max-width:430px){
+  .hero-value{font-size:38px!important;}
+  .metric{font-size:25px!important;}
+  .hero-mini{min-height:88px!important;}
+}
+
 </style>
 
 <script>
