@@ -1,62 +1,78 @@
 /* =========================================================
-   💸 CONTADOR ANIMADO (TIPO BANCO)
+   UI EFFECTS - SEGURO E COMPATÍVEL COM O HTML ATUAL
 ========================================================= */
-function animateValue(el, start, end, duration = 800){
-  if(!el) return;
 
-  const range = end - start;
-  const startTime = performance.now();
+(function(){
+  const moneyFormatter =
+    typeof window.formatMoney === "function"
+      ? window.formatMoney
+      : (value) =>
+          new Intl.NumberFormat("pt-BR", {
+            style: "currency",
+            currency: "BRL",
+            minimumFractionDigits: 2
+          }).format(Number(value) || 0);
 
-  function update(currentTime){
-    const progress = Math.min((currentTime - startTime) / duration, 1);
+  function resolveHeroElement(){
+    return (
+      document.querySelector("[data-hero-balance]") ||
+      document.querySelector(".hero-value") ||
+      document.getElementById("homeSaldoReca") ||
+      document.getElementById("homeSaldoGeral")
+    );
+  }
 
-    const ease = 1 - Math.pow(1 - progress, 3); // easeOut
-    const value = start + (range * ease);
+  function animateValue(el, start, end, duration = 800){
+    if(!el) return;
 
-    el.textContent = formatMoney(value);
+    const safeStart = Number(start) || 0;
+    const safeEnd = Number(end) || 0;
+    const range = safeEnd - safeStart;
+    const startTime = performance.now();
 
-    if(progress < 1){
-      requestAnimationFrame(update);
+    function update(currentTime){
+      const progress = Math.min((currentTime - startTime) / duration, 1);
+      const ease = 1 - Math.pow(1 - progress, 3);
+      const value = safeStart + (range * ease);
+
+      el.textContent = moneyFormatter(value);
+
+      if(progress < 1){
+        requestAnimationFrame(update);
+      }
     }
+
+    requestAnimationFrame(update);
   }
 
-  requestAnimationFrame(update);
-}
+  let lastBalance = 0;
 
-/* =========================================================
-   🔄 ATUALIZAÇÃO AO VIVO DO CARD
-========================================================= */
-let lastBalance = 0;
+  function updateHeroBalance(newValue){
+    const el = resolveHeroElement();
+    if(!el) return;
 
-function updateHeroBalance(newValue){
-  const el = document.querySelector(".hero-value");
-  if(!el) return;
+    const numericNewValue = Number(newValue) || 0;
+    const oldValue = Number(lastBalance) || 0;
 
-  const oldValue = lastBalance || 0;
+    animateValue(el, oldValue, numericNewValue);
 
-  animateValue(el, oldValue, newValue);
+    el.classList.remove("balance-positive", "balance-negative", "balance-pulse");
 
-  el.classList.remove("balance-positive","balance-negative","balance-pulse");
+    if(numericNewValue > oldValue){
+      el.classList.add("balance-positive");
+    }else if(numericNewValue < oldValue){
+      el.classList.add("balance-negative");
+    }
 
-  if(newValue > oldValue){
-    el.classList.add("balance-positive");
-  }else if(newValue < oldValue){
-    el.classList.add("balance-negative");
+    el.classList.add("balance-pulse");
+
+    setTimeout(() => {
+      el.classList.remove("balance-pulse");
+    }, 600);
+
+    lastBalance = numericNewValue;
   }
 
-  el.classList.add("balance-pulse");
-
-  setTimeout(()=>{
-    el.classList.remove("balance-pulse");
-  },600);
-
-  lastBalance = newValue;
-}
-
-/* =========================================================
-   📡 SIMULAÇÃO (REMOVER EM PRODUÇÃO)
-========================================================= */
-// setInterval(()=>{
-//   const random = lastBalance + (Math.random() * 50000 - 25000);
-//   updateHeroBalance(Math.max(0, random));
-// },3000);
+  window.animateValue = animateValue;
+  window.updateHeroBalance = updateHeroBalance;
+})();
