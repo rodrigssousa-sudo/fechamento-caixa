@@ -406,12 +406,40 @@ function isSupervisor(){
   return currentProfile?.role === "supervisor";
 }
 
+function isOperator(){
+  return !!currentUser && !isAdmin() && !isSupervisor();
+}
+
+function canCloseTurn(){
+  return !!currentUser;
+}
+
+function canSeeAllHistory(){
+  return !!currentUser;
+}
+
 function canSeeInternalAdjustments(){
   return isAdmin() || isSupervisor();
 }
 
 function canUseAdminClosingFields(){
-  return isAdmin();
+  return isAdmin() || isSupervisor();
+}
+
+function canPrintIndividualHistory(){
+  return !!currentUser;
+}
+
+function canGenerateMonthlyPdf(){
+  return isAdmin() || isSupervisor();
+}
+
+function canSeeTodayProfitCard(){
+  return !!currentUser;
+}
+
+function canSeeWeeklyProfitCard(){
+  return isAdmin() || isSupervisor();
 }
 
 function allowedCloseFieldIds(){
@@ -507,8 +535,14 @@ async function requireAdmin(){
   return false;
 }
 
+async function requireSupervisorOrAdmin(message = "Ação permitida somente para supervisor ou admin."){
+  if(isAdmin() || isSupervisor()) return true;
+  showSoftFeedback(message, "warning");
+  return false;
+}
+
 function canAccessHistoryItem(item){
-  return true;
+  return canSeeAllHistory();
 }
 
 function visibleHistory(){
@@ -546,7 +580,9 @@ function lastOwnRealClosing(){
 function canEditHistoryItem(item){
   if(!item) return false;
   if(isAdmin()) return true;
+  if(isSupervisor()) return false;
   if(isAdjustmentItem(item)) return false;
+
   const lastOwn = lastOwnRealClosing();
   return !!lastOwn && lastOwn.id === item.id && isOwnHistoryItem(item);
 }
@@ -1004,9 +1040,11 @@ function renderHome(){
       $("homeInternalAdjustment").style.color = adjustmentValue < 0 ? "#FF3B30" : "#16C784";
     }
 
-    const canSeeProfitCards = isAdmin() || isSupervisor();
-    if($("todayResultCard")) $("todayResultCard").classList.toggle("hidden", !canSeeProfitCards);
-    if($("weekResultCard")) $("weekResultCard").classList.toggle("hidden", !canSeeProfitCards);
+    const canSeeTodayProfit = canSeeTodayProfitCard();
+    const canSeeWeeklyProfit = canSeeWeeklyProfitCard();
+
+    if($("todayResultCard")) $("todayResultCard").classList.toggle("hidden", !canSeeTodayProfit);
+    if($("weekResultCard")) $("weekResultCard").classList.toggle("hidden", !canSeeWeeklyProfit);
 
     if($("homeTodayResult")){
       $("homeTodayResult").textContent = formatMoney(todayResult);
