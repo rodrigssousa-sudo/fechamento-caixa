@@ -54,51 +54,71 @@
     <div id="appNotice" class="notice hidden"></div>
 
     <section id="screenHome" class="screen active">
-      <div class="hero-card">
-        <div class="hero-label">Saldo Reca</div>
-        <div id="homeSaldoReca" class="hero-value">$ 0,00</div>
-        <div id="homeUpdatedAt" class="hero-sub">Aguardando atualização</div>
-
-        <div class="hero-grid">
-          <div class="hero-mini"><span>Ajuste interno</span><strong id="homeInternalAdjustment">$ 0,00</strong></div>
-          <div class="hero-mini"><span>Operador</span><strong id="homeOperator">-</strong></div>
-          <div class="hero-mini"><span>Data e hora</span><strong id="homeLastClose">-</strong></div>
-          <div class="hero-mini"><span>Diferença de caixa</span><strong id="homeDiff">$ 0,00</strong></div>
-        </div>
-      </div>
-
-      <div class="grid two">
-        <div class="card" data-home-detail="saldo" style="cursor:pointer;">
-          <div class="card-title"><h2>Saldo líquido</h2><span>Atual</span></div>
-          <div id="homeSaldoLiquido" class="metric">$ 0,00</div>
-    
-        </div>
-
-        <div class="card" data-home-detail="pendentes" style="cursor:pointer;">
-          <div class="card-title"><h2>Pendentes</h2><span>Total</span></div>
-          <div id="homePendentes" class="metric bad">$ 0,00</div>
-        </div>
-
-        <div id="todayResultCard" class="card" data-home-detail="lucroHoje" style="cursor:pointer;">
-          <div class="card-title"><h2>Lucro hoje</h2><span>Retiradas</span></div>
-          <div id="homeTodayResult" class="metric">$ 0,00</div>
-        </div>
-
-        <div id="weekResultCard" class="card" data-home-detail="lucroSemana" style="cursor:pointer;">
-          <div class="card-title"><h2>Lucro semana</h2><span>Retiradas</span></div>
-          <div id="homeWeekResult" class="metric">$ 0,00</div>
-        </div>
-      </div>
-
-      <div class="card comparativo-card" style="margin-top:18px;">
-        <div class="card-title">
-          <div>
-            <h2>Comparativo de fichas</h2>
+      <div class="home-shell">
+        <div class="hero-card">
+          <div class="hero-topline">
+            <div>
+              <div class="hero-label">Saldo Reca</div>
+              <div class="hero-caption">Visão principal do caixa em tempo real</div>
+            </div>
+            <div class="hero-badge">Painel ao vivo</div>
           </div>
-          <button id="toggleComparativoBtn" class="small-btn" type="button">Ver comparativo</button>
+          <div id="homeSaldoReca" class="hero-value">$ 0,00</div>
+          <div id="homeUpdatedAt" class="hero-sub">Aguardando atualização</div>
+
+          <div class="hero-grid">
+            <div class="hero-mini"><span>Ajuste interno</span><strong id="homeInternalAdjustment">$ 0,00</strong></div>
+            <div class="hero-mini"><span>Operador</span><strong id="homeOperator">-</strong></div>
+            <div class="hero-mini"><span>Data e hora</span><strong id="homeLastClose">-</strong></div>
+            <div class="hero-mini"><span>Diferença de caixa</span><strong id="homeDiff">$ 0,00</strong></div>
+          </div>
         </div>
-        <div id="comparativoSection" class="hidden">
-          <div id="chipsComparison" class="grid two"></div>
+
+        <div class="home-section-head">
+          <div>
+            <h2>Indicadores principais</h2>
+            <p>Toque em qualquer card para abrir o detalhamento.</p>
+          </div>
+          <span class="home-section-pill">Resumo executivo</span>
+        </div>
+
+        <div class="grid two home-metrics-grid">
+          <div class="card home-metric-card" data-home-detail="saldo" style="cursor:pointer;">
+            <div class="card-title"><h2>Saldo líquido</h2><span>Atual</span></div>
+            <div id="homeSaldoLiquido" class="metric">$ 0,00</div>
+            <div class="home-card-footer">Base líquida pronta para conferência</div>
+          </div>
+
+          <div class="card home-metric-card" data-home-detail="pendentes" style="cursor:pointer;">
+            <div class="card-title"><h2>Pendentes</h2><span>Total</span></div>
+            <div id="homePendentes" class="metric bad">$ 0,00</div>
+            <div class="home-card-footer">Itens aguardando baixa ou conferência</div>
+          </div>
+
+          <div id="todayResultCard" class="card home-metric-card" data-home-detail="lucroHoje" style="cursor:pointer;">
+            <div class="card-title"><h2>Lucro hoje</h2><span>Retiradas</span></div>
+            <div id="homeTodayResult" class="metric">$ 0,00</div>
+            <div class="home-card-footer">Resultado operacional do dia</div>
+          </div>
+
+          <div id="weekResultCard" class="card home-metric-card" data-home-detail="lucroSemana" style="cursor:pointer;">
+            <div class="card-title"><h2>Lucro semana</h2><span>Retiradas</span></div>
+            <div id="homeWeekResult" class="metric">$ 0,00</div>
+            <div class="home-card-footer">Comparativo semanal consolidado</div>
+          </div>
+        </div>
+
+        <div class="card comparativo-card home-comparison-card" style="margin-top:18px;">
+          <div class="card-title">
+            <div>
+              <h2>Comparativo de fichas</h2>
+              <span>Confira a evolução em relação ao último fechamento anterior</span>
+            </div>
+            <button id="toggleComparativoBtn" class="small-btn" type="button">Ver comparativo</button>
+          </div>
+          <div id="comparativoSection" class="hidden">
+            <div id="chipsComparison" class="grid two"></div>
+          </div>
         </div>
       </div>
     </section>
@@ -194,7 +214,37 @@
       </div>
     </section>
 
-    <section id="screenHistory" class="screen"><div class="card"><div class="card-title"><h2>Histórico inteligente</h2><span id="historyCount">0 registros</span></div><div class="history-tools"><div class="field"><input id="historySearch" placeholder="Buscar operador" /></div><div class="field"><input id="historyDate" type="date" /></div><button id="recalculateBtn" class="btn secondary">Recalcular</button><button id="pdfReportBtn" class="btn secondary">PDF Banco</button></div><div id="historyList" class="history-list"></div></div></section>
+    <section id="screenHistory" class="screen">
+      <div class="history-shell">
+        <div class="card history-hero-card">
+          <div class="history-hero-top">
+            <div>
+              <span class="history-kicker">Histórico inteligente</span>
+              <h2>Linha do tempo dos fechamentos</h2>
+              <p>Pesquise, filtre por data e abra qualquer item para ver o recibo detalhado.</p>
+            </div>
+            <span id="historyCount" class="history-count-pill">0 registros</span>
+          </div>
+        </div>
+
+        <div class="card history-main-card">
+          <div class="card-title">
+            <div>
+              <h2>Histórico inteligente</h2>
+              <span>Busca rápida, edição e comprovantes</span>
+            </div>
+            <span class="history-toolbar-label">Atualização em tempo real</span>
+          </div>
+          <div class="history-tools">
+            <div class="field"><input id="historySearch" placeholder="Buscar operador" /></div>
+            <div class="field"><input id="historyDate" type="date" /></div>
+            <button id="recalculateBtn" class="btn secondary">Recalcular</button>
+            <button id="pdfReportBtn" class="btn secondary">PDF Banco</button>
+          </div>
+          <div id="historyList" class="history-list"></div>
+        </div>
+      </div>
+    </section>
 
     <section id="screenGoals" class="screen">
       <div id="monthlyGoalCard" class="goal-card">
@@ -339,6 +389,7 @@
         <div class="receipt-brand">
           <div class="receipt-logo">BK</div>
           <div>
+            <div class="receipt-kicker">Comprovante interno</div>
             <h2>Comprovante Bank King</h2>
             <span id="receiptSubtitle">Fechamento detalhado</span>
           </div>
@@ -351,11 +402,18 @@
         <strong id="receiptSaldoLiquido">$ 0,00</strong>
       </div>
 
-      <div id="receiptContent"></div>
+      <div class="receipt-note-bar">
+        <span id="receiptCode">Código interno</span>
+        <span>Documento interno • pronto para compartilhar</span>
+      </div>
+
+      <div class="receipt-content-shell">
+        <div id="receiptContent"></div>
+      </div>
 
       <div class="receipt-footer">
-        <span id="receiptCode">Código interno</span>
-        <span>Documento interno • Bank King</span>
+        <span>Bank King Pro</span>
+        <span>Resumo validado pela tela atual</span>
       </div>
 
       <div class="receipt-actions">

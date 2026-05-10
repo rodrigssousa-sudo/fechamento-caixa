@@ -587,20 +587,27 @@ import { initializeApp, deleteApp } from "https://www.gstatic.com/firebasejs/12.
         const diff = displayCashDiff(item);
         const canEdit = canEditHistoryItem(item);
         const canDelete = canDeleteHistoryItem(item);
-        const lastEditableBadge = canEdit && !isAdmin() ? `<span class="badge ok" style="margin-left:6px;">ÚLTIMO EDITÁVEL</span>` : "";
+        const lastEditableBadge = canEdit && !isAdmin() ? `<span class="badge ok history-last-editable">Último editável</span>` : "";
         const adminActions = `
           ${canEdit ? `<button class="small-btn" data-edit="${item.id}">Editar</button>` : ""}
           ${canDelete ? `<button class="small-btn danger" data-delete="${item.id}">Excluir</button>` : ""}
         `;
 
-        return `<div class="history-item" data-receipt="${item.id}" style="cursor:pointer;">
+        const typeBadge = ajuste ? '<span class="history-pill history-pill-adjust">Ajuste</span>' : '<span class="history-pill">Fechamento</span>';
+        const diffClass = diff < 0 ? "is-negative" : "is-positive";
+
+        return `<div class="history-item ${ajuste ? "history-item-adjustment" : ""}" data-receipt="${item.id}" style="cursor:pointer;">
+          <div class="history-item-accent"></div>
           <div class="history-top">
-            <strong>${operator} ${ajuste ? '<span class="badge" style="margin-left:6px;">AJUSTE</span>' : ''}${lastEditableBadge}</strong>
-            <span>${dateLabel(item.submittedAt || t.closingDate)}</span>
+            <div class="history-main">
+              <strong>${operator}</strong>
+              <div class="history-meta-row">${typeBadge}${lastEditableBadge}</div>
+            </div>
+            <span class="history-date">${dateLabel(item.submittedAt || t.closingDate)}</span>
           </div>
           <div class="history-values">
             <div><span class="muted">Saldo líquido</span><b>${formatMoney(saldo)}</b></div>
-            <div><span class="muted">Diferença</span><b style="color:${diff<0?'#ef4444':'#10b981'}">${formatMoney(diff)}</b></div>
+            <div><span class="muted">Diferença</span><b class="${diffClass}">${formatMoney(diff)}</b></div>
           </div>
           <div class="history-actions">${adminActions}</div>
         </div>`;

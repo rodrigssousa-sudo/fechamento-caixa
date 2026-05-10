@@ -528,3 +528,299 @@ body::before{
   .report-stat,
   .report-preview-item{padding:14px!important;}
 }
+
+
+/* ===== Round 3: home, history and receipt polish ===== */
+.home-shell,
+.history-shell{
+  display:grid;
+  gap:16px;
+}
+.hero-topline{
+  display:flex;
+  align-items:flex-start;
+  justify-content:space-between;
+  gap:14px;
+}
+.hero-caption{
+  margin-top:6px;
+  color:rgba(255,255,255,.72);
+  font-size:13px;
+  font-weight:700;
+}
+.hero-badge,
+.home-section-pill,
+.history-count-pill,
+.history-toolbar-label,
+.receipt-kicker,
+.history-kicker{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  min-height:36px;
+  padding:0 14px;
+  border-radius:999px;
+  font-size:12px;
+  font-weight:900;
+  letter-spacing:.02em;
+}
+.hero-badge{
+  background:rgba(255,255,255,.12);
+  border:1px solid rgba(255,255,255,.14);
+  color:#fff;
+}
+.home-section-head{
+  display:flex;
+  align-items:flex-end;
+  justify-content:space-between;
+  gap:12px;
+  margin-top:2px;
+}
+.home-section-head h2,
+.history-hero-top h2{
+  margin:0;
+  font-size:20px;
+  letter-spacing:-.04em;
+}
+.home-section-head p,
+.history-hero-top p{
+  margin:6px 0 0;
+  color:var(--text-soft);
+  font-size:13px;
+  font-weight:700;
+}
+.home-section-pill,
+.history-toolbar-label,
+.history-count-pill{
+  background:#fff;
+  border:1px solid var(--line-soft);
+  color:var(--text-strong);
+}
+.home-metric-card{
+  position:relative;
+  overflow:hidden;
+}
+.home-metric-card::before{
+  content:"";
+  position:absolute;
+  inset:auto 0 0 0;
+  height:4px;
+  background:linear-gradient(90deg,#0a58ff,#60a5fa);
+  opacity:.9;
+}
+.home-metric-card[data-home-detail="pendentes"]::before{background:linear-gradient(90deg,#f59e0b,#fbbf24);}
+.home-metric-card[data-home-detail="lucroHoje"]::before,
+.home-metric-card[data-home-detail="lucroSemana"]::before{background:linear-gradient(90deg,#10b981,#34d399);}
+.home-card-footer{
+  margin-top:14px;
+  color:var(--text-soft);
+  font-size:12px;
+  font-weight:700;
+}
+.home-comparison-card .card-title > div span{
+  display:block;
+  margin-top:4px;
+  color:var(--text-soft)!important;
+  font-size:12px!important;
+}
+.history-hero-card{
+  background:linear-gradient(180deg,#ffffff,#f8fbff)!important;
+}
+.history-kicker,
+.receipt-kicker{
+  background:rgba(10,88,255,.10);
+  color:#0a58ff;
+  border:1px solid rgba(10,88,255,.08);
+}
+.history-hero-top{
+  display:flex;
+  align-items:flex-start;
+  justify-content:space-between;
+  gap:14px;
+}
+.history-main-card{
+  overflow:hidden;
+}
+.history-list{
+  gap:12px!important;
+}
+.history-item{
+  position:relative;
+  overflow:hidden;
+  display:grid;
+  gap:12px;
+  padding:18px 18px 16px 22px!important;
+  transition:transform .18s ease, box-shadow .18s ease, border-color .18s ease;
+}
+.history-item:hover{
+  transform:translateY(-1px);
+  box-shadow:0 18px 40px rgba(15,23,42,.10)!important;
+}
+.history-item-accent{
+  position:absolute;
+  left:0;
+  top:0;
+  bottom:0;
+  width:5px;
+  background:linear-gradient(180deg,#0a58ff,#60a5fa);
+}
+.history-item-adjustment .history-item-accent{
+  background:linear-gradient(180deg,#8b5cf6,#c084fc);
+}
+.history-top{
+  align-items:flex-start!important;
+}
+.history-main{
+  min-width:0;
+}
+.history-main strong{
+  display:block;
+  font-size:15px!important;
+  line-height:1.25;
+  color:var(--text-strong);
+}
+.history-date{
+  white-space:nowrap;
+  font-size:12px!important;
+  color:var(--text-soft)!important;
+}
+.history-meta-row{
+  display:flex;
+  flex-wrap:wrap;
+  gap:6px;
+  margin-top:8px;
+}
+.history-pill{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  min-height:26px;
+  padding:0 10px;
+  border-radius:999px;
+  background:rgba(10,88,255,.08);
+  color:#0a58ff;
+  font-size:11px;
+  font-weight:900;
+  text-transform:uppercase;
+  letter-spacing:.04em;
+}
+.history-pill-adjust{
+  background:rgba(139,92,246,.10);
+  color:#7c3aed;
+}
+.history-last-editable{
+  margin-left:0!important;
+}
+.history-values{
+  gap:10px!important;
+}
+.history-values > div{
+  border:1px solid var(--line-soft);
+  background:#fbfdff;
+  border-radius:16px;
+  padding:12px 14px;
+}
+.history-values b.is-positive{color:#059669!important;}
+.history-values b.is-negative{color:#dc2626!important;}
+.history-actions{
+  margin-top:0!important;
+}
+.receipt-panel{
+  width:min(620px,100%)!important;
+}
+.receipt-head{
+  position:sticky;
+  top:0;
+  z-index:2;
+  padding-top:2px;
+  background:linear-gradient(180deg,rgba(255,255,255,.96),rgba(255,255,255,.88));
+  backdrop-filter:blur(14px);
+}
+.receipt-brand{
+  align-items:flex-start!important;
+}
+.receipt-kicker{
+  margin-bottom:8px;
+  min-height:28px;
+  padding:0 12px;
+}
+.receipt-total{
+  margin-top:4px;
+}
+.receipt-note-bar{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:10px;
+  margin-bottom:14px;
+  padding:12px 14px;
+  border-radius:18px;
+  background:#f8fbff;
+  border:1px solid var(--line-soft);
+  color:var(--text-soft);
+  font-size:12px;
+  font-weight:800;
+}
+.receipt-content-shell{
+  display:grid;
+  gap:12px;
+}
+#receiptContent{
+  display:grid;
+  gap:12px;
+}
+.receipt-grid{
+  gap:12px!important;
+}
+.receipt-row,
+.receipt-line,
+.receipt-section{
+  box-shadow:none!important;
+}
+.receipt-section{
+  padding:14px;
+  background:#fbfdff!important;
+  border:1px solid var(--line-soft)!important;
+  border-radius:20px!important;
+}
+.receipt-section h3{
+  margin-bottom:10px!important;
+}
+.receipt-line{
+  background:#fff!important;
+}
+.receipt-footer{
+  border-top:0!important;
+  padding-top:0!important;
+  margin-top:14px!important;
+}
+@media (max-width: 900px){
+  .home-section-head,
+  .history-hero-top,
+  .hero-topline{
+    flex-direction:column;
+    align-items:flex-start;
+  }
+}
+@media (max-width: 640px){
+  .history-item{
+    padding:16px 16px 14px 18px!important;
+  }
+  .history-top,
+  .receipt-note-bar{
+    flex-direction:column;
+    align-items:flex-start!important;
+  }
+  .history-date{
+    white-space:normal;
+  }
+  .hero-badge,
+  .home-section-pill,
+  .history-count-pill,
+  .history-toolbar-label{
+    min-height:32px;
+  }
+  .receipt-note-bar{
+    gap:6px;
+  }
+}
