@@ -220,7 +220,7 @@
                 <div id="outflowPanel" class="admin-create-panel close-panel-body">
                   <div class="close-panel-toolbar">
                     <button id="addOutflowBtn" class="small-btn" type="button">+ Adicionar retirada</button>
-                    <span class="close-panel-note">Separe lucro e custo operacional para manter a leitura organizada.</span>
+                    <span class="close-panel-note">Separe lucro, custo operacional e Taxas Reba para manter a leitura organizada.</span>
                   </div>
                   <div id="outflowList" class="dynamic-list close-dynamic-list" data-empty-text="Nenhuma retirada adicionada ainda"></div>
                 </div>
@@ -423,30 +423,50 @@
     </section>
 
     <section id="screenAdmin" class="screen">
-      <div class="card">
-        <div class="card-title">
-          <h2>Painel Admin</h2>
-          <button id="toggleCreateUserBtn" class="admin-toggle">Mostrar criar usuário</button>
-        </div>
-        <span id="adminStatus" class="muted">Protegido</span>
-        <div id="createUserPanel" class="admin-create-panel">
-          <div class="form-grid" style="margin-top:14px;">
-            <div class="field"><label>Email</label><input id="newUserEmail" type="email" placeholder="usuario@email.com" /></div>
-            <div class="field"><label>Senha temporária</label><input id="newUserPassword" type="password" placeholder="mínimo 6 caracteres" /></div>
-            <div class="field"><label>Nome</label><input id="newUserName" placeholder="Nome do operador" /></div>
-            <div class="field"><label>Função</label><select id="newUserRole"><option value="operator">Operador</option><option value="supervisor">Supervisor</option><option value="admin">Admin</option></select></div>
-            <div class="field"><label>Supervisor</label><input id="newUserSupervisor" placeholder="Só para operador" /></div>
+      <div class="admin-shell">
+        <div class="card admin-card admin-header-card">
+          <div class="card-title">
+            <div>
+              <h2>Painel Admin</h2>
+              <span>Gestão de acessos e acompanhamento interno</span>
+            </div>
+            <button id="toggleCreateUserBtn" class="admin-toggle">Ocultar criar usuário</button>
           </div>
-          <button id="createUserBtn" class="btn full" style="margin-top:14px;">Criar usuário</button>
+          <span id="adminStatus" class="muted">Protegido</span>
+          <p class="admin-panel-copy">Cadastre usuários, ajuste funções e acompanhe rapidamente as últimas movimentações administrativas em um layout mais limpo.</p>
+          <div id="createUserPanel" class="admin-create-panel active">
+            <div class="form-grid admin-form-grid" style="margin-top:14px;">
+              <div class="field"><label>Email</label><input id="newUserEmail" type="email" placeholder="usuario@email.com" /></div>
+              <div class="field"><label>Senha temporária</label><input id="newUserPassword" type="password" placeholder="mínimo 6 caracteres" /></div>
+              <div class="field"><label>Nome</label><input id="newUserName" placeholder="Nome do operador" /></div>
+              <div class="field"><label>Função</label><select id="newUserRole"><option value="operator">Operador</option><option value="supervisor">Supervisor</option><option value="admin">Admin</option></select></div>
+              <div class="field"><label>Supervisor</label><input id="newUserSupervisor" placeholder="Só para operador" /></div>
+            </div>
+            <button id="createUserBtn" class="btn full" style="margin-top:14px;">Criar usuário</button>
+          </div>
+        </div>
+
+        <div class="card admin-card">
+          <div class="card-title">
+            <div>
+              <h2>Usuários</h2>
+              <span>Lista de acessos, funções e status</span>
+            </div>
+            <button id="loadUsersBtn" class="small-btn">Atualizar</button>
+          </div>
+          <div id="usersList" class="admin-grid"></div>
+        </div>
+
+        <div class="card admin-card">
+          <div class="card-title">
+            <div>
+              <h2>Auditoria</h2>
+              <span>Últimas ações registradas</span>
+            </div>
+          </div>
+          <div id="auditList" class="history-list"></div>
         </div>
       </div>
-
-      <div class="card">
-        <div class="card-title"><h2>Usuários</h2><button id="loadUsersBtn" class="small-btn">Atualizar</button></div>
-        <div id="usersList" class="admin-grid"></div>
-      </div>
-
-      <div class="card"><div class="card-title"><h2>Auditoria</h2><span>Últimas ações</span></div><div id="auditList" class="history-list"></div></div>
     </section>
 
   </main>
