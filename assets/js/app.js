@@ -1,6 +1,28 @@
-import { initializeApp, deleteApp } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-app.js";
-import { getAuth, onAuthStateChanged, signInWithEmailAndPassword, signOut, sendPasswordResetEmail, createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-auth.js";
-import { getFirestore, collection, doc, getDoc, getDocs, addDoc, setDoc, updateDoc, deleteDoc, onSnapshot, query, orderBy, limit, serverTimestamp } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-firestore.js";
+import { initializeApp } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-app.js";
+import {
+  getAuth,
+  onAuthStateChanged,
+  signInWithEmailAndPassword,
+  signOut,
+  sendPasswordResetEmail,
+  createUserWithEmailAndPassword
+} from "https://www.gstatic.com/firebasejs/12.0.0/firebase-auth.js";
+import {
+  getFirestore,
+  collection,
+  doc,
+  getDoc,
+  getDocs,
+  addDoc,
+  setDoc,
+  updateDoc,
+  deleteDoc,
+  onSnapshot,
+  query,
+  orderBy,
+  limit,
+  serverTimestamp
+} from "https://www.gstatic.com/firebasejs/12.0.0/firebase-firestore.js";
 
 import { firebaseConfig, BOOTSTRAP_ADMIN_EMAILS } from "./config/firebase-config.js";
 
@@ -9,7 +31,12 @@ const auth = getAuth(app);
 const db = getFirestore(app);
 const $ = (id) => document.getElementById(id);
 
-let currentUser = null, currentProfile = null, historyCache = [], historyUnsubscribe = null, systemUnsubscribe = null, currentRankRange = "day";
+let currentUser = null;
+let currentProfile = null;
+let historyCache = [];
+let historyUnsubscribe = null;
+let systemUnsubscribe = null;
+let currentRankRange = "day";
 let historyRenderLimit = 12;
 
 let calcRaf = 0;
@@ -134,8 +161,14 @@ function showToast(message, type = "info", timeout = 3200){
 
 function showSoftFeedback(message, type = "info", targetId = ""){
   if(targetId && $(targetId)){
-    showNotice(targetId, message, type === "error" ? "error" : type === "success" ? "success" : "info");
+    const noticeType =
+      type === "error" ? "error" :
+      type === "success" ? "ok" :
+      "info";
+
+    showNotice(targetId, message, noticeType);
   }
+
   showToast(message, type);
 }
 
@@ -155,7 +188,10 @@ function setGlobalBusy(isBusy, message = "Carregando..."){
 
   overlay.classList.toggle("hidden", activeAsyncCount === 0);
 
-  const msgEl = overlay.querySelector("[data-loading-text]");
+  const msgEl =
+    $("globalLoadingText") ||
+    overlay.querySelector("[data-loading-text]");
+
   if(msgEl) msgEl.textContent = message;
 }
 
@@ -211,6 +247,7 @@ function setButtonLoading(buttonOrId, isLoading, loadingText = "Processando...")
 function setSectionLoading(sectionOrId, isLoading){
   const el = typeof sectionOrId === "string" ? $(sectionOrId) : sectionOrId;
   if(!el) return;
+
   ensureSpinStyle();
   el.classList.toggle("section-loading", !!isLoading);
   el.setAttribute("aria-busy", isLoading ? "true" : "false");
@@ -244,15 +281,17 @@ function syncBodyThemeState(){
   document.body.classList.toggle("is-guest", !shellVisible);
 }
 
-function showNotice(targetId, message, type="error"){
+function showNotice(targetId, message, type = "error"){
   const el = $(targetId);
   if(!el) return;
+
   el.className = `notice ${type}`;
   el.textContent = message;
   el.classList.remove("hidden");
   el.style.opacity = "0";
   el.style.transform = "translateY(6px)";
   el.style.transition = "all .18s ease";
+
   requestAnimationFrame(() => {
     el.style.opacity = "1";
     el.style.transform = "translateY(0)";
@@ -299,16 +338,23 @@ function moneyToNumber(value){
 function formatInputMoney(value){
   const n = moneyToNumber(value);
   if(!n) return "";
-  return n.toLocaleString("pt-BR", { minimumFractionDigits:2, maximumFractionDigits:2 });
+  return n.toLocaleString("pt-BR", {
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2
+  });
 }
 
 function applyBankMoneyMask(input){
   if(!input) return;
-  input.classList.add("money-input");
-  input.setAttribute("autocomplete","off");
-  input.setAttribute("inputmode","decimal");
 
-  if(input.dataset.noHelper !== "1" && (!input.nextElementSibling || !input.nextElementSibling.classList?.contains("input-helper"))){
+  input.classList.add("money-input");
+  input.setAttribute("autocomplete", "off");
+  input.setAttribute("inputmode", "decimal");
+
+  if(
+    input.dataset.noHelper !== "1" &&
+    (!input.nextElementSibling || !input.nextElementSibling.classList?.contains("input-helper"))
+  ){
     const helper = document.createElement("div");
     helper.className = "input-helper";
     helper.innerHTML = `<span>Digite só números</span><b>0,00</b>`;
@@ -325,22 +371,23 @@ function applyBankMoneyMask(input){
 
   input.addEventListener("input", () => {
     const digits = String(input.value || "").replace(/[^0-9]/g, "");
+
     if(!digits){
       input.value = "";
       updateVisual();
-      input.dispatchEvent(new Event("bankmoney", { bubbles:true }));
+      input.dispatchEvent(new Event("bankmoney", { bubbles: true }));
       debouncedRenderCalculations();
       return;
     }
 
     const number = Number(digits) / 100;
     input.value = number.toLocaleString("pt-BR", {
-      minimumFractionDigits:2,
-      maximumFractionDigits:2
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2
     });
 
     updateVisual();
-    input.dispatchEvent(new Event("bankmoney", { bubbles:true }));
+    input.dispatchEvent(new Event("bankmoney", { bubbles: true }));
     debouncedRenderCalculations();
   });
 
@@ -358,7 +405,7 @@ function applyBankMoneyMask(input){
   updateVisual();
 }
 
-function applyBankMoneyMaskAll(scope=document){
+function applyBankMoneyMaskAll(scope = document){
   scope.querySelectorAll(".money-input").forEach(input => {
     if(input.dataset.bankMask === "1") return;
     input.dataset.bankMask = "1";
@@ -367,35 +414,38 @@ function applyBankMoneyMaskAll(scope=document){
 }
 
 function formatMoney(value){
-  return new Intl.NumberFormat("es-AR",{
-    style:"currency",
-    currency:"ARS",
-    minimumFractionDigits:2
-  }).format(Number(value)||0);
+  return new Intl.NumberFormat("es-AR", {
+    style: "currency",
+    currency: "ARS",
+    minimumFractionDigits: 2
+  }).format(Number(value) || 0);
 }
 
 function dateLabel(value){
   if(!value) return "-";
   const d = value?.toDate ? value.toDate() : new Date(value);
   if(isNaN(d)) return "-";
-  return d.toLocaleString("pt-BR",{
-    day:"2-digit",
-    month:"2-digit",
-    year:"2-digit",
-    hour:"2-digit",
-    minute:"2-digit"
+
+  return d.toLocaleString("pt-BR", {
+    day: "2-digit",
+    month: "2-digit",
+    year: "2-digit",
+    hour: "2-digit",
+    minute: "2-digit"
   });
 }
 
 function toDateInputValue(value){
   const d = value?.toDate ? value.toDate() : new Date(value || Date.now());
   if(isNaN(d)) return "";
-  d.setMinutes(d.getMinutes()-d.getTimezoneOffset());
-  return d.toISOString().slice(0,16);
+  d.setMinutes(d.getMinutes() - d.getTimezoneOffset());
+  return d.toISOString().slice(0, 16);
 }
 
 function isBootstrapEmail(email){
-  return BOOTSTRAP_ADMIN_EMAILS.map(x=>x.toLowerCase()).includes(String(email||"").toLowerCase());
+  return BOOTSTRAP_ADMIN_EMAILS
+    .map(x => x.toLowerCase())
+    .includes(String(email || "").toLowerCase());
 }
 
 function isAdmin(){
@@ -443,8 +493,8 @@ function canSeeWeeklyProfitCard(){
 }
 
 function allowedCloseFieldIds(){
-  const ids = ["webReca","suprema","pppoker","buffalo","ganamos"];
-  if(canUseAdminClosingFields()) ids.push("cargasPoker","cargasCasino");
+  const ids = ["webReca", "suprema", "pppoker", "buffalo", "ganamos"];
+  if(canUseAdminClosingFields()) ids.push("cargasPoker", "cargasCasino");
   return ids;
 }
 
@@ -479,28 +529,32 @@ function sanitizeTurnForPersistence(turno = {}, originalTurno = null){
     : moneyToNumber(original.cargasCasino ?? original.cargas ?? 0);
 
   sanitized.pendings = Array.isArray(turno.pendings)
-    ? turno.pendings.map(x => ({
-        name: String(x?.name || "").trim(),
-        value: moneyToNumber(x?.value || 0)
-      })).filter(x => x.name || x.value)
+    ? turno.pendings
+        .map(x => ({
+          name: String(x?.name || "").trim(),
+          value: moneyToNumber(x?.value || 0)
+        }))
+        .filter(x => x.name || x.value)
     : [];
 
   sanitized.outflows = Array.isArray(turno.outflows)
-    ? turno.outflows.map(x => ({
-        name: String(x?.name || "").trim(),
-        category: normalizeOutflowCategory(x?.category ?? x?.type),
-        value: moneyToNumber(x?.value || 0)
-      })).filter(x => x.name || x.value)
+    ? turno.outflows
+        .map(x => ({
+          name: String(x?.name || "").trim(),
+          category: normalizeOutflowCategory(x?.category ?? x?.type),
+          value: moneyToNumber(x?.value || 0)
+        }))
+        .filter(x => x.name || x.value)
     : [];
 
-  sanitized.pendentesTotal = sanitized.pendings.reduce((s,x)=>s + moneyToNumber(x.value),0);
-  sanitized.saidasTotal = sanitized.outflows.reduce((s,x)=>s + moneyToNumber(x.value),0);
+  sanitized.pendentesTotal = sanitized.pendings.reduce((s, x) => s + moneyToNumber(x.value), 0);
+  sanitized.saidasTotal = sanitized.outflows.reduce((s, x) => s + moneyToNumber(x.value), 0);
   sanitized.retiradaLucroTotal = sanitized.outflows
-    .filter(x=>x.category==="lucro")
-    .reduce((s,x)=>s + moneyToNumber(x.value),0);
+    .filter(x => x.category === "lucro")
+    .reduce((s, x) => s + moneyToNumber(x.value), 0);
   sanitized.custoOperacionalTotal = sanitized.outflows
-    .filter(x=>x.category==="custo_operacional")
-    .reduce((s,x)=>s + moneyToNumber(x.value),0);
+    .filter(x => x.category === "custo_operacional")
+    .reduce((s, x) => s + moneyToNumber(x.value), 0);
   sanitized.saldoLiquido = calcularSaldoLiquido(sanitized);
   sanitized.baseOperacional = calcularBaseOperacional(sanitized);
 
@@ -517,7 +571,7 @@ function outflowCategoryLabel(category){
 function todayDateInputValue(){
   const now = new Date();
   now.setMinutes(now.getMinutes() - now.getTimezoneOffset());
-  return now.toISOString().slice(0,10);
+  return now.toISOString().slice(0, 10);
 }
 
 function ensureDefaultHistoryDate(){
@@ -614,7 +668,7 @@ function getAdjustmentParts(item){
   if(t.retiradaCaixa !== undefined){
     retiradaCaixa = moneyToNumber(t.retiradaCaixa);
   }else if(Array.isArray(t.outflows) && t.outflows.length){
-    retiradaCaixa = t.outflows.reduce((s,x)=>s + moneyToNumber(x.value),0);
+    retiradaCaixa = t.outflows.reduce((s, x) => s + moneyToNumber(x.value), 0);
   }else{
     retiradaCaixa = moneyToNumber(t.saidasTotal ?? 0);
   }
@@ -649,7 +703,7 @@ function baseForNextClosing(){
   const adjustmentsAfterLastReal = view
     .slice(0, lastRealIndex)
     .filter(isAdjustmentItem)
-    .reduce((s,item)=>s + adjustmentImpact(item), 0);
+    .reduce((s, item) => s + adjustmentImpact(item), 0);
 
   return lastRealBase + adjustmentsAfterLastReal;
 }
@@ -660,8 +714,8 @@ function latestInternalAdjustment(){
 
 function adjustmentDescription(item){
   if(!item) return "Sem ajuste";
-  const t = item.turno || {};
   const value = adjustmentImpact(item);
+  const t = item.turno || {};
   const reason = t.ajusteMotivo || item.adjustmentReason || "Ajuste interno";
   const sign = value > 0 ? "+" : "";
   return `${sign}${formatMoney(value)} • ${reason}`;
@@ -701,12 +755,12 @@ function displayCashDiff(item){
     const internalAdjustments = view
       .slice(currentIndex + 1, prevRealIndex)
       .filter(isAdjustmentItem)
-      .reduce((s,x)=>s + adjustmentImpact(x), 0);
+      .reduce((s, x) => s + adjustmentImpact(x), 0);
 
     const baseComparacao = prevBase + internalAdjustments;
     return currentSaldo - baseComparacao;
-  }catch(e){
-    console.warn("Erro displayCashDiff:", e);
+  }catch(error){
+    console.warn("Erro displayCashDiff:", error);
     return 0;
   }
 }
@@ -716,23 +770,24 @@ function getDynamicRows(containerId){
   if(!el) return [];
 
   return [...el.querySelectorAll(".row-item")]
-    .map(row=>({
+    .map(row => ({
       name: row.querySelector(".row-name")?.value || "",
       category: row.querySelector(".row-category")?.value || "",
       value: moneyToNumber(row.querySelector(".row-value")?.value || 0)
     }))
-    .filter(x=>x.name || x.value);
+    .filter(x => x.name || x.value);
 }
 
-function setDynamicRows(containerId, rows=[]){
+function setDynamicRows(containerId, rows = []){
   const el = $(containerId);
   if(!el) return;
+
   el.innerHTML = "";
   const defaultLabel = containerId.toLowerCase().includes("outflow") ? "Descrição" : "Nome / motivo";
   (rows.length ? rows : [{}]).forEach(r => createDynamicRow(containerId, defaultLabel, r));
 }
 
-function createDynamicRow(containerId,label="Descrição",data={}){
+function createDynamicRow(containerId, label = "Descrição", data = {}){
   const list = $(containerId);
   if(!list) return;
 
@@ -796,7 +851,7 @@ function getTurnFromForm(){
   return sanitizeTurnForPersistence(turno);
 }
 
-function calcularSaldoLiquido(turno={}){
+function calcularSaldoLiquido(turno = {}){
   const webReca = moneyToNumber(turno.webReca ?? turno.reca ?? turno.banco ?? 0);
   const suprema = moneyToNumber(turno.suprema ?? 0) * 400;
   const pppoker = moneyToNumber(turno.pppoker ?? 0) * 400;
@@ -804,15 +859,15 @@ function calcularSaldoLiquido(turno={}){
   const ganamos = moneyToNumber(turno.ganamos ?? 0);
   const cargasPoker = moneyToNumber(turno.cargasPoker ?? 0) * 400;
   const cargasCasino = moneyToNumber(turno.cargasCasino ?? turno.cargas ?? 0);
-  const pendentes = moneyToNumber(turno.pendentesTotal ?? (turno.pendings || []).reduce((s,x)=>s+moneyToNumber(x.value),0));
-  const saidas = moneyToNumber(turno.saidasTotal ?? (turno.outflows || []).reduce((s,x)=>s+moneyToNumber(x.value),0));
+  const pendentes = moneyToNumber(turno.pendentesTotal ?? (turno.pendings || []).reduce((s, x) => s + moneyToNumber(x.value), 0));
+  const saidas = moneyToNumber(turno.saidasTotal ?? (turno.outflows || []).reduce((s, x) => s + moneyToNumber(x.value), 0));
 
   return webReca + suprema + pppoker + buffalo + ganamos + cargasPoker + cargasCasino - pendentes + saidas;
 }
 
-function calcularBaseOperacional(turno={}){
+function calcularBaseOperacional(turno = {}){
   const saldoLiquido = moneyToNumber(turno.saldoLiquido ?? calcularSaldoLiquido(turno));
-  const saidas = moneyToNumber(turno.saidasTotal ?? (turno.outflows || []).reduce((s,x)=>s+moneyToNumber(x.value),0));
+  const saidas = moneyToNumber(turno.saidasTotal ?? (turno.outflows || []).reduce((s, x) => s + moneyToNumber(x.value), 0));
   return saldoLiquido - saidas;
 }
 
@@ -830,7 +885,7 @@ function fillOperatorFromProfile(){
 }
 
 function clearClosingForm(){
-  ["webReca","suprema","pppoker","buffalo","ganamos","cargasPoker","cargasCasino"].forEach(id=>{
+  ["webReca", "suprema", "pppoker", "buffalo", "ganamos", "cargasPoker", "cargasCasino"].forEach(id => {
     if($(id)) $(id).value = "";
   });
 
@@ -846,11 +901,12 @@ function clearClosingForm(){
 function enableClearOnFocus(){
 }
 
-function setClosePanelState(panelId, buttonId, cardId, closedText="Abrir", openText="Ocultar"){
+function setClosePanelState(panelId, buttonId, cardId, closedText = "Abrir", openText = "Ocultar"){
   const panel = $(panelId);
   const button = $(buttonId);
   const card = $(cardId);
   const open = !!panel?.classList.contains("active");
+
   card?.classList.toggle("is-open", open);
   if(button) button.textContent = open ? openText : closedText;
 }
@@ -867,7 +923,8 @@ function updateCloseVisualState(turno = getTurnFromForm()){
 
   const statusEl = $("closeStatusBadge");
   if(statusEl){
-    statusEl.classList.remove("is-idle","is-ready","is-alert");
+    statusEl.classList.remove("is-idle", "is-ready", "is-alert");
+
     if(!hasBaseValues){
       statusEl.textContent = "Aguardando dados";
       statusEl.classList.add("is-idle");
@@ -960,13 +1017,13 @@ function renderMonthlyGoal(){
     if(Array.isArray(t.outflows)){
       return t.outflows
         .filter(o => String(o.category || o.type || "").toLowerCase() === "lucro")
-        .reduce((s,o) => s + moneyToNumber(o.value || 0), 0);
+        .reduce((s, o) => s + moneyToNumber(o.value || 0), 0);
     }
 
     return 0;
   };
 
-  const done = monthItems.reduce((s,item) => s + lucroDoItem(item), 0);
+  const done = monthItems.reduce((s, item) => s + lucroDoItem(item), 0);
 
   const percent = target > 0
     ? Math.max(0, Math.min(100, (done / target) * 100))
@@ -1001,7 +1058,8 @@ function renderHome(){
     }
 
     const todayStart = new Date();
-    todayStart.setHours(0,0,0,0);
+    todayStart.setHours(0, 0, 0, 0);
+
     const weekStart = new Date();
     weekStart.setDate(weekStart.getDate() - 7);
 
@@ -1009,15 +1067,19 @@ function renderHome(){
     const lucroFromItem = (x) => moneyToNumber(x.turno?.retiradaLucroTotal ?? 0);
     const itemDate = (x) => x.submittedAt?.toDate ? x.submittedAt.toDate() : new Date(x.turno?.closingDate || x.createdAt || 0);
 
-    const todayResult = profitItems.filter(x=>{
-      const d = itemDate(x);
-      return !isNaN(d) && d >= todayStart;
-    }).reduce((s,x)=>s + lucroFromItem(x), 0);
+    const todayResult = profitItems
+      .filter(x => {
+        const d = itemDate(x);
+        return !isNaN(d) && d >= todayStart;
+      })
+      .reduce((s, x) => s + lucroFromItem(x), 0);
 
-    const weekResult = profitItems.filter(x=>{
-      const d = itemDate(x);
-      return !isNaN(d) && d >= weekStart;
-    }).reduce((s,x)=>s + lucroFromItem(x), 0);
+    const weekResult = profitItems
+      .filter(x => {
+        const d = itemDate(x);
+        return !isNaN(d) && d >= weekStart;
+      })
+      .reduce((s, x) => s + lucroFromItem(x), 0);
 
     if($("homeSaldoReca")) $("homeSaldoReca").textContent = formatMoney(saldoReca);
     if($("homeSaldoLiquido")) $("homeSaldoLiquido").textContent = formatMoney(saldoLiquido);
@@ -1025,7 +1087,7 @@ function renderHome(){
 
     const pendCard = document.querySelector('[data-home-detail="pendentes"]');
     if(pendCard){
-      pendCard.classList.remove("pending-blue","pending-yellow","pending-red");
+      pendCard.classList.remove("pending-blue", "pending-yellow", "pending-red");
       if(moneyToNumber(pendentes) < 500000) pendCard.classList.add("pending-blue");
       else if(moneyToNumber(pendentes) < 1000000) pendCard.classList.add("pending-yellow");
       else pendCard.classList.add("pending-red");
@@ -1035,6 +1097,7 @@ function renderHome(){
     const adjustmentValue = latestAdjustment ? adjustmentImpact(latestAdjustment) : 0;
 
     if($("homeAdjustmentCard")) $("homeAdjustmentCard").classList.toggle("hidden", !canSeeInternalAdjustments());
+
     if($("homeInternalAdjustment")){
       $("homeInternalAdjustment").textContent = adjustmentDescription(latestAdjustment);
       $("homeInternalAdjustment").style.color = adjustmentValue < 0 ? "#FF3B30" : "#16C784";
@@ -1080,13 +1143,18 @@ function renderChipsComparison(last, prev){
   const pt = prev?.turno || {};
 
   const items = [
-    { label:"Suprema", key:"suprema", type:"chips" },
-    { label:"PPPoker", key:"pppoker", type:"chips" },
-    { label:"Buffalo", key:"buffalo", type:"money" },
-    { label:"Ganamos", key:"ganamos", type:"money" }
+    { label: "Suprema", key: "suprema", type: "chips" },
+    { label: "PPPoker", key: "pppoker", type: "chips" },
+    { label: "Buffalo", key: "buffalo", type: "money" },
+    { label: "Ganamos", key: "ganamos", type: "money" }
   ];
 
-  const fmtChips = (value) => `${moneyToNumber(value).toLocaleString("pt-BR",{minimumFractionDigits:2,maximumFractionDigits:2})} fichas`;
+  const fmtChips = (value) =>
+    `${moneyToNumber(value).toLocaleString("pt-BR", {
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2
+    })} fichas`;
+
   const signText = (value) => value > 0 ? "+" : "";
 
   box.innerHTML = items.map(item => {
