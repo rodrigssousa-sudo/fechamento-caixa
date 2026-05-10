@@ -5,19 +5,15 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
   <title>Bank King Pro</title>
 
-  
   <link rel="preload" href="./assets/css/styles.css" as="style" />
   <link rel="stylesheet" href="./assets/css/styles.css" />
   <link rel="stylesheet" href="./assets/css/theme-clean.css" />
-
-
 
   <link rel="manifest" href="./manifest.json" />
   <meta name="theme-color" content="#0a2c75" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-title" content="Bank King" />
   <script defer src="./assets/js/ui-effects.js"></script>
-
 </head>
 <body>
   <div id="globalLoading" class="loading-overlay">
@@ -66,7 +62,7 @@
           <div id="homeUpdatedAt" class="hero-sub">Aguardando atualização</div>
 
           <div class="hero-grid">
-            <div id="homeAdjustmentCard" class="hero-mini"><span>Ajuste interno</span><strong id="homeInternalAdjustment">$ 0,00</strong></div>
+            <div id="homeAdjustmentCard" class="hero-mini close-admin-field" data-role-visibility="admin-only"><span>Ajuste interno</span><strong id="homeInternalAdjustment">$ 0,00</strong></div>
             <div class="hero-mini"><span>Operador</span><strong id="homeOperator">-</strong></div>
             <div class="hero-mini"><span>Data e hora</span><strong id="homeLastClose">-</strong></div>
             <div class="hero-mini"><span>Diferença de caixa</span><strong id="homeDiff">$ 0,00</strong></div>
@@ -115,6 +111,7 @@
         </div>
       </div>
     </section>
+
     <section id="screenClose" class="screen">
       <div class="close-shell">
         <div class="card close-hero-card">
@@ -184,8 +181,8 @@
                     <div class="field"><label>PPPoker</label><input id="pppoker" class="money-input" inputmode="decimal" placeholder="0,00" /></div>
                     <div class="field"><label>Buffalo</label><input id="buffalo" class="money-input" inputmode="decimal" placeholder="0,00" /></div>
                     <div class="field"><label>Ganamos</label><input id="ganamos" class="money-input" inputmode="decimal" placeholder="0,00" /></div>
-                    <div class="field close-admin-field"><label>Carga poker</label><input id="cargasPoker" class="money-input" inputmode="decimal" placeholder="0,00" /><div class="muted" style="margin-top:4px;">Campo administrativo</div></div>
-                    <div class="field close-admin-field"><label>Carga casino</label><input id="cargasCasino" class="money-input" inputmode="decimal" placeholder="0,00" /><div class="muted" style="margin-top:4px;">Campo administrativo</div></div>
+                    <div class="field close-admin-field" data-role-visibility="admin-only"><label>Carga poker</label><input id="cargasPoker" class="money-input" inputmode="decimal" placeholder="0,00" /><div class="muted" style="margin-top:4px;">Campo administrativo</div></div>
+                    <div class="field close-admin-field" data-role-visibility="admin-only"><label>Carga casino</label><input id="cargasCasino" class="money-input" inputmode="decimal" placeholder="0,00" /><div class="muted" style="margin-top:4px;">Campo administrativo</div></div>
                   </div>
                 </div>
               </div>
@@ -227,7 +224,7 @@
               </div>
             </div>
 
-            <div id="quickChargeCard" class="card close-quick-card" style="margin-top:14px;">
+            <div id="quickChargeCard" class="card close-quick-card close-admin-field" data-role-visibility="admin-only" style="margin-top:14px;">
               <div class="card-title close-card-title">
                 <div>
                   <h2>Carga rápida</h2>
@@ -273,7 +270,7 @@
                   <div class="summary-box good"><span>Retirada lucro</span><b id="calcLucroSaida">$ 0,00</b></div>
                   <div class="summary-box gold"><span>Custo operacional</span><b id="calcCustoSaida">$ 0,00</b></div>
                 </div>
-                <div class="summary-note close-summary-note">
+                <div id="adminSummaryNote" class="summary-note close-summary-note close-admin-field" data-role-visibility="admin-only">
                   <span>Carga poker: <b id="calcCargaPoker">$ 0,00</b></span>
                   <span>Carga casino: <b id="calcCargaCasino">$ 0,00</b></span>
                 </div>
@@ -528,10 +525,10 @@
   </div>
 
   <div id="editHistoryModal" class="edit-modal"><div class="edit-panel"><div class="edit-panel-head"><h2>Editar fechamento</h2><button id="editCloseBtn" class="edit-close">×</button></div><input id="editHistoryId" type="hidden" /><div class="form-grid"><div class="field"><label>Operador</label><input id="editOperatorName" /></div><div class="field"><label>Data do fechamento</label><input id="editClosingDate" type="datetime-local" /></div><div class="field"><label>Reca</label><input id="editWebReca" class="money-input" inputmode="decimal" /></div>
-        <div class="field"><label>Suprema</label><input id="editSuprema" class="money-input" inputmode="decimal" /></div><div class="field"><label>PPPoker</label><input id="editPppoker" class="money-input" inputmode="decimal" /></div><div class="field"><label>Buffalo</label><input id="editBuffalo" class="money-input" inputmode="decimal" /></div><div class="field"><label>Ganamos</label><input id="editGanamos" class="money-input" inputmode="decimal" /></div><div class="field"><label>Carga poker</label><input id="editCargasPoker" class="money-input" inputmode="decimal" /></div><div class="field"><label>Carga casino</label><input id="editCargasCasino" class="money-input" inputmode="decimal" /></div></div><div class="grid two"><div class="card" style="box-shadow:none;margin-top:12px;"><div class="card-title"><h2>Pagos pendentes</h2><button id="editAddPendingBtn" class="small-btn">+ Adicionar</button></div><div id="editPendingList" class="dynamic-list"></div></div><div class="card" style="box-shadow:none;margin-top:12px;"><div class="card-title"><h2>Retiradas</h2><button id="editAddOutflowBtn" class="small-btn">+ Adicionar</button></div><div id="editOutflowList" class="dynamic-list"></div></div></div><div class="edit-actions"><button id="saveEditBtn" class="btn">Salvar alterações</button><button id="cancelEditBtn" class="btn secondary">Cancelar</button></div></div></div>
+        <div class="field"><label>Suprema</label><input id="editSuprema" class="money-input" inputmode="decimal" /></div><div class="field"><label>PPPoker</label><input id="editPppoker" class="money-input" inputmode="decimal" /></div><div class="field"><label>Buffalo</label><input id="editBuffalo" class="money-input" inputmode="decimal" /></div><div class="field"><label>Ganamos</label><input id="editGanamos" class="money-input" inputmode="decimal" /></div><div class="field close-admin-field" data-role-visibility="admin-only"><label>Carga poker</label><input id="editCargasPoker" class="money-input" inputmode="decimal" /></div><div class="field close-admin-field" data-role-visibility="admin-only"><label>Carga casino</label><input id="editCargasCasino" class="money-input" inputmode="decimal" /></div></div><div class="grid two"><div class="card" style="box-shadow:none;margin-top:12px;"><div class="card-title"><h2>Pagos pendentes</h2><button id="editAddPendingBtn" class="small-btn">+ Adicionar</button></div><div id="editPendingList" class="dynamic-list"></div></div><div class="card" style="box-shadow:none;margin-top:12px;"><div class="card-title"><h2>Retiradas</h2><button id="editAddOutflowBtn" class="small-btn">+ Adicionar</button></div><div id="editOutflowList" class="dynamic-list"></div></div></div><div class="edit-actions"><button id="saveEditBtn" class="btn">Salvar alterações</button><button id="cancelEditBtn" class="btn secondary">Cancelar</button></div></div></div>
 
   <div id="appReloadLoader" class="app-reload-loader"><div class="reload-card"><div class="reload-spinner"></div><strong>Atualizando sistema</strong><span>Recalculando dados...</span></div></div>
 
-    <script type="module" src="./assets/js/app.js"></script>
+  <script type="module" src="./assets/js/app.js"></script>
 </body>
 </html>
