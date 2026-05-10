@@ -621,7 +621,7 @@
 
 #homeInternalAdjustment{color:#16C784!important;font-weight:950!important;text-shadow:none!important;}
 #homeDiff{color:#FF3B30!important;font-weight:950!important;text-shadow:none!important;}
-#homeOperator,#homeLastClose{color:#FFFFFF!important;text-shadow:none!important;}
+#homeOperador,#homeLastClose{color:#FFFFFF!important;text-shadow:none!important;}
 
 .balance-positive{color:#16C784!important;}
 .balance-negative{color:#FF3B30!important;}
@@ -1561,7 +1561,7 @@ function updateHeroBalance(newValue){
 
         <div class="hero-grid">
           <div class="hero-mini"><span>Ajuste interno</span><strong id="homeInternalAdjustment">$ 0,00</strong></div>
-          <div class="hero-mini"><span>Operador</span><strong id="homeOperator">-</strong></div>
+          <div class="hero-mini"><span>Operador</span><strong id="homeOperador">-</strong></div>
           <div class="hero-mini"><span>Data e hora</span><strong id="homeLastClose">-</strong></div>
           <div class="hero-mini"><span>Diferença de caixa</span><strong id="homeDiff">$ 0,00</strong></div>
         </div>
@@ -1608,8 +1608,8 @@ function updateHeroBalance(newValue){
         <div class="form-grid">
           <div class="field">
             <label>Operador</label>
-            <input id="operatorName" placeholder="Nome do operador" readonly />
-            <div class="muted" id="operatorEmailLabel" style="margin-top:4px;"></div>
+            <input id="operadorName" placeholder="Nome do operador" readonly />
+            <div class="muted" id="operadorEmailLabel" style="margin-top:4px;"></div>
           </div>
           <div class="field"><label>Data do fechamento</label><input id="closingDate" type="datetime-local" /></div>
           <div class="field"><label>Saldo Reca</label><input id="webReca" class="money-input" inputmode="decimal" placeholder="0,00" /></div>
@@ -1720,7 +1720,7 @@ function updateHeroBalance(newValue){
 
     <section id="screenRanking" class="screen"><div class="card"><div class="card-title"><h2>Ranking operadores</h2><span>Lucro por operador</span></div><div class="rank-tabs"><button class="active" data-rank="day">Diário</button><button data-rank="week">Semanal</button><button data-rank="month">Mensal</button><button data-rank="all">Total</button></div><div id="rankingList" class="rank-list"></div></div></section>
 
-    <section id="screenReports" class="screen"><div class="card"><div class="card-title"><h2>Relatórios premium</h2><span>PDF nível banco</span></div><div class="form-grid"><div class="field"><label>Data inicial</label><input id="reportStart" type="date" /></div><div class="field"><label>Data final</label><input id="reportEnd" type="date" /></div><div class="field"><label>Operador</label><input id="reportOperator" placeholder="Todos" /></div><div class="field"><label>Supervisor</label><input id="reportSupervisor" placeholder="Todos" /></div></div><div class="grid three"><div class="card" style="box-shadow:none;"><div class="muted">Fechamentos</div><div id="reportPreviewCount" class="metric">0</div></div><div class="card" style="box-shadow:none;"><div class="muted">Saldo líquido</div><div id="reportPreviewSaldo" class="metric">$ 0,00</div></div><div class="card" style="box-shadow:none;"><div class="muted">Diferença</div><div id="reportPreviewDiff" class="metric">$ 0,00</div></div></div><button id="previewReportBtn" class="btn secondary full" style="margin-top:14px;">Pré-visualizar resumo</button><button id="generateReportBtn" class="btn full" style="margin-top:10px;">Gerar PDF</button></div></section>
+    <section id="screenReports" class="screen"><div class="card"><div class="card-title"><h2>Relatórios premium</h2><span>PDF nível banco</span></div><div class="form-grid"><div class="field"><label>Data inicial</label><input id="reportStart" type="date" /></div><div class="field"><label>Data final</label><input id="reportEnd" type="date" /></div><div class="field"><label>Operador</label><input id="reportOperador" placeholder="Todos" /></div><div class="field"><label>Supervisor</label><input id="reportSupervisor" placeholder="Todos" /></div></div><div class="grid three"><div class="card" style="box-shadow:none;"><div class="muted">Fechamentos</div><div id="reportPreviewCount" class="metric">0</div></div><div class="card" style="box-shadow:none;"><div class="muted">Saldo líquido</div><div id="reportPreviewSaldo" class="metric">$ 0,00</div></div><div class="card" style="box-shadow:none;"><div class="muted">Diferença</div><div id="reportPreviewDiff" class="metric">$ 0,00</div></div></div><button id="previewReportBtn" class="btn secondary full" style="margin-top:14px;">Pré-visualizar resumo</button><button id="generateReportBtn" class="btn full" style="margin-top:10px;">Gerar PDF</button></div></section>
 
     <section id="screenAdmin" class="screen">
       <div class="card">
@@ -1734,7 +1734,7 @@ function updateHeroBalance(newValue){
             <div class="field"><label>Email</label><input id="newUserEmail" type="email" placeholder="usuario@email.com" /></div>
             <div class="field"><label>Senha temporária</label><input id="newUserPassword" type="password" placeholder="mínimo 6 caracteres" /></div>
             <div class="field"><label>Nome</label><input id="newUserName" placeholder="Nome do operador" /></div>
-            <div class="field"><label>Função</label><select id="newUserRole"><option value="operator">Operador</option><option value="supervisor">Supervisor</option><option value="admin">Admin</option></select></div>
+            <div class="field"><label>Função</label><select id="newUserRole"><option value="operador">Operador</option><option value="supervisor">Supervisor</option><option value="admin">Admin</option></select></div>
             <div class="field"><label>Supervisor</label><input id="newUserSupervisor" placeholder="Só para operador" /></div>
           </div>
           <button id="createUserBtn" class="btn full" style="margin-top:14px;">Criar usuário</button>
@@ -1799,7 +1799,7 @@ function updateHeroBalance(newValue){
     </div>
   </div>
 
-  <div id="editHistoryModal" class="edit-modal"><div class="edit-panel"><div class="edit-panel-head"><h2>Editar fechamento</h2><button id="editCloseBtn" class="edit-close">×</button></div><input id="editHistoryId" type="hidden" /><div class="form-grid"><div class="field"><label>Operador</label><input id="editOperatorName" /></div><div class="field"><label>Data do fechamento</label><input id="editClosingDate" type="datetime-local" /></div><div class="field"><label>Reca</label><input id="editWebReca" class="money-input" inputmode="decimal" /></div>
+  <div id="editHistoryModal" class="edit-modal"><div class="edit-panel"><div class="edit-panel-head"><h2>Editar fechamento</h2><button id="editCloseBtn" class="edit-close">×</button></div><input id="editHistoryId" type="hidden" /><div class="form-grid"><div class="field"><label>Operador</label><input id="editOperadorName" /></div><div class="field"><label>Data do fechamento</label><input id="editClosingDate" type="datetime-local" /></div><div class="field"><label>Reca</label><input id="editWebReca" class="money-input" inputmode="decimal" /></div>
         <div class="field"><label>Suprema</label><input id="editSuprema" class="money-input" inputmode="decimal" /></div><div class="field"><label>PPPoker</label><input id="editPppoker" class="money-input" inputmode="decimal" /></div><div class="field"><label>Buffalo</label><input id="editBuffalo" class="money-input" inputmode="decimal" /></div><div class="field"><label>Ganamos</label><input id="editGanamos" class="money-input" inputmode="decimal" /></div><div class="field"><label>Carga poker</label><input id="editCargasPoker" class="money-input" inputmode="decimal" /></div><div class="field"><label>Carga casino</label><input id="editCargasCasino" class="money-input" inputmode="decimal" /></div></div><div class="grid two"><div class="card" style="box-shadow:none;margin-top:12px;"><div class="card-title"><h2>Pagos pendentes</h2><button id="editAddPendingBtn" class="small-btn">+ Adicionar</button></div><div id="editPendingList" class="dynamic-list"></div></div><div class="card" style="box-shadow:none;margin-top:12px;"><div class="card-title"><h2>Retiradas</h2><button id="editAddOutflowBtn" class="small-btn">+ Adicionar</button></div><div id="editOutflowList" class="dynamic-list"></div></div></div><div class="edit-actions"><button id="saveEditBtn" class="btn">Salvar alterações</button><button id="cancelEditBtn" class="btn secondary">Cancelar</button></div></div></div>
 
   <div id="appReloadLoader" class="app-reload-loader"><div class="reload-card"><div class="reload-spinner"></div><strong>Atualizando sistema</strong><span>Recalculando dados...</span></div></div>
@@ -1953,10 +1953,10 @@ function updateHeroBalance(newValue){
     function historyItemOwnerEmail(item){
       const t = item?.turno || {};
       return String(
-        item?.operatorEmail ||
+        item?.operadorEmail ||
         item?.createdByEmail ||
         item?.email ||
-        t.operatorEmail ||
+        t.operadorEmail ||
         t.createdByEmail ||
         ""
       ).toLowerCase();
@@ -2128,7 +2128,7 @@ function updateHeroBalance(newValue){
       const webReca=moneyToNumber($("webReca")?.value), suprema=moneyToNumber($("suprema")?.value), pppoker=moneyToNumber($("pppoker")?.value), buffalo=moneyToNumber($("buffalo")?.value), ganamos=moneyToNumber($("ganamos")?.value), cargasPoker=moneyToNumber($("cargasPoker")?.value), cargasCasino=moneyToNumber($("cargasCasino")?.value);
       const pendings=getDynamicRows("pendingList"), outflows=getDynamicRows("outflowList");
       const pendentesTotal=pendings.reduce((s,x)=>s+x.value,0), saidasTotal=outflows.reduce((s,x)=>s+x.value,0), retiradaLucroTotal=sumOutflowsByCategory(outflows,"lucro"), custoOperacionalTotal=sumOutflowsByCategory(outflows,"custo_operacional"), custoRecaTotal=sumOutflowsByCategory(outflows,"custo_reca");
-      const turno={operatorName:$("operatorName")?.value.trim()||"", closingDate:$("closingDate")?.value||new Date().toISOString(), webReca,suprema,pppoker,buffalo,ganamos,cargasPoker,cargasCasino,pendings,outflows,pendentesTotal,saidasTotal,retiradaLucroTotal,custoOperacionalTotal,custoRecaTotal};
+      const turno={operadorName:$("operadorName")?.value.trim()||"", closingDate:$("closingDate")?.value||new Date().toISOString(), webReca,suprema,pppoker,buffalo,ganamos,cargasPoker,cargasCasino,pendings,outflows,pendentesTotal,saidasTotal,retiradaLucroTotal,custoOperacionalTotal,custoRecaTotal};
       turno.saldoLiquido=calcularSaldoLiquido(turno);
       return turno;
     }
@@ -2155,16 +2155,16 @@ function updateHeroBalance(newValue){
       const saidas = moneyToNumber(turno.saidasTotal ?? (turno.outflows||[]).reduce((s,x)=>s+moneyToNumber(x.value),0));
       return saldoLiquido - saidas;
     }
-    function fillOperatorFromProfile(){
+    function fillOperadorFromProfile(){
       const name = profileName() || currentUser?.email?.split("@")[0] || "";
 
-      if($("operatorName")){
-        $("operatorName").value = name;
-        $("operatorName").readOnly = true;
+      if($("operadorName")){
+        $("operadorName").value = name;
+        $("operadorName").readOnly = true;
       }
 
-      if($("operatorEmailLabel")){
-        $("operatorEmailLabel").textContent = currentUser?.email || "";
+      if($("operadorEmailLabel")){
+        $("operadorEmailLabel").textContent = currentUser?.email || "";
       }
     }
 
@@ -2176,7 +2176,7 @@ function updateHeroBalance(newValue){
       if($("pendingList")) $("pendingList").innerHTML = "";
       if($("outflowList")) $("outflowList").innerHTML = "";
       initDate();
-      fillOperatorFromProfile();
+      fillOperadorFromProfile();
       renderCalculations();
     }
 
@@ -2203,7 +2203,7 @@ function updateHeroBalance(newValue){
         saldoEl.style.color = turno.saldoLiquido < 0 ? "#ef4444" : "#06152e";
       }
 
-      if($("homeOperator")) $("homeOperator").textContent = profileName() || "-";
+      if($("homeOperador")) $("homeOperador").textContent = profileName() || "-";
     }
 
  function renderMonthlyGoal(view){
@@ -2330,7 +2330,7 @@ function updateHeroBalance(newValue){
         $("homeWeekResult").textContent = formatMoney(weekResult);
         $("homeWeekResult").style.color = weekResult < 0 ? "#dc2626" : "#059669";
       }
-      if($("homeOperator")) $("homeOperator").textContent = last ? (last.operatorName || last.turno?.operatorName || "-") : "-";
+      if($("homeOperador")) $("homeOperador").textContent = last ? (last.operadorName || last.turno?.operadorName || "-") : "-";
       if($("homeLastClose")) $("homeLastClose").textContent = last ? dateLabel(last.submittedAt || last.createdAt || last.turno?.closingDate) : "-";
       if($("homeUpdatedAt")) $("homeUpdatedAt").textContent = last ? "Última atualização: " + dateLabel(last.submittedAt || last.createdAt) : "Aguardando fechamento";
       renderMonthlyGoal(view);
@@ -2393,7 +2393,7 @@ function updateHeroBalance(newValue){
       let list = visibleHistory();
 
       if(search){
-        list = list.filter(x => (x.operatorName || x.turno?.operatorName || "").toLowerCase().includes(search));
+        list = list.filter(x => (x.operadorName || x.turno?.operadorName || "").toLowerCase().includes(search));
       }
 
       if(date){
@@ -2410,7 +2410,7 @@ function updateHeroBalance(newValue){
 
       const html = list.map(item => {
         const t = item.turno || {};
-        const operator = item.operatorName || t.operatorName || "Sem operador";
+        const operador = item.operadorName || t.operadorName || "Sem operador";
         const ajuste = isAdjustmentItem(item);
         const saldo = ajuste ? adjustmentImpact(item) : (t.saldoLiquido ?? item.currentSaldoTotal ?? 0);
         const diff = displayCashDiff(item);
@@ -2424,7 +2424,7 @@ function updateHeroBalance(newValue){
 
         return `<div class="history-item" data-receipt="${item.id}" style="cursor:pointer;">
           <div class="history-top">
-            <strong>${operator} ${ajuste ? '<span class="badge" style="margin-left:6px;">AJUSTE</span>' : ''}${lastEditableBadge}</strong>
+            <strong>${operador} ${ajuste ? '<span class="badge" style="margin-left:6px;">AJUSTE</span>' : ''}${lastEditableBadge}</strong>
             <span>${dateLabel(item.submittedAt || t.closingDate)}</span>
           </div>
           <div class="history-values">
@@ -2452,7 +2452,7 @@ function updateHeroBalance(newValue){
       const totalAvailable = Math.min(visibleHistory().filter(x => {
         const searchNow = $("historySearch")?.value.trim().toLowerCase() || "";
         const dateNow = $("historyDate")?.value || "";
-        if(searchNow && !(x.operatorName || x.turno?.operatorName || "").toLowerCase().includes(searchNow)) return false;
+        if(searchNow && !(x.operadorName || x.turno?.operadorName || "").toLowerCase().includes(searchNow)) return false;
         if(dateNow){
           const d = x.submittedAt?.toDate ? x.submittedAt.toDate() : new Date(x.turno?.closingDate || x.createdAt || 0);
           if(isNaN(d) || d.toISOString().slice(0,10) !== dateNow) return false;
@@ -2483,7 +2483,7 @@ function updateHeroBalance(newValue){
 
       const map = new Map();
       list.forEach(x=>{
-        const name = x.operatorName || x.turno?.operatorName || "Sem operador";
+        const name = x.operadorName || x.turno?.operadorName || "Sem operador";
         const diff = moneyToNumber(x.diff ?? 0);
         const prev = map.get(name) || { name, total:0, count:0 };
         prev.total += diff;
@@ -2541,7 +2541,7 @@ function updateHeroBalance(newValue){
 
     function validateTurnBeforeSave(turno){
       const hasMainValue = [turno.webReca, turno.suprema, turno.pppoker, turno.buffalo, turno.ganamos, turno.cargasPoker, turno.cargasCasino, turno.pendentesTotal, turno.saidasTotal].some(v=>moneyToNumber(v)>0);
-      if(!turno.operatorName) return "Informe o operador.";
+      if(!turno.operadorName) return "Informe o operador.";
       if(!hasMainValue) return "Informe pelo menos um valor antes de salvar.";
       
       return "";
@@ -2598,11 +2598,11 @@ function updateHeroBalance(newValue){
           adjustment:false,
           turno:{
             ...turno,
-            operatorEmail:currentUser?.email || null,
+            operadorEmail:currentUser?.email || null,
             createdByEmail:currentUser?.email || null
           },
-          operatorName:turno.operatorName,
-          operatorEmail:currentUser?.email || null,
+          operadorName:turno.operadorName,
+          operadorEmail:currentUser?.email || null,
           supervisorUid:turno.supervisorUid,
           supervisorEmail:turno.supervisorEmail,
           supervisorName:turno.supervisorName,
@@ -2614,7 +2614,7 @@ function updateHeroBalance(newValue){
           createdByEmail:currentUser?.email||null
         });
 
-        await addAudit("save_closing",`Fechamento salvo por ${turno.operatorName}`);
+        await addAudit("save_closing",`Fechamento salvo por ${turno.operadorName}`);
         clearClosingForm();
         alert("Fechamento salvo com sucesso.");
       }catch(e){
@@ -2641,7 +2641,7 @@ function updateHeroBalance(newValue){
       const operador = $("quickCargaOperador")?.value.trim() || profileName() || "Admin";
       const totalAjuste = (cargasPoker * 400) + cargasCasino - retiradaCaixa;
       const turno = {
-        operatorName: operador,
+        operadorName: operador,
         closingDate: new Date().toISOString(),
         webReca: 0,
         suprema: 0,
@@ -2684,7 +2684,7 @@ function updateHeroBalance(newValue){
           adjustmentType:"carga_rapida",
           adjustmentReason:motivo,
           turno,
-          operatorName:operador,
+          operadorName:operador,
           currentSaldoTotal,
           diff,
           submittedAt:serverTimestamp(),
@@ -2751,7 +2751,7 @@ alert("Carga adicionada ao sistema como ajuste auditável.");
 
       $("receiptContent").innerHTML = `
         <div class="receipt-grid">
-          <div class="receipt-row"><span>Operador</span><b>${item.operatorName || t.operatorName || "-"}</b></div>
+          <div class="receipt-row"><span>Operador</span><b>${item.operadorName || t.operadorName || "-"}</b></div>
           <div class="receipt-row"><span>Supervisor</span><b>${item.supervisorName || t.supervisorName || item.supervisorEmail || "-"}</b></div>
           <div class="receipt-row"><span>Data</span><b>${dateLabel(item.submittedAt || t.closingDate)}</b></div>
           <div class="receipt-row"><span>Diferença de caixa</span><b style="color:${diff<0?'#ef4444':'#10b981'}">${formatMoney(diff)}</b></div>
@@ -2798,7 +2798,7 @@ alert("Carga adicionada ao sistema como ajuste auditável.");
       const impacto = adjustmentImpact(item);
       const parts = getAdjustmentParts(item);
       const motivo = t.ajusteMotivo || item.adjustmentReason || "Ajuste interno";
-      const operador = item.operatorName || t.operatorName || "-";
+      const operador = item.operadorName || t.operadorName || "-";
       const data = dateLabel(item.submittedAt || t.closingDate || item.createdAt);
       const tipoRetirada = t.retiradaTipo ? outflowCategoryLabel(t.retiradaTipo) : "-";
 
@@ -3004,7 +3004,7 @@ alert("Carga adicionada ao sistema como ajuste auditável.");
           (tt.outflows || []).forEach(o=>{
             if(o.category === "lucro"){
               rows.push({
-                label: `${item.operatorName || tt.operatorName || "Sem operador"} • ${o.name || "Retirada lucro"}`,
+                label: `${item.operadorName || tt.operadorName || "Sem operador"} • ${o.name || "Retirada lucro"}`,
                 value: moneyToNumber(o.value || 0)
               });
             }
@@ -3023,9 +3023,9 @@ alert("Carga adicionada ao sistema como ajuste auditável.");
       $("receiptModal").classList.add("active");
     }
 
-    async function openEditHistory(id){ const item=historyCache.find(x=>x.id===id); if(!item) return alert("Fechamento não encontrado no cache."); if(!canEditHistoryItem(item)) return alert("Você só pode editar o seu último fechamento de turno."); const t=item.turno||{}; $("editHistoryId").value=id; $("editOperatorName").value=item.operatorName||t.operatorName||""; $("editClosingDate").value=toDateInputValue(t.closingDate||item.submittedAt); $("editWebReca").value=t.webReca??t.reca??0; $("editSuprema").value=t.suprema??0; $("editPppoker").value=t.pppoker??0; $("editBuffalo").value=t.buffalo??0; $("editGanamos").value=t.ganamos??0; $("editCargasPoker").value=t.cargasPoker??0; $("editCargasCasino").value=t.cargasCasino??t.cargas??0; setDynamicRows("editPendingList",t.pendings||[]); setDynamicRows("editOutflowList",t.outflows||[]); $("editHistoryModal").classList.add("active"); }
+    async function openEditHistory(id){ const item=historyCache.find(x=>x.id===id); if(!item) return alert("Fechamento não encontrado no cache."); if(!canEditHistoryItem(item)) return alert("Você só pode editar o seu último fechamento de turno."); const t=item.turno||{}; $("editHistoryId").value=id; $("editOperadorName").value=item.operadorName||t.operadorName||""; $("editClosingDate").value=toDateInputValue(t.closingDate||item.submittedAt); $("editWebReca").value=t.webReca??t.reca??0; $("editSuprema").value=t.suprema??0; $("editPppoker").value=t.pppoker??0; $("editBuffalo").value=t.buffalo??0; $("editGanamos").value=t.ganamos??0; $("editCargasPoker").value=t.cargasPoker??0; $("editCargasCasino").value=t.cargasCasino??t.cargas??0; setDynamicRows("editPendingList",t.pendings||[]); setDynamicRows("editOutflowList",t.outflows||[]); $("editHistoryModal").classList.add("active"); }
     function closeEdit(){ $("editHistoryModal").classList.remove("active"); }
-    async function saveEdit(){ const id=$("editHistoryId").value; const ref=doc(db,"history",id); const original=historyCache.find(x=>x.id===id)||{}; if(!canEditHistoryItem(original)) return alert("Você só pode editar o seu último fechamento de turno."); const t={...(original.turno||{}),operatorName:$("editOperatorName").value.trim(),closingDate:$("editClosingDate").value||new Date().toISOString(),webReca:moneyToNumber($("editWebReca").value),suprema:moneyToNumber($("editSuprema").value),pppoker:moneyToNumber($("editPppoker").value),buffalo:moneyToNumber($("editBuffalo").value),ganamos:moneyToNumber($("editGanamos").value),cargasPoker:moneyToNumber($("editCargasPoker").value),cargasCasino:moneyToNumber($("editCargasCasino").value),pendings:getDynamicRows("editPendingList"),outflows:getDynamicRows("editOutflowList")}; t.pendentesTotal=t.pendings.reduce((s,x)=>s+x.value,0); t.saidasTotal=t.outflows.reduce((s,x)=>s+x.value,0); t.retiradaLucroTotal=sumOutflowsByCategory(t.outflows,"lucro"); t.custoOperacionalTotal=sumOutflowsByCategory(t.outflows,"custo_operacional"); t.custoRecaTotal=sumOutflowsByCategory(t.outflows,"custo_reca"); t.saldoLiquido=calcularSaldoLiquido(t); t.baseOperacional=calcularBaseOperacional(t); try{await updateDoc(ref,{turno:t,operatorName:t.operatorName,currentSaldoTotal:t.saldoLiquido,operationalBase:t.baseOperacional,editedAt:serverTimestamp(),editedBy:currentUser?.uid||null,editedByEmail:currentUser?.email||null}); await addAudit("edit_history",`Fechamento editado: ${id}`); closeEdit(); if(isAdmin()) await recalculateAllHistory(); else renderAll(); alert("Fechamento editado com sucesso.");}catch(e){alert(friendlyError(e));} }
+    async function saveEdit(){ const id=$("editHistoryId").value; const ref=doc(db,"history",id); const original=historyCache.find(x=>x.id===id)||{}; if(!canEditHistoryItem(original)) return alert("Você só pode editar o seu último fechamento de turno."); const t={...(original.turno||{}),operadorName:$("editOperadorName").value.trim(),closingDate:$("editClosingDate").value||new Date().toISOString(),webReca:moneyToNumber($("editWebReca").value),suprema:moneyToNumber($("editSuprema").value),pppoker:moneyToNumber($("editPppoker").value),buffalo:moneyToNumber($("editBuffalo").value),ganamos:moneyToNumber($("editGanamos").value),cargasPoker:moneyToNumber($("editCargasPoker").value),cargasCasino:moneyToNumber($("editCargasCasino").value),pendings:getDynamicRows("editPendingList"),outflows:getDynamicRows("editOutflowList")}; t.pendentesTotal=t.pendings.reduce((s,x)=>s+x.value,0); t.saidasTotal=t.outflows.reduce((s,x)=>s+x.value,0); t.retiradaLucroTotal=sumOutflowsByCategory(t.outflows,"lucro"); t.custoOperacionalTotal=sumOutflowsByCategory(t.outflows,"custo_operacional"); t.custoRecaTotal=sumOutflowsByCategory(t.outflows,"custo_reca"); t.saldoLiquido=calcularSaldoLiquido(t); t.baseOperacional=calcularBaseOperacional(t); try{await updateDoc(ref,{turno:t,operadorName:t.operadorName,currentSaldoTotal:t.saldoLiquido,operationalBase:t.baseOperacional,editedAt:serverTimestamp(),editedBy:currentUser?.uid||null,editedByEmail:currentUser?.email||null}); await addAudit("edit_history",`Fechamento editado: ${id}`); closeEdit(); if(isAdmin()) await recalculateAllHistory(); else renderAll(); alert("Fechamento editado com sucesso.");}catch(e){alert(friendlyError(e));} }
 
     async function recalculateAllHistory(){
       if(!await requireAdmin()) return false;
@@ -3090,7 +3090,7 @@ alert("Carga adicionada ao sistema como ajuste auditável.");
     }
     async function refreshInternal(){ const loader=$("appReloadLoader"); loader?.classList.add("active"); renderAll(); setTimeout(()=>loader?.classList.remove("active"),650); }
 
-    function getReportItems(){ let items=visibleHistory(); const start=$("reportStart")?.value, end=$("reportEnd")?.value, operator=($("reportOperator")?.value||"").trim().toLowerCase(), supervisor=($("reportSupervisor")?.value||"").trim().toLowerCase(); if(start) items=items.filter(x=>{const d=x.submittedAt?.toDate?x.submittedAt.toDate():new Date(x.turno?.closingDate||x.createdAt||0); return !isNaN(d)&&d.toISOString().slice(0,10)>=start;}); if(end) items=items.filter(x=>{const d=x.submittedAt?.toDate?x.submittedAt.toDate():new Date(x.turno?.closingDate||x.createdAt||0); return !isNaN(d)&&d.toISOString().slice(0,10)<=end;}); if(operator) items=items.filter(x=>String(x.operatorName||x.turno?.operatorName||"").toLowerCase().includes(operator)); if(supervisor) items=items.filter(x=>String(x.supervisorName||x.turno?.supervisorName||x.supervisorEmail||x.turno?.supervisorEmail||"").toLowerCase().includes(supervisor)); return items; }
+    function getReportItems(){ let items=visibleHistory(); const start=$("reportStart")?.value, end=$("reportEnd")?.value, operador=($("reportOperador")?.value||"").trim().toLowerCase(), supervisor=($("reportSupervisor")?.value||"").trim().toLowerCase(); if(start) items=items.filter(x=>{const d=x.submittedAt?.toDate?x.submittedAt.toDate():new Date(x.turno?.closingDate||x.createdAt||0); return !isNaN(d)&&d.toISOString().slice(0,10)>=start;}); if(end) items=items.filter(x=>{const d=x.submittedAt?.toDate?x.submittedAt.toDate():new Date(x.turno?.closingDate||x.createdAt||0); return !isNaN(d)&&d.toISOString().slice(0,10)<=end;}); if(operador) items=items.filter(x=>String(x.operadorName||x.turno?.operadorName||"").toLowerCase().includes(operador)); if(supervisor) items=items.filter(x=>String(x.supervisorName||x.turno?.supervisorName||x.supervisorEmail||x.turno?.supervisorEmail||"").toLowerCase().includes(supervisor)); return items; }
     function previewReport(){ if(!$("reportPreviewCount")) return; const items=getReportItems(), totalSaldo=items.reduce((s,x)=>s+moneyToNumber(x.turno?.saldoLiquido??x.currentSaldoTotal),0), totalDiff=items.reduce((s,x)=>s+moneyToNumber(x.diff),0); $("reportPreviewCount").textContent=items.length; $("reportPreviewSaldo").textContent=formatMoney(totalSaldo); $("reportPreviewDiff").textContent=formatMoney(totalDiff); }
     function buildBankPdfHtml(items){
       const generatedAt = new Date().toLocaleString("pt-BR");
@@ -3110,7 +3110,7 @@ alert("Carga adicionada ao sistema como ajuste auditável.");
         const base = ajuste ? moneyToNumber(item.operationalBase ?? item.currentSaldoTotal ?? 0) : calcularBaseOperacional({ ...t, saldoLiquido: saldo });
         const positive = diff >= 0;
         const titulo = ajuste ? "Ajuste interno" : "Fechamento de turno";
-        const operador = item.operatorName || t.operatorName || "Sem operador";
+        const operador = item.operadorName || t.operadorName || "Sem operador";
         const data = dateLabel(item.submittedAt || t.closingDate);
         const motivo = t.ajusteMotivo || item.adjustmentReason || "-";
         const cargaPoker = moneyToNumber(t.cargasPoker || 0) * 400;
@@ -3170,7 +3170,7 @@ alert("Carga adicionada ao sistema como ajuste auditável.");
     function startSystemRealtime(){ if(systemUnsubscribe) systemUnsubscribe(); systemUnsubscribe=onSnapshot(doc(db,"system","saldoReca"),snap=>{ if(!snap.exists()) return; const data=snap.data(); if(data.valor!==undefined){$("homeSaldoReca").textContent=formatMoney(data.valor); $("homeUpdatedAt").textContent="Saldo realtime: "+dateLabel(data.updatedAt);}},error=>console.warn("Saldo Reca realtime não configurado:",error)); }
 
     async function safeSetUserProfile(user, profile){ try{ await setDoc(doc(db,"users",user.uid), profile, { merge:true }); return true; }catch(e){ console.warn("Não conseguiu gravar perfil:",e); showNotice("appNotice",friendlyError(e),"error"); return false; } }
-    async function loadProfile(user){ const ref=doc(db,"users",user.uid); try{ const snap=await getDoc(ref); if(snap.exists()) return snap.data(); const bootstrap=isBootstrapEmail(user.email); const profile={email:user.email,name:user.email.split("@")[0],role:bootstrap?"admin":"operator",approved:bootstrap?true:false,blocked:false,createdAt:serverTimestamp()}; await safeSetUserProfile(user,profile); return profile; }catch(e){ console.warn("Erro ao ler perfil:",e); if(isBootstrapEmail(user.email)){ return {email:user.email,name:user.email.split("@")[0],role:"admin",approved:true,blocked:false,localOnly:true}; } showNotice("appNotice",friendlyError(e),"error"); return {email:user.email,name:user.email.split("@")[0],role:"operator",approved:false,blocked:false,permissionError:true}; } }
+    async function loadProfile(user){ const ref=doc(db,"users",user.uid); try{ const snap=await getDoc(ref); if(snap.exists()) return snap.data(); const bootstrap=isBootstrapEmail(user.email); const profile={email:user.email,name:user.email.split("@")[0],role:bootstrap?"admin":"operador",status:bootstrap?"active":"pending",approved:bootstrap?true:false,blocked:false,createdAt:serverTimestamp()}; await safeSetUserProfile(user,profile); return profile; }catch(e){ console.warn("Erro ao ler perfil:",e); if(isBootstrapEmail(user.email)){ return {email:user.email,name:user.email.split("@")[0],role:"admin",approved:true,blocked:false,localOnly:true}; } showNotice("appNotice",friendlyError(e),"error"); return {email:user.email,name:user.email.split("@")[0],role:"operador",status:"pending",approved:false,blocked:false,permissionError:true}; } }
     async function addAudit(action,description){ try{ await addDoc(collection(db,"audit_logs"),{action,description,uid:currentUser?.uid||null,email:currentUser?.email||null,createdAt:serverTimestamp()}); }catch(e){ console.warn("Audit não gravado:",e); } }
 
     async function loadUsers(){
@@ -3180,7 +3180,7 @@ alert("Carga adicionada ao sistema como ajuste auditável.");
 
         $("usersList").innerHTML = snap.docs.map(d=>{
           const u = d.data();
-          const role = u.role || "operator";
+          const role = u.role || "operador";
           const status = u.blocked ? "Bloqueado" : (u.approved ? "Aprovado" : "Pendente");
 
           return `<div class="user-item">
@@ -3196,7 +3196,7 @@ alert("Carga adicionada ao sistema como ajuste auditável.");
 
             <div class="user-actions">
               <select data-role-select="${d.id}">
-                <option value="operator" ${role === "operator" ? "selected" : ""}>Operador</option>
+                <option value="operador" ${role === "operador" ? "selected" : ""}>Operador</option>
                 <option value="supervisor" ${role === "supervisor" ? "selected" : ""}>Supervisor</option>
                 <option value="admin" ${role === "admin" ? "selected" : ""}>Admin</option>
               </select>
@@ -3214,7 +3214,7 @@ alert("Carga adicionada ao sistema como ajuste auditável.");
 
         document.querySelectorAll("[data-run-user-action]").forEach(btn=>btn.onclick=async()=>{
           const id = btn.dataset.runUserAction;
-          const role = document.querySelector(`[data-role-select="${id}"]`)?.value || "operator";
+          const role = document.querySelector(`[data-role-select="${id}"]`)?.value || "operador";
           const action = document.querySelector(`[data-action-select="${id}"]`)?.value || "approve";
 
           if(action === "approve"){
@@ -3242,8 +3242,8 @@ alert("Carga adicionada ao sistema como ajuste auditável.");
 
     async function loadAudit(){ if(!isAdmin()) return; try{ const qh=query(collection(db,"audit_logs"),orderBy("createdAt","desc"),limit(20)); const snap=await getDocs(qh); $("auditList").innerHTML=snap.docs.map(d=>{const a=d.data(); return `<div class="history-item"><div class="history-top"><strong>${a.action}</strong><span>${dateLabel(a.createdAt)}</span></div><div class="muted">${a.description||""}<br>${a.email||""}</div></div>`;}).join("")||`<div class="history-item">Sem auditoria.</div>`; }catch(e){ $("auditList").innerHTML=`<div class="notice error">${friendlyError(e)}</div>`; } }
 
-    async function createInternalUser(){ if(!await requireAdmin()) return; const email=$("newUserEmail").value.trim(), password=$("newUserPassword").value, name=$("newUserName").value.trim(), role=$("newUserRole").value, supervisorRaw=$("newUserSupervisor")?.value.trim()||""; if(!email||!password) return alert("Informe email e senha."); if(password.length<6) return alert("A senha precisa ter pelo menos 6 caracteres."); const secondaryApp=initializeApp(firebaseConfig,"SecondaryUserCreator"+Date.now()), secondaryAuth=getAuth(secondaryApp); try{ const cred=await createUserWithEmailAndPassword(secondaryAuth,email,password); await setDoc(doc(db,"users",cred.user.uid),{email,name:name||email.split("@")[0],role,supervisorUid:role==="operator"&&!supervisorRaw.includes("@")?(supervisorRaw||null):null,supervisorEmail:role==="operator"&&supervisorRaw.includes("@")?supervisorRaw:null,approved:true,blocked:false,createdAt:serverTimestamp(),createdBy:currentUser?.uid||null}); await signOut(secondaryAuth); await deleteApp(secondaryApp); await addAudit("create_user",`Usuário criado: ${email}`); ["newUserEmail","newUserPassword","newUserName","newUserSupervisor"].forEach(id=>{if($(id)) $(id).value="";}); await loadUsers(); alert("Usuário criado com sucesso."); }catch(e){ try{await signOut(secondaryAuth);await deleteApp(secondaryApp);}catch(_ignored){} alert(friendlyError(e)); } }
-    async function registerAccess(){ const email=$("loginEmail").value.trim(), password=$("loginPassword").value; if(!email||!password) return showNotice("loginNotice","Informe email e senha para criar acesso.","error"); if(password.length<6) return showNotice("loginNotice","A senha precisa ter pelo menos 6 caracteres.","error"); try{ const bootstrap=isBootstrapEmail(email); const cred=await createUserWithEmailAndPassword(auth,email,password); const profile={email,name:email.split("@")[0],role:bootstrap?"admin":"operator",approved:bootstrap?true:false,blocked:false,createdAt:serverTimestamp()}; await safeSetUserProfile(cred.user,profile); showNotice("loginNotice",bootstrap?"Conta admin criada. Entrando...":"Conta criada. Aguarde aprovação do admin.",bootstrap?"ok":"error"); }catch(e){ showNotice("loginNotice",friendlyError(e),"error"); } }
+    async function createInternalUser(){ if(!await requireAdmin()) return; const email=$("newUserEmail").value.trim(), password=$("newUserPassword").value, name=$("newUserName").value.trim(), role=$("newUserRole").value, supervisorRaw=$("newUserSupervisor")?.value.trim()||""; if(!email||!password) return alert("Informe email e senha."); if(password.length<6) return alert("A senha precisa ter pelo menos 6 caracteres."); const secondaryApp=initializeApp(firebaseConfig,"SecondaryUserCreator"+Date.now()), secondaryAuth=getAuth(secondaryApp); try{ const cred=await createUserWithEmailAndPassword(secondaryAuth,email,password); await setDoc(doc(db,"users",cred.user.uid),{email,name:name||email.split("@")[0],role,supervisorUid:role==="operador"&&!supervisorRaw.includes("@")?(supervisorRaw||null):null,supervisorEmail:role==="operador"&&supervisorRaw.includes("@")?supervisorRaw:null,approved:true,blocked:false,createdAt:serverTimestamp(),createdBy:currentUser?.uid||null}); await signOut(secondaryAuth); await deleteApp(secondaryApp); await addAudit("create_user",`Usuário criado: ${email}`); ["newUserEmail","newUserPassword","newUserName","newUserSupervisor"].forEach(id=>{if($(id)) $(id).value="";}); await loadUsers(); alert("Usuário criado com sucesso."); }catch(e){ try{await signOut(secondaryAuth);await deleteApp(secondaryApp);}catch(_ignored){} alert(friendlyError(e)); } }
+    async function registerAccess(){ const email=$("loginEmail").value.trim(), password=$("loginPassword").value; if(!email||!password) return showNotice("loginNotice","Informe email e senha para criar acesso.","error"); if(password.length<6) return showNotice("loginNotice","A senha precisa ter pelo menos 6 caracteres.","error"); try{ const bootstrap=isBootstrapEmail(email); const cred=await createUserWithEmailAndPassword(auth,email,password); const profile={email,name:email.split("@")[0],role:bootstrap?"admin":"operador",status:bootstrap?"active":"pending",approved:bootstrap?true:false,blocked:false,createdAt:serverTimestamp()}; await safeSetUserProfile(cred.user,profile); showNotice("loginNotice",bootstrap?"Conta admin criada. Entrando...":"Conta criada. Aguarde aprovação do admin.",bootstrap?"ok":"error"); }catch(e){ showNotice("loginNotice",friendlyError(e),"error"); } }
 
     function showScreen(name){
       if(name === "Admin" && !isAdmin()){
@@ -3290,7 +3290,7 @@ alert("Carga adicionada ao sistema como ajuste auditável.");
           showScreen("Home");
           refreshInternal();
         };
-      } applyBankMoneyMaskAll(document); enableClearOnFocus(); ["webReca","suprema","pppoker","buffalo","ganamos","cargasPoker","cargasCasino","quickCargaCasino","quickRetiradaCaixa","operatorName","closingDate","editWebReca","editSuprema","editPppoker","editBuffalo","editGanamos","editCargasPoker","editCargasCasino"].forEach(id=>$(id)?.addEventListener("input",renderCalculations)); document.addEventListener("bankmoney", renderCalculations); $("togglePendingBtn") && ($("togglePendingBtn").onclick=()=>{ const panel=$("pendingPanel"); panel?.classList.toggle("active"); $("togglePendingBtn").textContent = panel?.classList.contains("active") ? "Ocultar" : "Abrir"; });
+      } applyBankMoneyMaskAll(document); enableClearOnFocus(); ["webReca","suprema","pppoker","buffalo","ganamos","cargasPoker","cargasCasino","quickCargaCasino","quickRetiradaCaixa","operadorName","closingDate","editWebReca","editSuprema","editPppoker","editBuffalo","editGanamos","editCargasPoker","editCargasCasino"].forEach(id=>$(id)?.addEventListener("input",renderCalculations)); document.addEventListener("bankmoney", renderCalculations); $("togglePendingBtn") && ($("togglePendingBtn").onclick=()=>{ const panel=$("pendingPanel"); panel?.classList.toggle("active"); $("togglePendingBtn").textContent = panel?.classList.contains("active") ? "Ocultar" : "Abrir"; });
       $("toggleOutflowBtn") && ($("toggleOutflowBtn").onclick=()=>{ const panel=$("outflowPanel"); panel?.classList.toggle("active"); $("toggleOutflowBtn").textContent = panel?.classList.contains("active") ? "Ocultar" : "Abrir"; });
       $("addPendingBtn") && ($("addPendingBtn").onclick=()=>createDynamicRow("pendingList","Nome / motivo"));
       $("addOutflowBtn") && ($("addOutflowBtn").onclick=()=>createDynamicRow("outflowList","Descrição"));
@@ -3307,7 +3307,7 @@ alert("Carga adicionada ao sistema como ajuste auditável.");
       $("pdfReportBtn") && ($("pdfReportBtn").onclick=generateBankPdfReport);
       $("previewReportBtn") && ($("previewReportBtn").onclick=previewReport);
       $("generateReportBtn") && ($("generateReportBtn").onclick=generateBankPdfReport);
-      ["reportStart","reportEnd","reportOperator","reportSupervisor"].forEach(id=>$(id)?.addEventListener("input",previewReport));
+      ["reportStart","reportEnd","reportOperador","reportSupervisor"].forEach(id=>$(id)?.addEventListener("input",previewReport));
       $("loadUsersBtn") && ($("loadUsersBtn").onclick=loadUsers);
       $("toggleCreateUserBtn") && ($("toggleCreateUserBtn").onclick=()=>{
         const panel = $("createUserPanel");
@@ -3351,7 +3351,7 @@ alert("Carga adicionada ao sistema como ajuste auditável.");
     onAuthStateChanged(auth,async(user)=>{ currentUser=user; if(!user){$("loginScreen").classList.remove("hidden");$("appShell").classList.add("hidden");$("bottomNav").classList.add("hidden");return;} currentProfile=await loadProfile(user); if(currentProfile.blocked){await signOut(auth);return alert("Usuário bloqueado.");} if(currentProfile.approved===false){$("loginScreen").classList.remove("hidden");$("appShell").classList.add("hidden");$("bottomNav").classList.add("hidden");showNotice("loginNotice","Usuário aguardando aprovação do admin.","error");return;} $("loginScreen").classList.add("hidden");$("appShell").classList.remove("hidden");$("bottomNav").classList.remove("hidden");$("topUserLabel").textContent=`${currentProfile.name||user.email} • ${isAdmin()?"Admin":isSupervisor()?"Supervisor":"Operador"}`; $("adminStatus").textContent=isAdmin()?"Admin ativo":"Somente admin";
       if($("moreAdminBtn")) $("moreAdminBtn").style.display = isAdmin() ? "flex" : "none";
 
-      updateRoleVisibility(); if(currentProfile.permissionError) showNotice("appNotice","Seu login entrou, mas o Firestore negou acesso ao perfil. Ajuste as regras ou coloque seu email em BOOTSTRAP_ADMIN_EMAILS.","error"); startHistoryRealtimeListener(); startSystemRealtime(); fillOperatorFromProfile(); renderAll(); });
+      updateRoleVisibility(); if(currentProfile.permissionError) showNotice("appNotice","Seu login entrou, mas o Firestore negou acesso ao perfil. Ajuste as regras ou coloque seu email em BOOTSTRAP_ADMIN_EMAILS.","error"); startHistoryRealtimeListener(); startSystemRealtime(); fillOperadorFromProfile(); renderAll(); });
 
     function runSelfTests(){
       const savedUser = currentUser;
