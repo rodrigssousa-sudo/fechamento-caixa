@@ -1493,11 +1493,64 @@ function updateHeroBalance(newValue){
       </div>
 
       <div class="card permissions-card">
-        <div class="card-title"><h2>Permissões por função</h2><span>Controle de acesso</span></div>
-        <div class="permissions-grid">
-          <div class="perm-row"><strong>Operador</strong><span>Salva fechamento, vê início, histórico e comparativo. Não vê lucro diário, lucro semanal, ranking, relatórios, admin, ajustes rápidos/cargas internas nem edição de usuários.</span></div>
-          <div class="perm-row"><strong>Supervisor</strong><span>Vê lucro diário/semanal, ranking, relatórios e histórico. Não cria usuários, não edita usuários e não usa ajustes rápidos/cargas internas.</span></div>
-          <div class="perm-row"><strong>Admin</strong><span>Acesso total: usuários, relatórios, ranking, histórico, recalcular, editar/excluir fechamento, cargas, custos, ajustes rápidos e auditoria.</span></div>
+        <div class="card-title">
+          <h2>Permissões por função</h2>
+          <span>Clique para abrir</span>
+        </div>
+        <div class="permissions-grid permissions-accordion">
+          <details class="perm-card">
+            <summary>
+              <div>
+                <strong>Operador</strong>
+                <span>Acesso operacional básico</span>
+              </div>
+              <b>Abrir</b>
+            </summary>
+            <div class="perm-content">
+              <p>Salva fechamento, vê início, histórico e comparativo.</p>
+              <ul>
+                <li>Não vê lucro diário nem lucro semanal.</li>
+                <li>Não acessa ranking, relatórios, admin ou auditoria.</li>
+                <li>Não usa ajustes rápidos, cargas internas ou edição de usuários.</li>
+              </ul>
+            </div>
+          </details>
+
+          <details class="perm-card">
+            <summary>
+              <div>
+                <strong>Supervisor</strong>
+                <span>Acesso de acompanhamento</span>
+              </div>
+              <b>Abrir</b>
+            </summary>
+            <div class="perm-content">
+              <p>Vê lucro diário/semanal, ranking, relatórios e histórico.</p>
+              <ul>
+                <li>Não cria usuários.</li>
+                <li>Não edita usuários.</li>
+                <li>Não usa ajustes rápidos ou cargas internas.</li>
+              </ul>
+            </div>
+          </details>
+
+          <details class="perm-card">
+            <summary>
+              <div>
+                <strong>Admin</strong>
+                <span>Acesso total do sistema</span>
+              </div>
+              <b>Abrir</b>
+            </summary>
+            <div class="perm-content">
+              <p>Acesso total ao Bank King.</p>
+              <ul>
+                <li>Gerencia usuários, aprova, bloqueia e exclui perfis.</li>
+                <li>Acessa relatórios, ranking, histórico, auditoria e recálculo.</li>
+                <li>Edita/exclui fechamentos e usa cargas internas/ajustes rápidos.</li>
+              </ul>
+            </div>
+          </details>
         </div>
       </div>
 
@@ -3612,26 +3665,95 @@ body.side-drawer-open #sideMenuBtn{
 }
 .permissions-card{margin-top:14px!important;}
 .permissions-grid{display:grid;gap:10px;}
-.perm-row{
+.permissions-accordion{align-items:stretch;}
+.perm-card{
   border:1px solid var(--line);
-  border-radius:16px;
+  border-radius:18px;
   background:#fff;
-  padding:13px 14px;
+  overflow:hidden;
+  box-shadow:var(--shadow-1);
+}
+.perm-card summary{
+  min-height:64px;
+  padding:0 14px;
+  display:grid;
+  grid-template-columns:1fr auto;
+  align-items:center;
+  gap:12px;
+  cursor:pointer;
+  list-style:none;
+  user-select:none;
+}
+.perm-card summary::-webkit-details-marker{display:none;}
+.perm-card summary strong{
+  display:block;
+  color:#242424;
+  font-size:15px;
+  font-weight:950;
+  letter-spacing:-.35px;
+}
+.perm-card summary span{
+  display:block;
+  margin-top:3px;
+  color:var(--muted);
+  font-size:11px;
+  line-height:1.2;
+  font-weight:850;
+  text-transform:uppercase;
+  letter-spacing:.45px;
+}
+.perm-card summary b{
+  min-width:68px;
+  height:32px;
+  padding:0 10px;
+  border-radius:999px;
+  background:#f4f4f6;
+  color:#242424;
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  font-size:11px;
+  font-weight:950;
+  text-transform:uppercase;
+  letter-spacing:.35px;
+}
+.perm-card[open]{
+  border-color:rgba(36,36,36,.18);
+}
+.perm-card[open] summary{
+  border-bottom:1px solid var(--line);
+  background:linear-gradient(180deg,#fff,#fafafa);
+}
+.perm-card[open] summary b{
+  background:#242424;
+  color:#fff;
+}
+.perm-card[open] summary b::before{
+  content:"Fechar";
+  font-size:11px;
+}
+.perm-card[open] summary b{
+  font-size:0;
+}
+.perm-content{
+  padding:13px 14px 15px;
+  color:var(--muted);
+  font-size:12px;
+  line-height:1.42;
+  font-weight:760;
+}
+.perm-content p{
+  margin:0 0 8px;
+  color:#242424;
+  font-weight:850;
+}
+.perm-content ul{
+  margin:0;
+  padding-left:17px;
   display:grid;
   gap:5px;
 }
-.perm-row strong{
-  color:#242424;
-  font-size:14px;
-  font-weight:950;
-  letter-spacing:-.25px;
-}
-.perm-row span{
-  color:var(--muted);
-  font-size:12px;
-  line-height:1.35;
-  font-weight:760;
-}
+.perm-content li::marker{color:#242424;}
 @media(max-width:420px){
   .login-secondary-row{grid-template-columns:1fr 1fr;gap:8px;}
   .login-secondary-row .btn{font-size:12px;padding:0 8px;}
