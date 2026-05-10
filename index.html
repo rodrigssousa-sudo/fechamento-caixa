@@ -2120,6 +2120,25 @@ function updateHeroBalance(newValue){
       }
     }
 
+    function getOperadorName(item={}){
+      const t = item.turno || {};
+      return item.operadorName
+        || item["operatorName"]
+        || t.operadorName
+        || t["operatorName"]
+        || item.nomeOperador
+        || t.nomeOperador
+        || "Sem operador";
+    }
+
+    function setOperadorNameOnTurno(turno, nome){
+      turno.operadorName = nome || "";
+      // Compatibilidade com históricos antigos que ainda foram salvos como operatorName.
+      // Mantém os nomes antigos aparecendo sem precisar migrar manualmente o Firestore.
+      turno["operatorName"] = nome || "";
+      return turno;
+    }
+
     function getDynamicRows(containerId){ const el=$(containerId); if(!el) return []; return [...el.querySelectorAll(".row-item")].map(row=>({name:row.querySelector(".row-name")?.value||"",category:row.querySelector(".row-category")?.value||"",value:moneyToNumber(row.querySelector(".row-value")?.value||0)})).filter(x=>x.name||x.value); }
     function setDynamicRows(containerId, rows=[]){ const el=$(containerId); if(!el) return; el.innerHTML=""; (rows.length?rows:[{}]).forEach(r=>createDynamicRow(containerId,"Nome / motivo",r)); }
     function createDynamicRow(containerId,label="Descrição",data={}){ const list=$(containerId); if(!list) return; const row=document.createElement("div"); const isOutflow=containerId.toLowerCase().includes("outflow"); row.className="row-item"+(isOutflow?" outflow-row":""); const safeName=String(data.name||"").replace(/"/g,'&quot;'); const value=data.value ? formatInputMoney(data.value) : ""; const category=data.category||data.type||"lucro"; row.innerHTML=isOutflow?`<input class="row-name" placeholder="${label}" value="${safeName}" /><select class="row-category"><option value="lucro">Lucro</option><option value="custo_operacional">Custo operacional</option><option value="custo_reca">Custo O. Reca</option></select><input class="row-value money-input" inputmode="decimal" placeholder="0,00" value="${value}" /><button type="button" class="remove-row">×</button>`:`<input class="row-name" placeholder="${label}" value="${safeName}" /><input class="row-value money-input" inputmode="decimal" placeholder="0,00" value="${value}" /><button type="button" class="remove-row">×</button>`; if(isOutflow) row.querySelector(".row-category").value=category; row.querySelectorAll("input,select").forEach(i=>i.addEventListener("input",renderCalculations)); row.querySelectorAll("select").forEach(i=>i.addEventListener("change",renderCalculations)); row.querySelector(".remove-row").onclick=()=>{row.remove();renderCalculations();}; list.appendChild(row); applyBankMoneyMaskAll(row); enableClearOnFocus(); }
@@ -2128,7 +2147,9 @@ function updateHeroBalance(newValue){
       const webReca=moneyToNumber($("webReca")?.value), suprema=moneyToNumber($("suprema")?.value), pppoker=moneyToNumber($("pppoker")?.value), buffalo=moneyToNumber($("buffalo")?.value), ganamos=moneyToNumber($("ganamos")?.value), cargasPoker=moneyToNumber($("cargasPoker")?.value), cargasCasino=moneyToNumber($("cargasCasino")?.value);
       const pendings=getDynamicRows("pendingList"), outflows=getDynamicRows("outflowList");
       const pendentesTotal=pendings.reduce((s,x)=>s+x.value,0), saidasTotal=outflows.reduce((s,x)=>s+x.value,0), retiradaLucroTotal=sumOutflowsByCategory(outflows,"lucro"), custoOperacionalTotal=sumOutflowsByCategory(outflows,"custo_operacional"), custoRecaTotal=sumOutflowsByCategory(outflows,"custo_reca");
-      const turno={operadorName:$("operadorName")?.value.trim()||"", closingDate:$("closingDate")?.value||new Date().toISOString(), webReca,suprema,pppoker,buffalo,ganamos,cargasPoker,cargasCasino,pendings,outflows,pendentesTotal,saidasTotal,retiradaLucroTotal,custoOperacionalTotal,custoRecaTotal};
+      const nomeOperador = $("operadorName")?.value.trim() || "";
+      const turno={operadorName:nomeOperador, closingDate:$("closingDate")?.value||new Date().toISOString(), webReca,suprema,pppoker,buffalo,ganamos,cargasPoker,cargasCasino,pendings,outflows,pendentesTotal,saidasTotal,retiradaLucroTotal,custoOperacionalTotal,custoRecaTotal};
+      setOperadorNameOnTurno(turno, nomeOperador);
       turno.saldoLiquido=calcularSaldoLiquido(turno);
       return turno;
     }
@@ -2330,7 +2351,7 @@ function updateHeroBalance(newValue){
         $("homeWeekResult").textContent = formatMoney(weekResult);
         $("homeWeekResult").style.color = weekResult < 0 ? "#dc2626" : "#059669";
       }
-      if($("homeOperador")) $("homeOperador").textContent = last ? (last.operadorName || last.turno?.operadorName || "-") : "-";
+      if($("homeOperador")) $("homeOperador").textContent = last ? getOperadorName(last) : "-";
       if($("homeLastClose")) $("homeLastClose").textContent = last ? dateLabel(last.submittedAt || last.createdAt || last.turno?.closingDate) : "-";
       if($("homeUpdatedAt")) $("homeUpdatedAt").textContent = last ? "Última atualização: " + dateLabel(last.submittedAt || last.createdAt) : "Aguardando fechamento";
       renderMonthlyGoal(view);
@@ -2393,7 +2414,7 @@ function updateHeroBalance(newValue){
       let list = visibleHistory();
 
       if(search){
-        list = list.filter(x => (x.operadorName || x.turno?.operadorName || "").toLowerCase().includes(search));
+        list = list.filter(x => getOperadorName(x).toLowerCase().includes(search));
       }
 
       if(date){
@@ -2410,7 +2431,7 @@ function updateHeroBalance(newValue){
 
       const html = list.map(item => {
         const t = item.turno || {};
-        const operador = item.operadorName || t.operadorName || "Sem operador";
+        const operador = getOperadorName(item);
         const ajuste = isAdjustmentItem(item);
         const saldo = ajuste ? adjustmentImpact(item) : (t.saldoLiquido ?? item.currentSaldoTotal ?? 0);
         const diff = displayCashDiff(item);
@@ -2452,7 +2473,7 @@ function updateHeroBalance(newValue){
       const totalAvailable = Math.min(visibleHistory().filter(x => {
         const searchNow = $("historySearch")?.value.trim().toLowerCase() || "";
         const dateNow = $("historyDate")?.value || "";
-        if(searchNow && !(x.operadorName || x.turno?.operadorName || "").toLowerCase().includes(searchNow)) return false;
+        if(searchNow && !getOperadorName(x).toLowerCase().includes(searchNow)) return false;
         if(dateNow){
           const d = x.submittedAt?.toDate ? x.submittedAt.toDate() : new Date(x.turno?.closingDate || x.createdAt || 0);
           if(isNaN(d) || d.toISOString().slice(0,10) !== dateNow) return false;
@@ -2483,7 +2504,7 @@ function updateHeroBalance(newValue){
 
       const map = new Map();
       list.forEach(x=>{
-        const name = x.operadorName || x.turno?.operadorName || "Sem operador";
+        const name = getOperadorName(x);
         const diff = moneyToNumber(x.diff ?? 0);
         const prev = map.get(name) || { name, total:0, count:0 };
         prev.total += diff;
@@ -2541,7 +2562,7 @@ function updateHeroBalance(newValue){
 
     function validateTurnBeforeSave(turno){
       const hasMainValue = [turno.webReca, turno.suprema, turno.pppoker, turno.buffalo, turno.ganamos, turno.cargasPoker, turno.cargasCasino, turno.pendentesTotal, turno.saidasTotal].some(v=>moneyToNumber(v)>0);
-      if(!turno.operadorName) return "Informe o operador.";
+      if(!getOperadorName({turno}) || getOperadorName({turno}) === "Sem operador") return "Informe o operador.";
       if(!hasMainValue) return "Informe pelo menos um valor antes de salvar.";
       
       return "";
@@ -2602,6 +2623,8 @@ function updateHeroBalance(newValue){
             createdByEmail:currentUser?.email || null
           },
           operadorName:turno.operadorName,
+          operatorName:turno.operadorName,
+          nomeOperador:turno.operadorName,
           operadorEmail:currentUser?.email || null,
           supervisorUid:turno.supervisorUid,
           supervisorEmail:turno.supervisorEmail,
@@ -2642,6 +2665,8 @@ function updateHeroBalance(newValue){
       const totalAjuste = (cargasPoker * 400) + cargasCasino - retiradaCaixa;
       const turno = {
         operadorName: operador,
+        operatorName: operador,
+        nomeOperador: operador,
         closingDate: new Date().toISOString(),
         webReca: 0,
         suprema: 0,
@@ -2751,7 +2776,7 @@ alert("Carga adicionada ao sistema como ajuste auditável.");
 
       $("receiptContent").innerHTML = `
         <div class="receipt-grid">
-          <div class="receipt-row"><span>Operador</span><b>${item.operadorName || t.operadorName || "-"}</b></div>
+          <div class="receipt-row"><span>Operador</span><b>${getOperadorName(item)}</b></div>
           <div class="receipt-row"><span>Supervisor</span><b>${item.supervisorName || t.supervisorName || item.supervisorEmail || "-"}</b></div>
           <div class="receipt-row"><span>Data</span><b>${dateLabel(item.submittedAt || t.closingDate)}</b></div>
           <div class="receipt-row"><span>Diferença de caixa</span><b style="color:${diff<0?'#ef4444':'#10b981'}">${formatMoney(diff)}</b></div>
@@ -2798,7 +2823,7 @@ alert("Carga adicionada ao sistema como ajuste auditável.");
       const impacto = adjustmentImpact(item);
       const parts = getAdjustmentParts(item);
       const motivo = t.ajusteMotivo || item.adjustmentReason || "Ajuste interno";
-      const operador = item.operadorName || t.operadorName || "-";
+      const operador = getOperadorName(item);
       const data = dateLabel(item.submittedAt || t.closingDate || item.createdAt);
       const tipoRetirada = t.retiradaTipo ? outflowCategoryLabel(t.retiradaTipo) : "-";
 
@@ -3004,7 +3029,7 @@ alert("Carga adicionada ao sistema como ajuste auditável.");
           (tt.outflows || []).forEach(o=>{
             if(o.category === "lucro"){
               rows.push({
-                label: `${item.operadorName || tt.operadorName || "Sem operador"} • ${o.name || "Retirada lucro"}`,
+                label: `${getOperadorName(item)} • ${o.name || "Retirada lucro"}`,
                 value: moneyToNumber(o.value || 0)
               });
             }
@@ -3023,9 +3048,9 @@ alert("Carga adicionada ao sistema como ajuste auditável.");
       $("receiptModal").classList.add("active");
     }
 
-    async function openEditHistory(id){ const item=historyCache.find(x=>x.id===id); if(!item) return alert("Fechamento não encontrado no cache."); if(!canEditHistoryItem(item)) return alert("Você só pode editar o seu último fechamento de turno."); const t=item.turno||{}; $("editHistoryId").value=id; $("editOperadorName").value=item.operadorName||t.operadorName||""; $("editClosingDate").value=toDateInputValue(t.closingDate||item.submittedAt); $("editWebReca").value=t.webReca??t.reca??0; $("editSuprema").value=t.suprema??0; $("editPppoker").value=t.pppoker??0; $("editBuffalo").value=t.buffalo??0; $("editGanamos").value=t.ganamos??0; $("editCargasPoker").value=t.cargasPoker??0; $("editCargasCasino").value=t.cargasCasino??t.cargas??0; setDynamicRows("editPendingList",t.pendings||[]); setDynamicRows("editOutflowList",t.outflows||[]); $("editHistoryModal").classList.add("active"); }
+    async function openEditHistory(id){ const item=historyCache.find(x=>x.id===id); if(!item) return alert("Fechamento não encontrado no cache."); if(!canEditHistoryItem(item)) return alert("Você só pode editar o seu último fechamento de turno."); const t=item.turno||{}; $("editHistoryId").value=id; $("editOperadorName").value=getOperadorName(item)==="Sem operador" ? "" : getOperadorName(item); $("editClosingDate").value=toDateInputValue(t.closingDate||item.submittedAt); $("editWebReca").value=t.webReca??t.reca??0; $("editSuprema").value=t.suprema??0; $("editPppoker").value=t.pppoker??0; $("editBuffalo").value=t.buffalo??0; $("editGanamos").value=t.ganamos??0; $("editCargasPoker").value=t.cargasPoker??0; $("editCargasCasino").value=t.cargasCasino??t.cargas??0; setDynamicRows("editPendingList",t.pendings||[]); setDynamicRows("editOutflowList",t.outflows||[]); $("editHistoryModal").classList.add("active"); }
     function closeEdit(){ $("editHistoryModal").classList.remove("active"); }
-    async function saveEdit(){ const id=$("editHistoryId").value; const ref=doc(db,"history",id); const original=historyCache.find(x=>x.id===id)||{}; if(!canEditHistoryItem(original)) return alert("Você só pode editar o seu último fechamento de turno."); const t={...(original.turno||{}),operadorName:$("editOperadorName").value.trim(),closingDate:$("editClosingDate").value||new Date().toISOString(),webReca:moneyToNumber($("editWebReca").value),suprema:moneyToNumber($("editSuprema").value),pppoker:moneyToNumber($("editPppoker").value),buffalo:moneyToNumber($("editBuffalo").value),ganamos:moneyToNumber($("editGanamos").value),cargasPoker:moneyToNumber($("editCargasPoker").value),cargasCasino:moneyToNumber($("editCargasCasino").value),pendings:getDynamicRows("editPendingList"),outflows:getDynamicRows("editOutflowList")}; t.pendentesTotal=t.pendings.reduce((s,x)=>s+x.value,0); t.saidasTotal=t.outflows.reduce((s,x)=>s+x.value,0); t.retiradaLucroTotal=sumOutflowsByCategory(t.outflows,"lucro"); t.custoOperacionalTotal=sumOutflowsByCategory(t.outflows,"custo_operacional"); t.custoRecaTotal=sumOutflowsByCategory(t.outflows,"custo_reca"); t.saldoLiquido=calcularSaldoLiquido(t); t.baseOperacional=calcularBaseOperacional(t); try{await updateDoc(ref,{turno:t,operadorName:t.operadorName,currentSaldoTotal:t.saldoLiquido,operationalBase:t.baseOperacional,editedAt:serverTimestamp(),editedBy:currentUser?.uid||null,editedByEmail:currentUser?.email||null}); await addAudit("edit_history",`Fechamento editado: ${id}`); closeEdit(); if(isAdmin()) await recalculateAllHistory(); else renderAll(); alert("Fechamento editado com sucesso.");}catch(e){alert(friendlyError(e));} }
+    async function saveEdit(){ const id=$("editHistoryId").value; const ref=doc(db,"history",id); const original=historyCache.find(x=>x.id===id)||{}; if(!canEditHistoryItem(original)) return alert("Você só pode editar o seu último fechamento de turno."); const t={...(original.turno||{}),operadorName:$("editOperadorName").value.trim(),closingDate:$("editClosingDate").value||new Date().toISOString(),webReca:moneyToNumber($("editWebReca").value),suprema:moneyToNumber($("editSuprema").value),pppoker:moneyToNumber($("editPppoker").value),buffalo:moneyToNumber($("editBuffalo").value),ganamos:moneyToNumber($("editGanamos").value),cargasPoker:moneyToNumber($("editCargasPoker").value),cargasCasino:moneyToNumber($("editCargasCasino").value),pendings:getDynamicRows("editPendingList"),outflows:getDynamicRows("editOutflowList")}; setOperadorNameOnTurno(t, t.operadorName); t.pendentesTotal=t.pendings.reduce((s,x)=>s+x.value,0); t.saidasTotal=t.outflows.reduce((s,x)=>s+x.value,0); t.retiradaLucroTotal=sumOutflowsByCategory(t.outflows,"lucro"); t.custoOperacionalTotal=sumOutflowsByCategory(t.outflows,"custo_operacional"); t.custoRecaTotal=sumOutflowsByCategory(t.outflows,"custo_reca"); t.saldoLiquido=calcularSaldoLiquido(t); t.baseOperacional=calcularBaseOperacional(t); try{await updateDoc(ref,{turno:t,operadorName:t.operadorName,operatorName:t.operadorName,nomeOperador:t.operadorName,currentSaldoTotal:t.saldoLiquido,operationalBase:t.baseOperacional,editedAt:serverTimestamp(),editedBy:currentUser?.uid||null,editedByEmail:currentUser?.email||null}); await addAudit("edit_history",`Fechamento editado: ${id}`); closeEdit(); if(isAdmin()) await recalculateAllHistory(); else renderAll(); alert("Fechamento editado com sucesso.");}catch(e){alert(friendlyError(e));} }
 
     async function recalculateAllHistory(){
       if(!await requireAdmin()) return false;
@@ -3090,7 +3115,7 @@ alert("Carga adicionada ao sistema como ajuste auditável.");
     }
     async function refreshInternal(){ const loader=$("appReloadLoader"); loader?.classList.add("active"); renderAll(); setTimeout(()=>loader?.classList.remove("active"),650); }
 
-    function getReportItems(){ let items=visibleHistory(); const start=$("reportStart")?.value, end=$("reportEnd")?.value, operador=($("reportOperador")?.value||"").trim().toLowerCase(), supervisor=($("reportSupervisor")?.value||"").trim().toLowerCase(); if(start) items=items.filter(x=>{const d=x.submittedAt?.toDate?x.submittedAt.toDate():new Date(x.turno?.closingDate||x.createdAt||0); return !isNaN(d)&&d.toISOString().slice(0,10)>=start;}); if(end) items=items.filter(x=>{const d=x.submittedAt?.toDate?x.submittedAt.toDate():new Date(x.turno?.closingDate||x.createdAt||0); return !isNaN(d)&&d.toISOString().slice(0,10)<=end;}); if(operador) items=items.filter(x=>String(x.operadorName||x.turno?.operadorName||"").toLowerCase().includes(operador)); if(supervisor) items=items.filter(x=>String(x.supervisorName||x.turno?.supervisorName||x.supervisorEmail||x.turno?.supervisorEmail||"").toLowerCase().includes(supervisor)); return items; }
+    function getReportItems(){ let items=visibleHistory(); const start=$("reportStart")?.value, end=$("reportEnd")?.value, operador=($("reportOperador")?.value||"").trim().toLowerCase(), supervisor=($("reportSupervisor")?.value||"").trim().toLowerCase(); if(start) items=items.filter(x=>{const d=x.submittedAt?.toDate?x.submittedAt.toDate():new Date(x.turno?.closingDate||x.createdAt||0); return !isNaN(d)&&d.toISOString().slice(0,10)>=start;}); if(end) items=items.filter(x=>{const d=x.submittedAt?.toDate?x.submittedAt.toDate():new Date(x.turno?.closingDate||x.createdAt||0); return !isNaN(d)&&d.toISOString().slice(0,10)<=end;}); if(operador) items=items.filter(x=>getOperadorName(x).toLowerCase().includes(operador)); if(supervisor) items=items.filter(x=>String(x.supervisorName||x.turno?.supervisorName||x.supervisorEmail||x.turno?.supervisorEmail||"").toLowerCase().includes(supervisor)); return items; }
     function previewReport(){ if(!$("reportPreviewCount")) return; const items=getReportItems(), totalSaldo=items.reduce((s,x)=>s+moneyToNumber(x.turno?.saldoLiquido??x.currentSaldoTotal),0), totalDiff=items.reduce((s,x)=>s+moneyToNumber(x.diff),0); $("reportPreviewCount").textContent=items.length; $("reportPreviewSaldo").textContent=formatMoney(totalSaldo); $("reportPreviewDiff").textContent=formatMoney(totalDiff); }
     function buildBankPdfHtml(items){
       const generatedAt = new Date().toLocaleString("pt-BR");
@@ -3110,7 +3135,7 @@ alert("Carga adicionada ao sistema como ajuste auditável.");
         const base = ajuste ? moneyToNumber(item.operationalBase ?? item.currentSaldoTotal ?? 0) : calcularBaseOperacional({ ...t, saldoLiquido: saldo });
         const positive = diff >= 0;
         const titulo = ajuste ? "Ajuste interno" : "Fechamento de turno";
-        const operador = item.operadorName || t.operadorName || "Sem operador";
+        const operador = getOperadorName(item);
         const data = dateLabel(item.submittedAt || t.closingDate);
         const motivo = t.ajusteMotivo || item.adjustmentReason || "-";
         const cargaPoker = moneyToNumber(t.cargasPoker || 0) * 400;
