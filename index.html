@@ -220,3 +220,1516 @@
 
   <!-- APP SHELL -->
   <main id="appShell" class="app-shell hidden">
+    <!-- APP TOPBAR -->
+    <header class="app-topbar">
+      <div class="topbar-left">
+        <div class="brand-lockup">
+          <div class="brand-mark">
+            <span class="brand-mark-ring"></span>
+            <span class="brand-mark-core"></span>
+          </div>
+          <div class="brand-text">
+            <span class="brand-overline">BANK KING PRO</span>
+            <strong class="brand-title">Painel Operacional</strong>
+          </div>
+        </div>
+      </div>
+
+      <div class="topbar-center">
+        <div class="institutional-pill">
+          <span class="institutional-pill-dot"></span>
+          <span id="appStatusText">Ambiente operacional ativo</span>
+        </div>
+      </div>
+
+      <div class="topbar-right">
+        <div class="topbar-user-card">
+          <div class="topbar-user-avatar" id="topbarUserAvatar">BK</div>
+          <div class="topbar-user-meta">
+            <span class="topbar-user-label">Usuário conectado</span>
+            <strong id="topbarUserName">Carregando...</strong>
+          </div>
+        </div>
+
+        <button id="moreMenuBtn" class="btn btn-ghost btn-icon" type="button" aria-label="Abrir menu">
+          <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <circle cx="5" cy="12" r="1.8" fill="currentColor"></circle>
+            <circle cx="12" cy="12" r="1.8" fill="currentColor"></circle>
+            <circle cx="19" cy="12" r="1.8" fill="currentColor"></circle>
+          </svg>
+        </button>
+      </div>
+    </header>
+
+    <!-- APP CONTENT -->
+    <div class="app-content">
+
+      <!-- HOME SCREEN -->
+      <section id="homeScreen" class="screen screen-home active">
+        <div class="screen-header institutional-header">
+          <div>
+            <span class="screen-eyebrow">Visão Geral</span>
+            <h1 class="screen-title">Dashboard financeiro</h1>
+            <p class="screen-subtitle">
+              Monitoramento operacional com leitura rápida, consistência visual e foco em resultado.
+            </p>
+          </div>
+
+          <div class="screen-header-actions">
+            <button id="refreshHomeBtn" class="btn btn-secondary" type="button">
+              Atualizar painel
+            </button>
+          </div>
+        </div>
+
+        <!-- HERO / EXECUTIVE SUMMARY -->
+        <div class="executive-hero">
+          <div class="executive-hero-main">
+            <div class="executive-hero-copy">
+              <span class="hero-mini-label">Resumo executivo</span>
+              <h2>Controle financeiro com estética institucional</h2>
+              <p>
+                Acompanhe saldo, lucro e evolução operacional em um ambiente mais
+                sofisticado, estável e alinhado com a linguagem visual de uma instituição financeira.
+              </p>
+            </div>
+
+            <div class="executive-hero-metrics">
+              <div class="executive-mini-card">
+                <span class="mini-card-label">Saldo operacional</span>
+                <strong id="homeSaldoReca">R$ 0,00</strong>
+                <small>Visão principal do fechamento</small>
+              </div>
+
+              <div class="executive-mini-card">
+                <span class="mini-card-label">Data de referência</span>
+                <strong id="homeReferenceDate">--/--/----</strong>
+                <small>Última atualização registrada</small>
+              </div>
+            </div>
+          </div>
+
+          <div class="executive-hero-side">
+            <div class="risk-panel">
+              <div class="risk-panel-top">
+                <span class="risk-panel-label">Status</span>
+                <strong id="homeOperationalStatus">Operação monitorada</strong>
+              </div>
+              <div class="risk-panel-body">
+                <div class="risk-line">
+                  <span>Confiabilidade visual</span>
+                  <strong>Alta</strong>
+                </div>
+                <div class="risk-line">
+                  <span>Leitura operacional</span>
+                  <strong>Rápida</strong>
+                </div>
+                <div class="risk-line">
+                  <span>Modo do painel</span>
+                  <strong>Institutional UI</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- KPI GRID -->
+        <div class="dashboard-grid dashboard-grid-primary">
+          <article class="metric-card metric-card-balance">
+            <div class="metric-card-top">
+              <span class="metric-badge">Saldo</span>
+              <div class="metric-icon">
+                <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                  <rect x="3.5" y="6" width="17" height="12" rx="2.2" stroke="currentColor" stroke-width="1.6"></rect>
+                  <path d="M16 12H16.01" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"></path>
+                  <path d="M3.5 9.5H20.5" stroke="currentColor" stroke-width="1.6"></path>
+                </svg>
+              </div>
+            </div>
+            <div class="metric-card-content">
+              <span class="metric-label">Saldo geral</span>
+              <strong id="homeSaldoGeral">R$ 0,00</strong>
+              <p class="metric-description">Leitura consolidada do resultado operacional.</p>
+            </div>
+          </article>
+
+          <article id="todayResultCard" class="metric-card metric-card-profit">
+            <div class="metric-card-top">
+              <span class="metric-badge">Hoje</span>
+              <div class="metric-icon">
+                <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                  <path d="M4 16L9 11L13 15L20 8" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"></path>
+                  <path d="M15.5 8H20V12.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"></path>
+                </svg>
+              </div>
+            </div>
+            <div class="metric-card-content">
+              <span class="metric-label">Lucro do dia</span>
+              <strong id="homeLucroDia">R$ 0,00</strong>
+              <p class="metric-description">Indicador diário de performance financeira.</p>
+            </div>
+          </article>
+
+          <article id="weekResultCard" class="metric-card metric-card-week">
+            <div class="metric-card-top">
+              <span class="metric-badge">Semana</span>
+              <div class="metric-icon">
+                <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                  <rect x="4" y="5" width="16" height="15" rx="2.2" stroke="currentColor" stroke-width="1.6"></rect>
+                  <path d="M8 3.8V6.2" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"></path>
+                  <path d="M16 3.8V6.2" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"></path>
+                  <path d="M4 9H20" stroke="currentColor" stroke-width="1.6"></path>
+                </svg>
+              </div>
+            </div>
+            <div class="metric-card-content">
+              <span class="metric-label">Lucro semanal</span>
+              <strong id="homeLucroSemana">R$ 0,00</strong>
+              <p class="metric-description">Resultado acumulado da semana operacional.</p>
+            </div>
+          </article>
+
+          <article class="metric-card metric-card-neutral">
+            <div class="metric-card-top">
+              <span class="metric-badge">Controle</span>
+              <div class="metric-icon">
+                <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                  <path d="M12 4L19 7V11.8C19 16.2 16.1 20.2 12 21C7.9 20.2 5 16.2 5 11.8V7L12 4Z" stroke="currentColor" stroke-width="1.6"></path>
+                  <path d="M9.2 12.1L11 13.9L14.9 10" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"></path>
+                </svg>
+              </div>
+            </div>
+            <div class="metric-card-content">
+              <span class="metric-label">Condição do painel</span>
+              <strong id="homePainelStatus">Estável</strong>
+              <p class="metric-description">Interface preparada para leitura contínua e segura.</p>
+            </div>
+          </article>
+        </div>
+
+        <!-- SECONDARY SUMMARY -->
+        <div class="dashboard-grid dashboard-grid-secondary">
+          <article class="summary-card">
+            <div class="summary-card-header">
+              <div>
+                <span class="summary-card-eyebrow">Capital e posição</span>
+                <h3>Visão rápida de caixa</h3>
+              </div>
+            </div>
+
+            <div class="summary-card-body two-columns">
+              <div class="summary-info-row">
+                <span>Saldo de banca</span>
+                <strong id="homeSaldoBanco">R$ 0,00</strong>
+              </div>
+              <div class="summary-info-row">
+                <span>Capital total</span>
+                <strong id="homeCapitalTotal">R$ 0,00</strong>
+              </div>
+              <div class="summary-info-row">
+                <span>Resultado líquido</span>
+                <strong id="homeResultadoLiquido">R$ 0,00</strong>
+              </div>
+              <div class="summary-info-row">
+                <span>Base operacional</span>
+                <strong id="homeBaseOperacional">R$ 0,00</strong>
+              </div>
+            </div>
+          </article>
+
+          <article class="summary-card">
+            <div class="summary-card-header">
+              <div>
+                <span class="summary-card-eyebrow">Operação</span>
+                <h3>Indicadores complementares</h3>
+              </div>
+            </div>
+
+            <div class="summary-card-body two-columns">
+              <div class="summary-info-row">
+                <span>Fechamentos registrados</span>
+                <strong id="homeTotalClosings">0</strong>
+              </div>
+              <div class="summary-info-row">
+                <span>Média diária</span>
+                <strong id="homeDailyAverage">R$ 0,00</strong>
+              </div>
+              <div class="summary-info-row">
+                <span>Melhor resultado</span>
+                <strong id="homeBestResult">R$ 0,00</strong>
+              </div>
+              <div class="summary-info-row">
+                <span>Último operador</span>
+                <strong id="homeLastOperator">--</strong>
+              </div>
+            </div>
+          </article>
+        </div>
+
+        <!-- CHIPS COMPARISON -->
+        <div class="dashboard-grid dashboard-grid-comparison">
+          <article class="panel-card panel-card-comparison">
+            <div class="panel-card-header">
+              <div>
+                <span class="panel-card-eyebrow">Comparativo</span>
+                <h3>Diferença de fichas e valores</h3>
+                <p>
+                  Visual institucional para leitura comparativa entre fechamento atual e anterior.
+                </p>
+              </div>
+            </div>
+
+            <div id="chipsComparison" class="chips-comparison-wrap">
+              <div class="chips-empty">Nenhum fechamento para comparar.</div>
+            </div>
+          </article>
+        </div>
+
+        <!-- QUICK ACTIONS -->
+        <div class="dashboard-grid dashboard-grid-actions">
+          <article class="panel-card">
+            <div class="panel-card-header">
+              <div>
+                <span class="panel-card-eyebrow">Ações rápidas</span>
+                <h3>Atalhos operacionais</h3>
+              </div>
+            </div>
+
+            <div class="quick-actions-grid">
+              <button id="goToCloseBtn" class="quick-action-card" type="button">
+                <span class="quick-action-icon">
+                  <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                    <path d="M12 5V19" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"></path>
+                    <path d="M5 12H19" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"></path>
+                  </svg>
+                </span>
+                <strong>Novo fechamento</strong>
+                <small>Registrar operação do turno</small>
+              </button>
+
+              <button id="goToHistoryBtn" class="quick-action-card" type="button">
+                <span class="quick-action-icon">
+                  <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                    <path d="M12 8V12L15 14" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"></path>
+                    <path d="M20 12C20 16.4183 16.4183 20 12 20C7.58172 20 4 16.4183 4 12C4 7.58172 7.58172 4 12 4C14.6485 4 16.9964 5.28752 18.4527 7.27032" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"></path>
+                  </svg>
+                </span>
+                <strong>Histórico</strong>
+                <small>Consultar registros anteriores</small>
+              </button>
+
+              <button id="goToGoalsBtn" class="quick-action-card" type="button">
+                <span class="quick-action-icon">
+                  <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                    <circle cx="12" cy="12" r="7.5" stroke="currentColor" stroke-width="1.6"></circle>
+                    <circle cx="12" cy="12" r="3" stroke="currentColor" stroke-width="1.6"></circle>
+                    <path d="M12 4V2.8" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"></path>
+                    <path d="M20 12H21.2" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"></path>
+                    <path d="M12 21.2V20" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"></path>
+                    <path d="M2.8 12H4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"></path>
+                  </svg>
+                </span>
+                <strong>Metas</strong>
+                <small>Acompanhar progresso mensal</small>
+              </button>
+
+              <button id="goToReportsBtn" class="quick-action-card" type="button">
+                <span class="quick-action-icon">
+                  <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                    <path d="M7 18V10" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"></path>
+                    <path d="M12 18V6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"></path>
+                    <path d="M17 18V13" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"></path>
+                  </svg>
+                </span>
+                <strong>Relatórios</strong>
+                <small>Gerar análises e visão consolidada</small>
+              </button>
+            </div>
+          </article>
+        </div>
+      </section>
+
+      <!-- CLOSE SCREEN -->
+      <section id="closeScreen" class="screen screen-close hidden">
+        <div class="screen-header institutional-header">
+          <div>
+            <span class="screen-eyebrow">Fechamento</span>
+            <h1 class="screen-title">Encerramento operacional</h1>
+            <p class="screen-subtitle">
+              Preencha os dados do turno com clareza, controle e segurança visual.
+            </p>
+          </div>
+          <div class="screen-header-actions">
+            <button id="clearCloseFormBtn" class="btn btn-secondary" type="button">
+              Limpar tela
+            </button>
+            <button id="saveClosingBtnTop" class="btn btn-primary" type="button">
+              Salvar fechamento
+            </button>
+          </div>
+        </div>
+
+        <div class="close-layout">
+          <div class="close-form-panel panel-card">
+            <div class="panel-card-header">
+              <div>
+                <span class="panel-card-eyebrow">Entrada operacional</span>
+                <h3>Dados do fechamento</h3>
+                <p>
+                  Estrutura visual mais limpa, com leitura semelhante a painéis de operação financeira.
+                </p>
+              </div>
+            </div>
+
+            <div class="close-progress-strip">
+              <div class="close-progress-item">
+                <span class="close-progress-label">Campos preenchidos</span>
+                <strong id="closeFilledCount">0</strong>
+              </div>
+              <div class="close-progress-item">
+                <span class="close-progress-label">Status do formulário</span>
+                <strong id="closeFormStatus">Em andamento</strong>
+              </div>
+              <div class="close-progress-item">
+                <span class="close-progress-label">Leitura</span>
+                <strong>Institucional</strong>
+              </div>
+            </div>
+
+            <form id="closeForm" class="institutional-form" autocomplete="off">
+              <div class="form-section">
+                <div class="form-section-header">
+                  <span class="form-section-step">01</span>
+                  <div>
+                    <h4>Identificação</h4>
+                    <p>Informações principais do turno e do operador.</p>
+                  </div>
+                </div>
+
+                <div class="form-grid form-grid-2">
+                  <label class="field-group" for="operatorName">
+                    <span class="field-label">Operador</span>
+                    <div class="field-control">
+                      <input id="operatorName" type="text" placeholder="Nome do operador" />
+                    </div>
+                  </label>
+
+                  <label class="field-group" for="closeDate">
+                    <span class="field-label">Data</span>
+                    <div class="field-control">
+                      <input id="closeDate" type="date" />
+                    </div>
+                  </label>
+                </div>
+              </div>
+
+              <div class="form-section">
+                <div class="form-section-header">
+                  <span class="form-section-step">02</span>
+                  <div>
+                    <h4>Plataformas e valores</h4>
+                    <p>Registre os números do turno com consistência visual e conferência rápida.</p>
+                  </div>
+                </div>
+
+                <div class="form-grid form-grid-2">
+                  <label class="field-group" for="suprema">
+                    <span class="field-label">Suprema</span>
+                    <div class="field-control">
+                      <input id="suprema" type="text" inputmode="decimal" placeholder="0,00" />
+                    </div>
+                  </label>
+
+                  <label class="field-group" for="pppoker">
+                    <span class="field-label">PPPoker</span>
+                    <div class="field-control">
+                      <input id="pppoker" type="text" inputmode="decimal" placeholder="0,00" />
+                    </div>
+                  </label>
+
+                  <label class="field-group" for="buffalo">
+                    <span class="field-label">Buffalo</span>
+                    <div class="field-control">
+                      <input id="buffalo" type="text" inputmode="decimal" placeholder="0,00" />
+                    </div>
+                  </label>
+
+                  <label class="field-group" for="ganamos">
+                    <span class="field-label">Ganamos</span>
+                    <div class="field-control">
+                      <input id="ganamos" type="text" inputmode="decimal" placeholder="0,00" />
+                    </div>
+                  </label>
+                </div>
+              </div>
+
+              <div class="form-section">
+                <div class="form-section-header">
+                  <span class="form-section-step">03</span>
+                  <div>
+                    <h4>Pendências e saídas</h4>
+                    <p>Lance despesas, saídas e observações do fechamento operacional.</p>
+                  </div>
+                </div>
+
+                <div class="form-grid form-grid-2">
+                  <label class="field-group" for="pendingAmount">
+                    <span class="field-label">Pendências</span>
+                    <div class="field-control">
+                      <input id="pendingAmount" type="text" inputmode="decimal" placeholder="0,00" />
+                    </div>
+                  </label>
+
+                  <label class="field-group" for="outflowAmount">
+                    <span class="field-label">Saídas</span>
+                    <div class="field-control">
+                      <input id="outflowAmount" type="text" inputmode="decimal" placeholder="0,00" />
+                    </div>
+                  </label>
+                </div>
+
+                <label class="field-group" for="closeNotes">
+                  <span class="field-label">Observações</span>
+                  <div class="field-control field-control-textarea">
+                    <textarea
+                      id="closeNotes"
+                      rows="4"
+                      placeholder="Observações do turno, ocorrências ou justificativas."
+                    ></textarea>
+                  </div>
+                </label>
+              </div>
+
+              <div class="form-section admin-highlight-block">
+                <div class="form-section-header">
+                  <span class="form-section-step">04</span>
+                  <div>
+                    <h4>Ajustes administrativos</h4>
+                    <p>Área visualmente destacada para perfis com permissão ampliada.</p>
+                  </div>
+                </div>
+
+                <div class="form-grid form-grid-2">
+                  <label class="field-group" for="adminAdjustment">
+                    <span class="field-label">Ajuste administrativo</span>
+                    <div class="field-control">
+                      <input id="adminAdjustment" type="text" inputmode="decimal" placeholder="0,00" />
+                    </div>
+                  </label>
+
+                  <label class="field-group" for="internalAdjustment">
+                    <span class="field-label">Ajuste interno</span>
+                    <div class="field-control">
+                      <input id="internalAdjustment" type="text" inputmode="decimal" placeholder="0,00" />
+                    </div>
+                  </label>
+                </div>
+              </div>
+
+              <div class="form-actions-bar">
+                <button id="clearClosingBtn" class="btn btn-secondary" type="button">
+                  Limpar formulário
+                </button>
+                <button id="saveClosingBtn" class="btn btn-primary btn-xl" type="button">
+                  Salvar fechamento
+                </button>
+              </div>
+            </form>
+          </div>
+
+          <aside class="close-summary-panel">
+            <article class="panel-card summary-panel-card">
+              <div class="panel-card-header">
+                <div>
+                  <span class="panel-card-eyebrow">Resumo automático</span>
+                  <h3>Painel de conferência</h3>
+                  <p>Os indicadores abaixo ajudam na leitura e validação do fechamento.</p>
+                </div>
+              </div>
+
+              <div class="summary-kpi-stack">
+                <div class="summary-kpi">
+                  <span>Saldo Reca</span>
+                  <strong id="calcSaldoReca">R$ 0,00</strong>
+                </div>
+                <div class="summary-kpi">
+                  <span>Saldo líquido</span>
+                  <strong id="calcSaldoLiquido">R$ 0,00</strong>
+                </div>
+                <div class="summary-kpi">
+                  <span>Base operacional</span>
+                  <strong id="calcBaseOperacional">R$ 0,00</strong>
+                </div>
+                <div class="summary-kpi">
+                  <span>Resultado final</span>
+                  <strong id="calcResultadoFinal">R$ 0,00</strong>
+                </div>
+              </div>
+            </article>
+
+            <article class="panel-card summary-panel-card">
+              <div class="panel-card-header">
+                <div>
+                  <span class="panel-card-eyebrow">Leitura rápida</span>
+                  <h3>Posição do turno</h3>
+                </div>
+              </div>
+
+              <div class="summary-info-list">
+                <div class="summary-info-row">
+                  <span>Entradas</span>
+                  <strong id="calcEntradas">R$ 0,00</strong>
+                </div>
+                <div class="summary-info-row">
+                  <span>Saídas</span>
+                  <strong id="calcSaidas">R$ 0,00</strong>
+                </div>
+                <div class="summary-info-row">
+                  <span>Pendências</span>
+                  <strong id="calcPendencias">R$ 0,00</strong>
+                </div>
+                <div class="summary-info-row">
+                  <span>Ajustes</span>
+                  <strong id="calcAjustes">R$ 0,00</strong>
+                </div>
+              </div>
+            </article>
+          </aside>
+        </div>
+      </section>
+
+      <!-- HISTORY SCREEN -->
+      <section id="historyScreen" class="screen screen-history hidden">
+        <div class="screen-header institutional-header">
+          <div>
+            <span class="screen-eyebrow">Histórico</span>
+            <h1 class="screen-title">Consulta de registros</h1>
+            <p class="screen-subtitle">
+              Navegação histórica com aparência mais sóbria, limpa e orientada à auditoria.
+            </p>
+          </div>
+
+          <div class="screen-header-actions">
+            <button id="printHistoryBtn" class="btn btn-secondary" type="button">
+              Imprimir histórico
+            </button>
+            <button id="historyPdfBtn" class="btn btn-primary" type="button">
+              PDF mensal
+            </button>
+          </div>
+        </div>
+
+        <div class="history-toolbar panel-card">
+          <div class="history-toolbar-grid">
+            <label class="field-group" for="historySearch">
+              <span class="field-label">Busca</span>
+              <div class="field-control">
+                <input
+                  id="historySearch"
+                  type="text"
+                  placeholder="Pesquisar por operador, observação ou referência"
+                />
+              </div>
+            </label>
+
+            <label class="field-group" for="historyDateFrom">
+              <span class="field-label">Data inicial</span>
+              <div class="field-control">
+                <input id="historyDateFrom" type="date" />
+              </div>
+            </label>
+
+            <label class="field-group" for="historyDateTo">
+              <span class="field-label">Data final</span>
+              <div class="field-control">
+                <input id="historyDateTo" type="date" />
+              </div>
+            </label>
+
+            <div class="history-toolbar-actions">
+              <button id="applyHistoryFilterBtn" class="btn btn-secondary" type="button">
+                Aplicar filtros
+              </button>
+              <button id="clearHistoryFilterBtn" class="btn btn-ghost" type="button">
+                Limpar
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <div class="dashboard-grid dashboard-grid-secondary">
+          <article class="summary-card">
+            <div class="summary-card-header">
+              <div>
+                <span class="summary-card-eyebrow">Visão histórica</span>
+                <h3>Resumo dos registros</h3>
+              </div>
+            </div>
+
+            <div class="summary-card-body two-columns">
+              <div class="summary-info-row">
+                <span>Total exibido</span>
+                <strong id="historyVisibleCount">0</strong>
+              </div>
+              <div class="summary-info-row">
+                <span>Última data</span>
+                <strong id="historyLastDate">--/--/----</strong>
+              </div>
+              <div class="summary-info-row">
+                <span>Último operador</span>
+                <strong id="historyLastOperator">--</strong>
+              </div>
+              <div class="summary-info-row">
+                <span>Status</span>
+                <strong id="historyStatusText">Pronto</strong>
+              </div>
+            </div>
+          </article>
+
+          <article class="summary-card">
+            <div class="summary-card-header">
+              <div>
+                <span class="summary-card-eyebrow">Saída</span>
+                <h3>Exportação e conferência</h3>
+              </div>
+            </div>
+
+            <div class="summary-card-body two-columns">
+              <div class="summary-info-row">
+                <span>Impressão individual</span>
+                <strong id="historyPrintStatus">Disponível</strong>
+              </div>
+              <div class="summary-info-row">
+                <span>PDF mensal</span>
+                <strong id="historyPdfStatus">Aguardando</strong>
+              </div>
+              <div class="summary-info-row">
+                <span>Edição</span>
+                <strong id="historyEditStatus">Controlada por perfil</strong>
+              </div>
+              <div class="summary-info-row">
+                <span>Exclusão</span>
+                <strong id="historyDeleteStatus">Controlada por perfil</strong>
+              </div>
+            </div>
+          </article>
+        </div>
+
+        <div class="panel-card">
+          <div class="panel-card-header">
+            <div>
+              <span class="panel-card-eyebrow">Lista cronológica</span>
+              <h3>Lançamentos registrados</h3>
+              <p>Cards e registros preparados para leitura mais premium e institucional.</p>
+            </div>
+          </div>
+
+          <div id="historyList" class="history-list">
+            <div class="history-empty-state">
+              <div class="empty-state-icon">
+                <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                  <path d="M12 8V12L15 14" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"></path>
+                  <path d="M20 12C20 16.4183 16.4183 20 12 20C7.58172 20 4 16.4183 4 12C4 7.58172 7.58172 4 12 4C16.4183 4 20 7.58172 20 12Z" stroke="currentColor" stroke-width="1.6"></path>
+                </svg>
+              </div>
+              <strong>Nenhum registro carregado</strong>
+              <p>Os fechamentos aparecerão aqui com aparência mais limpa e consistente.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- GOALS SCREEN -->
+      <section id="goalsScreen" class="screen screen-goals hidden">
+        <div class="screen-header institutional-header">
+          <div>
+            <span class="screen-eyebrow">Metas</span>
+            <h1 class="screen-title">Meta mensal e progresso</h1>
+            <p class="screen-subtitle">
+              Um visual mais executivo para acompanhar objetivo, avanço e ritmo operacional.
+            </p>
+          </div>
+
+          <div class="screen-header-actions">
+            <button id="refreshGoalsBtn" class="btn btn-secondary" type="button">
+              Atualizar metas
+            </button>
+          </div>
+        </div>
+
+        <div class="goals-hero panel-card">
+          <div class="goals-hero-main">
+            <span class="panel-card-eyebrow">Performance do período</span>
+            <h3 id="monthlyGoalTitle">Meta do mês</h3>
+            <p id="monthlyGoalSubtitle">
+              Acompanhe a evolução da meta com leitura clara, institucional e orientada a resultado.
+            </p>
+          </div>
+
+          <div class="goals-hero-side">
+            <div class="goals-target-badge">
+              <span>Objetivo</span>
+              <strong id="monthlyGoalTarget">R$ 0,00</strong>
+            </div>
+          </div>
+        </div>
+
+        <div class="dashboard-grid dashboard-grid-primary">
+          <article class="metric-card metric-card-balance">
+            <div class="metric-card-top">
+              <span class="metric-badge">Realizado</span>
+              <div class="metric-icon">
+                <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                  <path d="M5 12.5L9.5 17L19 7.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"></path>
+                </svg>
+              </div>
+            </div>
+            <div class="metric-card-content">
+              <span class="metric-label">Valor acumulado</span>
+              <strong id="monthlyGoalDone">R$ 0,00</strong>
+              <p class="metric-description">Total já alcançado dentro do período atual.</p>
+            </div>
+          </article>
+
+          <article class="metric-card metric-card-profit">
+            <div class="metric-card-top">
+              <span class="metric-badge">Progresso</span>
+              <div class="metric-icon">
+                <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                  <circle cx="12" cy="12" r="8" stroke="currentColor" stroke-width="1.6"></circle>
+                  <path d="M12 12L12 7" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"></path>
+                  <path d="M12 12L15.5 13.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"></path>
+                </svg>
+              </div>
+            </div>
+            <div class="metric-card-content">
+              <span class="metric-label">Percentual</span>
+              <strong id="monthlyGoalPercent">0%</strong>
+              <p class="metric-description">Percentual de cumprimento da meta mensal.</p>
+            </div>
+          </article>
+
+          <article class="metric-card metric-card-week">
+            <div class="metric-card-top">
+              <span class="metric-badge">Falta</span>
+              <div class="metric-icon">
+                <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                  <path d="M12 8V12L14.8 14.2" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"></path>
+                  <path d="M20 12C20 16.4183 16.4183 20 12 20C7.58172 20 4 16.4183 4 12C4 7.58172 7.58172 4 12 4C16.4183 4 20 7.58172 20 12Z" stroke="currentColor" stroke-width="1.6"></path>
+                </svg>
+              </div>
+            </div>
+            <div class="metric-card-content">
+              <span class="metric-label">Restante</span>
+              <strong id="monthlyGoalRemaining">R$ 0,00</strong>
+              <p class="metric-description">Quanto falta para concluir a meta do mês.</p>
+            </div>
+          </article>
+        </div>
+
+        <div class="panel-card">
+          <div class="panel-card-header">
+            <div>
+              <span class="panel-card-eyebrow">Evolução</span>
+              <h3>Barra de progresso mensal</h3>
+              <p>Visual inspirado em dashboards financeiros, com leitura objetiva do avanço.</p>
+            </div>
+          </div>
+
+          <div class="goal-progress-wrap">
+            <div class="goal-progress-top">
+              <span id="monthlyGoalProgressLabel">Progresso atual</span>
+              <strong id="monthlyGoalProgressValue">0%</strong>
+            </div>
+            <div class="goal-progress-bar">
+              <div id="monthlyGoalProgressBar" class="goal-progress-fill" style="width: 0%;"></div>
+            </div>
+          </div>
+        </div>
+
+        <div id="monthlyGoalItems" class="goal-items-grid">
+          <article class="goal-item-card">
+            <span class="goal-item-label">Indicador</span>
+            <strong>Aguardando dados</strong>
+            <small>Os detalhes do progresso mensal aparecerão aqui.</small>
+          </article>
+        </div>
+      </section>
+      <!-- RANKING SCREEN -->
+      <section id="rankingScreen" class="screen screen-ranking hidden">
+        <div class="screen-header institutional-header">
+          <div>
+            <span class="screen-eyebrow">Ranking</span>
+            <h1 class="screen-title">Performance comparativa</h1>
+            <p class="screen-subtitle">
+              Leitura competitiva com linguagem visual mais executiva e institucional.
+            </p>
+          </div>
+
+          <div class="screen-header-actions">
+            <button id="refreshRankingBtn" class="btn btn-secondary" type="button">
+              Atualizar ranking
+            </button>
+          </div>
+        </div>
+
+        <div class="dashboard-grid dashboard-grid-primary">
+          <article class="metric-card metric-card-profit">
+            <div class="metric-card-top">
+              <span class="metric-badge">Hoje</span>
+              <div class="metric-icon">
+                <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                  <path d="M12 6V12L15.8 14.2" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"></path>
+                  <circle cx="12" cy="12" r="8" stroke="currentColor" stroke-width="1.6"></circle>
+                </svg>
+              </div>
+            </div>
+            <div class="metric-card-content">
+              <span class="metric-label">Ranking diário</span>
+              <strong id="rankingDailyLeader">--</strong>
+              <p class="metric-description">Maior desempenho do dia.</p>
+            </div>
+          </article>
+
+          <article class="metric-card metric-card-week">
+            <div class="metric-card-top">
+              <span class="metric-badge">Semana</span>
+              <div class="metric-icon">
+                <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                  <path d="M7 17L12 12L15 15L20 9" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"></path>
+                  <path d="M16 9H20V13" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"></path>
+                </svg>
+              </div>
+            </div>
+            <div class="metric-card-content">
+              <span class="metric-label">Ranking semanal</span>
+              <strong id="rankingWeeklyLeader">--</strong>
+              <p class="metric-description">Melhor acumulado da semana.</p>
+            </div>
+          </article>
+
+          <article class="metric-card metric-card-balance">
+            <div class="metric-card-top">
+              <span class="metric-badge">Mês</span>
+              <div class="metric-icon">
+                <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                  <rect x="4" y="5" width="16" height="15" rx="2.2" stroke="currentColor" stroke-width="1.6"></rect>
+                  <path d="M8 3.8V6.2" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"></path>
+                  <path d="M16 3.8V6.2" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"></path>
+                  <path d="M4 9H20" stroke="currentColor" stroke-width="1.6"></path>
+                </svg>
+              </div>
+            </div>
+            <div class="metric-card-content">
+              <span class="metric-label">Ranking mensal</span>
+              <strong id="rankingMonthlyLeader">--</strong>
+              <p class="metric-description">Maior resultado consolidado do mês.</p>
+            </div>
+          </article>
+
+          <article class="metric-card metric-card-neutral">
+            <div class="metric-card-top">
+              <span class="metric-badge">Total</span>
+              <div class="metric-icon">
+                <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                  <path d="M12 4L18.5 7.5V16.5L12 20L5.5 16.5V7.5L12 4Z" stroke="currentColor" stroke-width="1.6"></path>
+                  <path d="M9.5 12L11.2 13.7L14.8 10.1" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"></path>
+                </svg>
+              </div>
+            </div>
+            <div class="metric-card-content">
+              <span class="metric-label">Ranking geral</span>
+              <strong id="rankingTotalLeader">--</strong>
+              <p class="metric-description">Histórico total de performance.</p>
+            </div>
+          </article>
+        </div>
+
+        <div class="dashboard-grid dashboard-grid-secondary">
+          <article class="panel-card">
+            <div class="panel-card-header">
+              <div>
+                <span class="panel-card-eyebrow">Diário</span>
+                <h3>Top do dia</h3>
+              </div>
+            </div>
+            <div id="rankingDailyList" class="ranking-list">
+              <div class="history-empty-state">
+                <strong>Nenhum ranking diário disponível</strong>
+                <p>Os dados aparecerão aqui quando houver registros processados.</p>
+              </div>
+            </div>
+          </article>
+
+          <article class="panel-card">
+            <div class="panel-card-header">
+              <div>
+                <span class="panel-card-eyebrow">Semanal</span>
+                <h3>Top da semana</h3>
+              </div>
+            </div>
+            <div id="rankingWeeklyList" class="ranking-list">
+              <div class="history-empty-state">
+                <strong>Nenhum ranking semanal disponível</strong>
+                <p>Os dados aparecerão aqui quando houver registros processados.</p>
+              </div>
+            </div>
+          </article>
+        </div>
+
+        <div class="dashboard-grid dashboard-grid-secondary">
+          <article class="panel-card">
+            <div class="panel-card-header">
+              <div>
+                <span class="panel-card-eyebrow">Mensal</span>
+                <h3>Top do mês</h3>
+              </div>
+            </div>
+            <div id="rankingMonthlyList" class="ranking-list">
+              <div class="history-empty-state">
+                <strong>Nenhum ranking mensal disponível</strong>
+                <p>Os dados aparecerão aqui quando houver registros processados.</p>
+              </div>
+            </div>
+          </article>
+
+          <article class="panel-card">
+            <div class="panel-card-header">
+              <div>
+                <span class="panel-card-eyebrow">Geral</span>
+                <h3>Top histórico</h3>
+              </div>
+            </div>
+            <div id="rankingTotalList" class="ranking-list">
+              <div class="history-empty-state">
+                <strong>Nenhum ranking geral disponível</strong>
+                <p>Os dados aparecerão aqui quando houver registros processados.</p>
+              </div>
+            </div>
+          </article>
+        </div>
+      </section>
+
+      <!-- REPORTS SCREEN -->
+      <section id="reportsScreen" class="screen screen-reports hidden">
+        <div class="screen-header institutional-header">
+          <div>
+            <span class="screen-eyebrow">Relatórios</span>
+            <h1 class="screen-title">Geração analítica</h1>
+            <p class="screen-subtitle">
+              Estrutura de relatórios com leitura premium, filtros claros e visão consolidada.
+            </p>
+          </div>
+
+          <div class="screen-header-actions">
+            <button id="generateReportBtn" class="btn btn-primary" type="button">
+              Gerar relatório
+            </button>
+          </div>
+        </div>
+
+        <div class="history-toolbar panel-card">
+          <div class="history-toolbar-grid">
+            <label class="field-group" for="reportDateFrom">
+              <span class="field-label">Data inicial</span>
+              <div class="field-control">
+                <input id="reportDateFrom" type="date" />
+              </div>
+            </label>
+
+            <label class="field-group" for="reportDateTo">
+              <span class="field-label">Data final</span>
+              <div class="field-control">
+                <input id="reportDateTo" type="date" />
+              </div>
+            </label>
+
+            <label class="field-group" for="reportOperatorFilter">
+              <span class="field-label">Operador</span>
+              <div class="field-control">
+                <input id="reportOperatorFilter" type="text" placeholder="Filtrar por operador" />
+              </div>
+            </label>
+
+            <div class="history-toolbar-actions">
+              <button id="previewReportBtn" class="btn btn-secondary" type="button">
+                Pré-visualizar
+              </button>
+              <button id="clearReportFilterBtn" class="btn btn-ghost" type="button">
+                Limpar
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <div class="dashboard-grid dashboard-grid-primary">
+          <article class="metric-card metric-card-balance">
+            <div class="metric-card-top">
+              <span class="metric-badge">Volume</span>
+              <div class="metric-icon">
+                <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                  <path d="M5 17.5L9.5 12.5L13 15.5L19 8.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"></path>
+                  <path d="M15.5 8.5H19V12" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"></path>
+                </svg>
+              </div>
+            </div>
+            <div class="metric-card-content">
+              <span class="metric-label">Registros no preview</span>
+              <strong id="reportPreviewCount">0</strong>
+              <p class="metric-description">Quantidade de lançamentos incluídos na análise.</p>
+            </div>
+          </article>
+
+          <article class="metric-card metric-card-profit">
+            <div class="metric-card-top">
+              <span class="metric-badge">Resultado</span>
+              <div class="metric-icon">
+                <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                  <path d="M7 15L11 11L14 14L19 8" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"></path>
+                  <path d="M15 8H19V12" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"></path>
+                </svg>
+              </div>
+            </div>
+            <div class="metric-card-content">
+              <span class="metric-label">Resultado consolidado</span>
+              <strong id="reportPreviewResult">R$ 0,00</strong>
+              <p class="metric-description">Soma consolidada do período filtrado.</p>
+            </div>
+          </article>
+
+          <article class="metric-card metric-card-week">
+            <div class="metric-card-top">
+              <span class="metric-badge">Média</span>
+              <div class="metric-icon">
+                <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                  <path d="M4 15C5.8 13 7.2 12 9 12C10.8 12 12.2 13 14 15C15.8 17 17.2 18 19 18" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"></path>
+                  <path d="M4 9C5.8 7 7.2 6 9 6C10.8 6 12.2 7 14 9C15.8 11 17.2 12 19 12" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" opacity="0.55"></path>
+                </svg>
+              </div>
+            </div>
+            <div class="metric-card-content">
+              <span class="metric-label">Média por registro</span>
+              <strong id="reportPreviewAverage">R$ 0,00</strong>
+              <p class="metric-description">Leitura média do intervalo selecionado.</p>
+            </div>
+          </article>
+        </div>
+
+        <div class="panel-card">
+          <div class="panel-card-header">
+            <div>
+              <span class="panel-card-eyebrow">Prévia</span>
+              <h3>Resumo do relatório</h3>
+              <p>Área destinada à pré-visualização dos dados antes da exportação.</p>
+            </div>
+          </div>
+
+          <div id="reportPreviewStats" class="report-preview-grid">
+            <article class="goal-item-card">
+              <span class="goal-item-label">Status</span>
+              <strong>Sem prévia gerada</strong>
+              <small>Use os filtros acima para montar o relatório.</small>
+            </article>
+          </div>
+        </div>
+
+        <div class="panel-card">
+          <div class="panel-card-header">
+            <div>
+              <span class="panel-card-eyebrow">Saída</span>
+              <h3>Exportação final</h3>
+            </div>
+          </div>
+
+          <div class="form-actions-bar">
+            <button id="generatePdfReportBtn" class="btn btn-primary btn-xl" type="button">
+              Gerar PDF do relatório
+            </button>
+          </div>
+        </div>
+      </section>
+
+      <!-- ADMIN SCREEN -->
+      <section id="adminScreen" class="screen screen-admin hidden">
+        <div class="screen-header institutional-header">
+          <div>
+            <span class="screen-eyebrow">Administração</span>
+            <h1 class="screen-title">Painel administrativo</h1>
+            <p class="screen-subtitle">
+              Gestão de usuários, permissões e trilhas operacionais com visual sóbrio e corporativo.
+            </p>
+          </div>
+
+          <div class="screen-header-actions">
+            <div id="adminStatus" class="institutional-pill">
+              <span class="institutional-pill-dot"></span>
+              <span>Status administrativo</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="dashboard-grid dashboard-grid-secondary">
+          <article class="panel-card">
+            <div class="panel-card-header">
+              <div>
+                <span class="panel-card-eyebrow">Usuários</span>
+                <h3>Cadastro e gestão</h3>
+              </div>
+            </div>
+
+            <form id="adminUserForm" class="institutional-form" autocomplete="off">
+              <div class="form-grid form-grid-2">
+                <label class="field-group" for="adminUserName">
+                  <span class="field-label">Nome</span>
+                  <div class="field-control">
+                    <input id="adminUserName" type="text" placeholder="Nome do usuário" />
+                  </div>
+                </label>
+
+                <label class="field-group" for="adminUserEmail">
+                  <span class="field-label">E-mail</span>
+                  <div class="field-control">
+                    <input id="adminUserEmail" type="email" placeholder="email@empresa.com" />
+                  </div>
+                </label>
+
+                <label class="field-group" for="adminUserPassword">
+                  <span class="field-label">Senha</span>
+                  <div class="field-control">
+                    <input id="adminUserPassword" type="password" placeholder="Defina uma senha" />
+                  </div>
+                </label>
+
+                <label class="field-group" for="adminUserRole">
+                  <span class="field-label">Perfil</span>
+                  <div class="field-control">
+                    <select id="adminUserRole">
+                      <option value="operator">Operador</option>
+                      <option value="supervisor">Supervisor</option>
+                      <option value="admin">Admin</option>
+                    </select>
+                  </div>
+                </label>
+              </div>
+
+              <div class="form-actions-bar">
+                <button id="createUserBtn" class="btn btn-primary" type="button">
+                  Criar usuário
+                </button>
+              </div>
+            </form>
+          </article>
+
+          <article class="panel-card">
+            <div class="panel-card-header">
+              <div>
+                <span class="panel-card-eyebrow">Acesso</span>
+                <h3>Matriz resumida</h3>
+              </div>
+            </div>
+
+            <div class="summary-info-list">
+              <div class="summary-info-row">
+                <span>Operador</span>
+                <strong>Fechamento e consulta</strong>
+              </div>
+              <div class="summary-info-row">
+                <span>Supervisor</span>
+                <strong>Operação ampliada</strong>
+              </div>
+              <div class="summary-info-row">
+                <span>Admin</span>
+                <strong>Controle total</strong>
+              </div>
+              <div class="summary-info-row">
+                <span>Auditoria</span>
+                <strong>Ativa</strong>
+              </div>
+            </div>
+          </article>
+        </div>
+
+        <div class="dashboard-grid dashboard-grid-secondary">
+          <article class="panel-card">
+            <div class="panel-card-header">
+              <div>
+                <span class="panel-card-eyebrow">Lista</span>
+                <h3>Usuários cadastrados</h3>
+              </div>
+            </div>
+
+            <div id="adminUsersList" class="history-list">
+              <div class="history-empty-state">
+                <strong>Nenhum usuário carregado</strong>
+                <p>A listagem aparecerá aqui conforme os dados forem carregados.</p>
+              </div>
+            </div>
+          </article>
+
+          <article class="panel-card">
+            <div class="panel-card-header">
+              <div>
+                <span class="panel-card-eyebrow">Auditoria</span>
+                <h3>Logs administrativos</h3>
+              </div>
+            </div>
+
+            <div id="auditLogList" class="history-list">
+              <div class="history-empty-state">
+                <strong>Nenhum log carregado</strong>
+                <p>As atividades administrativas serão exibidas aqui.</p>
+              </div>
+            </div>
+          </article>
+        </div>
+      </section>
+    </div>
+
+    <!-- BOTTOM NAV -->
+    <nav class="bottom-nav" aria-label="Navegação principal">
+      <button id="navHome" class="bottom-nav-item active" type="button">
+        <span class="bottom-nav-icon">
+          <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <path d="M4 10.5L12 4L20 10.5V19C20 19.5523 19.5523 20 19 20H5C4.44772 20 4 19.5523 4 19V10.5Z" stroke="currentColor" stroke-width="1.6"></path>
+            <path d="M9 20V13H15V20" stroke="currentColor" stroke-width="1.6"></path>
+          </svg>
+        </span>
+        <span>Home</span>
+      </button>
+
+      <button id="navClose" class="bottom-nav-item" type="button">
+        <span class="bottom-nav-icon">
+          <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <path d="M12 5V19" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"></path>
+            <path d="M5 12H19" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"></path>
+          </svg>
+        </span>
+        <span>Fechar</span>
+      </button>
+
+      <button id="navHistory" class="bottom-nav-item" type="button">
+        <span class="bottom-nav-icon">
+          <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <path d="M12 8V12L15 14" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"></path>
+            <path d="M20 12C20 16.4183 16.4183 20 12 20C7.58172 20 4 16.4183 4 12C4 7.58172 7.58172 4 12 4C14.6485 4 16.9964 5.28752 18.4527 7.27032" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"></path>
+          </svg>
+        </span>
+        <span>Histórico</span>
+      </button>
+
+      <button id="navMore" class="bottom-nav-item" type="button">
+        <span class="bottom-nav-icon">
+          <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <circle cx="5" cy="12" r="1.6" fill="currentColor"></circle>
+            <circle cx="12" cy="12" r="1.6" fill="currentColor"></circle>
+            <circle cx="19" cy="12" r="1.6" fill="currentColor"></circle>
+          </svg>
+        </span>
+        <span>Mais</span>
+      </button>
+    </nav>
+
+    <!-- MORE MENU -->
+    <aside id="moreMenu" class="more-menu hidden" aria-hidden="true">
+      <div id="moreMenuBackdrop" class="more-menu-backdrop"></div>
+      <div class="more-menu-sheet">
+        <div class="more-menu-header">
+          <div>
+            <span class="panel-card-eyebrow">Atalhos</span>
+            <h3>Mais opções</h3>
+          </div>
+          <button id="closeMoreMenuBtn" class="btn btn-ghost btn-icon" type="button" aria-label="Fechar menu">
+            <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <path d="M6 6L18 18" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"></path>
+              <path d="M18 6L6 18" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"></path>
+            </svg>
+          </button>
+        </div>
+
+        <div class="more-menu-list">
+          <button id="menuGoalsBtn" class="more-menu-item" type="button">
+            <strong>Metas</strong>
+            <small>Acompanhar objetivo mensal</small>
+          </button>
+
+          <button id="menuRankingBtn" class="more-menu-item" type="button">
+            <strong>Ranking</strong>
+            <small>Comparativo de performance</small>
+          </button>
+
+          <button id="menuReportsBtn" class="more-menu-item" type="button">
+            <strong>Relatórios</strong>
+            <small>Gerar visão consolidada</small>
+          </button>
+
+          <button id="menuAdminBtn" class="more-menu-item" type="button">
+            <strong>Admin</strong>
+            <small>Usuários, auditoria e permissões</small>
+          </button>
+
+          <button id="logoutBtn" class="more-menu-item danger" type="button">
+            <strong>Sair</strong>
+            <small>Encerrar sessão atual</small>
+          </button>
+        </div>
+      </div>
+    </aside>
+  </main>
+
+  <!-- RECEIPT MODAL -->
+  <div id="receiptModal" class="modal hidden" aria-hidden="true">
+    <div class="modal-backdrop"></div>
+    <div class="modal-card modal-card-lg">
+      <div class="modal-header">
+        <div>
+          <span class="panel-card-eyebrow">Comprovante</span>
+          <h3>Resumo do fechamento</h3>
+        </div>
+        <button id="closeReceiptModalBtn" class="btn btn-ghost btn-icon" type="button" aria-label="Fechar comprovante">
+          <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <path d="M6 6L18 18" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"></path>
+            <path d="M18 6L6 18" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"></path>
+          </svg>
+        </button>
+      </div>
+
+      <div id="receiptContent" class="receipt-content">
+        <div class="history-empty-state">
+          <strong>Nenhum comprovante gerado</strong>
+          <p>O resumo do fechamento aparecerá aqui para exportação ou impressão.</p>
+        </div>
+      </div>
+
+      <div class="form-actions-bar">
+        <button id="printReceiptBtn" class="btn btn-secondary" type="button">
+          Imprimir
+        </button>
+        <button id="exportReceiptBtn" class="btn btn-primary" type="button">
+          Exportar
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- EDIT HISTORY MODAL -->
+  <div id="editHistoryModal" class="modal hidden" aria-hidden="true">
+    <div class="modal-backdrop"></div>
+    <div class="modal-card modal-card-lg">
+      <div class="modal-header">
+        <div>
+          <span class="panel-card-eyebrow">Edição</span>
+          <h3>Editar fechamento</h3>
+        </div>
+        <button id="closeEditModalBtn" class="btn btn-ghost btn-icon" type="button" aria-label="Fechar edição">
+          <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <path d="M6 6L18 18" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"></path>
+            <path d="M18 6L6 18" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"></path>
+          </svg>
+        </button>
+      </div>
+
+      <form id="editHistoryForm" class="institutional-form" autocomplete="off">
+        <div class="form-grid form-grid-2">
+          <label class="field-group" for="editOperatorName">
+            <span class="field-label">Operador</span>
+            <div class="field-control">
+              <input id="editOperatorName" type="text" />
+            </div>
+          </label>
+
+          <label class="field-group" for="editCloseDate">
+            <span class="field-label">Data</span>
+            <div class="field-control">
+              <input id="editCloseDate" type="date" />
+            </div>
+          </label>
+
+          <label class="field-group" for="editSuprema">
+            <span class="field-label">Suprema</span>
+            <div class="field-control">
+              <input id="editSuprema" type="text" inputmode="decimal" />
+            </div>
+          </label>
+
+          <label class="field-group" for="editPppoker">
+            <span class="field-label">PPPoker</span>
+            <div class="field-control">
+              <input id="editPppoker" type="text" inputmode="decimal" />
+            </div>
+          </label>
+
+          <label class="field-group" for="editBuffalo">
+            <span class="field-label">Buffalo</span>
+            <div class="field-control">
+              <input id="editBuffalo" type="text" inputmode="decimal" />
+            </div>
+          </label>
+
+          <label class="field-group" for="editGanamos">
+            <span class="field-label">Ganamos</span>
+            <div class="field-control">
+              <input id="editGanamos" type="text" inputmode="decimal" />
+            </div>
+          </label>
+
+          <label class="field-group" for="editPendingAmount">
+            <span class="field-label">Pendências</span>
+            <div class="field-control">
+              <input id="editPendingAmount" type="text" inputmode="decimal" />
+            </div>
+          </label>
+
+          <label class="field-group" for="editOutflowAmount">
+            <span class="field-label">Saídas</span>
+            <div class="field-control">
+              <input id="editOutflowAmount" type="text" inputmode="decimal" />
+            </div>
+          </label>
+        </div>
+
+        <label class="field-group" for="editCloseNotes">
+          <span class="field-label">Observações</span>
+          <div class="field-control field-control-textarea">
+            <textarea id="editCloseNotes" rows="4"></textarea>
+          </div>
+        </label>
+
+        <div class="form-actions-bar">
+          <button id="deleteHistoryBtn" class="btn btn-danger" type="button">
+            Excluir
+          </button>
+          <button id="saveEditBtn" class="btn btn-primary btn-xl" type="button">
+            Salvar alterações
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- RELOAD LOADER -->
+  <div id="appReloadOverlay" class="global-loading-overlay hidden" aria-hidden="true">
+    <div class="global-loading-backdrop"></div>
+    <div class="global-loading-card">
+      <div class="global-loading-brand">
+        <div class="brand-mark brand-mark-loading">
+          <span class="brand-mark-ring"></span>
+          <span class="brand-mark-core"></span>
+        </div>
+        <div class="brand-copy">
+          <span class="brand-overline">BANK KING PRO</span>
+          <strong>Atualizando ambiente</strong>
+        </div>
+      </div>
+
+      <div class="global-loading-progress">
+        <div class="global-loading-bar">
+          <span class="global-loading-bar-fill"></span>
+        </div>
+        <p>Recarregando componentes visuais e informações do painel...</p>
+      </div>
+    </div>
+  </div>
+
+  <script type="module" src="./assets/js/app.js"></script>
+</body>
+</html>
