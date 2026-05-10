@@ -1492,12 +1492,16 @@ function updateHeroBalance(newValue){
         </div>
       </div>
 
-      <div class="card permissions-card">
-        <div class="card-title">
-          <h2>Permissões por função</h2>
-          <span>Clique para abrir</span>
+      <div class="card permissions-card permissions-collapsed" id="permissionsCard">
+        <div class="card-title permissions-card-title">
+          <div>
+            <h2>Permissões por função</h2>
+            <span>Controle de acesso</span>
+          </div>
+          <button id="togglePermissionsCardBtn" class="small-btn secondary" type="button">Mostrar permissões</button>
         </div>
-        <div class="permissions-grid permissions-accordion">
+        <div id="permissionsCardBody" class="permissions-card-body hidden">
+          <div class="permissions-grid permissions-accordion">
           <details class="perm-card">
             <summary>
               <div>
@@ -1551,6 +1555,7 @@ function updateHeroBalance(newValue){
               </ul>
             </div>
           </details>
+          </div>
         </div>
       </div>
 
@@ -3664,6 +3669,25 @@ body.side-drawer-open #sideMenuBtn{
   pointer-events:none!important;
 }
 .permissions-card{margin-top:14px!important;}
+.permissions-card-title{margin-bottom:0!important;}
+.permissions-card-title > div span{
+  display:block;
+  margin-top:3px;
+  font-size:12px;
+  color:var(--muted);
+  font-weight:760;
+}
+.permissions-card-body{
+  margin-top:14px;
+  animation:permissionsOpen .22s ease both;
+}
+.permissions-card.permissions-collapsed{
+  padding-bottom:18px!important;
+}
+@keyframes permissionsOpen{
+  from{opacity:0;transform:translateY(-4px)}
+  to{opacity:1;transform:translateY(0)}
+}
 .permissions-grid{display:grid;gap:10px;}
 .permissions-accordion{align-items:stretch;}
 .perm-card{
@@ -4189,5 +4213,24 @@ body.side-drawer-open #sideMenuBtn{
     }
 
     document.addEventListener("DOMContentLoaded",()=>{ forceHideReloadLoader(); bindEvents(); initDate(); initBankMicroUX(); setTimeout(()=>{const splash=$("appSplash"); splash?.classList.add("hide"); setTimeout(()=>splash?.remove(),800);},1600); runSelfTests(); });
-  </script>
+  
+    function initPermissionsCardToggle(){
+      const card = $("permissionsCard");
+      const body = $("permissionsCardBody");
+      const btn = $("togglePermissionsCardBtn");
+      if(!card || !body || !btn || btn.dataset.ready === "1") return;
+
+      btn.dataset.ready = "1";
+      btn.addEventListener("click", () => {
+        const willOpen = body.classList.contains("hidden");
+        body.classList.toggle("hidden", !willOpen);
+        card.classList.toggle("permissions-collapsed", !willOpen);
+        btn.textContent = willOpen ? "Ocultar permissões" : "Mostrar permissões";
+      });
+    }
+
+    document.addEventListener("DOMContentLoaded", initPermissionsCardToggle);
+    setTimeout(initPermissionsCardToggle, 300);
+
+</script>
 </body>
