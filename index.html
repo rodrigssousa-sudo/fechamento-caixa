@@ -28,7 +28,7 @@
     <div class="login-card">
       <div class="login-logo">BK</div>
       <h1>Bank King Pro</h1>
-      <p>Fechamento de caixa com visual mais limpo e estrutura organizada.</p>
+      <p>Controle de fechamento, conferência e acompanhamento operacional em um ambiente financeiro mais organizado.</p>
       <div id="loginNotice" class="notice hidden"></div>
       <input id="loginEmail" type="email" placeholder="Email" autocomplete="email" />
       <input id="loginPassword" type="password" placeholder="Senha" autocomplete="current-password" />
@@ -39,7 +39,7 @@
   </div>
 
   <div id="appSplash" class="app-splash">
-    <div class="splash-content"><div class="splash-logo">BK</div><h1>Bank King Pro</h1><p>Controle financeiro organizado e rápido</p><div class="splash-loader"><span></span></div></div>
+    <div class="splash-content"><div class="splash-logo">BK</div><h1>Bank King Pro</h1><p>Controle financeiro seguro, organizado e ágil</p><div class="splash-loader"><span></span></div></div>
   </div>
 
   <main id="appShell" class="app-shell hidden">
@@ -54,9 +54,9 @@
         <div class="hero-card">
           <div class="hero-topline">
             <div>
-              <div class="hero-label">Saldo Reca</div>
+              <div class="hero-label">Saldo de caixa</div>
             </div>
-            <div class="hero-badge">Painel ao vivo</div>
+            <div class="hero-badge">Atualização em tempo real</div>
           </div>
           <div id="homeSaldoReca" class="hero-value">$ 0,00</div>
           <div id="homeUpdatedAt" class="hero-sub">Aguardando atualização</div>
@@ -64,36 +64,36 @@
           <div class="hero-grid">
             <div id="homeAdjustmentCard" class="hero-mini close-admin-field" data-role-visibility="admin-only"><span>Ajuste interno</span><strong id="homeInternalAdjustment">$ 0,00</strong></div>
             <div class="hero-mini"><span>Operador</span><strong id="homeOperator">-</strong></div>
-            <div class="hero-mini"><span>Data e hora</span><strong id="homeLastClose">-</strong></div>
+            <div class="hero-mini"><span>Último fechamento</span><strong id="homeLastClose">-</strong></div>
             <div class="hero-mini"><span>Diferença de caixa</span><strong id="homeDiff">$ 0,00</strong></div>
           </div>
         </div>
 
         <div class="home-section-head">
           <div>
-            <h2>Indicadores principais</h2>
+            <h2>Indicadores financeiros</h2>
           </div>
-          <span class="home-section-pill">Resumo executivo</span>
+          <span class="home-section-pill">Visão consolidada</span>
         </div>
 
         <div class="grid two home-metrics-grid">
           <div class="card home-metric-card" data-home-detail="saldo" style="cursor:pointer;">
-            <div class="card-title"><h2>Saldo líquido</h2><span>Atual</span></div>
+            <div class="card-title"><h2>Saldo líquido</h2><span>Posição atual</span></div>
             <div id="homeSaldoLiquido" class="metric">$ 0,00</div>
           </div>
 
           <div class="card home-metric-card" data-home-detail="pendentes" style="cursor:pointer;">
-            <div class="card-title"><h2>Pendentes</h2><span>Total</span></div>
+            <div class="card-title"><h2>Pendentes</h2><span>Em aberto</span></div>
             <div id="homePendentes" class="metric bad">$ 0,00</div>
           </div>
 
           <div id="todayResultCard" class="card home-metric-card" data-home-detail="lucroHoje" style="cursor:pointer;">
-            <div class="card-title"><h2>Lucro hoje</h2><span>Retiradas</span></div>
+            <div class="card-title"><h2>Lucro hoje</h2><span>No dia</span></div>
             <div id="homeTodayResult" class="metric">$ 0,00</div>
           </div>
 
           <div id="weekResultCard" class="card home-metric-card" data-home-detail="lucroSemana" style="cursor:pointer;">
-            <div class="card-title"><h2>Lucro semana</h2><span>Retiradas</span></div>
+            <div class="card-title"><h2>Lucro semana</h2><span>Últimos 7 dias</span></div>
             <div id="homeWeekResult" class="metric">$ 0,00</div>
           </div>
         </div>
@@ -103,7 +103,7 @@
             <div>
               <h2>Comparativo de fichas</h2>
             </div>
-            <button id="toggleComparativoBtn" class="small-btn" type="button">Ver comparativo</button>
+            <button id="toggleComparativoBtn" class="small-btn" type="button">Abrir comparativo</button>
           </div>
           <div id="comparativoSection" class="hidden">
             <div id="chipsComparison" class="grid two"></div>
@@ -117,14 +117,14 @@
         <div class="card close-hero-card">
           <div class="close-hero-top">
             <div>
-              <span class="close-kicker">Fechamento premium</span>
+              <span class="close-kicker">Fechamento financeiro</span>
               <h2>Fechamento do turno</h2>
             </div>
             <span id="closeStatusBadge" class="close-status-badge is-idle">Aguardando dados</span>
           </div>
           <div class="close-hero-grid">
             <div class="close-hero-metric">
-              <span>Campos com valor</span>
+              <span>Campos preenchidos</span>
               <strong id="closeFilledCount">0 / 7</strong>
             </div>
             <div class="close-hero-metric">
@@ -143,16 +143,16 @@
             <div class="card close-form-card">
               <div class="card-title close-card-title">
                 <div>
-                  <h2>Dados base do fechamento</h2>
+                  <h2>Dados do fechamento</h2>
                 </div>
-                <span class="close-section-badge">Atualização em tempo real</span>
+                <span class="close-section-badge">Preenchimento assistido</span>
               </div>
 
               <div class="close-form-groups">
                 <div class="close-group-block">
                   <div class="close-group-head">
-                    <h3>Contexto do turno</h3>
-                    <p>Informações principais de operador e data.</p>
+                    <h3>Contexto operacional</h3>
+                    <p>Informações de operador e horário de referência do fechamento.</p>
                   </div>
                   <div class="form-grid close-form-grid close-form-grid-top">
                     <div class="field field-highlight">
@@ -170,7 +170,7 @@
                 <div class="close-group-block">
                   <div class="close-group-head">
                     <h3>Base financeira</h3>
-                    <p>Valores que compõem o fechamento do turno.</p>
+                    <p>Valores que compõem a posição financeira do turno.</p>
                   </div>
                   <div class="form-grid close-form-grid close-form-grid-money">
                     <div class="field field-highlight">
@@ -192,17 +192,17 @@
               <div id="pendingCard" class="card close-motion-card">
                 <div class="card-title close-card-title">
                   <div>
-                    <h2>Pagos pendentes</h2>
+                    <h2>Pendências financeiras</h2>
                     <span id="pendingCounter">0 itens aguardando baixa</span>
                   </div>
                   <button id="togglePendingBtn" class="small-btn" type="button">Abrir</button>
                 </div>
                 <div id="pendingPanel" class="admin-create-panel close-panel-body">
                   <div class="close-panel-toolbar">
-                    <button id="addPendingBtn" class="small-btn" type="button">+ Adicionar pendente</button>
-                    <span class="close-panel-note">Inclua somente itens que ainda precisam ser compensados.</span>
+                    <button id="addPendingBtn" class="small-btn" type="button">+ Adicionar pendência</button>
+                    <span class="close-panel-note">Inclua somente valores ainda não compensados.</span>
                   </div>
-                  <div id="pendingList" class="dynamic-list close-dynamic-list" data-empty-text="Nenhum pendente adicionado ainda"></div>
+                  <div id="pendingList" class="dynamic-list close-dynamic-list" data-empty-text="Nenhuma pendência adicionada ainda"></div>
                 </div>
               </div>
 
@@ -217,7 +217,7 @@
                 <div id="outflowPanel" class="admin-create-panel close-panel-body">
                   <div class="close-panel-toolbar">
                     <button id="addOutflowBtn" class="small-btn" type="button">+ Adicionar retirada</button>
-                    <span class="close-panel-note">Separe lucro, custo operacional e Taxas Reba para manter a leitura organizada.</span>
+                    <span class="close-panel-note">Classifique corretamente lucro, custo operacional e Taxas Reba.</span>
                   </div>
                   <div id="outflowList" class="dynamic-list close-dynamic-list" data-empty-text="Nenhuma retirada adicionada ainda"></div>
                 </div>
@@ -227,7 +227,7 @@
             <div id="quickChargeCard" class="card close-quick-card close-admin-field" data-role-visibility="admin-only" style="margin-top:14px;">
               <div class="card-title close-card-title">
                 <div>
-                  <h2>Carga rápida</h2>
+                  <h2>Ajuste administrativo</h2>
                 </div>
                 <button id="toggleQuickChargeBtn" class="admin-toggle" type="button">Mostrar</button>
               </div>
@@ -241,10 +241,10 @@
                   <div class="field"><label>Carga casino</label><input id="quickCargaCasino" class="money-input" inputmode="decimal" placeholder="0,00" /></div>
                   <div class="field"><label>Retirada do caixa</label><input id="quickRetiradaCaixa" class="money-input" inputmode="decimal" placeholder="0,00" /></div>
                   <div class="field"><label>Tipo da retirada</label><select id="quickRetiradaTipo"><option value="lucro">Lucro</option><option value="custo_operacional">Custo operacional</option><option value="taxas_reba">Taxas Reba</option></select></div>
-                  <div class="field"><label>Motivo</label><input id="quickCargaMotivo" placeholder="Ex: aporte de caixa / reposição banca" /></div>
+                  <div class="field"><label>Motivo</label><input id="quickCargaMotivo" placeholder="Ex: ajuste de caixa / reposição operacional" /></div>
                   <div class="field"><label>Responsável</label><input id="quickCargaOperador" placeholder="Admin / responsável" /></div>
                 </div>
-                <button id="quickChargeBtn" class="btn full" style="margin-top:14px;">Adicionar carga ao sistema</button>
+                <button id="quickChargeBtn" class="btn full" style="margin-top:14px;">Registrar ajuste</button>
               </div>
             </div>
           </div>
@@ -254,9 +254,9 @@
               <div class="summary-head close-summary-head">
                 <div>
                   <h2>Resumo calculado</h2>
-                  <span>Conferência automática preservada</span>
+                  <span>Apuração automática preservada</span>
                 </div>
-                <div class="summary-live">Tempo real</div>
+                <div class="summary-live">Atualizado</div>
               </div>
               <div class="summary-main close-summary-main">
                 <div class="summary-total close-summary-total">
@@ -276,14 +276,14 @@
                 </div>
                 <div class="close-progress-card">
                   <div class="close-progress-top">
-                    <span>Preenchimento visual do fechamento</span>
+                    <span>Andamento do preenchimento</span>
                     <b id="closeProgressLabel">0%</b>
                   </div>
                   <div class="close-progress-track"><div id="closeProgressFill" class="close-progress-fill"></div></div>
                 </div>
                 <div class="close-action-grid">
-                  <button id="clearClosingBtn" class="btn secondary full">Limpar</button>
-                  <button id="saveClosingBtn" class="btn full">Salvar</button>
+                  <button id="clearClosingBtn" class="btn secondary full">Limpar dados</button>
+                  <button id="saveClosingBtn" class="btn full">Salvar fechamento</button>
                 </div>
               </div>
             </div>
@@ -297,7 +297,7 @@
         <div class="card history-hero-card">
           <div class="history-hero-top">
             <div>
-              <span class="history-kicker">Histórico inteligente</span>
+              <span class="history-kicker">Consulta operacional</span>
               <h2>Histórico</h2>
             </div>
             <span id="historyCount" class="history-count-pill">0 registros</span>
@@ -307,15 +307,15 @@
         <div class="card history-main-card">
           <div class="card-title">
             <div>
-              <h2>Histórico inteligente</h2>
+              <h2>Histórico de operações</h2>
             </div>
-            <span class="history-toolbar-label">Atualização em tempo real</span>
+            <span class="history-toolbar-label">Consulta em tempo real</span>
           </div>
           <div class="history-tools">
             <div class="field"><input id="historySearch" placeholder="Buscar operador" /></div>
             <div class="field"><input id="historyDate" type="date" /></div>
             <button id="recalculateBtn" class="btn secondary">Recalcular</button>
-            <button id="pdfReportBtn" class="btn secondary">PDF Banco</button>
+            <button id="pdfReportBtn" class="btn secondary">Relatório PDF</button>
           </div>
           <div id="historyList" class="history-list"></div>
           <div id="historyLoadMoreWrap" class="history-load-more-wrap"></div>
@@ -328,7 +328,7 @@
         <div class="goal-top">
           <div>
             <h2>Meta mensal</h2>
-            <span>Uso interno</span>
+            <span>Acompanhamento interno</span>
           </div>
           <div id="monthlyGoalPercent" class="goal-badge">0%</div>
         </div>
@@ -344,23 +344,23 @@
       </div>
     </section>
 
-    <section id="screenRanking" class="screen"><div class="card"><div class="card-title"><h2>Ranking operadores</h2><span>Lucro por operador</span></div><div class="rank-tabs"><button class="active" data-rank="day">Diário</button><button data-rank="week">Semanal</button><button data-rank="month">Mensal</button><button data-rank="all">Total</button></div><div id="rankingList" class="rank-list"></div></div></section>
+    <section id="screenRanking" class="screen"><div class="card"><div class="card-title"><h2>Ranking operadores</h2><span>Desempenho por operador</span></div><div class="rank-tabs"><button class="active" data-rank="day">Diário</button><button data-rank="week">Semanal</button><button data-rank="month">Mensal</button><button data-rank="all">Total</button></div><div id="rankingList" class="rank-list"></div></div></section>
 
     <section id="screenReports" class="screen">
       <div class="reports-shell">
         <div class="card reports-hero">
           <div class="card-title reports-title">
             <div>
-              <span class="reports-kicker">Relatórios premium</span>
-              <h2>Resumo executivo pronto para PDF</h2>
+              <span class="reports-kicker">Relatórios financeiros</span>
+              <h2>Relatório consolidado para exportação</h2>
             </div>
-            <span class="reports-badge">Preserva seus cálculos</span>
+            <span class="reports-badge">Baseado nos dados do sistema</span>
           </div>
-          <p class="reports-description">Use os mesmos dados do sistema para gerar um relatório mais elegante, limpo e fácil de imprimir, sem alterar a lógica financeira que já funciona no fechamento.</p>
+          <p class="reports-description">Utilize os dados registrados no sistema para gerar um relatório financeiro mais limpo, consistente e adequado para conferência e impressão.</p>
           <div class="reports-highlights">
-            <div class="reports-highlight"><strong>Visual clean</strong><span>layout mais profissional</span></div>
-            <div class="reports-highlight"><strong>Leitura rápida</strong><span>cards e resumo executivo</span></div>
-            <div class="reports-highlight"><strong>Compatível</strong><span>Firebase, Firestore e PDF</span></div>
+            <div class="reports-highlight"><strong>Visual institucional</strong><span>leitura mais profissional</span></div>
+            <div class="reports-highlight"><strong>Conferência rápida</strong><span>resumo claro dos principais números</span></div>
+            <div class="reports-highlight"><strong>Compatibilidade</strong><span>integração com Firebase, Firestore e PDF</span></div>
           </div>
         </div>
 
@@ -413,7 +413,7 @@
         </div>
 
         <div class="report-actions">
-          <button id="previewReportBtn" class="btn secondary full">Atualizar resumo</button>
+          <button id="previewReportBtn" class="btn secondary full">Atualizar prévia</button>
           <button id="generateReportBtn" class="btn full">Gerar PDF</button>
         </div>
       </div>
@@ -430,7 +430,7 @@
             <button id="toggleCreateUserBtn" class="admin-toggle">Ocultar criar usuário</button>
           </div>
           <span id="adminStatus" class="muted">Protegido</span>
-          <p class="admin-panel-copy">Cadastre usuários, ajuste funções e acompanhe rapidamente as últimas movimentações administrativas em um layout mais limpo.</p>
+          <p class="admin-panel-copy">Gerencie usuários, permissões e acompanhe as movimentações administrativas em um ambiente mais claro e organizado.</p>
           <div id="createUserPanel" class="admin-create-panel active">
             <div class="form-grid admin-form-grid" style="margin-top:14px;">
               <div class="field"><label>Email</label><input id="newUserEmail" type="email" placeholder="usuario@email.com" /></div>
@@ -471,11 +471,11 @@
   <nav id="bottomNav" class="bottom-nav hidden"><button class="nav-btn active" data-screen="Home"><b>⌂</b>Início</button><button class="nav-btn" data-screen="Close"><b>＋</b>Fechar</button><button class="nav-btn" data-screen="History"><b>≡</b>Histórico</button><button class="nav-btn" id="moreMenuBtn" type="button"><b>☰</b>Mais</button></nav>
 
   <div id="moreMenu" class="more-menu">
-    <div class="more-menu-title">Ações avançadas</div>
+    <div class="more-menu-title">Ações do sistema</div>
     <div class="more-menu-grid">
-      <button class="more-menu-btn" data-more-screen="Goals" id="moreGoalsBtn">Meta mensal <span>progresso</span></button>
-      <button class="more-menu-btn" data-more-screen="Ranking">Ranking <span>comparativo</span></button>
-      <button class="more-menu-btn" data-more-screen="Reports">Relatórios <span>Exporta PDF</span></button>
+      <button class="more-menu-btn" data-more-screen="Goals" id="moreGoalsBtn">Meta mensal <span>acompanhamento</span></button>
+      <button class="more-menu-btn" data-more-screen="Ranking">Ranking <span>desempenho</span></button>
+      <button class="more-menu-btn" data-more-screen="Reports">Relatórios <span>exportação PDF</span></button>
       <button class="more-menu-btn" data-more-screen="Admin" id="moreAdminBtn">Admin <span>gestão</span></button>
     </div>
   </div>
@@ -525,7 +525,7 @@
   </div>
 
   <div id="editHistoryModal" class="edit-modal"><div class="edit-panel"><div class="edit-panel-head"><h2>Editar fechamento</h2><button id="editCloseBtn" class="edit-close">×</button></div><input id="editHistoryId" type="hidden" /><div class="form-grid"><div class="field"><label>Operador</label><input id="editOperatorName" /></div><div class="field"><label>Data do fechamento</label><input id="editClosingDate" type="datetime-local" /></div><div class="field"><label>Reca</label><input id="editWebReca" class="money-input" inputmode="decimal" /></div>
-        <div class="field"><label>Suprema</label><input id="editSuprema" class="money-input" inputmode="decimal" /></div><div class="field"><label>PPPoker</label><input id="editPppoker" class="money-input" inputmode="decimal" /></div><div class="field"><label>Buffalo</label><input id="editBuffalo" class="money-input" inputmode="decimal" /></div><div class="field"><label>Ganamos</label><input id="editGanamos" class="money-input" inputmode="decimal" /></div><div class="field close-admin-field" data-role-visibility="admin-only"><label>Carga poker</label><input id="editCargasPoker" class="money-input" inputmode="decimal" /></div><div class="field close-admin-field" data-role-visibility="admin-only"><label>Carga casino</label><input id="editCargasCasino" class="money-input" inputmode="decimal" /></div></div><div class="grid two"><div class="card" style="box-shadow:none;margin-top:12px;"><div class="card-title"><h2>Pagos pendentes</h2><button id="editAddPendingBtn" class="small-btn">+ Adicionar</button></div><div id="editPendingList" class="dynamic-list"></div></div><div class="card" style="box-shadow:none;margin-top:12px;"><div class="card-title"><h2>Retiradas</h2><button id="editAddOutflowBtn" class="small-btn">+ Adicionar</button></div><div id="editOutflowList" class="dynamic-list"></div></div></div><div class="edit-actions"><button id="saveEditBtn" class="btn">Salvar alterações</button><button id="cancelEditBtn" class="btn secondary">Cancelar</button></div></div></div>
+        <div class="field"><label>Suprema</label><input id="editSuprema" class="money-input" inputmode="decimal" /></div><div class="field"><label>PPPoker</label><input id="editPppoker" class="money-input" inputmode="decimal" /></div><div class="field"><label>Buffalo</label><input id="editBuffalo" class="money-input" inputmode="decimal" /></div><div class="field"><label>Ganamos</label><input id="editGanamos" class="money-input" inputmode="decimal" /></div><div class="field close-admin-field" data-role-visibility="admin-only"><label>Carga poker</label><input id="editCargasPoker" class="money-input" inputmode="decimal" /></div><div class="field close-admin-field" data-role-visibility="admin-only"><label>Carga casino</label><input id="editCargasCasino" class="money-input" inputmode="decimal" /></div></div><div class="grid two"><div class="card" style="box-shadow:none;margin-top:12px;"><div class="card-title"><h2>Pendências financeiras</h2><button id="editAddPendingBtn" class="small-btn">+ Adicionar</button></div><div id="editPendingList" class="dynamic-list"></div></div><div class="card" style="box-shadow:none;margin-top:12px;"><div class="card-title"><h2>Retiradas</h2><button id="editAddOutflowBtn" class="small-btn">+ Adicionar</button></div><div id="editOutflowList" class="dynamic-list"></div></div></div><div class="edit-actions"><button id="saveEditBtn" class="btn">Salvar alterações</button><button id="cancelEditBtn" class="btn secondary">Cancelar</button></div></div></div>
 
   <div id="appReloadLoader" class="app-reload-loader"><div class="reload-card"><div class="reload-spinner"></div><strong>Atualizando sistema</strong><span>Recalculando dados...</span></div></div>
 
