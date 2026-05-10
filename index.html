@@ -71,20 +71,193 @@ button,input,select,textarea{font-family:inherit}button{border:0;cursor:pointer}
 
 
 /* =========================================================
-   FIX LOADER PRESO — appReloadLoader só aparece com .active
+   BANK KING V2 — PREMIUM WHITE OVERRIDE / MODO CLARO TOTAL
+   Fundo branco, grafite escuro, linhas divisórias, zero ruído visual
 ========================================================= */
-.app-reload-loader{
-  display:none!important;
-  opacity:0!important;
-  pointer-events:none!important;
+:root{
+  --bg:#ffffff!important;
+  --bg2:#f4f4f6!important;
+  --card:#ffffff!important;
+  --card2:#f9f9fb!important;
+  --text:#0d0d14!important;
+  --muted:#8a8a9a!important;
+  --line:rgba(0,0,0,.08)!important;
+  --line2:rgba(0,0,0,.055)!important;
+  --primary:#1a1a2e!important;
+  --primary2:#11111e!important;
+  --navy:#1a1a2e!important;
+  --navy2:#0d0d18!important;
+  --success:#087f5b!important;
+  --danger:#b42338!important;
+  --warning:#b7791f!important;
+  --radius:14px!important;
+  --radius-lg:20px!important;
+  --shadow-1:0 1px 2px rgba(0,0,0,.04),0 8px 22px rgba(0,0,0,.05)!important;
+  --shadow-2:0 2px 4px rgba(0,0,0,.05),0 16px 40px rgba(0,0,0,.08)!important;
+  --focus:rgba(26,26,46,.10)!important;
 }
-.app-reload-loader.active{
-  display:flex!important;
-  opacity:1!important;
-  pointer-events:auto!important;
+html,body{
+  background:#ffffff!important;
+  color:var(--text)!important;
 }
-.reload-card strong{display:block;margin-bottom:4px;}
-.reload-card span{display:block;}
+.topbar{
+  background:rgba(255,255,255,.96)!important;
+  border-bottom:1px solid rgba(0,0,0,.07)!important;
+}
+.logo-box{
+  background:linear-gradient(145deg,#1a1a2e,#11111e)!important;
+  box-shadow:var(--shadow-2)!important;
+}
+.icon-btn{
+  background:#fff!important;
+  border:1px solid var(--line)!important;
+  color:var(--primary2)!important;
+}
+.section-divider{
+  color:#8a8a9a!important;
+  font-size:11px!important;
+  letter-spacing:.8px!important;
+}
+.section-divider::after{
+  background:linear-gradient(90deg,rgba(0,0,0,.10),transparent)!important;
+}
+.hero-card{
+  background:
+    radial-gradient(circle at 92% 0%,rgba(42,112,255,.20),transparent 34%),
+    linear-gradient(135deg,#030915 0%,#071833 38%,#1a1a2e 100%)!important;
+  box-shadow:var(--shadow-2)!important;
+}
+.grid{gap:0!important;}
+.card,.goal-card,.chips-item,.user-item{
+  background:#fff!important;
+  border:1px solid var(--line)!important;
+  border-radius:var(--radius-lg)!important;
+  box-shadow:var(--shadow-1)!important;
+}
+.history-list,.rank-list{
+  display:grid!important;
+  gap:0!important;
+  background:#fff!important;
+  border-radius:var(--radius-lg)!important;
+  border:1px solid var(--line)!important;
+  overflow:hidden!important;
+}
+.history-item,.rank-item{
+  background:#fff!important;
+  border:none!important;
+  border-bottom:1px solid rgba(0,0,0,.07)!important;
+  border-radius:0!important;
+  padding:16px 14px!important;
+  box-shadow:none!important;
+}
+.history-item:last-child,.rank-item:last-child{border-bottom:none!important;}
+.card-title h2{
+  font-size:15px!important;
+  font-weight:800!important;
+  letter-spacing:-.3px!important;
+}
+.metric{font-size:30px!important;color:var(--text)!important;}
+.metric.good,#homeTodayResult,#homeWeekResult{color:var(--success)!important;}
+.metric.bad,#homePendentes{color:var(--danger)!important;}
+#screenHome .grid.two>.card[data-home-detail]{
+  min-height:118px!important;
+  padding:18px 18px 16px!important;
+  border-radius:18px!important;
+  border:1px solid var(--line)!important;
+  border-top:1px solid var(--line)!important;
+  box-shadow:var(--shadow-1)!important;
+  overflow:hidden!important;
+}
+.field input,.field select,.field textarea,.row-item input,.row-item select{
+  border:1px solid rgba(0,0,0,.10)!important;
+  border-left:4px solid transparent!important;
+  background:#fafafa!important;
+  color:var(--text)!important;
+  box-shadow:none!important;
+}
+.field input:focus,.field select:focus,.field textarea:focus,.row-item input:focus,.row-item select:focus{
+  background:#fff!important;
+  border-color:rgba(26,26,46,.25)!important;
+  border-left-color:var(--primary)!important;
+  box-shadow:0 0 0 4px var(--focus)!important;
+}
+.btn,.small-btn,.admin-toggle{
+  background:linear-gradient(145deg,#1a1a2e,#11111e)!important;
+  box-shadow:0 1px 2px rgba(0,0,0,.06),0 10px 24px rgba(26,26,46,.16)!important;
+}
+.btn.secondary,.small-btn.secondary,.admin-toggle{
+  background:linear-gradient(180deg,#fff,#f4f4f6)!important;
+  color:var(--primary2)!important;
+  border:1px solid var(--line)!important;
+  box-shadow:var(--shadow-1)!important;
+}
+.summary-head,.receipt-total,.nav-btn.active,.rank-tabs button.active{
+  background:linear-gradient(135deg,#0d0d18,#1a1a2e)!important;
+}
+.summary-total,.summary-note,.goal-badge,.rank-pos,.receipt-close,.edit-close{
+  background:#f4f4f6!important;
+}
+.rank-bar,.goal-bar{height:8px!important;background:#f0f0f2!important;}
+.rank-fill.good,.goal-fill{background:linear-gradient(90deg,#1a1a2e,#087f5b)!important;}
+.rank-fill.bad{background:linear-gradient(90deg,#b42338,#b7791f)!important;}
+.bottom-nav{
+  background:rgba(255,255,255,.96)!important;
+  border:1px solid rgba(0,0,0,.08)!important;
+  box-shadow:0 2px 6px rgba(0,0,0,.06),0 20px 60px rgba(0,0,0,.10)!important;
+}
+.more-menu{
+  background:rgba(255,255,255,.98)!important;
+  border:1px solid rgba(0,0,0,.08)!important;
+  box-shadow:0 2px 6px rgba(0,0,0,.06),0 26px 80px rgba(0,0,0,.14)!important;
+}
+.more-menu-btn{
+  background:#fff!important;
+  border:1px solid var(--line)!important;
+}
+.more-menu-btn .mmb-icon{
+  background:linear-gradient(145deg,#1a1a2e,#11111e)!important;
+}
+.loading-box,.reload-card,.receipt-panel,.edit-panel{
+  background:#fff!important;
+  border:1px solid var(--line)!important;
+  color:var(--text)!important;
+}
+.loading-spinner,.reload-spinner{
+  border:4px solid rgba(26,26,46,.10)!important;
+  border-top-color:#1a1a2e!important;
+}
+
+/* === BARRA INDICADORA NOS METRIC CARDS === */
+.card-indicator{
+  position:absolute;
+  bottom:0;left:0;right:0;
+  height:3px;
+  background:#f0f0f2;
+  overflow:hidden;
+  border-radius:0 0 var(--radius-lg) var(--radius-lg);
+}
+.card-indicator-fill{
+  height:100%;
+  width:0;
+  border-radius:999px;
+  transition:width .6s cubic-bezier(.4,0,.2,1);
+}
+.card-indicator-fill.good{background:linear-gradient(90deg,#087f5b,#18b981)}
+.card-indicator-fill.bad{background:linear-gradient(90deg,#b42338,#ef4444)}
+
+@media(max-width:760px){
+  .app-shell{padding:14px 0 calc(var(--bottom) + 18px)!important;}
+  .hero-card{margin:0 14px!important;}
+  .card,.goal-card,.chips-item{
+    border-radius:0!important;
+    border-left:none!important;
+    border-right:none!important;
+    box-shadow:none!important;
+    margin:0!important;
+    border-bottom:1px solid var(--line)!important;
+  }
+  #screenHome .grid.two>.card[data-home-detail]{border-radius:0!important;}
+}
 
 </style>
 
@@ -493,31 +666,6 @@ function updateHeroBalance(newValue){
       if(code.includes("auth/weak-password")) return "A senha precisa ter pelo menos 6 caracteres.";
       return error?.message || String(error);
     }
-
-    function showReloadLoader(title="Atualizando sistema", text="Recalculando dados..."){
-      const loader = $("appReloadLoader");
-      if(!loader) return;
-      const strong = loader.querySelector(".reload-card strong");
-      const span = loader.querySelector(".reload-card span");
-      if(strong) strong.textContent = title;
-      if(span) span.textContent = text;
-      loader.classList.add("active");
-    }
-
-    function hideReloadLoader(){
-      const loader = $("appReloadLoader");
-      if(!loader) return;
-      loader.classList.remove("active");
-    }
-
-    function withTimeout(promise, ms=12000, label="operação"){
-      let timer;
-      const timeout = new Promise((_, reject)=>{
-        timer = setTimeout(()=>reject(new Error(`Tempo excedido na ${label}. Verifique conexão/Firestore.`)), ms);
-      });
-      return Promise.race([promise, timeout]).finally(()=>clearTimeout(timer));
-    }
-
 
     function moneyToNumber(value){
       if(value === null || value === undefined) return 0; if(typeof value === "number") return value;
@@ -960,6 +1108,31 @@ function updateHeroBalance(newValue){
   });
 }
 
+
+
+    function setCardIndicator(cardEl, value, max){
+      if(!cardEl) return;
+      const old = cardEl.querySelector('.card-indicator');
+      if(old) old.remove();
+
+      if(value === null || value === undefined || !max) return;
+
+      const percent = Math.min(100, (Math.abs(value) / Math.abs(max)) * 100);
+      const isGood = value >= 0;
+
+      const bar = document.createElement('div');
+      bar.className = 'card-indicator';
+      bar.innerHTML = `<div class="card-indicator-fill ${isGood ? 'good' : 'bad'}" style="width:0%"></div>`;
+      cardEl.appendChild(bar);
+
+      requestAnimationFrame(() => {
+        requestAnimationFrame(() => {
+          const fill = bar.querySelector('.card-indicator-fill');
+          if(fill) fill.style.width = percent + '%';
+        });
+      });
+    }
+
     function renderHome(){
       const view = visibleHistory();
       const last = lastRealClosing() || view[0];
@@ -1022,6 +1195,29 @@ function updateHeroBalance(newValue){
         $("homeWeekResult").textContent = formatMoney(weekResult);
         $("homeWeekResult").style.color = weekResult < 0 ? "#dc2626" : "#059669";
       }
+
+      const saldoCard = document.querySelector('[data-home-detail="saldo"]');
+      const pendentesCard = document.querySelector('[data-home-detail="pendentes"]');
+      const lucroHojeCard = document.querySelector('[data-home-detail="lucroHoje"]');
+      const lucroSemCard = document.querySelector('[data-home-detail="lucroSemana"]');
+      const maxVal = Math.max(
+        Math.abs(moneyToNumber(saldoLiquido)),
+        Math.abs(moneyToNumber(pendentes)),
+        Math.abs(moneyToNumber(todayResult)),
+        Math.abs(moneyToNumber(weekResult)),
+        1
+      );
+
+      setCardIndicator(saldoCard, moneyToNumber(saldoLiquido), maxVal);
+      setCardIndicator(pendentesCard, -moneyToNumber(pendentes), maxVal);
+      if(canSeeProfitCards){
+        setCardIndicator(lucroHojeCard, moneyToNumber(todayResult), maxVal);
+        setCardIndicator(lucroSemCard, moneyToNumber(weekResult), maxVal);
+      }else{
+        lucroHojeCard?.querySelector('.card-indicator')?.remove();
+        lucroSemCard?.querySelector('.card-indicator')?.remove();
+      }
+
       if($("homeOperador")) $("homeOperador").textContent = last ? getOperadorName(last) : "-";
       if($("homeLastClose")) $("homeLastClose").textContent = last ? dateLabel(last.submittedAt || last.createdAt || last.turno?.closingDate) : "-";
       if($("homeUpdatedAt")) $("homeUpdatedAt").textContent = last ? "Última atualização: " + dateLabel(last.submittedAt || last.createdAt) : "Aguardando fechamento";
@@ -1100,7 +1296,7 @@ function updateHeroBalance(newValue){
 
       if($("historyCount")) $("historyCount").textContent = `${list.length} de ${Math.min(totalList,100)} registros`;
 
-      const html = list.map((item,index) => {
+      const html = list.map(item => {
         const t = item.turno || {};
         const operador = getOperadorName(item);
         const ajuste = isAdjustmentItem(item);
@@ -1114,7 +1310,7 @@ function updateHeroBalance(newValue){
           ${canDelete ? `<button class="small-btn danger" data-delete="${item.id}">Excluir</button>` : ""}
         `;
 
-        return `<div class="history-item stagger-in" data-receipt="${item.id}" style="cursor:pointer; --stagger:${index % 8};">
+        return `<div class="history-item" data-receipt="${item.id}" style="cursor:pointer;">
           <div class="history-top">
             <strong>${operador} ${ajuste ? '<span class="badge" style="margin-left:6px;">AJUSTE</span>' : ''}${lastEditableBadge}</strong>
             <span>${dateLabel(item.submittedAt || t.closingDate)}</span>
@@ -1193,7 +1389,7 @@ function updateHeroBalance(newValue){
         const medal = i === 0 ? "🥇" : i === 1 ? "🥈" : i === 2 ? "🥉" : (i + 1);
         const medalClass = i < 3 ? "rank-pos medal" : "rank-pos";
 
-        return `<div class="rank-item stagger-in" style="--stagger:${i % 8};">
+        return `<div class="rank-item">
           <div class="rank-head">
             <div class="rank-left">
               <div class="${medalClass}">${medal}</div>
@@ -1727,11 +1923,12 @@ alert("Carga adicionada ao sistema como ajuste auditável.");
 
     async function recalculateAllHistory(){
       if(!await requireAdmin()) return false;
-      showReloadLoader("Atualizando sistema", "Recalculando dados...");
+      const loader=$("appReloadLoader");
+      loader?.classList.add("active");
 
       try{
         const qh=query(collection(db,"history"),orderBy("submittedAt","asc"));
-        const snap=await withTimeout(getDocs(qh), 12000, "leitura do histórico");
+        const snap=await getDocs(qh);
         let operationalBaseSaldo=null;
 
         for(const item of snap.docs){
@@ -1769,7 +1966,7 @@ alert("Carga adicionada ao sistema como ajuste auditável.");
               updatePayload["turno.ajusteImpacto"] = saldoLiquido;
             }
 
-            await withTimeout(updateDoc(doc(db,"history",item.id), updatePayload), 10000, `atualização do histórico ${item.id}`);
+            await updateDoc(doc(db,"history",item.id), updatePayload);
           }catch(e){
             console.warn("Histórico ignorado no recálculo:",item.id,e);
           }
@@ -1782,20 +1979,10 @@ alert("Carga adicionada ao sistema como ajuste auditável.");
         alert(friendlyError(e));
         return false;
       }finally{
-        hideReloadLoader();
+        setTimeout(()=>loader?.classList.remove("active"),500);
       }
     }
-    async function refreshInternal(){
-      showReloadLoader("Atualizando sistema", "Sincronizando tela...");
-      try{
-        renderAll();
-      }catch(e){
-        console.error("Erro ao atualizar tela:", e);
-        alert(friendlyError(e));
-      }finally{
-        setTimeout(hideReloadLoader, 500);
-      }
-    }
+    async function refreshInternal(){ const loader=$("appReloadLoader"); loader?.classList.add("active"); renderAll(); setTimeout(()=>loader?.classList.remove("active"),650); }
 
     function getReportItems(){ let items=visibleHistory(); const start=$("reportStart")?.value, end=$("reportEnd")?.value, operador=($("reportOperador")?.value||"").trim().toLowerCase(), supervisor=($("reportSupervisor")?.value||"").trim().toLowerCase(); if(start) items=items.filter(x=>{const d=x.submittedAt?.toDate?x.submittedAt.toDate():new Date(x.turno?.closingDate||x.createdAt||0); return !isNaN(d)&&d.toISOString().slice(0,10)>=start;}); if(end) items=items.filter(x=>{const d=x.submittedAt?.toDate?x.submittedAt.toDate():new Date(x.turno?.closingDate||x.createdAt||0); return !isNaN(d)&&d.toISOString().slice(0,10)<=end;}); if(operador) items=items.filter(x=>getOperadorName(x).toLowerCase().includes(operador)); if(supervisor) items=items.filter(x=>String(x.supervisorName||x.turno?.supervisorName||x.supervisorEmail||x.turno?.supervisorEmail||"").toLowerCase().includes(supervisor)); return items; }
     function previewReport(){ if(!$("reportPreviewCount")) return; const items=getReportItems(), totalSaldo=items.reduce((s,x)=>s+moneyToNumber(x.turno?.saldoLiquido??x.currentSaldoTotal),0), totalDiff=items.reduce((s,x)=>s+moneyToNumber(x.diff),0); $("reportPreviewCount").textContent=items.length; $("reportPreviewSaldo").textContent=formatMoney(totalSaldo); $("reportPreviewDiff").textContent=formatMoney(totalDiff); }
@@ -1998,7 +2185,6 @@ alert("Carga adicionada ao sistema como ajuste auditável.");
     }
 
     function bindEvents(){
-      hideReloadLoader();
       if(bindEvents._bound) return;
       bindEvents._bound = true;
       // logo volta para início
@@ -2097,22 +2283,22 @@ alert("Carga adicionada ao sistema como ajuste auditável.");
       document.querySelectorAll(rippleTargets).forEach(btn=>{
         if(btn.dataset.rippleBound) return;
         btn.dataset.rippleBound = "1";
-        btn.addEventListener("pointerdown",(ev)=>{
+        btn.addEventListener("click",(ev)=>{
           const rect = btn.getBoundingClientRect();
-          const size = Math.max(rect.width, rect.height) * 2;
+          const size = Math.max(rect.width, rect.height);
           const ripple = document.createElement("span");
           ripple.className = "ripple";
           ripple.style.width = ripple.style.height = size + "px";
-          ripple.style.left = ((ev.clientX || rect.left + rect.width/2) - rect.left - size / 2) + "px";
-          ripple.style.top = ((ev.clientY || rect.top + rect.height/2) - rect.top - size / 2) + "px";
+          ripple.style.left = (ev.clientX - rect.left - size / 2) + "px";
+          ripple.style.top = (ev.clientY - rect.top - size / 2) + "px";
           btn.appendChild(ripple);
-          ripple.addEventListener("animationend",()=>ripple.remove(),{ once:true });
-        }, { passive:true });
+          setTimeout(()=>ripple.remove(), 620);
+        });
       });
 
       document.querySelectorAll(".screen.active .card,.screen.active .history-item,.screen.active .rank-item").forEach((card,index)=>{
-        if(!card.style.getPropertyValue("--stagger")) card.style.setProperty("--stagger", index % 8);
         card.classList.add("stagger-in");
+        card.style.setProperty("--stagger", index % 8);
       });
     }
 
