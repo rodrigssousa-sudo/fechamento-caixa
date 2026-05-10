@@ -717,6 +717,49 @@ html,body{background:#ffffff!important;color:var(--text)!important;}
   .side-drawer-avatar.photo-slot{width:62px!important;height:62px!important;border-radius:20px!important;}
 }
 
+
+
+/* =========================================================
+   PERFIL COMPACTO + EDIÇÃO DE PERFIL
+========================================================= */
+.side-drawer-head{padding-bottom:10px!important;}
+.side-drawer-title strong{font-size:17px!important;line-height:1.05!important;margin-bottom:2px!important;}
+.side-drawer-title > span{font-size:11px!important;line-height:1!important;margin-top:0!important;margin-bottom:5px!important;}
+.side-drawer-data{gap:2px!important;margin-top:6px!important;}
+.side-drawer-data div{grid-template-columns:48px 1fr!important;gap:7px!important;min-height:20px!important;}
+.side-drawer-data b{font-size:9.5px!important;line-height:1!important;}
+.side-drawer-data span{font-size:11.5px!important;line-height:1.08!important;}
+.side-drawer-avatar.photo-slot{cursor:pointer!important;transition:.18s ease!important;}
+.side-drawer-avatar.photo-slot:hover{transform:translateY(-1px)!important;border-color:rgba(26,26,46,.30)!important;}
+.profile-panel{max-width:560px!important;}
+.profile-edit-card{display:grid;grid-template-columns:118px 1fr;gap:16px;align-items:start;}
+.profile-photo-preview{width:118px;height:118px;border-radius:28px;background:#f4f4f6;color:var(--primary2);border:1px dashed rgba(0,0,0,.18);display:flex;align-items:center;justify-content:center;font-size:30px;font-weight:950;background-size:cover;background-position:center;cursor:pointer;box-shadow:none;}
+.profile-photo-preview.has-photo{color:transparent;border-style:solid;}
+.profile-edit-fields{display:grid;gap:12px;}
+#profilePhotoInput{padding:12px 14px;height:auto;min-height:48px;}
+@media(max-width:620px){.profile-edit-card{grid-template-columns:1fr}.profile-photo-preview{width:96px;height:96px;border-radius:24px}.profile-edit-fields{gap:10px}}
+
+
+
+/* =========================================================
+   AJUSTES FINAIS — PERFIL, MENU E RELATÓRIO PREMIUM
+========================================================= */
+.side-drawer{overflow-y:auto!important;-webkit-overflow-scrolling:touch!important;overscroll-behavior:contain!important;}
+.side-drawer.active ~ *{} /* fallback */
+body.side-drawer-open .bottom-nav{display:none!important;pointer-events:none!important;opacity:0!important;}
+.side-drawer-head{position:relative!important;}
+.side-drawer-avatar-wrap{display:grid!important;gap:6px!important;justify-items:center!important;align-content:start!important;}
+.side-drawer-avatar-label{font-size:10px!important;font-weight:950!important;letter-spacing:.7px!important;text-transform:uppercase!important;color:var(--muted)!important;line-height:1!important;}
+.side-drawer-data{gap:1px!important;margin-top:4px!important;}
+.side-drawer-data div{min-height:18px!important;}
+.side-drawer-data b{font-size:9px!important;}
+.side-drawer-data span{font-size:11px!important;line-height:1!important;}
+.side-drawer-section{flex:0 0 auto!important;}
+.side-drawer-footer{flex:0 0 auto!important;}
+.quick-charge-source-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+@media(max-width:620px){.quick-charge-source-grid{grid-template-columns:1fr!important;}}
+.report-kpi-order-note{font-size:10px;font-weight:900;letter-spacing:.55px;text-transform:uppercase;color:rgba(255,255,255,.58);margin-top:8px;}
+
 </style>
 
 <script>
@@ -953,8 +996,14 @@ function updateHeroBalance(newValue){
 
         <div id="quickChargePanel" class="admin-create-panel">
           <div class="form-grid" style="margin-top:14px;">
-            <div class="field"><label>Carga fichas poker</label><input id="quickCargaPoker" inputmode="decimal" placeholder="Quantidade de fichas" /></div>
-            <div class="field"><label>Carga casino</label><input id="quickCargaCasino" class="money-input" inputmode="decimal" placeholder="0,00" /></div>
+            <div class="quick-charge-source-grid">
+              <div class="field"><label>Carga fichas poker</label><input id="quickCargaPoker" inputmode="decimal" placeholder="Quantidade de fichas" /></div>
+              <div class="field"><label>Destino poker</label><select id="quickCargaPokerDestino"><option value="suprema">Suprema</option><option value="pppoker">PPPoker</option></select></div>
+            </div>
+            <div class="quick-charge-source-grid">
+              <div class="field"><label>Carga casino</label><input id="quickCargaCasino" class="money-input" inputmode="decimal" placeholder="0,00" /></div>
+              <div class="field"><label>Destino casino</label><select id="quickCargaCasinoDestino"><option value="buffalo">Buffalo</option><option value="ganamos">Ganamos</option></select></div>
+            </div>
             <div class="field"><label>Retirada do caixa</label><input id="quickRetiradaCaixa" class="money-input" inputmode="decimal" placeholder="0,00" /></div>
             <div class="field"><label>Tipo da retirada</label><select id="quickRetiradaTipo"><option value="lucro">Lucro</option><option value="custo_operacional">Custo operacional</option><option value="custo_reca">Custo O. Reca</option></select></div>
             <div class="field"><label>Motivo</label><input id="quickCargaMotivo" placeholder="Ex: aporte de caixa / reposição banca" /></div>
@@ -1032,7 +1081,7 @@ function updateHeroBalance(newValue){
   <aside id="sideDrawer" class="side-drawer" aria-label="Menu principal">
     <div class="side-drawer-head">
       <div class="side-drawer-brand">
-        <div id="sideDrawerAvatar" class="side-drawer-avatar photo-slot">BK</div>
+        <div class="side-drawer-avatar-wrap"><div id="sideDrawerAvatar" class="side-drawer-avatar photo-slot">BK</div><div class="side-drawer-avatar-label">Perfil</div></div>
         <div class="side-drawer-title">
           <strong id="sideDrawerName">Bank King</strong>
           <span id="sideDrawerRole">Sistema financeiro</span>
@@ -1063,12 +1112,48 @@ function updateHeroBalance(newValue){
 
     <div class="side-drawer-section">
       <div class="side-drawer-label">Sistema</div>
+      <button class="side-menu-btn utility" id="sideEditProfileBtn" type="button"><strong>Editar perfil</strong><span>nome e foto</span></button>
       <button class="side-menu-btn utility" id="sideRefreshBtn" type="button"><strong>Recarregar página</strong><span>sincronizar dados</span></button>
       <button class="side-menu-btn danger" id="sideLogoutBtn" type="button"><strong>Sair</strong><span>encerrar sessão</span></button>
     </div>
 
     <div class="side-drawer-footer">Bank King • menu lateral premium<br>Todos os atalhos do app em uma área limpa.</div>
   </aside>
+
+  <div id="profileModal" class="edit-modal">
+    <div class="edit-panel profile-panel">
+      <div class="edit-panel-head">
+        <h2>Editar perfil</h2>
+        <button id="profileCloseBtn" class="edit-close" type="button">×</button>
+      </div>
+      <div class="profile-edit-card">
+        <label for="profilePhotoInput" id="profilePhotoPreview" class="profile-photo-preview">BK</label>
+        <div class="profile-edit-fields">
+          <div class="field">
+            <label>Nome exibido</label>
+            <input id="profileNameInput" placeholder="Seu nome" />
+          </div>
+          <div class="field">
+            <label>Email</label>
+            <input id="profileEmailInput" readonly />
+          </div>
+          <div class="field">
+            <label>Foto/avatar</label>
+            <input id="profilePhotoUrlInput" placeholder="URL da foto ou escolha um arquivo abaixo" />
+          </div>
+          <div class="field">
+            <label>Enviar foto</label>
+            <input id="profilePhotoInput" type="file" accept="image/*" />
+          </div>
+        </div>
+      </div>
+      <div class="edit-actions">
+        <button id="saveProfileBtn" class="btn" type="button">Salvar perfil</button>
+        <button id="cancelProfileBtn" class="btn secondary" type="button">Cancelar</button>
+      </div>
+      <div class="muted" style="margin-top:10px;line-height:1.35;">A foto fica salva no perfil do usuário. Use imagem leve para carregar rápido.</div>
+    </div>
+  </div>
 
   <div id="receiptModal" class="receipt-modal">
     <div class="receipt-panel">
@@ -1364,8 +1449,16 @@ function updateHeroBalance(newValue){
     function getAdjustmentParts(item){
       const t = item?.turno || {};
 
-      const cargaPoker = moneyToNumber(t.cargasPoker || 0) * 400;
+      const cargaPokerFichas = moneyToNumber(t.cargasPoker || 0);
+      const cargaPokerMoney = cargaPokerFichas * 400;
+      const cargaPokerDestino = t.cargaPokerDestino || t.quickCargaPokerDestino || "poker";
+      const cargaSuprema = moneyToNumber(t.cargaSuprema || (cargaPokerDestino === "suprema" ? cargaPokerMoney : 0));
+      const cargaPppoker = moneyToNumber(t.cargaPppoker || (cargaPokerDestino === "pppoker" ? cargaPokerMoney : 0));
+
       const cargaCasino = moneyToNumber(t.cargasCasino ?? t.cargas ?? 0);
+      const cargaCasinoDestino = t.cargaCasinoDestino || t.quickCargaCasinoDestino || "casino";
+      const cargaBuffalo = moneyToNumber(t.cargaBuffalo || (cargaCasinoDestino === "buffalo" ? cargaCasino : 0));
+      const cargaGanamos = moneyToNumber(t.cargaGanamos || (cargaCasinoDestino === "ganamos" ? cargaCasino : 0));
 
       let retiradaCaixa = 0;
       if(t.retiradaCaixa !== undefined){
@@ -1376,7 +1469,7 @@ function updateHeroBalance(newValue){
         retiradaCaixa = moneyToNumber(t.saidasTotal ?? 0);
       }
 
-      return { cargaPoker, cargaCasino, retiradaCaixa };
+      return { cargaPoker: cargaPokerMoney, cargaPokerFichas, cargaPokerDestino, cargaSuprema, cargaPppoker, cargaCasino, cargaCasinoDestino, cargaBuffalo, cargaGanamos, retiradaCaixa };
     }
 
     function adjustmentImpact(item){
@@ -2054,7 +2147,9 @@ function updateHeroBalance(newValue){
       setGlobalLoading(true, "Salvando ajuste", "A carga rápida está sendo registrada com segurança.");
 
       const cargasPoker = moneyToNumber($("quickCargaPoker")?.value || 0);
+      const cargaPokerDestino = $("quickCargaPokerDestino")?.value || "suprema";
       const cargasCasino = moneyToNumber($("quickCargaCasino")?.value || 0);
+      const cargaCasinoDestino = $("quickCargaCasinoDestino")?.value || "buffalo";
       const retiradaCaixa = moneyToNumber($("quickRetiradaCaixa")?.value || 0);
       const retiradaTipo = $("quickRetiradaTipo")?.value || "lucro";
       const motivo = $("quickCargaMotivo")?.value.trim() || "Carga rápida de caixa";
@@ -2071,7 +2166,13 @@ function updateHeroBalance(newValue){
         buffalo: 0,
         ganamos: 0,
         cargasPoker,
+        cargaPokerDestino,
+        cargaSuprema: cargaPokerDestino === "suprema" ? cargasPoker * 400 : 0,
+        cargaPppoker: cargaPokerDestino === "pppoker" ? cargasPoker * 400 : 0,
         cargasCasino,
+        cargaCasinoDestino,
+        cargaBuffalo: cargaCasinoDestino === "buffalo" ? cargasCasino : 0,
+        cargaGanamos: cargaCasinoDestino === "ganamos" ? cargasCasino : 0,
         pendings: [],
         outflows: retiradaCaixa > 0 ? [{
           name: motivo,
@@ -2117,6 +2218,8 @@ function updateHeroBalance(newValue){
         await addAudit("quick_capital_injection", `Carga rápida adicionada: ${formatMoney(totalAjuste)} • ${motivo}`);
 
         ["quickCargaPoker","quickCargaCasino","quickRetiradaCaixa","quickCargaMotivo","quickCargaOperador"].forEach(id=>{ if($(id)) $(id).value=""; });
+        if($("quickCargaPokerDestino")) $("quickCargaPokerDestino").value="suprema";
+        if($("quickCargaCasinoDestino")) $("quickCargaCasinoDestino").value="buffalo";
         if($("quickRetiradaTipo")) $("quickRetiradaTipo").value="lucro";
 
         if(isAdmin()){
@@ -2240,7 +2343,13 @@ alert("Carga adicionada ao sistema como ajuste auditável.");
           <h3>Dados do ajuste</h3>
           <div class="receipt-list">
             ${receiptLine("Carga poker ×400", formatMoney(parts.cargaPoker))}
+            ${receiptLine("Destino poker", parts.cargaPokerDestino === "suprema" ? "Suprema" : parts.cargaPokerDestino === "pppoker" ? "PPPoker" : "-")}
+            ${receiptLine("Carga Suprema", formatMoney(parts.cargaSuprema || 0))}
+            ${receiptLine("Carga PPPoker", formatMoney(parts.cargaPppoker || 0))}
             ${receiptLine("Carga casino / dinheiro", formatMoney(parts.cargaCasino))}
+            ${receiptLine("Destino casino", parts.cargaCasinoDestino === "buffalo" ? "Buffalo" : parts.cargaCasinoDestino === "ganamos" ? "Ganamos" : "-")}
+            ${receiptLine("Carga Buffalo", formatMoney(parts.cargaBuffalo || 0))}
+            ${receiptLine("Carga Ganamos", formatMoney(parts.cargaGanamos || 0))}
             ${receiptLine("Retirada do caixa", formatMoney(parts.retiradaCaixa))}
             ${receiptLine("Tipo da retirada", tipoRetirada)}
           </div>
@@ -2536,6 +2645,10 @@ alert("Carga adicionada ao sistema como ajuste auditável.");
       const totalSaldo = items.reduce((s,x)=>s + moneyToNumber(x.turno?.saldoLiquido ?? x.currentSaldoTotal), 0);
       const totalDiff = items.filter(x=>!isAdjustmentItem(x)).reduce((s,x)=>s + displayCashDiff(x), 0);
       const totalAjustes = items.filter(isAdjustmentItem).reduce((s,x)=>s + adjustmentImpact(x), 0);
+      const ajusteParts = items.filter(isAdjustmentItem).map(getAdjustmentParts);
+      const totalCargaBuffalo = ajusteParts.reduce((s,x)=>s + moneyToNumber(x.cargaBuffalo || 0), 0);
+      const totalCargaGanamos = ajusteParts.reduce((s,x)=>s + moneyToNumber(x.cargaGanamos || 0), 0);
+      const totalCargaPoker = ajusteParts.reduce((s,x)=>s + moneyToNumber(x.cargaPoker || 0), 0);
       const totalLucro = items.reduce((s,x)=>s + turnCategoryTotal(x.turno || {}, "lucro", "retiradaLucroTotal"), 0);
       const totalCustoOperacional = items.reduce((s,x)=>s + turnCategoryTotal(x.turno || {}, "custo_operacional", "custoOperacionalTotal"), 0);
       const totalCustoReca = items.reduce((s,x)=>s + turnCategoryTotal(x.turno || {}, "custo_reca", "custoRecaTotal"), 0);
@@ -2580,7 +2693,11 @@ alert("Carga adicionada ao sistema como ajuste auditável.");
             </div>
             <div class="detail-card"><h3>Movimentos</h3>
               <div class="line"><span>Carga poker</span><b>${formatMoney(cargaPoker)}</b></div>
+              <div class="line"><span>Carga Suprema</span><b>${formatMoney(getAdjustmentParts(item).cargaSuprema || 0)}</b></div>
+              <div class="line"><span>Carga PPPoker</span><b>${formatMoney(getAdjustmentParts(item).cargaPppoker || 0)}</b></div>
               <div class="line"><span>Carga casino</span><b>${formatMoney(cargaCasino)}</b></div>
+              <div class="line"><span>Carga Buffalo</span><b>${formatMoney(getAdjustmentParts(item).cargaBuffalo || 0)}</b></div>
+              <div class="line"><span>Carga Ganamos</span><b>${formatMoney(getAdjustmentParts(item).cargaGanamos || 0)}</b></div>
               <div class="line"><span>Pendentes</span><b>${formatMoney(t.pendentesTotal || 0)}</b></div>
               <div class="line"><span>Retiradas</span><b>${formatMoney(t.saidasTotal || 0)}</b></div>
               <div class="line"><span>Lucro</span><b>${formatMoney(turnCategoryTotal(t, "lucro", "retiradaLucroTotal"))}</b></div>
@@ -2598,7 +2715,7 @@ alert("Carga adicionada ao sistema como ajuste auditável.");
       }).join("");
 
       return `<!DOCTYPE html><html><head><meta charset="UTF-8"><title>Relatório Bank King</title><style>
-        *{box-sizing:border-box}body{margin:0;background:#f3f7ff;color:#07152f;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif;padding:20px}.toolbar{position:sticky;top:0;z-index:10;background:rgba(255,255,255,.92);backdrop-filter:blur(18px);border:1px solid #dbe5f2;border-radius:18px;padding:12px 14px;margin-bottom:14px;display:flex;align-items:center;justify-content:space-between;gap:12px}.toolbar strong{font-size:14px}.toolbar-actions{display:flex;gap:8px}.tool-btn{height:38px;border:0;border-radius:12px;padding:0 14px;font-weight:900;cursor:pointer}.primary{background:#005BFF;color:#fff}.secondary{background:#eef4ff;color:#07328E}.cover{background:linear-gradient(135deg,#006BFF,#0047D9);color:#fff;border-radius:28px;padding:26px;margin-bottom:16px;box-shadow:0 24px 70px rgba(0,91,255,.24)}.cover-top{display:flex;justify-content:space-between;gap:20px}.logo{width:54px;height:54px;border-radius:17px;background:#fff;color:#005BFF;display:flex;align-items:center;justify-content:center;font-weight:950;font-size:20px}.brand{display:flex;gap:12px;align-items:center}.brand h1{margin:0;font-size:30px}.brand p,.meta{margin:4px 0 0;color:rgba(255,255,255,.78);font-weight:800;font-size:12px}.meta{text-align:right;line-height:1.55}.totals{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-top:18px}.total{background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.18);border-radius:16px;padding:12px}.total span{display:block;font-size:10px;text-transform:uppercase;opacity:.75;font-weight:900}.total b{display:block;margin-top:5px;font-size:15px}.close-block{background:#fff;border:1px solid #dbe5f2;border-radius:24px;padding:18px;margin-bottom:14px;box-shadow:0 16px 44px rgba(11,31,77,.09);break-inside:avoid;page-break-inside:avoid}.close-head{display:flex;justify-content:space-between;gap:14px;align-items:flex-start;margin-bottom:14px}.kicker{font-size:10px;color:#005BFF;font-weight:950;text-transform:uppercase;letter-spacing:.5px}.close-head h2{margin:3px 0;font-size:20px}.close-head p{margin:0;color:#64748b;font-size:12px;font-weight:800}.diff{border-radius:999px;padding:9px 12px;font-size:13px;font-weight:950;white-space:nowrap}.pos{background:#dcfce7;color:#047857}.neg{background:#fee2e2;color:#b91c1c}.main-card{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;border-radius:20px;background:linear-gradient(135deg,#07152f,#07328E);color:#fff;padding:14px;margin-bottom:12px}.main-card span{display:block;font-size:10px;opacity:.76;font-weight:900;text-transform:uppercase}.main-card strong{display:block;margin-top:5px;font-size:17px}.txt-pos{color:#6EE7B7!important}.txt-neg{color:#FCA5A5!important}.detail-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}.detail-card{border:1px solid #e8eef8;border-radius:18px;background:#fbfdff;padding:12px}.detail-card.full{margin-top:10px}.detail-card h3{margin:0 0 8px;font-size:13px;color:#07328E}.line{display:flex;justify-content:space-between;gap:10px;padding:7px 0;border-top:1px solid #edf2f7;font-size:12px}.line:first-of-type{border-top:0}.line span{color:#64748b;font-weight:800}.line b{font-weight:950;text-align:right}.muted-line{opacity:.75}@media(max-width:760px){body{padding:10px}.cover-top{flex-direction:column}.meta{text-align:left}.totals,.main-card,.detail-grid{grid-template-columns:1fr}.toolbar{align-items:flex-start;flex-direction:column}.toolbar-actions{width:100%;display:grid;grid-template-columns:1fr 1fr 1fr}.tool-btn{width:100%}}@media print{@page{size:A4 portrait;margin:10mm}body{background:#fff;padding:0}.toolbar{display:none}.cover{border-radius:0;margin:0 0 8mm;box-shadow:none}.close-block{box-shadow:none;border-radius:18px;margin-bottom:8mm}.close-block{page-break-inside:avoid}.totals{grid-template-columns:repeat(4,1fr)}.main-card{grid-template-columns:repeat(4,1fr)}.detail-grid{grid-template-columns:1fr 1fr}}
+        *{box-sizing:border-box}body{margin:0;background:#f3f7ff;color:#07152f;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif;padding:20px}.toolbar{position:sticky;top:0;z-index:10;background:rgba(255,255,255,.92);backdrop-filter:blur(18px);border:1px solid #dbe5f2;border-radius:18px;padding:12px 14px;margin-bottom:14px;display:flex;align-items:center;justify-content:space-between;gap:12px}.toolbar strong{font-size:14px}.toolbar-actions{display:flex;gap:8px}.tool-btn{height:38px;border:0;border-radius:12px;padding:0 14px;font-weight:900;cursor:pointer}.primary{background:#11111e;color:#fff}.secondary{background:#eef4ff;color:#11111e}.cover{background:linear-gradient(135deg,#14141d,#050508);color:#fff;border-radius:28px;padding:26px;margin-bottom:16px;box-shadow:0 24px 70px rgba(0,0,0,.24)}.cover-top{display:flex;justify-content:space-between;gap:20px}.logo{width:54px;height:54px;border-radius:17px;background:#fff;color:#11111e;display:flex;align-items:center;justify-content:center;font-weight:950;font-size:20px}.brand{display:flex;gap:12px;align-items:center}.brand h1{margin:0;font-size:30px}.brand p,.meta{margin:4px 0 0;color:rgba(255,255,255,.78);font-weight:800;font-size:12px}.meta{text-align:right;line-height:1.55}.totals{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-top:18px}.total{background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.18);border-radius:16px;padding:12px}.total span{display:block;font-size:10px;text-transform:uppercase;opacity:.75;font-weight:900}.total b{display:block;margin-top:5px;font-size:15px}.close-block{background:#fff;border:1px solid #dbe5f2;border-radius:24px;padding:18px;margin-bottom:14px;box-shadow:0 16px 44px rgba(11,31,77,.09);break-inside:avoid;page-break-inside:avoid}.close-head{display:flex;justify-content:space-between;gap:14px;align-items:flex-start;margin-bottom:14px}.kicker{font-size:10px;color:#11111e;font-weight:950;text-transform:uppercase;letter-spacing:.5px}.close-head h2{margin:3px 0;font-size:20px}.close-head p{margin:0;color:#64748b;font-size:12px;font-weight:800}.diff{border-radius:999px;padding:9px 12px;font-size:13px;font-weight:950;white-space:nowrap}.pos{background:#dcfce7;color:#047857}.neg{background:#fee2e2;color:#b91c1c}.main-card{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;border-radius:20px;background:linear-gradient(135deg,#20202a,#050508);color:#fff;padding:14px;margin-bottom:12px}.main-card span{display:block;font-size:10px;opacity:.76;font-weight:900;text-transform:uppercase}.main-card strong{display:block;margin-top:5px;font-size:17px}.txt-pos{color:#6EE7B7!important}.txt-neg{color:#FCA5A5!important}.detail-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}.detail-card{border:1px solid #e8eef8;border-radius:18px;background:#fbfdff;padding:12px}.detail-card.full{margin-top:10px}.detail-card h3{margin:0 0 8px;font-size:13px;color:#11111e}.line{display:flex;justify-content:space-between;gap:10px;padding:7px 0;border-top:1px solid #edf2f7;font-size:12px}.line:first-of-type{border-top:0}.line span{color:#64748b;font-weight:800}.line b{font-weight:950;text-align:right}.muted-line{opacity:.75}@media(max-width:760px){body{padding:10px}.cover-top{flex-direction:column}.meta{text-align:left}.totals,.main-card,.detail-grid{grid-template-columns:1fr}.toolbar{align-items:flex-start;flex-direction:column}.toolbar-actions{width:100%;display:grid;grid-template-columns:1fr 1fr 1fr}.tool-btn{width:100%}}@media print{@page{size:A4 portrait;margin:10mm}body{background:#fff;padding:0}.toolbar{display:none}.cover{border-radius:0;margin:0 0 8mm;box-shadow:none}.close-block{box-shadow:none;border-radius:18px;margin-bottom:8mm}.close-block{page-break-inside:avoid}.totals{grid-template-columns:repeat(4,1fr)}.main-card{grid-template-columns:repeat(4,1fr)}.detail-grid{grid-template-columns:1fr 1fr}}
 
         body{background:linear-gradient(180deg,#f8fbff,#eaf1fb)!important;}
         .total b,.diff,.main-card strong,.line b{font-variant-numeric:tabular-nums;font-feature-settings:"tnum" 1,"lnum" 1;}
@@ -2608,7 +2725,7 @@ alert("Carga adicionada ao sistema como ajuste auditável.");
         .neg,.txt-neg{color:#b42338!important;background:#fff1f3!important;}
         .close-block + .close-block::before{content:"";display:block;height:1px;background:linear-gradient(90deg,transparent,rgba(6,18,38,.14),transparent);margin:-2px 0 16px;}
 
-      </style></head><body><div class="toolbar"><strong>Relatório Bank King • ${reportCode}</strong><div class="toolbar-actions"><button class="tool-btn secondary" onclick="window.close()">Voltar</button><button class="tool-btn secondary" onclick="window.print()">Imprimir</button><button class="tool-btn primary" onclick="window.print()">Salvar PDF</button></div></div><header class="cover"><div class="cover-top"><div class="brand"><div class="logo">BK</div><div><h1>Bank King</h1><p>Relatório financeiro interno</p></div></div><div class="meta">Código: ${reportCode}<br>Gerado em: ${generatedAt}<br>Usuário: ${currentProfile?.name || currentUser?.email || "-"}</div></div><div class="totals"><div class="total"><span>Registros</span><b>${items.length}</b></div><div class="total"><span>Saldo somado</span><b>${formatMoney(totalSaldo)}</b></div><div class="total"><span>Diferença caixa</span><b>${formatMoney(totalDiff)}</b></div><div class="total"><span>Ajustes</span><b>${formatMoney(totalAjustes)}</b></div><div class="total"><span>Lucro</span><b>${formatMoney(totalLucro)}</b></div><div class="total"><span>Custo operacional</span><b>${formatMoney(totalCustoOperacional)}</b></div><div class="total"><span>Custo O. Reca</span><b>${formatMoney(totalCustoReca)}</b></div></div></header><main>${blocks || `<section class="close-block">Nenhum fechamento encontrado.</section>`}</main></body></html>`;
+      </style></head><body><div class="toolbar"><strong>Relatório Bank King • ${reportCode}</strong><div class="toolbar-actions"><button class="tool-btn secondary" onclick="window.close()">Voltar</button><button class="tool-btn secondary" onclick="window.print()">Imprimir</button><button class="tool-btn primary" onclick="window.print()">Salvar PDF</button></div></div><header class="cover"><div class="cover-top"><div class="brand"><div class="logo">BK</div><div><h1>Bank King</h1><p>Relatório financeiro interno</p></div></div><div class="meta">Código: ${reportCode}<br>Gerado em: ${generatedAt}<br>Usuário: ${currentProfile?.name || currentUser?.email || "-"}</div></div><div class="totals"><div class="total"><span>Custo operacional</span><b>${formatMoney(totalCustoOperacional)}</b></div><div class="total"><span>Custo Reca</span><b>${formatMoney(totalCustoReca)}</b></div><div class="total"><span>Diferenças de caixa</span><b>${formatMoney(totalDiff)}</b></div><div class="total"><span>Registros</span><b>${items.length}</b></div><div class="total"><span>Lucro</span><b>${formatMoney(totalLucro)}</b></div><div class="total"><span>Ajustes</span><b>${formatMoney(totalAjustes)}</b></div><div class="total"><span>Carga Buffalo</span><b>${formatMoney(totalCargaBuffalo)}</b></div><div class="total"><span>Carga Ganamos</span><b>${formatMoney(totalCargaGanamos)}</b></div><div class="total"><span>Carga Poker</span><b>${formatMoney(totalCargaPoker)}</b></div></div></header><main>${blocks || `<section class="close-block">Nenhum fechamento encontrado.</section>`}</main></body></html>`;
     }
 
     function generateBankPdfReport(){ const items=$("reportStart")?getReportItems():visibleHistory(); const win=window.open("","_blank"); if(!win) return alert("Permita pop-ups para gerar o PDF."); win.document.open(); win.document.write(buildBankPdfHtml(items)); win.document.close(); setTimeout(()=>{win.focus();win.print();},500); }
@@ -2737,11 +2854,14 @@ alert("Carga adicionada ao sistema como ajuste auditável.");
     function openSideDrawer(){
       $("sideDrawer")?.classList.add("active");
       $("sideDrawerOverlay")?.classList.add("active");
+      document.body.classList.add("side-drawer-open");
+      updateSideDrawerProfile();
     }
 
     function closeSideDrawer(){
       $("sideDrawer")?.classList.remove("active");
       $("sideDrawerOverlay")?.classList.remove("active");
+      document.body.classList.remove("side-drawer-open");
     }
 
     function updateSideDrawerProfile(){
@@ -2762,6 +2882,79 @@ alert("Carga adicionada ao sistema como ajuste auditável.");
         avatar.textContent = initials;
         avatar.style.backgroundImage = photoUrl ? `url('${photoUrl}')` : "";
         avatar.classList.toggle("has-photo", !!photoUrl);
+      }
+    }
+
+    function openProfileModal(){
+      const name = currentProfile?.name || currentUser?.email?.split("@")[0] || "";
+      const email = currentUser?.email || currentProfile?.email || "";
+      const photoUrl = currentProfile?.photoURL || currentProfile?.photoUrl || currentUser?.photoURL || "";
+      if($("profileNameInput")) $("profileNameInput").value = name;
+      if($("profileEmailInput")) $("profileEmailInput").value = email;
+      if($("profilePhotoUrlInput")) $("profilePhotoUrlInput").value = photoUrl;
+      updateProfilePhotoPreview(photoUrl, name);
+      $("profileModal")?.classList.add("active");
+    }
+
+    function closeProfileModal(){
+      $("profileModal")?.classList.remove("active");
+      if($("profilePhotoInput")) $("profilePhotoInput").value = "";
+    }
+
+    function updateProfilePhotoPreview(photoUrl="", name=""){
+      const preview = $("profilePhotoPreview");
+      if(!preview) return;
+      const initials = String(name || currentProfile?.name || currentUser?.email || "BK").trim().split(/\s+/).slice(0,2).map(p=>p[0]).join("").toUpperCase() || "BK";
+      preview.textContent = initials;
+      preview.style.backgroundImage = photoUrl ? `url('${photoUrl}')` : "";
+      preview.classList.toggle("has-photo", !!photoUrl);
+    }
+
+    function compressProfileImage(file){
+      return new Promise((resolve,reject)=>{
+        if(!file) return resolve("");
+        const reader = new FileReader();
+        reader.onerror = () => reject(new Error("Não foi possível ler a imagem."));
+        reader.onload = () => {
+          const img = new Image();
+          img.onerror = () => reject(new Error("Arquivo de imagem inválido."));
+          img.onload = () => {
+            const size = 360;
+            const canvas = document.createElement("canvas");
+            canvas.width = size;
+            canvas.height = size;
+            const ctx = canvas.getContext("2d");
+            const side = Math.min(img.width, img.height);
+            const sx = (img.width - side) / 2;
+            const sy = (img.height - side) / 2;
+            ctx.drawImage(img, sx, sy, side, side, 0, 0, size, size);
+            resolve(canvas.toDataURL("image/jpeg", .72));
+          };
+          img.src = reader.result;
+        };
+        reader.readAsDataURL(file);
+      });
+    }
+
+    async function saveOwnProfile(){
+      if(!currentUser) return;
+      const name = ($("profileNameInput")?.value || "").trim() || currentUser.email?.split("@")[0] || "Usuário";
+      let photoURL = ($("profilePhotoUrlInput")?.value || "").trim();
+      const file = $("profilePhotoInput")?.files?.[0];
+      try{
+        if(file) photoURL = await compressProfileImage(file);
+        const payload = { name, photoURL, photoUrl: photoURL, updatedAt: serverTimestamp() };
+        await setDoc(doc(db,"users",currentUser.uid), payload, { merge:true });
+        currentProfile = { ...(currentProfile || {}), ...payload, name, photoURL, photoUrl: photoURL };
+        fillOperadorFromProfile();
+        updateSideDrawerProfile();
+        renderAll();
+        closeProfileModal();
+        showNotice("appNotice","Perfil atualizado com sucesso.","ok");
+        setTimeout(()=>hideNotice("appNotice"), 2600);
+      }catch(e){
+        console.warn("Erro ao salvar perfil:", e);
+        alert("Não foi possível salvar o perfil. Verifique se suas regras permitem o usuário editar o próprio documento em /users/{uid}.");
       }
     }
 
@@ -2807,6 +3000,18 @@ alert("Carga adicionada ao sistema como ajuste auditável.");
       document.querySelectorAll(".side-menu-btn[data-screen]").forEach(btn=>btn.onclick=()=>showScreen(btn.dataset.screen));
       document.querySelectorAll(".side-menu-btn[data-more-screen]").forEach(btn=>btn.onclick=()=>showScreen(btn.dataset.moreScreen));
       $("sideRefreshBtn") && ($("sideRefreshBtn").onclick=()=>{ closeSideDrawer(); refreshInternal(); });
+      $("sideEditProfileBtn") && ($("sideEditProfileBtn").onclick=()=>{ closeSideDrawer(); openProfileModal(); });
+      $("sideDrawerAvatar") && ($("sideDrawerAvatar").onclick=()=>{ closeSideDrawer(); openProfileModal(); });
+      $("profileCloseBtn") && ($("profileCloseBtn").onclick=closeProfileModal);
+      $("cancelProfileBtn") && ($("cancelProfileBtn").onclick=closeProfileModal);
+      $("saveProfileBtn") && ($("saveProfileBtn").onclick=saveOwnProfile);
+      $("profilePhotoUrlInput")?.addEventListener("input",()=>updateProfilePhotoPreview($("profilePhotoUrlInput").value,$("profileNameInput")?.value));
+      $("profileNameInput")?.addEventListener("input",()=>updateProfilePhotoPreview($("profilePhotoUrlInput")?.value,$("profileNameInput")?.value));
+      $("profilePhotoInput")?.addEventListener("change", async()=>{
+        const file = $("profilePhotoInput")?.files?.[0];
+        if(!file) return updateProfilePhotoPreview($("profilePhotoUrlInput")?.value,$("profileNameInput")?.value);
+        try{ updateProfilePhotoPreview(await compressProfileImage(file), $("profileNameInput")?.value); }catch(e){ alert(e.message || "Imagem inválida."); }
+      });
       $("sideLogoutBtn") && ($("sideLogoutBtn").onclick=async()=>{ closeSideDrawer(); if(historyUnsubscribe)historyUnsubscribe(); if(systemUnsubscribe)systemUnsubscribe(); await signOut(auth); });
       document.querySelectorAll("[data-home-detail]").forEach(card=>{
         card.onclick = () => openHomeMetricDetail(card.dataset.homeDetail);
