@@ -68,6 +68,24 @@ button,input,select,textarea{font-family:inherit}button{border:0;cursor:pointer}
 @media(max-width:760px){.app-shell{padding:14px 12px calc(var(--bottom) + 18px)}.hero-card{padding:26px 20px;border-radius:20px}.hero-value{font-size:40px;letter-spacing:-1.5px}.hero-grid{grid-template-columns:1fr 1fr;gap:10px}.grid.two,.grid.three{grid-template-columns:1fr}.summary-breakdown{grid-template-columns:1fr 1fr}.bottom-nav{width:calc(100% - 18px);height:72px}.user-item,.user-actions{grid-template-columns:1fr}.row-item,.row-item.outflow-row{grid-template-columns:1fr}.remove-row{width:100%}}
 @media(max-width:430px){.hero-grid{grid-template-columns:1fr}.hero-value{font-size:36px}.metric{font-size:26px}.summary-breakdown,.goal-values,.receipt-grid,.receipt-actions,.edit-actions{grid-template-columns:1fr}.brand h1{font-size:16px}}
 @media(prefers-color-scheme:dark){:root{--bg:#07111f;--bg2:#030915;--card:#0b1627;--card2:#0f1b2e;--text:#eaf1ff;--muted:#94a3b8;--line:rgba(255,255,255,.10);--line2:rgba(255,255,255,.075);--shadow-1:0 1px 2px rgba(0,0,0,.22),0 14px 36px rgba(0,0,0,.30);--shadow-2:0 2px 6px rgba(0,0,0,.26),0 24px 70px rgba(0,0,0,.38)}html,body{background:radial-gradient(circle at 12% -8%,rgba(11,79,214,.20),transparent 34%),linear-gradient(180deg,#07111f,#030915)}.topbar{background:linear-gradient(180deg,rgba(7,17,31,.94),rgba(7,17,31,.72))}.card,.goal-card,.history-item,.rank-item,.chips-item,.user-item,.summary-total,.summary-box,.goal-box,.receipt-row,.receipt-line,.more-menu-btn{background:linear-gradient(180deg,var(--card),var(--card2));color:var(--text)}.field input,.field select,.field textarea,.row-item input,.row-item select{background:#0d1a2c;color:var(--text)}.bottom-nav,.more-menu,.receipt-panel,.edit-panel,.loading-box,.reload-card{background:rgba(11,22,39,.92);border-color:rgba(255,255,255,.10)}.btn.secondary,.small-btn.secondary,.admin-toggle{background:#0d1a2c;color:#cfe0ff}.login-card input{background:rgba(255,255,255,.10)}}
+
+
+/* =========================================================
+   FIX LOADER PRESO — appReloadLoader só aparece com .active
+========================================================= */
+.app-reload-loader{
+  display:none!important;
+  opacity:0!important;
+  pointer-events:none!important;
+}
+.app-reload-loader.active{
+  display:flex!important;
+  opacity:1!important;
+  pointer-events:auto!important;
+}
+.reload-card strong{display:block;margin-bottom:4px;}
+.reload-card span{display:block;}
+
 </style>
 
 <script>
@@ -475,6 +493,31 @@ function updateHeroBalance(newValue){
       if(code.includes("auth/weak-password")) return "A senha precisa ter pelo menos 6 caracteres.";
       return error?.message || String(error);
     }
+
+    function showReloadLoader(title="Atualizando sistema", text="Recalculando dados..."){
+      const loader = $("appReloadLoader");
+      if(!loader) return;
+      const strong = loader.querySelector(".reload-card strong");
+      const span = loader.querySelector(".reload-card span");
+      if(strong) strong.textContent = title;
+      if(span) span.textContent = text;
+      loader.classList.add("active");
+    }
+
+    function hideReloadLoader(){
+      const loader = $("appReloadLoader");
+      if(!loader) return;
+      loader.classList.remove("active");
+    }
+
+    function withTimeout(promise, ms=12000, label="operação"){
+      let timer;
+      const timeout = new Promise((_, reject)=>{
+        timer = setTimeout(()=>reject(new Error(`Tempo excedido na ${label}. Verifique conexão/Firestore.`)), ms);
+      });
+      return Promise.race([promise, timeout]).finally(()=>clearTimeout(timer));
+    }
+
 
     function moneyToNumber(value){
       if(value === null || value === undefined) return 0; if(typeof value === "number") return value;
@@ -1057,7 +1100,7 @@ function updateHeroBalance(newValue){
 
       if($("historyCount")) $("historyCount").textContent = `${list.length} de ${Math.min(totalList,100)} registros`;
 
-      const html = list.map(item => {
+      const html = list.map((item,index) => {
         const t = item.turno || {};
         const operador = getOperadorName(item);
         const ajuste = isAdjustmentItem(item);
@@ -1071,7 +1114,7 @@ function updateHeroBalance(newValue){
           ${canDelete ? `<button class="small-btn danger" data-delete="${item.id}">Excluir</button>` : ""}
         `;
 
-        return `<div class="history-item" data-receipt="${item.id}" style="cursor:pointer;">
+        return `<div class="history-item stagger-in" data-receipt="${item.id}" style="cursor:pointer; --stagger:${index % 8};">
           <div class="history-top">
             <strong>${operador} ${ajuste ? '<span class="badge" style="margin-left:6px;">AJUSTE</span>' : ''}${lastEditableBadge}</strong>
             <span>${dateLabel(item.submittedAt || t.closingDate)}</span>
@@ -1150,7 +1193,7 @@ function updateHeroBalance(newValue){
         const medal = i === 0 ? "🥇" : i === 1 ? "🥈" : i === 2 ? "🥉" : (i + 1);
         const medalClass = i < 3 ? "rank-pos medal" : "rank-pos";
 
-        return `<div class="rank-item">
+        return `<div class="rank-item stagger-in" style="--stagger:${i % 8};">
           <div class="rank-head">
             <div class="rank-left">
               <div class="${medalClass}">${medal}</div>
@@ -1684,12 +1727,11 @@ alert("Carga adicionada ao sistema como ajuste auditável.");
 
     async function recalculateAllHistory(){
       if(!await requireAdmin()) return false;
-      const loader=$("appReloadLoader");
-      loader?.classList.add("active");
+      showReloadLoader("Atualizando sistema", "Recalculando dados...");
 
       try{
         const qh=query(collection(db,"history"),orderBy("submittedAt","asc"));
-        const snap=await getDocs(qh);
+        const snap=await withTimeout(getDocs(qh), 12000, "leitura do histórico");
         let operationalBaseSaldo=null;
 
         for(const item of snap.docs){
@@ -1727,7 +1769,7 @@ alert("Carga adicionada ao sistema como ajuste auditável.");
               updatePayload["turno.ajusteImpacto"] = saldoLiquido;
             }
 
-            await updateDoc(doc(db,"history",item.id), updatePayload);
+            await withTimeout(updateDoc(doc(db,"history",item.id), updatePayload), 10000, `atualização do histórico ${item.id}`);
           }catch(e){
             console.warn("Histórico ignorado no recálculo:",item.id,e);
           }
@@ -1740,10 +1782,20 @@ alert("Carga adicionada ao sistema como ajuste auditável.");
         alert(friendlyError(e));
         return false;
       }finally{
-        setTimeout(()=>loader?.classList.remove("active"),500);
+        hideReloadLoader();
       }
     }
-    async function refreshInternal(){ const loader=$("appReloadLoader"); loader?.classList.add("active"); renderAll(); setTimeout(()=>loader?.classList.remove("active"),650); }
+    async function refreshInternal(){
+      showReloadLoader("Atualizando sistema", "Sincronizando tela...");
+      try{
+        renderAll();
+      }catch(e){
+        console.error("Erro ao atualizar tela:", e);
+        alert(friendlyError(e));
+      }finally{
+        setTimeout(hideReloadLoader, 500);
+      }
+    }
 
     function getReportItems(){ let items=visibleHistory(); const start=$("reportStart")?.value, end=$("reportEnd")?.value, operador=($("reportOperador")?.value||"").trim().toLowerCase(), supervisor=($("reportSupervisor")?.value||"").trim().toLowerCase(); if(start) items=items.filter(x=>{const d=x.submittedAt?.toDate?x.submittedAt.toDate():new Date(x.turno?.closingDate||x.createdAt||0); return !isNaN(d)&&d.toISOString().slice(0,10)>=start;}); if(end) items=items.filter(x=>{const d=x.submittedAt?.toDate?x.submittedAt.toDate():new Date(x.turno?.closingDate||x.createdAt||0); return !isNaN(d)&&d.toISOString().slice(0,10)<=end;}); if(operador) items=items.filter(x=>getOperadorName(x).toLowerCase().includes(operador)); if(supervisor) items=items.filter(x=>String(x.supervisorName||x.turno?.supervisorName||x.supervisorEmail||x.turno?.supervisorEmail||"").toLowerCase().includes(supervisor)); return items; }
     function previewReport(){ if(!$("reportPreviewCount")) return; const items=getReportItems(), totalSaldo=items.reduce((s,x)=>s+moneyToNumber(x.turno?.saldoLiquido??x.currentSaldoTotal),0), totalDiff=items.reduce((s,x)=>s+moneyToNumber(x.diff),0); $("reportPreviewCount").textContent=items.length; $("reportPreviewSaldo").textContent=formatMoney(totalSaldo); $("reportPreviewDiff").textContent=formatMoney(totalDiff); }
@@ -1946,6 +1998,7 @@ alert("Carga adicionada ao sistema como ajuste auditável.");
     }
 
     function bindEvents(){
+      hideReloadLoader();
       if(bindEvents._bound) return;
       bindEvents._bound = true;
       // logo volta para início
@@ -2044,22 +2097,22 @@ alert("Carga adicionada ao sistema como ajuste auditável.");
       document.querySelectorAll(rippleTargets).forEach(btn=>{
         if(btn.dataset.rippleBound) return;
         btn.dataset.rippleBound = "1";
-        btn.addEventListener("click",(ev)=>{
+        btn.addEventListener("pointerdown",(ev)=>{
           const rect = btn.getBoundingClientRect();
-          const size = Math.max(rect.width, rect.height);
+          const size = Math.max(rect.width, rect.height) * 2;
           const ripple = document.createElement("span");
           ripple.className = "ripple";
           ripple.style.width = ripple.style.height = size + "px";
-          ripple.style.left = (ev.clientX - rect.left - size / 2) + "px";
-          ripple.style.top = (ev.clientY - rect.top - size / 2) + "px";
+          ripple.style.left = ((ev.clientX || rect.left + rect.width/2) - rect.left - size / 2) + "px";
+          ripple.style.top = ((ev.clientY || rect.top + rect.height/2) - rect.top - size / 2) + "px";
           btn.appendChild(ripple);
-          setTimeout(()=>ripple.remove(), 620);
-        });
+          ripple.addEventListener("animationend",()=>ripple.remove(),{ once:true });
+        }, { passive:true });
       });
 
       document.querySelectorAll(".screen.active .card,.screen.active .history-item,.screen.active .rank-item").forEach((card,index)=>{
+        if(!card.style.getPropertyValue("--stagger")) card.style.setProperty("--stagger", index % 8);
         card.classList.add("stagger-in");
-        card.style.setProperty("--stagger", index % 8);
       });
     }
 
