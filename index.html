@@ -1173,6 +1173,18 @@ html,body{background:#ffffff!important;}
   .login-secondary-row{grid-template-columns:1fr!important;}
 }
 
+
+/* Admin user delete action */
+.user-actions .small-btn.danger{
+  background:linear-gradient(145deg,#b42338,#7f1d1d)!important;
+  color:#fff!important;
+  border-color:rgba(255,255,255,.12)!important;
+}
+.user-actions .small-btn:disabled{
+  opacity:.62!important;
+  cursor:not-allowed!important;
+}
+
 </style>
 
 <script>
@@ -1667,7 +1679,7 @@ function updateHeroBalance(newValue){
     function hideNotice(targetId){ $(targetId)?.classList.add("hidden"); }
     function friendlyError(error){
       const code = error?.code || "";
-      if(code.includes("permission-denied")) return "Permissão negada no Firestore. Ajuste as regras ou aprove este usuário como admin.";
+      if(code.includes("permission-denied")) return "Permissão negada no Firestore. Confira se o usuário está aprovado/ativo e se as regras permitem criar em history, ler users e gravar audit_logs.";
       if(code.includes("auth/email-already-in-use")) return "Este email já está cadastrado. Use Entrar no sistema.";
       if(code.includes("auth/invalid-credential")) return "Email ou senha inválidos.";
       if(code.includes("auth/weak-password")) return "A senha precisa ter pelo menos 6 caracteres.";
@@ -1810,6 +1822,15 @@ function updateHeroBalance(newValue){
     function isAdmin(){ return currentProfile?.role === "admin" || currentProfile?.admin === true; }
     function isSupervisor(){ return currentProfile?.role === "supervisor"; }
     function profileName(){ return currentProfile?.name || currentUser?.email?.split("@")[0] || ""; }
+    function canCurrentUserSaveClosing(){
+      if(!currentUser) return false;
+      if(isAdmin()) return true;
+      if(currentProfile?.deleted === true) return false;
+      if(currentProfile?.blocked === true) return false;
+      if(currentProfile?.approved === false) return false;
+      if(currentProfile?.status === "deleted" || currentProfile?.status === "blocked" || currentProfile?.status === "pending") return false;
+      return true;
+    }
     async function requireAdmin(){ if(isAdmin()) return true; alert("Ação permitida somente para admin."); return false; }
 
     function canAccessHistoryItem(item){
@@ -2523,6 +2544,10 @@ function updateHeroBalance(newValue){
       setButtonLoading($("saveClosingBtn"), true, "Salvando...");
       setGlobalLoading(true, "Salvando fechamento", "Não feche nem toque duas vezes. Estamos gravando o turno.");
       try{
+        if(!canCurrentUserSaveClosing()){
+          alert("Este usuário ainda não está aprovado/ativo para salvar fechamentos. Entre no Admin > Usuários e execute Aprovar com cargo.");
+          return;
+        }
         const turno = getTurnFromForm();
         const validationError = validateTurnBeforeSave(turno);
         if(validationError) return alert(validationError);
@@ -3646,65 +3671,100 @@ body.side-drawer-open #sideMenuBtn{
 
     async function loadUsers(){
       if(!await requireAdmin()) return;
+      const listEl = $("usersList");
+      if(listEl) listEl.innerHTML = `<div class="user-item">Carregando usuários...</div>`;
+
       try{
         const snap = await getDocs(collection(db,"users"));
 
         $("usersList").innerHTML = snap.docs.map(d=>{
           const u = d.data();
           const role = u.role || "operador";
-          const status = u.blocked ? "Bloqueado" : (u.approved ? "Aprovado" : "Pendente");
+          const status = u.deleted ? "Excluído" : (u.blocked ? "Bloqueado" : (u.approved ? "Aprovado" : "Pendente"));
+          const isSelf = d.id === currentUser?.uid;
 
-          return `<div class="user-item">
+          return `<div class="user-item" data-user-card="${d.id}">
             <div>
               <strong>${u.name || u.email || "Usuário"}</strong>
               <div class="muted">${u.email || ""}</div>
               <div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:7px;">
-                <span class="badge ${u.approved?'ok':'off'}">${u.approved?'Aprovado':'Pendente'}</span>
-                <span class="badge ${u.blocked?'off':'ok'}">${u.blocked?'Bloqueado':'Ativo'}</span>
+                <span class="badge ${u.approved && !u.deleted ? 'ok':'off'}">${u.approved && !u.deleted ? 'Aprovado':'Pendente'}</span>
+                <span class="badge ${u.blocked || u.deleted ? 'off':'ok'}">${status}</span>
                 <span class="badge">${role}</span>
+                ${isSelf ? '<span class="badge ok">Você</span>' : ''}
               </div>
             </div>
 
             <div class="user-actions">
-              <select data-role-select="${d.id}">
+              <select data-role-select="${d.id}" ${u.deleted ? "disabled" : ""}>
                 <option value="operador" ${role === "operador" ? "selected" : ""}>Operador</option>
                 <option value="supervisor" ${role === "supervisor" ? "selected" : ""}>Supervisor</option>
                 <option value="admin" ${role === "admin" ? "selected" : ""}>Admin</option>
               </select>
 
-              <select data-action-select="${d.id}">
+              <select data-action-select="${d.id}" ${u.deleted ? "disabled" : ""}>
                 <option value="approve">Aprovar com cargo</option>
                 <option value="save_role">Salvar cargo</option>
                 <option value="block">${u.blocked ? "Desbloquear" : "Bloquear"}</option>
+                <option value="delete_user">Excluir usuário</option>
               </select>
 
-              <button class="small-btn" data-run-user-action="${d.id}">Executar</button>
+              <button type="button" class="small-btn" data-run-user-action="${d.id}" ${u.deleted ? "disabled" : ""}>Executar</button>
+              <button type="button" class="small-btn danger" data-delete-user="${d.id}" ${isSelf || u.deleted ? "disabled" : ""}>Excluir</button>
             </div>
           </div>`;
         }).join("") || `<div class="user-item">Nenhum usuário encontrado.</div>`;
 
-        document.querySelectorAll("[data-run-user-action]").forEach(btn=>btn.onclick=async()=>{
-          const id = btn.dataset.runUserAction;
+        async function runUserAction(id, forcedAction=""){
           const role = document.querySelector(`[data-role-select="${id}"]`)?.value || "operador";
-          const action = document.querySelector(`[data-action-select="${id}"]`)?.value || "approve";
+          const action = forcedAction || document.querySelector(`[data-action-select="${id}"]`)?.value || "approve";
+          const btn = document.querySelector(forcedAction ? `[data-delete-user="${id}"]` : `[data-run-user-action="${id}"]`);
 
-          if(action === "approve"){
-            await updateDoc(doc(db,"users",id), { approved:true, role });
-            await addAudit("approve_user", `Usuário aprovado como ${role}`);
+          if(id === currentUser?.uid && (action === "delete_user" || action === "block")){
+            alert("Você não pode excluir ou bloquear o próprio usuário logado.");
+            return;
           }
 
-          if(action === "save_role"){
-            await updateDoc(doc(db,"users",id), { role });
-            await addAudit("update_user_role", `Cargo alterado para ${role}`);
-          }
+          if(action === "delete_user" && !confirm("Excluir este usuário do painel admin? O acesso será bloqueado. Para apagar também do Firebase Authentication, use o Console Firebase ou uma Cloud Function com Admin SDK.")) return;
 
-          if(action === "block"){
-            const s = await getDoc(doc(db,"users",id));
-            await updateDoc(doc(db,"users",id), { blocked:!s.data()?.blocked });
-            await addAudit("toggle_user_block", `Status de bloqueio alterado`);
-          }
+          setButtonLoading(btn, true, action === "delete_user" ? "Excluindo..." : "Executando...");
+          try{
+            if(action === "approve"){
+              await updateDoc(doc(db,"users",id), { approved:true, status:"active", blocked:false, deleted:false, role, approvedAt:serverTimestamp(), approvedBy:currentUser?.uid || null });
+              await addAudit("approve_user", `Usuário aprovado como ${role}`);
+            }
 
-          loadUsers();
+            if(action === "save_role"){
+              await updateDoc(doc(db,"users",id), { role, updatedAt:serverTimestamp(), updatedBy:currentUser?.uid || null });
+              await addAudit("update_user_role", `Cargo alterado para ${role}`);
+            }
+
+            if(action === "block"){
+              const s = await getDoc(doc(db,"users",id));
+              const blocked = !s.data()?.blocked;
+              await updateDoc(doc(db,"users",id), { blocked, status: blocked ? "blocked" : "active", updatedAt:serverTimestamp(), updatedBy:currentUser?.uid || null });
+              await addAudit("toggle_user_block", blocked ? "Usuário bloqueado" : "Usuário desbloqueado");
+            }
+
+            if(action === "delete_user"){
+              await updateDoc(doc(db,"users",id), { deleted:true, blocked:true, approved:false, status:"deleted", deletedAt:serverTimestamp(), deletedBy:currentUser?.uid || null });
+              await addAudit("delete_user", `Usuário removido/bloqueado: ${id}`);
+            }
+
+            await loadUsers();
+          }catch(e){
+            alert(friendlyError(e));
+          }finally{
+            setButtonLoading(btn, false);
+          }
+        }
+
+        document.querySelectorAll("[data-run-user-action]").forEach(btn=>{
+          btn.onclick=async()=> runUserAction(btn.dataset.runUserAction);
+        });
+
+        document.querySelectorAll("[data-delete-user]").forEach(btn=>{
+          btn.onclick=async()=> runUserAction(btn.dataset.deleteUser, "delete_user");
         });
       }catch(e){
         $("usersList").innerHTML=`<div class="notice error">${friendlyError(e)}</div>`;
@@ -3713,7 +3773,7 @@ body.side-drawer-open #sideMenuBtn{
 
     async function loadAudit(){ if(!isAdmin()) return; try{ const qh=query(collection(db,"audit_logs"),orderBy("createdAt","desc"),limit(20)); const snap=await getDocs(qh); $("auditList").innerHTML=snap.docs.map(d=>{const a=d.data(); return `<div class="history-item"><div class="history-top"><strong>${a.action}</strong><span>${dateLabel(a.createdAt)}</span></div><div class="muted">${a.description||""}<br>${a.email||""}</div></div>`;}).join("")||`<div class="history-item">Sem auditoria.</div>`; }catch(e){ $("auditList").innerHTML=`<div class="notice error">${friendlyError(e)}</div>`; } }
 
-    async function createInternalUser(){ if(!await requireAdmin()) return; const email=$("newUserEmail").value.trim(), password=$("newUserPassword").value, name=$("newUserName").value.trim(), role=$("newUserRole").value, supervisorRaw=$("newUserSupervisor")?.value.trim()||""; if(!email||!password) return alert("Informe email e senha."); if(password.length<6) return alert("A senha precisa ter pelo menos 6 caracteres."); const secondaryApp=initializeApp(firebaseConfig,"SecondaryUserCreator"+Date.now()), secondaryAuth=getAuth(secondaryApp); try{ const cred=await createUserWithEmailAndPassword(secondaryAuth,email,password); await setDoc(doc(db,"users",cred.user.uid),{email,name:name||email.split("@")[0],role,supervisorUid:role==="operador"&&!supervisorRaw.includes("@")?(supervisorRaw||null):null,supervisorEmail:role==="operador"&&supervisorRaw.includes("@")?supervisorRaw:null,approved:true,blocked:false,createdAt:serverTimestamp(),createdBy:currentUser?.uid||null}); await signOut(secondaryAuth); await deleteApp(secondaryApp); await addAudit("create_user",`Usuário criado: ${email}`); ["newUserEmail","newUserPassword","newUserName","newUserSupervisor"].forEach(id=>{if($(id)) $(id).value="";}); await loadUsers(); alert("Usuário criado com sucesso."); }catch(e){ try{await signOut(secondaryAuth);await deleteApp(secondaryApp);}catch(_ignored){} alert(friendlyError(e)); } }
+    async function createInternalUser(){ if(!await requireAdmin()) return; const email=$("newUserEmail").value.trim(), password=$("newUserPassword").value, name=$("newUserName").value.trim(), role=$("newUserRole").value, supervisorRaw=$("newUserSupervisor")?.value.trim()||""; if(!email||!password) return alert("Informe email e senha."); if(password.length<6) return alert("A senha precisa ter pelo menos 6 caracteres."); const secondaryApp=initializeApp(firebaseConfig,"SecondaryUserCreator"+Date.now()), secondaryAuth=getAuth(secondaryApp); try{ const cred=await createUserWithEmailAndPassword(secondaryAuth,email,password); await setDoc(doc(db,"users",cred.user.uid),{email,name:name||email.split("@")[0],role,supervisorUid:role==="operador"&&!supervisorRaw.includes("@")?(supervisorRaw||null):null,supervisorEmail:role==="operador"&&supervisorRaw.includes("@")?supervisorRaw:null,approved:true,status:"active",blocked:false,createdAt:serverTimestamp(),createdBy:currentUser?.uid||null}); await signOut(secondaryAuth); await deleteApp(secondaryApp); await addAudit("create_user",`Usuário criado: ${email}`); ["newUserEmail","newUserPassword","newUserName","newUserSupervisor"].forEach(id=>{if($(id)) $(id).value="";}); await loadUsers(); alert("Usuário criado com sucesso."); }catch(e){ try{await signOut(secondaryAuth);await deleteApp(secondaryApp);}catch(_ignored){} alert(friendlyError(e)); } }
     async function registerAccess(){ const email=$("loginEmail").value.trim(), password=$("loginPassword").value; if(!email||!password) return showNotice("loginNotice","Informe email e senha para criar acesso.","error"); if(password.length<6) return showNotice("loginNotice","A senha precisa ter pelo menos 6 caracteres.","error"); try{ const bootstrap=isBootstrapEmail(email); await applyLoginPersistence(); const cred=await createUserWithEmailAndPassword(auth,email,password); const profile={email,name:email.split("@")[0],role:bootstrap?"admin":"operador",status:bootstrap?"active":"pending",approved:bootstrap?true:false,blocked:false,createdAt:serverTimestamp()}; await safeSetUserProfile(cred.user,profile); showNotice("loginNotice",bootstrap?"Conta admin criada. Entrando...":"Conta criada. Aguarde aprovação do admin.",bootstrap?"ok":"error"); }catch(e){ showNotice("loginNotice",friendlyError(e),"error"); } }
 
     function showScreen(name){
