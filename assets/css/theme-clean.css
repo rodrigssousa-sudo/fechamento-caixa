@@ -1493,3 +1493,67 @@ body{letter-spacing:-.008em;}
   .card,
   .login-card{padding:18px!important;}
 }
+
+/* ===== Round 8: home readability hotfix ===== */
+#screenHome .hero-card,
+#screenHome .hero-mini,
+#screenHome .grid.two > .card[data-home-detail]{
+  isolation:isolate;
+}
+#screenHome .hero-card{
+  background:
+    radial-gradient(circle at top right, rgba(255,255,255,.18), transparent 30%),
+    linear-gradient(145deg,#18335f 0%,#325b9e 52%,#7ea8fb 100%)!important;
+  box-shadow:0 20px 42px rgba(24,51,95,.16)!important;
+}
+#screenHome .hero-card::before{
+  background:linear-gradient(180deg, rgba(255,255,255,.14), transparent 42%)!important;
+}
+#screenHome .hero-label,
+#screenHome .hero-caption,
+#screenHome .hero-sub,
+#screenHome .hero-badge,
+#screenHome .hero-mini span{
+  color:rgba(255,255,255,.92)!important;
+}
+#screenHome .hero-value,
+#screenHome .hero-mini strong,
+#screenHome #homeOperator,
+#screenHome #homeLastClose{
+  color:#ffffff!important;
+}
+#screenHome .hero-mini{
+  background:rgba(7,21,47,.16)!important;
+  border:1px solid rgba(255,255,255,.18)!important;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.10)!important;
+  backdrop-filter:none!important;
+  -webkit-backdrop-filter:none!important;
+}
+#screenHome .hero-mini strong{
+  text-shadow:0 1px 2px rgba(7,21,47,.10)!important;
+}
+#screenHome .grid.two > .card[data-home-detail]{
+  background:linear-gradient(180deg,#ffffff 0%,#fbfdff 100%)!important;
+  border:1px solid rgba(15,23,42,.08)!important;
+  box-shadow:0 14px 30px rgba(15,23,42,.08)!important;
+}
+#screenHome .grid.two > .card[data-home-detail] .card-title,
+#screenHome .grid.two > .card[data-home-detail] .metric{
+  position:relative!important;
+  z-index:3!important;
+}
+#screenHome .grid.two > .card[data-home-detail] .card-title h2{
+  color:#0b172a!important;
+}
+#screenHome .grid.two > .card[data-home-detail] .card-title span{
+  color:#5f7089!important;
+}
+#screenHome .grid.two > .card[data-home-detail] .metric,
+#screenHome #homeSaldoLiquido,
+#screenHome #homeTodayResult,
+#screenHome #homeWeekResult{
+  color:#081529!important;
+}
+#screenHome #homePendentes.metric.bad{
+  color:#d92d20!important;
+}
