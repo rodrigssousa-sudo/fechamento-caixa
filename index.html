@@ -57,6 +57,37 @@ button,input,select,textarea{font-family:inherit}button{border:0;cursor:pointer}
 .history-tools{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px}.history-list,.rank-list{display:grid;gap:12px}.history-item,.rank-item{border-top:4px solid rgba(26,26,46,.32)}.history-top,.rank-head{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:9px}.history-top strong{font-size:14px}.history-top span{font-size:12px;color:var(--muted);font-weight:760}.history-values{display:grid;grid-template-columns:1fr 1fr;gap:8px;font-size:12px}.history-values b{display:block;font-size:15px;margin-top:3px}.history-actions{display:flex;gap:8px;margin-top:10px;flex-wrap:wrap}.rank-tabs{display:flex;gap:8px;overflow:auto;margin-bottom:12px}.rank-tabs button{height:38px;border-radius:14px;padding:0 14px;background:#fff;color:var(--primary2);font-weight:900;border:1px solid var(--line);white-space:nowrap}.rank-tabs button.active{background:linear-gradient(145deg,#1a1a2e,#11111e);color:#fff}.rank-left{display:flex;align-items:center;gap:10px}.rank-pos{width:38px;height:38px;border-radius:14px;background:#f4f4f6;display:flex;align-items:center;justify-content:center;font-weight:950;color:var(--primary2);box-shadow:inset 0 1px 0 rgba(255,255,255,.75)}.rank-pos.medal{font-size:20px;background:#fff8e1;color:#9a6700}.rank-name{font-weight:900;font-size:14px}.rank-meta{font-size:11px;color:var(--muted);font-weight:780;margin-top:2px}.rank-value{font-size:15px;font-weight:900;white-space:nowrap}.rank-bar{height:12px;border-radius:999px;background:#f0f0f2;overflow:hidden;border:1px solid var(--line2)}.rank-fill{height:100%;border-radius:999px;transition:width .35s ease}.rank-fill.good{background:linear-gradient(90deg,#1a1a2e,#087f5b)}.rank-fill.bad{background:linear-gradient(90deg,#b42338,#b7791f)}.rank-footer{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;margin-top:8px;color:var(--muted);font-size:11px;font-weight:780}
 .goal-card{margin-top:14px}.goal-top{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin-bottom:12px}.goal-top h2{margin:0;font-size:16px;font-weight:900}.goal-top span{display:block;margin-top:3px;color:var(--muted);font-size:12px;font-weight:760}.goal-badge{border-radius:999px;padding:7px 10px;background:#f4f4f6;color:var(--primary2);font-size:11px;font-weight:900}.goal-values{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px}.goal-box{border-radius:14px;padding:12px;background:#fff;border:1px solid var(--line2)}.goal-box span{display:block;font-size:11px;color:var(--muted);font-weight:850}.goal-box b{display:block;margin-top:5px;font-size:17px;font-weight:900}.goal-bar{height:12px;border-radius:999px;background:#f0f0f2;overflow:hidden}.goal-fill{height:100%;width:0;border-radius:999px;background:linear-gradient(90deg,#1a1a2e,#087f5b);transition:width .35s ease}.goal-footer{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;margin-top:9px;color:var(--muted);font-size:12px;font-weight:780}
 .admin-grid{display:grid;gap:12px}.user-item{display:grid;grid-template-columns:1fr auto;align-items:center;gap:12px}.user-actions{display:grid;grid-template-columns:150px 150px 110px;gap:8px}.admin-create-panel{display:none}.admin-create-panel.active{display:block}.badge{font-size:11px;font-weight:900;border-radius:999px;padding:5px 8px;background:#f4f4f6;color:var(--primary2)}.badge.ok{background:#e9f7f1;color:var(--success)}.badge.off{background:#fff1f3;color:var(--danger)}
+.user-time-box{
+  margin-top:9px;
+  width:fit-content;
+  min-width:190px;
+  border:1px solid var(--line);
+  border-radius:15px;
+  background:#fafafa;
+  padding:10px 12px;
+  display:grid;
+  gap:3px;
+}
+.user-time-box span{
+  font-size:9.5px;
+  line-height:1;
+  color:var(--muted);
+  font-weight:950;
+  letter-spacing:.65px;
+  text-transform:uppercase;
+}
+.user-time-box strong{
+  color:#242424;
+  font-size:18px;
+  line-height:1;
+  font-weight:950;
+  font-variant-numeric:tabular-nums lining-nums;
+}
+.user-time-box small{
+  color:var(--muted);
+  font-size:10.5px;
+  font-weight:800;
+}
 .bottom-nav{position:fixed;left:50%;bottom:calc(10px + env(safe-area-inset-bottom));transform:translateX(-50%);width:min(760px,calc(100% - 20px));height:74px;border-radius:20px;background:rgba(255,255,255,.90);backdrop-filter:blur(26px);-webkit-backdrop-filter:blur(26px);box-shadow:0 2px 6px rgba(26,26,46,.08),0 24px 70px rgba(26,26,46,.16);border:1px solid rgba(255,255,255,.88);display:grid;grid-template-columns:repeat(4,1fr);z-index:80;padding:7px}.nav-btn{border-radius:14px;background:transparent;color:var(--muted);font-weight:850;font-size:11px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;position:relative;overflow:hidden}.nav-btn svg{width:20px;height:20px;stroke:currentColor;stroke-width:2.2;fill:none}.nav-btn.active{background:linear-gradient(145deg,#15151d,#11111e 72%,#1a1a2e);color:#fff;box-shadow:0 1px 2px rgba(26,26,46,.06),0 12px 28px rgba(26,26,46,.22)}
 .more-menu{position:fixed;left:50%;bottom:calc(92px + env(safe-area-inset-bottom));transform:translateX(-50%) translateY(10px);width:min(430px,calc(100% - 28px));z-index:90;background:rgba(255,255,255,.97);backdrop-filter:blur(24px);border:1px solid rgba(255,255,255,.85);box-shadow:0 2px 6px rgba(26,26,46,.08),0 26px 80px rgba(26,26,46,.18);border-radius:20px;padding:12px;display:none;opacity:0;transition:.2s ease}.more-menu.active{display:block;opacity:1;transform:translateX(-50%) translateY(0)}.more-menu-title{font-size:12px;font-weight:900;color:#334155;padding:6px 8px 10px;text-transform:uppercase;letter-spacing:.38px}.more-menu-grid{display:grid;gap:8px}.more-menu-btn{min-height:58px;border-radius:16px;background:linear-gradient(180deg,#fff,#f5f8ff);color:var(--text);font-weight:900;display:grid;grid-template-columns:42px 1fr auto;align-items:center;gap:10px;padding:0 14px;border:1px solid var(--line);box-shadow:var(--shadow-1);text-align:left;position:relative;overflow:hidden}.more-menu-btn .mmb-icon{width:36px;height:36px;border-radius:14px;background:linear-gradient(145deg,#1a1a2e,#11111e);color:#fff;display:flex;align-items:center;justify-content:center;font-size:17px;box-shadow:0 10px 22px rgba(26,26,46,.18)}.more-menu-btn span:not(.mmb-icon){font-size:12px;color:var(--muted);font-weight:760}.more-menu-btn::after{content:"›";color:var(--primary);font-size:24px;font-weight:900}
 .login-screen{position:fixed;inset:0;z-index:100000;background:radial-gradient(circle at 50% 8%,rgba(26,26,46,.45),transparent 36%),linear-gradient(180deg,#030915,#14141d 52%,#11111e);display:flex;align-items:center;justify-content:center;padding:18px;color:#fff}.login-card{width:min(410px,100%);background:rgba(255,255,255,.105);border:1px solid rgba(255,255,255,.18);backdrop-filter:blur(20px);border-radius:20px;padding:24px;box-shadow:0 2px 6px rgba(0,0,0,.18),0 34px 100px rgba(0,0,0,.30)}.login-logo,.splash-logo,.receipt-logo{width:74px;height:74px;border-radius:18px;background:linear-gradient(145deg,#fff,#f4f4f6);color:#1a1a2e;display:flex;align-items:center;justify-content:center;font-size:26px;font-weight:950;margin:0 auto 14px}.login-card h1{text-align:center;margin:0;font-size:28px}.login-card p{text-align:center;opacity:.78;font-weight:700;margin:6px 0 22px}.login-card input{width:100%;height:52px;margin-bottom:10px;border-radius:14px;border:1px solid rgba(255,255,255,.24);background:rgba(255,255,255,.14);color:#fff;padding:0 14px;font-weight:800;outline:0;font-size:16px}.login-card input::placeholder{color:rgba(255,255,255,.62)}
@@ -1220,12 +1251,17 @@ function animateValue(el, start, end, duration = 800){
 let lastBalance = 0;
 
 function updateHeroBalance(newValue){
-  const el = document.querySelector(".hero-value");
+  const el = document.querySelector("#homeSaldoReca");
   if(!el) return;
 
-  const oldValue = lastBalance || 0;
+  newValue = Number(newValue) || 0;
+  const oldValue = Number(lastBalance) || 0;
 
-  animateValue(el, oldValue, newValue);
+  if(newValue === 0){
+    el.textContent = formatMoney(0);
+  }else{
+    animateValue(el, oldValue, newValue);
+  }
 
   el.classList.remove("balance-positive","balance-negative","balance-pulse");
 
@@ -1697,7 +1733,7 @@ function updateHeroBalance(newValue){
   <script type="module">
     import { initializeApp, deleteApp } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-app.js";
     import { getAuth, onAuthStateChanged, signInWithEmailAndPassword, signOut, sendPasswordResetEmail, createUserWithEmailAndPassword, setPersistence, browserLocalPersistence, browserSessionPersistence } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-auth.js";
-    import { getFirestore, collection, doc, getDoc, getDocs, addDoc, setDoc, updateDoc, deleteDoc, onSnapshot, query, orderBy, limit, serverTimestamp } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-firestore.js";
+    import { getFirestore, collection, doc, getDoc, getDocs, addDoc, setDoc, updateDoc, deleteDoc, onSnapshot, query, orderBy, limit, serverTimestamp, increment } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-firestore.js";
 
     const firebaseConfig = {
       apiKey: "AIzaSyAuyfJNu2vwvVyH5gRsvg82m98teFCmPXw",
@@ -1729,6 +1765,7 @@ function updateHeroBalance(newValue){
 
     let currentUser = null, currentProfile = null, historyCache = [], historyUnsubscribe = null, systemUnsubscribe = null, currentRankRange = "day";
     let historyRenderLimit = 6;
+    let appTimeTracker = { timer:null, uid:null, weekKey:"", lastTick:0, pendingSeconds:0, listenersReady:false };
 
     function showNotice(targetId, message, type="error"){
       const el = $(targetId); if(!el) return;
@@ -2088,6 +2125,33 @@ function updateHeroBalance(newValue){
         || "Sem operador";
     }
 
+    function getSaldoRecaFromItem(item={}){
+      const t = item.turno || {};
+      const candidates = [
+        t.webReca,
+        t.reca,
+        t.saldoReca,
+        t.web_reca,
+        t.recaSaldo,
+        t.banco,
+        item.webReca,
+        item.reca,
+        item.saldoReca,
+        item.web_reca,
+        item.recaSaldo,
+        item.banco
+      ];
+
+      for(const value of candidates){
+        if(value !== undefined && value !== null && String(value).trim?.() !== ""){
+          const n = moneyToNumber(value);
+          if(Number.isFinite(n)) return n;
+        }
+      }
+
+      return 0;
+    }
+
     function setOperadorNameOnTurno(turno, nome){
       turno.operadorName = nome || "";
       // Compatibilidade com históricos antigos que ainda foram salvos como operatorName.
@@ -2265,7 +2329,7 @@ function updateHeroBalance(newValue){
       const view = visibleHistory();
       const last = lastRealClosing() || view[0];
       const prev = last ? previousRealClosingAfter(last) : null;
-      const saldoReca = last?.turno?.webReca ?? last?.turno?.reca ?? last?.webReca ?? 0;
+      const saldoReca = getSaldoRecaFromItem(last);
       const saldoLiquido = last?.turno?.saldoLiquido ?? last?.currentSaldoTotal ?? 0;
       const pendentes = last?.turno?.pendentesTotal ?? 0;
       const diff = last ? displayCashDiff(last) : 0;
@@ -2294,7 +2358,11 @@ function updateHeroBalance(newValue){
         return !isNaN(d) && d >= weekStart;
       }).reduce((s,x)=>s + lucroFromItem(x), 0);
 
-      if($("homeSaldoReca")) updateHeroBalance(moneyToNumber(saldoReca));
+      if($("homeSaldoReca")){
+        const recaValue = moneyToNumber(saldoReca);
+        $("homeSaldoReca").textContent = formatMoney(recaValue);
+        updateHeroBalance(recaValue);
+      }
       if($("homeSaldoLiquido")) $("homeSaldoLiquido").textContent = formatMoney(saldoLiquido);
       if($("homePendentes")) $("homePendentes").textContent = formatMoney(pendentes);
       const pendCard = document.querySelector('[data-home-detail="pendentes"]');
@@ -2802,7 +2870,7 @@ alert("Carga adicionada ao sistema como ajuste auditável.");
         <div class="receipt-section">
           <h3>Resumo financeiro</h3>
           <div class="receipt-list">
-            ${receiptLine("Saldo Reca", formatMoney(t.webReca ?? t.reca ?? 0))}
+            ${receiptLine("Saldo Reca", formatMoney(getSaldoRecaFromItem(item)))}
             ${receiptLine("Suprema ×400", formatMoney(moneyToNumber(t.suprema || 0) * 400))}
             ${receiptLine("PPPoker ×400", formatMoney(moneyToNumber(t.pppoker || 0) * 400))}
             ${receiptLine("Buffalo", formatMoney(t.buffalo || 0))}
@@ -3023,7 +3091,7 @@ alert("Carga adicionada ao sistema como ajuste auditável.");
         total = moneyToNumber(t.saldoLiquido ?? last?.currentSaldoTotal ?? 0);
         content = `
           <div class="receipt-section"><h3>Composição do saldo</h3><div class="receipt-list">
-            ${receiptLine("Saldo Reca", formatMoney(t.webReca ?? t.reca ?? 0))}
+            ${receiptLine("Saldo Reca", formatMoney(getSaldoRecaFromItem(item)))}
             ${receiptLine("Suprema ×400", formatMoney(moneyToNumber(t.suprema || 0) * 400))}
             ${receiptLine("PPPoker ×400", formatMoney(moneyToNumber(t.pppoker || 0) * 400))}
             ${receiptLine("Buffalo", formatMoney(t.buffalo || 0))}
@@ -3815,6 +3883,141 @@ body.side-drawer-open #sideMenuBtn{
     async function loadProfile(user){ const ref=doc(db,"users",user.uid); try{ const snap=await getDoc(ref); if(snap.exists()) return snap.data(); const bootstrap=isBootstrapEmail(user.email); const profile={email:user.email,name:user.email.split("@")[0],role:bootstrap?"admin":"operador",status:bootstrap?"active":"pending",approved:bootstrap?true:false,blocked:false,createdAt:serverTimestamp()}; await safeSetUserProfile(user,profile); return profile; }catch(e){ console.warn("Erro ao ler perfil:",e); if(isBootstrapEmail(user.email)){ return {email:user.email,name:user.email.split("@")[0],role:"admin",approved:true,blocked:false,localOnly:true}; } showNotice("appNotice",friendlyError(e),"error"); return {email:user.email,name:user.email.split("@")[0],role:"operador",status:"pending",approved:false,blocked:false,permissionError:true}; } }
     async function addAudit(action,description){ try{ await addDoc(collection(db,"audit_logs"),{action,description,uid:currentUser?.uid||null,email:currentUser?.email||null,createdAt:serverTimestamp()}); }catch(e){ console.warn("Audit não gravado:",e); } }
 
+
+    function getIsoWeekKey(date = new Date()){
+      const d = new Date(Date.UTC(date.getFullYear(), date.getMonth(), date.getDate()));
+      const dayNum = d.getUTCDay() || 7;
+      d.setUTCDate(d.getUTCDate() + 4 - dayNum);
+      const yearStart = new Date(Date.UTC(d.getUTCFullYear(),0,1));
+      const weekNo = Math.ceil((((d - yearStart) / 86400000) + 1) / 7);
+      return `${d.getUTCFullYear()}-W${String(weekNo).padStart(2,"0")}`;
+    }
+
+    function formatAppTime(seconds = 0){
+      const total = Math.max(0, Math.floor(moneyToNumber(seconds)));
+      const hours = Math.floor(total / 3600);
+      const minutes = Math.floor((total % 3600) / 60);
+
+      if(hours <= 0 && minutes <= 0) return "0 min";
+      if(hours <= 0) return `${minutes} min`;
+      if(minutes <= 0) return `${hours}h`;
+      return `${hours}h ${minutes}min`;
+    }
+
+    async function resetWeeklyAppTimeIfNeeded(uid){
+      if(!uid) return;
+      const weekKey = getIsoWeekKey();
+      const profileWeekKey = currentProfile?.appTime?.weekKey || "";
+
+      if(profileWeekKey === weekKey) return;
+
+      try{
+        await setDoc(doc(db,"users",uid), {
+          appTime:{
+            weekKey,
+            weekSeconds:0,
+            lastWeeklyResetAt:serverTimestamp()
+          }
+        }, { merge:true });
+
+        currentProfile = {
+          ...(currentProfile || {}),
+          appTime:{
+            ...(currentProfile?.appTime || {}),
+            weekKey,
+            weekSeconds:0
+          }
+        };
+      }catch(e){
+        console.warn("Não foi possível resetar contador semanal:", e);
+      }
+    }
+
+    async function flushAppTime(force=false){
+      if(!appTimeTracker.uid) return;
+
+      const now = Date.now();
+      if(!appTimeTracker.lastTick) appTimeTracker.lastTick = now;
+
+      let delta = Math.floor((now - appTimeTracker.lastTick) / 1000);
+      appTimeTracker.lastTick = now;
+
+      // Evita somar tempo absurdo se o computador dormir ou o navegador congelar.
+      if(delta > 300) delta = 300;
+      if(delta > 0) appTimeTracker.pendingSeconds += delta;
+
+      if(!force && appTimeTracker.pendingSeconds < 60) return;
+
+      const secondsToSave = appTimeTracker.pendingSeconds;
+      if(secondsToSave <= 0) return;
+
+      appTimeTracker.pendingSeconds = 0;
+
+      try{
+        const weekKey = getIsoWeekKey();
+        await setDoc(doc(db,"users",appTimeTracker.uid), {
+          appTime:{
+            weekKey,
+            weekSeconds:increment(secondsToSave),
+            totalSeconds:increment(secondsToSave),
+            lastSeenAt:serverTimestamp(),
+            lastSessionUpdateAt:serverTimestamp()
+          }
+        }, { merge:true });
+      }catch(e){
+        appTimeTracker.pendingSeconds += secondsToSave;
+        console.warn("Não foi possível gravar tempo de uso:", e);
+      }
+    }
+
+    async function startAppTimeTracker(){
+      if(!currentUser?.uid) return;
+
+      stopAppTimeTracker(false);
+
+      await resetWeeklyAppTimeIfNeeded(currentUser.uid);
+
+      appTimeTracker.uid = currentUser.uid;
+      appTimeTracker.weekKey = getIsoWeekKey();
+      appTimeTracker.lastTick = Date.now();
+      appTimeTracker.pendingSeconds = 0;
+
+      appTimeTracker.timer = setInterval(() => {
+        flushAppTime(false);
+      }, 60000);
+
+      if(!appTimeTracker.listenersReady){
+        appTimeTracker.listenersReady = true;
+
+        document.addEventListener("visibilitychange", () => {
+          if(document.hidden) flushAppTime(true);
+          else appTimeTracker.lastTick = Date.now();
+        });
+
+        window.addEventListener("pagehide", () => {
+          flushAppTime(true);
+        });
+
+        window.addEventListener("beforeunload", () => {
+          flushAppTime(true);
+        });
+      }
+    }
+
+    function stopAppTimeTracker(flush=true){
+      if(appTimeTracker.timer){
+        clearInterval(appTimeTracker.timer);
+        appTimeTracker.timer = null;
+      }
+
+      if(flush) flushAppTime(true);
+
+      appTimeTracker.uid = null;
+      appTimeTracker.weekKey = "";
+      appTimeTracker.lastTick = 0;
+      appTimeTracker.pendingSeconds = 0;
+    }
+
     async function loadUsers(){
       if(!await requireAdmin()) return;
       const listEl = $("usersList");
@@ -3828,11 +4031,19 @@ body.side-drawer-open #sideMenuBtn{
           const role = u.role || "operador";
           const status = u.deleted ? "Excluído" : (u.blocked ? "Bloqueado" : (u.approved ? "Aprovado" : "Pendente"));
           const isSelf = d.id === currentUser?.uid;
+          const appTime = u.appTime || {};
+          const weekSeconds = appTime.weekKey === getIsoWeekKey() ? moneyToNumber(appTime.weekSeconds || 0) : 0;
+          const totalSeconds = moneyToNumber(appTime.totalSeconds || 0);
 
           return `<div class="user-item" data-user-card="${d.id}">
             <div>
               <strong>${u.name || u.email || "Usuário"}</strong>
               <div class="muted">${u.email || ""}</div>
+              <div class="user-time-box">
+                <span>Tempo no app esta semana</span>
+                <strong>${formatAppTime(weekSeconds)}</strong>
+                <small>Total acumulado: ${formatAppTime(totalSeconds)}</small>
+              </div>
               <div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:7px;">
                 <span class="badge ${u.approved && !u.deleted ? 'ok':'off'}">${u.approved && !u.deleted ? 'Aprovado':'Pendente'}</span>
                 <span class="badge ${u.blocked || u.deleted ? 'off':'ok'}">${status}</span>
@@ -4109,8 +4320,8 @@ body.side-drawer-open #sideMenuBtn{
         $("toggleCreateUserBtn").textContent = panel?.classList.contains("active") ? "Ocultar criar usuário" : "Mostrar criar usuário";
       });
       $("createUserBtn") && ($("createUserBtn").onclick=createInternalUser);
-      $("historySearch")?.addEventListener("input",()=>{ historyRenderLimit=30; renderHistory(); });
-      $("historyDate")?.addEventListener("input",()=>{ historyRenderLimit=30; renderHistory(); }); document.querySelectorAll(".nav-btn[data-screen]").forEach(btn=>btn.onclick=()=>showScreen(btn.dataset.screen));
+      $("historySearch")?.addEventListener("input",()=>{ historyRenderLimit=6; renderHistory(); });
+      $("historyDate")?.addEventListener("input",()=>{ historyRenderLimit=6; renderHistory(); }); document.querySelectorAll(".nav-btn[data-screen]").forEach(btn=>btn.onclick=()=>showScreen(btn.dataset.screen));
       $("sideMenuBtn") && ($("sideMenuBtn").onclick=(ev)=>{ ev.stopPropagation(); openSideDrawer(); });
       $("sideDrawerClose") && ($("sideDrawerClose").onclick=closeSideDrawer);
       $("sideDrawerOverlay") && ($("sideDrawerOverlay").onclick=closeSideDrawer);
@@ -4129,7 +4340,7 @@ body.side-drawer-open #sideMenuBtn{
         if(!file) return updateProfilePhotoPreview($("profilePhotoUrlInput")?.value,$("profileNameInput")?.value);
         try{ updateProfilePhotoPreview(await compressProfileImage(file), $("profileNameInput")?.value); }catch(e){ alert(e.message || "Imagem inválida."); }
       });
-      $("sideLogoutBtn") && ($("sideLogoutBtn").onclick=async()=>{ closeSideDrawer(); if(historyUnsubscribe)historyUnsubscribe(); if(systemUnsubscribe)systemUnsubscribe(); await signOut(auth); });
+      $("sideLogoutBtn") && ($("sideLogoutBtn").onclick=async()=>{ closeSideDrawer(); if(historyUnsubscribe)historyUnsubscribe(); if(systemUnsubscribe)systemUnsubscribe(); stopAppTimeTracker(true); await signOut(auth); });
       document.querySelectorAll("[data-home-detail]").forEach(card=>{
         card.onclick = () => openHomeMetricDetail(card.dataset.homeDetail);
       });
@@ -4156,15 +4367,58 @@ body.side-drawer-open #sideMenuBtn{
         if(menu.contains(ev.target) || $("moreMenuBtn")?.contains(ev.target)) return;
         menu.classList.remove("active");
       });
-      document.querySelectorAll("[data-more-screen]").forEach(btn=>btn.onclick=(ev)=>{ ev.stopPropagation(); showScreen(btn.dataset.moreScreen); }); document.querySelectorAll("[data-rank]").forEach(btn=>btn.onclick=()=>{document.querySelectorAll("[data-rank]").forEach(b=>b.classList.remove("active")); btn.classList.add("active"); currentRankRange=btn.dataset.rank; renderRanking();}); $("logoutBtn").onclick=async()=>{if(historyUnsubscribe)historyUnsubscribe();if(systemUnsubscribe)systemUnsubscribe();await signOut(auth);}; $("loginBtn").onclick=async()=>{try{hideNotice("loginNotice");await applyLoginPersistence();await signInWithEmailAndPassword(auth,$("loginEmail").value.trim(),$("loginPassword").value);}catch(e){showNotice("loginNotice",friendlyError(e),"error");}}; $("registerBtn").onclick=registerAccess; $("resetPasswordBtn").onclick=async()=>{try{const email=$("loginEmail").value.trim(); if(!email) return showNotice("loginNotice","Informe o email.","error"); await sendPasswordResetEmail(auth,email); showNotice("loginNotice","Email de recuperação enviado.","ok");}catch(e){showNotice("loginNotice",friendlyError(e),"error");}}; $("receiptCloseBtn") && ($("receiptCloseBtn").onclick=closeHistoryReceipt);
+      document.querySelectorAll("[data-more-screen]").forEach(btn=>btn.onclick=(ev)=>{ ev.stopPropagation(); showScreen(btn.dataset.moreScreen); }); document.querySelectorAll("[data-rank]").forEach(btn=>btn.onclick=()=>{document.querySelectorAll("[data-rank]").forEach(b=>b.classList.remove("active")); btn.classList.add("active"); currentRankRange=btn.dataset.rank; renderRanking();}); $("logoutBtn").onclick=async()=>{if(historyUnsubscribe)historyUnsubscribe();if(systemUnsubscribe)systemUnsubscribe();stopAppTimeTracker(true); await signOut(auth);}; $("loginBtn").onclick=async()=>{try{hideNotice("loginNotice");await applyLoginPersistence();await signInWithEmailAndPassword(auth,$("loginEmail").value.trim(),$("loginPassword").value);}catch(e){showNotice("loginNotice",friendlyError(e),"error");}}; $("registerBtn").onclick=registerAccess; $("resetPasswordBtn").onclick=async()=>{try{const email=$("loginEmail").value.trim(); if(!email) return showNotice("loginNotice","Informe o email.","error"); await sendPasswordResetEmail(auth,email); showNotice("loginNotice","Email de recuperação enviado.","ok");}catch(e){showNotice("loginNotice",friendlyError(e),"error");}}; $("receiptCloseBtn") && ($("receiptCloseBtn").onclick=closeHistoryReceipt);
       $("receiptExportPngBtn") && ($("receiptExportPngBtn").onclick=exportReceiptAsPng);
       $("editCloseBtn").onclick=closeEdit; $("cancelEditBtn").onclick=closeEdit; $("saveEditBtn").onclick=saveEdit; $("editAddPendingBtn").onclick=()=>createDynamicRow("editPendingList","Nome / motivo"); $("editAddOutflowBtn").onclick=()=>createDynamicRow("editOutflowList","Descrição"); }
     function initDate(){ const now=new Date(); now.setMinutes(now.getMinutes()-now.getTimezoneOffset()); $("closingDate").value=now.toISOString().slice(0,16); }
 
-    onAuthStateChanged(auth,async(user)=>{ currentUser=user; if(!user){$("loginScreen").classList.remove("hidden");$("appShell").classList.add("hidden");$("bottomNav").classList.add("hidden");return;} currentProfile=await loadProfile(user); if(currentProfile.blocked){await signOut(auth);return alert("Usuário bloqueado.");} if(currentProfile.approved===false){$("loginScreen").classList.remove("hidden");$("appShell").classList.add("hidden");$("bottomNav").classList.add("hidden");showNotice("loginNotice","Usuário aguardando aprovação do admin.","error");return;} $("loginScreen").classList.add("hidden");$("appShell").classList.remove("hidden");$("bottomNav").classList.remove("hidden");$("topUserLabel").textContent=`${currentProfile.name||user.email} • ${isAdmin()?"Admin":isSupervisor()?"Supervisor":"Operador"}`;  $("adminStatus").textContent=isAdmin()?"Admin ativo":"Somente admin";
-      if($("moreAdminBtn")) $("moreAdminBtn").style.display = isAdmin() ? "flex" : "none"; if($("sideAdminBtn")) $("sideAdminBtn").style.display = isAdmin() ? "grid" : "none"; updateSideDrawerProfile();
+    onAuthStateChanged(auth,async(user)=>{
+      currentUser=user;
 
-      updateRoleVisibility(); if(currentProfile.permissionError) showNotice("appNotice","Seu login entrou, mas o Firestore negou acesso ao perfil. Ajuste as regras ou coloque seu email em BOOTSTRAP_ADMIN_EMAILS.","error"); startHistoryRealtimeListener(); startSystemRealtime(); fillOperadorFromProfile(); renderAll(); });
+      if(!user){
+        stopAppTimeTracker(true);
+        $("loginScreen").classList.remove("hidden");
+        $("appShell").classList.add("hidden");
+        $("bottomNav").classList.add("hidden");
+        return;
+      }
+
+      currentProfile=await loadProfile(user);
+
+      if(currentProfile.blocked){
+        stopAppTimeTracker(true);
+        await signOut(auth);
+        return alert("Usuário bloqueado.");
+      }
+
+      if(currentProfile.approved===false){
+        stopAppTimeTracker(true);
+        $("loginScreen").classList.remove("hidden");
+        $("appShell").classList.add("hidden");
+        $("bottomNav").classList.add("hidden");
+        showNotice("loginNotice","Usuário aguardando aprovação do admin.","error");
+        return;
+      }
+
+      $("loginScreen").classList.add("hidden");
+      $("appShell").classList.remove("hidden");
+      $("bottomNav").classList.remove("hidden");
+      $("topUserLabel").textContent=`${currentProfile.name||user.email} • ${isAdmin()?"Admin":isSupervisor()?"Supervisor":"Operador"}`;
+      $("adminStatus").textContent=isAdmin()?"Admin ativo":"Somente admin";
+
+      if($("moreAdminBtn")) $("moreAdminBtn").style.display = isAdmin() ? "flex" : "none";
+      if($("sideAdminBtn")) $("sideAdminBtn").style.display = isAdmin() ? "grid" : "none";
+      updateSideDrawerProfile();
+
+      updateRoleVisibility();
+      if(currentProfile.permissionError) showNotice("appNotice","Seu login entrou, mas o Firestore negou acesso ao perfil. Ajuste as regras ou coloque seu email em BOOTSTRAP_ADMIN_EMAILS.","error");
+
+      startAppTimeTracker();
+      startHistoryRealtimeListener();
+      startSystemRealtime();
+      fillOperadorFromProfile();
+      renderAll();
+    });
 
     function runSelfTests(){
       const savedUser = currentUser;
