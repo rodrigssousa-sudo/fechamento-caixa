@@ -667,6 +667,50 @@ function updateHeroBalance(newValue){
       return error?.message || String(error);
     }
 
+    function forceHideReloadLoader(){
+      const loader = $("appReloadLoader");
+      if(!loader) return;
+      loader.classList.remove("active");
+      loader.style.display = "none";
+      loader.style.opacity = "0";
+      loader.style.pointerEvents = "none";
+    }
+
+    function showReloadLoaderSafe(title="Atualizando sistema", text="Recalculando dados..."){
+      const loader = $("appReloadLoader");
+      if(!loader) return null;
+      const strong = loader.querySelector(".reload-card strong");
+      const span = loader.querySelector(".reload-card span");
+      if(strong) strong.textContent = title;
+      if(span) span.textContent = text;
+      loader.style.display = "";
+      loader.style.opacity = "";
+      loader.style.pointerEvents = "";
+      loader.classList.add("active");
+
+      clearTimeout(window.__bkReloadSafetyTimer);
+      window.__bkReloadSafetyTimer = setTimeout(() => {
+        console.warn("Loader fechado por segurança para evitar tela travada.");
+        forceHideReloadLoader();
+      }, 9000);
+
+      return loader;
+    }
+
+    function hideReloadLoaderSafe(delay=250){
+      clearTimeout(window.__bkReloadSafetyTimer);
+      const done = () => forceHideReloadLoader();
+      if(delay > 0) setTimeout(done, delay);
+      else done();
+    }
+
+    function withTimeout(promise, ms=8000, label="operação"){
+      return Promise.race([
+        promise,
+        new Promise((_, reject) => setTimeout(() => reject(new Error(`Tempo limite excedido em ${label}`)), ms))
+      ]);
+    }
+
     function moneyToNumber(value){
       if(value === null || value === undefined) return 0; if(typeof value === "number") return value;
       let s = String(value).trim().replace(/[^0-9,.-]/g, ""); if(!s) return 0;
@@ -1923,12 +1967,12 @@ alert("Carga adicionada ao sistema como ajuste auditável.");
 
     async function recalculateAllHistory(){
       if(!await requireAdmin()) return false;
-      const loader=$("appReloadLoader");
-      loader?.classList.add("active");
+
+      showReloadLoaderSafe("Atualizando sistema", "Recalculando dados...");
 
       try{
         const qh=query(collection(db,"history"),orderBy("submittedAt","asc"));
-        const snap=await getDocs(qh);
+        const snap=await withTimeout(getDocs(qh), 8000, "buscar histórico");
         let operationalBaseSaldo=null;
 
         for(const item of snap.docs){
@@ -1941,7 +1985,6 @@ alert("Carga adicionada ao sistema como ajuste auditável.");
             let currentSaldoTotal, diff;
 
             if(isAdjustment){
-              // Ajuste interno altera apenas a base operacional.
               diff = saldoLiquido;
               currentSaldoTotal = saldoLiquido;
               operationalBaseSaldo = (operationalBaseSaldo ?? 0) + diff;
@@ -1951,11 +1994,13 @@ alert("Carga adicionada ao sistema como ajuste auditável.");
               operationalBaseSaldo = calcularBaseOperacional({ ...turno, saldoLiquido });
             }
 
+            const baseOperacional = isAdjustment ? operationalBaseSaldo : calcularBaseOperacional({ ...turno, saldoLiquido });
+
             const updatePayload = {
               "turno.saldoLiquido": saldoLiquido,
-              "turno.baseOperacional": isAdjustment ? operationalBaseSaldo : calcularBaseOperacional({ ...turno, saldoLiquido }),
+              "turno.baseOperacional": baseOperacional,
               currentSaldoTotal,
-              operationalBase: isAdjustment ? operationalBaseSaldo : calcularBaseOperacional({ ...turno, saldoLiquido }),
+              operationalBase: baseOperacional,
               diff,
               recalculatedAt: serverTimestamp()
             };
@@ -1966,23 +2011,38 @@ alert("Carga adicionada ao sistema como ajuste auditável.");
               updatePayload["turno.ajusteImpacto"] = saldoLiquido;
             }
 
-            await updateDoc(doc(db,"history",item.id), updatePayload);
+            await withTimeout(updateDoc(doc(db,"history",item.id), updatePayload), 5000, "atualizar histórico");
           }catch(e){
-            console.warn("Histórico ignorado no recálculo:",item.id,e);
+            console.warn("Histórico ignorado no recálculo:", item.id, e);
           }
         }
 
-        await addAudit("recalculate_history","Histórico recalculado: ajustes internos alteram base operacional sem virar resultado operacional");
+        try{
+          await withTimeout(addAudit("recalculate_history","Histórico recalculado com segurança"), 4000, "salvar auditoria");
+        }catch(auditErr){
+          console.warn("Auditoria ignorada:", auditErr);
+        }
+
         renderAll();
         return true;
       }catch(e){
+        console.error("Erro no recálculo:", e);
         alert(friendlyError(e));
         return false;
       }finally{
-        setTimeout(()=>loader?.classList.remove("active"),500);
+        hideReloadLoaderSafe(250);
       }
     }
-    async function refreshInternal(){ const loader=$("appReloadLoader"); loader?.classList.add("active"); renderAll(); setTimeout(()=>loader?.classList.remove("active"),650); }
+    async function refreshInternal(){
+      showReloadLoaderSafe("Atualizando sistema", "Atualizando tela...");
+      try{
+        renderAll();
+      }catch(e){
+        console.error("Erro ao atualizar tela:", e);
+      }finally{
+        hideReloadLoaderSafe(450);
+      }
+    }
 
     function getReportItems(){ let items=visibleHistory(); const start=$("reportStart")?.value, end=$("reportEnd")?.value, operador=($("reportOperador")?.value||"").trim().toLowerCase(), supervisor=($("reportSupervisor")?.value||"").trim().toLowerCase(); if(start) items=items.filter(x=>{const d=x.submittedAt?.toDate?x.submittedAt.toDate():new Date(x.turno?.closingDate||x.createdAt||0); return !isNaN(d)&&d.toISOString().slice(0,10)>=start;}); if(end) items=items.filter(x=>{const d=x.submittedAt?.toDate?x.submittedAt.toDate():new Date(x.turno?.closingDate||x.createdAt||0); return !isNaN(d)&&d.toISOString().slice(0,10)<=end;}); if(operador) items=items.filter(x=>getOperadorName(x).toLowerCase().includes(operador)); if(supervisor) items=items.filter(x=>String(x.supervisorName||x.turno?.supervisorName||x.supervisorEmail||x.turno?.supervisorEmail||"").toLowerCase().includes(supervisor)); return items; }
     function previewReport(){ if(!$("reportPreviewCount")) return; const items=getReportItems(), totalSaldo=items.reduce((s,x)=>s+moneyToNumber(x.turno?.saldoLiquido??x.currentSaldoTotal),0), totalDiff=items.reduce((s,x)=>s+moneyToNumber(x.diff),0); $("reportPreviewCount").textContent=items.length; $("reportPreviewSaldo").textContent=formatMoney(totalSaldo); $("reportPreviewDiff").textContent=formatMoney(totalDiff); }
@@ -2302,6 +2362,6 @@ alert("Carga adicionada ao sistema como ajuste auditável.");
       });
     }
 
-    document.addEventListener("DOMContentLoaded",()=>{ bindEvents(); initDate(); initBankMicroUX(); setTimeout(()=>{const splash=$("appSplash"); splash?.classList.add("hide"); setTimeout(()=>splash?.remove(),800);},1600); runSelfTests(); });
+    document.addEventListener("DOMContentLoaded",()=>{ forceHideReloadLoader(); bindEvents(); initDate(); initBankMicroUX(); setTimeout(()=>{const splash=$("appSplash"); splash?.classList.add("hide"); setTimeout(()=>splash?.remove(),800);},1600); runSelfTests(); });
   </script>
 </body>
