@@ -1450,6 +1450,104 @@ html,body{
   .hero-mini{min-height:88px!important;}
 }
 
+
+
+/* =========================================================
+   BANK KING — AJUSTES VISUAIS BANCÁRIOS V4
+   1 numeric tabular • 2 background frio • 3 extrato border-top
+   4 verde/vermelho sóbrios • 5 focus border-left • 6 section-divider
+========================================================= */
+:root{
+  --bank-bg-cold:#eaf1fb!important;
+  --bank-bg-deep:#dfeaf8!important;
+  --success:#087f5b!important;
+  --danger:#b42338!important;
+  --bank-success-soft:#e9f7f1!important;
+  --bank-danger-soft:#fff1f3!important;
+  --bank-divider:rgba(6,18,38,.105)!important;
+}
+html,body{
+  background:
+    radial-gradient(circle at 8% -10%,rgba(7,92,255,.13),transparent 34%),
+    radial-gradient(circle at 92% 0%,rgba(6,43,122,.08),transparent 30%),
+    linear-gradient(180deg,#f7faff 0%,var(--bank-bg-cold) 48%,var(--bank-bg-deep) 100%)!important;
+}
+.metric,.hero-value,.hero-mini strong,.summary-total strong,.summary-box b,.goal-box b,
+.history-values b,.rank-value,.receipt-row b,.receipt-total strong,.chips-row strong,
+.chips-values strong,#reportPreviewCount,#reportPreviewSaldo,#reportPreviewDiff,
+.money-input,[id*="Saldo"],[id*="saldo"],[id*="Total"],[id*="total"],[id*="Diff"],[id*="diff"]{
+  font-variant-numeric:tabular-nums!important;
+  font-feature-settings:"tnum" 1,"lnum" 1!important;
+}
+.positive,.metric.good,#homeTodayResult,#homeWeekResult,.chips-good,.txt-pos,.balance-positive,
+.summary-box.good b,.rank-fill.good + span{
+  color:#087f5b!important;
+}
+.negative,.metric.bad,#homePendentes,#homeDiff,.chips-bad,.txt-neg,.balance-negative,
+.summary-box.danger b{
+  color:#b42338!important;
+}
+.history-item,.rank-item,.chips-item,.receipt-row,.receipt-line,.detail-card,
+#historyList .history-item,#rankingList .rank-item{
+  border-top:4px solid rgba(7,92,255,.20)!important;
+}
+.history-item:nth-child(3n+1),.rank-item:nth-child(3n+1),.chips-item:nth-child(3n+1){border-top-color:rgba(7,92,255,.24)!important;}
+.history-item:nth-child(3n+2),.rank-item:nth-child(3n+2),.chips-item:nth-child(3n+2){border-top-color:rgba(8,127,91,.22)!important;}
+.history-item:nth-child(3n+3),.rank-item:nth-child(3n+3),.chips-item:nth-child(3n+3){border-top-color:rgba(6,43,122,.22)!important;}
+.field input,.field select,.field textarea,.row-item input,.row-item select{
+  border-left:4px solid transparent!important;
+}
+.field input:focus,.field select:focus,.field textarea:focus,
+.row-item input:focus,.row-item select:focus{
+  border-left-color:#075CFF!important;
+  box-shadow:0 0 0 4px rgba(7,92,255,.09),0 14px 34px rgba(2,8,23,.075)!important;
+}
+.money-input:focus{border-left-color:#087f5b!important;}
+.section-divider{
+  display:flex;
+  align-items:center;
+  gap:12px;
+  margin:24px 2px 14px;
+  color:#667085;
+  font-size:11px;
+  font-weight:950;
+  letter-spacing:.52px;
+  text-transform:uppercase;
+}
+.section-divider::before,.section-divider::after{
+  content:"";
+  height:1px;
+  flex:1;
+  background:linear-gradient(90deg,transparent,var(--bank-divider),transparent);
+}
+.screen > .card + .card,
+.screen > .grid + .card,
+.screen > .card + .grid,
+.screen > .goal-card + .card{
+  margin-top:20px!important;
+}
+.screen > .card + .card::before,
+.screen > .grid + .card::before,
+.screen > .goal-card + .card::before{
+  content:""!important;
+  position:absolute!important;
+  left:22px!important;
+  right:22px!important;
+  top:-11px!important;
+  height:1px!important;
+  background:linear-gradient(90deg,transparent,var(--bank-divider),transparent)!important;
+  display:block!important;
+  z-index:3!important;
+}
+.card,.summary-panel,.goal-card,.history-item,.rank-item,.chips-item{
+  overflow:visible!important;
+}
+.notice.ok{background:#e9f7f1!important;border-color:#b7e4d0!important;color:#087f5b!important;}
+.notice.error{background:#fff1f3!important;border-color:#ffd1d8!important;color:#b42338!important;}
+#screenHome .grid.two > .card[data-home-detail="lucroHoje"],
+#screenHome .grid.two > .card[data-home-detail="lucroSemana"]{border-bottom-color:#087f5b!important;}
+#screenHome .grid.two > .card[data-home-detail="pendentes"]{border-bottom-color:#b42338!important;}
+
 </style>
 
 <script>
@@ -1567,6 +1665,7 @@ function updateHeroBalance(newValue){
         </div>
       </div>
 
+      <div class="section-divider">Indicadores do turno</div>
       <div class="grid two">
         <div class="card" data-home-detail="saldo" style="cursor:pointer;">
           <div class="card-title"><h2>Saldo líquido</h2><span>Atual</span></div>
@@ -1590,6 +1689,7 @@ function updateHeroBalance(newValue){
         </div>
       </div>
 
+      <div class="section-divider">Conferência operacional</div>
       <div class="card comparativo-card" style="margin-top:18px;">
         <div class="card-title">
           <div>
@@ -1622,6 +1722,7 @@ function updateHeroBalance(newValue){
           
         </div>
       </div>
+      <div class="section-divider">Movimentos de caixa</div>
       <div class="grid two">
         <div class="card">
           <div class="card-title"><h2>Pagos pendentes</h2><button id="togglePendingBtn" class="small-btn">Abrir</button></div>
@@ -1639,6 +1740,7 @@ function updateHeroBalance(newValue){
         </div>
       </div>
 
+       <div class="section-divider">Resumo do fechamento</div>
        <div class="card summary-panel">
         <div class="summary-head">
           <div>
@@ -1671,6 +1773,7 @@ function updateHeroBalance(newValue){
         </div>
       </div>
 
+      <div class="section-divider">Ajustes internos</div>
       <div id="quickChargeCard" class="card" style="margin-top:14px;">
         <div class="card-title">
           <div>
@@ -1695,7 +1798,7 @@ function updateHeroBalance(newValue){
       </div>
     </section>
 
-    <section id="screenHistory" class="screen"><div class="card"><div class="card-title"><h2>Histórico inteligente</h2><span id="historyCount">0 registros</span></div><div class="history-tools"><div class="field"><input id="historySearch" placeholder="Buscar operador" /></div><div class="field"><input id="historyDate" type="date" /></div><button id="recalculateBtn" class="btn secondary">Recalcular</button><button id="pdfReportBtn" class="btn secondary">PDF Banco</button></div><div id="historyList" class="history-list"></div></div></section>
+    <section id="screenHistory" class="screen"><div class="section-divider">Extrato de fechamentos</div><div class="card"><div class="card-title"><h2>Histórico inteligente</h2><span id="historyCount">0 registros</span></div><div class="history-tools"><div class="field"><input id="historySearch" placeholder="Buscar operador" /></div><div class="field"><input id="historyDate" type="date" /></div><button id="recalculateBtn" class="btn secondary">Recalcular</button><button id="pdfReportBtn" class="btn secondary">PDF Banco</button></div><div id="historyList" class="history-list"></div></div></section>
 
     <section id="screenGoals" class="screen">
       <div id="monthlyGoalCard" class="goal-card">
@@ -1718,9 +1821,9 @@ function updateHeroBalance(newValue){
       </div>
     </section>
 
-    <section id="screenRanking" class="screen"><div class="card"><div class="card-title"><h2>Ranking operadores</h2><span>Lucro por operador</span></div><div class="rank-tabs"><button class="active" data-rank="day">Diário</button><button data-rank="week">Semanal</button><button data-rank="month">Mensal</button><button data-rank="all">Total</button></div><div id="rankingList" class="rank-list"></div></div></section>
+    <section id="screenRanking" class="screen"><div class="section-divider">Performance por operador</div><div class="card"><div class="card-title"><h2>Ranking operadores</h2><span>Lucro por operador</span></div><div class="rank-tabs"><button class="active" data-rank="day">Diário</button><button data-rank="week">Semanal</button><button data-rank="month">Mensal</button><button data-rank="all">Total</button></div><div id="rankingList" class="rank-list"></div></div></section>
 
-    <section id="screenReports" class="screen"><div class="card"><div class="card-title"><h2>Relatórios premium</h2><span>PDF nível banco</span></div><div class="form-grid"><div class="field"><label>Data inicial</label><input id="reportStart" type="date" /></div><div class="field"><label>Data final</label><input id="reportEnd" type="date" /></div><div class="field"><label>Operador</label><input id="reportOperador" placeholder="Todos" /></div><div class="field"><label>Supervisor</label><input id="reportSupervisor" placeholder="Todos" /></div></div><div class="grid three"><div class="card" style="box-shadow:none;"><div class="muted">Fechamentos</div><div id="reportPreviewCount" class="metric">0</div></div><div class="card" style="box-shadow:none;"><div class="muted">Saldo líquido</div><div id="reportPreviewSaldo" class="metric">$ 0,00</div></div><div class="card" style="box-shadow:none;"><div class="muted">Diferença</div><div id="reportPreviewDiff" class="metric">$ 0,00</div></div></div><button id="previewReportBtn" class="btn secondary full" style="margin-top:14px;">Pré-visualizar resumo</button><button id="generateReportBtn" class="btn full" style="margin-top:10px;">Gerar PDF</button></div></section>
+    <section id="screenReports" class="screen"><div class="section-divider">Exportação institucional</div><div class="card"><div class="card-title"><h2>Relatórios premium</h2><span>PDF nível banco</span></div><div class="form-grid"><div class="field"><label>Data inicial</label><input id="reportStart" type="date" /></div><div class="field"><label>Data final</label><input id="reportEnd" type="date" /></div><div class="field"><label>Operador</label><input id="reportOperador" placeholder="Todos" /></div><div class="field"><label>Supervisor</label><input id="reportSupervisor" placeholder="Todos" /></div></div><div class="grid three"><div class="card" style="box-shadow:none;"><div class="muted">Fechamentos</div><div id="reportPreviewCount" class="metric">0</div></div><div class="card" style="box-shadow:none;"><div class="muted">Saldo líquido</div><div id="reportPreviewSaldo" class="metric">$ 0,00</div></div><div class="card" style="box-shadow:none;"><div class="muted">Diferença</div><div id="reportPreviewDiff" class="metric">$ 0,00</div></div></div><button id="previewReportBtn" class="btn secondary full" style="margin-top:14px;">Pré-visualizar resumo</button><button id="generateReportBtn" class="btn full" style="margin-top:10px;">Gerar PDF</button></div></section>
 
     <section id="screenAdmin" class="screen">
       <div class="card">
@@ -3186,6 +3289,15 @@ alert("Carga adicionada ao sistema como ajuste auditável.");
 
       return `<!DOCTYPE html><html><head><meta charset="UTF-8"><title>Relatório Bank King</title><style>
         *{box-sizing:border-box}body{margin:0;background:#f3f7ff;color:#07152f;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif;padding:20px}.toolbar{position:sticky;top:0;z-index:10;background:rgba(255,255,255,.92);backdrop-filter:blur(18px);border:1px solid #dbe5f2;border-radius:18px;padding:12px 14px;margin-bottom:14px;display:flex;align-items:center;justify-content:space-between;gap:12px}.toolbar strong{font-size:14px}.toolbar-actions{display:flex;gap:8px}.tool-btn{height:38px;border:0;border-radius:12px;padding:0 14px;font-weight:900;cursor:pointer}.primary{background:#005BFF;color:#fff}.secondary{background:#eef4ff;color:#07328E}.cover{background:linear-gradient(135deg,#006BFF,#0047D9);color:#fff;border-radius:28px;padding:26px;margin-bottom:16px;box-shadow:0 24px 70px rgba(0,91,255,.24)}.cover-top{display:flex;justify-content:space-between;gap:20px}.logo{width:54px;height:54px;border-radius:17px;background:#fff;color:#005BFF;display:flex;align-items:center;justify-content:center;font-weight:950;font-size:20px}.brand{display:flex;gap:12px;align-items:center}.brand h1{margin:0;font-size:30px}.brand p,.meta{margin:4px 0 0;color:rgba(255,255,255,.78);font-weight:800;font-size:12px}.meta{text-align:right;line-height:1.55}.totals{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-top:18px}.total{background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.18);border-radius:16px;padding:12px}.total span{display:block;font-size:10px;text-transform:uppercase;opacity:.75;font-weight:900}.total b{display:block;margin-top:5px;font-size:15px}.close-block{background:#fff;border:1px solid #dbe5f2;border-radius:24px;padding:18px;margin-bottom:14px;box-shadow:0 16px 44px rgba(11,31,77,.09);break-inside:avoid;page-break-inside:avoid}.close-head{display:flex;justify-content:space-between;gap:14px;align-items:flex-start;margin-bottom:14px}.kicker{font-size:10px;color:#005BFF;font-weight:950;text-transform:uppercase;letter-spacing:.5px}.close-head h2{margin:3px 0;font-size:20px}.close-head p{margin:0;color:#64748b;font-size:12px;font-weight:800}.diff{border-radius:999px;padding:9px 12px;font-size:13px;font-weight:950;white-space:nowrap}.pos{background:#dcfce7;color:#047857}.neg{background:#fee2e2;color:#b91c1c}.main-card{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;border-radius:20px;background:linear-gradient(135deg,#07152f,#07328E);color:#fff;padding:14px;margin-bottom:12px}.main-card span{display:block;font-size:10px;opacity:.76;font-weight:900;text-transform:uppercase}.main-card strong{display:block;margin-top:5px;font-size:17px}.txt-pos{color:#6EE7B7!important}.txt-neg{color:#FCA5A5!important}.detail-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}.detail-card{border:1px solid #e8eef8;border-radius:18px;background:#fbfdff;padding:12px}.detail-card.full{margin-top:10px}.detail-card h3{margin:0 0 8px;font-size:13px;color:#07328E}.line{display:flex;justify-content:space-between;gap:10px;padding:7px 0;border-top:1px solid #edf2f7;font-size:12px}.line:first-of-type{border-top:0}.line span{color:#64748b;font-weight:800}.line b{font-weight:950;text-align:right}.muted-line{opacity:.75}@media(max-width:760px){body{padding:10px}.cover-top{flex-direction:column}.meta{text-align:left}.totals,.main-card,.detail-grid{grid-template-columns:1fr}.toolbar{align-items:flex-start;flex-direction:column}.toolbar-actions{width:100%;display:grid;grid-template-columns:1fr 1fr 1fr}.tool-btn{width:100%}}@media print{@page{size:A4 portrait;margin:10mm}body{background:#fff;padding:0}.toolbar{display:none}.cover{border-radius:0;margin:0 0 8mm;box-shadow:none}.close-block{box-shadow:none;border-radius:18px;margin-bottom:8mm}.close-block{page-break-inside:avoid}.totals{grid-template-columns:repeat(4,1fr)}.main-card{grid-template-columns:repeat(4,1fr)}.detail-grid{grid-template-columns:1fr 1fr}}
+
+        body{background:linear-gradient(180deg,#f8fbff,#eaf1fb)!important;}
+        .total b,.diff,.main-card strong,.line b{font-variant-numeric:tabular-nums;font-feature-settings:"tnum" 1,"lnum" 1;}
+        .close-block,.detail-card{border-top:4px solid rgba(7,92,255,.22)!important;}
+        .line{border-top:1px solid rgba(6,18,38,.095)!important;}
+        .pos,.txt-pos{color:#087f5b!important;background:#e9f7f1!important;}
+        .neg,.txt-neg{color:#b42338!important;background:#fff1f3!important;}
+        .close-block + .close-block::before{content:"";display:block;height:1px;background:linear-gradient(90deg,transparent,rgba(6,18,38,.14),transparent);margin:-2px 0 16px;}
+
       </style></head><body><div class="toolbar"><strong>Relatório Bank King • ${reportCode}</strong><div class="toolbar-actions"><button class="tool-btn secondary" onclick="window.close()">Voltar</button><button class="tool-btn secondary" onclick="window.print()">Imprimir</button><button class="tool-btn primary" onclick="window.print()">Salvar PDF</button></div></div><header class="cover"><div class="cover-top"><div class="brand"><div class="logo">BK</div><div><h1>Bank King</h1><p>Relatório financeiro interno</p></div></div><div class="meta">Código: ${reportCode}<br>Gerado em: ${generatedAt}<br>Usuário: ${currentProfile?.name || currentUser?.email || "-"}</div></div><div class="totals"><div class="total"><span>Registros</span><b>${items.length}</b></div><div class="total"><span>Saldo somado</span><b>${formatMoney(totalSaldo)}</b></div><div class="total"><span>Diferença caixa</span><b>${formatMoney(totalDiff)}</b></div><div class="total"><span>Ajustes</span><b>${formatMoney(totalAjustes)}</b></div><div class="total"><span>Lucro</span><b>${formatMoney(totalLucro)}</b></div><div class="total"><span>Custo operacional</span><b>${formatMoney(totalCustoOperacional)}</b></div><div class="total"><span>Custo O. Reca</span><b>${formatMoney(totalCustoReca)}</b></div></div></header><main>${blocks || `<section class="close-block">Nenhum fechamento encontrado.</section>`}</main></body></html>`;
     }
 
