@@ -1895,3 +1895,48 @@ body::before{display:none!important;}
     border-radius:18px!important;
   }
 }
+
+
+/* ===== Round 11: ajuste visível por perfil + histórico diário ===== */
+#screenHome .hero-mini,
+#screenHome .hero-mini:hover,
+#screenHome .hero-mini:focus-within{
+  background:linear-gradient(180deg,#eef5ff 0%,#dfeeff 100%)!important;
+  border:1px solid rgba(93,135,214,.24)!important;
+  box-shadow:0 8px 18px rgba(17,24,39,.06)!important;
+  transform:none!important;
+}
+#screenHome .hero-mini:nth-child(1),
+#screenHome .hero-mini:nth-child(1):hover,
+#screenHome .hero-mini:nth-child(1):focus-within{
+  background:linear-gradient(180deg,#dcecff 0%,#c7ddff 100%)!important;
+}
+#screenHome .hero-mini:nth-child(4),
+#screenHome .hero-mini:nth-child(4):hover,
+#screenHome .hero-mini:nth-child(4):focus-within{
+  background:linear-gradient(180deg,#e8f1ff 0%,#d6e7ff 100%)!important;
+}
+#screenHome .hero-mini span,
+#screenHome .hero-mini:hover span,
+#screenHome .hero-mini:focus-within span{
+  color:#48617f!important;
+}
+#screenHome .hero-mini strong,
+#screenHome .hero-mini:hover strong,
+#screenHome .hero-mini:focus-within strong,
+#screenHome #homeOperator,
+#screenHome #homeLastClose{
+  color:#0f2b52!important;
+}
+#screenHome #homeInternalAdjustment{
+  color:#0b7a57!important;
+}
+#screenHome #homeDiff{
+  color:#c2410c!important;
+}
+.history-load-more-wrap{
+  padding-top:12px;
+}
+.history-load-more-wrap .btn{
+  width:100%;
+}

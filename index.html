@@ -66,7 +66,7 @@
           <div id="homeUpdatedAt" class="hero-sub">Aguardando atualização</div>
 
           <div class="hero-grid">
-            <div class="hero-mini"><span>Ajuste interno</span><strong id="homeInternalAdjustment">$ 0,00</strong></div>
+            <div id="homeAdjustmentCard" class="hero-mini"><span>Ajuste interno</span><strong id="homeInternalAdjustment">$ 0,00</strong></div>
             <div class="hero-mini"><span>Operador</span><strong id="homeOperator">-</strong></div>
             <div class="hero-mini"><span>Data e hora</span><strong id="homeLastClose">-</strong></div>
             <div class="hero-mini"><span>Diferença de caixa</span><strong id="homeDiff">$ 0,00</strong></div>
@@ -243,7 +243,7 @@
                   <div class="field"><label>Carga fichas poker</label><input id="quickCargaPoker" inputmode="decimal" placeholder="Quantidade de fichas" /></div>
                   <div class="field"><label>Carga casino</label><input id="quickCargaCasino" class="money-input" inputmode="decimal" placeholder="0,00" /></div>
                   <div class="field"><label>Retirada do caixa</label><input id="quickRetiradaCaixa" class="money-input" inputmode="decimal" placeholder="0,00" /></div>
-                  <div class="field"><label>Tipo da retirada</label><select id="quickRetiradaTipo"><option value="lucro">Lucro</option><option value="custo_operacional">Custo operacional</option></select></div>
+                  <div class="field"><label>Tipo da retirada</label><select id="quickRetiradaTipo"><option value="lucro">Lucro</option><option value="custo_operacional">Custo operacional</option><option value="taxas_reba">Taxas Reba</option></select></div>
                   <div class="field"><label>Motivo</label><input id="quickCargaMotivo" placeholder="Ex: aporte de caixa / reposição banca" /></div>
                   <div class="field"><label>Responsável</label><input id="quickCargaOperador" placeholder="Admin / responsável" /></div>
                 </div>
@@ -321,6 +321,7 @@
             <button id="pdfReportBtn" class="btn secondary">PDF Banco</button>
           </div>
           <div id="historyList" class="history-list"></div>
+          <div id="historyLoadMoreWrap" class="history-load-more-wrap"></div>
         </div>
       </div>
     </section>

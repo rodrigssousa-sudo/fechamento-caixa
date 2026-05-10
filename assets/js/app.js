@@ -11,7 +11,7 @@ import { initializeApp, deleteApp } from "https://www.gstatic.com/firebasejs/12.
     const $ = (id) => document.getElementById(id);
 
     let currentUser = null, currentProfile = null, historyCache = [], historyUnsubscribe = null, systemUnsubscribe = null, currentRankRange = "day";
-    let historyRenderLimit = 30;
+    let historyRenderLimit = 12;
 
     function syncBodyThemeState(){
       const shellVisible = !$("appShell")?.classList.contains("hidden");
@@ -111,6 +111,22 @@ import { initializeApp, deleteApp } from "https://www.gstatic.com/firebasejs/12.
     function isBootstrapEmail(email){ return BOOTSTRAP_ADMIN_EMAILS.map(x=>x.toLowerCase()).includes(String(email||"").toLowerCase()); }
     function isAdmin(){ return currentProfile?.role === "admin" || currentProfile?.admin === true; }
     function isSupervisor(){ return currentProfile?.role === "supervisor"; }
+    function canSeeInternalAdjustments(){ return isAdmin() || isSupervisor(); }
+    function outflowCategoryLabel(category){
+      const value = String(category || "lucro").toLowerCase();
+      if(value === "custo_operacional") return "Custo operacional";
+      if(value === "taxas_reba") return "Taxas Reba";
+      return "Lucro";
+    }
+    function todayDateInputValue(){
+      const now = new Date();
+      now.setMinutes(now.getMinutes() - now.getTimezoneOffset());
+      return now.toISOString().slice(0,10);
+    }
+    function ensureDefaultHistoryDate(){
+      const input = $("historyDate");
+      if(input && !input.value) input.value = todayDateInputValue();
+    }
     function profileName(){ return currentProfile?.name || currentUser?.email?.split("@")[0] || ""; }
     async function requireAdmin(){ if(isAdmin()) return true; alert("Ação permitida somente para admin."); return false; }
 
@@ -294,7 +310,7 @@ import { initializeApp, deleteApp } from "https://www.gstatic.com/firebasejs/12.
 
     function getDynamicRows(containerId){ const el=$(containerId); if(!el) return []; return [...el.querySelectorAll(".row-item")].map(row=>({name:row.querySelector(".row-name")?.value||"",category:row.querySelector(".row-category")?.value||"",value:moneyToNumber(row.querySelector(".row-value")?.value||0)})).filter(x=>x.name||x.value); }
     function setDynamicRows(containerId, rows=[]){ const el=$(containerId); if(!el) return; el.innerHTML=""; (rows.length?rows:[{}]).forEach(r=>createDynamicRow(containerId,"Nome / motivo",r)); }
-    function createDynamicRow(containerId,label="Descrição",data={}){ const list=$(containerId); if(!list) return; const row=document.createElement("div"); const isOutflow=containerId.toLowerCase().includes("outflow"); row.className="row-item"+(isOutflow?" outflow-row":""); const safeName=String(data.name||"").replace(/"/g,'&quot;'); const value=data.value ? formatInputMoney(data.value) : ""; const category=data.category||data.type||"lucro"; row.innerHTML=isOutflow?`<input class="row-name" placeholder="${label}" value="${safeName}" /><select class="row-category"><option value="lucro">Lucro</option><option value="custo_operacional">Custo operacional</option></select><input class="row-value money-input" inputmode="decimal" placeholder="0,00" value="${value}" /><button type="button" class="remove-row">×</button>`:`<input class="row-name" placeholder="${label}" value="${safeName}" /><input class="row-value money-input" inputmode="decimal" placeholder="0,00" value="${value}" /><button type="button" class="remove-row">×</button>`; if(isOutflow) row.querySelector(".row-category").value=category; row.querySelectorAll("input,select").forEach(i=>i.addEventListener("input",renderCalculations)); row.querySelectorAll("select").forEach(i=>i.addEventListener("change",renderCalculations)); row.querySelector(".remove-row").onclick=()=>{row.remove();renderCalculations();}; list.appendChild(row); applyBankMoneyMaskAll(row); enableClearOnFocus(); }
+    function createDynamicRow(containerId,label="Descrição",data={}){ const list=$(containerId); if(!list) return; const row=document.createElement("div"); const isOutflow=containerId.toLowerCase().includes("outflow"); row.className="row-item"+(isOutflow?" outflow-row":""); const safeName=String(data.name||"").replace(/"/g,'&quot;'); const value=data.value ? formatInputMoney(data.value) : ""; const category=data.category||data.type||"lucro"; row.innerHTML=isOutflow?`<input class="row-name" placeholder="${label}" value="${safeName}" /><select class="row-category"><option value="lucro">Lucro</option><option value="custo_operacional">Custo operacional</option><option value="taxas_reba">Taxas Reba</option></select><input class="row-value money-input" inputmode="decimal" placeholder="0,00" value="${value}" /><button type="button" class="remove-row">×</button>`:`<input class="row-name" placeholder="${label}" value="${safeName}" /><input class="row-value money-input" inputmode="decimal" placeholder="0,00" value="${value}" /><button type="button" class="remove-row">×</button>`; if(isOutflow) row.querySelector(".row-category").value=category; row.querySelectorAll("input,select").forEach(i=>i.addEventListener("input",renderCalculations)); row.querySelectorAll("select").forEach(i=>i.addEventListener("change",renderCalculations)); row.querySelector(".remove-row").onclick=()=>{row.remove();renderCalculations();}; list.appendChild(row); applyBankMoneyMaskAll(row); enableClearOnFocus(); }
 
     function getTurnFromForm(){
       const webReca=moneyToNumber($("webReca")?.value), suprema=moneyToNumber($("suprema")?.value), pppoker=moneyToNumber($("pppoker")?.value), buffalo=moneyToNumber($("buffalo")?.value), ganamos=moneyToNumber($("ganamos")?.value), cargasPoker=moneyToNumber($("cargasPoker")?.value), cargasCasino=moneyToNumber($("cargasCasino")?.value);
@@ -542,6 +558,7 @@ import { initializeApp, deleteApp } from "https://www.gstatic.com/firebasejs/12.
 
       const latestAdjustment = latestInternalAdjustment();
       const adjustmentValue = latestAdjustment ? adjustmentImpact(latestAdjustment) : 0;
+      if($("homeAdjustmentCard")) $("homeAdjustmentCard").classList.toggle("hidden", !canSeeInternalAdjustments());
       if($("homeInternalAdjustment")){
         $("homeInternalAdjustment").textContent = adjustmentDescription(latestAdjustment);
         $("homeInternalAdjustment").style.color = adjustmentValue < 0 ? "#FF3B30" : "#16C784";
@@ -618,7 +635,8 @@ import { initializeApp, deleteApp } from "https://www.gstatic.com/firebasejs/12.
     function renderHistory(){
       const search = $("historySearch")?.value.trim().toLowerCase() || "";
       const date = $("historyDate")?.value || "";
-      let list = visibleHistory();
+      const historySource = visibleHistory().filter(item => canSeeInternalAdjustments() || !isAdjustmentItem(item));
+      let list = historySource;
 
       if(search){
         list = list.filter(x => (x.operatorName || x.turno?.operatorName || "").toLowerCase().includes(search));
@@ -684,7 +702,7 @@ import { initializeApp, deleteApp } from "https://www.gstatic.com/firebasejs/12.
 
       document.querySelectorAll("[data-receipt]").forEach(card => card.onclick = () => openHistoryReceipt(card.dataset.receipt));
 
-      const totalAvailable = Math.min(visibleHistory().filter(x => {
+      const totalAvailable = Math.min(historySource.filter(x => {
         const searchNow = $("historySearch")?.value.trim().toLowerCase() || "";
         const dateNow = $("historyDate")?.value || "";
         if(searchNow && !(x.operatorName || x.turno?.operatorName || "").toLowerCase().includes(searchNow)) return false;
@@ -695,10 +713,12 @@ import { initializeApp, deleteApp } from "https://www.gstatic.com/firebasejs/12.
         return true;
       }).length, 100);
 
-      if(historyRenderLimit < totalAvailable && $("historyList")){
-        $("historyList").insertAdjacentHTML("beforeend", `<button id="loadMoreHistoryBtn" class="btn secondary full" style="margin-top:6px;">Carregar mais</button>`);
+      if($("historyLoadMoreWrap")) $("historyLoadMoreWrap").innerHTML = "";
+
+      if(historyRenderLimit < totalAvailable && $("historyLoadMoreWrap")){
+        $("historyLoadMoreWrap").innerHTML = `<button id="loadMoreHistoryBtn" class="btn secondary full">Carregar mais</button>`;
         $("loadMoreHistoryBtn").onclick = () => {
-          historyRenderLimit = Math.min(100, historyRenderLimit + 20);
+          historyRenderLimit = Math.min(100, historyRenderLimit + 12);
           renderHistory();
         };
       }
@@ -956,7 +976,7 @@ alert("Carga adicionada ao sistema como ajuste auditável.");
 
     function renderReceiptRows(title, rows, emptyText){
       const list = (rows || []).filter(x=>x.name || x.value);
-      return `<div class="receipt-section"><h3>${title}</h3><div class="receipt-list">${list.length ? list.map(x=>receiptLine(`${x.name || "Sem descrição"}${x.category ? " • " + (x.category === "custo_operacional" ? "Custo operacional" : "Lucro") : ""}`, formatMoney(x.value || 0))).join("") : `<div class="receipt-line"><span>${emptyText}</span><b>-</b></div>`}</div></div>`;
+      return `<div class="receipt-section"><h3>${title}</h3><div class="receipt-list">${list.length ? list.map(x=>receiptLine(`${x.name || "Sem descrição"}${x.category ? " • " + outflowCategoryLabel(x.category) : ""}`, formatMoney(x.value || 0))).join("") : `<div class="receipt-line"><span>${emptyText}</span><b>-</b></div>`}</div></div>`;
     }
 
     function openHistoryReceipt(id){
@@ -1034,7 +1054,7 @@ alert("Carga adicionada ao sistema como ajuste auditável.");
       const motivo = t.ajusteMotivo || item.adjustmentReason || "Ajuste interno";
       const operador = item.operatorName || t.operatorName || "-";
       const data = dateLabel(item.submittedAt || t.closingDate || item.createdAt);
-      const tipoRetirada = t.retiradaTipo === "custo_operacional" ? "Custo operacional" : (t.retiradaTipo === "lucro" ? "Lucro" : "-");
+      const tipoRetirada = t.retiradaTipo ? outflowCategoryLabel(t.retiradaTipo) : "-";
 
       $("receiptSaldoLiquido").textContent = formatMoney(impacto);
       $("receiptSubtitle").textContent = `Carga rápida / ajuste • ${data}`;
@@ -1418,7 +1438,7 @@ alert("Carga adicionada ao sistema como ajuste auditável.");
         const cargaCasino = moneyToNumber(t.cargasCasino ?? t.cargas ?? 0);
 
         const pendentes = (t.pendings || []).filter(x=>x.name || x.value).map(p=>`<div class="line"><span>${p.name || "Pendente"}</span><b>${formatMoney(p.value || 0)}</b></div>`).join("") || `<div class="line muted-line"><span>Sem pendentes</span><b>-</b></div>`;
-        const retiradas = (t.outflows || []).filter(x=>x.name || x.value).map(o=>`<div class="line"><span>${o.name || "Retirada"} • ${o.category === "custo_operacional" ? "Custo" : "Lucro"}</span><b>${formatMoney(o.value || 0)}</b></div>`).join("") || `<div class="line muted-line"><span>Sem retiradas</span><b>-</b></div>`;
+        const retiradas = (t.outflows || []).filter(x=>x.name || x.value).map(o=>`<div class="line"><span>${o.name || "Retirada"} • ${outflowCategoryLabel(o.category)}</span><b>${formatMoney(o.value || 0)}</b></div>`).join("") || `<div class="line muted-line"><span>Sem retiradas</span><b>-</b></div>`;
 
         return `<section class="close-block">
           <div class="close-head">
@@ -1623,8 +1643,8 @@ alert("Carga adicionada ao sistema como ajuste auditável.");
         $("toggleCreateUserBtn").textContent = panel?.classList.contains("active") ? "Ocultar criar usuário" : "Mostrar criar usuário";
       });
       $("createUserBtn") && ($("createUserBtn").onclick=createInternalUser);
-      $("historySearch")?.addEventListener("input",()=>{ historyRenderLimit=30; renderHistory(); });
-      $("historyDate")?.addEventListener("input",()=>{ historyRenderLimit=30; renderHistory(); }); document.querySelectorAll(".nav-btn[data-screen]").forEach(btn=>btn.onclick=()=>showScreen(btn.dataset.screen));
+      $("historySearch")?.addEventListener("input",()=>{ historyRenderLimit=12; renderHistory(); });
+      $("historyDate")?.addEventListener("input",()=>{ historyRenderLimit=12; renderHistory(); }); document.querySelectorAll(".nav-btn[data-screen]").forEach(btn=>btn.onclick=()=>showScreen(btn.dataset.screen));
       document.querySelectorAll("[data-home-detail]").forEach(card=>{
         card.onclick = () => openHomeMetricDetail(card.dataset.homeDetail);
       });
@@ -1659,7 +1679,7 @@ alert("Carga adicionada ao sistema como ajuste auditável.");
     onAuthStateChanged(auth,async(user)=>{ currentUser=user; if(!user){$("loginScreen").classList.remove("hidden");$("appShell").classList.add("hidden");$("bottomNav").classList.add("hidden"); syncBodyThemeState(); return;} currentProfile=await loadProfile(user); if(currentProfile.blocked){await signOut(auth);return alert("Usuário bloqueado.");} if(currentProfile.approved===false){$("loginScreen").classList.remove("hidden");$("appShell").classList.add("hidden");$("bottomNav").classList.add("hidden");syncBodyThemeState();showNotice("loginNotice","Usuário aguardando aprovação do admin.","error");return;} $("loginScreen").classList.add("hidden");$("appShell").classList.remove("hidden");$("bottomNav").classList.remove("hidden");syncBodyThemeState();$("topUserLabel").textContent=`${currentProfile.name||user.email} • ${isAdmin()?"Admin":isSupervisor()?"Supervisor":"Operador"}`; $("adminStatus").textContent=isAdmin()?"Admin ativo":"Somente admin";
       if($("moreAdminBtn")) $("moreAdminBtn").style.display = isAdmin() ? "flex" : "none";
 
-      updateRoleVisibility(); if(currentProfile.permissionError) showNotice("appNotice","Seu login entrou, mas o Firestore negou acesso ao perfil. Ajuste as regras ou coloque seu email em BOOTSTRAP_ADMIN_EMAILS.","error"); startHistoryRealtimeListener(); startSystemRealtime(); fillOperatorFromProfile(); renderAll(); });
+      updateRoleVisibility(); if(currentProfile.permissionError) showNotice("appNotice","Seu login entrou, mas o Firestore negou acesso ao perfil. Ajuste as regras ou coloque seu email em BOOTSTRAP_ADMIN_EMAILS.","error"); startHistoryRealtimeListener(); startSystemRealtime(); fillOperatorFromProfile(); ensureDefaultHistoryDate(); renderAll(); });
 
     function runSelfTests(){
       const savedUser = currentUser;
