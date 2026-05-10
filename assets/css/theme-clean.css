@@ -1342,3 +1342,154 @@ body::before{
   .card,
   .login-card{border-radius:22px!important;}
 }
+
+/* ===== Round 7: developer mode softer refinement ===== */
+:root{
+  --surface-1:rgba(255,255,255,.92);
+  --surface-3:#f6f9ff;
+  --text-soft:#70819b;
+  --line-soft:rgba(15,23,42,.065);
+  --shadow-soft:0 14px 30px rgba(15,23,42,.055);
+  --shadow-strong:0 20px 44px rgba(15,23,42,.08);
+}
+html,body{
+  background:
+    radial-gradient(circle at 12% 0%, rgba(147,197,253,.16), transparent 30%),
+    radial-gradient(circle at 88% 0%, rgba(191,219,254,.14), transparent 26%),
+    linear-gradient(180deg,#fcfdff 0%,#f5f8fd 100%);
+}
+body{letter-spacing:-.008em;}
+.card,
+.login-card,
+.edit-panel,
+.receipt-panel,
+.more-menu,
+.loading-box,
+.bottom-nav{
+  backdrop-filter:blur(12px);
+}
+.card,
+.login-card,
+.edit-panel,
+.receipt-panel,
+.more-menu,
+.loading-box{
+  border-color:rgba(15,23,42,.055)!important;
+}
+.hero-card,
+.reports-hero,
+.close-hero-card{
+  border-color:rgba(255,255,255,.10)!important;
+}
+.hero-card{
+  background:
+    radial-gradient(circle at top right, rgba(219,234,254,.18), transparent 28%),
+    linear-gradient(145deg,#1a3566 0%,#345d9f 50%,#7ba7fb 100%)!important;
+}
+.reports-hero{
+  background:
+    radial-gradient(circle at top right, rgba(219,234,254,.17), transparent 26%),
+    linear-gradient(135deg,#213b69 0%,#3c619f 48%,#88adff 100%)!important;
+}
+.close-hero-card{
+  background:
+    radial-gradient(circle at top right, rgba(219,234,254,.16), transparent 28%),
+    linear-gradient(135deg,#203862 0%,#3b5f99 48%,#86acff 100%)!important;
+  box-shadow:0 20px 40px rgba(32,56,98,.14)!important;
+}
+.hero-mini,
+.reports-highlight,
+.close-hero-metric{
+  background:rgba(255,255,255,.14)!important;
+  border-color:rgba(255,255,255,.15)!important;
+}
+.hero-badge,
+.close-kicker,
+.reports-badge,
+.close-status-badge,
+.close-section-badge,
+.history-kicker,
+.receipt-kicker,
+.history-pill,
+.home-section-pill,
+.history-toolbar-label,
+.history-count-pill{
+  filter:saturate(.88);
+}
+.close-shell .card:hover,
+.history-item:hover,
+.hero-mini:hover,
+.icon-btn:hover,
+.small-btn:hover,
+.btn:hover,
+.nav-btn:hover,
+.more-menu-btn:hover{
+  transform:translateY(-1px);
+}
+.icon-btn,
+.small-btn,
+.more-menu-btn,
+.nav-btn,
+.btn.secondary,
+.close-action-grid .btn.secondary{
+  color:#17324f!important;
+  border-color:rgba(15,23,42,.07)!important;
+}
+.btn,
+.nav-btn.active,
+.more-menu-btn.active,
+.close-action-grid .btn.full:not(.secondary){
+  background:linear-gradient(145deg,#4a8df7,#7cb3ff)!important;
+  box-shadow:0 10px 20px rgba(74,141,247,.18)!important;
+}
+.field input,
+.field select,
+.field textarea,
+#loginEmail,
+#loginPassword,
+.money-input,
+.close-panel-body .row-item,
+.summary-box,
+.history-values > div,
+.receipt-note-bar,
+.report-preview-item,
+.report-stat,
+.close-group-block,
+.close-progress-card,
+.close-quick-card .close-panel-intro,
+.receipt-section,
+.receipt-row,
+.chips-item{
+  border-color:rgba(15,23,42,.06)!important;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.94)!important;
+}
+.field input:focus,
+.field select:focus,
+.field textarea:focus,
+#loginEmail:focus,
+#loginPassword:focus,
+.money-input:focus{
+  border-color:rgba(125,211,252,.55)!important;
+  box-shadow:0 0 0 4px rgba(147,197,253,.14), inset 0 1px 0 rgba(255,255,255,.96)!important;
+}
+.close-progress-track{
+  background:#edf3fe;
+}
+.close-progress-fill,
+.home-metric-card::before{
+  opacity:.68;
+}
+.summary-box.good{background:rgba(16,185,129,.06)!important;}
+.summary-box.danger{background:rgba(239,68,68,.06)!important;}
+.summary-box.gold{background:rgba(245,158,11,.08)!important;}
+.notice.ok{background:rgba(16,185,129,.06)!important;}
+.notice.error{background:rgba(239,68,68,.055)!important;}
+.loading-overlay{background:rgba(248,250,252,.68)!important;}
+@media (max-width:640px){
+  .topbar{background:linear-gradient(180deg, rgba(252,253,255,.94), rgba(252,253,255,.84));}
+  .hero-card,
+  .reports-hero,
+  .close-hero-card,
+  .card,
+  .login-card{padding:18px!important;}
+}
