@@ -1080,7 +1080,7 @@ html,body{background:#ffffff!important;}
   border:1px solid rgba(255,255,255,.13)!important;
   box-shadow:inset 0 1px 0 rgba(255,255,255,.045)!important;
 }
-.login-card input:not([type="checkbox"]:focus){
+.login-card input:not([type="checkbox"]):focus{
   background:rgba(255,255,255,.115)!important;
   border-color:rgba(255,255,255,.22)!important;
   box-shadow:0 0 0 3px rgba(255,255,255,.055)!important;
@@ -2611,8 +2611,6 @@ service cloud.firestore {
 
     function withinHistoryRetention(item){
       const d = historyItemDate(item);
-      // Não deixa documento sem data perfeita desaparecer do histórico.
-      // Firestore serverTimestamp pode demorar no primeiro snapshot.
       if(isNaN(d)) return true;
       return d >= historyRetentionStart();
     }
@@ -2862,9 +2860,11 @@ service cloud.firestore {
 
     function visibleHistory(){
       let list = historyCache.filter(withinHistoryRetention).filter(canAccessHistoryItem);
+
       if(!list.length && historyCache.length){
         list = historyCache.filter(canAccessHistoryItem);
       }
+
       return list;
     }
 
@@ -3029,8 +3029,8 @@ service cloud.firestore {
       try{
         if(!item) return 0;
 
-        // Fonte principal: diff já salvo no documento.
-        // Isso garante que operador, supervisor e admin vejam o mesmo valor.
+        // Fonte principal: diff salvo no Firestore.
+        // Assim admin, supervisor e operador veem a mesma diferença.
         if(item.diff !== undefined && item.diff !== null && String(item.diff).trim?.() !== ""){
           return moneyToNumber(item.diff);
         }
@@ -3043,7 +3043,7 @@ service cloud.firestore {
           return adjustmentImpact(item);
         }
 
-        // Fallback para documentos antigos sem diff salvo.
+        // Fallback para registros antigos sem diff salvo.
         const view = calculationHistory();
         const currentIndex = view.findIndex(x => x.id === item.id);
         const currentSaldo = moneyToNumber(item.turno?.saldoLiquido ?? item.currentSaldoTotal ?? 0);
@@ -5131,7 +5131,6 @@ body.side-drawer-open #sideMenuBtn{
         limit(HISTORY_DEFAULT_LOAD_LIMIT)
       );
 
-      // Busca inicial imediata: evita Home vazia até o onSnapshot responder.
       getDocs(qh).then(snap => {
         const docs = snap.docs.map(d => ({ id:d.id, ...d.data() }));
         if(docs.length){
