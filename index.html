@@ -1785,6 +1785,31 @@ body.role-admin [data-more-screen="Goals"]{
   visibility:visible!important;
 }
 
+
+
+/* =========================================================
+   SPLASH FAILSAFE
+   Evita app travado na tela de carregamento se Firebase ou preview falhar.
+========================================================= */
+.hidden{
+  display:none!important;
+}
+
+#appSplash.hidden,
+#splashScreen.hidden,
+#splash.hidden,
+#loadingScreen.hidden,
+#introScreen.hidden,
+.splash.hidden,
+.splash-screen.hidden,
+.loading-screen.hidden,
+.intro-screen.hidden,
+.app-loader.hidden{
+  display:none!important;
+  opacity:0!important;
+  pointer-events:none!important;
+}
+
 </style>
 
 <script>
@@ -2335,9 +2360,42 @@ function updateHeroBalance(newValue){
   <div id="appReloadLoader" class="app-reload-loader"><div class="reload-card"><div class="reload-spinner"></div><strong>Atualizando sistema</strong><span>Recalculando dados...</span></div></div>
 
   <script type="module">
+window.__BK_FORCE_OPEN_APP__ = function(){
+      try{
+        ["appSplash","splashScreen","splash","loadingScreen","introScreen"].forEach(id => {
+          const el = document.getElementById(id);
+          if(el){
+            el.classList.add("hidden");
+            el.style.display = "none";
+            el.style.opacity = "0";
+            el.style.pointerEvents = "none";
+          }
+        });
 
+        document.querySelectorAll(".splash,.splash-screen,.loading-screen,.intro-screen,.app-loader").forEach(el=>{
+          el.classList.add("hidden");
+          el.style.display = "none";
+          el.style.opacity = "0";
+          el.style.pointerEvents = "none";
+        });
 
+        document.body.classList.remove("loading","is-loading","splash-active");
+      }catch(e){
+        console.warn("Failsafe splash:", e);
+      }
+    };
 
+    window.addEventListener("error", function(e){
+      console.error("Bank King runtime error:", e.error || e.message);
+      setTimeout(window.__BK_FORCE_OPEN_APP__, 250);
+    });
+
+    window.addEventListener("unhandledrejection", function(e){
+      console.error("Bank King promise error:", e.reason);
+      setTimeout(window.__BK_FORCE_OPEN_APP__, 250);
+    });
+
+    setTimeout(window.__BK_FORCE_OPEN_APP__, 4500);
 
 import { initializeApp, deleteApp } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-app.js";
     import { getAuth, onAuthStateChanged, signInWithEmailAndPassword, signOut, sendPasswordResetEmail, createUserWithEmailAndPassword, setPersistence, browserLocalPersistence, browserSessionPersistence, updateEmail, updatePassword } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-auth.js";
@@ -4516,21 +4574,26 @@ alert("Carga adicionada ao sistema como ajuste auditável.");
     }
 
     function openReportMainCardPreview(){
-      const items = getReportItems();
-      previewReport();
+      try{
+        const items = getReportItems();
+        previewReport();
 
-      const win = window.open("", "_blank");
-      if(!win){
-        alert("Permita pop-ups para abrir a pré-visualização.");
-        return;
+        const win = window.open("", "_blank");
+        if(!win){
+          alert("Permita pop-ups para abrir a pré-visualização.");
+          return;
+        }
+
+        win.document.open();
+        win.document.write(buildReportPreviewMainCardHtml(items));
+        win.document.close();
+      }catch(e){
+        console.error("Erro na pré-visualização do relatório:", e);
+        alert("Não foi possível abrir a pré-visualização. Verifique os filtros do relatório.");
       }
-
-      win.document.open();
-      win.document.write(buildReportPreviewMainCardHtml(items));
-      win.document.close();
     }
 
-function previewReport(){ if(!$("reportPreviewCount")) return; const items=getReportItems(), totalSaldo=items.reduce((s,x)=>s+moneyToNumber(x.turno?.saldoLiquido??x.currentSaldoTotal),0), totalDiff=items.reduce((s,x)=>s+moneyToNumber(x.diff),0); $("reportPreviewCount").textContent=items.length; $("reportPreviewSaldo").textContent=formatMoney(totalSaldo); $("reportPreviewDiff").textContent=formatMoney(totalDiff); }
+    function previewReport(){ if(!$("reportPreviewCount")) return; const items=getReportItems(), totalSaldo=items.reduce((s,x)=>s+moneyToNumber(x.turno?.saldoLiquido??x.currentSaldoTotal),0), totalDiff=items.reduce((s,x)=>s+moneyToNumber(x.diff),0); $("reportPreviewCount").textContent=items.length; $("reportPreviewSaldo").textContent=formatMoney(totalSaldo); $("reportPreviewDiff").textContent=formatMoney(totalDiff); }
     function buildBankPdfHtml(items){
       const generatedAt = formatDateTimeSP(nowSP());
       const reportCode = "BK-" + Date.now().toString().slice(-8);
@@ -5485,3 +5548,250 @@ body.side-drawer-open #sideMenuBtn{
             if(code.includes("requires-recent-login")){
               authWarning = "Nome/foto foram aplicados. Para trocar o email, saia, entre novamente e tente de novo.";
             }else if(code.includes("auth/email-already-in-use")){
+              authWarning = "Nome/foto foram aplicados, mas este email já está em uso.";
+            }else if(code.includes("auth/invalid-email")){
+              authWarning = "Nome/foto foram aplicados, mas o email informado é inválido.";
+            }else{
+              authWarning = "Nome/foto foram aplicados, mas não foi possível trocar o email.";
+            }
+          }
+        }
+
+        if(newPassword){
+          try{
+            await updatePassword(currentUser, newPassword);
+            authChanged = true;
+          }catch(e){
+            const code = e?.code || "";
+            if(code.includes("requires-recent-login")){
+              authWarning += " Para trocar a senha, saia, entre novamente e tente de novo.";
+            }else{
+              authWarning += " Não foi possível trocar a senha agora.";
+            }
+          }
+        }
+
+        try{
+          await addAudit("update_own_profile", `Perfil atualizado por ${currentUser.email || oldEmail}`);
+        }catch(e){
+          console.warn("Auditoria do perfil ignorada:", e);
+        }
+
+        fillOperadorFromProfile();
+        updateSideDrawerProfile();
+        renderAll("data");
+        closeProfileModal();
+
+        if(authWarning){
+          showNotice("appNotice", authWarning.trim(), "error");
+        }else if(!firestoreSaved){
+          showNotice("appNotice","Perfil aplicado nesta sessão. Para ficar salvo permanente, cole as regras do Firestore geradas no arquivo FIRESTORE_RULES_PERFIL_USUARIO.txt.","error");
+        }else{
+          showNotice("appNotice", authChanged ? "Perfil e acesso atualizados com sucesso." : "Perfil atualizado com sucesso.", "ok");
+          setTimeout(()=>hideNotice("appNotice"), 2800);
+        }
+      }catch(e){
+        console.warn("Erro ao salvar perfil:", e);
+        alert("Não foi possível salvar o perfil: " + friendlyError(e));
+      }finally{
+        setButtonLoading(saveBtn, false);
+      }
+    }
+
+    function setupAdminCollapsibleCards(){
+      const setup = (btnId, bodyId, openText="Ocultar", closedText="Mostrar", onOpen=null) => {
+        const btn = $(btnId);
+        const body = $(bodyId);
+
+        if(!btn || !body || btn.dataset.ready === "1") return;
+
+        btn.dataset.ready = "1";
+        btn.textContent = body.classList.contains("hidden") ? closedText : openText;
+
+        btn.addEventListener("click", async () => {
+          const willOpen = body.classList.contains("hidden");
+
+          body.classList.toggle("hidden", !willOpen);
+          btn.textContent = willOpen ? openText : closedText;
+
+          if(willOpen && typeof onOpen === "function"){
+            await onOpen();
+          }
+        });
+      };
+
+      setup("togglePermissionsAdminBtn", "permissionsAdminBody", "Ocultar", "Mostrar");
+      setup("toggleUsersAdminBtn", "usersAdminBody", "Ocultar", "Mostrar", async () => {
+        if(isAdmin()) await loadUsers();
+      });
+    }
+
+    function bindEvents(){
+      loadSavedLoginPreference();
+      setupAdminCollapsibleCards();
+      if(bindEvents._bound) return;
+      bindEvents._bound = true;
+      // logo volta para início
+      if($("logoRefreshBtn")){
+        $("logoRefreshBtn").onclick = () => {
+          showScreen("Home");
+          refreshInternal();
+        };
+      } applyBankMoneyMaskAll(document); enableClearOnFocus(); ["webReca","suprema","pppoker","buffalo","ganamos","cargasPoker","cargasCasino","quickCargaCasino","quickRetiradaCaixa","operadorName","closingDate","editWebReca","editSuprema","editPppoker","editBuffalo","editGanamos","editCargasPoker","editCargasCasino"].forEach(id=>$(id)?.addEventListener("input",scheduleCalculations)); document.addEventListener("bankmoney", renderCalculations); $("togglePendingBtn") && ($("togglePendingBtn").onclick=()=>{ const panel=$("pendingPanel"); panel?.classList.toggle("active"); $("togglePendingBtn").textContent = panel?.classList.contains("active") ? "Ocultar" : "Abrir"; });
+      $("toggleOutflowBtn") && ($("toggleOutflowBtn").onclick=()=>{ const panel=$("outflowPanel"); panel?.classList.toggle("active"); $("toggleOutflowBtn").textContent = panel?.classList.contains("active") ? "Ocultar" : "Abrir"; });
+      $("addPendingBtn") && ($("addPendingBtn").onclick=()=>createDynamicRow("pendingList","Nome / motivo"));
+      $("addOutflowBtn") && ($("addOutflowBtn").onclick=()=>createDynamicRow("outflowList","Descrição"));
+      $("quickChargeBtn") && ($("quickChargeBtn").onclick=addQuickCapitalInjection);
+      $("toggleQuickChargeBtn") && ($("toggleQuickChargeBtn").onclick=()=>{
+        const panel = $("quickChargePanel");
+        panel?.classList.toggle("active");
+        $("toggleQuickChargeBtn").textContent = panel?.classList.contains("active") ? "Ocultar carga rápida" : "Mostrar carga rápida";
+      }); $("clearClosingBtn") && ($("clearClosingBtn").onclick=clearClosingForm);
+      $("saveClosingBtn") && ($("saveClosingBtn").onclick=saveClosing);
+      $("refreshBtn") && ($("refreshBtn").onclick=refreshInternal);
+      // BK já volta para Início e atualiza no começo do bindEvents()
+      $("recalculateBtn") && ($("recalculateBtn").onclick=recalculateAllHistory);
+      $("pdfReportBtn") && ($("pdfReportBtn").onclick=generateBankPdfReport);
+      $("previewReportBtn") && ($("previewReportBtn").onclick=openReportMainCardPreview);
+      $("generateReportBtn") && ($("generateReportBtn").onclick=generateBankPdfReport);
+      ["reportStart","reportEnd","reportOperador","reportSupervisor"].forEach(id=>$(id)?.addEventListener("input",previewReport));
+      $("loadUsersBtn") && ($("loadUsersBtn").onclick=loadUsers);
+      $("toggleCreateUserBtn") && ($("toggleCreateUserBtn").onclick=()=>{
+        const panel = $("createUserPanel");
+        panel?.classList.toggle("active");
+        $("toggleCreateUserBtn").textContent = panel?.classList.contains("active") ? "Ocultar criar usuário" : "Mostrar criar usuário";
+      });
+      $("createUserBtn") && ($("createUserBtn").onclick=createInternalUser);
+      $("historySearch")?.addEventListener("input",()=>{ historyDaysVisible = 1; renderHistory(); });
+      $("historyDate")?.addEventListener("input",()=>{ historyDaysVisible = 1; renderHistory(); }); document.querySelectorAll(".nav-btn[data-screen]").forEach(btn=>btn.onclick=()=>showScreen(btn.dataset.screen));
+      $("sideMenuBtn") && ($("sideMenuBtn").onclick=(ev)=>{ ev.stopPropagation(); openSideDrawer(); });
+      $("sideDrawerClose") && ($("sideDrawerClose").onclick=closeSideDrawer);
+      $("sideDrawerOverlay") && ($("sideDrawerOverlay").onclick=closeSideDrawer);
+      document.querySelectorAll(".side-menu-btn[data-screen]").forEach(btn=>btn.onclick=()=>showScreen(btn.dataset.screen));
+      document.querySelectorAll(".side-menu-btn[data-more-screen]").forEach(btn=>btn.onclick=()=>showScreen(btn.dataset.moreScreen));
+      $("sideRefreshBtn") && ($("sideRefreshBtn").onclick=()=>{ closeSideDrawer(); refreshInternal(); });
+      $("sideEditProfileBtn") && ($("sideEditProfileBtn").onclick=()=>{ closeSideDrawer(); openProfileModal(); });
+      $("sideDrawerAvatar") && ($("sideDrawerAvatar").onclick=()=>{ closeSideDrawer(); openProfileModal(); });
+      $("profileCloseBtn") && ($("profileCloseBtn").onclick=closeProfileModal);
+      $("cancelProfileBtn") && ($("cancelProfileBtn").onclick=closeProfileModal);
+      $("saveProfileBtn") && ($("saveProfileBtn").onclick=saveOwnProfile);
+      $("profilePhotoUrlInput")?.addEventListener("input",()=>updateProfilePhotoPreview($("profilePhotoUrlInput").value,$("profileNameInput")?.value));
+      $("profileNameInput")?.addEventListener("input",()=>updateProfilePhotoPreview($("profilePhotoUrlInput")?.value,$("profileNameInput")?.value));
+      $("profilePhotoInput")?.addEventListener("change", async()=>{
+        const file = $("profilePhotoInput")?.files?.[0];
+        if(!file) return updateProfilePhotoPreview($("profilePhotoUrlInput")?.value,$("profileNameInput")?.value);
+        try{ updateProfilePhotoPreview(await compressProfileImage(file), $("profileNameInput")?.value); }catch(e){ alert(e.message || "Imagem inválida."); }
+      });
+      $("sideLogoutBtn") && ($("sideLogoutBtn").onclick=async()=>{ closeSideDrawer(); if(historyUnsubscribe)historyUnsubscribe(); if(systemUnsubscribe)systemUnsubscribe(); await signOut(auth); });
+      document.querySelectorAll("[data-home-detail]").forEach(card=>{
+        card.onclick = () => openHomeMetricDetail(card.dataset.homeDetail);
+      });
+      $("toggleComparativoBtn") && ($("toggleComparativoBtn").onclick=()=>{
+        const section = $("comparativoSection");
+        const btn = $("toggleComparativoBtn");
+        if(!section || !btn) return;
+
+        const shouldOpen = section.classList.contains("hidden");
+        section.classList.toggle("hidden", !shouldOpen);
+        btn.textContent = shouldOpen ? "Ocultar comparativo" : "Ver comparativo";
+
+        const last = lastRealClosing() || visibleHistory()[0] || null;
+        const prev = last ? previousRealClosingAfter(last) : (visibleHistory()[1] || null);
+        renderChipsComparison(last, prev);
+      });
+      $("moreMenuBtn") && ($("moreMenuBtn").onclick=(ev)=>{
+        ev.stopPropagation();
+        $("moreMenu")?.classList.toggle("active");
+      });
+      document.addEventListener("click", (ev)=>{
+        const menu = $("moreMenu");
+        if(!menu?.classList.contains("active")) return;
+        if(menu.contains(ev.target) || $("moreMenuBtn")?.contains(ev.target)) return;
+        menu.classList.remove("active");
+      });
+      document.querySelectorAll("[data-more-screen]").forEach(btn=>btn.onclick=(ev)=>{ ev.stopPropagation(); showScreen(btn.dataset.moreScreen); }); document.querySelectorAll("[data-rank]").forEach(btn=>btn.onclick=()=>{document.querySelectorAll("[data-rank]").forEach(b=>b.classList.remove("active")); btn.classList.add("active"); currentRankRange=btn.dataset.rank; renderRanking();}); $("logoutBtn").onclick=async()=>{if(historyUnsubscribe)historyUnsubscribe();if(systemUnsubscribe)systemUnsubscribe();await signOut(auth);}; $("rememberLogin")?.addEventListener("change",()=>{
+        saveLoginPreference($("loginEmail")?.value?.trim() || "");
+        applyLoginPersistence().catch(e=>console.warn("Persistência login:", e));
+      });
+
+      $("loginEmail")?.addEventListener("input",()=>{
+        if(rememberLoginSelected()){
+          saveLoginPreference($("loginEmail")?.value?.trim() || "");
+        }
+      });
+
+      $("toggleLoginPasswordBtn")?.addEventListener("click",()=>{
+        const input = $("loginPassword");
+        const btn = $("toggleLoginPasswordBtn");
+        if(!input || !btn) return;
+
+        const willShow = input.type === "password";
+        input.type = willShow ? "text" : "password";
+        btn.classList.toggle("is-visible", willShow);
+        btn.setAttribute("aria-label", willShow ? "Ocultar senha" : "Mostrar senha");
+        btn.setAttribute("title", willShow ? "Ocultar senha" : "Mostrar senha");
+      });
+
+      $("loginBtn").onclick=async()=>{try{hideNotice("loginNotice");await applyLoginPersistence();await signInWithEmailAndPassword(auth,$("loginEmail").value.trim(),$("loginPassword").value);}catch(e){showNotice("loginNotice",friendlyError(e),"error");}}; $("registerBtn").onclick=registerAccess; $("resetPasswordBtn").onclick=async()=>{try{const email=$("loginEmail").value.trim(); if(!email) return showNotice("loginNotice","Informe o email.","error"); await sendPasswordResetEmail(auth,email); showNotice("loginNotice","Email de recuperação enviado.","ok");}catch(e){showNotice("loginNotice",friendlyError(e),"error");}}; $("receiptCloseBtn") && ($("receiptCloseBtn").onclick=closeHistoryReceipt);
+      $("receiptExportPngBtn") && ($("receiptExportPngBtn").onclick=exportReceiptAsPng);
+      $("editCloseBtn").onclick=closeEdit; $("cancelEditBtn").onclick=closeEdit; $("saveEditBtn").onclick=saveEdit; $("editAddPendingBtn").onclick=()=>createDynamicRow("editPendingList","Nome / motivo"); $("editAddOutflowBtn").onclick=()=>createDynamicRow("editOutflowList","Descrição"); }
+    function initDate(){ if($("closingDate")) $("closingDate").value = localInputSP(nowSP()); }
+
+    onAuthStateChanged(auth,async(user)=>{ currentUser=user; if(!user){document.body.classList.remove("role-admin","role-supervisor","role-operador");loadSavedLoginPreference();$("loginScreen").classList.remove("hidden");$("appShell").classList.add("hidden");$("bottomNav").classList.add("hidden");return;} currentProfile=await loadProfile(user); if(currentProfile.blocked){await signOut(auth);return alert("Usuário bloqueado.");} if(currentProfile.approved===false){$("loginScreen").classList.remove("hidden");$("appShell").classList.add("hidden");$("bottomNav").classList.add("hidden");showNotice("loginNotice","Usuário aguardando aprovação do admin.","error");return;} $("loginScreen").classList.add("hidden");$("appShell").classList.remove("hidden");$("bottomNav").classList.remove("hidden");$("topUserLabel").textContent=`${currentProfile.name||user.email} • ${isAdmin()?"Admin":isSupervisor()?"Supervisor":"Operador"}`;  $("adminStatus").textContent=isAdmin()?"Admin ativo":"Somente admin";
+      if($("moreAdminBtn")) $("moreAdminBtn").style.display = isAdmin() ? "flex" : "none"; if($("sideAdminBtn")) $("sideAdminBtn").style.display = isAdmin() ? "grid" : "none"; updateSideDrawerProfile();
+
+      applyRoleBodyClass(); updateRoleVisibility(); if(isAdmin()) loadAudit(); if(currentProfile.permissionError) showNotice("appNotice","Seu login entrou, mas o Firestore negou acesso ao perfil. Ajuste as regras ou coloque seu email em BOOTSTRAP_ADMIN_EMAILS.","error"); startHistoryRealtimeListener(); startSystemRealtime(); fillOperadorFromProfile(); renderAll("data"); });
+
+    function runSelfTests(){
+      const savedUser = currentUser;
+      const savedProfile = currentProfile;
+      const tests=[];
+      const assert=(name,cond)=>tests.push({name,pass:!!cond});
+
+      assert("money BR",moneyToNumber("1.234,56")===1234.56);
+      assert("money US",moneyToNumber("1,234.56")===1234.56);
+      assert("calc multipliers",calcularSaldoLiquido({webReca:100,suprema:1,pppoker:2,buffalo:10,ganamos:20,cargasPoker:1,cargasCasino:5,pendentesTotal:15,saidasTotal:7})===1327);
+      assert("history access approved",canAccessHistoryItem({createdBy:"u1",turno:{}})===true);
+
+      currentUser = savedUser;
+      currentProfile = savedProfile;
+      console.table(tests);
+      return tests;
+    }
+    window.BankKingTests={runSelfTests,moneyToNumber,calcularSaldoLiquido};
+
+    function bindHeroLiveGlow(){
+      // Removido: sem efeito de luz acompanhando o dedo.
+    }
+
+    function initBankMicroUX(){
+      const rippleTargets = ".btn,.small-btn,.admin-toggle,.nav-btn,.more-menu-btn,.icon-btn";
+      document.querySelectorAll(rippleTargets).forEach(btn=>{
+        if(btn.dataset.rippleBound) return;
+        btn.dataset.rippleBound = "1";
+        btn.addEventListener("click",(ev)=>{
+          const rect = btn.getBoundingClientRect();
+          const size = Math.max(rect.width, rect.height);
+          const ripple = document.createElement("span");
+          ripple.className = "ripple";
+          ripple.style.width = ripple.style.height = size + "px";
+          ripple.style.left = (ev.clientX - rect.left - size / 2) + "px";
+          ripple.style.top = (ev.clientY - rect.top - size / 2) + "px";
+          btn.appendChild(ripple);
+          setTimeout(()=>ripple.remove(), 620);
+        });
+      });
+
+      document.querySelectorAll(".screen.active .card,.screen.active .history-item,.screen.active .rank-item").forEach((card,index)=>{
+        card.classList.add("stagger-in");
+        card.style.setProperty("--stagger", index % 8);
+      });
+    }
+
+    document.addEventListener("DOMContentLoaded",()=>{ forceHideReloadLoader(); bindEvents(); initDate(); initBankMicroUX(); setTimeout(()=>{const splash=$("appSplash"); splash?.classList.add("hide"); setTimeout(()=>splash?.remove(),800);},1600); runSelfTests(); });
+  
+    document.addEventListener("DOMContentLoaded", loadSavedLoginPreference);
+
+document.addEventListener("DOMContentLoaded",()=>{ setTimeout(window.__BK_FORCE_OPEN_APP__,4500); });
+</script>
+</body>
