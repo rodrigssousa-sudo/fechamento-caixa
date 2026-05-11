@@ -2336,6 +2336,8 @@ function updateHeroBalance(newValue){
 
   <script type="module">
 
+
+
 import { initializeApp, deleteApp } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-app.js";
     import { getAuth, onAuthStateChanged, signInWithEmailAndPassword, signOut, sendPasswordResetEmail, createUserWithEmailAndPassword, setPersistence, browserLocalPersistence, browserSessionPersistence, updateEmail, updatePassword } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-auth.js";
     import { getFirestore, collection, doc, getDoc, getDocs, addDoc, setDoc, updateDoc, deleteDoc, onSnapshot, query, orderBy, limit, serverTimestamp } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-firestore.js";
@@ -2885,9 +2887,11 @@ const firebaseConfig = {
     async function requireAdmin(){ if(isAdmin()) return true; alert("Ação permitida somente para admin."); return false; }
 
     function canAccessHistoryItem(item){
-      // Admin e supervisor veem tudo.
-      // Operador não vê ajustes internos/carga rápida dentro do histórico.
-      if(!isAdmin() && !isSupervisor() && isAdjustmentItem(item)) return false;
+      // Histórico de fechamentos liberado para operador, supervisor e admin.
+      // Operador também pode ver fechamentos dos demais operadores.
+      // Somente ajustes internos/carga rápida ficam ocultos para operador.
+      if(isAdmin() || isSupervisor()) return true;
+      if(isAdjustmentItem(item)) return false;
       return true;
     }
 
@@ -2916,6 +2920,7 @@ const firebaseConfig = {
         item?.email ||
         t.operadorEmail ||
         t.createdByEmail ||
+        t.email ||
         ""
       ).toLowerCase();
     }
@@ -2923,7 +2928,19 @@ const firebaseConfig = {
     function isOwnHistoryItem(item){
       const currentEmail = String(currentUser?.email || "").toLowerCase();
       const ownerEmail = historyItemOwnerEmail(item);
-      return !!currentEmail && !!ownerEmail && currentEmail === ownerEmail;
+
+      const currentUid = String(currentUser?.uid || "");
+      const t = item?.turno || {};
+      const ownerUid = String(
+        item?.createdBy ||
+        item?.operadorUid ||
+        t.createdBy ||
+        t.operadorUid ||
+        ""
+      );
+
+      return (!!currentEmail && !!ownerEmail && currentEmail === ownerEmail)
+        || (!!currentUid && !!ownerUid && currentUid === ownerUid);
     }
 
     function lastOwnRealClosing(){
@@ -2939,15 +2956,14 @@ const firebaseConfig = {
     function canEditHistoryItem(item){
       if(!item) return false;
 
-      // Admin sempre edita.
+      // Admin edita qualquer fechamento.
       if(isAdmin()) return true;
 
-      // Ajustes/carga rápida ficam somente para admin.
+      // Operador não edita ajustes internos/cargas rápidas.
       if(isAdjustmentItem(item)) return false;
 
-      // Operador só edita o próprio último fechamento real.
-      const lastOwn = lastOwnRealClosing();
-      return !!lastOwn && lastOwn.id === item.id && isOwnHistoryItem(item);
+      // Operador pode editar somente os próprios fechamentos.
+      return isOwnHistoryItem(item);
     }
 
     function canDeleteHistoryItem(item){
@@ -3565,7 +3581,7 @@ function renderCalculations(){
         const diff = displayCashDiff(item);
         const canEdit = canEditHistoryItem(item);
         const canDelete = canDeleteHistoryItem(item);
-        const lastEditableBadge = canEdit && !isAdmin() ? `<span class="badge ok" style="margin-left:6px;">ÚLTIMO EDITÁVEL</span>` : "";
+        const lastEditableBadge = canEdit && !isAdmin() ? `<span class="badge ok" style="margin-left:6px;">EDITÁVEL</span>` : "";
         const adminActions = `
           ${canEdit ? `<button class="small-btn" data-edit="${item.id}">Editar</button>` : ""}
           ${canDelete ? `<button class="small-btn danger" data-delete="${item.id}">Excluir</button>` : ""}
@@ -3767,12 +3783,14 @@ function renderCalculations(){
           turno:{
             ...turno,
             operadorEmail:currentUser?.email || null,
+            operadorUid:currentUser?.uid || null,
             createdByEmail:currentUser?.email || null
           },
           operadorName:turno.operadorName,
           operatorName:turno.operadorName,
           nomeOperador:turno.operadorName,
           operadorEmail:currentUser?.email || null,
+          operadorUid:currentUser?.uid || null,
           supervisorUid:turno.supervisorUid,
           supervisorEmail:turno.supervisorEmail,
           supervisorName:turno.supervisorName,
@@ -4213,7 +4231,11 @@ alert("Carga adicionada ao sistema como ajuste auditável.");
 
     async function openEditHistory(id){ const item=historyCache.find(x=>x.id===id); if(!item) return alert("Fechamento não encontrado no cache."); if(!canEditHistoryItem(item)) return alert("Você só pode editar o seu último fechamento de turno."); const t=item.turno||{}; $("editHistoryId").value=id; $("editOperadorName").value=getOperadorName(item)==="Sem operador" ? "" : getOperadorName(item); $("editClosingDate").value=toDateInputValue(t.closingDate||item.submittedAt); $("editWebReca").value=t.webReca??t.reca??0; $("editSuprema").value=t.suprema??0; $("editPppoker").value=t.pppoker??0; $("editBuffalo").value=t.buffalo??0; $("editGanamos").value=t.ganamos??0; $("editCargasPoker").value=t.cargasPoker??0; $("editCargasCasino").value=t.cargasCasino??t.cargas??0; setDynamicRows("editPendingList",t.pendings||[]); setDynamicRows("editOutflowList",t.outflows||[]); $("editHistoryModal").classList.add("active"); }
     function closeEdit(){ $("editHistoryModal").classList.remove("active"); }
-    async function saveEdit(){ const id=$("editHistoryId").value; const ref=doc(db,"history",id); const original=historyCache.find(x=>x.id===id)||{}; if(!canEditHistoryItem(original)) return alert("Você só pode editar o seu último fechamento de turno."); const t={...(original.turno||{}),operadorName:$("editOperadorName").value.trim(),closingDate:$("editClosingDate").value||nowSP().toISOString(),webReca:moneyToNumber($("editWebReca").value),suprema:moneyToNumber($("editSuprema").value),pppoker:moneyToNumber($("editPppoker").value),buffalo:moneyToNumber($("editBuffalo").value),ganamos:moneyToNumber($("editGanamos").value),cargasPoker:moneyToNumber($("editCargasPoker").value),cargasCasino:moneyToNumber($("editCargasCasino").value),pendings:getDynamicRows("editPendingList"),outflows:getDynamicRows("editOutflowList")}; setOperadorNameOnTurno(t, t.operadorName); t.pendentesTotal=t.pendings.reduce((s,x)=>s+x.value,0); t.saidasTotal=t.outflows.reduce((s,x)=>s+x.value,0); t.retiradaLucroTotal=sumOutflowsByCategory(t.outflows,"lucro"); t.custoOperacionalTotal=sumOutflowsByCategory(t.outflows,"custo_operacional"); t.custoRecaTotal=sumOutflowsByCategory(t.outflows,"custo_reca"); t.saldoLiquido=calcularSaldoLiquido(t); t.baseOperacional=calcularBaseOperacional(t); try{await updateDoc(ref,{turno:t,operadorName:t.operadorName,operatorName:t.operadorName,nomeOperador:t.operadorName,currentSaldoTotal:t.saldoLiquido,operationalBase:t.baseOperacional,editedAt:serverTimestamp(),editedBy:currentUser?.uid||null,editedByEmail:currentUser?.email||null}); await addAudit("edit_history",`Fechamento editado: ${id}`); closeEdit(); if(isAdmin()) await recalculateAllHistory(); else renderAll("data"); alert("Fechamento editado com sucesso.");}catch(e){alert(friendlyError(e));} }
+    async function saveEdit(){ const id=$("editHistoryId").value; const ref=doc(db,"history",id); const original=historyCache.find(x=>x.id===id)||{}; if(!canEditHistoryItem(original)) return alert("Você só pode editar o seu último fechamento de turno."); const t={...(original.turno||{}),operadorName:$("editOperadorName").value.trim(),closingDate:$("editClosingDate").value||nowSP().toISOString(),webReca:moneyToNumber($("editWebReca").value),suprema:moneyToNumber($("editSuprema").value),pppoker:moneyToNumber($("editPppoker").value),buffalo:moneyToNumber($("editBuffalo").value),ganamos:moneyToNumber($("editGanamos").value),cargasPoker:moneyToNumber($("editCargasPoker").value),cargasCasino:moneyToNumber($("editCargasCasino").value),pendings:getDynamicRows("editPendingList"),outflows:getDynamicRows("editOutflowList")}; setOperadorNameOnTurno(t, t.operadorName); t.pendentesTotal=t.pendings.reduce((s,x)=>s+x.value,0); t.saidasTotal=t.outflows.reduce((s,x)=>s+x.value,0); t.retiradaLucroTotal=sumOutflowsByCategory(t.outflows,"lucro"); t.custoOperacionalTotal=sumOutflowsByCategory(t.outflows,"custo_operacional"); t.custoRecaTotal=sumOutflowsByCategory(t.outflows,"custo_reca"); t.operadorEmail = original?.turno?.operadorEmail || original?.operadorEmail || currentUser?.email || null;
+      t.createdByEmail = original?.turno?.createdByEmail || original?.createdByEmail || currentUser?.email || null;
+      t.createdBy = original?.turno?.createdBy || original?.createdBy || currentUser?.uid || null;
+      t.operadorUid = original?.turno?.operadorUid || original?.operadorUid || currentUser?.uid || null;
+      t.saldoLiquido=calcularSaldoLiquido(t); t.baseOperacional=calcularBaseOperacional(t); try{await updateDoc(ref,{turno:t,operadorName:t.operadorName,operatorName:t.operadorName,nomeOperador:t.operadorName,currentSaldoTotal:t.saldoLiquido,operationalBase:t.baseOperacional,operadorEmail:t.operadorEmail,operadorUid:t.operadorUid,createdByEmail:t.createdByEmail,editedAt:serverTimestamp(),editedBy:currentUser?.uid||null,editedByEmail:currentUser?.email||null}); await addAudit("edit_history",`Fechamento editado: ${id}`); closeEdit(); if(isAdmin()) await recalculateAllHistory(); else renderAll("data"); alert("Fechamento editado com sucesso.");}catch(e){alert(friendlyError(e));} }
 
     async function recalculateAllHistory(){
       if(!await requireAdmin()) return false;
@@ -5171,6 +5193,12 @@ body.side-drawer-open #sideMenuBtn{
       }
 
       if($("sideAdminBtn")) $("sideAdminBtn").style.display = canSeeAdmin ? "grid" : "none";
+      // Histórico liberado para operador, supervisor e admin.
+      document.querySelectorAll('[data-screen="History"],[data-more-screen="History"]').forEach(btn=>{
+        btn.classList.remove("hidden");
+        btn.style.display = "";
+      });
+
     }
 
     function openSideDrawer(){
@@ -5569,6 +5597,8 @@ body.side-drawer-open #sideMenuBtn{
     document.addEventListener("DOMContentLoaded",()=>{ forceHideReloadLoader(); bindEvents(); initDate(); initBankMicroUX(); setTimeout(()=>{const splash=$("appSplash"); splash?.classList.add("hide"); setTimeout(()=>splash?.remove(),800);},1600); runSelfTests(); });
   
     document.addEventListener("DOMContentLoaded", loadSavedLoginPreference);
+
+
 
 </script>
 </body>
