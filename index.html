@@ -2861,15 +2861,10 @@ service cloud.firestore {
     }
 
     function visibleHistory(){
-      // Interface padrão: tenta 91 dias + permissão.
       let list = historyCache.filter(withinHistoryRetention).filter(canAccessHistoryItem);
-
-      // Fallback: se algum problema de data/permissão deixou tudo vazio,
-      // não zera o app; mostra ao menos os fechamentos permitidos.
       if(!list.length && historyCache.length){
         list = historyCache.filter(canAccessHistoryItem);
       }
-
       return list;
     }
 
@@ -3349,15 +3344,21 @@ service cloud.firestore {
       return initials.toUpperCase().slice(0,2);
     }
     
-    function globalHistorySafe(){
-      // Fonte segura para cards gerais da Home.
-      // Evita tela zerada quando visibleHistory fica vazio por filtro de role/data.
-      const list = Array.isArray(historyCache) ? historyCache.filter(Boolean) : [];
-      return list.sort((a,b)=>{
-        const da = historyItemDate(a);
-        const db = historyItemDate(b);
-        return (isNaN(db) ? 0 : db.getTime()) - (isNaN(da) ? 0 : da.getTime());
-      });
+    
+    function validHistoryDateMs(item){
+      const d = historyItemDate(item);
+      if(!d || isNaN(d)) return 0;
+      return d.getTime();
+    }
+
+    function normalizeHistoryCache(list=[]){
+      return (list || [])
+        .filter(Boolean)
+        .sort((a,b)=>validHistoryDateMs(b) - validHistoryDateMs(a));
+    }
+
+function globalHistorySafe(){
+      return normalizeHistoryCache(historyCache);
     }
 
     function latestRealClosingForHome(){
@@ -3365,10 +3366,11 @@ service cloud.firestore {
     }
 
     function latestAnyItemForHome(){
-      return latestRealClosingForHome() || globalHistorySafe()[0] || visibleHistory()[0] || null;
+      const global = globalHistorySafe();
+      return global.find(item => !isAdjustmentItem(item)) || global[0] || null;
     }
 
-function renderHome(){
+    function renderHome(){
       const view = visibleHistory();
       const globalView = globalHistorySafe();
       const last = latestAnyItemForHome();
@@ -3377,6 +3379,14 @@ function renderHome(){
       const saldoLiquido = last?.turno?.saldoLiquido ?? last?.currentSaldoTotal ?? 0;
       const pendentes = last?.turno?.pendentesTotal ?? 0;
       const diff = last ? displayCashDiffForAllRoles(last) : 0;
+
+      if(!last){
+        if($("homeUpdatedAt")) $("homeUpdatedAt").textContent = historyCache.length ? "Sem fechamento real encontrado" : "Carregando histórico...";
+        if($("homeOperador")) $("homeOperador").textContent = profileName() || "-";
+        renderMonthlyGoal(view);
+        renderHomeBonusCard(view);
+        return;
+      }
 
       if($("homeDiff")){
         $("homeDiff").textContent = formatMoney(diff);
@@ -5022,7 +5032,29 @@ body.side-drawer-open #sideMenuBtn{
 
     async function generateBankPdfReport(){ await fetchAnnualHistoryIfNeeded(); const items=$("reportStart")?getReportItems():visibleHistory(); const win=window.open("","_blank"); if(!win) return alert("Permita pop-ups para gerar o PDF."); win.document.open(); win.document.write(buildBankPdfHtml(items)); win.document.close(); setTimeout(()=>{win.focus();win.print();},500); }
 
-    function startHistoryRealtimeListener(){ if(historyUnsubscribe) historyUnsubscribe(); const qh=query(collection(db,"history"),orderBy("submittedAt","desc"),limit(HISTORY_DEFAULT_LOAD_LIMIT)); historyUnsubscribe=onSnapshot(qh,snap=>{historyCache=snap.docs.map(d=>({id:d.id,...d.data()})); hideNotice("appNotice"); renderAll();},error=>{console.warn("History permission/listener:",error); showNotice("appNotice",friendlyError(error),"error"); renderAll();}); }
+    function startHistoryRealtimeListener(){
+      if(historyUnsubscribe) historyUnsubscribe();
+
+      const qh = query(
+        collection(db,"history"),
+        orderBy("submittedAt","desc"),
+        limit(HISTORY_DEFAULT_LOAD_LIMIT)
+      );
+
+      historyUnsubscribe = onSnapshot(qh, snap => {
+        const docs = snap.docs.map(d => ({ id:d.id, ...d.data() }));
+        historyCache = normalizeHistoryCache(docs);
+
+        console.info("Bank King history loaded:", historyCache.length);
+
+        hideNotice("appNotice");
+        renderAll();
+      }, error => {
+        console.warn("History permission/listener:", error);
+        showNotice("appNotice", friendlyError(error), "error");
+        renderAll();
+      });
+    }
     function startSystemRealtime(){
       if(systemUnsubscribe) systemUnsubscribe();
 
@@ -5033,18 +5065,17 @@ body.side-drawer-open #sideMenuBtn{
         if(data.valor === undefined) return;
 
         const realtimeValue = moneyToNumber(data.valor);
-        const last = lastRealClosing() || visibleHistory()[0];
+        const last = latestAnyItemForHome();
         const historyReca = getSaldoRecaFromItem(last);
 
-        // Não deixa um documento realtime zerado apagar o Saldo Reca do último fechamento.
         const valueToShow = realtimeValue > 0 ? realtimeValue : historyReca;
 
-        updateHeroBalance(valueToShow);
+        if(valueToShow > 0){
+          updateHeroBalance(valueToShow);
+        }
 
-        if($("homeUpdatedAt")){
-          $("homeUpdatedAt").textContent = data.updatedAt
-            ? "Saldo realtime: " + dateLabel(data.updatedAt)
-            : "Última atualização: " + dateLabel(last?.submittedAt || last?.createdAt || last?.turno?.closingDate);
+        if($("homeUpdatedAt") && data.updatedAt && realtimeValue > 0){
+          $("homeUpdatedAt").textContent = "Saldo realtime: " + dateLabel(data.updatedAt);
         }
       }, error => console.warn("Saldo Reca realtime não configurado:", error));
     }
@@ -5505,6 +5536,15 @@ body.side-drawer-open #sideMenuBtn{
         if(isAdmin()) await loadUsers();
       });
     }
+
+    
+    window.__BK_DEBUG_STATE__ = () => ({
+      user: currentUser?.email || null,
+      role: currentProfile?.role || null,
+      historyCache: historyCache.length,
+      visibleHistory: visibleHistory().length,
+      latestHome: latestAnyItemForHome()
+    });
 
     function bindEvents(){
       loadSavedLoginPreference();
