@@ -1080,7 +1080,7 @@ html,body{background:#ffffff!important;}
   border:1px solid rgba(255,255,255,.13)!important;
   box-shadow:inset 0 1px 0 rgba(255,255,255,.045)!important;
 }
-.login-card input:not([type="checkbox"]:focus){
+.login-card input:not([type="checkbox"]):focus{
   background:rgba(255,255,255,.115)!important;
   border-color:rgba(255,255,255,.22)!important;
   box-shadow:0 0 0 3px rgba(255,255,255,.055)!important;
@@ -1714,14 +1714,86 @@ body.role-operador [data-more-screen="Goals"]{
   font-variant-numeric:tabular-nums lining-nums!important;
 }
 
+
+
+/* =========================================================
+   PERFORMANCE / FLUIDEZ
+   Mantém visual, reduz custo de pintura e melhora scroll.
+========================================================= */
+.screen,
+.card,
+.history-item,
+.rank-item,
+.chips-item,
+.side-drawer,
+.receipt-panel,
+.edit-panel{
+  backface-visibility:hidden;
+}
+
+.history-list,
+.rank-list,
+.admin-grid{
+  content-visibility:auto;
+  contain-intrinsic-size:600px;
+}
+
+@media (prefers-reduced-motion: reduce){
+  *,
+  *::before,
+  *::after{
+    animation-duration:.001ms!important;
+    animation-iteration-count:1!important;
+    scroll-behavior:auto!important;
+    transition-duration:.001ms!important;
+  }
+}
+
+
+
+
+/* =========================================================
+   PERMISSÃO OPERADOR — SEM META MENSAL
+   Operador vê somente o card BÔNUS.
+========================================================= */
+body.role-operador #monthlyGoalCard,
+body.role-operador #screenGoals,
+body.role-operador #sideGoalsBtn,
+body.role-operador [data-more-screen="Goals"]{
+  display:none!important;
+  visibility:hidden!important;
+  pointer-events:none!important;
+}
+
+body.role-operador #homeBonusCard{
+  display:flex!important;
+  visibility:visible!important;
+  pointer-events:auto!important;
+}
+
+body.role-supervisor #monthlyGoalCard,
+body.role-admin #monthlyGoalCard{
+  display:block!important;
+  visibility:visible!important;
+}
+
+body.role-supervisor #sideGoalsBtn,
+body.role-admin #sideGoalsBtn,
+body.role-supervisor [data-more-screen="Goals"],
+body.role-admin [data-more-screen="Goals"]{
+  display:grid!important;
+  visibility:visible!important;
+}
+
 </style>
 
 <script>
-
 /* =========================================================
    💸 CONTADOR ANIMADO (TIPO BANCO)
 ========================================================= */
-function animateValue(el, start, end, duration = 800){
+const BK_REDUCE_MOTION = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+function animateValue(el, start, end, duration = 520){
   if(!el) return;
 
   const range = end - start;
@@ -1755,11 +1827,16 @@ function updateHeroBalance(newValue){
   newValue = Number(newValue) || 0;
   const oldValue = Number(lastBalance) || 0;
 
+  if(Math.abs(newValue - oldValue) < 0.01){
+    if(typeof formatMoney === "function") el.textContent = formatMoney(newValue);
+    return;
+  }
+
   if(typeof formatMoney === "function"){
-    if(newValue === 0){
-      el.textContent = formatMoney(0);
+    if(newValue === 0 || BK_REDUCE_MOTION){
+      el.textContent = formatMoney(newValue);
     }else{
-      animateValue(el, oldValue, newValue);
+      animateValue(el, oldValue, newValue, 520);
     }
   }else{
     el.textContent = "$ " + newValue.toLocaleString("pt-BR", { minimumFractionDigits:2, maximumFractionDigits:2 });
@@ -1775,9 +1852,10 @@ function updateHeroBalance(newValue){
 
   el.classList.add("balance-pulse");
 
-  setTimeout(()=>{
+  clearTimeout(window.__bkBalancePulseTimer);
+  window.__bkBalancePulseTimer = setTimeout(()=>{
     el.classList.remove("balance-pulse");
-  },600);
+  },420);
 
   lastBalance = newValue;
 }
@@ -1789,7 +1867,6 @@ function updateHeroBalance(newValue){
 //   const random = lastBalance + (Math.random() * 50000 - 25000);
 //   updateHeroBalance(Math.max(0, random));
 // },3000);
-
 </script>
 </head>
 <body>
@@ -2258,7 +2335,8 @@ function updateHeroBalance(newValue){
   <div id="appReloadLoader" class="app-reload-loader"><div class="reload-card"><div class="reload-spinner"></div><strong>Atualizando sistema</strong><span>Recalculando dados...</span></div></div>
 
   <script type="module">
-    import { initializeApp, deleteApp } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-app.js";
+
+import { initializeApp, deleteApp } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-app.js";
     import { getAuth, onAuthStateChanged, signInWithEmailAndPassword, signOut, sendPasswordResetEmail, createUserWithEmailAndPassword, setPersistence, browserLocalPersistence, browserSessionPersistence, updateEmail, updatePassword } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-auth.js";
     import { getFirestore, collection, doc, getDoc, getDocs, addDoc, setDoc, updateDoc, deleteDoc, onSnapshot, query, orderBy, limit, serverTimestamp } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-firestore.js";
 
@@ -2318,7 +2396,40 @@ service cloud.firestore {
 =========================================================
 */
 
-    const firebaseConfig = {
+    
+    /* =========================================================
+       PERFORMANCE PATCH — FLUIDEZ SEM PERDER LÓGICA
+       - Coalesce renders com requestAnimationFrame
+       - Renderiza telas pesadas apenas quando visíveis
+       - Evita repetir DOM work em telas escondidas
+    ========================================================= */
+    let __bkRenderScheduled = false;
+    let __bkRenderReason = "";
+    let __bkLastActiveScreen = "Home";
+
+    function isScreenActive(name){
+      const el = $("screen" + name);
+      return !!el && el.classList.contains("active");
+    }
+
+    function activeScreenName(){
+      const active = document.querySelector(".screen.active");
+      return active?.id?.replace("screen","") || "Home";
+    }
+
+    function scheduleRenderAll(reason="update"){
+      __bkRenderReason = reason;
+      if(__bkRenderScheduled) return;
+
+      __bkRenderScheduled = true;
+      requestAnimationFrame(() => {
+        __bkRenderScheduled = false;
+        renderAllNow(__bkRenderReason);
+      });
+    }
+
+
+const firebaseConfig = {
       apiKey: "AIzaSyAuyfJNu2vwvVyH5gRsvg82m98teFCmPXw",
       authDomain: "bank-king-c53cf.firebaseapp.com",
       projectId: "bank-king-c53cf",
@@ -2423,19 +2534,28 @@ service cloud.firestore {
       return `${p.year}-${p.month}-${p.day}T${p.hour}:${p.minute}`;
     }
 
+    const BK_DATE_TIME_FORMATTER = new Intl.DateTimeFormat("pt-BR", {
+      timeZone: APP_TIMEZONE,
+      day:"2-digit",
+      month:"2-digit",
+      year:"2-digit",
+      hour:"2-digit",
+      minute:"2-digit"
+    });
+
+    const BK_DATE_ONLY_FORMATTER = new Intl.DateTimeFormat("pt-BR", {
+      timeZone: APP_TIMEZONE,
+      day:"2-digit",
+      month:"2-digit",
+      year:"2-digit"
+    });
+
     function formatDateTimeSP(value){
       if(!value) return "-";
       const d = value?.toDate ? value.toDate() : new Date(value);
       if(isNaN(d)) return "-";
 
-      return new Intl.DateTimeFormat("pt-BR", {
-        timeZone: APP_TIMEZONE,
-        day:"2-digit",
-        month:"2-digit",
-        year:"2-digit",
-        hour:"2-digit",
-        minute:"2-digit"
-      }).format(d);
+      return BK_DATE_TIME_FORMATTER.format(d);
     }
 
     function formatDateOnlySP(value){
@@ -2443,12 +2563,7 @@ service cloud.firestore {
       const d = value?.toDate ? value.toDate() : new Date(value);
       if(isNaN(d)) return "-";
 
-      return new Intl.DateTimeFormat("pt-BR", {
-        timeZone: APP_TIMEZONE,
-        day:"2-digit",
-        month:"2-digit",
-        year:"2-digit"
-      }).format(d);
+      return BK_DATE_ONLY_FORMATTER.format(d);
     }
 
     function getItemDate(item){
@@ -2707,7 +2822,8 @@ service cloud.firestore {
       });
     }
 
-    function formatMoney(value){ return new Intl.NumberFormat("es-AR",{style:"currency",currency:"ARS",minimumFractionDigits:2}).format(Number(value)||0); }
+    const BK_MONEY_FORMATTER = new Intl.NumberFormat("es-AR",{style:"currency",currency:"ARS",minimumFractionDigits:2});
+    function formatMoney(value){ return BK_MONEY_FORMATTER.format(Number(value)||0); }
     function dateLabel(value){ return formatDateTimeSP(value); }
     function toDateInputValue(value){ return localInputSP(value || nowSP()); }
     function outflowCategoryLabel(category){
@@ -2728,11 +2844,42 @@ service cloud.firestore {
     function isAdmin(){ return currentProfile?.role === "admin" || currentProfile?.admin === true; }
     function isSupervisor(){ return currentProfile?.role === "supervisor"; }
 
+    function canSeeMonthlyGoal(){
+      return isAdmin() || isSupervisor();
+    }
+
+    function applyGoalVisibility(){
+      const canSee = canSeeMonthlyGoal();
+
+      if($("monthlyGoalCard")){
+        $("monthlyGoalCard").classList.toggle("hidden", !canSee);
+        $("monthlyGoalCard").style.display = canSee ? "" : "none";
+      }
+
+      if($("sideGoalsBtn")){
+        $("sideGoalsBtn").classList.toggle("hidden", !canSee);
+        $("sideGoalsBtn").style.display = canSee ? "" : "none";
+      }
+
+      document.querySelectorAll('[data-more-screen="Goals"]').forEach(btn => {
+        btn.classList.toggle("hidden", !canSee);
+        btn.style.display = canSee ? "" : "none";
+      });
+
+      // Operador não pode permanecer na tela de meta.
+      if(!canSee && $("screenGoals")?.classList.contains("active")){
+        showScreen("Home");
+      }
+    }
+
+
     function applyRoleBodyClass(){
       document.body.classList.remove("role-admin","role-supervisor","role-operador");
       if(isAdmin()) document.body.classList.add("role-admin");
       else if(isSupervisor()) document.body.classList.add("role-supervisor");
       else document.body.classList.add("role-operador");
+    
+      applyGoalVisibility();
     }
     function profileName(){ return currentProfile?.name || currentUser?.email?.split("@")[0] || ""; }
     async function requireAdmin(){ if(isAdmin()) return true; alert("Ação permitida somente para admin."); return false; }
@@ -2990,7 +3137,7 @@ service cloud.firestore {
 
     function getDynamicRows(containerId){ const el=$(containerId); if(!el) return []; return [...el.querySelectorAll(".row-item")].map(row=>({name:row.querySelector(".row-name")?.value||"",category:row.querySelector(".row-category")?.value||"",value:moneyToNumber(row.querySelector(".row-value")?.value||0)})).filter(x=>x.name||x.value); }
     function setDynamicRows(containerId, rows=[]){ const el=$(containerId); if(!el) return; el.innerHTML=""; (rows.length?rows:[{}]).forEach(r=>createDynamicRow(containerId,"Nome / motivo",r)); }
-    function createDynamicRow(containerId,label="Descrição",data={}){ const list=$(containerId); if(!list) return; const row=document.createElement("div"); const isOutflow=containerId.toLowerCase().includes("outflow"); row.className="row-item"+(isOutflow?" outflow-row":""); const safeName=String(data.name||"").replace(/"/g,'&quot;'); const value=data.value ? formatInputMoney(data.value) : ""; const category=data.category||data.type||"lucro"; row.innerHTML=isOutflow?`<input class="row-name" placeholder="${label}" value="${safeName}" /><select class="row-category"><option value="lucro">Lucro</option><option value="custo_operacional">Custo operacional</option><option value="custo_reca">Taxa Reca</option></select><input class="row-value money-input" inputmode="decimal" placeholder="0,00" value="${value}" /><button type="button" class="remove-row">×</button>`:`<input class="row-name" placeholder="${label}" value="${safeName}" /><input class="row-value money-input" inputmode="decimal" placeholder="0,00" value="${value}" /><button type="button" class="remove-row">×</button>`; if(isOutflow) row.querySelector(".row-category").value=category; row.querySelectorAll("input,select").forEach(i=>i.addEventListener("input",renderCalculations)); row.querySelectorAll("select").forEach(i=>i.addEventListener("change",renderCalculations)); row.querySelector(".remove-row").onclick=()=>{row.remove();renderCalculations();}; list.appendChild(row); applyBankMoneyMaskAll(row); enableClearOnFocus(); }
+    function createDynamicRow(containerId,label="Descrição",data={}){ const list=$(containerId); if(!list) return; const row=document.createElement("div"); const isOutflow=containerId.toLowerCase().includes("outflow"); row.className="row-item"+(isOutflow?" outflow-row":""); const safeName=String(data.name||"").replace(/"/g,'&quot;'); const value=data.value ? formatInputMoney(data.value) : ""; const category=data.category||data.type||"lucro"; row.innerHTML=isOutflow?`<input class="row-name" placeholder="${label}" value="${safeName}" /><select class="row-category"><option value="lucro">Lucro</option><option value="custo_operacional">Custo operacional</option><option value="custo_reca">Taxa Reca</option></select><input class="row-value money-input" inputmode="decimal" placeholder="0,00" value="${value}" /><button type="button" class="remove-row">×</button>`:`<input class="row-name" placeholder="${label}" value="${safeName}" /><input class="row-value money-input" inputmode="decimal" placeholder="0,00" value="${value}" /><button type="button" class="remove-row">×</button>`; if(isOutflow) row.querySelector(".row-category").value=category; row.querySelectorAll("input,select").forEach(i=>i.addEventListener("input",scheduleCalculations)); row.querySelectorAll("select").forEach(i=>i.addEventListener("change",scheduleCalculations)); row.querySelector(".remove-row").onclick=()=>{row.remove();renderCalculations();}; list.appendChild(row); applyBankMoneyMaskAll(row); enableClearOnFocus(); }
 
     function getTurnFromForm(){
       const webReca=moneyToNumber($("webReca")?.value), suprema=moneyToNumber($("suprema")?.value), pppoker=moneyToNumber($("pppoker")?.value), buffalo=moneyToNumber($("buffalo")?.value), ganamos=moneyToNumber($("ganamos")?.value), cargasPoker=moneyToNumber($("cargasPoker")?.value), cargasCasino=moneyToNumber($("cargasCasino")?.value);
@@ -3055,7 +3202,18 @@ service cloud.firestore {
       // para permitir sair do app e voltar sem perder os números digitados.
     }
 
-    function renderCalculations(){
+    
+    let __bkCalcTimer = null;
+    function scheduleCalculations(){
+      clearTimeout(__bkCalcTimer);
+      __bkCalcTimer = setTimeout(() => {
+        safeRender("calculations", renderCalculations);
+      }, 45);
+    }
+
+function renderCalculations(){
+      if(!$("calcSaldoLiquido")) return;
+
       const turno = getTurnFromForm();
 
       if($("calcSaldoLiquido")) $("calcSaldoLiquido").textContent = formatMoney(turno.saldoLiquido);
@@ -3137,7 +3295,7 @@ service cloud.firestore {
 
       // Visível para operador, supervisor e admin.
       card.classList.remove("hidden");
-      card.style.display = "";
+      card.style.display = "flex";
 
       // BÔNUS = MESMA BARRA DA META MENSAL.
       // Não recalcula com regra própria; usa o mesmo estado da meta.
@@ -3163,39 +3321,43 @@ service cloud.firestore {
     }
 
     function renderMonthlyGoal(view){
-  // Calcula sempre, mesmo quando operador não pode ver a tela de meta.
-  // Isso alimenta o card BÔNUS com a mesma porcentagem.
-  const { target, done, percent, remaining } = getMonthlyGoalProgressData(view, { includeRestricted:true });
+      // Calcula sempre para alimentar o card BÔNUS com a mesma %.
+      const { target, done, percent, remaining } = getMonthlyGoalProgressData(view, { includeRestricted:true });
 
-  const card = $("monthlyGoalCard");
-  if(!card) return;
+      const card = $("monthlyGoalCard");
+      const canSeeGoal = canSeeMonthlyGoal();
 
-  const canSeeGoal = isAdmin() || isSupervisor();
+      if(card){
+        card.classList.toggle("hidden", !canSeeGoal);
+        card.style.display = canSeeGoal ? "" : "none";
+      }
 
-  card.classList.toggle("hidden", !canSeeGoal);
-  card.style.display = canSeeGoal ? "" : "none";
+      if($("sideGoalsBtn")){
+        $("sideGoalsBtn").classList.toggle("hidden", !canSeeGoal);
+        $("sideGoalsBtn").style.display = canSeeGoal ? "" : "none";
+      }
 
-  if($("sideGoalsBtn")){
-    $("sideGoalsBtn").style.display = canSeeGoal ? "grid" : "none";
-  }
+      document.querySelectorAll('[data-more-screen="Goals"]').forEach(btn => {
+        btn.classList.toggle("hidden", !canSeeGoal);
+        btn.style.display = canSeeGoal ? "" : "none";
+      });
 
-  if(!canSeeGoal) return;
+      // Operador: não renderiza nem exibe valores da meta mensal.
+      if(!canSeeGoal) return;
 
-  if($("monthlyGoalDone")) $("monthlyGoalDone").textContent = formatMoney(done);
-  if($("monthlyGoalTarget")) $("monthlyGoalTarget").textContent = formatMoney(target);
-  if($("monthlyGoalPercent")) $("monthlyGoalPercent").textContent = `${percent.toFixed(1)}%`;
+      if($("monthlyGoalDone")) $("monthlyGoalDone").textContent = formatMoney(done);
+      if($("monthlyGoalTarget")) $("monthlyGoalTarget").textContent = formatMoney(target);
+      if($("monthlyGoalPercent")) $("monthlyGoalPercent").textContent = `${percent.toFixed(1)}%`;
 
-  if($("monthlyGoalFill")){
-    $("monthlyGoalFill").style.width = `${percent}%`;
-    const greenStrength = Math.max(42, Math.min(95, 42 + percent * .53));
-    $("monthlyGoalFill").style.background = `linear-gradient(90deg, hsl(145 70% ${greenStrength}%) 0%, #22c55e 58%, #087f5b 100%)`;
-  }
+      if($("monthlyGoalFill")){
+        $("monthlyGoalFill").style.width = `${percent}%`;
+        const greenStrength = Math.max(42, Math.min(95, 42 + percent * .53));
+        $("monthlyGoalFill").style.background = `linear-gradient(90deg, hsl(145 70% ${greenStrength}%) 0%, #22c55e 58%, #087f5b 100%)`;
+      }
 
-  if($("monthlyGoalRemaining")) $("monthlyGoalRemaining").textContent = remaining > 0 ? `Faltam ${formatMoney(remaining)}` : "Meta alcançada";
-  if($("monthlyGoalStatus")) $("monthlyGoalStatus").textContent = remaining > 0 ? "Em andamento" : "Meta batida";
-}
-
-
+      if($("monthlyGoalRemaining")) $("monthlyGoalRemaining").textContent = remaining > 0 ? `Faltam ${formatMoney(remaining)}` : "Meta alcançada";
+      if($("monthlyGoalStatus")) $("monthlyGoalStatus").textContent = remaining > 0 ? "Em andamento" : "Meta batida";
+    }
 
     function setCardIndicator(cardEl, value, max){
       // Desativado: cards iniciais sem barras/alertas visuais no modo clean white.
@@ -3393,7 +3555,9 @@ service cloud.firestore {
           : `${totalVisible} registros • ${historyDaysVisible} dia${historyDaysVisible > 1 ? "s" : ""} aberto${historyDaysVisible > 1 ? "s" : ""} de 91`;
       }
 
-      const html = list.map(item => {
+      const MAX_HISTORY_DOM = 120;
+      const domList = list.slice(0, MAX_HISTORY_DOM);
+      const html = domList.map(item => {
         const t = item.turno || {};
         const operador = getOperadorName(item);
         const ajuste = isAdjustmentItem(item);
@@ -3442,6 +3606,10 @@ service cloud.firestore {
           return true;
         }).length;
 
+        if(totalVisible > MAX_HISTORY_DOM){
+          $("historyList").insertAdjacentHTML("beforeend", `<button class="btn secondary full" style="margin-top:6px;" disabled>Mostrando ${MAX_HISTORY_DOM} registros. Use filtros para refinar.</button>`);
+        }
+
         if(totalVisible < totalAllFiltered){
           $("historyList").insertAdjacentHTML("beforeend", `<button id="loadMoreHistoryBtn" class="btn secondary full" style="margin-top:6px;">Ver mais antigos</button>`);
           $("loadMoreHistoryBtn").onclick = () => {
@@ -3475,9 +3643,11 @@ service cloud.firestore {
       });
 
       const ranking = [...map.values()].sort((a,b)=>b.total-a.total);
+      const RANKING_DOM_LIMIT = 80;
+      const rankingView = ranking.slice(0, RANKING_DOM_LIMIT);
       const maxAbs = Math.max(...ranking.map(r=>Math.abs(r.total)), 1);
 
-      $("rankingList").innerHTML = ranking.map((r,i)=>{
+      $("rankingList").innerHTML = rankingView.map((r,i)=>{
         const percent = Math.min(100, (Math.abs(r.total) / maxAbs) * 100);
         const positive = r.total >= 0;
         const status = positive ? "Caixa positivo" : "Caixa negativo";
@@ -3515,12 +3685,26 @@ service cloud.firestore {
       }
     }
 
-    function renderAll(){
-      safeRender("calculations", renderCalculations);
-      safeRender("home", renderHome);
-      safeRender("history", renderHistory);
-      safeRender("ranking", renderRanking);
-      safeRender("report", previewReport);
+    function renderAllNow(reason="direct"){
+      const active = activeScreenName();
+      __bkLastActiveScreen = active;
+
+      if(isScreenActive("Close") || $("editHistoryModal")?.classList.contains("active")){
+        safeRender("calculations", renderCalculations);
+      }
+
+      if(isScreenActive("Home") || reason === "data" || reason === "auth"){
+        safeRender("home", renderHome);
+      }
+
+      if(isScreenActive("History")) safeRender("history", renderHistory);
+      if(isScreenActive("Ranking")) safeRender("ranking", renderRanking);
+      if(isScreenActive("Reports")) safeRender("report", previewReport);
+      if(isScreenActive("Goals")) safeRender("goal", () => renderMonthlyGoal(visibleHistory()));
+    }
+
+    function renderAll(reason="update"){
+      scheduleRenderAll(reason);
     }
 
     function validateTurnBeforeSave(turno){
@@ -3699,7 +3883,7 @@ service cloud.firestore {
   await recalculateAllHistory();
 }
 
-renderAll();
+renderAll("data");
 renderMonthlyGoal(visibleHistory());
 
 alert("Carga adicionada ao sistema como ajuste auditável.");
@@ -4029,7 +4213,7 @@ alert("Carga adicionada ao sistema como ajuste auditável.");
 
     async function openEditHistory(id){ const item=historyCache.find(x=>x.id===id); if(!item) return alert("Fechamento não encontrado no cache."); if(!canEditHistoryItem(item)) return alert("Você só pode editar o seu último fechamento de turno."); const t=item.turno||{}; $("editHistoryId").value=id; $("editOperadorName").value=getOperadorName(item)==="Sem operador" ? "" : getOperadorName(item); $("editClosingDate").value=toDateInputValue(t.closingDate||item.submittedAt); $("editWebReca").value=t.webReca??t.reca??0; $("editSuprema").value=t.suprema??0; $("editPppoker").value=t.pppoker??0; $("editBuffalo").value=t.buffalo??0; $("editGanamos").value=t.ganamos??0; $("editCargasPoker").value=t.cargasPoker??0; $("editCargasCasino").value=t.cargasCasino??t.cargas??0; setDynamicRows("editPendingList",t.pendings||[]); setDynamicRows("editOutflowList",t.outflows||[]); $("editHistoryModal").classList.add("active"); }
     function closeEdit(){ $("editHistoryModal").classList.remove("active"); }
-    async function saveEdit(){ const id=$("editHistoryId").value; const ref=doc(db,"history",id); const original=historyCache.find(x=>x.id===id)||{}; if(!canEditHistoryItem(original)) return alert("Você só pode editar o seu último fechamento de turno."); const t={...(original.turno||{}),operadorName:$("editOperadorName").value.trim(),closingDate:$("editClosingDate").value||nowSP().toISOString(),webReca:moneyToNumber($("editWebReca").value),suprema:moneyToNumber($("editSuprema").value),pppoker:moneyToNumber($("editPppoker").value),buffalo:moneyToNumber($("editBuffalo").value),ganamos:moneyToNumber($("editGanamos").value),cargasPoker:moneyToNumber($("editCargasPoker").value),cargasCasino:moneyToNumber($("editCargasCasino").value),pendings:getDynamicRows("editPendingList"),outflows:getDynamicRows("editOutflowList")}; setOperadorNameOnTurno(t, t.operadorName); t.pendentesTotal=t.pendings.reduce((s,x)=>s+x.value,0); t.saidasTotal=t.outflows.reduce((s,x)=>s+x.value,0); t.retiradaLucroTotal=sumOutflowsByCategory(t.outflows,"lucro"); t.custoOperacionalTotal=sumOutflowsByCategory(t.outflows,"custo_operacional"); t.custoRecaTotal=sumOutflowsByCategory(t.outflows,"custo_reca"); t.saldoLiquido=calcularSaldoLiquido(t); t.baseOperacional=calcularBaseOperacional(t); try{await updateDoc(ref,{turno:t,operadorName:t.operadorName,operatorName:t.operadorName,nomeOperador:t.operadorName,currentSaldoTotal:t.saldoLiquido,operationalBase:t.baseOperacional,editedAt:serverTimestamp(),editedBy:currentUser?.uid||null,editedByEmail:currentUser?.email||null}); await addAudit("edit_history",`Fechamento editado: ${id}`); closeEdit(); if(isAdmin()) await recalculateAllHistory(); else renderAll(); alert("Fechamento editado com sucesso.");}catch(e){alert(friendlyError(e));} }
+    async function saveEdit(){ const id=$("editHistoryId").value; const ref=doc(db,"history",id); const original=historyCache.find(x=>x.id===id)||{}; if(!canEditHistoryItem(original)) return alert("Você só pode editar o seu último fechamento de turno."); const t={...(original.turno||{}),operadorName:$("editOperadorName").value.trim(),closingDate:$("editClosingDate").value||nowSP().toISOString(),webReca:moneyToNumber($("editWebReca").value),suprema:moneyToNumber($("editSuprema").value),pppoker:moneyToNumber($("editPppoker").value),buffalo:moneyToNumber($("editBuffalo").value),ganamos:moneyToNumber($("editGanamos").value),cargasPoker:moneyToNumber($("editCargasPoker").value),cargasCasino:moneyToNumber($("editCargasCasino").value),pendings:getDynamicRows("editPendingList"),outflows:getDynamicRows("editOutflowList")}; setOperadorNameOnTurno(t, t.operadorName); t.pendentesTotal=t.pendings.reduce((s,x)=>s+x.value,0); t.saidasTotal=t.outflows.reduce((s,x)=>s+x.value,0); t.retiradaLucroTotal=sumOutflowsByCategory(t.outflows,"lucro"); t.custoOperacionalTotal=sumOutflowsByCategory(t.outflows,"custo_operacional"); t.custoRecaTotal=sumOutflowsByCategory(t.outflows,"custo_reca"); t.saldoLiquido=calcularSaldoLiquido(t); t.baseOperacional=calcularBaseOperacional(t); try{await updateDoc(ref,{turno:t,operadorName:t.operadorName,operatorName:t.operadorName,nomeOperador:t.operadorName,currentSaldoTotal:t.saldoLiquido,operationalBase:t.baseOperacional,editedAt:serverTimestamp(),editedBy:currentUser?.uid||null,editedByEmail:currentUser?.email||null}); await addAudit("edit_history",`Fechamento editado: ${id}`); closeEdit(); if(isAdmin()) await recalculateAllHistory(); else renderAll("data"); alert("Fechamento editado com sucesso.");}catch(e){alert(friendlyError(e));} }
 
     async function recalculateAllHistory(){
       if(!await requireAdmin()) return false;
@@ -4089,7 +4273,7 @@ alert("Carga adicionada ao sistema como ajuste auditável.");
           console.warn("Auditoria ignorada:", auditErr);
         }
 
-        renderAll();
+        renderAll("data");
         return true;
       }catch(e){
         console.error("Erro no recálculo:", e);
@@ -4102,7 +4286,7 @@ alert("Carga adicionada ao sistema como ajuste auditável.");
     async function refreshInternal(){
       showReloadLoaderSafe("Atualizando sistema", "Atualizando tela...");
       try{
-        renderAll();
+        renderAll("data");
       }catch(e){
         console.error("Erro ao atualizar tela:", e);
       }finally{
@@ -4758,7 +4942,7 @@ body.side-drawer-open #sideMenuBtn{
 
     function generateBankPdfReport(){ const items=$("reportStart")?getReportItems():visibleHistory(); const win=window.open("","_blank"); if(!win) return alert("Permita pop-ups para gerar o PDF."); win.document.open(); win.document.write(buildBankPdfHtml(items)); win.document.close(); setTimeout(()=>{win.focus();win.print();},500); }
 
-    function startHistoryRealtimeListener(){ if(historyUnsubscribe) historyUnsubscribe(); const qh=query(collection(db,"history"),orderBy("submittedAt","desc"),limit(HISTORY_DEFAULT_LOAD_LIMIT)); historyUnsubscribe=onSnapshot(qh,snap=>{historyCache=snap.docs.map(d=>({id:d.id,...d.data()})); hideNotice("appNotice"); renderAll();},error=>{console.warn("History permission/listener:",error); showNotice("appNotice",friendlyError(error),"error"); historyCache=[]; renderAll();}); }
+    function startHistoryRealtimeListener(){ if(historyUnsubscribe) historyUnsubscribe(); const qh=query(collection(db,"history"),orderBy("submittedAt","desc"),limit(HISTORY_DEFAULT_LOAD_LIMIT)); historyUnsubscribe=onSnapshot(qh,snap=>{historyCache=snap.docs.map(d=>({id:d.id,...d.data()})); hideNotice("appNotice"); renderAll("data");},error=>{console.warn("History permission/listener:",error); showNotice("appNotice",friendlyError(error),"error"); historyCache=[]; renderAll("data");}); }
     function startSystemRealtime(){
       if(systemUnsubscribe) systemUnsubscribe();
 
@@ -4892,6 +5076,10 @@ body.side-drawer-open #sideMenuBtn{
     async function registerAccess(){ const email=$("loginEmail").value.trim(), password=$("loginPassword").value; if(!email||!password) return showNotice("loginNotice","Informe email e senha para criar acesso.","error"); if(password.length<6) return showNotice("loginNotice","A senha precisa ter pelo menos 6 caracteres.","error"); try{ const bootstrap=isBootstrapEmail(email); await applyLoginPersistence(); const cred=await createUserWithEmailAndPassword(auth,email,password); saveLoginPreference(email); const profile={email,name:email.split("@")[0],role:bootstrap?"admin":"operador",status:bootstrap?"active":"pending",approved:bootstrap?true:false,blocked:false,createdAt:serverTimestamp()}; await safeSetUserProfile(cred.user,profile); showNotice("loginNotice",bootstrap?"Conta admin criada. Entrando...":"Conta criada. Aguarde aprovação do admin.",bootstrap?"ok":"error"); }catch(e){ showNotice("loginNotice",friendlyError(e),"error"); } }
 
     function showScreen(name){
+      if(name === "Goals" && !canSeeMonthlyGoal()){
+        name = "Home";
+      }
+
       if(name === "Admin" && !isAdmin()){
         alert("Painel Admin liberado somente para admin.");
         return;
@@ -5169,7 +5357,7 @@ body.side-drawer-open #sideMenuBtn{
 
         fillOperadorFromProfile();
         updateSideDrawerProfile();
-        renderAll();
+        renderAll("data");
         closeProfileModal();
 
         if(authWarning){
@@ -5227,7 +5415,7 @@ body.side-drawer-open #sideMenuBtn{
           showScreen("Home");
           refreshInternal();
         };
-      } applyBankMoneyMaskAll(document); enableClearOnFocus(); ["webReca","suprema","pppoker","buffalo","ganamos","cargasPoker","cargasCasino","quickCargaCasino","quickRetiradaCaixa","operadorName","closingDate","editWebReca","editSuprema","editPppoker","editBuffalo","editGanamos","editCargasPoker","editCargasCasino"].forEach(id=>$(id)?.addEventListener("input",renderCalculations)); document.addEventListener("bankmoney", renderCalculations); $("togglePendingBtn") && ($("togglePendingBtn").onclick=()=>{ const panel=$("pendingPanel"); panel?.classList.toggle("active"); $("togglePendingBtn").textContent = panel?.classList.contains("active") ? "Ocultar" : "Abrir"; });
+      } applyBankMoneyMaskAll(document); enableClearOnFocus(); ["webReca","suprema","pppoker","buffalo","ganamos","cargasPoker","cargasCasino","quickCargaCasino","quickRetiradaCaixa","operadorName","closingDate","editWebReca","editSuprema","editPppoker","editBuffalo","editGanamos","editCargasPoker","editCargasCasino"].forEach(id=>$(id)?.addEventListener("input",scheduleCalculations)); document.addEventListener("bankmoney", renderCalculations); $("togglePendingBtn") && ($("togglePendingBtn").onclick=()=>{ const panel=$("pendingPanel"); panel?.classList.toggle("active"); $("togglePendingBtn").textContent = panel?.classList.contains("active") ? "Ocultar" : "Abrir"; });
       $("toggleOutflowBtn") && ($("toggleOutflowBtn").onclick=()=>{ const panel=$("outflowPanel"); panel?.classList.toggle("active"); $("toggleOutflowBtn").textContent = panel?.classList.contains("active") ? "Ocultar" : "Abrir"; });
       $("addPendingBtn") && ($("addPendingBtn").onclick=()=>createDynamicRow("pendingList","Nome / motivo"));
       $("addOutflowBtn") && ($("addOutflowBtn").onclick=()=>createDynamicRow("outflowList","Descrição"));
@@ -5330,7 +5518,7 @@ body.side-drawer-open #sideMenuBtn{
     onAuthStateChanged(auth,async(user)=>{ currentUser=user; if(!user){document.body.classList.remove("role-admin","role-supervisor","role-operador");loadSavedLoginPreference();$("loginScreen").classList.remove("hidden");$("appShell").classList.add("hidden");$("bottomNav").classList.add("hidden");return;} currentProfile=await loadProfile(user); if(currentProfile.blocked){await signOut(auth);return alert("Usuário bloqueado.");} if(currentProfile.approved===false){$("loginScreen").classList.remove("hidden");$("appShell").classList.add("hidden");$("bottomNav").classList.add("hidden");showNotice("loginNotice","Usuário aguardando aprovação do admin.","error");return;} $("loginScreen").classList.add("hidden");$("appShell").classList.remove("hidden");$("bottomNav").classList.remove("hidden");$("topUserLabel").textContent=`${currentProfile.name||user.email} • ${isAdmin()?"Admin":isSupervisor()?"Supervisor":"Operador"}`;  $("adminStatus").textContent=isAdmin()?"Admin ativo":"Somente admin";
       if($("moreAdminBtn")) $("moreAdminBtn").style.display = isAdmin() ? "flex" : "none"; if($("sideAdminBtn")) $("sideAdminBtn").style.display = isAdmin() ? "grid" : "none"; updateSideDrawerProfile();
 
-      applyRoleBodyClass(); updateRoleVisibility(); if(isAdmin()) loadAudit(); if(currentProfile.permissionError) showNotice("appNotice","Seu login entrou, mas o Firestore negou acesso ao perfil. Ajuste as regras ou coloque seu email em BOOTSTRAP_ADMIN_EMAILS.","error"); startHistoryRealtimeListener(); startSystemRealtime(); fillOperadorFromProfile(); renderAll(); });
+      applyRoleBodyClass(); updateRoleVisibility(); if(isAdmin()) loadAudit(); if(currentProfile.permissionError) showNotice("appNotice","Seu login entrou, mas o Firestore negou acesso ao perfil. Ajuste as regras ou coloque seu email em BOOTSTRAP_ADMIN_EMAILS.","error"); startHistoryRealtimeListener(); startSystemRealtime(); fillOperadorFromProfile(); renderAll("data"); });
 
     function runSelfTests(){
       const savedUser = currentUser;
