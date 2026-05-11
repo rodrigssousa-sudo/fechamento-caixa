@@ -2362,6 +2362,7 @@ function updateHeroBalance(newValue){
   <script type="module">
 
 
+
 window.__BK_FORCE_OPEN_APP__ = function(){
       try{
         ["appSplash","splashScreen","splash","loadingScreen","introScreen"].forEach(id => {
@@ -4461,16 +4462,39 @@ alert("Carga adicionada ao sistema como ajuste auditável.");
     }
 
     
-    function getReportMainCardData(items){
+    
+    function reportClosingCashDiffOnly(items){
+      // Diferença de caixa do PDF/prévia:
+      // soma somente fechamentos reais de caixa.
+      // Ajustes internos, cargas internas e registros de ajuste são ignorados.
+      return (items || [])
+        .filter(item => !isAdjustmentItem(item))
+        .reduce((s,item)=>{
+          if(item?.diff !== undefined && item?.diff !== null && String(item.diff).trim?.() !== ""){
+            return s + moneyToNumber(item.diff);
+          }
+
+          if(item?.turno?.diff !== undefined && item?.turno?.diff !== null){
+            return s + moneyToNumber(item.turno.diff);
+          }
+
+          if(typeof displayCashDiffForAllRoles === "function"){
+            return s + moneyToNumber(displayCashDiffForAllRoles(item));
+          }
+
+          if(typeof displayCashDiff === "function"){
+            return s + moneyToNumber(displayCashDiff(item));
+          }
+
+          return s;
+        },0);
+    }
+
+function getReportMainCardData(items){
       const totalCustoOperacional = items.reduce((s,x)=>s + turnCategoryTotal(x.turno || {}, "custo_operacional", "custoOperacionalTotal"),0);
       const totalTaxaReca = items.reduce((s,x)=>s + turnCategoryTotal(x.turno || {}, "custo_reca", "custoRecaTotal"),0);
 
-      const totalDiff = items.reduce((s,x)=>{
-        if(x.diff !== undefined && x.diff !== null) return s + moneyToNumber(x.diff);
-        if(typeof displayCashDiffForAllRoles === "function") return s + displayCashDiffForAllRoles(x);
-        if(typeof displayCashDiff === "function") return s + displayCashDiff(x);
-        return s;
-      },0);
+      const totalDiff = reportClosingCashDiffOnly(items);
 
       const totalLucro = items.reduce((s,x)=>s + turnCategoryTotal(x.turno || {}, "lucro", "retiradaLucroTotal"),0);
 
@@ -4822,7 +4846,7 @@ alert("Carga adicionada ao sistema como ajuste auditável.");
       const generatedAt = formatDateTimeSP(nowSP());
       const reportCode = "BK-" + Date.now().toString().slice(-8);
       const totalSaldo = items.reduce((s,x)=>s + moneyToNumber(x.turno?.saldoLiquido ?? x.currentSaldoTotal), 0);
-      const totalDiff = items.filter(x=>!isAdjustmentItem(x)).reduce((s,x)=>s + displayCashDiff(x), 0);
+      const totalDiff = reportClosingCashDiffOnly(items);
       const totalAjustes = items.filter(isAdjustmentItem).reduce((s,x)=>s + adjustmentImpact(x), 0);
       const ajusteParts = items.filter(isAdjustmentItem).map(getAdjustmentParts);
       const totalCargaBuffalo = ajusteParts.reduce((s,x)=>s + moneyToNumber(x.cargaBuffalo || 0), 0);
@@ -6017,6 +6041,7 @@ body.side-drawer-open #sideMenuBtn{
     document.addEventListener("DOMContentLoaded", loadSavedLoginPreference);
 
 document.addEventListener("DOMContentLoaded",()=>{ setTimeout(window.__BK_FORCE_OPEN_APP__,4500); });
+
 
 
 </script>
