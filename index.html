@@ -3361,40 +3361,93 @@ function globalHistorySafe(){
       return normalizeHistoryCache(historyCache);
     }
 
-    function latestRealClosingForHome(){
-      return globalHistorySafe().find(item => !isAdjustmentItem(item)) || null;
+    function latestRealClosingForHome(){ return latestClosingForHome(); }
+
+    
+    function latestClosingForHome(){
+      const global = globalHistorySafe();
+
+      // Prioridade: último fechamento real.
+      const real = global.find(item => !isAdjustmentItem(item));
+      if(real) return real;
+
+      // Fallback: qualquer item se não existir fechamento real.
+      return global[0] || visibleHistory()[0] || null;
     }
 
-    function latestAnyItemForHome(){
+    function latestAdjustmentForHome(){
       const global = globalHistorySafe();
-      return global.find(item => !isAdjustmentItem(item)) || global[0] || null;
+      return global.find(isAdjustmentItem) || null;
     }
+
+function latestAnyItemForHome(){ return latestClosingForHome(); }
 
     function renderHome(){
       const view = visibleHistory();
       const globalView = globalHistorySafe();
-      const last = latestAnyItemForHome();
+
+      // Fonte única da tela inicial:
+      // todos os cards principais vêm do mesmo último fechamento real.
+      const last = latestClosingForHome();
       const prev = last ? previousRealClosingAfter(last) : null;
-      const saldoReca = getSaldoRecaFromItem(last);
-      const saldoLiquido = last?.turno?.saldoLiquido ?? last?.currentSaldoTotal ?? 0;
-      const pendentes = last?.turno?.pendentesTotal ?? 0;
-      const diff = last ? displayCashDiffForAllRoles(last) : 0;
 
       if(!last){
-        if($("homeUpdatedAt")) $("homeUpdatedAt").textContent = historyCache.length ? "Sem fechamento real encontrado" : "Carregando histórico...";
+        if($("homeSaldoReca")) $("homeSaldoReca").textContent = formatMoney(0);
+        if($("homeSaldoLiquido")) $("homeSaldoLiquido").textContent = formatMoney(0);
+        if($("homePendentes")) $("homePendentes").textContent = formatMoney(0);
+        if($("homeDiff")) $("homeDiff").textContent = formatMoney(0);
+        if($("homeLastClose")) $("homeLastClose").textContent = "-";
         if($("homeOperador")) $("homeOperador").textContent = profileName() || "-";
-        renderMonthlyGoal(view);
-        renderHomeBonusCard(view);
+        if($("homeUpdatedAt")) $("homeUpdatedAt").textContent = historyCache.length ? "Sem fechamento real encontrado" : "Carregando histórico...";
+        renderMonthlyGoal(globalView);
+        renderHomeBonusCard(globalView);
+        renderChipsComparison(null, null);
         return;
       }
+
+      const t = last.turno || {};
+      const saldoReca = getSaldoRecaFromItem(last);
+      const saldoLiquido = moneyToNumber(t.saldoLiquido ?? last.currentSaldoTotal ?? 0);
+      const pendentes = moneyToNumber(t.pendentesTotal ?? 0);
+      const diff = displayCashDiffForAllRoles(last);
+
+      if($("homeSaldoReca")){
+        const recaValue = moneyToNumber(saldoReca);
+        $("homeSaldoReca").textContent = formatMoney(recaValue);
+        updateHeroBalance(recaValue);
+      }
+
+      if($("homeSaldoLiquido")) $("homeSaldoLiquido").textContent = formatMoney(saldoLiquido);
+      if($("homePendentes")) $("homePendentes").textContent = formatMoney(pendentes);
 
       if($("homeDiff")){
         $("homeDiff").textContent = formatMoney(diff);
         $("homeDiff").style.color = diff < 0 ? "#FF3B30" : "#16C784";
       }
 
+      if($("homeOperador")) $("homeOperador").textContent = getOperadorName(last);
+      if($("homeLastClose")) $("homeLastClose").textContent = dateLabel(last.submittedAt || last.createdAt || t.closingDate);
+      if($("homeUpdatedAt")) $("homeUpdatedAt").textContent = "Última atualização: " + dateLabel(last.submittedAt || last.createdAt || t.closingDate);
+
+      const pendCard = document.querySelector('[data-home-detail="pendentes"]');
+      if(pendCard){
+        pendCard.classList.remove("pending-blue","pending-yellow","pending-red");
+        if(pendentes < 500000) pendCard.classList.add("pending-blue");
+        else if(pendentes < 1000000) pendCard.classList.add("pending-yellow");
+        else pendCard.classList.add("pending-red");
+      }
+
+      const latestAdjustment = latestAdjustmentForHome();
+      const adjustmentValue = latestAdjustment ? adjustmentImpact(latestAdjustment) : 0;
+
+      if($("homeInternalAdjustment")){
+        $("homeInternalAdjustment").textContent = latestAdjustment ? adjustmentDescription(latestAdjustment) : formatMoney(0);
+        $("homeInternalAdjustment").style.color = adjustmentValue < 0 ? "#FF3B30" : "#16C784";
+      }
+
       const todayStart = nowSP();
       todayStart.setHours(0,0,0,0);
+
       const weekStart = nowSP();
       weekStart.setDate(weekStart.getDate() - 7);
 
@@ -3412,28 +3465,8 @@ function globalHistorySafe(){
         return !isNaN(d) && d >= weekStart;
       }).reduce((s,x)=>s + lucroFromItem(x), 0);
 
-      if($("homeSaldoReca")){
-        const recaValue = moneyToNumber(saldoReca);
-        $("homeSaldoReca").textContent = formatMoney(recaValue);
-        updateHeroBalance(recaValue);
-      }
-      if($("homeSaldoLiquido")) $("homeSaldoLiquido").textContent = formatMoney(saldoLiquido);
-      if($("homePendentes")) $("homePendentes").textContent = formatMoney(pendentes);
-      const pendCard = document.querySelector('[data-home-detail="pendentes"]');
-      if(pendCard){
-        pendCard.classList.remove("pending-blue","pending-yellow","pending-red");
-        if(moneyToNumber(pendentes) < 500000) pendCard.classList.add("pending-blue");
-        else if(moneyToNumber(pendentes) < 1000000) pendCard.classList.add("pending-yellow");
-        else pendCard.classList.add("pending-red");
-      }
-
-      const latestAdjustment = latestInternalAdjustment();
-      const adjustmentValue = latestAdjustment ? adjustmentImpact(latestAdjustment) : 0;
-      if($("homeInternalAdjustment")){
-        $("homeInternalAdjustment").textContent = adjustmentDescription(latestAdjustment);
-        $("homeInternalAdjustment").style.color = adjustmentValue < 0 ? "#FF3B30" : "#16C784";
-      }
       const canSeeProfitCards = isAdmin() || isSupervisor();
+
       if($("homeInternalAdjustmentCard")) $("homeInternalAdjustmentCard").classList.toggle("operator-hidden", !canSeeProfitCards);
       if($("todayResultCard")) $("todayResultCard").classList.toggle("hidden", !canSeeProfitCards);
       if($("weekResultCard")) $("weekResultCard").classList.toggle("hidden", !canSeeProfitCards);
@@ -3442,6 +3475,7 @@ function globalHistorySafe(){
         $("homeTodayResult").textContent = formatMoney(todayResult);
         $("homeTodayResult").style.color = todayResult < 0 ? "#dc2626" : "#059669";
       }
+
       if($("homeWeekResult")){
         $("homeWeekResult").textContent = formatMoney(weekResult);
         $("homeWeekResult").style.color = weekResult < 0 ? "#dc2626" : "#059669";
@@ -3451,16 +3485,18 @@ function globalHistorySafe(){
       const pendentesCard = document.querySelector('[data-home-detail="pendentes"]');
       const lucroHojeCard = document.querySelector('[data-home-detail="lucroHoje"]');
       const lucroSemCard = document.querySelector('[data-home-detail="lucroSemana"]');
+
       const maxVal = Math.max(
-        Math.abs(moneyToNumber(saldoLiquido)),
-        Math.abs(moneyToNumber(pendentes)),
+        Math.abs(saldoLiquido),
+        Math.abs(pendentes),
         Math.abs(moneyToNumber(todayResult)),
         Math.abs(moneyToNumber(weekResult)),
         1
       );
 
-      setCardIndicator(saldoCard, moneyToNumber(saldoLiquido), maxVal);
-      setCardIndicator(pendentesCard, -moneyToNumber(pendentes), maxVal);
+      setCardIndicator(saldoCard, saldoLiquido, maxVal);
+      setCardIndicator(pendentesCard, -pendentes, maxVal);
+
       if(canSeeProfitCards){
         setCardIndicator(lucroHojeCard, moneyToNumber(todayResult), maxVal);
         setCardIndicator(lucroSemCard, moneyToNumber(weekResult), maxVal);
@@ -3469,11 +3505,9 @@ function globalHistorySafe(){
         lucroSemCard?.querySelector('.card-indicator')?.remove();
       }
 
-      if($("homeOperador")) $("homeOperador").textContent = last ? getOperadorName(last) : "-";
-      if($("homeLastClose")) $("homeLastClose").textContent = last ? dateLabel(last.submittedAt || last.createdAt || last.turno?.closingDate) : "-";
-      if($("homeUpdatedAt")) $("homeUpdatedAt").textContent = last ? "Última atualização: " + dateLabel(last.submittedAt || last.createdAt) : "Aguardando fechamento";
-      renderMonthlyGoal(view);
-      renderHomeBonusCard(view);
+      // Bônus e meta usam histórico global para manter a mesma porcentagem para todos.
+      renderMonthlyGoal(globalView);
+      renderHomeBonusCard(globalView);
       renderChipsComparison(last, prev);
     }
 
@@ -5065,9 +5099,8 @@ body.side-drawer-open #sideMenuBtn{
         if(data.valor === undefined) return;
 
         const realtimeValue = moneyToNumber(data.valor);
-        const last = latestAnyItemForHome();
+        const last = latestClosingForHome();
         const historyReca = getSaldoRecaFromItem(last);
-
         const valueToShow = realtimeValue > 0 ? realtimeValue : historyReca;
 
         if(valueToShow > 0){
@@ -5538,6 +5571,21 @@ body.side-drawer-open #sideMenuBtn{
     }
 
     
+    
+    window.__BK_HOME_DEBUG__ = () => {
+      const last = latestClosingForHome();
+      return {
+        historyCache: historyCache.length,
+        visibleHistory: visibleHistory().length,
+        latest: last,
+        operador: last ? getOperadorName(last) : null,
+        data: last ? dateLabel(last.submittedAt || last.createdAt || last.turno?.closingDate) : null,
+        saldoReca: last ? getSaldoRecaFromItem(last) : null,
+        diff: last ? displayCashDiffForAllRoles(last) : null,
+        bonus: getMonthlyGoalProgressData(globalHistorySafe(), { includeRestricted:true })
+      };
+    };
+
     window.__BK_DEBUG_STATE__ = () => ({
       user: currentUser?.email || null,
       role: currentProfile?.role || null,
