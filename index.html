@@ -1714,6 +1714,40 @@ body.role-operador [data-more-screen="Goals"]{
   font-variant-numeric:tabular-nums lining-nums!important;
 }
 
+
+
+/* =========================================================
+   RELATÓRIO PDF — FILTROS AVANÇADOS VISÍVEIS
+========================================================= */
+.report-filter-grid{
+  grid-template-columns:repeat(2,minmax(0,1fr))!important;
+  align-items:end!important;
+  gap:12px!important;
+}
+
+.report-filter-grid .field{
+  display:block!important;
+}
+
+.report-filter-grid .field label{
+  display:block!important;
+  font-size:10px!important;
+  font-weight:950!important;
+  color:var(--muted)!important;
+  text-transform:uppercase!important;
+  letter-spacing:.55px!important;
+}
+
+#reportOperadorWrap.is-hidden{
+  display:none!important;
+}
+
+@media(max-width:760px){
+  .report-filter-grid{
+    grid-template-columns:1fr!important;
+  }
+}
+
 </style>
 
 <script>
@@ -2022,7 +2056,82 @@ function updateHeroBalance(newValue){
 
     <section id="screenRanking" class="screen"><div class="section-divider">Performance por operador</div><div class="card"><div class="card-title"><h2>Ranking operadores</h2><span>Lucro por operador</span></div><div class="rank-tabs"><button class="active" data-rank="day">Diário</button><button data-rank="week">Semanal</button><button data-rank="month">Mensal</button><button data-rank="all">Total</button></div><div id="rankingList" class="rank-list"></div></div></section>
 
-    <section id="screenReports" class="screen"><div class="section-divider">Exportação institucional</div><div class="card"><div class="card-title"><h2>Relatórios premium</h2><span>PDF nível banco • filtros avançados</span></div><div class="form-grid"><div class="field"><label>Data inicial</label><input id="reportStart" type="date" /></div><div class="field"><label>Data final</label><input id="reportEnd" type="date" /></div><div class="field"><label>Operador</label><input id="reportOperador" placeholder="Todos ou nome específico" /></div><div class="field"><label>Supervisor</label><input id="reportSupervisor" placeholder="Todos" /></div><div class="field"><label>Tipo de fechamento</label><select id="reportEntryType"><option value="all">Todos</option><option value="closings">Fechamentos de operadores</option><option value="adjustments">Apenas ajustes internos</option><option value="charges">Apenas cargas de fichas</option></select></div><div class="field"><label>Detalhamento do relatório</label><select id="reportDetailMode"><option value="all">Todos os detalhes</option><option value="profit">Apenas lucro / retiradas lucro</option><option value="operational">Gastos operacionais e Taxa Reca</option></select></div></div><div class="grid three"><div class="card" style="box-shadow:none;"><div class="muted">Registros</div><div id="reportPreviewCount" class="metric">0</div></div><div class="card" style="box-shadow:none;"><div class="muted" id="reportPreviewMainLabel">Saldo líquido</div><div id="reportPreviewSaldo" class="metric">$ 0,00</div></div><div class="card" style="box-shadow:none;"><div class="muted" id="reportPreviewDiffLabel">Diferença</div><div id="reportPreviewDiff" class="metric">$ 0,00</div></div></div><button id="previewReportBtn" class="btn secondary full" style="margin-top:14px;">Pré-visualizar resumo</button><button id="generateReportBtn" class="btn full" style="margin-top:10px;">Gerar PDF</button></div></section>
+    <section id="screenReports" class="screen">
+  <div class="section-divider">Exportação institucional</div>
+  <div class="card">
+    <div class="card-title">
+      <h2>Relatórios premium</h2>
+      <span>PDF nível banco • filtros avançados</span>
+    </div>
+
+    <div class="form-grid report-filter-grid">
+      <div class="field">
+        <label>Data inicial</label>
+        <input id="reportStart" type="date" />
+      </div>
+
+      <div class="field">
+        <label>Data final</label>
+        <input id="reportEnd" type="date" />
+      </div>
+
+      <div class="field">
+        <label>Operador</label>
+        <select id="reportOperatorMode">
+          <option value="all">Todos os operadores</option>
+          <option value="specific">Operador específico</option>
+        </select>
+      </div>
+
+      <div class="field" id="reportOperadorWrap">
+        <label>Nome do operador</label>
+        <input id="reportOperador" placeholder="Digite o operador" />
+      </div>
+
+      <div class="field">
+        <label>Supervisor</label>
+        <input id="reportSupervisor" placeholder="Todos" />
+      </div>
+
+      <div class="field">
+        <label>Tipo de movimento</label>
+        <select id="reportEntryType">
+          <option value="all">Todos</option>
+          <option value="closings">Fechamentos de operadores</option>
+          <option value="adjustments">Apenas ajustes internos</option>
+          <option value="charges">Apenas cargas de fichas</option>
+        </select>
+      </div>
+
+      <div class="field">
+        <label>Modelo do relatório</label>
+        <select id="reportDetailMode">
+          <option value="all">Relatório com todos os detalhes</option>
+          <option value="profit">Relatório apenas do lucro / retiradas lucro</option>
+          <option value="operational">Relatório com gastos operacional e Taxa Reca</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="grid three">
+      <div class="card" style="box-shadow:none;">
+        <div class="muted">Registros</div>
+        <div id="reportPreviewCount" class="metric">0</div>
+      </div>
+      <div class="card" style="box-shadow:none;">
+        <div class="muted" id="reportPreviewMainLabel">Saldo líquido</div>
+        <div id="reportPreviewSaldo" class="metric">$ 0,00</div>
+      </div>
+      <div class="card" style="box-shadow:none;">
+        <div class="muted" id="reportPreviewDiffLabel">Diferença</div>
+        <div id="reportPreviewDiff" class="metric">$ 0,00</div>
+      </div>
+    </div>
+
+    <button id="previewReportBtn" class="btn secondary full" style="margin-top:14px;">Pré-visualizar resumo</button>
+    <button id="generateReportBtn" class="btn full" style="margin-top:10px;">Gerar PDF</button>
+  </div>
+</section>
 
     <section id="screenAdmin" class="screen">
       <div class="card">
@@ -2906,7 +3015,7 @@ service cloud.firestore {
       return view.slice(start).find(item => !isAdjustmentItem(item)) || null;
     }
 
-    function displayCashDiff(item){
+    function displayCashDiffForAllRoles(item){
       try{
         if(!item) return 0;
 
@@ -2943,6 +3052,17 @@ service cloud.firestore {
         console.warn("Erro displayCashDiff:", e);
         return 0;
       }
+    }
+
+    
+    function lastRealClosingGlobal(){
+      return historyCache.find(item => !isAdjustmentItem(item)) || null;
+    }
+
+    function displayCashDiffForAllRoles(item){
+      // Mesma diferença para operador, supervisor e admin.
+      // A base usa historyCache completo, não o histórico filtrado pela função.
+      return displayCashDiff(item);
     }
 
     function getOperadorName(item={}){
@@ -3218,12 +3338,12 @@ service cloud.firestore {
     }
     function renderHome(){
       const view = visibleHistory();
-      const last = lastRealClosing() || view[0];
+      const last = lastRealClosingGlobal() || lastRealClosing() || view[0];
       const prev = last ? previousRealClosingAfter(last) : null;
       const saldoReca = getSaldoRecaFromItem(last);
       const saldoLiquido = last?.turno?.saldoLiquido ?? last?.currentSaldoTotal ?? 0;
       const pendentes = last?.turno?.pendentesTotal ?? 0;
-      const diff = last ? displayCashDiff(last) : 0;
+      const diff = last ? displayCashDiffForAllRoles(last) : 0;
 
       if($("homeDiff")){
         $("homeDiff").textContent = formatMoney(diff);
@@ -3404,7 +3524,7 @@ service cloud.firestore {
         const operador = getOperadorName(item);
         const ajuste = isAdjustmentItem(item);
         const saldo = ajuste ? adjustmentImpact(item) : (t.saldoLiquido ?? item.currentSaldoTotal ?? 0);
-        const diff = displayCashDiff(item);
+        const diff = displayCashDiffForAllRoles(item);
         const canEdit = canEditHistoryItem(item);
         const canDelete = canDeleteHistoryItem(item);
         const lastEditableBadge = canEdit && !isAdmin() ? `<span class="badge ok" style="margin-left:6px;">ÚLTIMO EDITÁVEL</span>` : "";
@@ -3745,7 +3865,7 @@ alert("Carga adicionada ao sistema como ajuste auditável.");
       const t = item.turno || {};
       const id = item.id || "";
       const saldo = t.saldoLiquido ?? item.currentSaldoTotal ?? 0;
-      const diff = displayCashDiff(item);
+      const diff = displayCashDiffForAllRoles(item);
       const cargaPokerMoney = moneyToNumber(t.cargasPoker || 0) * 400;
       const cargaCasino = moneyToNumber(t.cargasCasino ?? t.cargas ?? 0);
 
@@ -4154,27 +4274,53 @@ alert("Carga adicionada ao sistema como ajuste auditável.");
 
     function reportEntryType(){ return $("reportEntryType")?.value || "all"; }
     function reportDetailMode(){ return $("reportDetailMode")?.value || "all"; }
-    function itemProfitTotal(item){ return turnCategoryTotal(item?.turno || {}, "lucro", "retiradaLucroTotal"); }
+    function reportOperatorMode(){ return $("reportOperatorMode")?.value || "all"; }
+
+    function itemProfitTotal(item){
+      return turnCategoryTotal(item?.turno || {}, "lucro", "retiradaLucroTotal");
+    }
+
     function itemOperationalCostTotal(item){
       const t = item?.turno || {};
       return turnCategoryTotal(t, "custo_operacional", "custoOperacionalTotal") + turnCategoryTotal(t, "custo_reca", "custoRecaTotal");
     }
+
     function isChargeReportItem(item){
       if(!isAdjustmentItem(item)) return false;
       const p = getAdjustmentParts(item);
-      return moneyToNumber(p.cargaSuprema||0) > 0 || moneyToNumber(p.cargaPppoker||0) > 0 || moneyToNumber(p.cargaBuffalo||0) > 0 || moneyToNumber(p.cargaGanamos||0) > 0 || moneyToNumber(p.cargaPoker||0) > 0 || moneyToNumber(p.cargaCasino||0) > 0;
+      return moneyToNumber(p.cargaSuprema||0) > 0
+        || moneyToNumber(p.cargaPppoker||0) > 0
+        || moneyToNumber(p.cargaBuffalo||0) > 0
+        || moneyToNumber(p.cargaGanamos||0) > 0
+        || moneyToNumber(p.cargaPoker||0) > 0
+        || moneyToNumber(p.cargaCasino||0) > 0;
     }
+
     function reportModeLabel(){
       const type = reportEntryType();
       const detail = reportDetailMode();
-      const typeLabel = type === "closings" ? "Fechamentos de operadores" : type === "adjustments" ? "Ajustes internos" : type === "charges" ? "Cargas de fichas" : "Todos os registros";
-      const detailLabel = detail === "profit" ? "Apenas lucro" : detail === "operational" ? "Gastos operacionais / Taxa Reca" : "Todos os detalhes";
+
+      const typeLabel = type === "closings"
+        ? "Fechamentos de operadores"
+        : type === "adjustments"
+          ? "Ajustes internos"
+          : type === "charges"
+            ? "Cargas de fichas"
+            : "Todos os registros";
+
+      const detailLabel = detail === "profit"
+        ? "Apenas lucro / retiradas lucro"
+        : detail === "operational"
+          ? "Gastos operacionais / Taxa Reca"
+          : "Todos os detalhes";
+
       return `${typeLabel} • ${detailLabel}`;
     }
 
     function getReportItems(){
-      const start = $("reportStart")?.value;
-      const end = $("reportEnd")?.value;
+      const start = $("reportStart")?.value || "";
+      const end = $("reportEnd")?.value || "";
+      const operatorMode = reportOperatorMode();
       const operador = ($("reportOperador")?.value || "").trim().toLowerCase();
       const supervisor = ($("reportSupervisor")?.value || "").trim().toLowerCase();
       const entryType = reportEntryType();
@@ -4208,7 +4354,7 @@ alert("Carga adicionada ao sistema como ajuste auditável.");
         });
       }
 
-      if(operador){
+      if(operatorMode === "specific" && operador){
         items = items.filter(x=>getOperadorName(x).toLowerCase().includes(operador));
       }
 
@@ -4228,22 +4374,25 @@ alert("Carga adicionada ao sistema como ajuste auditável.");
 
     function previewReport(){
       if(!$("reportPreviewCount")) return;
+
       const items = getReportItems();
       const detail = reportDetailMode();
+
       const totalSaldo = items.reduce((sum,x)=>sum+moneyToNumber(x.turno?.saldoLiquido??x.currentSaldoTotal),0);
-      const totalDiff = items.reduce((sum,x)=>sum+moneyToNumber(x.diff),0);
+      const totalDiff = items.reduce((sum,x)=>sum+displayCashDiffForAllRoles(x),0);
       const totalLucro = items.reduce((sum,x)=>sum+itemProfitTotal(x),0);
       const totalOperacional = items.reduce((sum,x)=>sum+itemOperationalCostTotal(x),0);
 
       $("reportPreviewCount").textContent = items.length;
+
       if(detail === "profit"){
         if($("reportPreviewMainLabel")) $("reportPreviewMainLabel").textContent = "Lucro";
-        if($("reportPreviewDiffLabel")) $("reportPreviewDiffLabel").textContent = "Regra";
+        if($("reportPreviewDiffLabel")) $("reportPreviewDiffLabel").textContent = "Filtro";
         $("reportPreviewSaldo").textContent = formatMoney(totalLucro);
         $("reportPreviewDiff").textContent = "Lucro";
       }else if(detail === "operational"){
         if($("reportPreviewMainLabel")) $("reportPreviewMainLabel").textContent = "Gastos";
-        if($("reportPreviewDiffLabel")) $("reportPreviewDiffLabel").textContent = "Regra";
+        if($("reportPreviewDiffLabel")) $("reportPreviewDiffLabel").textContent = "Filtro";
         $("reportPreviewSaldo").textContent = formatMoney(totalOperacional);
         $("reportPreviewDiff").textContent = "Operacional";
       }else{
@@ -4253,6 +4402,7 @@ alert("Carga adicionada ao sistema como ajuste auditável.");
         $("reportPreviewDiff").textContent = formatMoney(totalDiff);
       }
     }
+
     function buildBankPdfHtml(items){
       const generatedAt = formatDateTimeSP(nowSP());
       const reportCode = "BK-" + Date.now().toString().slice(-8);
@@ -4260,7 +4410,7 @@ alert("Carga adicionada ao sistema como ajuste auditável.");
       const entryMode = reportEntryType();
       const reportLabel = reportModeLabel();
       const totalSaldo = items.reduce((s,x)=>s + moneyToNumber(x.turno?.saldoLiquido ?? x.currentSaldoTotal), 0);
-      const totalDiff = items.filter(x=>!isAdjustmentItem(x)).reduce((s,x)=>s + displayCashDiff(x), 0);
+      const totalDiff = items.filter(x=>!isAdjustmentItem(x)).reduce((s,x)=>s + displayCashDiffForAllRoles(x), 0);
       const totalAjustes = items.filter(isAdjustmentItem).reduce((s,x)=>s + adjustmentImpact(x), 0);
       const ajusteParts = items.filter(isAdjustmentItem).map(getAdjustmentParts);
       const totalCargaBuffalo = ajusteParts.reduce((s,x)=>s + moneyToNumber(x.cargaBuffalo || 0), 0);
@@ -4275,7 +4425,7 @@ alert("Carga adicionada ao sistema como ajuste auditável.");
       const blocks = items.map((item, index)=>{
         const t = item.turno || {};
         const ajuste = isAdjustmentItem(item);
-        const diff = ajuste ? adjustmentImpact(item) : displayCashDiff(item);
+        const diff = ajuste ? adjustmentImpact(item) : displayCashDiffForAllRoles(item);
         const saldo = moneyToNumber(t.saldoLiquido ?? item.currentSaldoTotal ?? 0);
         const base = ajuste ? moneyToNumber(item.operationalBase ?? item.currentSaldoTotal ?? 0) : calcularBaseOperacional({ ...t, saldoLiquido: saldo });
         const positive = diff >= 0;
@@ -4836,7 +4986,7 @@ body.side-drawer-open #sideMenuBtn{
 </div></header><main>${blocks || `<section class="close-block">Nenhum fechamento encontrado.</section>`}</main></body></html>`;
     }
 
-    function generateBankPdfReport(){ const items=$("reportStart")?getReportItems():visibleHistory(); const win=window.open("","_blank"); if(!win) return alert("Permita pop-ups para gerar o PDF."); win.document.open(); win.document.write(buildBankPdfHtml(items)); win.document.close(); setTimeout(()=>{win.focus();win.print();},500); }
+    async function generateBankPdfReport(){ await fetchAnnualHistoryIfNeeded(); const items=$("reportStart")?getReportItems():visibleHistory(); const win=window.open("","_blank"); if(!win) return alert("Permita pop-ups para gerar o PDF."); win.document.open(); win.document.write(buildBankPdfHtml(items)); win.document.close(); setTimeout(()=>{win.focus();win.print();},500); }
 
     function startHistoryRealtimeListener(){ if(historyUnsubscribe) historyUnsubscribe(); const qh=query(collection(db,"history"),orderBy("submittedAt","desc"),limit(HISTORY_DEFAULT_LOAD_LIMIT)); historyUnsubscribe=onSnapshot(qh,snap=>{historyCache=snap.docs.map(d=>({id:d.id,...d.data()})); hideNotice("appNotice"); renderAll();},error=>{console.warn("History permission/listener:",error); showNotice("appNotice",friendlyError(error),"error"); historyCache=[]; renderAll();}); }
     function startSystemRealtime(){
@@ -4988,7 +5138,8 @@ body.side-drawer-open #sideMenuBtn{
       $("moreMenu")?.classList.remove("active");
       closeSideDrawer();
 
-      if(name==="Admin"){setupAdminCollapsibleCards();loadAudit();}
+      if(name==="Admin"){setupAdminCollapsibleCards();
+      setupReportFilterEvents();loadAudit();}
       if(name==="Ranking") renderRanking(); setTimeout(initBankMicroUX, 30);
       if(name==="Reports") previewReport();
       if(name==="Goals") renderMonthlyGoal(visibleHistory());
@@ -5266,6 +5417,31 @@ body.side-drawer-open #sideMenuBtn{
       }finally{
         setButtonLoading(saveBtn, false);
       }
+    }
+
+    function setupReportFilterEvents(){
+      const ids = ["reportStart","reportEnd","reportOperatorMode","reportOperador","reportSupervisor","reportEntryType","reportDetailMode"];
+      ids.forEach(id=>{
+        const el = $(id);
+        if(!el || el.dataset.reportReady === "1") return;
+        el.dataset.reportReady = "1";
+        const evt = el.tagName === "SELECT" ? "change" : "input";
+        el.addEventListener(evt, () => {
+          syncReportOperatorField();
+          previewReport();
+        });
+      });
+
+      syncReportOperatorField();
+    }
+
+    function syncReportOperatorField(){
+      const mode = $("reportOperatorMode")?.value || "all";
+      const wrap = $("reportOperadorWrap");
+      const op = $("reportOperador");
+
+      if(wrap) wrap.classList.toggle("is-hidden", mode !== "specific");
+      if(mode !== "specific" && op) op.value = "";
     }
 
     function setupAdminCollapsibleCards(){
