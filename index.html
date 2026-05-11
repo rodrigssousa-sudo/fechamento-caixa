@@ -57,6 +57,37 @@ button,input,select,textarea{font-family:inherit}button{border:0;cursor:pointer}
 .history-tools{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px}.history-list,.rank-list{display:grid;gap:12px}.history-item,.rank-item{border-top:4px solid rgba(26,26,46,.32)}.history-top,.rank-head{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:9px}.history-top strong{font-size:14px}.history-top span{font-size:12px;color:var(--muted);font-weight:760}.history-values{display:grid;grid-template-columns:1fr 1fr;gap:8px;font-size:12px}.history-values b{display:block;font-size:15px;margin-top:3px}.history-actions{display:flex;gap:8px;margin-top:10px;flex-wrap:wrap}.rank-tabs{display:flex;gap:8px;overflow:auto;margin-bottom:12px}.rank-tabs button{height:38px;border-radius:14px;padding:0 14px;background:#fff;color:var(--primary2);font-weight:900;border:1px solid var(--line);white-space:nowrap}.rank-tabs button.active{background:linear-gradient(145deg,#1a1a2e,#11111e);color:#fff}.rank-left{display:flex;align-items:center;gap:10px}.rank-pos{width:38px;height:38px;border-radius:14px;background:#f4f4f6;display:flex;align-items:center;justify-content:center;font-weight:950;color:var(--primary2);box-shadow:inset 0 1px 0 rgba(255,255,255,.75)}.rank-pos.medal{font-size:20px;background:#fff8e1;color:#9a6700}.rank-name{font-weight:900;font-size:14px}.rank-meta{font-size:11px;color:var(--muted);font-weight:780;margin-top:2px}.rank-value{font-size:15px;font-weight:900;white-space:nowrap}.rank-bar{height:12px;border-radius:999px;background:#f0f0f2;overflow:hidden;border:1px solid var(--line2)}.rank-fill{height:100%;border-radius:999px;transition:width .35s ease}.rank-fill.good{background:linear-gradient(90deg,#1a1a2e,#087f5b)}.rank-fill.bad{background:linear-gradient(90deg,#b42338,#b7791f)}.rank-footer{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;margin-top:8px;color:var(--muted);font-size:11px;font-weight:780}
 .goal-card{margin-top:14px}.goal-top{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin-bottom:12px}.goal-top h2{margin:0;font-size:16px;font-weight:900}.goal-top span{display:block;margin-top:3px;color:var(--muted);font-size:12px;font-weight:760}.goal-badge{border-radius:999px;padding:7px 10px;background:#f4f4f6;color:var(--primary2);font-size:11px;font-weight:900}.goal-values{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px}.goal-box{border-radius:14px;padding:12px;background:#fff;border:1px solid var(--line2)}.goal-box span{display:block;font-size:11px;color:var(--muted);font-weight:850}.goal-box b{display:block;margin-top:5px;font-size:17px;font-weight:900}.goal-bar{height:12px;border-radius:999px;background:#f0f0f2;overflow:hidden}.goal-fill{height:100%;width:0;border-radius:999px;background:linear-gradient(90deg,#1a1a2e,#087f5b);transition:width .35s ease}.goal-footer{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;margin-top:9px;color:var(--muted);font-size:12px;font-weight:780}
 .admin-grid{display:grid;gap:12px}.user-item{display:grid;grid-template-columns:1fr auto;align-items:center;gap:12px}.user-actions{display:grid;grid-template-columns:150px 150px 110px;gap:8px}.admin-create-panel{display:none}.admin-create-panel.active{display:block}.badge{font-size:11px;font-weight:900;border-radius:999px;padding:5px 8px;background:#f4f4f6;color:var(--primary2)}.badge.ok{background:#e9f7f1;color:var(--success)}.badge.off{background:#fff1f3;color:var(--danger)}
+.user-time-box{
+  margin-top:9px;
+  width:fit-content;
+  min-width:190px;
+  border:1px solid var(--line);
+  border-radius:15px;
+  background:#fafafa;
+  padding:10px 12px;
+  display:grid;
+  gap:3px;
+}
+.user-time-box span{
+  font-size:9.5px;
+  line-height:1;
+  color:var(--muted);
+  font-weight:950;
+  letter-spacing:.65px;
+  text-transform:uppercase;
+}
+.user-time-box strong{
+  color:#242424;
+  font-size:18px;
+  line-height:1;
+  font-weight:950;
+  font-variant-numeric:tabular-nums lining-nums;
+}
+.user-time-box small{
+  color:var(--muted);
+  font-size:10.5px;
+  font-weight:800;
+}
 .bottom-nav{position:fixed;left:50%;bottom:calc(10px + env(safe-area-inset-bottom));transform:translateX(-50%);width:min(760px,calc(100% - 20px));height:74px;border-radius:20px;background:rgba(255,255,255,.90);backdrop-filter:blur(26px);-webkit-backdrop-filter:blur(26px);box-shadow:0 2px 6px rgba(26,26,46,.08),0 24px 70px rgba(26,26,46,.16);border:1px solid rgba(255,255,255,.88);display:grid;grid-template-columns:repeat(4,1fr);z-index:80;padding:7px}.nav-btn{border-radius:14px;background:transparent;color:var(--muted);font-weight:850;font-size:11px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;position:relative;overflow:hidden}.nav-btn svg{width:20px;height:20px;stroke:currentColor;stroke-width:2.2;fill:none}.nav-btn.active{background:linear-gradient(145deg,#15151d,#11111e 72%,#1a1a2e);color:#fff;box-shadow:0 1px 2px rgba(26,26,46,.06),0 12px 28px rgba(26,26,46,.22)}
 .more-menu{position:fixed;left:50%;bottom:calc(92px + env(safe-area-inset-bottom));transform:translateX(-50%) translateY(10px);width:min(430px,calc(100% - 28px));z-index:90;background:rgba(255,255,255,.97);backdrop-filter:blur(24px);border:1px solid rgba(255,255,255,.85);box-shadow:0 2px 6px rgba(26,26,46,.08),0 26px 80px rgba(26,26,46,.18);border-radius:20px;padding:12px;display:none;opacity:0;transition:.2s ease}.more-menu.active{display:block;opacity:1;transform:translateX(-50%) translateY(0)}.more-menu-title{font-size:12px;font-weight:900;color:#334155;padding:6px 8px 10px;text-transform:uppercase;letter-spacing:.38px}.more-menu-grid{display:grid;gap:8px}.more-menu-btn{min-height:58px;border-radius:16px;background:linear-gradient(180deg,#fff,#f5f8ff);color:var(--text);font-weight:900;display:grid;grid-template-columns:42px 1fr auto;align-items:center;gap:10px;padding:0 14px;border:1px solid var(--line);box-shadow:var(--shadow-1);text-align:left;position:relative;overflow:hidden}.more-menu-btn .mmb-icon{width:36px;height:36px;border-radius:14px;background:linear-gradient(145deg,#1a1a2e,#11111e);color:#fff;display:flex;align-items:center;justify-content:center;font-size:17px;box-shadow:0 10px 22px rgba(26,26,46,.18)}.more-menu-btn span:not(.mmb-icon){font-size:12px;color:var(--muted);font-weight:760}.more-menu-btn::after{content:"›";color:var(--primary);font-size:24px;font-weight:900}
 .login-screen{position:fixed;inset:0;z-index:100000;background:radial-gradient(circle at 50% 8%,rgba(26,26,46,.45),transparent 36%),linear-gradient(180deg,#030915,#14141d 52%,#11111e);display:flex;align-items:center;justify-content:center;padding:18px;color:#fff}.login-card{width:min(410px,100%);background:rgba(255,255,255,.105);border:1px solid rgba(255,255,255,.18);backdrop-filter:blur(20px);border-radius:20px;padding:24px;box-shadow:0 2px 6px rgba(0,0,0,.18),0 34px 100px rgba(0,0,0,.30)}.login-logo,.splash-logo,.receipt-logo{width:74px;height:74px;border-radius:18px;background:linear-gradient(145deg,#fff,#f4f4f6);color:#1a1a2e;display:flex;align-items:center;justify-content:center;font-size:26px;font-weight:950;margin:0 auto 14px}.login-card h1{text-align:center;margin:0;font-size:28px}.login-card p{text-align:center;opacity:.78;font-weight:700;margin:6px 0 22px}.login-card input{width:100%;height:52px;margin-bottom:10px;border-radius:14px;border:1px solid rgba(255,255,255,.24);background:rgba(255,255,255,.14);color:#fff;padding:0 14px;font-weight:800;outline:0;font-size:16px}.login-card input::placeholder{color:rgba(255,255,255,.62)}
@@ -1173,6 +1204,288 @@ html,body{background:#ffffff!important;}
   .login-secondary-row{grid-template-columns:1fr!important;}
 }
 
+
+/* Admin user delete action */
+.user-actions .small-btn.danger{
+  background:linear-gradient(145deg,#b42338,#7f1d1d)!important;
+  color:#fff!important;
+  border-color:rgba(255,255,255,.12)!important;
+}
+.user-actions .small-btn:disabled{
+  opacity:.62!important;
+  cursor:not-allowed!important;
+}
+
+
+
+/* =========================================================
+   BANK KING — CHUMBO SÓLIDO GLOBAL / SEM DEGRADÊ
+   Todos os cards coloridos ficam preto chumbo uniforme.
+   Hierarquia: título discreto, valor forte, texto secundário suave.
+========================================================= */
+:root{
+  --chumbo-solid:#242424!important;
+  --chumbo-text:#ffffff!important;
+  --chumbo-muted:rgba(255,255,255,.62)!important;
+  --chumbo-line:rgba(255,255,255,.12)!important;
+  --primary:#242424!important;
+  --primary2:#242424!important;
+  --navy:#242424!important;
+  --navy2:#242424!important;
+}
+
+.hero-card,
+.hero-mini,
+.summary-head,
+.summary-live,
+.summary-note,
+.receipt-total,
+.cover,
+.cover .total,
+.cover .totals .total,
+.main-card,
+.total,
+.report-kpi-card,
+.dark-kpi,
+.pdf-kpi-card,
+.pdf-section-card,
+.pdf-carga-box,
+.pdf-profit-card,
+.nav-btn.active,
+.rank-tabs button.active,
+.side-menu-btn.active,
+.logo-box,
+.menu-launcher,
+.more-menu-btn .mmb-icon,
+.side-menu-btn.active .mmb-icon,
+.btn:not(.secondary):not(.danger),
+.small-btn:not(.secondary):not(.danger),
+.admin-toggle:not(.secondary),
+.profile-photo-preview.has-photo,
+.side-drawer-avatar.photo-slot.has-photo,
+.login-logo,
+.splash-logo,
+.receipt-logo,
+[class*="primary-card"],
+[class*="bank-card"],
+[class*="blue"],
+[class*="report-header"],
+[class*="report-cover"]{
+  background:#242424!important;
+  background-image:none!important;
+  color:#ffffff!important;
+  border-color:var(--chumbo-line)!important;
+  box-shadow:0 1px 2px rgba(0,0,0,.08),0 14px 34px rgba(36,36,36,.18)!important;
+}
+
+.hero-card::before,
+.hero-card::after,
+.pdf-kpi-card::after,
+.pdf-section-card::before,
+.pdf-profit-card::after{
+  background:none!important;
+  background-image:none!important;
+}
+
+.pdf-kpi-card::before,
+.pdf-profit-card::before{
+  background:rgba(255,255,255,.10)!important;
+}
+
+.hero-mini,
+.summary-live,
+.summary-note,
+.cover .total,
+.cover .totals .total,
+.receipt-panel .receipt-total,
+.report-card-dark,
+.report-kpi-card,
+.dark-kpi,
+.pdf-carga-box{
+  background:#242424!important;
+  background-image:none!important;
+  border:1px solid var(--chumbo-line)!important;
+  color:#fff!important;
+}
+
+.hero-card .hero-label,
+.hero-sub,
+.hero-mini span,
+.summary-head span,
+.summary-live,
+.summary-note,
+.receipt-total span,
+.cover .meta,
+.cover .brand p,
+.cover .total span,
+.cover .totals .total span,
+.main-card span,
+.total span,
+.report-kpi-card span,
+.dark-kpi span,
+.pdf-kpi-card span,
+.pdf-section-title,
+.pdf-carga-box span,
+.pdf-profit-card span,
+.side-menu-btn.active span:not(.mmb-icon),
+.nav-btn.active span{
+  color:var(--chumbo-muted)!important;
+  font-size:10px!important;
+  line-height:1.05!important;
+  font-weight:900!important;
+  text-transform:uppercase!important;
+  letter-spacing:.75px!important;
+}
+
+.hero-card .hero-value,
+.hero-mini strong,
+.summary-head h2,
+.receipt-total strong,
+.cover h1,
+.cover .total b,
+.cover .totals .total b,
+.main-card b,
+.main-card strong,
+.total b,
+.report-kpi-card b,
+.dark-kpi b,
+.pdf-kpi-card b,
+.pdf-carga-box b,
+.pdf-profit-card b,
+.nav-btn.active strong,
+.side-menu-btn.active strong{
+  color:#ffffff!important;
+  font-weight:950!important;
+  letter-spacing:-.55px!important;
+  font-variant-numeric:tabular-nums lining-nums!important;
+  font-feature-settings:"tnum" 1,"lnum" 1!important;
+}
+
+.hero-card{
+  padding:28px 24px!important;
+  border-radius:24px!important;
+}
+.hero-card .hero-label{
+  margin-bottom:12px!important;
+}
+.hero-card .hero-value{
+  font-size:54px!important;
+  line-height:.92!important;
+  margin:0 0 12px!important;
+}
+.hero-sub{
+  display:flex!important;
+  align-items:center!important;
+  gap:9px!important;
+  margin-top:0!important;
+  font-size:12px!important;
+}
+.hero-sub::before{
+  background:#18b981!important;
+  box-shadow:0 0 0 5px rgba(24,185,129,.13)!important;
+}
+
+.hero-mini{
+  min-height:88px!important;
+  padding:15px 16px!important;
+  border-radius:18px!important;
+  box-shadow:none!important;
+}
+.hero-mini span{
+  display:block!important;
+  margin-bottom:10px!important;
+}
+.hero-mini strong{
+  display:block!important;
+  font-size:22px!important;
+  line-height:1.05!important;
+}
+
+.btn:not(.secondary):not(.danger),
+.small-btn:not(.secondary):not(.danger),
+.admin-toggle:not(.secondary){
+  background:#242424!important;
+  background-image:none!important;
+  color:#fff!important;
+  border:1px solid rgba(255,255,255,.12)!important;
+}
+
+.side-menu-btn.active,
+.nav-btn.active,
+.rank-tabs button.active{
+  background:#242424!important;
+  background-image:none!important;
+  color:#fff!important;
+}
+
+.card-title h2{
+  color:#0d0d14!important;
+  font-weight:900!important;
+  letter-spacing:-.45px!important;
+}
+.card-title span,
+.muted{
+  color:#8a8a9a!important;
+  font-weight:800!important;
+}
+
+.metric{
+  color:#0d0d14!important;
+  font-weight:950!important;
+  letter-spacing:-1.2px!important;
+}
+
+#homeInternalAdjustment,
+.positive-text,
+.chips-good,
+.txt-pos{
+  color:#23c483!important;
+}
+#homeDiff,
+.negative-text,
+.chips-bad,
+.txt-neg{
+  color:#ff5f7a!important;
+}
+
+.cover,
+.main-card,
+.pdf-kpi-card,
+.pdf-section-card,
+.pdf-profit-card{
+  background:#242424!important;
+  background-image:none!important;
+}
+.close-block,
+.detail-card{
+  border-top-color:rgba(36,36,36,.22)!important;
+}
+
+.rank-fill.good,
+.goal-fill,
+.card-indicator-fill.good{
+  background:#242424!important;
+  background-image:none!important;
+}
+.loading-spinner,
+.reload-spinner{
+  border-top-color:#242424!important;
+}
+
+@media(max-width:760px){
+  .hero-card{
+    margin:0 14px!important;
+    padding:24px 20px!important;
+    border-radius:22px!important;
+  }
+  .hero-card .hero-value{
+    font-size:44px!important;
+  }
+  .hero-mini strong{
+    font-size:20px!important;
+  }
+}
+
 </style>
 
 <script>
@@ -1208,12 +1521,17 @@ function animateValue(el, start, end, duration = 800){
 let lastBalance = 0;
 
 function updateHeroBalance(newValue){
-  const el = document.querySelector(".hero-value");
+  const el = document.querySelector("#homeSaldoReca");
   if(!el) return;
 
-  const oldValue = lastBalance || 0;
+  newValue = Number(newValue) || 0;
+  const oldValue = Number(lastBalance) || 0;
 
-  animateValue(el, oldValue, newValue);
+  if(newValue === 0){
+    el.textContent = formatMoney(0);
+  }else{
+    animateValue(el, oldValue, newValue);
+  }
 
   el.classList.remove("balance-positive","balance-negative","balance-pulse");
 
@@ -1272,12 +1590,12 @@ function updateHeroBalance(newValue){
   </div>
 
   <div id="appSplash" class="app-splash">
-    <div class="splash-content"><div class="splash-logo">BK</div><h1>Bank King</h1><p>Controle Financeiro • UTC-3 SP</p><div class="splash-loader"><span></span></div></div>
+    <div class="splash-content"><div class="splash-logo">BK</div><h1>Bank King</h1><p>Controle Financeiro</p><div class="splash-loader"><span></span></div></div>
   </div>
 
   <main id="appShell" class="app-shell hidden">
     <header class="topbar">
-      <div class="brand"><div class="logo-box" id="logoRefreshBtn">BK</div><div><h1>Bank King</h1><span id="topUserLabel">Sistema financeiro • UTC-3 SP</span></div></div>
+      <div class="brand"><div class="logo-box" id="logoRefreshBtn">BK</div><div><h1>Bank King</h1><span id="topUserLabel">Sistema financeiro</span></div></div>
       <div class="top-actions"><button id="refreshBtn" class="icon-btn" title="Atualizar">↻</button><button id="logoutBtn" class="icon-btn" title="Sair">⎋</button></div>
     </header>
     <div id="appNotice" class="notice hidden"></div>
@@ -1480,12 +1798,70 @@ function updateHeroBalance(newValue){
         </div>
       </div>
 
-      <div class="card permissions-card">
-        <div class="card-title"><h2>Permissões por função</h2><span>Controle de acesso</span></div>
-        <div class="permissions-grid">
-          <div class="perm-row"><strong>Operador</strong><span>Salva fechamento, vê início, histórico e comparativo. Não vê lucro diário, lucro semanal, ranking, relatórios, admin, ajustes rápidos/cargas internas nem edição de usuários.</span></div>
-          <div class="perm-row"><strong>Supervisor</strong><span>Vê lucro diário/semanal, ranking, relatórios e histórico. Não cria usuários, não edita usuários e não usa ajustes rápidos/cargas internas.</span></div>
-          <div class="perm-row"><strong>Admin</strong><span>Acesso total: usuários, relatórios, ranking, histórico, recalcular, editar/excluir fechamento, cargas, custos, ajustes rápidos e auditoria.</span></div>
+      <div class="card permissions-card permissions-collapsed" id="permissionsCard">
+        <div class="card-title permissions-card-title">
+          <div>
+            <h2>Permissões por função</h2>
+            <span>Controle de acesso</span>
+          </div>
+          <button id="togglePermissionsCardBtn" class="small-btn secondary" type="button">Mostrar permissões</button>
+        </div>
+        <div id="permissionsCardBody" class="permissions-card-body hidden">
+          <div class="permissions-grid permissions-accordion">
+          <details class="perm-card">
+            <summary>
+              <div>
+                <strong>Operador</strong>
+                <span>Acesso operacional básico</span>
+              </div>
+              <b>Abrir</b>
+            </summary>
+            <div class="perm-content">
+              <p>Salva fechamento, vê início, histórico e comparativo.</p>
+              <ul>
+                <li>Não vê lucro diário nem lucro semanal.</li>
+                <li>Não acessa ranking, relatórios, admin ou auditoria.</li>
+                <li>Não usa ajustes rápidos, cargas internas ou edição de usuários.</li>
+              </ul>
+            </div>
+          </details>
+
+          <details class="perm-card">
+            <summary>
+              <div>
+                <strong>Supervisor</strong>
+                <span>Acesso de acompanhamento</span>
+              </div>
+              <b>Abrir</b>
+            </summary>
+            <div class="perm-content">
+              <p>Vê lucro diário/semanal, ranking, relatórios e histórico.</p>
+              <ul>
+                <li>Não cria usuários.</li>
+                <li>Não edita usuários.</li>
+                <li>Não usa ajustes rápidos ou cargas internas.</li>
+              </ul>
+            </div>
+          </details>
+
+          <details class="perm-card">
+            <summary>
+              <div>
+                <strong>Admin</strong>
+                <span>Acesso total do sistema</span>
+              </div>
+              <b>Abrir</b>
+            </summary>
+            <div class="perm-content">
+              <p>Acesso total ao Bank King.</p>
+              <ul>
+                <li>Gerencia usuários, aprova, bloqueia e exclui perfis.</li>
+                <li>Acessa relatórios, ranking, histórico, auditoria e recálculo.</li>
+                <li>Edita/exclui fechamentos e usa cargas internas/ajustes rápidos.</li>
+              </ul>
+            </div>
+          </details>
+          </div>
         </div>
       </div>
 
@@ -1627,7 +2003,7 @@ function updateHeroBalance(newValue){
   <script type="module">
     import { initializeApp, deleteApp } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-app.js";
     import { getAuth, onAuthStateChanged, signInWithEmailAndPassword, signOut, sendPasswordResetEmail, createUserWithEmailAndPassword, setPersistence, browserLocalPersistence, browserSessionPersistence } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-auth.js";
-    import { getFirestore, collection, doc, getDoc, getDocs, addDoc, setDoc, updateDoc, deleteDoc, onSnapshot, query, orderBy, limit, serverTimestamp } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-firestore.js";
+    import { getFirestore, collection, doc, getDoc, getDocs, addDoc, setDoc, updateDoc, deleteDoc, onSnapshot, query, orderBy, limit, serverTimestamp, increment } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-firestore.js";
 
     const firebaseConfig = {
       apiKey: "AIzaSyAuyfJNu2vwvVyH5gRsvg82m98teFCmPXw",
@@ -1657,131 +2033,9 @@ function updateHeroBalance(newValue){
     const db = getFirestore(app);
     const $ = (id) => document.getElementById(id);
 
-    /* =========================================================
-       TIMEZONE FIXO DO APP — SÃO PAULO / UTC-3
-       Usa America/Sao_Paulo para histórico, filtros, PDF e ranking.
-    ========================================================= */
-    const APP_TIMEZONE = "America/Sao_Paulo";
-
-    function nowSP(){
-      const parts = new Intl.DateTimeFormat("en-CA", {
-        timeZone: APP_TIMEZONE,
-        year:"numeric",
-        month:"2-digit",
-        day:"2-digit",
-        hour:"2-digit",
-        minute:"2-digit",
-        second:"2-digit",
-        hour12:false
-      }).formatToParts(new Date()).reduce((acc,p)=>{ acc[p.type]=p.value; return acc; }, {});
-
-      return new Date(`${parts.year}-${parts.month}-${parts.day}T${parts.hour}:${parts.minute}:${parts.second}`);
-    }
-
-    function datePartsSP(value = new Date()){
-      const d = value?.toDate ? value.toDate() : new Date(value || Date.now());
-
-      if(isNaN(d)) return null;
-
-      return new Intl.DateTimeFormat("en-CA", {
-        timeZone: APP_TIMEZONE,
-        year:"numeric",
-        month:"2-digit",
-        day:"2-digit",
-        hour:"2-digit",
-        minute:"2-digit",
-        second:"2-digit",
-        hour12:false
-      }).formatToParts(d).reduce((acc,p)=>{ acc[p.type]=p.value; return acc; }, {});
-    }
-
-    function dateKeySP(value = new Date()){
-      const p = datePartsSP(value);
-      if(!p) return "";
-      return `${p.year}-${p.month}-${p.day}`;
-    }
-
-    function localInputSP(value = new Date()){
-      const p = datePartsSP(value);
-      if(!p) return "";
-      return `${p.year}-${p.month}-${p.day}T${p.hour}:${p.minute}`;
-    }
-
-    function formatDateTimeSP(value){
-      if(!value) return "-";
-      const d = value?.toDate ? value.toDate() : new Date(value);
-      if(isNaN(d)) return "-";
-
-      return new Intl.DateTimeFormat("pt-BR", {
-        timeZone: APP_TIMEZONE,
-        day:"2-digit",
-        month:"2-digit",
-        year:"2-digit",
-        hour:"2-digit",
-        minute:"2-digit"
-      }).format(d);
-    }
-
-    function formatDateOnlySP(value){
-      if(!value) return "-";
-      const d = value?.toDate ? value.toDate() : new Date(value);
-      if(isNaN(d)) return "-";
-
-      return new Intl.DateTimeFormat("pt-BR", {
-        timeZone: APP_TIMEZONE,
-        day:"2-digit",
-        month:"2-digit",
-        year:"2-digit"
-      }).format(d);
-    }
-
-    function getItemDate(item){
-      return item?.submittedAt?.toDate
-        ? item.submittedAt.toDate()
-        : new Date(item?.turno?.closingDate || item?.createdAt || 0);
-    }
-
-    function isSameDaySP(value, yyyyMmDd){
-      return !!yyyyMmDd && dateKeySP(value) === yyyyMmDd;
-    }
-
-    function isOnOrAfterDateSP(value, yyyyMmDd){
-      if(!yyyyMmDd) return true;
-      const key = dateKeySP(value);
-      return !!key && key >= yyyyMmDd;
-    }
-
-    function isOnOrBeforeDateSP(value, yyyyMmDd){
-      if(!yyyyMmDd) return true;
-      const key = dateKeySP(value);
-      return !!key && key <= yyyyMmDd;
-    }
-
-    function periodStartSP(range){
-      const d = nowSP();
-
-      if(range === "day"){
-        d.setHours(0,0,0,0);
-        return d;
-      }
-
-      if(range === "week"){
-        d.setDate(d.getDate() - 7);
-        d.setHours(0,0,0,0);
-        return d;
-      }
-
-      if(range === "month"){
-        d.setMonth(d.getMonth() - 1);
-        d.setHours(0,0,0,0);
-        return d;
-      }
-
-      return null;
-    }
-
     let currentUser = null, currentProfile = null, historyCache = [], historyUnsubscribe = null, systemUnsubscribe = null, currentRankRange = "day";
-    let historyRenderLimit = 30;
+    let historyRenderLimit = 6;
+    let appTimeTracker = { timer:null, uid:null, weekKey:"", lastTick:0, pendingSeconds:0, listenersReady:false };
 
     function showNotice(targetId, message, type="error"){
       const el = $(targetId); if(!el) return;
@@ -1790,7 +2044,7 @@ function updateHeroBalance(newValue){
     function hideNotice(targetId){ $(targetId)?.classList.add("hidden"); }
     function friendlyError(error){
       const code = error?.code || "";
-      if(code.includes("permission-denied")) return "Permissão negada no Firestore. Ajuste as regras ou aprove este usuário como admin.";
+      if(code.includes("permission-denied")) return "Permissão negada no Firestore. Confira se o usuário está aprovado/ativo e se as regras permitem criar em history, ler users e gravar audit_logs.";
       if(code.includes("auth/email-already-in-use")) return "Este email já está cadastrado. Use Entrar no sistema.";
       if(code.includes("auth/invalid-credential")) return "Email ou senha inválidos.";
       if(code.includes("auth/weak-password")) return "A senha precisa ter pelo menos 6 caracteres.";
@@ -1913,8 +2167,8 @@ function updateHeroBalance(newValue){
     }
 
     function formatMoney(value){ return new Intl.NumberFormat("es-AR",{style:"currency",currency:"ARS",minimumFractionDigits:2}).format(Number(value)||0); }
-    function dateLabel(value){ return formatDateTimeSP(value); }
-    function toDateInputValue(value){ return localInputSP(value || nowSP()); }
+    function dateLabel(value){ if(!value) return "-"; const d = value?.toDate ? value.toDate() : new Date(value); if(isNaN(d)) return "-"; return d.toLocaleString("pt-BR",{day:"2-digit",month:"2-digit",year:"2-digit",hour:"2-digit",minute:"2-digit"}); }
+    function toDateInputValue(value){ const d = value?.toDate ? value.toDate() : new Date(value || Date.now()); if(isNaN(d)) return ""; d.setMinutes(d.getMinutes()-d.getTimezoneOffset()); return d.toISOString().slice(0,16); }
     function outflowCategoryLabel(category){
       if(category === "custo_operacional") return "Custo operacional";
       if(category === "custo_reca") return "Custo O. Reca";
@@ -1933,6 +2187,15 @@ function updateHeroBalance(newValue){
     function isAdmin(){ return currentProfile?.role === "admin" || currentProfile?.admin === true; }
     function isSupervisor(){ return currentProfile?.role === "supervisor"; }
     function profileName(){ return currentProfile?.name || currentUser?.email?.split("@")[0] || ""; }
+    function canCurrentUserSaveClosing(){
+      if(!currentUser) return false;
+      if(isAdmin()) return true;
+      if(currentProfile?.deleted === true) return false;
+      if(currentProfile?.blocked === true) return false;
+      if(currentProfile?.approved === false) return false;
+      if(currentProfile?.status === "deleted" || currentProfile?.status === "blocked" || currentProfile?.status === "pending") return false;
+      return true;
+    }
     async function requireAdmin(){ if(isAdmin()) return true; alert("Ação permitida somente para admin."); return false; }
 
     function canAccessHistoryItem(item){
@@ -2132,6 +2395,33 @@ function updateHeroBalance(newValue){
         || "Sem operador";
     }
 
+    function getSaldoRecaFromItem(item={}){
+      const t = item.turno || {};
+      const candidates = [
+        t.webReca,
+        t.reca,
+        t.saldoReca,
+        t.web_reca,
+        t.recaSaldo,
+        t.banco,
+        item.webReca,
+        item.reca,
+        item.saldoReca,
+        item.web_reca,
+        item.recaSaldo,
+        item.banco
+      ];
+
+      for(const value of candidates){
+        if(value !== undefined && value !== null && String(value).trim?.() !== ""){
+          const n = moneyToNumber(value);
+          if(Number.isFinite(n)) return n;
+        }
+      }
+
+      return 0;
+    }
+
     function setOperadorNameOnTurno(turno, nome){
       turno.operadorName = nome || "";
       // Compatibilidade com históricos antigos que ainda foram salvos como operatorName.
@@ -2149,7 +2439,7 @@ function updateHeroBalance(newValue){
       const pendings=getDynamicRows("pendingList"), outflows=getDynamicRows("outflowList");
       const pendentesTotal=pendings.reduce((s,x)=>s+x.value,0), saidasTotal=outflows.reduce((s,x)=>s+x.value,0), retiradaLucroTotal=sumOutflowsByCategory(outflows,"lucro"), custoOperacionalTotal=sumOutflowsByCategory(outflows,"custo_operacional"), custoRecaTotal=sumOutflowsByCategory(outflows,"custo_reca");
       const nomeOperador = $("operadorName")?.value.trim() || "";
-      const turno={operadorName:nomeOperador, closingDate:$("closingDate")?.value||nowSP().toISOString(), webReca,suprema,pppoker,buffalo,ganamos,cargasPoker,cargasCasino,pendings,outflows,pendentesTotal,saidasTotal,retiradaLucroTotal,custoOperacionalTotal,custoRecaTotal};
+      const turno={operadorName:nomeOperador, closingDate:$("closingDate")?.value||new Date().toISOString(), webReca,suprema,pppoker,buffalo,ganamos,cargasPoker,cargasCasino,pendings,outflows,pendentesTotal,saidasTotal,retiradaLucroTotal,custoOperacionalTotal,custoRecaTotal};
       setOperadorNameOnTurno(turno, nomeOperador);
       turno.saldoLiquido=calcularSaldoLiquido(turno);
       return turno;
@@ -2241,7 +2531,7 @@ function updateHeroBalance(newValue){
     45000000
   );
 
-  const now = nowSP();
+  const now = new Date();
   const monthStart = new Date(now.getFullYear(), now.getMonth(), 1);
 
   const monthItems = visibleHistory().filter(item => {
@@ -2309,7 +2599,7 @@ function updateHeroBalance(newValue){
       const view = visibleHistory();
       const last = lastRealClosing() || view[0];
       const prev = last ? previousRealClosingAfter(last) : null;
-      const saldoReca = last?.turno?.webReca ?? last?.turno?.reca ?? last?.webReca ?? 0;
+      const saldoReca = getSaldoRecaFromItem(last);
       const saldoLiquido = last?.turno?.saldoLiquido ?? last?.currentSaldoTotal ?? 0;
       const pendentes = last?.turno?.pendentesTotal ?? 0;
       const diff = last ? displayCashDiff(last) : 0;
@@ -2319,9 +2609,9 @@ function updateHeroBalance(newValue){
         $("homeDiff").style.color = diff < 0 ? "#FF3B30" : "#16C784";
       }
 
-      const todayStart = nowSP();
+      const todayStart = new Date();
       todayStart.setHours(0,0,0,0);
-      const weekStart = nowSP();
+      const weekStart = new Date();
       weekStart.setDate(weekStart.getDate() - 7);
 
       const profitItems = visibleHistory();
@@ -2338,7 +2628,11 @@ function updateHeroBalance(newValue){
         return !isNaN(d) && d >= weekStart;
       }).reduce((s,x)=>s + lucroFromItem(x), 0);
 
-      if($("homeSaldoReca")) updateHeroBalance(moneyToNumber(saldoReca));
+      if($("homeSaldoReca")){
+        const recaValue = moneyToNumber(saldoReca);
+        $("homeSaldoReca").textContent = formatMoney(recaValue);
+        updateHeroBalance(recaValue);
+      }
       if($("homeSaldoLiquido")) $("homeSaldoLiquido").textContent = formatMoney(saldoLiquido);
       if($("homePendentes")) $("homePendentes").textContent = formatMoney(pendentes);
       const pendCard = document.querySelector('[data-home-detail="pendentes"]');
@@ -2466,14 +2760,14 @@ function updateHeroBalance(newValue){
       if(date){
         list = list.filter(x => {
           const d = x.submittedAt?.toDate ? x.submittedAt.toDate() : new Date(x.turno?.closingDate || x.createdAt || 0);
-          return !isNaN(d) && isSameDaySP(d, date);
+          return !isNaN(d) && d.toISOString().slice(0,10) === date;
         });
       }
 
       const totalList = list.length;
-      list = list.slice(0, Math.min(historyRenderLimit, 100));
+      list = list.slice(0, historyRenderLimit);
 
-      if($("historyCount")) $("historyCount").textContent = `${list.length} de ${Math.min(totalList,100)} registros`;
+      if($("historyCount")) $("historyCount").textContent = `${list.length} de ${totalList} registros`;
 
       const html = list.map(item => {
         const t = item.turno || {};
@@ -2516,27 +2810,27 @@ function updateHeroBalance(newValue){
 
       document.querySelectorAll("[data-receipt]").forEach(card => card.onclick = () => openHistoryReceipt(card.dataset.receipt));
 
-      const totalAvailable = Math.min(visibleHistory().filter(x => {
+      const totalAvailable = visibleHistory().filter(x => {
         const searchNow = $("historySearch")?.value.trim().toLowerCase() || "";
         const dateNow = $("historyDate")?.value || "";
         if(searchNow && !getOperadorName(x).toLowerCase().includes(searchNow)) return false;
         if(dateNow){
           const d = x.submittedAt?.toDate ? x.submittedAt.toDate() : new Date(x.turno?.closingDate || x.createdAt || 0);
-          if(isNaN(d) || !isSameDaySP(d, dateNow)) return false;
+          if(isNaN(d) || d.toISOString().slice(0,10) !== dateNow) return false;
         }
         return true;
-      }).length, 100);
+      }).length;
 
       if(historyRenderLimit < totalAvailable && $("historyList")){
-        $("historyList").insertAdjacentHTML("beforeend", `<button id="loadMoreHistoryBtn" class="btn secondary full" style="margin-top:6px;">Carregar mais</button>`);
+        $("historyList").insertAdjacentHTML("beforeend", `<button id="loadMoreHistoryBtn" class="btn secondary full" style="margin-top:6px;">Ver mais antigos</button>`);
         $("loadMoreHistoryBtn").onclick = () => {
-          historyRenderLimit = Math.min(100, historyRenderLimit + 20);
+          historyRenderLimit += 6;
           renderHistory();
         };
       }
     }
 
-    function periodStart(range){ return periodStartSP(range); }
+    function periodStart(range){ const now=new Date(), d=new Date(now); if(range==="day") d.setHours(0,0,0,0); if(range==="week") d.setDate(now.getDate()-7); if(range==="month") d.setMonth(now.getMonth()-1); if(range==="all") return null; return d; }
     function renderRanking(){
       const start = periodStart(currentRankRange);
       let list = operationalHistory();
@@ -2646,6 +2940,10 @@ function updateHeroBalance(newValue){
       setButtonLoading($("saveClosingBtn"), true, "Salvando...");
       setGlobalLoading(true, "Salvando fechamento", "Não feche nem toque duas vezes. Estamos gravando o turno.");
       try{
+        if(!canCurrentUserSaveClosing()){
+          alert("Este usuário ainda não está aprovado/ativo para salvar fechamentos. Entre no Admin > Usuários e execute Aprovar com cargo.");
+          return;
+        }
         const turno = getTurnFromForm();
         const validationError = validateTurnBeforeSave(turno);
         if(validationError) return alert(validationError);
@@ -2716,7 +3014,7 @@ function updateHeroBalance(newValue){
         operadorName: operador,
         operatorName: operador,
         nomeOperador: operador,
-        closingDate: nowSP().toISOString(),
+        closingDate: new Date().toISOString(),
         webReca: 0,
         suprema: 0,
         pppoker: 0,
@@ -2842,7 +3140,7 @@ alert("Carga adicionada ao sistema como ajuste auditável.");
         <div class="receipt-section">
           <h3>Resumo financeiro</h3>
           <div class="receipt-list">
-            ${receiptLine("Saldo Reca", formatMoney(t.webReca ?? t.reca ?? 0))}
+            ${receiptLine("Saldo Reca", formatMoney(getSaldoRecaFromItem(item)))}
             ${receiptLine("Suprema ×400", formatMoney(moneyToNumber(t.suprema || 0) * 400))}
             ${receiptLine("PPPoker ×400", formatMoney(moneyToNumber(t.pppoker || 0) * 400))}
             ${receiptLine("Buffalo", formatMoney(t.buffalo || 0))}
@@ -3047,7 +3345,7 @@ alert("Carga adicionada ao sistema como ajuste auditável.");
       let total = 0;
       let content = "";
 
-      const now = nowSP();
+      const now = new Date();
       const todayStart = new Date(now); todayStart.setHours(0,0,0,0);
       const weekStart = new Date(now); weekStart.setDate(weekStart.getDate()-7);
 
@@ -3063,7 +3361,7 @@ alert("Carga adicionada ao sistema como ajuste auditável.");
         total = moneyToNumber(t.saldoLiquido ?? last?.currentSaldoTotal ?? 0);
         content = `
           <div class="receipt-section"><h3>Composição do saldo</h3><div class="receipt-list">
-            ${receiptLine("Saldo Reca", formatMoney(t.webReca ?? t.reca ?? 0))}
+            ${receiptLine("Saldo Reca", formatMoney(getSaldoRecaFromItem(item)))}
             ${receiptLine("Suprema ×400", formatMoney(moneyToNumber(t.suprema || 0) * 400))}
             ${receiptLine("PPPoker ×400", formatMoney(moneyToNumber(t.pppoker || 0) * 400))}
             ${receiptLine("Buffalo", formatMoney(t.buffalo || 0))}
@@ -3113,7 +3411,7 @@ alert("Carga adicionada ao sistema como ajuste auditável.");
 
     async function openEditHistory(id){ const item=historyCache.find(x=>x.id===id); if(!item) return alert("Fechamento não encontrado no cache."); if(!canEditHistoryItem(item)) return alert("Você só pode editar o seu último fechamento de turno."); const t=item.turno||{}; $("editHistoryId").value=id; $("editOperadorName").value=getOperadorName(item)==="Sem operador" ? "" : getOperadorName(item); $("editClosingDate").value=toDateInputValue(t.closingDate||item.submittedAt); $("editWebReca").value=t.webReca??t.reca??0; $("editSuprema").value=t.suprema??0; $("editPppoker").value=t.pppoker??0; $("editBuffalo").value=t.buffalo??0; $("editGanamos").value=t.ganamos??0; $("editCargasPoker").value=t.cargasPoker??0; $("editCargasCasino").value=t.cargasCasino??t.cargas??0; setDynamicRows("editPendingList",t.pendings||[]); setDynamicRows("editOutflowList",t.outflows||[]); $("editHistoryModal").classList.add("active"); }
     function closeEdit(){ $("editHistoryModal").classList.remove("active"); }
-    async function saveEdit(){ const id=$("editHistoryId").value; const ref=doc(db,"history",id); const original=historyCache.find(x=>x.id===id)||{}; if(!canEditHistoryItem(original)) return alert("Você só pode editar o seu último fechamento de turno."); const t={...(original.turno||{}),operadorName:$("editOperadorName").value.trim(),closingDate:$("editClosingDate").value||nowSP().toISOString(),webReca:moneyToNumber($("editWebReca").value),suprema:moneyToNumber($("editSuprema").value),pppoker:moneyToNumber($("editPppoker").value),buffalo:moneyToNumber($("editBuffalo").value),ganamos:moneyToNumber($("editGanamos").value),cargasPoker:moneyToNumber($("editCargasPoker").value),cargasCasino:moneyToNumber($("editCargasCasino").value),pendings:getDynamicRows("editPendingList"),outflows:getDynamicRows("editOutflowList")}; setOperadorNameOnTurno(t, t.operadorName); t.pendentesTotal=t.pendings.reduce((s,x)=>s+x.value,0); t.saidasTotal=t.outflows.reduce((s,x)=>s+x.value,0); t.retiradaLucroTotal=sumOutflowsByCategory(t.outflows,"lucro"); t.custoOperacionalTotal=sumOutflowsByCategory(t.outflows,"custo_operacional"); t.custoRecaTotal=sumOutflowsByCategory(t.outflows,"custo_reca"); t.saldoLiquido=calcularSaldoLiquido(t); t.baseOperacional=calcularBaseOperacional(t); try{await updateDoc(ref,{turno:t,operadorName:t.operadorName,operatorName:t.operadorName,nomeOperador:t.operadorName,currentSaldoTotal:t.saldoLiquido,operationalBase:t.baseOperacional,editedAt:serverTimestamp(),editedBy:currentUser?.uid||null,editedByEmail:currentUser?.email||null}); await addAudit("edit_history",`Fechamento editado: ${id}`); closeEdit(); if(isAdmin()) await recalculateAllHistory(); else renderAll(); alert("Fechamento editado com sucesso.");}catch(e){alert(friendlyError(e));} }
+    async function saveEdit(){ const id=$("editHistoryId").value; const ref=doc(db,"history",id); const original=historyCache.find(x=>x.id===id)||{}; if(!canEditHistoryItem(original)) return alert("Você só pode editar o seu último fechamento de turno."); const t={...(original.turno||{}),operadorName:$("editOperadorName").value.trim(),closingDate:$("editClosingDate").value||new Date().toISOString(),webReca:moneyToNumber($("editWebReca").value),suprema:moneyToNumber($("editSuprema").value),pppoker:moneyToNumber($("editPppoker").value),buffalo:moneyToNumber($("editBuffalo").value),ganamos:moneyToNumber($("editGanamos").value),cargasPoker:moneyToNumber($("editCargasPoker").value),cargasCasino:moneyToNumber($("editCargasCasino").value),pendings:getDynamicRows("editPendingList"),outflows:getDynamicRows("editOutflowList")}; setOperadorNameOnTurno(t, t.operadorName); t.pendentesTotal=t.pendings.reduce((s,x)=>s+x.value,0); t.saidasTotal=t.outflows.reduce((s,x)=>s+x.value,0); t.retiradaLucroTotal=sumOutflowsByCategory(t.outflows,"lucro"); t.custoOperacionalTotal=sumOutflowsByCategory(t.outflows,"custo_operacional"); t.custoRecaTotal=sumOutflowsByCategory(t.outflows,"custo_reca"); t.saldoLiquido=calcularSaldoLiquido(t); t.baseOperacional=calcularBaseOperacional(t); try{await updateDoc(ref,{turno:t,operadorName:t.operadorName,operatorName:t.operadorName,nomeOperador:t.operadorName,currentSaldoTotal:t.saldoLiquido,operationalBase:t.baseOperacional,editedAt:serverTimestamp(),editedBy:currentUser?.uid||null,editedByEmail:currentUser?.email||null}); await addAudit("edit_history",`Fechamento editado: ${id}`); closeEdit(); if(isAdmin()) await recalculateAllHistory(); else renderAll(); alert("Fechamento editado com sucesso.");}catch(e){alert(friendlyError(e));} }
 
     async function recalculateAllHistory(){
       if(!await requireAdmin()) return false;
@@ -3194,10 +3492,10 @@ alert("Carga adicionada ao sistema como ajuste auditável.");
       }
     }
 
-    function getReportItems(){ let items=visibleHistory(); const start=$("reportStart")?.value, end=$("reportEnd")?.value, operador=($("reportOperador")?.value||"").trim().toLowerCase(), supervisor=($("reportSupervisor")?.value||"").trim().toLowerCase(); if(start) items=items.filter(x=>{const d=x.submittedAt?.toDate?x.submittedAt.toDate():new Date(x.turno?.closingDate||x.createdAt||0); return !isNaN(d)&&isOnOrAfterDateSP(d,start);}); if(end) items=items.filter(x=>{const d=x.submittedAt?.toDate?x.submittedAt.toDate():new Date(x.turno?.closingDate||x.createdAt||0); return !isNaN(d)&&isOnOrBeforeDateSP(d,end);}); if(operador) items=items.filter(x=>getOperadorName(x).toLowerCase().includes(operador)); if(supervisor) items=items.filter(x=>String(x.supervisorName||x.turno?.supervisorName||x.supervisorEmail||x.turno?.supervisorEmail||"").toLowerCase().includes(supervisor)); return items; }
+    function getReportItems(){ let items=visibleHistory(); const start=$("reportStart")?.value, end=$("reportEnd")?.value, operador=($("reportOperador")?.value||"").trim().toLowerCase(), supervisor=($("reportSupervisor")?.value||"").trim().toLowerCase(); if(start) items=items.filter(x=>{const d=x.submittedAt?.toDate?x.submittedAt.toDate():new Date(x.turno?.closingDate||x.createdAt||0); return !isNaN(d)&&d.toISOString().slice(0,10)>=start;}); if(end) items=items.filter(x=>{const d=x.submittedAt?.toDate?x.submittedAt.toDate():new Date(x.turno?.closingDate||x.createdAt||0); return !isNaN(d)&&d.toISOString().slice(0,10)<=end;}); if(operador) items=items.filter(x=>getOperadorName(x).toLowerCase().includes(operador)); if(supervisor) items=items.filter(x=>String(x.supervisorName||x.turno?.supervisorName||x.supervisorEmail||x.turno?.supervisorEmail||"").toLowerCase().includes(supervisor)); return items; }
     function previewReport(){ if(!$("reportPreviewCount")) return; const items=getReportItems(), totalSaldo=items.reduce((s,x)=>s+moneyToNumber(x.turno?.saldoLiquido??x.currentSaldoTotal),0), totalDiff=items.reduce((s,x)=>s+moneyToNumber(x.diff),0); $("reportPreviewCount").textContent=items.length; $("reportPreviewSaldo").textContent=formatMoney(totalSaldo); $("reportPreviewDiff").textContent=formatMoney(totalDiff); }
     function buildBankPdfHtml(items){
-      const generatedAt = formatDateTimeSP(nowSP());
+      const generatedAt = new Date().toLocaleString("pt-BR");
       const reportCode = "BK-" + Date.now().toString().slice(-8);
       const totalSaldo = items.reduce((s,x)=>s + moneyToNumber(x.turno?.saldoLiquido ?? x.currentSaldoTotal), 0);
       const totalDiff = items.filter(x=>!isAdjustmentItem(x)).reduce((s,x)=>s + displayCashDiff(x), 0);
@@ -3709,27 +4007,115 @@ body.side-drawer-open #sideMenuBtn{
   pointer-events:none!important;
 }
 .permissions-card{margin-top:14px!important;}
+.permissions-card-title{margin-bottom:0!important;}
+.permissions-card-title > div span{
+  display:block;
+  margin-top:3px;
+  font-size:12px;
+  color:var(--muted);
+  font-weight:760;
+}
+.permissions-card-body{
+  margin-top:14px;
+  animation:permissionsOpen .22s ease both;
+}
+.permissions-card.permissions-collapsed{
+  padding-bottom:18px!important;
+}
+@keyframes permissionsOpen{
+  from{opacity:0;transform:translateY(-4px)}
+  to{opacity:1;transform:translateY(0)}
+}
 .permissions-grid{display:grid;gap:10px;}
-.perm-row{
+.permissions-accordion{align-items:stretch;}
+.perm-card{
   border:1px solid var(--line);
-  border-radius:16px;
+  border-radius:18px;
   background:#fff;
-  padding:13px 14px;
+  overflow:hidden;
+  box-shadow:var(--shadow-1);
+}
+.perm-card summary{
+  min-height:64px;
+  padding:0 14px;
+  display:grid;
+  grid-template-columns:1fr auto;
+  align-items:center;
+  gap:12px;
+  cursor:pointer;
+  list-style:none;
+  user-select:none;
+}
+.perm-card summary::-webkit-details-marker{display:none;}
+.perm-card summary strong{
+  display:block;
+  color:#242424;
+  font-size:15px;
+  font-weight:950;
+  letter-spacing:-.35px;
+}
+.perm-card summary span{
+  display:block;
+  margin-top:3px;
+  color:var(--muted);
+  font-size:11px;
+  line-height:1.2;
+  font-weight:850;
+  text-transform:uppercase;
+  letter-spacing:.45px;
+}
+.perm-card summary b{
+  min-width:68px;
+  height:32px;
+  padding:0 10px;
+  border-radius:999px;
+  background:#f4f4f6;
+  color:#242424;
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  font-size:11px;
+  font-weight:950;
+  text-transform:uppercase;
+  letter-spacing:.35px;
+}
+.perm-card[open]{
+  border-color:rgba(36,36,36,.18);
+}
+.perm-card[open] summary{
+  border-bottom:1px solid var(--line);
+  background:linear-gradient(180deg,#fff,#fafafa);
+}
+.perm-card[open] summary b{
+  background:#242424;
+  color:#fff;
+}
+.perm-card[open] summary b::before{
+  content:"Fechar";
+  font-size:11px;
+}
+.perm-card[open] summary b{
+  font-size:0;
+}
+.perm-content{
+  padding:13px 14px 15px;
+  color:var(--muted);
+  font-size:12px;
+  line-height:1.42;
+  font-weight:760;
+}
+.perm-content p{
+  margin:0 0 8px;
+  color:#242424;
+  font-weight:850;
+}
+.perm-content ul{
+  margin:0;
+  padding-left:17px;
   display:grid;
   gap:5px;
 }
-.perm-row strong{
-  color:#242424;
-  font-size:14px;
-  font-weight:950;
-  letter-spacing:-.25px;
-}
-.perm-row span{
-  color:var(--muted);
-  font-size:12px;
-  line-height:1.35;
-  font-weight:760;
-}
+.perm-content li::marker{color:#242424;}
 @media(max-width:420px){
   .login-secondary-row{grid-template-columns:1fr 1fr;gap:8px;}
   .login-secondary-row .btn{font-size:12px;padding:0 8px;}
@@ -3767,67 +4153,245 @@ body.side-drawer-open #sideMenuBtn{
     async function loadProfile(user){ const ref=doc(db,"users",user.uid); try{ const snap=await getDoc(ref); if(snap.exists()) return snap.data(); const bootstrap=isBootstrapEmail(user.email); const profile={email:user.email,name:user.email.split("@")[0],role:bootstrap?"admin":"operador",status:bootstrap?"active":"pending",approved:bootstrap?true:false,blocked:false,createdAt:serverTimestamp()}; await safeSetUserProfile(user,profile); return profile; }catch(e){ console.warn("Erro ao ler perfil:",e); if(isBootstrapEmail(user.email)){ return {email:user.email,name:user.email.split("@")[0],role:"admin",approved:true,blocked:false,localOnly:true}; } showNotice("appNotice",friendlyError(e),"error"); return {email:user.email,name:user.email.split("@")[0],role:"operador",status:"pending",approved:false,blocked:false,permissionError:true}; } }
     async function addAudit(action,description){ try{ await addDoc(collection(db,"audit_logs"),{action,description,uid:currentUser?.uid||null,email:currentUser?.email||null,createdAt:serverTimestamp()}); }catch(e){ console.warn("Audit não gravado:",e); } }
 
+
+    function getIsoWeekKey(date = new Date()){
+      const d = new Date(Date.UTC(date.getFullYear(), date.getMonth(), date.getDate()));
+      const dayNum = d.getUTCDay() || 7;
+      d.setUTCDate(d.getUTCDate() + 4 - dayNum);
+      const yearStart = new Date(Date.UTC(d.getUTCFullYear(),0,1));
+      const weekNo = Math.ceil((((d - yearStart) / 86400000) + 1) / 7);
+      return `${d.getUTCFullYear()}-W${String(weekNo).padStart(2,"0")}`;
+    }
+
+    function formatAppTime(seconds = 0){
+      const total = Math.max(0, Math.floor(moneyToNumber(seconds)));
+      const hours = Math.floor(total / 3600);
+      const minutes = Math.floor((total % 3600) / 60);
+
+      if(hours <= 0 && minutes <= 0) return "0 min";
+      if(hours <= 0) return `${minutes} min`;
+      if(minutes <= 0) return `${hours}h`;
+      return `${hours}h ${minutes}min`;
+    }
+
+    async function resetWeeklyAppTimeIfNeeded(uid){
+      if(!uid) return;
+      const weekKey = getIsoWeekKey();
+      const profileWeekKey = currentProfile?.appTime?.weekKey || "";
+
+      if(profileWeekKey === weekKey) return;
+
+      try{
+        await setDoc(doc(db,"users",uid), {
+          appTime:{
+            weekKey,
+            weekSeconds:0,
+            lastWeeklyResetAt:serverTimestamp()
+          }
+        }, { merge:true });
+
+        currentProfile = {
+          ...(currentProfile || {}),
+          appTime:{
+            ...(currentProfile?.appTime || {}),
+            weekKey,
+            weekSeconds:0
+          }
+        };
+      }catch(e){
+        console.warn("Não foi possível resetar contador semanal:", e);
+      }
+    }
+
+    async function flushAppTime(force=false){
+      if(!appTimeTracker.uid) return;
+
+      const now = Date.now();
+      if(!appTimeTracker.lastTick) appTimeTracker.lastTick = now;
+
+      let delta = Math.floor((now - appTimeTracker.lastTick) / 1000);
+      appTimeTracker.lastTick = now;
+
+      // Evita somar tempo absurdo se o computador dormir ou o navegador congelar.
+      if(delta > 300) delta = 300;
+      if(delta > 0) appTimeTracker.pendingSeconds += delta;
+
+      if(!force && appTimeTracker.pendingSeconds < 60) return;
+
+      const secondsToSave = appTimeTracker.pendingSeconds;
+      if(secondsToSave <= 0) return;
+
+      appTimeTracker.pendingSeconds = 0;
+
+      try{
+        const weekKey = getIsoWeekKey();
+        await setDoc(doc(db,"users",appTimeTracker.uid), {
+          appTime:{
+            weekKey,
+            weekSeconds:increment(secondsToSave),
+            totalSeconds:increment(secondsToSave),
+            lastSeenAt:serverTimestamp(),
+            lastSessionUpdateAt:serverTimestamp()
+          }
+        }, { merge:true });
+      }catch(e){
+        appTimeTracker.pendingSeconds += secondsToSave;
+        console.warn("Não foi possível gravar tempo de uso:", e);
+      }
+    }
+
+    async function startAppTimeTracker(){
+      if(!currentUser?.uid) return;
+
+      stopAppTimeTracker(false);
+
+      await resetWeeklyAppTimeIfNeeded(currentUser.uid);
+
+      appTimeTracker.uid = currentUser.uid;
+      appTimeTracker.weekKey = getIsoWeekKey();
+      appTimeTracker.lastTick = Date.now();
+      appTimeTracker.pendingSeconds = 0;
+
+      appTimeTracker.timer = setInterval(() => {
+        flushAppTime(false);
+      }, 60000);
+
+      if(!appTimeTracker.listenersReady){
+        appTimeTracker.listenersReady = true;
+
+        document.addEventListener("visibilitychange", () => {
+          if(document.hidden) flushAppTime(true);
+          else appTimeTracker.lastTick = Date.now();
+        });
+
+        window.addEventListener("pagehide", () => {
+          flushAppTime(true);
+        });
+
+        window.addEventListener("beforeunload", () => {
+          flushAppTime(true);
+        });
+      }
+    }
+
+    function stopAppTimeTracker(flush=true){
+      if(appTimeTracker.timer){
+        clearInterval(appTimeTracker.timer);
+        appTimeTracker.timer = null;
+      }
+
+      if(flush) flushAppTime(true);
+
+      appTimeTracker.uid = null;
+      appTimeTracker.weekKey = "";
+      appTimeTracker.lastTick = 0;
+      appTimeTracker.pendingSeconds = 0;
+    }
+
     async function loadUsers(){
       if(!await requireAdmin()) return;
+      const listEl = $("usersList");
+      if(listEl) listEl.innerHTML = `<div class="user-item">Carregando usuários...</div>`;
+
       try{
         const snap = await getDocs(collection(db,"users"));
 
         $("usersList").innerHTML = snap.docs.map(d=>{
           const u = d.data();
           const role = u.role || "operador";
-          const status = u.blocked ? "Bloqueado" : (u.approved ? "Aprovado" : "Pendente");
+          const status = u.deleted ? "Excluído" : (u.blocked ? "Bloqueado" : (u.approved ? "Aprovado" : "Pendente"));
+          const isSelf = d.id === currentUser?.uid;
+          const appTime = u.appTime || {};
+          const weekSeconds = appTime.weekKey === getIsoWeekKey() ? moneyToNumber(appTime.weekSeconds || 0) : 0;
+          const totalSeconds = moneyToNumber(appTime.totalSeconds || 0);
 
-          return `<div class="user-item">
+          return `<div class="user-item" data-user-card="${d.id}">
             <div>
               <strong>${u.name || u.email || "Usuário"}</strong>
               <div class="muted">${u.email || ""}</div>
+              <div class="user-time-box">
+                <span>Tempo no app esta semana</span>
+                <strong>${formatAppTime(weekSeconds)}</strong>
+                <small>Total acumulado: ${formatAppTime(totalSeconds)}</small>
+              </div>
               <div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:7px;">
-                <span class="badge ${u.approved?'ok':'off'}">${u.approved?'Aprovado':'Pendente'}</span>
-                <span class="badge ${u.blocked?'off':'ok'}">${u.blocked?'Bloqueado':'Ativo'}</span>
+                <span class="badge ${u.approved && !u.deleted ? 'ok':'off'}">${u.approved && !u.deleted ? 'Aprovado':'Pendente'}</span>
+                <span class="badge ${u.blocked || u.deleted ? 'off':'ok'}">${status}</span>
                 <span class="badge">${role}</span>
+                ${isSelf ? '<span class="badge ok">Você</span>' : ''}
               </div>
             </div>
 
             <div class="user-actions">
-              <select data-role-select="${d.id}">
+              <select data-role-select="${d.id}" ${u.deleted ? "disabled" : ""}>
                 <option value="operador" ${role === "operador" ? "selected" : ""}>Operador</option>
                 <option value="supervisor" ${role === "supervisor" ? "selected" : ""}>Supervisor</option>
                 <option value="admin" ${role === "admin" ? "selected" : ""}>Admin</option>
               </select>
 
-              <select data-action-select="${d.id}">
+              <select data-action-select="${d.id}" ${u.deleted ? "disabled" : ""}>
                 <option value="approve">Aprovar com cargo</option>
                 <option value="save_role">Salvar cargo</option>
                 <option value="block">${u.blocked ? "Desbloquear" : "Bloquear"}</option>
+                <option value="delete_user">Excluir usuário</option>
               </select>
 
-              <button class="small-btn" data-run-user-action="${d.id}">Executar</button>
+              <button type="button" class="small-btn" data-run-user-action="${d.id}" ${u.deleted ? "disabled" : ""}>Executar</button>
+              <button type="button" class="small-btn danger" data-delete-user="${d.id}" ${isSelf || u.deleted ? "disabled" : ""}>Excluir</button>
             </div>
           </div>`;
         }).join("") || `<div class="user-item">Nenhum usuário encontrado.</div>`;
 
-        document.querySelectorAll("[data-run-user-action]").forEach(btn=>btn.onclick=async()=>{
-          const id = btn.dataset.runUserAction;
+        async function runUserAction(id, forcedAction=""){
           const role = document.querySelector(`[data-role-select="${id}"]`)?.value || "operador";
-          const action = document.querySelector(`[data-action-select="${id}"]`)?.value || "approve";
+          const action = forcedAction || document.querySelector(`[data-action-select="${id}"]`)?.value || "approve";
+          const btn = document.querySelector(forcedAction ? `[data-delete-user="${id}"]` : `[data-run-user-action="${id}"]`);
 
-          if(action === "approve"){
-            await updateDoc(doc(db,"users",id), { approved:true, role });
-            await addAudit("approve_user", `Usuário aprovado como ${role}`);
+          if(id === currentUser?.uid && (action === "delete_user" || action === "block")){
+            alert("Você não pode excluir ou bloquear o próprio usuário logado.");
+            return;
           }
 
-          if(action === "save_role"){
-            await updateDoc(doc(db,"users",id), { role });
-            await addAudit("update_user_role", `Cargo alterado para ${role}`);
-          }
+          if(action === "delete_user" && !confirm("Excluir este usuário do painel admin? O acesso será bloqueado. Para apagar também do Firebase Authentication, use o Console Firebase ou uma Cloud Function com Admin SDK.")) return;
 
-          if(action === "block"){
-            const s = await getDoc(doc(db,"users",id));
-            await updateDoc(doc(db,"users",id), { blocked:!s.data()?.blocked });
-            await addAudit("toggle_user_block", `Status de bloqueio alterado`);
-          }
+          setButtonLoading(btn, true, action === "delete_user" ? "Excluindo..." : "Executando...");
+          try{
+            if(action === "approve"){
+              await updateDoc(doc(db,"users",id), { approved:true, status:"active", blocked:false, deleted:false, role, approvedAt:serverTimestamp(), approvedBy:currentUser?.uid || null });
+              await addAudit("approve_user", `Usuário aprovado como ${role}`);
+            }
 
-          loadUsers();
+            if(action === "save_role"){
+              await updateDoc(doc(db,"users",id), { role, updatedAt:serverTimestamp(), updatedBy:currentUser?.uid || null });
+              await addAudit("update_user_role", `Cargo alterado para ${role}`);
+            }
+
+            if(action === "block"){
+              const s = await getDoc(doc(db,"users",id));
+              const blocked = !s.data()?.blocked;
+              await updateDoc(doc(db,"users",id), { blocked, status: blocked ? "blocked" : "active", updatedAt:serverTimestamp(), updatedBy:currentUser?.uid || null });
+              await addAudit("toggle_user_block", blocked ? "Usuário bloqueado" : "Usuário desbloqueado");
+            }
+
+            if(action === "delete_user"){
+              await updateDoc(doc(db,"users",id), { deleted:true, blocked:true, approved:false, status:"deleted", deletedAt:serverTimestamp(), deletedBy:currentUser?.uid || null });
+              await addAudit("delete_user", `Usuário removido/bloqueado: ${id}`);
+            }
+
+            await loadUsers();
+          }catch(e){
+            alert(friendlyError(e));
+          }finally{
+            setButtonLoading(btn, false);
+          }
+        }
+
+        document.querySelectorAll("[data-run-user-action]").forEach(btn=>{
+          btn.onclick=async()=> runUserAction(btn.dataset.runUserAction);
+        });
+
+        document.querySelectorAll("[data-delete-user]").forEach(btn=>{
+          btn.onclick=async()=> runUserAction(btn.dataset.deleteUser, "delete_user");
         });
       }catch(e){
         $("usersList").innerHTML=`<div class="notice error">${friendlyError(e)}</div>`;
@@ -3836,7 +4400,7 @@ body.side-drawer-open #sideMenuBtn{
 
     async function loadAudit(){ if(!isAdmin()) return; try{ const qh=query(collection(db,"audit_logs"),orderBy("createdAt","desc"),limit(20)); const snap=await getDocs(qh); $("auditList").innerHTML=snap.docs.map(d=>{const a=d.data(); return `<div class="history-item"><div class="history-top"><strong>${a.action}</strong><span>${dateLabel(a.createdAt)}</span></div><div class="muted">${a.description||""}<br>${a.email||""}</div></div>`;}).join("")||`<div class="history-item">Sem auditoria.</div>`; }catch(e){ $("auditList").innerHTML=`<div class="notice error">${friendlyError(e)}</div>`; } }
 
-    async function createInternalUser(){ if(!await requireAdmin()) return; const email=$("newUserEmail").value.trim(), password=$("newUserPassword").value, name=$("newUserName").value.trim(), role=$("newUserRole").value, supervisorRaw=$("newUserSupervisor")?.value.trim()||""; if(!email||!password) return alert("Informe email e senha."); if(password.length<6) return alert("A senha precisa ter pelo menos 6 caracteres."); const secondaryApp=initializeApp(firebaseConfig,"SecondaryUserCreator"+Date.now()), secondaryAuth=getAuth(secondaryApp); try{ const cred=await createUserWithEmailAndPassword(secondaryAuth,email,password); await setDoc(doc(db,"users",cred.user.uid),{email,name:name||email.split("@")[0],role,supervisorUid:role==="operador"&&!supervisorRaw.includes("@")?(supervisorRaw||null):null,supervisorEmail:role==="operador"&&supervisorRaw.includes("@")?supervisorRaw:null,approved:true,blocked:false,createdAt:serverTimestamp(),createdBy:currentUser?.uid||null}); await signOut(secondaryAuth); await deleteApp(secondaryApp); await addAudit("create_user",`Usuário criado: ${email}`); ["newUserEmail","newUserPassword","newUserName","newUserSupervisor"].forEach(id=>{if($(id)) $(id).value="";}); await loadUsers(); alert("Usuário criado com sucesso."); }catch(e){ try{await signOut(secondaryAuth);await deleteApp(secondaryApp);}catch(_ignored){} alert(friendlyError(e)); } }
+    async function createInternalUser(){ if(!await requireAdmin()) return; const email=$("newUserEmail").value.trim(), password=$("newUserPassword").value, name=$("newUserName").value.trim(), role=$("newUserRole").value, supervisorRaw=$("newUserSupervisor")?.value.trim()||""; if(!email||!password) return alert("Informe email e senha."); if(password.length<6) return alert("A senha precisa ter pelo menos 6 caracteres."); const secondaryApp=initializeApp(firebaseConfig,"SecondaryUserCreator"+Date.now()), secondaryAuth=getAuth(secondaryApp); try{ const cred=await createUserWithEmailAndPassword(secondaryAuth,email,password); await setDoc(doc(db,"users",cred.user.uid),{email,name:name||email.split("@")[0],role,supervisorUid:role==="operador"&&!supervisorRaw.includes("@")?(supervisorRaw||null):null,supervisorEmail:role==="operador"&&supervisorRaw.includes("@")?supervisorRaw:null,approved:true,status:"active",blocked:false,createdAt:serverTimestamp(),createdBy:currentUser?.uid||null}); await signOut(secondaryAuth); await deleteApp(secondaryApp); await addAudit("create_user",`Usuário criado: ${email}`); ["newUserEmail","newUserPassword","newUserName","newUserSupervisor"].forEach(id=>{if($(id)) $(id).value="";}); await loadUsers(); alert("Usuário criado com sucesso."); }catch(e){ try{await signOut(secondaryAuth);await deleteApp(secondaryApp);}catch(_ignored){} alert(friendlyError(e)); } }
     async function registerAccess(){ const email=$("loginEmail").value.trim(), password=$("loginPassword").value; if(!email||!password) return showNotice("loginNotice","Informe email e senha para criar acesso.","error"); if(password.length<6) return showNotice("loginNotice","A senha precisa ter pelo menos 6 caracteres.","error"); try{ const bootstrap=isBootstrapEmail(email); await applyLoginPersistence(); const cred=await createUserWithEmailAndPassword(auth,email,password); const profile={email,name:email.split("@")[0],role:bootstrap?"admin":"operador",status:bootstrap?"active":"pending",approved:bootstrap?true:false,blocked:false,createdAt:serverTimestamp()}; await safeSetUserProfile(cred.user,profile); showNotice("loginNotice",bootstrap?"Conta admin criada. Entrando...":"Conta criada. Aguarde aprovação do admin.",bootstrap?"ok":"error"); }catch(e){ showNotice("loginNotice",friendlyError(e),"error"); } }
 
     function showScreen(name){
@@ -4026,8 +4590,8 @@ body.side-drawer-open #sideMenuBtn{
         $("toggleCreateUserBtn").textContent = panel?.classList.contains("active") ? "Ocultar criar usuário" : "Mostrar criar usuário";
       });
       $("createUserBtn") && ($("createUserBtn").onclick=createInternalUser);
-      $("historySearch")?.addEventListener("input",()=>{ historyRenderLimit=30; renderHistory(); });
-      $("historyDate")?.addEventListener("input",()=>{ historyRenderLimit=30; renderHistory(); }); document.querySelectorAll(".nav-btn[data-screen]").forEach(btn=>btn.onclick=()=>showScreen(btn.dataset.screen));
+      $("historySearch")?.addEventListener("input",()=>{ historyRenderLimit=6; renderHistory(); });
+      $("historyDate")?.addEventListener("input",()=>{ historyRenderLimit=6; renderHistory(); }); document.querySelectorAll(".nav-btn[data-screen]").forEach(btn=>btn.onclick=()=>showScreen(btn.dataset.screen));
       $("sideMenuBtn") && ($("sideMenuBtn").onclick=(ev)=>{ ev.stopPropagation(); openSideDrawer(); });
       $("sideDrawerClose") && ($("sideDrawerClose").onclick=closeSideDrawer);
       $("sideDrawerOverlay") && ($("sideDrawerOverlay").onclick=closeSideDrawer);
@@ -4046,7 +4610,7 @@ body.side-drawer-open #sideMenuBtn{
         if(!file) return updateProfilePhotoPreview($("profilePhotoUrlInput")?.value,$("profileNameInput")?.value);
         try{ updateProfilePhotoPreview(await compressProfileImage(file), $("profileNameInput")?.value); }catch(e){ alert(e.message || "Imagem inválida."); }
       });
-      $("sideLogoutBtn") && ($("sideLogoutBtn").onclick=async()=>{ closeSideDrawer(); if(historyUnsubscribe)historyUnsubscribe(); if(systemUnsubscribe)systemUnsubscribe(); await signOut(auth); });
+      $("sideLogoutBtn") && ($("sideLogoutBtn").onclick=async()=>{ closeSideDrawer(); if(historyUnsubscribe)historyUnsubscribe(); if(systemUnsubscribe)systemUnsubscribe(); stopAppTimeTracker(true); await signOut(auth); });
       document.querySelectorAll("[data-home-detail]").forEach(card=>{
         card.onclick = () => openHomeMetricDetail(card.dataset.homeDetail);
       });
@@ -4073,15 +4637,58 @@ body.side-drawer-open #sideMenuBtn{
         if(menu.contains(ev.target) || $("moreMenuBtn")?.contains(ev.target)) return;
         menu.classList.remove("active");
       });
-      document.querySelectorAll("[data-more-screen]").forEach(btn=>btn.onclick=(ev)=>{ ev.stopPropagation(); showScreen(btn.dataset.moreScreen); }); document.querySelectorAll("[data-rank]").forEach(btn=>btn.onclick=()=>{document.querySelectorAll("[data-rank]").forEach(b=>b.classList.remove("active")); btn.classList.add("active"); currentRankRange=btn.dataset.rank; renderRanking();}); $("logoutBtn").onclick=async()=>{if(historyUnsubscribe)historyUnsubscribe();if(systemUnsubscribe)systemUnsubscribe();await signOut(auth);}; $("loginBtn").onclick=async()=>{try{hideNotice("loginNotice");await applyLoginPersistence();await signInWithEmailAndPassword(auth,$("loginEmail").value.trim(),$("loginPassword").value);}catch(e){showNotice("loginNotice",friendlyError(e),"error");}}; $("registerBtn").onclick=registerAccess; $("resetPasswordBtn").onclick=async()=>{try{const email=$("loginEmail").value.trim(); if(!email) return showNotice("loginNotice","Informe o email.","error"); await sendPasswordResetEmail(auth,email); showNotice("loginNotice","Email de recuperação enviado.","ok");}catch(e){showNotice("loginNotice",friendlyError(e),"error");}}; $("receiptCloseBtn") && ($("receiptCloseBtn").onclick=closeHistoryReceipt);
+      document.querySelectorAll("[data-more-screen]").forEach(btn=>btn.onclick=(ev)=>{ ev.stopPropagation(); showScreen(btn.dataset.moreScreen); }); document.querySelectorAll("[data-rank]").forEach(btn=>btn.onclick=()=>{document.querySelectorAll("[data-rank]").forEach(b=>b.classList.remove("active")); btn.classList.add("active"); currentRankRange=btn.dataset.rank; renderRanking();}); $("logoutBtn").onclick=async()=>{if(historyUnsubscribe)historyUnsubscribe();if(systemUnsubscribe)systemUnsubscribe();stopAppTimeTracker(true); await signOut(auth);}; $("loginBtn").onclick=async()=>{try{hideNotice("loginNotice");await applyLoginPersistence();await signInWithEmailAndPassword(auth,$("loginEmail").value.trim(),$("loginPassword").value);}catch(e){showNotice("loginNotice",friendlyError(e),"error");}}; $("registerBtn").onclick=registerAccess; $("resetPasswordBtn").onclick=async()=>{try{const email=$("loginEmail").value.trim(); if(!email) return showNotice("loginNotice","Informe o email.","error"); await sendPasswordResetEmail(auth,email); showNotice("loginNotice","Email de recuperação enviado.","ok");}catch(e){showNotice("loginNotice",friendlyError(e),"error");}}; $("receiptCloseBtn") && ($("receiptCloseBtn").onclick=closeHistoryReceipt);
       $("receiptExportPngBtn") && ($("receiptExportPngBtn").onclick=exportReceiptAsPng);
       $("editCloseBtn").onclick=closeEdit; $("cancelEditBtn").onclick=closeEdit; $("saveEditBtn").onclick=saveEdit; $("editAddPendingBtn").onclick=()=>createDynamicRow("editPendingList","Nome / motivo"); $("editAddOutflowBtn").onclick=()=>createDynamicRow("editOutflowList","Descrição"); }
     function initDate(){ const now=new Date(); now.setMinutes(now.getMinutes()-now.getTimezoneOffset()); $("closingDate").value=now.toISOString().slice(0,16); }
 
-    onAuthStateChanged(auth,async(user)=>{ currentUser=user; if(!user){$("loginScreen").classList.remove("hidden");$("appShell").classList.add("hidden");$("bottomNav").classList.add("hidden");return;} currentProfile=await loadProfile(user); if(currentProfile.blocked){await signOut(auth);return alert("Usuário bloqueado.");} if(currentProfile.approved===false){$("loginScreen").classList.remove("hidden");$("appShell").classList.add("hidden");$("bottomNav").classList.add("hidden");showNotice("loginNotice","Usuário aguardando aprovação do admin.","error");return;} $("loginScreen").classList.add("hidden");$("appShell").classList.remove("hidden");$("bottomNav").classList.remove("hidden");$("topUserLabel").textContent=`${currentProfile.name||user.email} • ${isAdmin()?"Admin":isSupervisor()?"Supervisor":"Operador"}`;  $("adminStatus").textContent=isAdmin()?"Admin ativo":"Somente admin";
-      if($("moreAdminBtn")) $("moreAdminBtn").style.display = isAdmin() ? "flex" : "none"; if($("sideAdminBtn")) $("sideAdminBtn").style.display = isAdmin() ? "grid" : "none"; updateSideDrawerProfile();
+    onAuthStateChanged(auth,async(user)=>{
+      currentUser=user;
 
-      updateRoleVisibility(); if(currentProfile.permissionError) showNotice("appNotice","Seu login entrou, mas o Firestore negou acesso ao perfil. Ajuste as regras ou coloque seu email em BOOTSTRAP_ADMIN_EMAILS.","error"); startHistoryRealtimeListener(); startSystemRealtime(); fillOperadorFromProfile(); renderAll(); });
+      if(!user){
+        stopAppTimeTracker(true);
+        $("loginScreen").classList.remove("hidden");
+        $("appShell").classList.add("hidden");
+        $("bottomNav").classList.add("hidden");
+        return;
+      }
+
+      currentProfile=await loadProfile(user);
+
+      if(currentProfile.blocked){
+        stopAppTimeTracker(true);
+        await signOut(auth);
+        return alert("Usuário bloqueado.");
+      }
+
+      if(currentProfile.approved===false){
+        stopAppTimeTracker(true);
+        $("loginScreen").classList.remove("hidden");
+        $("appShell").classList.add("hidden");
+        $("bottomNav").classList.add("hidden");
+        showNotice("loginNotice","Usuário aguardando aprovação do admin.","error");
+        return;
+      }
+
+      $("loginScreen").classList.add("hidden");
+      $("appShell").classList.remove("hidden");
+      $("bottomNav").classList.remove("hidden");
+      $("topUserLabel").textContent=`${currentProfile.name||user.email} • ${isAdmin()?"Admin":isSupervisor()?"Supervisor":"Operador"}`;
+      $("adminStatus").textContent=isAdmin()?"Admin ativo":"Somente admin";
+
+      if($("moreAdminBtn")) $("moreAdminBtn").style.display = isAdmin() ? "flex" : "none";
+      if($("sideAdminBtn")) $("sideAdminBtn").style.display = isAdmin() ? "grid" : "none";
+      updateSideDrawerProfile();
+
+      updateRoleVisibility();
+      if(currentProfile.permissionError) showNotice("appNotice","Seu login entrou, mas o Firestore negou acesso ao perfil. Ajuste as regras ou coloque seu email em BOOTSTRAP_ADMIN_EMAILS.","error");
+
+      startAppTimeTracker();
+      startHistoryRealtimeListener();
+      startSystemRealtime();
+      fillOperadorFromProfile();
+      renderAll();
+    });
 
     function runSelfTests(){
       const savedUser = currentUser;
@@ -4130,5 +4737,24 @@ body.side-drawer-open #sideMenuBtn{
     }
 
     document.addEventListener("DOMContentLoaded",()=>{ forceHideReloadLoader(); bindEvents(); initDate(); initBankMicroUX(); setTimeout(()=>{const splash=$("appSplash"); splash?.classList.add("hide"); setTimeout(()=>splash?.remove(),800);},1600); runSelfTests(); });
-  </script>
+  
+    function initPermissionsCardToggle(){
+      const card = $("permissionsCard");
+      const body = $("permissionsCardBody");
+      const btn = $("togglePermissionsCardBtn");
+      if(!card || !body || !btn || btn.dataset.ready === "1") return;
+
+      btn.dataset.ready = "1";
+      btn.addEventListener("click", () => {
+        const willOpen = body.classList.contains("hidden");
+        body.classList.toggle("hidden", !willOpen);
+        card.classList.toggle("permissions-collapsed", !willOpen);
+        btn.textContent = willOpen ? "Ocultar permissões" : "Mostrar permissões";
+      });
+    }
+
+    document.addEventListener("DOMContentLoaded", initPermissionsCardToggle);
+    setTimeout(initPermissionsCardToggle, 300);
+
+</script>
 </body>
