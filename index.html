@@ -1173,6 +1173,72 @@ html,body{background:#ffffff!important;}
   .login-secondary-row{grid-template-columns:1fr!important;}
 }
 
+
+
+/* =========================================================
+   PATCH — PERMISSÕES / PERFIL / META VERDE / INPUT EDITÁVEL
+========================================================= */
+.goal-bar{
+  height:12px!important;
+  border-radius:999px!important;
+  background:#edfdf5!important;
+  border:1px solid rgba(8,127,91,.12)!important;
+  overflow:hidden!important;
+}
+.goal-fill{
+  background:linear-gradient(90deg,#bbf7d0 0%,#22c55e 55%,#087f5b 100%)!important;
+  box-shadow:0 0 18px rgba(34,197,94,.26)!important;
+  transition:width .45s ease, filter .45s ease!important;
+}
+#homeInternalAdjustmentCard.operator-hidden,
+.operator-hidden,
+.audit-hidden{
+  display:none!important;
+}
+.profile-edit-fields .field input[type="password"],
+.profile-edit-fields .field input[type="email"]{
+  min-height:48px!important;
+}
+.profile-edit-card{
+  grid-template-columns:118px 1fr!important;
+}
+@media(max-width:620px){
+  .profile-edit-card{grid-template-columns:1fr!important;}
+}
+
+
+
+/* =========================================================
+   ROLE VISIBILITY — OPERADOR SEM AJUSTE INTERNO / SEM META
+========================================================= */
+body.role-operador #homeInternalAdjustmentCard,
+body.role-operador .internal-adjustment-card,
+body.role-operador #monthlyGoalCard,
+body.role-operador #sideGoalsBtn,
+body.role-operador [data-more-screen="Goals"]{
+  display:none!important;
+}
+
+body.role-supervisor #homeInternalAdjustmentCard,
+body.role-supervisor .internal-adjustment-card,
+body.role-supervisor #monthlyGoalCard,
+body.role-supervisor #sideGoalsBtn,
+body.role-admin #homeInternalAdjustmentCard,
+body.role-admin .internal-adjustment-card,
+body.role-admin #monthlyGoalCard,
+body.role-admin #sideGoalsBtn{
+  display:grid;
+}
+
+body.role-supervisor #monthlyGoalCard,
+body.role-admin #monthlyGoalCard{
+  display:block;
+}
+
+.role-hidden{
+  display:none!important;
+}
+
 </style>
 
 <script>
@@ -1208,12 +1274,21 @@ function animateValue(el, start, end, duration = 800){
 let lastBalance = 0;
 
 function updateHeroBalance(newValue){
-  const el = document.querySelector(".hero-value");
+  const el = document.querySelector("#homeSaldoReca");
   if(!el) return;
 
-  const oldValue = lastBalance || 0;
+  newValue = Number(newValue) || 0;
+  const oldValue = Number(lastBalance) || 0;
 
-  animateValue(el, oldValue, newValue);
+  if(typeof formatMoney === "function"){
+    if(newValue === 0){
+      el.textContent = formatMoney(0);
+    }else{
+      animateValue(el, oldValue, newValue);
+    }
+  }else{
+    el.textContent = "$ " + newValue.toLocaleString("pt-BR", { minimumFractionDigits:2, maximumFractionDigits:2 });
+  }
 
   el.classList.remove("balance-positive","balance-negative","balance-pulse");
 
@@ -1289,7 +1364,7 @@ function updateHeroBalance(newValue){
         <div id="homeUpdatedAt" class="hero-sub">Aguardando atualização</div>
 
         <div class="hero-grid">
-          <div class="hero-mini"><span>Ajuste interno</span><strong id="homeInternalAdjustment">$ 0,00</strong></div>
+          <div id="homeInternalAdjustmentCard" class="hero-mini internal-adjustment-card"><span>Ajuste interno</span><strong id="homeInternalAdjustment">$ 0,00</strong></div>
           <div class="hero-mini"><span>Operador</span><strong id="homeOperador">-</strong></div>
           <div class="hero-mini"><span>Data e hora</span><strong id="homeLastClose">-</strong></div>
           <div class="hero-mini"><span>Diferença de caixa</span><strong id="homeDiff">$ 0,00</strong></div>
@@ -1562,8 +1637,16 @@ function updateHeroBalance(newValue){
             <input id="profileNameInput" placeholder="Seu nome" />
           </div>
           <div class="field">
-            <label>Email</label>
-            <input id="profileEmailInput" readonly />
+            <label>Email de acesso</label>
+            <input id="profileEmailInput" type="email" placeholder="seu@email.com" />
+          </div>
+          <div class="field">
+            <label>Nova senha</label>
+            <input id="profilePasswordInput" type="password" placeholder="Deixe em branco para manter" autocomplete="new-password" />
+          </div>
+          <div class="field">
+            <label>Confirmar nova senha</label>
+            <input id="profilePasswordConfirmInput" type="password" placeholder="Repita a nova senha" autocomplete="new-password" />
           </div>
           <div class="field">
             <label>Foto/avatar</label>
@@ -1579,7 +1662,7 @@ function updateHeroBalance(newValue){
         <button id="saveProfileBtn" class="btn" type="button">Salvar perfil</button>
         <button id="cancelProfileBtn" class="btn secondary" type="button">Cancelar</button>
       </div>
-      <div class="muted" style="margin-top:10px;line-height:1.35;">A foto fica salva no perfil do usuário. Use imagem leve para carregar rápido.</div>
+      <div class="muted" style="margin-top:10px;line-height:1.35;">O operador pode alterar nome, foto, email e senha. Para trocar email/senha, o Firebase pode pedir login recente por segurança.</div>
     </div>
   </div>
 
@@ -1626,8 +1709,64 @@ function updateHeroBalance(newValue){
 
   <script type="module">
     import { initializeApp, deleteApp } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-app.js";
-    import { getAuth, onAuthStateChanged, signInWithEmailAndPassword, signOut, sendPasswordResetEmail, createUserWithEmailAndPassword, setPersistence, browserLocalPersistence, browserSessionPersistence } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-auth.js";
+    import { getAuth, onAuthStateChanged, signInWithEmailAndPassword, signOut, sendPasswordResetEmail, createUserWithEmailAndPassword, setPersistence, browserLocalPersistence, browserSessionPersistence, updateEmail, updatePassword } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-auth.js";
     import { getFirestore, collection, doc, getDoc, getDocs, addDoc, setDoc, updateDoc, deleteDoc, onSnapshot, query, orderBy, limit, serverTimestamp } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-firestore.js";
+
+    
+/*
+=========================================================
+FIRESTORE RULES NECESSÁRIAS PARA EDITAR O PRÓPRIO PERFIL
+Cole isso no Firebase Console > Firestore Database > Rules,
+adaptando junto com suas regras atuais.
+
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    function signedIn() {
+      return request.auth != null;
+    }
+
+    function isAdmin() {
+      return signedIn()
+        && exists(/databases/$(database)/documents/users/$(request.auth.uid))
+        && get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == "admin";
+    }
+
+    match /users/{userId} {
+      allow read: if signedIn();
+
+      // Qualquer usuário logado pode criar/editar o próprio perfil.
+      allow create: if signedIn() && request.auth.uid == userId;
+      allow update: if signedIn() && (
+        request.auth.uid == userId ||
+        isAdmin()
+      );
+
+      // Exclusão de documento de usuário só admin.
+      allow delete: if isAdmin();
+    }
+
+    match /history/{docId} {
+      allow read: if signedIn();
+      allow create: if signedIn();
+      allow update, delete: if isAdmin();
+    }
+
+    match /audit_logs/{docId} {
+      allow read: if isAdmin();
+      allow create: if signedIn();
+      allow update, delete: if isAdmin();
+    }
+
+    match /system/{docId} {
+      allow read: if signedIn();
+      allow write: if isAdmin();
+    }
+  }
+}
+=========================================================
+*/
 
     const firebaseConfig = {
       apiKey: "AIzaSyAuyfJNu2vwvVyH5gRsvg82m98teFCmPXw",
@@ -1865,9 +2004,43 @@ function updateHeroBalance(newValue){
       if(!input.nextElementSibling || !input.nextElementSibling.classList?.contains("input-helper")){
         const helper = document.createElement("div");
         helper.className = "input-helper";
-        helper.innerHTML = `<span>Digite só números</span><b>0,00</b>`;
+        helper.innerHTML = `<span>Edite qualquer número</span><b>0,00</b>`;
         input.insertAdjacentElement("afterend", helper);
       }
+
+      const normalizeDigits = (value) => String(value || "").replace(/\D/g, "");
+      const formatDigitsToMoney = (digits) => {
+        if(!digits) return "";
+        const number = Number(digits) / 100;
+        return number.toLocaleString("pt-BR", { minimumFractionDigits:2, maximumFractionDigits:2 });
+      };
+
+      const countDigitsBeforeCaret = () => {
+        const pos = input.selectionStart ?? String(input.value || "").length;
+        return normalizeDigits(String(input.value || "").slice(0, pos)).length;
+      };
+
+      const setCaretByDigitIndex = (digitIndex) => {
+        const value = String(input.value || "");
+        if(digitIndex <= 0){
+          input.setSelectionRange(0,0);
+          return;
+        }
+
+        let seen = 0;
+        let pos = value.length;
+        for(let i=0;i<value.length;i++){
+          if(/\d/.test(value[i])){
+            seen++;
+            if(seen >= digitIndex){
+              pos = i + 1;
+              break;
+            }
+          }
+        }
+
+        input.setSelectionRange(pos,pos);
+      };
 
       const updateVisual = () => {
         const value = moneyToNumber(input.value || 0);
@@ -1878,21 +2051,24 @@ function updateHeroBalance(newValue){
       };
 
       input.addEventListener("input", () => {
-        const digits = String(input.value || "").replace(/[^0-9]/g, "");
+        const digitIndex = countDigitsBeforeCaret();
+        const digits = normalizeDigits(input.value);
+
         if(!digits){
           input.value = "";
           updateVisual();
           input.dispatchEvent(new Event("bankmoney", { bubbles:true }));
           return;
         }
-        const number = Number(digits) / 100;
-        input.value = number.toLocaleString("pt-BR", { minimumFractionDigits:2, maximumFractionDigits:2 });
+
+        input.value = formatDigitsToMoney(digits);
+        setCaretByDigitIndex(digitIndex);
         updateVisual();
         input.dispatchEvent(new Event("bankmoney", { bubbles:true }));
       });
 
       input.addEventListener("focus", () => {
-        input.select?.();
+        // Não seleciona tudo: permite apagar/mudar um único número no meio do valor.
         updateVisual();
       });
 
@@ -1932,16 +2108,31 @@ function updateHeroBalance(newValue){
     function isBootstrapEmail(email){ return BOOTSTRAP_ADMIN_EMAILS.map(x=>x.toLowerCase()).includes(String(email||"").toLowerCase()); }
     function isAdmin(){ return currentProfile?.role === "admin" || currentProfile?.admin === true; }
     function isSupervisor(){ return currentProfile?.role === "supervisor"; }
+
+    function applyRoleBodyClass(){
+      document.body.classList.remove("role-admin","role-supervisor","role-operador");
+      if(isAdmin()) document.body.classList.add("role-admin");
+      else if(isSupervisor()) document.body.classList.add("role-supervisor");
+      else document.body.classList.add("role-operador");
+    }
     function profileName(){ return currentProfile?.name || currentUser?.email?.split("@")[0] || ""; }
     async function requireAdmin(){ if(isAdmin()) return true; alert("Ação permitida somente para admin."); return false; }
 
     function canAccessHistoryItem(item){
-      // Histórico liberado para todos os usuários aprovados.
-      // Admin pode gerenciar tudo. Operador só edita o próprio último fechamento real.
+      // Admin e supervisor veem tudo.
+      // Operador não vê ajustes internos/carga rápida dentro do histórico.
+      if(!isAdmin() && !isSupervisor() && isAdjustmentItem(item)) return false;
       return true;
     }
 
     function visibleHistory(){ return historyCache.filter(canAccessHistoryItem); }
+
+    function calculationHistory(){
+      // Usa o histórico completo para cálculos internos.
+      // Operadores continuam sem ver ajustes internos na interface,
+      // mas o diff/base considera esses ajustes para não quebrar o caixa.
+      return historyCache;
+    }
 
     function historyItemOwnerEmail(item){
       const t = item?.turno || {};
@@ -2048,7 +2239,7 @@ function updateHeroBalance(newValue){
       // 1) Fechamento real passa para o próximo turno como: saldoLiquido - retiradas.
       // 2) Ajuste interno altera essa base.
       // 3) Diff do próximo fechamento compara saldoLiquido atual contra essa base.
-      const view = visibleHistory();
+      const view = calculationHistory();
       const lastRealIndex = view.findIndex(item => !isAdjustmentItem(item));
       const lastReal = lastRealIndex >= 0 ? view[lastRealIndex] : null;
       if(!lastReal) return null;
@@ -2076,7 +2267,7 @@ function updateHeroBalance(newValue){
     }
 
     function previousRealClosingAfter(currentItem){
-      const view = visibleHistory();
+      const view = calculationHistory();
       const idx = view.findIndex(x => x.id === currentItem?.id);
       const start = idx >= 0 ? idx + 1 : 0;
       return view.slice(start).find(item => !isAdjustmentItem(item)) || null;
@@ -2090,7 +2281,7 @@ function updateHeroBalance(newValue){
           return adjustmentImpact(item);
         }
 
-        const view = visibleHistory();
+        const view = calculationHistory();
         const currentIndex = view.findIndex(x => x.id === item.id);
         const currentSaldo = moneyToNumber(item.turno?.saldoLiquido ?? item.currentSaldoTotal ?? 0);
 
@@ -2130,6 +2321,36 @@ function updateHeroBalance(newValue){
         || item.nomeOperador
         || t.nomeOperador
         || "Sem operador";
+    }
+
+    function getSaldoRecaFromItem(item={}){
+      const t = item.turno || {};
+
+      const candidates = [
+        t.webReca,
+        t.reca,
+        t.saldoReca,
+        t.saldo_reca,
+        t.recaSaldo,
+        t.web_reca,
+        t.banco,
+        item.webReca,
+        item.reca,
+        item.saldoReca,
+        item.saldo_reca,
+        item.recaSaldo,
+        item.web_reca,
+        item.banco
+      ];
+
+      for(const value of candidates){
+        if(value !== undefined && value !== null && String(value).trim?.() !== ""){
+          const n = moneyToNumber(value);
+          if(Number.isFinite(n)) return n;
+        }
+      }
+
+      return 0;
     }
 
     function setOperadorNameOnTurno(turno, nome){
@@ -2232,8 +2453,16 @@ function updateHeroBalance(newValue){
   const card = $("monthlyGoalCard");
   if(!card) return;
 
-  // ✅ Deixa a meta aparecer para qualquer usuário logado
-  card.classList.remove("hidden");
+  const canSeeGoal = isAdmin() || isSupervisor();
+
+  card.classList.toggle("hidden", !canSeeGoal);
+  card.style.display = canSeeGoal ? "" : "none";
+
+  if($("sideGoalsBtn")){
+    $("sideGoalsBtn").style.display = canSeeGoal ? "grid" : "none";
+  }
+
+  if(!canSeeGoal) return;
 
   const target = moneyToNumber(
     currentProfile?.monthlyGoal ||
@@ -2278,16 +2507,15 @@ function updateHeroBalance(newValue){
   if($("monthlyGoalDone")) $("monthlyGoalDone").textContent = formatMoney(done);
   if($("monthlyGoalTarget")) $("monthlyGoalTarget").textContent = formatMoney(target);
   if($("monthlyGoalPercent")) $("monthlyGoalPercent").textContent = `${percent.toFixed(1)}%`;
-  if($("monthlyGoalFill")) $("monthlyGoalFill").style.width = `${percent}%`;
+
+  if($("monthlyGoalFill")){
+    $("monthlyGoalFill").style.width = `${percent}%`;
+    const greenStrength = Math.max(42, Math.min(95, 42 + percent * .53));
+    $("monthlyGoalFill").style.background = `linear-gradient(90deg, hsl(145 70% ${greenStrength}%) 0%, #22c55e 58%, #087f5b 100%)`;
+  }
+
   if($("monthlyGoalRemaining")) $("monthlyGoalRemaining").textContent = remaining > 0 ? `Faltam ${formatMoney(remaining)}` : "Meta alcançada";
   if($("monthlyGoalStatus")) $("monthlyGoalStatus").textContent = remaining > 0 ? "Em andamento" : "Meta batida";
-
-  console.log("META MENSAL DEBUG:", {
-    target,
-    done,
-    percent,
-    monthItems
-  });
 }
 
 
@@ -2309,7 +2537,7 @@ function updateHeroBalance(newValue){
       const view = visibleHistory();
       const last = lastRealClosing() || view[0];
       const prev = last ? previousRealClosingAfter(last) : null;
-      const saldoReca = last?.turno?.webReca ?? last?.turno?.reca ?? last?.webReca ?? 0;
+      const saldoReca = getSaldoRecaFromItem(last);
       const saldoLiquido = last?.turno?.saldoLiquido ?? last?.currentSaldoTotal ?? 0;
       const pendentes = last?.turno?.pendentesTotal ?? 0;
       const diff = last ? displayCashDiff(last) : 0;
@@ -2338,7 +2566,11 @@ function updateHeroBalance(newValue){
         return !isNaN(d) && d >= weekStart;
       }).reduce((s,x)=>s + lucroFromItem(x), 0);
 
-      if($("homeSaldoReca")) updateHeroBalance(moneyToNumber(saldoReca));
+      if($("homeSaldoReca")){
+        const recaValue = moneyToNumber(saldoReca);
+        $("homeSaldoReca").textContent = formatMoney(recaValue);
+        updateHeroBalance(recaValue);
+      }
       if($("homeSaldoLiquido")) $("homeSaldoLiquido").textContent = formatMoney(saldoLiquido);
       if($("homePendentes")) $("homePendentes").textContent = formatMoney(pendentes);
       const pendCard = document.querySelector('[data-home-detail="pendentes"]');
@@ -2356,6 +2588,7 @@ function updateHeroBalance(newValue){
         $("homeInternalAdjustment").style.color = adjustmentValue < 0 ? "#FF3B30" : "#16C784";
       }
       const canSeeProfitCards = isAdmin() || isSupervisor();
+      if($("homeInternalAdjustmentCard")) $("homeInternalAdjustmentCard").classList.toggle("operator-hidden", !canSeeProfitCards);
       if($("todayResultCard")) $("todayResultCard").classList.toggle("hidden", !canSeeProfitCards);
       if($("weekResultCard")) $("weekResultCard").classList.toggle("hidden", !canSeeProfitCards);
 
@@ -3761,7 +3994,31 @@ body.side-drawer-open #sideMenuBtn{
     function generateBankPdfReport(){ const items=$("reportStart")?getReportItems():visibleHistory(); const win=window.open("","_blank"); if(!win) return alert("Permita pop-ups para gerar o PDF."); win.document.open(); win.document.write(buildBankPdfHtml(items)); win.document.close(); setTimeout(()=>{win.focus();win.print();},500); }
 
     function startHistoryRealtimeListener(){ if(historyUnsubscribe) historyUnsubscribe(); const qh=query(collection(db,"history"),orderBy("submittedAt","desc"),limit(300)); historyUnsubscribe=onSnapshot(qh,snap=>{historyCache=snap.docs.map(d=>({id:d.id,...d.data()})); hideNotice("appNotice"); renderAll();},error=>{console.warn("History permission/listener:",error); showNotice("appNotice",friendlyError(error),"error"); historyCache=[]; renderAll();}); }
-    function startSystemRealtime(){ if(systemUnsubscribe) systemUnsubscribe(); systemUnsubscribe=onSnapshot(doc(db,"system","saldoReca"),snap=>{ if(!snap.exists()) return; const data=snap.data(); if(data.valor!==undefined){updateHeroBalance(moneyToNumber(data.valor)); $("homeUpdatedAt").textContent="Saldo realtime: "+dateLabel(data.updatedAt);}},error=>console.warn("Saldo Reca realtime não configurado:",error)); }
+    function startSystemRealtime(){
+      if(systemUnsubscribe) systemUnsubscribe();
+
+      systemUnsubscribe = onSnapshot(doc(db,"system","saldoReca"), snap => {
+        if(!snap.exists()) return;
+
+        const data = snap.data();
+        if(data.valor === undefined) return;
+
+        const realtimeValue = moneyToNumber(data.valor);
+        const last = lastRealClosing() || visibleHistory()[0];
+        const historyReca = getSaldoRecaFromItem(last);
+
+        // Não deixa um documento realtime zerado apagar o Saldo Reca do último fechamento.
+        const valueToShow = realtimeValue > 0 ? realtimeValue : historyReca;
+
+        updateHeroBalance(valueToShow);
+
+        if($("homeUpdatedAt")){
+          $("homeUpdatedAt").textContent = data.updatedAt
+            ? "Saldo realtime: " + dateLabel(data.updatedAt)
+            : "Última atualização: " + dateLabel(last?.submittedAt || last?.createdAt || last?.turno?.closingDate);
+        }
+      }, error => console.warn("Saldo Reca realtime não configurado:", error));
+    }
 
     async function safeSetUserProfile(user, profile){ try{ await setDoc(doc(db,"users",user.uid), profile, { merge:true }); return true; }catch(e){ console.warn("Não conseguiu gravar perfil:",e); showNotice("appNotice",friendlyError(e),"error"); return false; } }
     async function loadProfile(user){ const ref=doc(db,"users",user.uid); try{ const snap=await getDoc(ref); if(snap.exists()) return snap.data(); const bootstrap=isBootstrapEmail(user.email); const profile={email:user.email,name:user.email.split("@")[0],role:bootstrap?"admin":"operador",status:bootstrap?"active":"pending",approved:bootstrap?true:false,blocked:false,createdAt:serverTimestamp()}; await safeSetUserProfile(user,profile); return profile; }catch(e){ console.warn("Erro ao ler perfil:",e); if(isBootstrapEmail(user.email)){ return {email:user.email,name:user.email.split("@")[0],role:"admin",approved:true,blocked:false,localOnly:true}; } showNotice("appNotice",friendlyError(e),"error"); return {email:user.email,name:user.email.split("@")[0],role:"operador",status:"pending",approved:false,blocked:false,permissionError:true}; } }
@@ -3834,7 +4091,37 @@ body.side-drawer-open #sideMenuBtn{
       }
     }
 
-    async function loadAudit(){ if(!isAdmin()) return; try{ const qh=query(collection(db,"audit_logs"),orderBy("createdAt","desc"),limit(20)); const snap=await getDocs(qh); $("auditList").innerHTML=snap.docs.map(d=>{const a=d.data(); return `<div class="history-item"><div class="history-top"><strong>${a.action}</strong><span>${dateLabel(a.createdAt)}</span></div><div class="muted">${a.description||""}<br>${a.email||""}</div></div>`;}).join("")||`<div class="history-item">Sem auditoria.</div>`; }catch(e){ $("auditList").innerHTML=`<div class="notice error">${friendlyError(e)}</div>`; } }
+    async function loadAudit(){
+      const box = $("auditList");
+      const auditCard = box?.closest(".card");
+
+      if(auditCard) auditCard.classList.toggle("hidden", !isAdmin());
+      if(!box) return;
+      if(!isAdmin()){
+        box.innerHTML = `<div class="history-item">Auditoria disponível somente para admin.</div>`;
+        return;
+      }
+
+      try{
+        box.innerHTML = `<div class="history-item">Carregando auditoria...</div>`;
+        const qh = query(collection(db,"audit_logs"), orderBy("createdAt","desc"), limit(50));
+        const snap = await getDocs(qh);
+
+        box.innerHTML = snap.docs.map(d=>{
+          const a = d.data();
+          return `<div class="history-item">
+            <div class="history-top">
+              <strong>${a.action || "ação"}</strong>
+              <span>${dateLabel(a.createdAt)}</span>
+            </div>
+            <div class="muted">${a.description || ""}<br>${a.email || ""}</div>
+          </div>`;
+        }).join("") || `<div class="history-item">Sem auditoria.</div>`;
+      }catch(e){
+        console.warn("Erro auditoria:", e);
+        box.innerHTML = `<div class="notice error">${friendlyError(e)}</div>`;
+      }
+    }
 
     async function createInternalUser(){ if(!await requireAdmin()) return; const email=$("newUserEmail").value.trim(), password=$("newUserPassword").value, name=$("newUserName").value.trim(), role=$("newUserRole").value, supervisorRaw=$("newUserSupervisor")?.value.trim()||""; if(!email||!password) return alert("Informe email e senha."); if(password.length<6) return alert("A senha precisa ter pelo menos 6 caracteres."); const secondaryApp=initializeApp(firebaseConfig,"SecondaryUserCreator"+Date.now()), secondaryAuth=getAuth(secondaryApp); try{ const cred=await createUserWithEmailAndPassword(secondaryAuth,email,password); await setDoc(doc(db,"users",cred.user.uid),{email,name:name||email.split("@")[0],role,supervisorUid:role==="operador"&&!supervisorRaw.includes("@")?(supervisorRaw||null):null,supervisorEmail:role==="operador"&&supervisorRaw.includes("@")?supervisorRaw:null,approved:true,blocked:false,createdAt:serverTimestamp(),createdBy:currentUser?.uid||null}); await signOut(secondaryAuth); await deleteApp(secondaryApp); await addAudit("create_user",`Usuário criado: ${email}`); ["newUserEmail","newUserPassword","newUserName","newUserSupervisor"].forEach(id=>{if($(id)) $(id).value="";}); await loadUsers(); alert("Usuário criado com sucesso."); }catch(e){ try{await signOut(secondaryAuth);await deleteApp(secondaryApp);}catch(_ignored){} alert(friendlyError(e)); } }
     async function registerAccess(){ const email=$("loginEmail").value.trim(), password=$("loginPassword").value; if(!email||!password) return showNotice("loginNotice","Informe email e senha para criar acesso.","error"); if(password.length<6) return showNotice("loginNotice","A senha precisa ter pelo menos 6 caracteres.","error"); try{ const bootstrap=isBootstrapEmail(email); await applyLoginPersistence(); const cred=await createUserWithEmailAndPassword(auth,email,password); const profile={email,name:email.split("@")[0],role:bootstrap?"admin":"operador",status:bootstrap?"active":"pending",approved:bootstrap?true:false,blocked:false,createdAt:serverTimestamp()}; await safeSetUserProfile(cred.user,profile); showNotice("loginNotice",bootstrap?"Conta admin criada. Entrando...":"Conta criada. Aguarde aprovação do admin.",bootstrap?"ok":"error"); }catch(e){ showNotice("loginNotice",friendlyError(e),"error"); } }
@@ -3862,27 +4149,65 @@ body.side-drawer-open #sideMenuBtn{
       if(name==="Goals") renderMonthlyGoal(visibleHistory());
     }
     function updateRoleVisibility(){
+      applyRoleBodyClass();
+
+      const canSeeManagement = isAdmin() || isSupervisor();
+      const canSeeAdmin = isAdmin();
+
       const adminOnlyIds = [
         "cargasPoker",
         "cargasCasino",
         "editCargasPoker",
         "editCargasCasino",
-        "quickChargeCard"
+        "quickChargeCard",
+        "sideAdminBtn"
       ];
 
       adminOnlyIds.forEach(id => {
         const el = $(id);
         const wrapper = el?.closest(".field") || el;
-        if(wrapper) wrapper.style.display = isAdmin() ? "" : "none";
+        if(wrapper) wrapper.style.display = canSeeAdmin ? "" : "none";
       });
-      const canSeeProfitCards = isAdmin() || isSupervisor();
+
+      // Operador não vê ajuste interno no card principal.
+      if($("homeInternalAdjustmentCard")){
+        $("homeInternalAdjustmentCard").classList.toggle("role-hidden", !canSeeManagement);
+        $("homeInternalAdjustmentCard").style.display = canSeeManagement ? "" : "none";
+      }
+
+      // Operador não vê meta mensal nem botão da meta.
+      if($("monthlyGoalCard")){
+        $("monthlyGoalCard").classList.toggle("hidden", !canSeeManagement);
+        $("monthlyGoalCard").style.display = canSeeManagement ? "" : "none";
+      }
+
+      if($("sideGoalsBtn")){
+        $("sideGoalsBtn").classList.toggle("role-hidden", !canSeeManagement);
+        $("sideGoalsBtn").style.display = canSeeManagement ? "grid" : "none";
+      }
+
+      document.querySelectorAll('[data-more-screen="Goals"]').forEach(btn=>{
+        btn.classList.toggle("role-hidden", !canSeeManagement);
+        btn.style.display = canSeeManagement ? "grid" : "none";
+      });
+
+      const canSeeProfitCards = canSeeManagement;
       if($("todayResultCard")) $("todayResultCard").classList.toggle("hidden", !canSeeProfitCards);
       if($("weekResultCard")) $("weekResultCard").classList.toggle("hidden", !canSeeProfitCards);
-      const canSeeReports = isAdmin() || isSupervisor();
-      document.querySelectorAll('[data-more-screen="Ranking"],[data-more-screen="Reports"]').forEach(el=>{ el.style.display = canSeeReports ? "grid" : "none"; });
-      if($("sideAdminBtn")) $("sideAdminBtn").style.display = isAdmin() ? "grid" : "none";
-    }
 
+      const canSeeReports = canSeeManagement;
+      document.querySelectorAll('[data-more-screen="Reports"],[data-more-screen="Ranking"]').forEach(btn=>{
+        btn.style.display = canSeeReports ? "grid" : "none";
+      });
+
+      const auditCard = $("auditList")?.closest(".card");
+      if(auditCard){
+        auditCard.classList.toggle("hidden", !canSeeAdmin);
+        auditCard.style.display = canSeeAdmin ? "" : "none";
+      }
+
+      if($("sideAdminBtn")) $("sideAdminBtn").style.display = canSeeAdmin ? "grid" : "none";
+    }
 
     function openSideDrawer(){
       $("sideDrawer")?.classList.add("active");
@@ -3901,7 +4226,7 @@ body.side-drawer-open #sideMenuBtn{
       const name = currentProfile?.name || currentUser?.email?.split("@")[0] || "Bank King";
       const role = isAdmin() ? "Admin" : isSupervisor() ? "Supervisor" : "Operador";
       const email = currentUser?.email || "-";
-      const now = new Date();
+      const now = nowSP();
       const initials = String(name || "BK").trim().split(/\s+/).slice(0,2).map(p=>p[0]).join("").toUpperCase() || "BK";
       const photoUrl = currentProfile?.photoURL || currentProfile?.photoUrl || currentUser?.photoURL || "";
 
@@ -3924,6 +4249,8 @@ body.side-drawer-open #sideMenuBtn{
       const photoUrl = currentProfile?.photoURL || currentProfile?.photoUrl || currentUser?.photoURL || "";
       if($("profileNameInput")) $("profileNameInput").value = name;
       if($("profileEmailInput")) $("profileEmailInput").value = email;
+      if($("profilePasswordInput")) $("profilePasswordInput").value = "";
+      if($("profilePasswordConfirmInput")) $("profilePasswordConfirmInput").value = "";
       if($("profilePhotoUrlInput")) $("profilePhotoUrlInput").value = photoUrl;
       updateProfilePhotoPreview(photoUrl, name);
       $("profileModal")?.classList.add("active");
@@ -3932,6 +4259,8 @@ body.side-drawer-open #sideMenuBtn{
     function closeProfileModal(){
       $("profileModal")?.classList.remove("active");
       if($("profilePhotoInput")) $("profilePhotoInput").value = "";
+      if($("profilePasswordInput")) $("profilePasswordInput").value = "";
+      if($("profilePasswordConfirmInput")) $("profilePasswordConfirmInput").value = "";
     }
 
     function updateProfilePhotoPreview(photoUrl="", name=""){
@@ -3971,23 +4300,106 @@ body.side-drawer-open #sideMenuBtn{
 
     async function saveOwnProfile(){
       if(!currentUser) return;
-      const name = ($("profileNameInput")?.value || "").trim() || currentUser.email?.split("@")[0] || "Usuário";
+
+      const saveBtn = $("saveProfileBtn");
+      setButtonLoading(saveBtn, true, "Salvando perfil...");
+
+      const oldEmail = String(currentUser.email || "").trim();
+      const name = ($("profileNameInput")?.value || "").trim() || oldEmail.split("@")[0] || "Usuário";
+      const newEmail = ($("profileEmailInput")?.value || "").trim();
+      const newPassword = $("profilePasswordInput")?.value || "";
+      const passwordConfirm = $("profilePasswordConfirmInput")?.value || "";
       let photoURL = ($("profilePhotoUrlInput")?.value || "").trim();
       const file = $("profilePhotoInput")?.files?.[0];
+
       try{
+        if(!newEmail) return alert("Informe um email válido.");
+
+        if(newPassword || passwordConfirm){
+          if(newPassword.length < 6) return alert("A nova senha precisa ter pelo menos 6 caracteres.");
+          if(newPassword !== passwordConfirm) return alert("A confirmação da senha não confere.");
+        }
+
         if(file) photoURL = await compressProfileImage(file);
-        const payload = { name, photoURL, photoUrl: photoURL, updatedAt: serverTimestamp() };
-        await setDoc(doc(db,"users",currentUser.uid), payload, { merge:true });
-        currentProfile = { ...(currentProfile || {}), ...payload, name, photoURL, photoUrl: photoURL };
+
+        // 1) Primeiro salva dados simples do perfil do próprio usuário.
+        // Isso funciona com a regra: request.auth.uid == userId.
+        const profilePayload = {
+          name,
+          email: oldEmail,
+          photoURL,
+          photoUrl: photoURL,
+          updatedAt: serverTimestamp(),
+          updatedBy: currentUser.uid
+        };
+
+        await setDoc(doc(db,"users",currentUser.uid), profilePayload, { merge:true });
+
+        // Atualiza local imediatamente, mesmo antes de tentar email/senha.
+        currentProfile = { ...(currentProfile || {}), ...profilePayload };
+
+        // 2) Depois tenta alterar Auth email/senha, se o usuário pediu.
+        // Se o Firebase exigir login recente, nome/foto continuam salvos.
+        let authChanged = false;
+        let authWarning = "";
+
+        if(newEmail && newEmail.toLowerCase() !== oldEmail.toLowerCase()){
+          try{
+            await updateEmail(currentUser, newEmail);
+            await setDoc(doc(db,"users",currentUser.uid), { email:newEmail, updatedAt:serverTimestamp() }, { merge:true });
+            currentProfile.email = newEmail;
+            authChanged = true;
+          }catch(e){
+            const code = e?.code || "";
+            if(code.includes("requires-recent-login")){
+              authWarning = " Nome/foto foram salvos, mas para trocar o email você precisa sair, entrar novamente e tentar de novo.";
+            }else if(code.includes("auth/email-already-in-use")){
+              authWarning = " Nome/foto foram salvos, mas este email já está em uso.";
+            }else if(code.includes("auth/invalid-email")){
+              authWarning = " Nome/foto foram salvos, mas o email informado é inválido.";
+            }else{
+              authWarning = " Nome/foto foram salvos, mas não foi possível trocar o email.";
+            }
+          }
+        }
+
+        if(newPassword){
+          try{
+            await updatePassword(currentUser, newPassword);
+            authChanged = true;
+          }catch(e){
+            const code = e?.code || "";
+            if(code.includes("requires-recent-login")){
+              authWarning += " Para trocar a senha, saia, entre novamente e tente de novo.";
+            }else{
+              authWarning += " Não foi possível trocar a senha agora.";
+            }
+          }
+        }
+
+        await addAudit("update_own_profile", `Perfil atualizado por ${currentUser.email || oldEmail}`);
+
         fillOperadorFromProfile();
         updateSideDrawerProfile();
         renderAll();
         closeProfileModal();
-        showNotice("appNotice","Perfil atualizado com sucesso.","ok");
-        setTimeout(()=>hideNotice("appNotice"), 2600);
+
+        if(authWarning){
+          showNotice("appNotice", authWarning.trim(), "error");
+        }else{
+          showNotice("appNotice", authChanged ? "Perfil e acesso atualizados com sucesso." : "Perfil atualizado com sucesso.", "ok");
+          setTimeout(()=>hideNotice("appNotice"), 2800);
+        }
       }catch(e){
         console.warn("Erro ao salvar perfil:", e);
-        alert("Não foi possível salvar o perfil. Verifique se suas regras permitem o usuário editar o próprio documento em /users/{uid}.");
+        const code = e?.code || "";
+        if(code.includes("permission-denied")){
+          alert("O app está correto, mas falta liberar a regra do Firestore para o usuário editar o próprio perfil em /users/{uid}. Veja as regras no final deste arquivo.");
+        }else{
+          alert("Não foi possível salvar o perfil: " + friendlyError(e));
+        }
+      }finally{
+        setButtonLoading(saveBtn, false);
       }
     }
 
@@ -4076,12 +4488,12 @@ body.side-drawer-open #sideMenuBtn{
       document.querySelectorAll("[data-more-screen]").forEach(btn=>btn.onclick=(ev)=>{ ev.stopPropagation(); showScreen(btn.dataset.moreScreen); }); document.querySelectorAll("[data-rank]").forEach(btn=>btn.onclick=()=>{document.querySelectorAll("[data-rank]").forEach(b=>b.classList.remove("active")); btn.classList.add("active"); currentRankRange=btn.dataset.rank; renderRanking();}); $("logoutBtn").onclick=async()=>{if(historyUnsubscribe)historyUnsubscribe();if(systemUnsubscribe)systemUnsubscribe();await signOut(auth);}; $("loginBtn").onclick=async()=>{try{hideNotice("loginNotice");await applyLoginPersistence();await signInWithEmailAndPassword(auth,$("loginEmail").value.trim(),$("loginPassword").value);}catch(e){showNotice("loginNotice",friendlyError(e),"error");}}; $("registerBtn").onclick=registerAccess; $("resetPasswordBtn").onclick=async()=>{try{const email=$("loginEmail").value.trim(); if(!email) return showNotice("loginNotice","Informe o email.","error"); await sendPasswordResetEmail(auth,email); showNotice("loginNotice","Email de recuperação enviado.","ok");}catch(e){showNotice("loginNotice",friendlyError(e),"error");}}; $("receiptCloseBtn") && ($("receiptCloseBtn").onclick=closeHistoryReceipt);
       $("receiptExportPngBtn") && ($("receiptExportPngBtn").onclick=exportReceiptAsPng);
       $("editCloseBtn").onclick=closeEdit; $("cancelEditBtn").onclick=closeEdit; $("saveEditBtn").onclick=saveEdit; $("editAddPendingBtn").onclick=()=>createDynamicRow("editPendingList","Nome / motivo"); $("editAddOutflowBtn").onclick=()=>createDynamicRow("editOutflowList","Descrição"); }
-    function initDate(){ const now=new Date(); now.setMinutes(now.getMinutes()-now.getTimezoneOffset()); $("closingDate").value=now.toISOString().slice(0,16); }
+    function initDate(){ if($("closingDate")) $("closingDate").value = localInputSP(nowSP()); }
 
-    onAuthStateChanged(auth,async(user)=>{ currentUser=user; if(!user){$("loginScreen").classList.remove("hidden");$("appShell").classList.add("hidden");$("bottomNav").classList.add("hidden");return;} currentProfile=await loadProfile(user); if(currentProfile.blocked){await signOut(auth);return alert("Usuário bloqueado.");} if(currentProfile.approved===false){$("loginScreen").classList.remove("hidden");$("appShell").classList.add("hidden");$("bottomNav").classList.add("hidden");showNotice("loginNotice","Usuário aguardando aprovação do admin.","error");return;} $("loginScreen").classList.add("hidden");$("appShell").classList.remove("hidden");$("bottomNav").classList.remove("hidden");$("topUserLabel").textContent=`${currentProfile.name||user.email} • ${isAdmin()?"Admin":isSupervisor()?"Supervisor":"Operador"}`;  $("adminStatus").textContent=isAdmin()?"Admin ativo":"Somente admin";
+    onAuthStateChanged(auth,async(user)=>{ currentUser=user; if(!user){document.body.classList.remove("role-admin","role-supervisor","role-operador");$("loginScreen").classList.remove("hidden");$("appShell").classList.add("hidden");$("bottomNav").classList.add("hidden");return;} currentProfile=await loadProfile(user); if(currentProfile.blocked){await signOut(auth);return alert("Usuário bloqueado.");} if(currentProfile.approved===false){$("loginScreen").classList.remove("hidden");$("appShell").classList.add("hidden");$("bottomNav").classList.add("hidden");showNotice("loginNotice","Usuário aguardando aprovação do admin.","error");return;} $("loginScreen").classList.add("hidden");$("appShell").classList.remove("hidden");$("bottomNav").classList.remove("hidden");$("topUserLabel").textContent=`${currentProfile.name||user.email} • ${isAdmin()?"Admin":isSupervisor()?"Supervisor":"Operador"}`;  $("adminStatus").textContent=isAdmin()?"Admin ativo":"Somente admin";
       if($("moreAdminBtn")) $("moreAdminBtn").style.display = isAdmin() ? "flex" : "none"; if($("sideAdminBtn")) $("sideAdminBtn").style.display = isAdmin() ? "grid" : "none"; updateSideDrawerProfile();
 
-      updateRoleVisibility(); if(currentProfile.permissionError) showNotice("appNotice","Seu login entrou, mas o Firestore negou acesso ao perfil. Ajuste as regras ou coloque seu email em BOOTSTRAP_ADMIN_EMAILS.","error"); startHistoryRealtimeListener(); startSystemRealtime(); fillOperadorFromProfile(); renderAll(); });
+      applyRoleBodyClass(); updateRoleVisibility(); if(isAdmin()) loadAudit(); if(currentProfile.permissionError) showNotice("appNotice","Seu login entrou, mas o Firestore negou acesso ao perfil. Ajuste as regras ou coloque seu email em BOOTSTRAP_ADMIN_EMAILS.","error"); startHistoryRealtimeListener(); startSystemRealtime(); fillOperadorFromProfile(); renderAll(); });
 
     function runSelfTests(){
       const savedUser = currentUser;
