@@ -1216,6 +1216,276 @@ html,body{background:#ffffff!important;}
   cursor:not-allowed!important;
 }
 
+
+
+/* =========================================================
+   BANK KING — CHUMBO SÓLIDO GLOBAL / SEM DEGRADÊ
+   Todos os cards coloridos ficam preto chumbo uniforme.
+   Hierarquia: título discreto, valor forte, texto secundário suave.
+========================================================= */
+:root{
+  --chumbo-solid:#242424!important;
+  --chumbo-text:#ffffff!important;
+  --chumbo-muted:rgba(255,255,255,.62)!important;
+  --chumbo-line:rgba(255,255,255,.12)!important;
+  --primary:#242424!important;
+  --primary2:#242424!important;
+  --navy:#242424!important;
+  --navy2:#242424!important;
+}
+
+.hero-card,
+.hero-mini,
+.summary-head,
+.summary-live,
+.summary-note,
+.receipt-total,
+.cover,
+.cover .total,
+.cover .totals .total,
+.main-card,
+.total,
+.report-kpi-card,
+.dark-kpi,
+.pdf-kpi-card,
+.pdf-section-card,
+.pdf-carga-box,
+.pdf-profit-card,
+.nav-btn.active,
+.rank-tabs button.active,
+.side-menu-btn.active,
+.logo-box,
+.menu-launcher,
+.more-menu-btn .mmb-icon,
+.side-menu-btn.active .mmb-icon,
+.btn:not(.secondary):not(.danger),
+.small-btn:not(.secondary):not(.danger),
+.admin-toggle:not(.secondary),
+.profile-photo-preview.has-photo,
+.side-drawer-avatar.photo-slot.has-photo,
+.login-logo,
+.splash-logo,
+.receipt-logo,
+[class*="primary-card"],
+[class*="bank-card"],
+[class*="blue"],
+[class*="report-header"],
+[class*="report-cover"]{
+  background:#242424!important;
+  background-image:none!important;
+  color:#ffffff!important;
+  border-color:var(--chumbo-line)!important;
+  box-shadow:0 1px 2px rgba(0,0,0,.08),0 14px 34px rgba(36,36,36,.18)!important;
+}
+
+.hero-card::before,
+.hero-card::after,
+.pdf-kpi-card::after,
+.pdf-section-card::before,
+.pdf-profit-card::after{
+  background:none!important;
+  background-image:none!important;
+}
+
+.pdf-kpi-card::before,
+.pdf-profit-card::before{
+  background:rgba(255,255,255,.10)!important;
+}
+
+.hero-mini,
+.summary-live,
+.summary-note,
+.cover .total,
+.cover .totals .total,
+.receipt-panel .receipt-total,
+.report-card-dark,
+.report-kpi-card,
+.dark-kpi,
+.pdf-carga-box{
+  background:#242424!important;
+  background-image:none!important;
+  border:1px solid var(--chumbo-line)!important;
+  color:#fff!important;
+}
+
+.hero-card .hero-label,
+.hero-sub,
+.hero-mini span,
+.summary-head span,
+.summary-live,
+.summary-note,
+.receipt-total span,
+.cover .meta,
+.cover .brand p,
+.cover .total span,
+.cover .totals .total span,
+.main-card span,
+.total span,
+.report-kpi-card span,
+.dark-kpi span,
+.pdf-kpi-card span,
+.pdf-section-title,
+.pdf-carga-box span,
+.pdf-profit-card span,
+.side-menu-btn.active span:not(.mmb-icon),
+.nav-btn.active span{
+  color:var(--chumbo-muted)!important;
+  font-size:10px!important;
+  line-height:1.05!important;
+  font-weight:900!important;
+  text-transform:uppercase!important;
+  letter-spacing:.75px!important;
+}
+
+.hero-card .hero-value,
+.hero-mini strong,
+.summary-head h2,
+.receipt-total strong,
+.cover h1,
+.cover .total b,
+.cover .totals .total b,
+.main-card b,
+.main-card strong,
+.total b,
+.report-kpi-card b,
+.dark-kpi b,
+.pdf-kpi-card b,
+.pdf-carga-box b,
+.pdf-profit-card b,
+.nav-btn.active strong,
+.side-menu-btn.active strong{
+  color:#ffffff!important;
+  font-weight:950!important;
+  letter-spacing:-.55px!important;
+  font-variant-numeric:tabular-nums lining-nums!important;
+  font-feature-settings:"tnum" 1,"lnum" 1!important;
+}
+
+.hero-card{
+  padding:28px 24px!important;
+  border-radius:24px!important;
+}
+.hero-card .hero-label{
+  margin-bottom:12px!important;
+}
+.hero-card .hero-value{
+  font-size:54px!important;
+  line-height:.92!important;
+  margin:0 0 12px!important;
+}
+.hero-sub{
+  display:flex!important;
+  align-items:center!important;
+  gap:9px!important;
+  margin-top:0!important;
+  font-size:12px!important;
+}
+.hero-sub::before{
+  background:#18b981!important;
+  box-shadow:0 0 0 5px rgba(24,185,129,.13)!important;
+}
+
+.hero-mini{
+  min-height:88px!important;
+  padding:15px 16px!important;
+  border-radius:18px!important;
+  box-shadow:none!important;
+}
+.hero-mini span{
+  display:block!important;
+  margin-bottom:10px!important;
+}
+.hero-mini strong{
+  display:block!important;
+  font-size:22px!important;
+  line-height:1.05!important;
+}
+
+.btn:not(.secondary):not(.danger),
+.small-btn:not(.secondary):not(.danger),
+.admin-toggle:not(.secondary){
+  background:#242424!important;
+  background-image:none!important;
+  color:#fff!important;
+  border:1px solid rgba(255,255,255,.12)!important;
+}
+
+.side-menu-btn.active,
+.nav-btn.active,
+.rank-tabs button.active{
+  background:#242424!important;
+  background-image:none!important;
+  color:#fff!important;
+}
+
+.card-title h2{
+  color:#0d0d14!important;
+  font-weight:900!important;
+  letter-spacing:-.45px!important;
+}
+.card-title span,
+.muted{
+  color:#8a8a9a!important;
+  font-weight:800!important;
+}
+
+.metric{
+  color:#0d0d14!important;
+  font-weight:950!important;
+  letter-spacing:-1.2px!important;
+}
+
+#homeInternalAdjustment,
+.positive-text,
+.chips-good,
+.txt-pos{
+  color:#23c483!important;
+}
+#homeDiff,
+.negative-text,
+.chips-bad,
+.txt-neg{
+  color:#ff5f7a!important;
+}
+
+.cover,
+.main-card,
+.pdf-kpi-card,
+.pdf-section-card,
+.pdf-profit-card{
+  background:#242424!important;
+  background-image:none!important;
+}
+.close-block,
+.detail-card{
+  border-top-color:rgba(36,36,36,.22)!important;
+}
+
+.rank-fill.good,
+.goal-fill,
+.card-indicator-fill.good{
+  background:#242424!important;
+  background-image:none!important;
+}
+.loading-spinner,
+.reload-spinner{
+  border-top-color:#242424!important;
+}
+
+@media(max-width:760px){
+  .hero-card{
+    margin:0 14px!important;
+    padding:24px 20px!important;
+    border-radius:22px!important;
+  }
+  .hero-card .hero-value{
+    font-size:44px!important;
+  }
+  .hero-mini strong{
+    font-size:20px!important;
+  }
+}
+
 </style>
 
 <script>
