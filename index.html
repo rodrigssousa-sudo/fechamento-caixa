@@ -1080,7 +1080,7 @@ html,body{background:#ffffff!important;}
   border:1px solid rgba(255,255,255,.13)!important;
   box-shadow:inset 0 1px 0 rgba(255,255,255,.045)!important;
 }
-.login-card input:not([type="checkbox"]):focus{
+.login-card input:not([type="checkbox"]:focus){
   background:rgba(255,255,255,.115)!important;
   border-color:rgba(255,255,255,.22)!important;
   box-shadow:0 0 0 3px rgba(255,255,255,.055)!important;
@@ -1714,40 +1714,6 @@ body.role-operador [data-more-screen="Goals"]{
   font-variant-numeric:tabular-nums lining-nums!important;
 }
 
-
-
-/* =========================================================
-   RELATÓRIO PDF — FILTROS AVANÇADOS VISÍVEIS
-========================================================= */
-.report-filter-grid{
-  grid-template-columns:repeat(2,minmax(0,1fr))!important;
-  align-items:end!important;
-  gap:12px!important;
-}
-
-.report-filter-grid .field{
-  display:block!important;
-}
-
-.report-filter-grid .field label{
-  display:block!important;
-  font-size:10px!important;
-  font-weight:950!important;
-  color:var(--muted)!important;
-  text-transform:uppercase!important;
-  letter-spacing:.55px!important;
-}
-
-#reportOperadorWrap.is-hidden{
-  display:none!important;
-}
-
-@media(max-width:760px){
-  .report-filter-grid{
-    grid-template-columns:1fr!important;
-  }
-}
-
 </style>
 
 <script>
@@ -1986,7 +1952,7 @@ function updateHeroBalance(newValue){
             <div class="summary-box"><span>Retiradas total</span><b id="calcSaidas">$ 0,00</b></div>
             <div class="summary-box good"><span>Retirada lucro</span><b id="calcLucroSaida">$ 0,00</b></div>
             <div class="summary-box gold"><span>Custo operacional</span><b id="calcCustoSaida">$ 0,00</b></div>
-            <div class="summary-box"><span>Taxa Reca</span><b id="calcCustoRecaSaida">$ 0,00</b></div>
+            <div class="summary-box"><span>Custo O. Reca</span><b id="calcCustoRecaSaida">$ 0,00</b></div>
           </div>
           <div class="summary-note">
             <span>Carga poker: <b id="calcCargaPoker">$ 0,00</b></span>
@@ -2021,7 +1987,7 @@ function updateHeroBalance(newValue){
               <div class="field"><label>Destino casino</label><select id="quickCargaCasinoDestino"><option value="buffalo">Buffalo</option><option value="ganamos">Ganamos</option></select></div>
             </div>
             <div class="field"><label>Retirada do caixa</label><input id="quickRetiradaCaixa" class="money-input" inputmode="decimal" placeholder="0,00" /></div>
-            <div class="field"><label>Tipo da retirada</label><select id="quickRetiradaTipo"><option value="lucro">Lucro</option><option value="custo_operacional">Custo operacional</option><option value="custo_reca">Taxa Reca</option></select></div>
+            <div class="field"><label>Tipo da retirada</label><select id="quickRetiradaTipo"><option value="lucro">Lucro</option><option value="custo_operacional">Custo operacional</option><option value="custo_reca">Custo O. Reca</option></select></div>
             <div class="field"><label>Motivo</label><input id="quickCargaMotivo" placeholder="Ex: aporte de caixa / reposição banca" /></div>
             <div class="field"><label>Responsável</label><input id="quickCargaOperador" placeholder="Admin / responsável" /></div>
           </div>
@@ -2056,82 +2022,7 @@ function updateHeroBalance(newValue){
 
     <section id="screenRanking" class="screen"><div class="section-divider">Performance por operador</div><div class="card"><div class="card-title"><h2>Ranking operadores</h2><span>Lucro por operador</span></div><div class="rank-tabs"><button class="active" data-rank="day">Diário</button><button data-rank="week">Semanal</button><button data-rank="month">Mensal</button><button data-rank="all">Total</button></div><div id="rankingList" class="rank-list"></div></div></section>
 
-    <section id="screenReports" class="screen">
-  <div class="section-divider">Exportação institucional</div>
-  <div class="card">
-    <div class="card-title">
-      <h2>Relatórios premium</h2>
-      <span>PDF nível banco • filtros avançados</span>
-    </div>
-
-    <div class="form-grid report-filter-grid">
-      <div class="field">
-        <label>Data inicial</label>
-        <input id="reportStart" type="date" />
-      </div>
-
-      <div class="field">
-        <label>Data final</label>
-        <input id="reportEnd" type="date" />
-      </div>
-
-      <div class="field">
-        <label>Operador</label>
-        <select id="reportOperatorMode">
-          <option value="all">Todos os operadores</option>
-          <option value="specific">Operador específico</option>
-        </select>
-      </div>
-
-      <div class="field" id="reportOperadorWrap">
-        <label>Nome do operador</label>
-        <input id="reportOperador" placeholder="Digite o operador" />
-      </div>
-
-      <div class="field">
-        <label>Supervisor</label>
-        <input id="reportSupervisor" placeholder="Todos" />
-      </div>
-
-      <div class="field">
-        <label>Tipo de movimento</label>
-        <select id="reportEntryType">
-          <option value="all">Todos</option>
-          <option value="closings">Fechamentos de operadores</option>
-          <option value="adjustments">Apenas ajustes internos</option>
-          <option value="charges">Apenas cargas de fichas</option>
-        </select>
-      </div>
-
-      <div class="field">
-        <label>Modelo do relatório</label>
-        <select id="reportDetailMode">
-          <option value="all">Relatório com todos os detalhes</option>
-          <option value="profit">Relatório apenas do lucro / retiradas lucro</option>
-          <option value="operational">Relatório com gastos operacional e Taxa Reca</option>
-        </select>
-      </div>
-    </div>
-
-    <div class="grid three">
-      <div class="card" style="box-shadow:none;">
-        <div class="muted">Registros</div>
-        <div id="reportPreviewCount" class="metric">0</div>
-      </div>
-      <div class="card" style="box-shadow:none;">
-        <div class="muted" id="reportPreviewMainLabel">Saldo líquido</div>
-        <div id="reportPreviewSaldo" class="metric">$ 0,00</div>
-      </div>
-      <div class="card" style="box-shadow:none;">
-        <div class="muted" id="reportPreviewDiffLabel">Diferença</div>
-        <div id="reportPreviewDiff" class="metric">$ 0,00</div>
-      </div>
-    </div>
-
-    <button id="previewReportBtn" class="btn secondary full" style="margin-top:14px;">Pré-visualizar resumo</button>
-    <button id="generateReportBtn" class="btn full" style="margin-top:10px;">Gerar PDF</button>
-  </div>
-</section>
+    <section id="screenReports" class="screen"><div class="section-divider">Exportação institucional</div><div class="card"><div class="card-title"><h2>Relatórios premium</h2><span>PDF nível banco • 91 dias + anual sob demanda</span></div><div class="form-grid"><div class="field"><label>Data inicial</label><input id="reportStart" type="date" /></div><div class="field"><label>Data final</label><input id="reportEnd" type="date" /></div><div class="field"><label>Operador</label><input id="reportOperador" placeholder="Todos" /></div><div class="field"><label>Supervisor</label><input id="reportSupervisor" placeholder="Todos" /></div></div><div class="grid three"><div class="card" style="box-shadow:none;"><div class="muted">Fechamentos</div><div id="reportPreviewCount" class="metric">0</div></div><div class="card" style="box-shadow:none;"><div class="muted">Saldo líquido</div><div id="reportPreviewSaldo" class="metric">$ 0,00</div></div><div class="card" style="box-shadow:none;"><div class="muted">Diferença</div><div id="reportPreviewDiff" class="metric">$ 0,00</div></div></div><button id="previewReportBtn" class="btn secondary full" style="margin-top:14px;">Pré-visualizar resumo</button><button id="generateReportBtn" class="btn full" style="margin-top:10px;">Gerar PDF</button></div></section>
 
     <section id="screenAdmin" class="screen">
       <div class="card">
@@ -2611,7 +2502,7 @@ service cloud.firestore {
 
     function withinHistoryRetention(item){
       const d = historyItemDate(item);
-      if(isNaN(d)) return true;
+      if(isNaN(d)) return false;
       return d >= historyRetentionStart();
     }
 
@@ -2821,7 +2712,7 @@ service cloud.firestore {
     function toDateInputValue(value){ return localInputSP(value || nowSP()); }
     function outflowCategoryLabel(category){
       if(category === "custo_operacional") return "Custo operacional";
-      if(category === "custo_reca") return "Taxa Reca";
+      if(category === "custo_reca") return "Custo O. Reca";
       return "Lucro";
     }
     function sumOutflowsByCategory(outflows=[], category){
@@ -2849,23 +2740,13 @@ service cloud.firestore {
     function canAccessHistoryItem(item){
       // Admin e supervisor veem tudo.
       // Operador não vê ajustes internos/carga rápida dentro do histórico.
-      const role = String(currentProfile?.role || "").toLowerCase();
-      const isManagement = isAdmin() || isSupervisor() || role === "admin" || role === "supervisor";
-
-      if(!isManagement && isAdjustmentItem(item)) return false;
-
-      // Qualquer usuário logado aprovado/ativo pode ver fechamentos.
+      if(!isAdmin() && !isSupervisor() && isAdjustmentItem(item)) return false;
       return true;
     }
 
     function visibleHistory(){
-      let list = historyCache.filter(withinHistoryRetention).filter(canAccessHistoryItem);
-
-      if(!list.length && historyCache.length){
-        list = historyCache.filter(canAccessHistoryItem);
-      }
-
-      return list;
+      // Interface e relatórios padrão ficam limitados aos últimos 91 dias.
+      return historyCache.filter(withinHistoryRetention).filter(canAccessHistoryItem);
     }
 
     function reportHistory(){
@@ -2950,12 +2831,6 @@ service cloud.firestore {
       const cargaPppoker = moneyToNumber(t.cargaPppoker || (cargaPokerDestino === "pppoker" ? cargaPokerMoney : 0));
 
       const cargaCasino = moneyToNumber(t.cargasCasino ?? t.cargas ?? 0);
-        const lucroItem = itemProfitTotal(item);
-        const operacionalItem = turnCategoryTotal(t, "custo_operacional", "custoOperacionalTotal");
-        const taxaRecaItem = turnCategoryTotal(t, "custo_reca", "custoRecaTotal");
-        const showFullDetails = detailMode === "all";
-        const showProfitOnly = detailMode === "profit";
-        const showOperationalOnly = detailMode === "operational";
       const cargaCasinoDestino = t.cargaCasinoDestino || t.quickCargaCasinoDestino || "casino";
       const cargaBuffalo = moneyToNumber(t.cargaBuffalo || (cargaCasinoDestino === "buffalo" ? cargaCasino : 0));
       const cargaGanamos = moneyToNumber(t.cargaGanamos || (cargaCasinoDestino === "ganamos" ? cargaCasino : 0));
@@ -3025,30 +2900,19 @@ service cloud.firestore {
       return view.slice(start).find(item => !isAdjustmentItem(item)) || null;
     }
 
-    function displayCashDiffForAllRoles(item){
+    function displayCashDiff(item){
       try{
         if(!item) return 0;
-
-        // Fonte principal: diff salvo no Firestore.
-        // Assim admin, supervisor e operador veem a mesma diferença.
-        if(item.diff !== undefined && item.diff !== null && String(item.diff).trim?.() !== ""){
-          return moneyToNumber(item.diff);
-        }
-
-        if(item.turno?.diff !== undefined && item.turno?.diff !== null){
-          return moneyToNumber(item.turno.diff);
-        }
 
         if(isAdjustmentItem(item)){
           return adjustmentImpact(item);
         }
 
-        // Fallback para registros antigos sem diff salvo.
         const view = calculationHistory();
         const currentIndex = view.findIndex(x => x.id === item.id);
         const currentSaldo = moneyToNumber(item.turno?.saldoLiquido ?? item.currentSaldoTotal ?? 0);
 
-        if(currentIndex < 0) return 0;
+        if(currentIndex < 0) return moneyToNumber(item.diff ?? 0);
 
         const prevRealIndex = view.findIndex((x, idx) => idx > currentIndex && !isAdjustmentItem(x));
         if(prevRealIndex < 0) return 0;
@@ -3060,15 +2924,18 @@ service cloud.firestore {
           calcularBaseOperacional(prevReal.turno || {})
         );
 
+        // Ajustes internos entre o fechamento anterior e o fechamento atual
+        // entram na base, mas não entram como lucro/diferença operacional.
         const internalAdjustments = view
           .slice(currentIndex + 1, prevRealIndex)
           .filter(isAdjustmentItem)
           .reduce((s,x)=>s + adjustmentImpact(x), 0);
 
-        return currentSaldo - (prevBase + internalAdjustments);
+        const baseComparacao = prevBase + internalAdjustments;
+        return currentSaldo - baseComparacao;
       }catch(e){
-        console.warn("Erro ao calcular/exibir diferença de caixa:", e);
-        return moneyToNumber(item?.diff ?? item?.turno?.diff ?? 0);
+        console.warn("Erro displayCashDiff:", e);
+        return 0;
       }
     }
 
@@ -3123,7 +2990,7 @@ service cloud.firestore {
 
     function getDynamicRows(containerId){ const el=$(containerId); if(!el) return []; return [...el.querySelectorAll(".row-item")].map(row=>({name:row.querySelector(".row-name")?.value||"",category:row.querySelector(".row-category")?.value||"",value:moneyToNumber(row.querySelector(".row-value")?.value||0)})).filter(x=>x.name||x.value); }
     function setDynamicRows(containerId, rows=[]){ const el=$(containerId); if(!el) return; el.innerHTML=""; (rows.length?rows:[{}]).forEach(r=>createDynamicRow(containerId,"Nome / motivo",r)); }
-    function createDynamicRow(containerId,label="Descrição",data={}){ const list=$(containerId); if(!list) return; const row=document.createElement("div"); const isOutflow=containerId.toLowerCase().includes("outflow"); row.className="row-item"+(isOutflow?" outflow-row":""); const safeName=String(data.name||"").replace(/"/g,'&quot;'); const value=data.value ? formatInputMoney(data.value) : ""; const category=data.category||data.type||"lucro"; row.innerHTML=isOutflow?`<input class="row-name" placeholder="${label}" value="${safeName}" /><select class="row-category"><option value="lucro">Lucro</option><option value="custo_operacional">Custo operacional</option><option value="custo_reca">Taxa Reca</option></select><input class="row-value money-input" inputmode="decimal" placeholder="0,00" value="${value}" /><button type="button" class="remove-row">×</button>`:`<input class="row-name" placeholder="${label}" value="${safeName}" /><input class="row-value money-input" inputmode="decimal" placeholder="0,00" value="${value}" /><button type="button" class="remove-row">×</button>`; if(isOutflow) row.querySelector(".row-category").value=category; row.querySelectorAll("input,select").forEach(i=>i.addEventListener("input",renderCalculations)); row.querySelectorAll("select").forEach(i=>i.addEventListener("change",renderCalculations)); row.querySelector(".remove-row").onclick=()=>{row.remove();renderCalculations();}; list.appendChild(row); applyBankMoneyMaskAll(row); enableClearOnFocus(); }
+    function createDynamicRow(containerId,label="Descrição",data={}){ const list=$(containerId); if(!list) return; const row=document.createElement("div"); const isOutflow=containerId.toLowerCase().includes("outflow"); row.className="row-item"+(isOutflow?" outflow-row":""); const safeName=String(data.name||"").replace(/"/g,'&quot;'); const value=data.value ? formatInputMoney(data.value) : ""; const category=data.category||data.type||"lucro"; row.innerHTML=isOutflow?`<input class="row-name" placeholder="${label}" value="${safeName}" /><select class="row-category"><option value="lucro">Lucro</option><option value="custo_operacional">Custo operacional</option><option value="custo_reca">Custo O. Reca</option></select><input class="row-value money-input" inputmode="decimal" placeholder="0,00" value="${value}" /><button type="button" class="remove-row">×</button>`:`<input class="row-name" placeholder="${label}" value="${safeName}" /><input class="row-value money-input" inputmode="decimal" placeholder="0,00" value="${value}" /><button type="button" class="remove-row">×</button>`; if(isOutflow) row.querySelector(".row-category").value=category; row.querySelectorAll("input,select").forEach(i=>i.addEventListener("input",renderCalculations)); row.querySelectorAll("select").forEach(i=>i.addEventListener("change",renderCalculations)); row.querySelector(".remove-row").onclick=()=>{row.remove();renderCalculations();}; list.appendChild(row); applyBankMoneyMaskAll(row); enableClearOnFocus(); }
 
     function getTurnFromForm(){
       const webReca=moneyToNumber($("webReca")?.value), suprema=moneyToNumber($("suprema")?.value), pppoker=moneyToNumber($("pppoker")?.value), buffalo=moneyToNumber($("buffalo")?.value), ganamos=moneyToNumber($("ganamos")?.value), cargasPoker=moneyToNumber($("cargasPoker")?.value), cargasCasino=moneyToNumber($("cargasCasino")?.value);
@@ -3343,171 +3210,26 @@ service cloud.firestore {
       const initials = (parts[0]?.[0] || "B") + (parts[1]?.[0] || parts[0]?.[1] || "K");
       return initials.toUpperCase().slice(0,2);
     }
-    
-    
-    function validHistoryDateMs(item){
-      const d = historyItemDate(item);
-      if(!d || isNaN(d)) return 0;
-      return d.getTime();
-    }
-
-    function normalizeHistoryCache(list=[]){
-      return (list || [])
-        .filter(Boolean)
-        .sort((a,b)=>validHistoryDateMs(b) - validHistoryDateMs(a));
-    }
-
-function globalHistorySafe(){
-      return normalizeHistoryCache(historyCache);
-    }
-
-    function latestRealClosingForHome(){ return latestClosingForHome(); }
-
-    
-    function latestClosingForHome(){
-      const global = globalHistorySafe();
-
-      // Prioridade: último fechamento real.
-      const real = global.find(item => !isAdjustmentItem(item));
-      if(real) return real;
-
-      // Fallback: qualquer item se não existir fechamento real.
-      return global[0] || visibleHistory()[0] || null;
-    }
-
-    function latestAdjustmentForHome(){
-      const global = globalHistorySafe();
-      return global.find(isAdjustmentItem) || null;
-    }
-
-function latestAnyItemForHome(){ return latestClosingForHome(); }
-
-    
-    let homeDirectFetchRunning = false;
-    let homeDirectFetchDone = false;
-
-    async function fetchHomeSnapshotDirect(){
-      if(homeDirectFetchRunning || homeDirectFetchDone) return;
-      if(!currentUser) return;
-
-      homeDirectFetchRunning = true;
-
-      try{
-        const qh = query(
-          collection(db,"history"),
-          orderBy("submittedAt","desc"),
-          limit(50)
-        );
-
-        const snap = await getDocs(qh);
-        const docs = snap.docs.map(d => ({ id:d.id, ...d.data() }));
-
-        if(docs.length){
-          const byId = new Map(historyCache.map(item => [item.id, item]));
-          docs.forEach(item => byId.set(item.id, item));
-          historyCache = normalizeHistoryCache([...byId.values()]);
-          homeDirectFetchDone = true;
-          console.info("Bank King home direct fetch:", docs.length);
-          renderAll();
-        }
-      }catch(e){
-        console.warn("Home direct fetch falhou:", e); fetchHomeSnapshotNoOrderFallback();
-      }finally{
-        homeDirectFetchRunning = false;
-      }
-    }
-
-
-    async function fetchHomeSnapshotNoOrderFallback(){
-      try{
-        const qh = query(collection(db,"history"), limit(50));
-        const snap = await getDocs(qh);
-        const docs = snap.docs.map(d => ({ id:d.id, ...d.data() }));
-        if(docs.length){
-          const byId = new Map(historyCache.map(item => [item.id, item]));
-          docs.forEach(item => byId.set(item.id, item));
-          historyCache = normalizeHistoryCache([...byId.values()]);
-          console.info("Bank King home no-order fallback:", docs.length);
-          renderAll();
-        }
-      }catch(e){
-        console.warn("Home no-order fallback falhou:", e);
-      }
-    }
-
-function renderHome(){
+    function renderHome(){
       const view = visibleHistory();
-      const globalView = globalHistorySafe();
-
-      // Fonte única da tela inicial:
-      // todos os cards principais vêm do mesmo último fechamento real.
-      const last = latestClosingForHome();
+      const last = lastRealClosing() || view[0];
       const prev = last ? previousRealClosingAfter(last) : null;
-
-      if(!last){
-        if($("homeSaldoReca")) $("homeSaldoReca").textContent = formatMoney(0);
-        if($("homeSaldoLiquido")) $("homeSaldoLiquido").textContent = formatMoney(0);
-        if($("homePendentes")) $("homePendentes").textContent = formatMoney(0);
-        if($("homeDiff")) $("homeDiff").textContent = formatMoney(0);
-        if($("homeLastClose")) $("homeLastClose").textContent = "-";
-        if($("homeOperador")) $("homeOperador").textContent = profileName() || "-";
-        if($("homeUpdatedAt")) $("homeUpdatedAt").textContent = historyCache.length ? "Sem fechamento real encontrado" : "Carregando histórico...";
-        renderMonthlyGoal(globalView);
-        renderHomeBonusCard(globalView);
-        renderChipsComparison(null, null);
-
-        // Fallback real: se o listener ainda não carregou, busca diretamente o último histórico.
-        fetchHomeSnapshotDirect();
-        return;
-      }
-
-      const t = last.turno || {};
       const saldoReca = getSaldoRecaFromItem(last);
-      const saldoLiquido = moneyToNumber(t.saldoLiquido ?? last.currentSaldoTotal ?? 0);
-      const pendentes = moneyToNumber(t.pendentesTotal ?? 0);
-      const diff = displayCashDiffForAllRoles(last);
-
-      if($("homeSaldoReca")){
-        const recaValue = moneyToNumber(saldoReca);
-        $("homeSaldoReca").textContent = formatMoney(recaValue);
-        updateHeroBalance(recaValue);
-      }
-
-      if($("homeSaldoLiquido")) $("homeSaldoLiquido").textContent = formatMoney(saldoLiquido);
-      if($("homePendentes")) $("homePendentes").textContent = formatMoney(pendentes);
+      const saldoLiquido = last?.turno?.saldoLiquido ?? last?.currentSaldoTotal ?? 0;
+      const pendentes = last?.turno?.pendentesTotal ?? 0;
+      const diff = last ? displayCashDiff(last) : 0;
 
       if($("homeDiff")){
         $("homeDiff").textContent = formatMoney(diff);
         $("homeDiff").style.color = diff < 0 ? "#FF3B30" : "#16C784";
       }
 
-      if($("homeOperador")) $("homeOperador").textContent = getOperadorName(last);
-      if($("homeLastClose")) $("homeLastClose").textContent = dateLabel(last.submittedAt || last.createdAt || t.closingDate);
-      if($("homeUpdatedAt")) $("homeUpdatedAt").textContent = "Última atualização: " + dateLabel(last.submittedAt || last.createdAt || t.closingDate);
-
-      const pendCard = document.querySelector('[data-home-detail="pendentes"]');
-      if(pendCard){
-        pendCard.classList.remove("pending-blue","pending-yellow","pending-red");
-        if(pendentes < 500000) pendCard.classList.add("pending-blue");
-        else if(pendentes < 1000000) pendCard.classList.add("pending-yellow");
-        else pendCard.classList.add("pending-red");
-      }
-
-      const latestAdjustment = latestAdjustmentForHome();
-      const adjustmentValue = latestAdjustment ? adjustmentImpact(latestAdjustment) : 0;
-
-      if($("homeInternalAdjustment")){
-        $("homeInternalAdjustment").textContent = latestAdjustment ? adjustmentDescription(latestAdjustment) : formatMoney(0);
-        $("homeInternalAdjustment").style.color = adjustmentValue < 0 ? "#FF3B30" : "#16C784";
-      }
-
       const todayStart = nowSP();
       todayStart.setHours(0,0,0,0);
-
       const weekStart = nowSP();
       weekStart.setDate(weekStart.getDate() - 7);
 
-      const profitItems = globalView.length ? globalView : visibleHistory();
+      const profitItems = visibleHistory();
       const lucroFromItem = (x) => turnCategoryTotal(x.turno || {}, "lucro", "retiradaLucroTotal");
       const itemDate = (x) => x.submittedAt?.toDate ? x.submittedAt.toDate() : new Date(x.turno?.closingDate || x.createdAt || 0);
 
@@ -3521,8 +3243,28 @@ function renderHome(){
         return !isNaN(d) && d >= weekStart;
       }).reduce((s,x)=>s + lucroFromItem(x), 0);
 
-      const canSeeProfitCards = isAdmin() || isSupervisor();
+      if($("homeSaldoReca")){
+        const recaValue = moneyToNumber(saldoReca);
+        $("homeSaldoReca").textContent = formatMoney(recaValue);
+        updateHeroBalance(recaValue);
+      }
+      if($("homeSaldoLiquido")) $("homeSaldoLiquido").textContent = formatMoney(saldoLiquido);
+      if($("homePendentes")) $("homePendentes").textContent = formatMoney(pendentes);
+      const pendCard = document.querySelector('[data-home-detail="pendentes"]');
+      if(pendCard){
+        pendCard.classList.remove("pending-blue","pending-yellow","pending-red");
+        if(moneyToNumber(pendentes) < 500000) pendCard.classList.add("pending-blue");
+        else if(moneyToNumber(pendentes) < 1000000) pendCard.classList.add("pending-yellow");
+        else pendCard.classList.add("pending-red");
+      }
 
+      const latestAdjustment = latestInternalAdjustment();
+      const adjustmentValue = latestAdjustment ? adjustmentImpact(latestAdjustment) : 0;
+      if($("homeInternalAdjustment")){
+        $("homeInternalAdjustment").textContent = adjustmentDescription(latestAdjustment);
+        $("homeInternalAdjustment").style.color = adjustmentValue < 0 ? "#FF3B30" : "#16C784";
+      }
+      const canSeeProfitCards = isAdmin() || isSupervisor();
       if($("homeInternalAdjustmentCard")) $("homeInternalAdjustmentCard").classList.toggle("operator-hidden", !canSeeProfitCards);
       if($("todayResultCard")) $("todayResultCard").classList.toggle("hidden", !canSeeProfitCards);
       if($("weekResultCard")) $("weekResultCard").classList.toggle("hidden", !canSeeProfitCards);
@@ -3531,7 +3273,6 @@ function renderHome(){
         $("homeTodayResult").textContent = formatMoney(todayResult);
         $("homeTodayResult").style.color = todayResult < 0 ? "#dc2626" : "#059669";
       }
-
       if($("homeWeekResult")){
         $("homeWeekResult").textContent = formatMoney(weekResult);
         $("homeWeekResult").style.color = weekResult < 0 ? "#dc2626" : "#059669";
@@ -3541,18 +3282,16 @@ function renderHome(){
       const pendentesCard = document.querySelector('[data-home-detail="pendentes"]');
       const lucroHojeCard = document.querySelector('[data-home-detail="lucroHoje"]');
       const lucroSemCard = document.querySelector('[data-home-detail="lucroSemana"]');
-
       const maxVal = Math.max(
-        Math.abs(saldoLiquido),
-        Math.abs(pendentes),
+        Math.abs(moneyToNumber(saldoLiquido)),
+        Math.abs(moneyToNumber(pendentes)),
         Math.abs(moneyToNumber(todayResult)),
         Math.abs(moneyToNumber(weekResult)),
         1
       );
 
-      setCardIndicator(saldoCard, saldoLiquido, maxVal);
-      setCardIndicator(pendentesCard, -pendentes, maxVal);
-
+      setCardIndicator(saldoCard, moneyToNumber(saldoLiquido), maxVal);
+      setCardIndicator(pendentesCard, -moneyToNumber(pendentes), maxVal);
       if(canSeeProfitCards){
         setCardIndicator(lucroHojeCard, moneyToNumber(todayResult), maxVal);
         setCardIndicator(lucroSemCard, moneyToNumber(weekResult), maxVal);
@@ -3561,9 +3300,11 @@ function renderHome(){
         lucroSemCard?.querySelector('.card-indicator')?.remove();
       }
 
-      // Bônus e meta usam histórico global para manter a mesma porcentagem para todos.
-      renderMonthlyGoal(globalView);
-      renderHomeBonusCard(globalView);
+      if($("homeOperador")) $("homeOperador").textContent = last ? getOperadorName(last) : "-";
+      if($("homeLastClose")) $("homeLastClose").textContent = last ? dateLabel(last.submittedAt || last.createdAt || last.turno?.closingDate) : "-";
+      if($("homeUpdatedAt")) $("homeUpdatedAt").textContent = last ? "Última atualização: " + dateLabel(last.submittedAt || last.createdAt) : "Aguardando fechamento";
+      renderMonthlyGoal(view);
+      renderHomeBonusCard(view);
       renderChipsComparison(last, prev);
     }
 
@@ -3628,7 +3369,6 @@ function renderHome(){
       const search = $("historySearch")?.value.trim().toLowerCase() || "";
       const date = $("historyDate")?.value || "";
       let list = visibleHistory();
-      if(!list.length && historyCache.length){ list = historyCache.filter(canAccessHistoryItem); }
 
       if(search){
         list = list.filter(x => getOperadorName(x).toLowerCase().includes(search));
@@ -3658,7 +3398,7 @@ function renderHome(){
         const operador = getOperadorName(item);
         const ajuste = isAdjustmentItem(item);
         const saldo = ajuste ? adjustmentImpact(item) : (t.saldoLiquido ?? item.currentSaldoTotal ?? 0);
-        const diff = displayCashDiffForAllRoles(item);
+        const diff = displayCashDiff(item);
         const canEdit = canEditHistoryItem(item);
         const canDelete = canDeleteHistoryItem(item);
         const lastEditableBadge = canEdit && !isAdmin() ? `<span class="badge ok" style="margin-left:6px;">ÚLTIMO EDITÁVEL</span>` : "";
@@ -3999,7 +3739,7 @@ alert("Carga adicionada ao sistema como ajuste auditável.");
       const t = item.turno || {};
       const id = item.id || "";
       const saldo = t.saldoLiquido ?? item.currentSaldoTotal ?? 0;
-      const diff = displayCashDiffForAllRoles(item);
+      const diff = displayCashDiff(item);
       const cargaPokerMoney = moneyToNumber(t.cargasPoker || 0) * 400;
       const cargaCasino = moneyToNumber(t.cargasCasino ?? t.cargas ?? 0);
 
@@ -4406,59 +4146,11 @@ alert("Carga adicionada ao sistema como ajuste auditável.");
       }
     }
 
-    function reportEntryType(){ return $("reportEntryType")?.value || "all"; }
-    function reportDetailMode(){ return $("reportDetailMode")?.value || "all"; }
-    function reportOperatorMode(){ return $("reportOperatorMode")?.value || "all"; }
-
-    function itemProfitTotal(item){
-      return turnCategoryTotal(item?.turno || {}, "lucro", "retiradaLucroTotal");
-    }
-
-    function itemOperationalCostTotal(item){
-      const t = item?.turno || {};
-      return turnCategoryTotal(t, "custo_operacional", "custoOperacionalTotal") + turnCategoryTotal(t, "custo_reca", "custoRecaTotal");
-    }
-
-    function isChargeReportItem(item){
-      if(!isAdjustmentItem(item)) return false;
-      const p = getAdjustmentParts(item);
-      return moneyToNumber(p.cargaSuprema||0) > 0
-        || moneyToNumber(p.cargaPppoker||0) > 0
-        || moneyToNumber(p.cargaBuffalo||0) > 0
-        || moneyToNumber(p.cargaGanamos||0) > 0
-        || moneyToNumber(p.cargaPoker||0) > 0
-        || moneyToNumber(p.cargaCasino||0) > 0;
-    }
-
-    function reportModeLabel(){
-      const type = reportEntryType();
-      const detail = reportDetailMode();
-
-      const typeLabel = type === "closings"
-        ? "Fechamentos de operadores"
-        : type === "adjustments"
-          ? "Ajustes internos"
-          : type === "charges"
-            ? "Cargas de fichas"
-            : "Todos os registros";
-
-      const detailLabel = detail === "profit"
-        ? "Apenas lucro / retiradas lucro"
-        : detail === "operational"
-          ? "Gastos operacionais / Taxa Reca"
-          : "Todos os detalhes";
-
-      return `${typeLabel} • ${detailLabel}`;
-    }
-
     function getReportItems(){
-      const start = $("reportStart")?.value || "";
-      const end = $("reportEnd")?.value || "";
-      const operatorMode = reportOperatorMode();
+      const start = $("reportStart")?.value;
+      const end = $("reportEnd")?.value;
       const operador = ($("reportOperador")?.value || "").trim().toLowerCase();
       const supervisor = ($("reportSupervisor")?.value || "").trim().toLowerCase();
-      const entryType = reportEntryType();
-      const detailMode = reportDetailMode();
 
       let useExtendedRange = false;
       if(start && end){
@@ -4470,6 +4162,8 @@ alert("Carga adicionada ao sistema como ajuste auditável.");
         }
       }
 
+      // Até 91 dias: fonte padrão otimizada.
+      // Acima de 91 dias: usa histórico carregado ampliado para balanço anual.
       let items = useExtendedRange
         ? historyCache.filter(canAccessHistoryItem)
         : reportHistory();
@@ -4488,7 +4182,7 @@ alert("Carga adicionada ao sistema como ajuste auditável.");
         });
       }
 
-      if(operatorMode === "specific" && operador){
+      if(operador){
         items = items.filter(x=>getOperadorName(x).toLowerCase().includes(operador));
       }
 
@@ -4496,62 +4190,20 @@ alert("Carga adicionada ao sistema como ajuste auditável.");
         items = items.filter(x=>String(x.supervisorName||x.turno?.supervisorName||x.supervisorEmail||x.turno?.supervisorEmail||"").toLowerCase().includes(supervisor));
       }
 
-      if(entryType === "closings") items = items.filter(x=>!isAdjustmentItem(x));
-      if(entryType === "adjustments") items = items.filter(isAdjustmentItem);
-      if(entryType === "charges") items = items.filter(isChargeReportItem);
-
-      if(detailMode === "profit") items = items.filter(x=>itemProfitTotal(x) > 0);
-      if(detailMode === "operational") items = items.filter(x=>itemOperationalCostTotal(x) > 0);
-
       return items;
     }
 
-    function previewReport(){
-      if(!$("reportPreviewCount")) return;
-
-      const items = getReportItems();
-      const detail = reportDetailMode();
-
-      const totalSaldo = items.reduce((sum,x)=>sum+moneyToNumber(x.turno?.saldoLiquido??x.currentSaldoTotal),0);
-      const totalDiff = items.reduce((sum,x)=>sum+displayCashDiffForAllRoles(x),0);
-      const totalLucro = items.reduce((sum,x)=>sum+itemProfitTotal(x),0);
-      const totalOperacional = items.reduce((sum,x)=>sum+itemOperationalCostTotal(x),0);
-
-      $("reportPreviewCount").textContent = items.length;
-
-      if(detail === "profit"){
-        if($("reportPreviewMainLabel")) $("reportPreviewMainLabel").textContent = "Lucro";
-        if($("reportPreviewDiffLabel")) $("reportPreviewDiffLabel").textContent = "Filtro";
-        $("reportPreviewSaldo").textContent = formatMoney(totalLucro);
-        $("reportPreviewDiff").textContent = "Lucro";
-      }else if(detail === "operational"){
-        if($("reportPreviewMainLabel")) $("reportPreviewMainLabel").textContent = "Gastos";
-        if($("reportPreviewDiffLabel")) $("reportPreviewDiffLabel").textContent = "Filtro";
-        $("reportPreviewSaldo").textContent = formatMoney(totalOperacional);
-        $("reportPreviewDiff").textContent = "Operacional";
-      }else{
-        if($("reportPreviewMainLabel")) $("reportPreviewMainLabel").textContent = "Saldo líquido";
-        if($("reportPreviewDiffLabel")) $("reportPreviewDiffLabel").textContent = "Diferença";
-        $("reportPreviewSaldo").textContent = formatMoney(totalSaldo);
-        $("reportPreviewDiff").textContent = formatMoney(totalDiff);
-      }
-    }
-
+    function previewReport(){ if(!$("reportPreviewCount")) return; const items=getReportItems(), totalSaldo=items.reduce((s,x)=>s+moneyToNumber(x.turno?.saldoLiquido??x.currentSaldoTotal),0), totalDiff=items.reduce((s,x)=>s+moneyToNumber(x.diff),0); $("reportPreviewCount").textContent=items.length; $("reportPreviewSaldo").textContent=formatMoney(totalSaldo); $("reportPreviewDiff").textContent=formatMoney(totalDiff); }
     function buildBankPdfHtml(items){
       const generatedAt = formatDateTimeSP(nowSP());
       const reportCode = "BK-" + Date.now().toString().slice(-8);
-      const detailMode = reportDetailMode();
-      const entryMode = reportEntryType();
-      const reportLabel = reportModeLabel();
       const totalSaldo = items.reduce((s,x)=>s + moneyToNumber(x.turno?.saldoLiquido ?? x.currentSaldoTotal), 0);
-      const totalDiff = items.filter(x=>!isAdjustmentItem(x)).reduce((s,x)=>s + displayCashDiffForAllRoles(x), 0);
+      const totalDiff = items.filter(x=>!isAdjustmentItem(x)).reduce((s,x)=>s + displayCashDiff(x), 0);
       const totalAjustes = items.filter(isAdjustmentItem).reduce((s,x)=>s + adjustmentImpact(x), 0);
       const ajusteParts = items.filter(isAdjustmentItem).map(getAdjustmentParts);
       const totalCargaBuffalo = ajusteParts.reduce((s,x)=>s + moneyToNumber(x.cargaBuffalo || 0), 0);
       const totalCargaGanamos = ajusteParts.reduce((s,x)=>s + moneyToNumber(x.cargaGanamos || 0), 0);
       const totalCargaPoker = ajusteParts.reduce((s,x)=>s + moneyToNumber(x.cargaPoker || 0), 0);
-      const totalCargaSuprema = ajusteParts.reduce((s,x)=>s + moneyToNumber(x.cargaSuprema || 0), 0);
-      const totalCargaPppoker = ajusteParts.reduce((s,x)=>s + moneyToNumber(x.cargaPppoker || 0), 0);
       const totalLucro = items.reduce((s,x)=>s + turnCategoryTotal(x.turno || {}, "lucro", "retiradaLucroTotal"), 0);
       const totalCustoOperacional = items.reduce((s,x)=>s + turnCategoryTotal(x.turno || {}, "custo_operacional", "custoOperacionalTotal"), 0);
       const totalCustoReca = items.reduce((s,x)=>s + turnCategoryTotal(x.turno || {}, "custo_reca", "custoRecaTotal"), 0);
@@ -4559,7 +4211,7 @@ alert("Carga adicionada ao sistema como ajuste auditável.");
       const blocks = items.map((item, index)=>{
         const t = item.turno || {};
         const ajuste = isAdjustmentItem(item);
-        const diff = ajuste ? adjustmentImpact(item) : displayCashDiffForAllRoles(item);
+        const diff = ajuste ? adjustmentImpact(item) : displayCashDiff(item);
         const saldo = moneyToNumber(t.saldoLiquido ?? item.currentSaldoTotal ?? 0);
         const base = ajuste ? moneyToNumber(item.operationalBase ?? item.currentSaldoTotal ?? 0) : calcularBaseOperacional({ ...t, saldoLiquido: saldo });
         const positive = diff >= 0;
@@ -4569,20 +4221,9 @@ alert("Carga adicionada ao sistema como ajuste auditável.");
         const motivo = t.ajusteMotivo || item.adjustmentReason || "-";
         const cargaPoker = moneyToNumber(t.cargasPoker || 0) * 400;
         const cargaCasino = moneyToNumber(t.cargasCasino ?? t.cargas ?? 0);
-        const lucroItem = itemProfitTotal(item);
-        const operacionalItem = turnCategoryTotal(t, "custo_operacional", "custoOperacionalTotal");
-        const taxaRecaItem = turnCategoryTotal(t, "custo_reca", "custoRecaTotal");
-        const showFullDetails = detailMode === "all";
-        const showProfitOnly = detailMode === "profit";
-        const showOperationalOnly = detailMode === "operational";
 
-        const pendentes = showFullDetails ? ((t.pendings || []).filter(x=>x.name || x.value).map(p=>`<div class="line"><span>${p.name || "Pendente"}</span><b>${formatMoney(p.value || 0)}</b></div>`).join("") || `<div class="line muted-line"><span>Sem pendentes</span><b>-</b></div>`) : "";
-        const outflowRows = (t.outflows || []).filter(x=>x.name || x.value).filter(o=>{
-          if(showProfitOnly) return o.category === "lucro";
-          if(showOperationalOnly) return o.category === "custo_operacional" || o.category === "custo_reca";
-          return true;
-        });
-        const retiradas = outflowRows.map(o=>`<div class="line"><span>${o.name || "Retirada"} • ${outflowCategoryLabel(o.category)}</span><b>${formatMoney(o.value || 0)}</b></div>`).join("") || `<div class="line muted-line"><span>Sem retiradas neste filtro</span><b>-</b></div>`;
+        const pendentes = (t.pendings || []).filter(x=>x.name || x.value).map(p=>`<div class="line"><span>${p.name || "Pendente"}</span><b>${formatMoney(p.value || 0)}</b></div>`).join("") || `<div class="line muted-line"><span>Sem pendentes</span><b>-</b></div>`;
+        const retiradas = (t.outflows || []).filter(x=>x.name || x.value).map(o=>`<div class="line"><span>${o.name || "Retirada"} • ${outflowCategoryLabel(o.category)}</span><b>${formatMoney(o.value || 0)}</b></div>`).join("") || `<div class="line muted-line"><span>Sem retiradas</span><b>-</b></div>`;
 
         return `<section class="close-block">
           <div class="close-head">
@@ -4591,18 +4232,13 @@ alert("Carga adicionada ao sistema como ajuste auditável.");
           </div>
 
           <div class="main-card">
-            <div><span>${showProfitOnly ? "Lucro" : showOperationalOnly ? "Gastos" : "Saldo líquido"}</span><strong>${showProfitOnly ? formatMoney(lucroItem) : showOperationalOnly ? formatMoney(operacionalItem + taxaRecaItem) : formatMoney(saldo)}</strong></div>
+            <div><span>Saldo líquido</span><strong>${formatMoney(saldo)}</strong></div>
             <div><span>Diferença de caixa</span><strong class="${positive ? "txt-pos" : "txt-neg"}">${positive ? "+" : ""}${formatMoney(diff)}</strong></div>
             <div><span>Base operacional</span><strong>${formatMoney(base)}</strong></div>
             <div><span>Tipo</span><strong>${ajuste ? "Ajuste" : "Fechamento"}</strong></div>
           </div>
 
-          ${showProfitOnly ? `<div class="detail-grid"><div class="detail-card"><h3>Lucro / retiradas lucro</h3>
-              <div class="line"><span>Total lucro</span><b>${formatMoney(lucroItem)}</b></div>
-            </div><div class="detail-card"><h3>Resumo</h3><div class="line"><span>Operador</span><b>${operador}</b></div><div class="line"><span>Data</span><b>${data}</b></div></div></div>` : showOperationalOnly ? `<div class="detail-grid"><div class="detail-card"><h3>Gastos operacionais</h3>
-              <div class="line"><span>Custo operacional</span><b>${formatMoney(operacionalItem)}</b></div>
-              <div class="line"><span>Taxa Reca</span><b>${formatMoney(taxaRecaItem)}</b></div>
-            </div><div class="detail-card"><h3>Resumo</h3><div class="line"><span>Operador</span><b>${operador}</b></div><div class="line"><span>Data</span><b>${data}</b></div></div></div>` : `<div class="detail-grid">
+          <div class="detail-grid">
             <div class="detail-card"><h3>Saldos</h3>
               <div class="line"><span>Reca</span><b>${formatMoney(t.webReca ?? t.reca ?? 0)}</b></div>
               <div class="line"><span>Suprema ×400</span><b>${formatMoney(moneyToNumber(t.suprema||0)*400)}</b></div>
@@ -4621,11 +4257,11 @@ alert("Carga adicionada ao sistema como ajuste auditável.");
               <div class="line"><span>Retiradas</span><b>${formatMoney(t.saidasTotal || 0)}</b></div>
               <div class="line"><span>Lucro</span><b>${formatMoney(turnCategoryTotal(t, "lucro", "retiradaLucroTotal"))}</b></div>
               <div class="line"><span>Custo operacional</span><b>${formatMoney(turnCategoryTotal(t, "custo_operacional", "custoOperacionalTotal"))}</b></div>
-              <div class="line"><span>Taxa Reca</span><b>${formatMoney(turnCategoryTotal(t, "custo_reca", "custoRecaTotal"))}</b></div>
+              <div class="line"><span>Custo O. Reca</span><b>${formatMoney(turnCategoryTotal(t, "custo_reca", "custoRecaTotal"))}</b></div>
             </div>
-          </div>`}
+          </div>
 
-          <div class="detail-card full"><h3>${showProfitOnly ? "Retiradas de lucro" : showOperationalOnly ? "Gastos operacionais / Taxa Reca" : ajuste ? "Detalhe do ajuste" : "Detalhes"}</h3>
+          <div class="detail-card full"><h3>${ajuste ? "Detalhe do ajuste" : "Detalhes"}</h3>
             ${ajuste ? `<div class="line"><span>Motivo</span><b>${motivo}</b></div>` : ""}
             ${pendentes}
             ${retiradas}
@@ -5096,7 +4732,7 @@ body.side-drawer-open #sideMenuBtn{
   .login-secondary-row{grid-template-columns:1fr 1fr;gap:8px;}
   .login-secondary-row .btn{font-size:12px;padding:0 8px;}
 }
-</style></head><body><div class="toolbar"><strong>Relatório Bank King • ${reportCode}</strong><div class="toolbar-actions"><button class="tool-btn secondary" onclick="window.close()">Voltar</button><button class="tool-btn secondary" onclick="window.print()">Imprimir</button><button class="tool-btn primary" onclick="window.print()">Salvar PDF</button></div></div><header class="cover"><div class="cover-top"><div class="brand"><div class="logo">BK</div><div><h1>Bank King</h1><p>Financial Internal Report • ${reportLabel}</p></div></div><div class="meta">Código: ${reportCode}<br>Gerado em: ${generatedAt}<br>Usuário: ${currentProfile?.name || currentUser?.email || "-"}</div></div><div class="pdf-kpi-wrapper">
+</style></head><body><div class="toolbar"><strong>Relatório Bank King • ${reportCode}</strong><div class="toolbar-actions"><button class="tool-btn secondary" onclick="window.close()">Voltar</button><button class="tool-btn secondary" onclick="window.print()">Imprimir</button><button class="tool-btn primary" onclick="window.print()">Salvar PDF</button></div></div><header class="cover"><div class="cover-top"><div class="brand"><div class="logo">BK</div><div><h1>Bank King</h1><p>Financial Internal Report</p></div></div><div class="meta">Código: ${reportCode}<br>Gerado em: ${generatedAt}<br>Usuário: ${currentProfile?.name || currentUser?.email || "-"}</div></div><div class="pdf-kpi-wrapper">
   <div class="pdf-kpi-grid">
     <div class="pdf-kpi-card"><span>Custo operacional</span><b>${formatMoney(totalCustoOperacional)}</b></div>
     <div class="pdf-kpi-card"><span>Custo RECA</span><b>${formatMoney(totalCustoReca)}</b></div>
@@ -5120,45 +4756,9 @@ body.side-drawer-open #sideMenuBtn{
 </div></header><main>${blocks || `<section class="close-block">Nenhum fechamento encontrado.</section>`}</main></body></html>`;
     }
 
-    async function generateBankPdfReport(){ await fetchAnnualHistoryIfNeeded(); const items=$("reportStart")?getReportItems():visibleHistory(); const win=window.open("","_blank"); if(!win) return alert("Permita pop-ups para gerar o PDF."); win.document.open(); win.document.write(buildBankPdfHtml(items)); win.document.close(); setTimeout(()=>{win.focus();win.print();},500); }
+    function generateBankPdfReport(){ const items=$("reportStart")?getReportItems():visibleHistory(); const win=window.open("","_blank"); if(!win) return alert("Permita pop-ups para gerar o PDF."); win.document.open(); win.document.write(buildBankPdfHtml(items)); win.document.close(); setTimeout(()=>{win.focus();win.print();},500); }
 
-    function startHistoryRealtimeListener(){
-      if(historyUnsubscribe) historyUnsubscribe();
-
-      const qh = query(
-        collection(db,"history"),
-        orderBy("submittedAt","desc"),
-        limit(HISTORY_DEFAULT_LOAD_LIMIT)
-      );
-
-      getDocs(qh).then(snap => {
-        const docs = snap.docs.map(d => ({ id:d.id, ...d.data() }));
-        if(docs.length){
-          historyCache = normalizeHistoryCache(docs);
-          console.info("Bank King initial history loaded:", historyCache.length);
-          renderAll();
-        }
-      }).catch(error => {
-        console.warn("Initial history fetch:", error);
-        fetchHomeSnapshotNoOrderFallback();
-        showNotice("appNotice", friendlyError(error), "error");
-      });
-
-      historyUnsubscribe = onSnapshot(qh, snap => {
-        const docs = snap.docs.map(d => ({ id:d.id, ...d.data() }));
-        historyCache = normalizeHistoryCache(docs);
-
-        console.info("Bank King history loaded:", historyCache.length);
-
-        hideNotice("appNotice");
-        renderAll();
-      }, error => {
-        console.warn("History permission/listener:", error);
-        showNotice("appNotice", friendlyError(error), "error");
-        renderAll();
-      });
-    }
-
+    function startHistoryRealtimeListener(){ if(historyUnsubscribe) historyUnsubscribe(); const qh=query(collection(db,"history"),orderBy("submittedAt","desc"),limit(HISTORY_DEFAULT_LOAD_LIMIT)); historyUnsubscribe=onSnapshot(qh,snap=>{historyCache=snap.docs.map(d=>({id:d.id,...d.data()})); hideNotice("appNotice"); renderAll();},error=>{console.warn("History permission/listener:",error); showNotice("appNotice",friendlyError(error),"error"); historyCache=[]; renderAll();}); }
     function startSystemRealtime(){
       if(systemUnsubscribe) systemUnsubscribe();
 
@@ -5169,16 +4769,18 @@ body.side-drawer-open #sideMenuBtn{
         if(data.valor === undefined) return;
 
         const realtimeValue = moneyToNumber(data.valor);
-        const last = latestClosingForHome();
+        const last = lastRealClosing() || visibleHistory()[0];
         const historyReca = getSaldoRecaFromItem(last);
+
+        // Não deixa um documento realtime zerado apagar o Saldo Reca do último fechamento.
         const valueToShow = realtimeValue > 0 ? realtimeValue : historyReca;
 
-        if(valueToShow > 0){
-          updateHeroBalance(valueToShow);
-        }
+        updateHeroBalance(valueToShow);
 
-        if($("homeUpdatedAt") && data.updatedAt && realtimeValue > 0){
-          $("homeUpdatedAt").textContent = "Saldo realtime: " + dateLabel(data.updatedAt);
+        if($("homeUpdatedAt")){
+          $("homeUpdatedAt").textContent = data.updatedAt
+            ? "Saldo realtime: " + dateLabel(data.updatedAt)
+            : "Última atualização: " + dateLabel(last?.submittedAt || last?.createdAt || last?.turno?.closingDate);
         }
       }, error => console.warn("Saldo Reca realtime não configurado:", error));
     }
@@ -5306,8 +4908,7 @@ body.side-drawer-open #sideMenuBtn{
       $("moreMenu")?.classList.remove("active");
       closeSideDrawer();
 
-      if(name==="Admin"){setupAdminCollapsibleCards();
-      setupReportFilterEvents();loadAudit();}
+      if(name==="Admin"){setupAdminCollapsibleCards();loadAudit();}
       if(name==="Ranking") renderRanking(); setTimeout(initBankMicroUX, 30);
       if(name==="Reports") previewReport();
       if(name==="Goals") renderMonthlyGoal(visibleHistory());
@@ -5587,31 +5188,6 @@ body.side-drawer-open #sideMenuBtn{
       }
     }
 
-    function setupReportFilterEvents(){
-      const ids = ["reportStart","reportEnd","reportOperatorMode","reportOperador","reportSupervisor","reportEntryType","reportDetailMode"];
-      ids.forEach(id=>{
-        const el = $(id);
-        if(!el || el.dataset.reportReady === "1") return;
-        el.dataset.reportReady = "1";
-        const evt = el.tagName === "SELECT" ? "change" : "input";
-        el.addEventListener(evt, () => {
-          syncReportOperatorField();
-          previewReport();
-        });
-      });
-
-      syncReportOperatorField();
-    }
-
-    function syncReportOperatorField(){
-      const mode = $("reportOperatorMode")?.value || "all";
-      const wrap = $("reportOperadorWrap");
-      const op = $("reportOperador");
-
-      if(wrap) wrap.classList.toggle("is-hidden", mode !== "specific");
-      if(mode !== "specific" && op) op.value = "";
-    }
-
     function setupAdminCollapsibleCards(){
       const setup = (btnId, bodyId, openText="Ocultar", closedText="Mostrar", onOpen=null) => {
         const btn = $(btnId);
@@ -5639,30 +5215,6 @@ body.side-drawer-open #sideMenuBtn{
         if(isAdmin()) await loadUsers();
       });
     }
-
-    
-    
-    window.__BK_HOME_DEBUG__ = () => {
-      const last = latestClosingForHome();
-      return {
-        historyCache: historyCache.length,
-        visibleHistory: visibleHistory().length,
-        latest: last,
-        operador: last ? getOperadorName(last) : null,
-        data: last ? dateLabel(last.submittedAt || last.createdAt || last.turno?.closingDate) : null,
-        saldoReca: last ? getSaldoRecaFromItem(last) : null,
-        diff: last ? displayCashDiffForAllRoles(last) : null,
-        bonus: getMonthlyGoalProgressData(globalHistorySafe(), { includeRestricted:true })
-      };
-    };
-
-    window.__BK_DEBUG_STATE__ = () => ({
-      user: currentUser?.email || null,
-      role: currentProfile?.role || null,
-      historyCache: historyCache.length,
-      visibleHistory: visibleHistory().length,
-      latestHome: latestAnyItemForHome()
-    });
 
     function bindEvents(){
       loadSavedLoginPreference();
@@ -5778,8 +5330,7 @@ body.side-drawer-open #sideMenuBtn{
     onAuthStateChanged(auth,async(user)=>{ currentUser=user; if(!user){document.body.classList.remove("role-admin","role-supervisor","role-operador");loadSavedLoginPreference();$("loginScreen").classList.remove("hidden");$("appShell").classList.add("hidden");$("bottomNav").classList.add("hidden");return;} currentProfile=await loadProfile(user); if(currentProfile.blocked){await signOut(auth);return alert("Usuário bloqueado.");} if(currentProfile.approved===false){$("loginScreen").classList.remove("hidden");$("appShell").classList.add("hidden");$("bottomNav").classList.add("hidden");showNotice("loginNotice","Usuário aguardando aprovação do admin.","error");return;} $("loginScreen").classList.add("hidden");$("appShell").classList.remove("hidden");$("bottomNav").classList.remove("hidden");$("topUserLabel").textContent=`${currentProfile.name||user.email} • ${isAdmin()?"Admin":isSupervisor()?"Supervisor":"Operador"}`;  $("adminStatus").textContent=isAdmin()?"Admin ativo":"Somente admin";
       if($("moreAdminBtn")) $("moreAdminBtn").style.display = isAdmin() ? "flex" : "none"; if($("sideAdminBtn")) $("sideAdminBtn").style.display = isAdmin() ? "grid" : "none"; updateSideDrawerProfile();
 
-      applyRoleBodyClass(); updateRoleVisibility(); if(isAdmin()) loadAudit(); if(currentProfile.permissionError) showNotice("appNotice","Seu login entrou, mas o Firestore negou acesso ao perfil. Ajuste as regras ou coloque seu email em BOOTSTRAP_ADMIN_EMAILS.","error"); startHistoryRealtimeListener(); startHistoryRealtimeListener();
-        startSystemRealtime(); fillOperadorFromProfile(); renderAll(); });
+      applyRoleBodyClass(); updateRoleVisibility(); if(isAdmin()) loadAudit(); if(currentProfile.permissionError) showNotice("appNotice","Seu login entrou, mas o Firestore negou acesso ao perfil. Ajuste as regras ou coloque seu email em BOOTSTRAP_ADMIN_EMAILS.","error"); startHistoryRealtimeListener(); startSystemRealtime(); fillOperadorFromProfile(); renderAll(); });
 
     function runSelfTests(){
       const savedUser = currentUser;
@@ -5830,14 +5381,6 @@ body.side-drawer-open #sideMenuBtn{
     document.addEventListener("DOMContentLoaded",()=>{ forceHideReloadLoader(); bindEvents(); initDate(); initBankMicroUX(); setTimeout(()=>{const splash=$("appSplash"); splash?.classList.add("hide"); setTimeout(()=>splash?.remove(),800);},1600); runSelfTests(); });
   
     document.addEventListener("DOMContentLoaded", loadSavedLoginPreference);
-
-
-    setTimeout(()=>{
-      if(currentUser && !historyCache.length){
-        console.warn("Bank King: histórico ainda vazio após 4s. Verifique regras Firestore / coleção history / campo submittedAt.");
-        showNotice("appNotice","Histórico não carregou. Verifique permissão do Firestore para ler /history e se os documentos têm submittedAt.","error");
-      }
-    },4000);
 
 </script>
 </body>
