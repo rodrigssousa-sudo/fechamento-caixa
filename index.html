@@ -1334,9 +1334,6 @@ body.role-admin #monthlyGoalCard{
   box-shadow:none;
 }
 
-body.role-operador #bonusVerticalBar{
-  display:none!important;
-}
 
 @media(max-width:760px){
   .bonus-vertical-bar{
@@ -1362,6 +1359,96 @@ body.role-operador #bonusVerticalBar{
     right:6px;
     width:34px;
     min-height:220px;
+  }
+}
+
+
+
+/* =========================================================
+   BÔNUS HOME CARD — dentro do card principal
+   Operador: substitui Ajuste interno.
+   Supervisor/Admin: aparece como card novo.
+========================================================= */
+.bonus-vertical-bar{
+  display:none!important;
+}
+
+.bonus-home-card{
+  position:relative!important;
+  overflow:hidden!important;
+  display:flex!important;
+  flex-direction:column!important;
+  justify-content:center!important;
+  gap:8px!important;
+}
+
+.bonus-home-card span{
+  color:rgba(255,255,255,.68)!important;
+  font-size:10px!important;
+  font-weight:950!important;
+  text-transform:uppercase!important;
+  letter-spacing:.8px!important;
+}
+
+.bonus-home-card strong{
+  color:#ffffff!important;
+  font-size:24px!important;
+  line-height:1!important;
+  font-weight:950!important;
+  letter-spacing:-.8px!important;
+}
+
+.bonus-home-progress{
+  width:100%!important;
+  height:9px!important;
+  border-radius:999px!important;
+  background:rgba(255,255,255,.14)!important;
+  border:1px solid rgba(255,255,255,.10)!important;
+  overflow:hidden!important;
+}
+
+.bonus-home-fill{
+  height:100%!important;
+  width:0%;
+  border-radius:999px!important;
+  background:linear-gradient(90deg,#bbf7d0,#22c55e,#087f5b)!important;
+  box-shadow:0 0 12px rgba(34,197,94,.28)!important;
+  transition:width .55s cubic-bezier(.4,0,.2,1), background .35s ease!important;
+}
+
+.bonus-home-card.bonus-unlocked{
+  background:linear-gradient(145deg,#064e3b,#087f5b,#22c55e)!important;
+  border-color:rgba(34,197,94,.45)!important;
+}
+
+.bonus-home-card.bonus-unlocked #homeBonusValue{
+  font-size:22px!important;
+}
+
+body.role-operador #homeInternalAdjustmentCard{
+  display:none!important;
+}
+
+body.role-operador #homeBonusCard{
+  display:flex!important;
+}
+
+body.role-supervisor #homeInternalAdjustmentCard,
+body.role-admin #homeInternalAdjustmentCard{
+  display:flex!important;
+}
+
+body.role-supervisor #homeBonusCard,
+body.role-admin #homeBonusCard{
+  display:flex!important;
+}
+
+@media(max-width:760px){
+  .bonus-home-card strong{
+    font-size:21px!important;
+  }
+  .bonus-home-progress{
+    height:8px!important;
   }
 }
 
@@ -1484,10 +1571,6 @@ function updateHeroBalance(newValue){
     <div id="appNotice" class="notice hidden"></div>
 
     <section id="screenHome" class="screen active">
-      <aside id="bonusVerticalBar" class="bonus-vertical-bar hidden" aria-label="Meta mensal de bônus">
-        <div class="bonus-vertical-title">BÔNUS</div>
-        <div id="bonusVerticalTrack" class="bonus-vertical-track"></div>
-      </aside>
       <div class="hero-card">
         <div class="hero-label">Saldo Reca</div>
         <div id="homeSaldoReca" class="hero-value">$ 0,00</div>
@@ -1495,6 +1578,11 @@ function updateHeroBalance(newValue){
 
         <div class="hero-grid">
           <div id="homeInternalAdjustmentCard" class="hero-mini internal-adjustment-card"><span>Ajuste interno</span><strong id="homeInternalAdjustment">$ 0,00</strong></div>
+          <div id="homeBonusCard" class="hero-mini bonus-home-card">
+            <span id="homeBonusLabel">BÔNUS</span>
+            <strong id="homeBonusValue">0%</strong>
+            <div class="bonus-home-progress"><div id="homeBonusFill" class="bonus-home-fill"></div></div>
+          </div>
           <div class="hero-mini"><span>Operador</span><strong id="homeOperador">-</strong></div>
           <div class="hero-mini"><span>Data e hora</span><strong id="homeLastClose">-</strong></div>
           <div class="hero-mini"><span>Diferença de caixa</span><strong id="homeDiff">$ 0,00</strong></div>
@@ -2579,25 +2667,17 @@ service cloud.firestore {
       if($("homeOperador")) $("homeOperador").textContent = profileName() || "-";
     }
 
- function renderBonusVerticalBar(view){
-      const bar = $("bonusVerticalBar");
-      const track = $("bonusVerticalTrack");
-      if(!bar || !track) return;
+ function renderHomeBonusCard(view){
+      const card = $("homeBonusCard");
+      const fill = $("homeBonusFill");
+      const valueEl = $("homeBonusValue");
+      const labelEl = $("homeBonusLabel");
 
-      const canSeeBonus = isAdmin() || isSupervisor();
-      bar.classList.toggle("hidden", !canSeeBonus);
-      bar.style.display = canSeeBonus ? "" : "none";
+      if(!card || !fill || !valueEl) return;
 
-      if(!canSeeBonus){
-        track.innerHTML = "";
-        return;
-      }
-
-      const now = nowSP();
-      const year = now.getFullYear();
-      const month = now.getMonth();
-      const daysInMonth = new Date(year, month + 1, 0).getDate();
-      const today = now.getDate();
+      // Visível para operador, supervisor e admin.
+      card.classList.remove("hidden");
+      card.style.display = "";
 
       const target = moneyToNumber(
         currentProfile?.monthlyGoal ||
@@ -2605,13 +2685,15 @@ service cloud.firestore {
         45000000
       );
 
-      const monthStart = new Date(year, month, 1);
+      const now = nowSP();
+      const monthStart = new Date(now.getFullYear(), now.getMonth(), 1);
+
       const monthItems = (view || visibleHistory()).filter(item => {
         const d = item?.submittedAt?.toDate
           ? item.submittedAt.toDate()
           : new Date(item?.turno?.closingDate || item?.createdAt || 0);
 
-        return !isNaN(d) && d >= monthStart && d.getMonth() === month && d.getFullYear() === year;
+        return !isNaN(d) && d >= monthStart;
       });
 
       const lucroDoItem = (item) => {
@@ -2629,39 +2711,24 @@ service cloud.firestore {
         return 0;
       };
 
-      const lucroPorDia = new Map();
-
-      monthItems.forEach(item => {
-        const d = item?.submittedAt?.toDate
-          ? item.submittedAt.toDate()
-          : new Date(item?.turno?.closingDate || item?.createdAt || 0);
-
-        if(isNaN(d)) return;
-
-        const day = d.getDate();
-        const lucro = lucroDoItem(item);
-        lucroPorDia.set(day, (lucroPorDia.get(day) || 0) + lucro);
-      });
-
       const done = monthItems.reduce((s,item) => s + lucroDoItem(item), 0);
+      const percent = target > 0 ? Math.max(0, Math.min(100, (done / target) * 100)) : 0;
       const unlocked = target > 0 && done >= target;
 
-      bar.classList.toggle("bonus-unlocked", unlocked);
+      card.classList.toggle("bonus-unlocked", unlocked);
 
-      // Quando atingir a meta, a única escrita visível permanece sendo "BÔNUS".
-      const cells = [];
-      for(let day = 1; day <= daysInMonth; day++){
-        const lucroDia = lucroPorDia.get(day) || 0;
-        let status = "future";
+      if(labelEl) labelEl.textContent = "BÔNUS";
 
-        if(day <= today){
-          status = lucroDia > 0 ? "done" : "missed";
-        }
-
-        cells.push(`<div class="bonus-day-cell ${status}" title="Dia ${day}: ${lucroDia > 0 ? formatMoney(lucroDia) : day <= today ? 'sem lucro' : 'futuro'}"></div>`);
+      if(unlocked){
+        valueEl.textContent = "LIBERADO";
+        fill.style.width = "100%";
+      }else{
+        valueEl.textContent = `${percent.toFixed(0)}%`;
+        fill.style.width = `${percent}%`;
       }
 
-      track.innerHTML = cells.join("");
+      const greenStrength = Math.max(42, Math.min(95, 42 + percent * .53));
+      fill.style.background = `linear-gradient(90deg, hsl(145 70% ${greenStrength}%) 0%, #22c55e 58%, #087f5b 100%)`;
     }
 
     function renderMonthlyGoal(view){
@@ -2675,11 +2742,6 @@ service cloud.firestore {
 
   if($("sideGoalsBtn")){
     $("sideGoalsBtn").style.display = canSeeGoal ? "grid" : "none";
-  }
-
-  if($("bonusVerticalBar")){
-    $("bonusVerticalBar").classList.toggle("hidden", !canSeeGoal);
-    $("bonusVerticalBar").style.display = canSeeGoal ? "" : "none";
   }
 
   if(!canSeeGoal) return;
@@ -2846,7 +2908,7 @@ service cloud.firestore {
       if($("homeOperador")) $("homeOperador").textContent = last ? getOperadorName(last) : "-";
       if($("homeLastClose")) $("homeLastClose").textContent = last ? dateLabel(last.submittedAt || last.createdAt || last.turno?.closingDate) : "-";
       if($("homeUpdatedAt")) $("homeUpdatedAt").textContent = last ? "Última atualização: " + dateLabel(last.submittedAt || last.createdAt) : "Aguardando fechamento";
-      renderBonusVerticalBar(view);
+      renderHomeBonusCard(view);
       renderMonthlyGoal(view);
       renderChipsComparison(last, prev);
     }
@@ -4373,6 +4435,17 @@ body.side-drawer-open #sideMenuBtn{
       applyRoleBodyClass();
 
       const canSeeManagement = isAdmin() || isSupervisor();
+
+      if($("homeBonusCard")){
+        $("homeBonusCard").classList.remove("hidden");
+        $("homeBonusCard").style.display = "";
+      }
+
+      if($("homeInternalAdjustmentCard")){
+        $("homeInternalAdjustmentCard").style.display = canSeeManagement ? "" : "none";
+        $("homeInternalAdjustmentCard").classList.toggle("role-hidden", !canSeeManagement);
+      }
+
       const canSeeAdmin = isAdmin();
 
       const adminOnlyIds = [
@@ -4400,11 +4473,6 @@ body.side-drawer-open #sideMenuBtn{
       if($("monthlyGoalCard")){
         $("monthlyGoalCard").classList.toggle("hidden", !canSeeManagement);
         $("monthlyGoalCard").style.display = canSeeManagement ? "" : "none";
-      }
-
-      if($("bonusVerticalBar")){
-        $("bonusVerticalBar").classList.toggle("hidden", !canSeeManagement);
-        $("bonusVerticalBar").style.display = canSeeManagement ? "" : "none";
       }
 
       if($("sideGoalsBtn")){
@@ -4548,8 +4616,6 @@ body.side-drawer-open #sideMenuBtn{
 
         if(file) photoURL = await compressProfileImage(file);
 
-        // 1) Primeiro salva dados simples do perfil do próprio usuário.
-        // Isso funciona com a regra: request.auth.uid == userId.
         const profilePayload = {
           name,
           email: oldEmail,
@@ -4559,32 +4625,42 @@ body.side-drawer-open #sideMenuBtn{
           updatedBy: currentUser.uid
         };
 
-        await setDoc(doc(db,"users",currentUser.uid), profilePayload, { merge:true });
+        let firestoreSaved = false;
 
-        // Atualiza local imediatamente, mesmo antes de tentar email/senha.
+        try{
+          await setDoc(doc(db,"users",currentUser.uid), profilePayload, { merge:true });
+          firestoreSaved = true;
+        }catch(profileErr){
+          console.warn("Perfil não salvo no Firestore por regra:", profileErr);
+          // Mantém a experiência funcionando no app mesmo se a regra do Firestore ainda não foi liberada.
+          // O usuário vê nome/foto atualizados nesta sessão, e o admin só precisa colar as regras no Firebase.
+        }
+
         currentProfile = { ...(currentProfile || {}), ...profilePayload };
 
-        // 2) Depois tenta alterar Auth email/senha, se o usuário pediu.
-        // Se o Firebase exigir login recente, nome/foto continuam salvos.
         let authChanged = false;
         let authWarning = "";
 
         if(newEmail && newEmail.toLowerCase() !== oldEmail.toLowerCase()){
           try{
             await updateEmail(currentUser, newEmail);
-            await setDoc(doc(db,"users",currentUser.uid), { email:newEmail, updatedAt:serverTimestamp() }, { merge:true });
+            try{
+              await setDoc(doc(db,"users",currentUser.uid), { email:newEmail, updatedAt:serverTimestamp() }, { merge:true });
+            }catch(e){
+              console.warn("Email alterado no Auth, mas não sincronizado no Firestore:", e);
+            }
             currentProfile.email = newEmail;
             authChanged = true;
           }catch(e){
             const code = e?.code || "";
             if(code.includes("requires-recent-login")){
-              authWarning = " Nome/foto foram salvos, mas para trocar o email você precisa sair, entrar novamente e tentar de novo.";
+              authWarning = "Nome/foto foram aplicados. Para trocar o email, saia, entre novamente e tente de novo.";
             }else if(code.includes("auth/email-already-in-use")){
-              authWarning = " Nome/foto foram salvos, mas este email já está em uso.";
+              authWarning = "Nome/foto foram aplicados, mas este email já está em uso.";
             }else if(code.includes("auth/invalid-email")){
-              authWarning = " Nome/foto foram salvos, mas o email informado é inválido.";
+              authWarning = "Nome/foto foram aplicados, mas o email informado é inválido.";
             }else{
-              authWarning = " Nome/foto foram salvos, mas não foi possível trocar o email.";
+              authWarning = "Nome/foto foram aplicados, mas não foi possível trocar o email.";
             }
           }
         }
@@ -4603,7 +4679,11 @@ body.side-drawer-open #sideMenuBtn{
           }
         }
 
-        await addAudit("update_own_profile", `Perfil atualizado por ${currentUser.email || oldEmail}`);
+        try{
+          await addAudit("update_own_profile", `Perfil atualizado por ${currentUser.email || oldEmail}`);
+        }catch(e){
+          console.warn("Auditoria do perfil ignorada:", e);
+        }
 
         fillOperadorFromProfile();
         updateSideDrawerProfile();
@@ -4612,18 +4692,15 @@ body.side-drawer-open #sideMenuBtn{
 
         if(authWarning){
           showNotice("appNotice", authWarning.trim(), "error");
+        }else if(!firestoreSaved){
+          showNotice("appNotice","Perfil aplicado nesta sessão. Para ficar salvo permanente, cole as regras do Firestore geradas no arquivo FIRESTORE_RULES_PERFIL_USUARIO.txt.","error");
         }else{
           showNotice("appNotice", authChanged ? "Perfil e acesso atualizados com sucesso." : "Perfil atualizado com sucesso.", "ok");
           setTimeout(()=>hideNotice("appNotice"), 2800);
         }
       }catch(e){
         console.warn("Erro ao salvar perfil:", e);
-        const code = e?.code || "";
-        if(code.includes("permission-denied")){
-          alert("O app está correto, mas falta liberar a regra do Firestore para o usuário editar o próprio perfil em /users/{uid}. Veja as regras no final deste arquivo.");
-        }else{
-          alert("Não foi possível salvar o perfil: " + friendlyError(e));
-        }
+        alert("Não foi possível salvar o perfil: " + friendlyError(e));
       }finally{
         setButtonLoading(saveBtn, false);
       }
