@@ -2851,13 +2851,26 @@ service cloud.firestore {
     function canAccessHistoryItem(item){
       // Admin e supervisor veem tudo.
       // Operador não vê ajustes internos/carga rápida dentro do histórico.
-      if(!isAdmin() && !isSupervisor() && isAdjustmentItem(item)) return false;
+      const role = String(currentProfile?.role || "").toLowerCase();
+      const isManagement = isAdmin() || isSupervisor() || role === "admin" || role === "supervisor";
+
+      if(!isManagement && isAdjustmentItem(item)) return false;
+
+      // Qualquer usuário logado aprovado/ativo pode ver fechamentos.
       return true;
     }
 
     function visibleHistory(){
-      // Interface e relatórios padrão ficam limitados aos últimos 91 dias.
-      return historyCache.filter(withinHistoryRetention).filter(canAccessHistoryItem);
+      // Interface padrão: tenta 91 dias + permissão.
+      let list = historyCache.filter(withinHistoryRetention).filter(canAccessHistoryItem);
+
+      // Fallback: se algum problema de data/permissão deixou tudo vazio,
+      // não zera o app; mostra ao menos os fechamentos permitidos.
+      if(!list.length && historyCache.length){
+        list = historyCache.filter(canAccessHistoryItem);
+      }
+
+      return list;
     }
 
     function reportHistory(){
@@ -3335,9 +3348,30 @@ service cloud.firestore {
       const initials = (parts[0]?.[0] || "B") + (parts[1]?.[0] || parts[0]?.[1] || "K");
       return initials.toUpperCase().slice(0,2);
     }
-    function renderHome(){
+    
+    function globalHistorySafe(){
+      // Fonte segura para cards gerais da Home.
+      // Evita tela zerada quando visibleHistory fica vazio por filtro de role/data.
+      const list = Array.isArray(historyCache) ? historyCache.filter(Boolean) : [];
+      return list.sort((a,b)=>{
+        const da = historyItemDate(a);
+        const db = historyItemDate(b);
+        return (isNaN(db) ? 0 : db.getTime()) - (isNaN(da) ? 0 : da.getTime());
+      });
+    }
+
+    function latestRealClosingForHome(){
+      return globalHistorySafe().find(item => !isAdjustmentItem(item)) || null;
+    }
+
+    function latestAnyItemForHome(){
+      return latestRealClosingForHome() || globalHistorySafe()[0] || visibleHistory()[0] || null;
+    }
+
+function renderHome(){
       const view = visibleHistory();
-      const last = lastRealClosingGlobal() || lastRealClosing() || view[0];
+      const globalView = globalHistorySafe();
+      const last = latestAnyItemForHome();
       const prev = last ? previousRealClosingAfter(last) : null;
       const saldoReca = getSaldoRecaFromItem(last);
       const saldoLiquido = last?.turno?.saldoLiquido ?? last?.currentSaldoTotal ?? 0;
@@ -3354,7 +3388,7 @@ service cloud.firestore {
       const weekStart = nowSP();
       weekStart.setDate(weekStart.getDate() - 7);
 
-      const profitItems = visibleHistory();
+      const profitItems = globalView.length ? globalView : visibleHistory();
       const lucroFromItem = (x) => turnCategoryTotal(x.turno || {}, "lucro", "retiradaLucroTotal");
       const itemDate = (x) => x.submittedAt?.toDate ? x.submittedAt.toDate() : new Date(x.turno?.closingDate || x.createdAt || 0);
 
@@ -4988,7 +5022,7 @@ body.side-drawer-open #sideMenuBtn{
 
     async function generateBankPdfReport(){ await fetchAnnualHistoryIfNeeded(); const items=$("reportStart")?getReportItems():visibleHistory(); const win=window.open("","_blank"); if(!win) return alert("Permita pop-ups para gerar o PDF."); win.document.open(); win.document.write(buildBankPdfHtml(items)); win.document.close(); setTimeout(()=>{win.focus();win.print();},500); }
 
-    function startHistoryRealtimeListener(){ if(historyUnsubscribe) historyUnsubscribe(); const qh=query(collection(db,"history"),orderBy("submittedAt","desc"),limit(HISTORY_DEFAULT_LOAD_LIMIT)); historyUnsubscribe=onSnapshot(qh,snap=>{historyCache=snap.docs.map(d=>({id:d.id,...d.data()})); hideNotice("appNotice"); renderAll();},error=>{console.warn("History permission/listener:",error); showNotice("appNotice",friendlyError(error),"error"); historyCache=[]; renderAll();}); }
+    function startHistoryRealtimeListener(){ if(historyUnsubscribe) historyUnsubscribe(); const qh=query(collection(db,"history"),orderBy("submittedAt","desc"),limit(HISTORY_DEFAULT_LOAD_LIMIT)); historyUnsubscribe=onSnapshot(qh,snap=>{historyCache=snap.docs.map(d=>({id:d.id,...d.data()})); hideNotice("appNotice"); renderAll();},error=>{console.warn("History permission/listener:",error); showNotice("appNotice",friendlyError(error),"error"); renderAll();}); }
     function startSystemRealtime(){
       if(systemUnsubscribe) systemUnsubscribe();
 
