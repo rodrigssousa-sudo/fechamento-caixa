@@ -1952,7 +1952,7 @@ function updateHeroBalance(newValue){
             <div class="summary-box"><span>Retiradas total</span><b id="calcSaidas">$ 0,00</b></div>
             <div class="summary-box good"><span>Retirada lucro</span><b id="calcLucroSaida">$ 0,00</b></div>
             <div class="summary-box gold"><span>Custo operacional</span><b id="calcCustoSaida">$ 0,00</b></div>
-            <div class="summary-box"><span>Custo O. Reca</span><b id="calcCustoRecaSaida">$ 0,00</b></div>
+            <div class="summary-box"><span>Taxa Reca</span><b id="calcCustoRecaSaida">$ 0,00</b></div>
           </div>
           <div class="summary-note">
             <span>Carga poker: <b id="calcCargaPoker">$ 0,00</b></span>
@@ -1987,7 +1987,7 @@ function updateHeroBalance(newValue){
               <div class="field"><label>Destino casino</label><select id="quickCargaCasinoDestino"><option value="buffalo">Buffalo</option><option value="ganamos">Ganamos</option></select></div>
             </div>
             <div class="field"><label>Retirada do caixa</label><input id="quickRetiradaCaixa" class="money-input" inputmode="decimal" placeholder="0,00" /></div>
-            <div class="field"><label>Tipo da retirada</label><select id="quickRetiradaTipo"><option value="lucro">Lucro</option><option value="custo_operacional">Custo operacional</option><option value="custo_reca">Custo O. Reca</option></select></div>
+            <div class="field"><label>Tipo da retirada</label><select id="quickRetiradaTipo"><option value="lucro">Lucro</option><option value="custo_operacional">Custo operacional</option><option value="custo_reca">Taxa Reca</option></select></div>
             <div class="field"><label>Motivo</label><input id="quickCargaMotivo" placeholder="Ex: aporte de caixa / reposição banca" /></div>
             <div class="field"><label>Responsável</label><input id="quickCargaOperador" placeholder="Admin / responsável" /></div>
           </div>
@@ -2022,7 +2022,7 @@ function updateHeroBalance(newValue){
 
     <section id="screenRanking" class="screen"><div class="section-divider">Performance por operador</div><div class="card"><div class="card-title"><h2>Ranking operadores</h2><span>Lucro por operador</span></div><div class="rank-tabs"><button class="active" data-rank="day">Diário</button><button data-rank="week">Semanal</button><button data-rank="month">Mensal</button><button data-rank="all">Total</button></div><div id="rankingList" class="rank-list"></div></div></section>
 
-    <section id="screenReports" class="screen"><div class="section-divider">Exportação institucional</div><div class="card"><div class="card-title"><h2>Relatórios premium</h2><span>PDF nível banco • 91 dias + anual sob demanda</span></div><div class="form-grid"><div class="field"><label>Data inicial</label><input id="reportStart" type="date" /></div><div class="field"><label>Data final</label><input id="reportEnd" type="date" /></div><div class="field"><label>Operador</label><input id="reportOperador" placeholder="Todos" /></div><div class="field"><label>Supervisor</label><input id="reportSupervisor" placeholder="Todos" /></div></div><div class="grid three"><div class="card" style="box-shadow:none;"><div class="muted">Fechamentos</div><div id="reportPreviewCount" class="metric">0</div></div><div class="card" style="box-shadow:none;"><div class="muted">Saldo líquido</div><div id="reportPreviewSaldo" class="metric">$ 0,00</div></div><div class="card" style="box-shadow:none;"><div class="muted">Diferença</div><div id="reportPreviewDiff" class="metric">$ 0,00</div></div></div><button id="previewReportBtn" class="btn secondary full" style="margin-top:14px;">Pré-visualizar resumo</button><button id="generateReportBtn" class="btn full" style="margin-top:10px;">Gerar PDF</button></div></section>
+    <section id="screenReports" class="screen"><div class="section-divider">Exportação institucional</div><div class="card"><div class="card-title"><h2>Relatórios premium</h2><span>PDF nível banco • filtros avançados</span></div><div class="form-grid"><div class="field"><label>Data inicial</label><input id="reportStart" type="date" /></div><div class="field"><label>Data final</label><input id="reportEnd" type="date" /></div><div class="field"><label>Operador</label><input id="reportOperador" placeholder="Todos ou nome específico" /></div><div class="field"><label>Supervisor</label><input id="reportSupervisor" placeholder="Todos" /></div><div class="field"><label>Tipo de fechamento</label><select id="reportEntryType"><option value="all">Todos</option><option value="closings">Fechamentos de operadores</option><option value="adjustments">Apenas ajustes internos</option><option value="charges">Apenas cargas de fichas</option></select></div><div class="field"><label>Detalhamento do relatório</label><select id="reportDetailMode"><option value="all">Todos os detalhes</option><option value="profit">Apenas lucro / retiradas lucro</option><option value="operational">Gastos operacionais e Taxa Reca</option></select></div></div><div class="grid three"><div class="card" style="box-shadow:none;"><div class="muted">Registros</div><div id="reportPreviewCount" class="metric">0</div></div><div class="card" style="box-shadow:none;"><div class="muted" id="reportPreviewMainLabel">Saldo líquido</div><div id="reportPreviewSaldo" class="metric">$ 0,00</div></div><div class="card" style="box-shadow:none;"><div class="muted" id="reportPreviewDiffLabel">Diferença</div><div id="reportPreviewDiff" class="metric">$ 0,00</div></div></div><button id="previewReportBtn" class="btn secondary full" style="margin-top:14px;">Pré-visualizar resumo</button><button id="generateReportBtn" class="btn full" style="margin-top:10px;">Gerar PDF</button></div></section>
 
     <section id="screenAdmin" class="screen">
       <div class="card">
@@ -2712,7 +2712,7 @@ service cloud.firestore {
     function toDateInputValue(value){ return localInputSP(value || nowSP()); }
     function outflowCategoryLabel(category){
       if(category === "custo_operacional") return "Custo operacional";
-      if(category === "custo_reca") return "Custo O. Reca";
+      if(category === "custo_reca") return "Taxa Reca";
       return "Lucro";
     }
     function sumOutflowsByCategory(outflows=[], category){
@@ -2831,6 +2831,12 @@ service cloud.firestore {
       const cargaPppoker = moneyToNumber(t.cargaPppoker || (cargaPokerDestino === "pppoker" ? cargaPokerMoney : 0));
 
       const cargaCasino = moneyToNumber(t.cargasCasino ?? t.cargas ?? 0);
+        const lucroItem = itemProfitTotal(item);
+        const operacionalItem = turnCategoryTotal(t, "custo_operacional", "custoOperacionalTotal");
+        const taxaRecaItem = turnCategoryTotal(t, "custo_reca", "custoRecaTotal");
+        const showFullDetails = detailMode === "all";
+        const showProfitOnly = detailMode === "profit";
+        const showOperationalOnly = detailMode === "operational";
       const cargaCasinoDestino = t.cargaCasinoDestino || t.quickCargaCasinoDestino || "casino";
       const cargaBuffalo = moneyToNumber(t.cargaBuffalo || (cargaCasinoDestino === "buffalo" ? cargaCasino : 0));
       const cargaGanamos = moneyToNumber(t.cargaGanamos || (cargaCasinoDestino === "ganamos" ? cargaCasino : 0));
@@ -2990,7 +2996,7 @@ service cloud.firestore {
 
     function getDynamicRows(containerId){ const el=$(containerId); if(!el) return []; return [...el.querySelectorAll(".row-item")].map(row=>({name:row.querySelector(".row-name")?.value||"",category:row.querySelector(".row-category")?.value||"",value:moneyToNumber(row.querySelector(".row-value")?.value||0)})).filter(x=>x.name||x.value); }
     function setDynamicRows(containerId, rows=[]){ const el=$(containerId); if(!el) return; el.innerHTML=""; (rows.length?rows:[{}]).forEach(r=>createDynamicRow(containerId,"Nome / motivo",r)); }
-    function createDynamicRow(containerId,label="Descrição",data={}){ const list=$(containerId); if(!list) return; const row=document.createElement("div"); const isOutflow=containerId.toLowerCase().includes("outflow"); row.className="row-item"+(isOutflow?" outflow-row":""); const safeName=String(data.name||"").replace(/"/g,'&quot;'); const value=data.value ? formatInputMoney(data.value) : ""; const category=data.category||data.type||"lucro"; row.innerHTML=isOutflow?`<input class="row-name" placeholder="${label}" value="${safeName}" /><select class="row-category"><option value="lucro">Lucro</option><option value="custo_operacional">Custo operacional</option><option value="custo_reca">Custo O. Reca</option></select><input class="row-value money-input" inputmode="decimal" placeholder="0,00" value="${value}" /><button type="button" class="remove-row">×</button>`:`<input class="row-name" placeholder="${label}" value="${safeName}" /><input class="row-value money-input" inputmode="decimal" placeholder="0,00" value="${value}" /><button type="button" class="remove-row">×</button>`; if(isOutflow) row.querySelector(".row-category").value=category; row.querySelectorAll("input,select").forEach(i=>i.addEventListener("input",renderCalculations)); row.querySelectorAll("select").forEach(i=>i.addEventListener("change",renderCalculations)); row.querySelector(".remove-row").onclick=()=>{row.remove();renderCalculations();}; list.appendChild(row); applyBankMoneyMaskAll(row); enableClearOnFocus(); }
+    function createDynamicRow(containerId,label="Descrição",data={}){ const list=$(containerId); if(!list) return; const row=document.createElement("div"); const isOutflow=containerId.toLowerCase().includes("outflow"); row.className="row-item"+(isOutflow?" outflow-row":""); const safeName=String(data.name||"").replace(/"/g,'&quot;'); const value=data.value ? formatInputMoney(data.value) : ""; const category=data.category||data.type||"lucro"; row.innerHTML=isOutflow?`<input class="row-name" placeholder="${label}" value="${safeName}" /><select class="row-category"><option value="lucro">Lucro</option><option value="custo_operacional">Custo operacional</option><option value="custo_reca">Taxa Reca</option></select><input class="row-value money-input" inputmode="decimal" placeholder="0,00" value="${value}" /><button type="button" class="remove-row">×</button>`:`<input class="row-name" placeholder="${label}" value="${safeName}" /><input class="row-value money-input" inputmode="decimal" placeholder="0,00" value="${value}" /><button type="button" class="remove-row">×</button>`; if(isOutflow) row.querySelector(".row-category").value=category; row.querySelectorAll("input,select").forEach(i=>i.addEventListener("input",renderCalculations)); row.querySelectorAll("select").forEach(i=>i.addEventListener("change",renderCalculations)); row.querySelector(".remove-row").onclick=()=>{row.remove();renderCalculations();}; list.appendChild(row); applyBankMoneyMaskAll(row); enableClearOnFocus(); }
 
     function getTurnFromForm(){
       const webReca=moneyToNumber($("webReca")?.value), suprema=moneyToNumber($("suprema")?.value), pppoker=moneyToNumber($("pppoker")?.value), buffalo=moneyToNumber($("buffalo")?.value), ganamos=moneyToNumber($("ganamos")?.value), cargasPoker=moneyToNumber($("cargasPoker")?.value), cargasCasino=moneyToNumber($("cargasCasino")?.value);
@@ -4146,11 +4152,33 @@ alert("Carga adicionada ao sistema como ajuste auditável.");
       }
     }
 
+    function reportEntryType(){ return $("reportEntryType")?.value || "all"; }
+    function reportDetailMode(){ return $("reportDetailMode")?.value || "all"; }
+    function itemProfitTotal(item){ return turnCategoryTotal(item?.turno || {}, "lucro", "retiradaLucroTotal"); }
+    function itemOperationalCostTotal(item){
+      const t = item?.turno || {};
+      return turnCategoryTotal(t, "custo_operacional", "custoOperacionalTotal") + turnCategoryTotal(t, "custo_reca", "custoRecaTotal");
+    }
+    function isChargeReportItem(item){
+      if(!isAdjustmentItem(item)) return false;
+      const p = getAdjustmentParts(item);
+      return moneyToNumber(p.cargaSuprema||0) > 0 || moneyToNumber(p.cargaPppoker||0) > 0 || moneyToNumber(p.cargaBuffalo||0) > 0 || moneyToNumber(p.cargaGanamos||0) > 0 || moneyToNumber(p.cargaPoker||0) > 0 || moneyToNumber(p.cargaCasino||0) > 0;
+    }
+    function reportModeLabel(){
+      const type = reportEntryType();
+      const detail = reportDetailMode();
+      const typeLabel = type === "closings" ? "Fechamentos de operadores" : type === "adjustments" ? "Ajustes internos" : type === "charges" ? "Cargas de fichas" : "Todos os registros";
+      const detailLabel = detail === "profit" ? "Apenas lucro" : detail === "operational" ? "Gastos operacionais / Taxa Reca" : "Todos os detalhes";
+      return `${typeLabel} • ${detailLabel}`;
+    }
+
     function getReportItems(){
       const start = $("reportStart")?.value;
       const end = $("reportEnd")?.value;
       const operador = ($("reportOperador")?.value || "").trim().toLowerCase();
       const supervisor = ($("reportSupervisor")?.value || "").trim().toLowerCase();
+      const entryType = reportEntryType();
+      const detailMode = reportDetailMode();
 
       let useExtendedRange = false;
       if(start && end){
@@ -4162,8 +4190,6 @@ alert("Carga adicionada ao sistema como ajuste auditável.");
         }
       }
 
-      // Até 91 dias: fonte padrão otimizada.
-      // Acima de 91 dias: usa histórico carregado ampliado para balanço anual.
       let items = useExtendedRange
         ? historyCache.filter(canAccessHistoryItem)
         : reportHistory();
@@ -4190,13 +4216,49 @@ alert("Carga adicionada ao sistema como ajuste auditável.");
         items = items.filter(x=>String(x.supervisorName||x.turno?.supervisorName||x.supervisorEmail||x.turno?.supervisorEmail||"").toLowerCase().includes(supervisor));
       }
 
+      if(entryType === "closings") items = items.filter(x=>!isAdjustmentItem(x));
+      if(entryType === "adjustments") items = items.filter(isAdjustmentItem);
+      if(entryType === "charges") items = items.filter(isChargeReportItem);
+
+      if(detailMode === "profit") items = items.filter(x=>itemProfitTotal(x) > 0);
+      if(detailMode === "operational") items = items.filter(x=>itemOperationalCostTotal(x) > 0);
+
       return items;
     }
 
-    function previewReport(){ if(!$("reportPreviewCount")) return; const items=getReportItems(), totalSaldo=items.reduce((s,x)=>s+moneyToNumber(x.turno?.saldoLiquido??x.currentSaldoTotal),0), totalDiff=items.reduce((s,x)=>s+moneyToNumber(x.diff),0); $("reportPreviewCount").textContent=items.length; $("reportPreviewSaldo").textContent=formatMoney(totalSaldo); $("reportPreviewDiff").textContent=formatMoney(totalDiff); }
+    function previewReport(){
+      if(!$("reportPreviewCount")) return;
+      const items = getReportItems();
+      const detail = reportDetailMode();
+      const totalSaldo = items.reduce((sum,x)=>sum+moneyToNumber(x.turno?.saldoLiquido??x.currentSaldoTotal),0);
+      const totalDiff = items.reduce((sum,x)=>sum+moneyToNumber(x.diff),0);
+      const totalLucro = items.reduce((sum,x)=>sum+itemProfitTotal(x),0);
+      const totalOperacional = items.reduce((sum,x)=>sum+itemOperationalCostTotal(x),0);
+
+      $("reportPreviewCount").textContent = items.length;
+      if(detail === "profit"){
+        if($("reportPreviewMainLabel")) $("reportPreviewMainLabel").textContent = "Lucro";
+        if($("reportPreviewDiffLabel")) $("reportPreviewDiffLabel").textContent = "Regra";
+        $("reportPreviewSaldo").textContent = formatMoney(totalLucro);
+        $("reportPreviewDiff").textContent = "Lucro";
+      }else if(detail === "operational"){
+        if($("reportPreviewMainLabel")) $("reportPreviewMainLabel").textContent = "Gastos";
+        if($("reportPreviewDiffLabel")) $("reportPreviewDiffLabel").textContent = "Regra";
+        $("reportPreviewSaldo").textContent = formatMoney(totalOperacional);
+        $("reportPreviewDiff").textContent = "Operacional";
+      }else{
+        if($("reportPreviewMainLabel")) $("reportPreviewMainLabel").textContent = "Saldo líquido";
+        if($("reportPreviewDiffLabel")) $("reportPreviewDiffLabel").textContent = "Diferença";
+        $("reportPreviewSaldo").textContent = formatMoney(totalSaldo);
+        $("reportPreviewDiff").textContent = formatMoney(totalDiff);
+      }
+    }
     function buildBankPdfHtml(items){
       const generatedAt = formatDateTimeSP(nowSP());
       const reportCode = "BK-" + Date.now().toString().slice(-8);
+      const detailMode = reportDetailMode();
+      const entryMode = reportEntryType();
+      const reportLabel = reportModeLabel();
       const totalSaldo = items.reduce((s,x)=>s + moneyToNumber(x.turno?.saldoLiquido ?? x.currentSaldoTotal), 0);
       const totalDiff = items.filter(x=>!isAdjustmentItem(x)).reduce((s,x)=>s + displayCashDiff(x), 0);
       const totalAjustes = items.filter(isAdjustmentItem).reduce((s,x)=>s + adjustmentImpact(x), 0);
@@ -4204,6 +4266,8 @@ alert("Carga adicionada ao sistema como ajuste auditável.");
       const totalCargaBuffalo = ajusteParts.reduce((s,x)=>s + moneyToNumber(x.cargaBuffalo || 0), 0);
       const totalCargaGanamos = ajusteParts.reduce((s,x)=>s + moneyToNumber(x.cargaGanamos || 0), 0);
       const totalCargaPoker = ajusteParts.reduce((s,x)=>s + moneyToNumber(x.cargaPoker || 0), 0);
+      const totalCargaSuprema = ajusteParts.reduce((s,x)=>s + moneyToNumber(x.cargaSuprema || 0), 0);
+      const totalCargaPppoker = ajusteParts.reduce((s,x)=>s + moneyToNumber(x.cargaPppoker || 0), 0);
       const totalLucro = items.reduce((s,x)=>s + turnCategoryTotal(x.turno || {}, "lucro", "retiradaLucroTotal"), 0);
       const totalCustoOperacional = items.reduce((s,x)=>s + turnCategoryTotal(x.turno || {}, "custo_operacional", "custoOperacionalTotal"), 0);
       const totalCustoReca = items.reduce((s,x)=>s + turnCategoryTotal(x.turno || {}, "custo_reca", "custoRecaTotal"), 0);
@@ -4221,9 +4285,20 @@ alert("Carga adicionada ao sistema como ajuste auditável.");
         const motivo = t.ajusteMotivo || item.adjustmentReason || "-";
         const cargaPoker = moneyToNumber(t.cargasPoker || 0) * 400;
         const cargaCasino = moneyToNumber(t.cargasCasino ?? t.cargas ?? 0);
+        const lucroItem = itemProfitTotal(item);
+        const operacionalItem = turnCategoryTotal(t, "custo_operacional", "custoOperacionalTotal");
+        const taxaRecaItem = turnCategoryTotal(t, "custo_reca", "custoRecaTotal");
+        const showFullDetails = detailMode === "all";
+        const showProfitOnly = detailMode === "profit";
+        const showOperationalOnly = detailMode === "operational";
 
-        const pendentes = (t.pendings || []).filter(x=>x.name || x.value).map(p=>`<div class="line"><span>${p.name || "Pendente"}</span><b>${formatMoney(p.value || 0)}</b></div>`).join("") || `<div class="line muted-line"><span>Sem pendentes</span><b>-</b></div>`;
-        const retiradas = (t.outflows || []).filter(x=>x.name || x.value).map(o=>`<div class="line"><span>${o.name || "Retirada"} • ${outflowCategoryLabel(o.category)}</span><b>${formatMoney(o.value || 0)}</b></div>`).join("") || `<div class="line muted-line"><span>Sem retiradas</span><b>-</b></div>`;
+        const pendentes = showFullDetails ? ((t.pendings || []).filter(x=>x.name || x.value).map(p=>`<div class="line"><span>${p.name || "Pendente"}</span><b>${formatMoney(p.value || 0)}</b></div>`).join("") || `<div class="line muted-line"><span>Sem pendentes</span><b>-</b></div>`) : "";
+        const outflowRows = (t.outflows || []).filter(x=>x.name || x.value).filter(o=>{
+          if(showProfitOnly) return o.category === "lucro";
+          if(showOperationalOnly) return o.category === "custo_operacional" || o.category === "custo_reca";
+          return true;
+        });
+        const retiradas = outflowRows.map(o=>`<div class="line"><span>${o.name || "Retirada"} • ${outflowCategoryLabel(o.category)}</span><b>${formatMoney(o.value || 0)}</b></div>`).join("") || `<div class="line muted-line"><span>Sem retiradas neste filtro</span><b>-</b></div>`;
 
         return `<section class="close-block">
           <div class="close-head">
@@ -4232,13 +4307,18 @@ alert("Carga adicionada ao sistema como ajuste auditável.");
           </div>
 
           <div class="main-card">
-            <div><span>Saldo líquido</span><strong>${formatMoney(saldo)}</strong></div>
+            <div><span>${showProfitOnly ? "Lucro" : showOperationalOnly ? "Gastos" : "Saldo líquido"}</span><strong>${showProfitOnly ? formatMoney(lucroItem) : showOperationalOnly ? formatMoney(operacionalItem + taxaRecaItem) : formatMoney(saldo)}</strong></div>
             <div><span>Diferença de caixa</span><strong class="${positive ? "txt-pos" : "txt-neg"}">${positive ? "+" : ""}${formatMoney(diff)}</strong></div>
             <div><span>Base operacional</span><strong>${formatMoney(base)}</strong></div>
             <div><span>Tipo</span><strong>${ajuste ? "Ajuste" : "Fechamento"}</strong></div>
           </div>
 
-          <div class="detail-grid">
+          ${showProfitOnly ? `<div class="detail-grid"><div class="detail-card"><h3>Lucro / retiradas lucro</h3>
+              <div class="line"><span>Total lucro</span><b>${formatMoney(lucroItem)}</b></div>
+            </div><div class="detail-card"><h3>Resumo</h3><div class="line"><span>Operador</span><b>${operador}</b></div><div class="line"><span>Data</span><b>${data}</b></div></div></div>` : showOperationalOnly ? `<div class="detail-grid"><div class="detail-card"><h3>Gastos operacionais</h3>
+              <div class="line"><span>Custo operacional</span><b>${formatMoney(operacionalItem)}</b></div>
+              <div class="line"><span>Taxa Reca</span><b>${formatMoney(taxaRecaItem)}</b></div>
+            </div><div class="detail-card"><h3>Resumo</h3><div class="line"><span>Operador</span><b>${operador}</b></div><div class="line"><span>Data</span><b>${data}</b></div></div></div>` : `<div class="detail-grid">
             <div class="detail-card"><h3>Saldos</h3>
               <div class="line"><span>Reca</span><b>${formatMoney(t.webReca ?? t.reca ?? 0)}</b></div>
               <div class="line"><span>Suprema ×400</span><b>${formatMoney(moneyToNumber(t.suprema||0)*400)}</b></div>
@@ -4257,11 +4337,11 @@ alert("Carga adicionada ao sistema como ajuste auditável.");
               <div class="line"><span>Retiradas</span><b>${formatMoney(t.saidasTotal || 0)}</b></div>
               <div class="line"><span>Lucro</span><b>${formatMoney(turnCategoryTotal(t, "lucro", "retiradaLucroTotal"))}</b></div>
               <div class="line"><span>Custo operacional</span><b>${formatMoney(turnCategoryTotal(t, "custo_operacional", "custoOperacionalTotal"))}</b></div>
-              <div class="line"><span>Custo O. Reca</span><b>${formatMoney(turnCategoryTotal(t, "custo_reca", "custoRecaTotal"))}</b></div>
+              <div class="line"><span>Taxa Reca</span><b>${formatMoney(turnCategoryTotal(t, "custo_reca", "custoRecaTotal"))}</b></div>
             </div>
-          </div>
+          </div>`}
 
-          <div class="detail-card full"><h3>${ajuste ? "Detalhe do ajuste" : "Detalhes"}</h3>
+          <div class="detail-card full"><h3>${showProfitOnly ? "Retiradas de lucro" : showOperationalOnly ? "Gastos operacionais / Taxa Reca" : ajuste ? "Detalhe do ajuste" : "Detalhes"}</h3>
             ${ajuste ? `<div class="line"><span>Motivo</span><b>${motivo}</b></div>` : ""}
             ${pendentes}
             ${retiradas}
@@ -4732,7 +4812,7 @@ body.side-drawer-open #sideMenuBtn{
   .login-secondary-row{grid-template-columns:1fr 1fr;gap:8px;}
   .login-secondary-row .btn{font-size:12px;padding:0 8px;}
 }
-</style></head><body><div class="toolbar"><strong>Relatório Bank King • ${reportCode}</strong><div class="toolbar-actions"><button class="tool-btn secondary" onclick="window.close()">Voltar</button><button class="tool-btn secondary" onclick="window.print()">Imprimir</button><button class="tool-btn primary" onclick="window.print()">Salvar PDF</button></div></div><header class="cover"><div class="cover-top"><div class="brand"><div class="logo">BK</div><div><h1>Bank King</h1><p>Financial Internal Report</p></div></div><div class="meta">Código: ${reportCode}<br>Gerado em: ${generatedAt}<br>Usuário: ${currentProfile?.name || currentUser?.email || "-"}</div></div><div class="pdf-kpi-wrapper">
+</style></head><body><div class="toolbar"><strong>Relatório Bank King • ${reportCode}</strong><div class="toolbar-actions"><button class="tool-btn secondary" onclick="window.close()">Voltar</button><button class="tool-btn secondary" onclick="window.print()">Imprimir</button><button class="tool-btn primary" onclick="window.print()">Salvar PDF</button></div></div><header class="cover"><div class="cover-top"><div class="brand"><div class="logo">BK</div><div><h1>Bank King</h1><p>Financial Internal Report • ${reportLabel}</p></div></div><div class="meta">Código: ${reportCode}<br>Gerado em: ${generatedAt}<br>Usuário: ${currentProfile?.name || currentUser?.email || "-"}</div></div><div class="pdf-kpi-wrapper">
   <div class="pdf-kpi-grid">
     <div class="pdf-kpi-card"><span>Custo operacional</span><b>${formatMoney(totalCustoOperacional)}</b></div>
     <div class="pdf-kpi-card"><span>Custo RECA</span><b>${formatMoney(totalCustoReca)}</b></div>
