@@ -3382,7 +3382,60 @@ function globalHistorySafe(){
 
 function latestAnyItemForHome(){ return latestClosingForHome(); }
 
-    function renderHome(){
+    
+    let homeDirectFetchRunning = false;
+    let homeDirectFetchDone = false;
+
+    async function fetchHomeSnapshotDirect(){
+      if(homeDirectFetchRunning || homeDirectFetchDone) return;
+      if(!currentUser) return;
+
+      homeDirectFetchRunning = true;
+
+      try{
+        const qh = query(
+          collection(db,"history"),
+          orderBy("submittedAt","desc"),
+          limit(50)
+        );
+
+        const snap = await getDocs(qh);
+        const docs = snap.docs.map(d => ({ id:d.id, ...d.data() }));
+
+        if(docs.length){
+          const byId = new Map(historyCache.map(item => [item.id, item]));
+          docs.forEach(item => byId.set(item.id, item));
+          historyCache = normalizeHistoryCache([...byId.values()]);
+          homeDirectFetchDone = true;
+          console.info("Bank King home direct fetch:", docs.length);
+          renderAll();
+        }
+      }catch(e){
+        console.warn("Home direct fetch falhou:", e); fetchHomeSnapshotNoOrderFallback();
+      }finally{
+        homeDirectFetchRunning = false;
+      }
+    }
+
+
+    async function fetchHomeSnapshotNoOrderFallback(){
+      try{
+        const qh = query(collection(db,"history"), limit(50));
+        const snap = await getDocs(qh);
+        const docs = snap.docs.map(d => ({ id:d.id, ...d.data() }));
+        if(docs.length){
+          const byId = new Map(historyCache.map(item => [item.id, item]));
+          docs.forEach(item => byId.set(item.id, item));
+          historyCache = normalizeHistoryCache([...byId.values()]);
+          console.info("Bank King home no-order fallback:", docs.length);
+          renderAll();
+        }
+      }catch(e){
+        console.warn("Home no-order fallback falhou:", e);
+      }
+    }
+
+function renderHome(){
       const view = visibleHistory();
       const globalView = globalHistorySafe();
 
@@ -3402,6 +3455,9 @@ function latestAnyItemForHome(){ return latestClosingForHome(); }
         renderMonthlyGoal(globalView);
         renderHomeBonusCard(globalView);
         renderChipsComparison(null, null);
+
+        // Fallback real: se o listener ainda não carregou, busca diretamente o último histórico.
+        fetchHomeSnapshotDirect();
         return;
       }
 
@@ -5075,6 +5131,20 @@ body.side-drawer-open #sideMenuBtn{
         limit(HISTORY_DEFAULT_LOAD_LIMIT)
       );
 
+      // Busca inicial imediata: evita Home vazia até o onSnapshot responder.
+      getDocs(qh).then(snap => {
+        const docs = snap.docs.map(d => ({ id:d.id, ...d.data() }));
+        if(docs.length){
+          historyCache = normalizeHistoryCache(docs);
+          console.info("Bank King initial history loaded:", historyCache.length);
+          renderAll();
+        }
+      }).catch(error => {
+        console.warn("Initial history fetch:", error);
+        fetchHomeSnapshotNoOrderFallback();
+        showNotice("appNotice", friendlyError(error), "error");
+      });
+
       historyUnsubscribe = onSnapshot(qh, snap => {
         const docs = snap.docs.map(d => ({ id:d.id, ...d.data() }));
         historyCache = normalizeHistoryCache(docs);
@@ -5089,6 +5159,7 @@ body.side-drawer-open #sideMenuBtn{
         renderAll();
       });
     }
+
     function startSystemRealtime(){
       if(systemUnsubscribe) systemUnsubscribe();
 
@@ -5708,7 +5779,8 @@ body.side-drawer-open #sideMenuBtn{
     onAuthStateChanged(auth,async(user)=>{ currentUser=user; if(!user){document.body.classList.remove("role-admin","role-supervisor","role-operador");loadSavedLoginPreference();$("loginScreen").classList.remove("hidden");$("appShell").classList.add("hidden");$("bottomNav").classList.add("hidden");return;} currentProfile=await loadProfile(user); if(currentProfile.blocked){await signOut(auth);return alert("Usuário bloqueado.");} if(currentProfile.approved===false){$("loginScreen").classList.remove("hidden");$("appShell").classList.add("hidden");$("bottomNav").classList.add("hidden");showNotice("loginNotice","Usuário aguardando aprovação do admin.","error");return;} $("loginScreen").classList.add("hidden");$("appShell").classList.remove("hidden");$("bottomNav").classList.remove("hidden");$("topUserLabel").textContent=`${currentProfile.name||user.email} • ${isAdmin()?"Admin":isSupervisor()?"Supervisor":"Operador"}`;  $("adminStatus").textContent=isAdmin()?"Admin ativo":"Somente admin";
       if($("moreAdminBtn")) $("moreAdminBtn").style.display = isAdmin() ? "flex" : "none"; if($("sideAdminBtn")) $("sideAdminBtn").style.display = isAdmin() ? "grid" : "none"; updateSideDrawerProfile();
 
-      applyRoleBodyClass(); updateRoleVisibility(); if(isAdmin()) loadAudit(); if(currentProfile.permissionError) showNotice("appNotice","Seu login entrou, mas o Firestore negou acesso ao perfil. Ajuste as regras ou coloque seu email em BOOTSTRAP_ADMIN_EMAILS.","error"); startHistoryRealtimeListener(); startSystemRealtime(); fillOperadorFromProfile(); renderAll(); });
+      applyRoleBodyClass(); updateRoleVisibility(); if(isAdmin()) loadAudit(); if(currentProfile.permissionError) showNotice("appNotice","Seu login entrou, mas o Firestore negou acesso ao perfil. Ajuste as regras ou coloque seu email em BOOTSTRAP_ADMIN_EMAILS.","error"); startHistoryRealtimeListener(); startHistoryRealtimeListener();
+        startSystemRealtime(); fillOperadorFromProfile(); renderAll(); });
 
     function runSelfTests(){
       const savedUser = currentUser;
@@ -5759,6 +5831,14 @@ body.side-drawer-open #sideMenuBtn{
     document.addEventListener("DOMContentLoaded",()=>{ forceHideReloadLoader(); bindEvents(); initDate(); initBankMicroUX(); setTimeout(()=>{const splash=$("appSplash"); splash?.classList.add("hide"); setTimeout(()=>splash?.remove(),800);},1600); runSelfTests(); });
   
     document.addEventListener("DOMContentLoaded", loadSavedLoginPreference);
+
+
+    setTimeout(()=>{
+      if(currentUser && !historyCache.length){
+        console.warn("Bank King: histórico ainda vazio após 4s. Verifique regras Firestore / coleção history / campo submittedAt.");
+        showNotice("appNotice","Histórico não carregou. Verifique permissão do Firestore para ler /history e se os documentos têm submittedAt.","error");
+      }
+    },4000);
 
 </script>
 </body>
