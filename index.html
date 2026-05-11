@@ -3059,11 +3059,8 @@ service cloud.firestore {
       return historyCache.find(item => !isAdjustmentItem(item)) || null;
     }
 
-    function displayCashDiffForAllRoles(item){
-      // Mesma diferença para operador, supervisor e admin.
-      // A base usa historyCache completo, não o histórico filtrado pela função.
-      return displayCashDiff(item);
-    }
+    
+    
 
     function getOperadorName(item={}){
       const t = item.turno || {};
