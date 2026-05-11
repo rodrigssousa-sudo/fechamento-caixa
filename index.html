@@ -1239,6 +1239,132 @@ body.role-admin #monthlyGoalCard{
   display:none!important;
 }
 
+
+
+/* =========================================================
+   META DE BÔNUS — BARRA VERTICAL NA TELA INICIAL
+   Cada bloco representa um dia do mês:
+   verde = teve lucro no dia / vermelho = sem lucro.
+========================================================= */
+.bonus-vertical-bar{
+  position:fixed;
+  right:14px;
+  top:50%;
+  transform:translateY(-50%);
+  z-index:65;
+  width:48px;
+  min-height:360px;
+  max-height:68vh;
+  padding:10px 7px;
+  border-radius:24px;
+  background:#242424;
+  border:1px solid rgba(255,255,255,.12);
+  box-shadow:0 14px 34px rgba(0,0,0,.20);
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  gap:9px;
+  overflow:hidden;
+}
+
+.bonus-vertical-title{
+  writing-mode:vertical-rl;
+  transform:rotate(180deg);
+  color:#fff;
+  font-size:10px;
+  line-height:1;
+  font-weight:950;
+  letter-spacing:1.6px;
+  text-transform:uppercase;
+  flex:0 0 auto;
+  opacity:.92;
+}
+
+.bonus-vertical-track{
+  width:100%;
+  flex:1;
+  display:flex;
+  flex-direction:column-reverse;
+  gap:3px;
+  align-items:stretch;
+  justify-content:flex-start;
+}
+
+.bonus-day-cell{
+  flex:1 1 0;
+  min-height:7px;
+  border-radius:8px;
+  background:rgba(255,255,255,.13);
+  border:1px solid rgba(255,255,255,.10);
+  transition:.25s ease;
+}
+
+.bonus-day-cell.done{
+  background:linear-gradient(180deg,#22c55e,#087f5b);
+  border-color:rgba(34,197,94,.55);
+  box-shadow:0 0 10px rgba(34,197,94,.28);
+}
+
+.bonus-day-cell.missed{
+  background:linear-gradient(180deg,#ef4444,#991b1b);
+  border-color:rgba(239,68,68,.50);
+  box-shadow:0 0 8px rgba(239,68,68,.15);
+}
+
+.bonus-day-cell.future{
+  background:rgba(255,255,255,.10);
+  border-color:rgba(255,255,255,.08);
+  box-shadow:none;
+}
+
+.bonus-vertical-bar.bonus-unlocked{
+  background:linear-gradient(180deg,#064e3b,#087f5b,#22c55e)!important;
+  box-shadow:0 0 0 1px rgba(34,197,94,.35),0 18px 42px rgba(34,197,94,.28)!important;
+}
+
+.bonus-vertical-bar.bonus-unlocked .bonus-vertical-title{
+  font-size:12px;
+  letter-spacing:2px;
+  opacity:1;
+}
+
+.bonus-vertical-bar.bonus-unlocked .bonus-day-cell{
+  background:rgba(255,255,255,.22);
+  border-color:rgba(255,255,255,.18);
+  box-shadow:none;
+}
+
+body.role-operador #bonusVerticalBar{
+  display:none!important;
+}
+
+@media(max-width:760px){
+  .bonus-vertical-bar{
+    right:8px;
+    width:38px;
+    min-height:250px;
+    max-height:54vh;
+    padding:8px 5px;
+    border-radius:20px;
+  }
+  .bonus-vertical-title{
+    font-size:9px;
+    letter-spacing:1.2px;
+  }
+  .bonus-day-cell{
+    min-height:5px;
+    border-radius:6px;
+  }
+}
+
+@media(max-width:430px){
+  .bonus-vertical-bar{
+    right:6px;
+    width:34px;
+    min-height:220px;
+  }
+}
+
 </style>
 
 <script>
@@ -1358,6 +1484,10 @@ function updateHeroBalance(newValue){
     <div id="appNotice" class="notice hidden"></div>
 
     <section id="screenHome" class="screen active">
+      <aside id="bonusVerticalBar" class="bonus-vertical-bar hidden" aria-label="Meta mensal de bônus">
+        <div class="bonus-vertical-title">BÔNUS</div>
+        <div id="bonusVerticalTrack" class="bonus-vertical-track"></div>
+      </aside>
       <div class="hero-card">
         <div class="hero-label">Saldo Reca</div>
         <div id="homeSaldoReca" class="hero-value">$ 0,00</div>
@@ -2449,7 +2579,92 @@ service cloud.firestore {
       if($("homeOperador")) $("homeOperador").textContent = profileName() || "-";
     }
 
- function renderMonthlyGoal(view){
+ function renderBonusVerticalBar(view){
+      const bar = $("bonusVerticalBar");
+      const track = $("bonusVerticalTrack");
+      if(!bar || !track) return;
+
+      const canSeeBonus = isAdmin() || isSupervisor();
+      bar.classList.toggle("hidden", !canSeeBonus);
+      bar.style.display = canSeeBonus ? "" : "none";
+
+      if(!canSeeBonus){
+        track.innerHTML = "";
+        return;
+      }
+
+      const now = nowSP();
+      const year = now.getFullYear();
+      const month = now.getMonth();
+      const daysInMonth = new Date(year, month + 1, 0).getDate();
+      const today = now.getDate();
+
+      const target = moneyToNumber(
+        currentProfile?.monthlyGoal ||
+        currentProfile?.metaMensal ||
+        45000000
+      );
+
+      const monthStart = new Date(year, month, 1);
+      const monthItems = (view || visibleHistory()).filter(item => {
+        const d = item?.submittedAt?.toDate
+          ? item.submittedAt.toDate()
+          : new Date(item?.turno?.closingDate || item?.createdAt || 0);
+
+        return !isNaN(d) && d >= monthStart && d.getMonth() === month && d.getFullYear() === year;
+      });
+
+      const lucroDoItem = (item) => {
+        const t = item?.turno || {};
+
+        const direto = moneyToNumber(t.retiradaLucroTotal ?? 0);
+        if(direto > 0) return direto;
+
+        if(Array.isArray(t.outflows)){
+          return t.outflows
+            .filter(o => String(o.category || o.type || "").toLowerCase() === "lucro")
+            .reduce((s,o) => s + moneyToNumber(o.value || 0), 0);
+        }
+
+        return 0;
+      };
+
+      const lucroPorDia = new Map();
+
+      monthItems.forEach(item => {
+        const d = item?.submittedAt?.toDate
+          ? item.submittedAt.toDate()
+          : new Date(item?.turno?.closingDate || item?.createdAt || 0);
+
+        if(isNaN(d)) return;
+
+        const day = d.getDate();
+        const lucro = lucroDoItem(item);
+        lucroPorDia.set(day, (lucroPorDia.get(day) || 0) + lucro);
+      });
+
+      const done = monthItems.reduce((s,item) => s + lucroDoItem(item), 0);
+      const unlocked = target > 0 && done >= target;
+
+      bar.classList.toggle("bonus-unlocked", unlocked);
+
+      // Quando atingir a meta, a única escrita visível permanece sendo "BÔNUS".
+      const cells = [];
+      for(let day = 1; day <= daysInMonth; day++){
+        const lucroDia = lucroPorDia.get(day) || 0;
+        let status = "future";
+
+        if(day <= today){
+          status = lucroDia > 0 ? "done" : "missed";
+        }
+
+        cells.push(`<div class="bonus-day-cell ${status}" title="Dia ${day}: ${lucroDia > 0 ? formatMoney(lucroDia) : day <= today ? 'sem lucro' : 'futuro'}"></div>`);
+      }
+
+      track.innerHTML = cells.join("");
+    }
+
+    function renderMonthlyGoal(view){
   const card = $("monthlyGoalCard");
   if(!card) return;
 
@@ -2460,6 +2675,11 @@ service cloud.firestore {
 
   if($("sideGoalsBtn")){
     $("sideGoalsBtn").style.display = canSeeGoal ? "grid" : "none";
+  }
+
+  if($("bonusVerticalBar")){
+    $("bonusVerticalBar").classList.toggle("hidden", !canSeeGoal);
+    $("bonusVerticalBar").style.display = canSeeGoal ? "" : "none";
   }
 
   if(!canSeeGoal) return;
@@ -2626,6 +2846,7 @@ service cloud.firestore {
       if($("homeOperador")) $("homeOperador").textContent = last ? getOperadorName(last) : "-";
       if($("homeLastClose")) $("homeLastClose").textContent = last ? dateLabel(last.submittedAt || last.createdAt || last.turno?.closingDate) : "-";
       if($("homeUpdatedAt")) $("homeUpdatedAt").textContent = last ? "Última atualização: " + dateLabel(last.submittedAt || last.createdAt) : "Aguardando fechamento";
+      renderBonusVerticalBar(view);
       renderMonthlyGoal(view);
       renderChipsComparison(last, prev);
     }
@@ -4179,6 +4400,11 @@ body.side-drawer-open #sideMenuBtn{
       if($("monthlyGoalCard")){
         $("monthlyGoalCard").classList.toggle("hidden", !canSeeManagement);
         $("monthlyGoalCard").style.display = canSeeManagement ? "" : "none";
+      }
+
+      if($("bonusVerticalBar")){
+        $("bonusVerticalBar").classList.toggle("hidden", !canSeeManagement);
+        $("bonusVerticalBar").style.display = canSeeManagement ? "" : "none";
       }
 
       if($("sideGoalsBtn")){
