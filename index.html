@@ -2360,6 +2360,7 @@ function updateHeroBalance(newValue){
   <div id="appReloadLoader" class="app-reload-loader"><div class="reload-card"><div class="reload-spinner"></div><strong>Atualizando sistema</strong><span>Recalculando dados...</span></div></div>
 
   <script type="module">
+
 window.__BK_FORCE_OPEN_APP__ = function(){
       try{
         ["appSplash","splashScreen","splash","loadingScreen","introScreen"].forEach(id => {
@@ -4460,32 +4461,59 @@ alert("Carga adicionada ao sistema como ajuste auditável.");
 
     
     function getReportMainCardData(items){
-      const totalSaldo = items.reduce((s,x)=>s + moneyToNumber(x.turno?.saldoLiquido ?? x.currentSaldoTotal ?? 0),0);
-      const totalDiff = items.reduce((s,x)=>s + moneyToNumber(x.diff ?? 0),0);
-      const totalLucro = items.reduce((s,x)=>s + turnCategoryTotal(x.turno || {}, "lucro", "retiradaLucroTotal"),0);
-      const totalPendentes = items.reduce((s,x)=>s + moneyToNumber(x.turno?.pendentesTotal ?? 0),0);
-      const totalRetiradas = items.reduce((s,x)=>s + moneyToNumber(x.turno?.saidasTotal ?? 0),0);
       const totalCustoOperacional = items.reduce((s,x)=>s + turnCategoryTotal(x.turno || {}, "custo_operacional", "custoOperacionalTotal"),0);
       const totalTaxaReca = items.reduce((s,x)=>s + turnCategoryTotal(x.turno || {}, "custo_reca", "custoRecaTotal"),0);
 
+      const totalDiff = items.reduce((s,x)=>{
+        if(x.diff !== undefined && x.diff !== null) return s + moneyToNumber(x.diff);
+        if(typeof displayCashDiffForAllRoles === "function") return s + displayCashDiffForAllRoles(x);
+        if(typeof displayCashDiff === "function") return s + displayCashDiff(x);
+        return s;
+      },0);
+
+      const totalLucro = items.reduce((s,x)=>s + turnCategoryTotal(x.turno || {}, "lucro", "retiradaLucroTotal"),0);
+
+      const totalPoker = items.reduce((s,x)=>{
+        const t = x.turno || {};
+        const p = typeof getAdjustmentParts === "function" ? getAdjustmentParts(x) : {};
+        return s
+          + moneyToNumber(t.cargaPoker || t.cargasPoker || 0)
+          + moneyToNumber(p.cargaPoker || 0)
+          + moneyToNumber(p.cargaSuprema || 0)
+          + moneyToNumber(p.cargaPppoker || 0);
+      },0);
+
+      const totalBuffalo = items.reduce((s,x)=>{
+        const t = x.turno || {};
+        const p = typeof getAdjustmentParts === "function" ? getAdjustmentParts(x) : {};
+        return s + moneyToNumber(t.cargaBuffalo || t.cargasBuffalo || 0) + moneyToNumber(p.cargaBuffalo || 0);
+      },0);
+
+      const totalGanamos = items.reduce((s,x)=>{
+        const t = x.turno || {};
+        const p = typeof getAdjustmentParts === "function" ? getAdjustmentParts(x) : {};
+        return s + moneyToNumber(t.cargaGanamos || t.cargasGanamos || 0) + moneyToNumber(p.cargaGanamos || 0);
+      },0);
+
       return {
-        totalSaldo,
+        totalCustoOperacional,
+        totalTaxaReca,
         totalDiff,
         totalLucro,
-        totalPendentes,
-        totalRetiradas,
-        totalCustoOperacional,
-        totalTaxaReca
+        totalPoker,
+        totalBuffalo,
+        totalGanamos,
+        registros: items.length
       };
     }
 
     function buildReportPreviewMainCardHtml(items){
-      const start = $("reportStart")?.value || "";
-      const end = $("reportEnd")?.value || "";
-      const operador = ($("reportOperador")?.value || "").trim() || "Todos";
-      const supervisor = ($("reportSupervisor")?.value || "").trim() || "Todos";
-      const periodLabel = `${start ? formatDateOnlySP(start + "T12:00:00") : "Início"} até ${end ? formatDateOnlySP(end + "T12:00:00") : "Hoje"}`;
+      const generatedAt = formatDateTimeSP(nowSP());
+      const reportCode = "BK-" + Date.now().toString().slice(-8);
+      const userName = profileName ? profileName() : (currentUser?.email || "Usuário");
       const data = getReportMainCardData(items);
+
+      const diffClass = data.totalDiff < 0 ? "danger" : "success";
 
       return `<!doctype html>
 <html lang="pt-BR">
@@ -4498,69 +4526,270 @@ alert("Carga adicionada ao sistema como ajuste auditável.");
   body{
     margin:0;
     min-height:100vh;
-    padding:24px;
+    padding:22px;
     background:#f4f4f6;
     color:#111827;
     font-family:Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;
     display:flex;
-    align-items:center;
+    align-items:flex-start;
     justify-content:center;
   }
-  .preview-shell{width:min(760px,100%)}
-  .main-card{
-    border-radius:28px;
-    overflow:hidden;
-    background:linear-gradient(145deg,#2b2b34 0%,#1a1a2e 46%,#0b0b10 100%);
-    color:#fff;
-    box-shadow:0 2px 6px rgba(0,0,0,.10),0 28px 90px rgba(17,17,30,.24);
-    border:1px solid rgba(255,255,255,.14);
+  .preview-shell{
+    width:min(1120px,100%);
   }
-  .cover{padding:26px 28px 22px;border-bottom:1px solid rgba(255,255,255,.12)}
-  .eyebrow{font-size:11px;font-weight:950;letter-spacing:.95px;text-transform:uppercase;color:rgba(255,255,255,.62)}
-  h1{margin:8px 0 5px;font-size:28px;line-height:1.02;letter-spacing:-1px;font-weight:950}
-  .meta{margin:0;color:rgba(255,255,255,.70);font-size:13px;font-weight:750}
-  .saldo{padding:26px 28px;display:grid;gap:8px}
-  .saldo span{color:rgba(255,255,255,.62);font-size:11px;font-weight:950;letter-spacing:.65px;text-transform:uppercase}
-  .saldo strong{font-size:48px;line-height:.96;letter-spacing:-2px;font-weight:950;font-variant-numeric:tabular-nums lining-nums}
-  .kpis{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;padding:0 28px 28px}
-  .kpi{min-height:92px;border-radius:18px;padding:14px;background:rgba(255,255,255,.10);border:1px solid rgba(255,255,255,.14);display:grid;align-content:center;gap:7px}
-  .kpi span{font-size:10px;color:rgba(255,255,255,.60);font-weight:950;letter-spacing:.55px;text-transform:uppercase}
-  .kpi b{font-size:18px;font-weight:950;color:#fff;font-variant-numeric:tabular-nums lining-nums}
-  .filters{padding:16px 28px 24px;border-top:1px solid rgba(255,255,255,.10);color:rgba(255,255,255,.68);font-size:12px;font-weight:800;line-height:1.45}
-  .actions{display:flex;justify-content:center;gap:10px;margin-top:14px}
-  button{height:44px;border:0;border-radius:14px;padding:0 16px;font-weight:900;cursor:pointer}
-  .print{background:#11111e;color:#fff}.close{background:#fff;color:#11111e}
-  @media(max-width:640px){body{padding:14px;align-items:flex-start}.kpis{grid-template-columns:1fr}.saldo strong{font-size:38px}}
-  @media print{body{background:#fff;padding:0}.actions{display:none}.preview-shell{width:100%}.main-card{box-shadow:none;border-radius:0}}
+  .report-card{
+    border-radius:26px;
+    overflow:hidden;
+    background:
+      radial-gradient(circle at 52% 88%, rgba(42,126,83,.30), transparent 34%),
+      linear-gradient(145deg,#292929 0%,#202020 48%,#101010 100%);
+    color:#fff;
+    box-shadow:0 3px 8px rgba(0,0,0,.14),0 26px 80px rgba(0,0,0,.28);
+    border:1px solid rgba(255,255,255,.13);
+    padding:28px;
+  }
+  .top{
+    display:flex;
+    justify-content:space-between;
+    gap:20px;
+    align-items:flex-start;
+    margin-bottom:22px;
+  }
+  .brand{
+    display:flex;
+    gap:14px;
+    align-items:center;
+  }
+  .logo{
+    width:62px;
+    height:62px;
+    border-radius:18px;
+    background:#fff;
+    color:#111;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-weight:950;
+    font-size:24px;
+    letter-spacing:-1px;
+  }
+  .brand h1{
+    margin:0;
+    font-size:28px;
+    line-height:1;
+    letter-spacing:-1px;
+    font-weight:950;
+  }
+  .brand p{
+    margin:9px 0 0;
+    color:rgba(255,255,255,.62);
+    font-size:11px;
+    font-weight:950;
+    letter-spacing:2.6px;
+    text-transform:uppercase;
+  }
+  .meta{
+    text-align:right;
+    color:rgba(255,255,255,.66);
+    font-size:12px;
+    font-weight:950;
+    line-height:1.55;
+    letter-spacing:1.4px;
+    text-transform:uppercase;
+  }
+  .grid{
+    display:grid;
+    grid-template-columns:repeat(4,minmax(0,1fr));
+    gap:14px;
+  }
+  .panel{
+    border-radius:18px;
+    padding:20px;
+    min-height:112px;
+    background:linear-gradient(180deg,rgba(255,255,255,.075),rgba(255,255,255,.035));
+    border:1px solid rgba(255,255,255,.12);
+    box-shadow:inset 0 1px 0 rgba(255,255,255,.06);
+    overflow:hidden;
+  }
+  .label{
+    color:rgba(255,255,255,.62);
+    font-size:11px;
+    font-weight:950;
+    letter-spacing:2.8px;
+    text-transform:uppercase;
+    margin-bottom:16px;
+    white-space:nowrap;
+  }
+  .value{
+    color:#fff;
+    font-size:34px;
+    line-height:1;
+    font-weight:950;
+    letter-spacing:-1.3px;
+    font-variant-numeric:tabular-nums lining-nums;
+    white-space:nowrap;
+  }
+  .value.danger{color:#ff6478}
+  .value.success{color:#62ce8e}
+  .records{
+    font-size:36px;
+  }
+  .section{
+    margin-top:16px;
+    border-radius:22px;
+    padding:22px;
+    background:rgba(255,255,255,.045);
+    border:1px solid rgba(255,255,255,.11);
+  }
+  .section-title{
+    color:rgba(255,255,255,.62);
+    font-size:11px;
+    font-weight:950;
+    letter-spacing:3px;
+    text-transform:uppercase;
+    padding-bottom:14px;
+    border-bottom:1px solid rgba(255,255,255,.11);
+    margin-bottom:16px;
+  }
+  .charges{
+    display:grid;
+    grid-template-columns:repeat(3,minmax(0,1fr));
+    gap:14px;
+  }
+  .charge{
+    border-radius:18px;
+    background:rgba(255,255,255,.06);
+    border:1px solid rgba(255,255,255,.12);
+    padding:16px 18px;
+  }
+  .charge span{
+    display:block;
+    color:rgba(255,255,255,.62);
+    font-size:10px;
+    font-weight:950;
+    letter-spacing:2px;
+    text-transform:uppercase;
+    margin-bottom:8px;
+  }
+  .charge b{
+    font-size:26px;
+    color:#fff;
+    font-weight:950;
+    letter-spacing:-.8px;
+    white-space:nowrap;
+  }
+  .profit{
+    margin-top:16px;
+    border-radius:22px;
+    padding:26px 30px;
+    background:
+      radial-gradient(circle at 50% 100%, rgba(65,201,122,.22), transparent 54%),
+      rgba(255,255,255,.045);
+    border:1px solid rgba(255,255,255,.11);
+  }
+  .profit .label{
+    padding-bottom:14px;
+    border-bottom:1px solid rgba(255,255,255,.10);
+    margin-bottom:16px;
+  }
+  .profit strong{
+    display:block;
+    color:#62ce8e;
+    font-size:56px;
+    line-height:1;
+    font-weight:950;
+    letter-spacing:-2.2px;
+    font-variant-numeric:tabular-nums lining-nums;
+    white-space:nowrap;
+  }
+  .actions{
+    display:flex;
+    justify-content:center;
+    gap:10px;
+    margin-top:14px;
+  }
+  button{
+    height:44px;
+    border:0;
+    border-radius:14px;
+    padding:0 16px;
+    font-weight:900;
+    cursor:pointer;
+  }
+  .print{background:#111;color:#fff}
+  .close{background:#fff;color:#111}
+  @media(max-width:900px){
+    body{padding:12px}
+    .report-card{padding:18px;border-radius:22px}
+    .top{flex-direction:column}
+    .meta{text-align:left}
+    .grid{grid-template-columns:1fr 1fr}
+    .charges{grid-template-columns:1fr}
+    .value{font-size:28px}
+    .profit strong{font-size:40px}
+  }
+  @media(max-width:520px){
+    .grid{grid-template-columns:1fr}
+    .brand h1{font-size:24px}
+    .logo{width:54px;height:54px}
+  }
+  @media print{
+    body{background:#fff;padding:0}
+    .actions{display:none}
+    .preview-shell{width:100%}
+    .report-card{box-shadow:none;border-radius:0}
+  }
 </style>
 </head>
 <body>
   <div class="preview-shell">
-    <div class="main-card">
-      <div class="cover">
-        <div class="eyebrow">BANK KING • Financial Internal Report</div>
-        <h1>Pré-visualização do relatório</h1>
-        <p class="meta">${periodLabel} • ${items.length} registros</p>
+    <div class="report-card">
+      <div class="top">
+        <div class="brand">
+          <div class="logo">BK</div>
+          <div>
+            <h1>Bank King</h1>
+            <p>Financial Internal Report</p>
+          </div>
+        </div>
+        <div class="meta">
+          Código: ${reportCode}<br>
+          Gerado em: ${generatedAt}<br>
+          Usuário: ${userName}
+        </div>
       </div>
 
-      <div class="saldo">
-        <span>Saldo líquido consolidado</span>
-        <strong>${formatMoney(data.totalSaldo)}</strong>
+      <div class="grid">
+        <div class="panel">
+          <div class="label">Custo operacional</div>
+          <div class="value">${formatMoney(data.totalCustoOperacional)}</div>
+        </div>
+        <div class="panel">
+          <div class="label">Taxa Reca</div>
+          <div class="value">${formatMoney(data.totalTaxaReca)}</div>
+        </div>
+        <div class="panel">
+          <div class="label">Divergência de caixa</div>
+          <div class="value ${diffClass}">${formatMoney(data.totalDiff)}</div>
+        </div>
+        <div class="panel">
+          <div class="label">Registros</div>
+          <div class="value records">${data.registros}</div>
+        </div>
       </div>
 
-      <div class="kpis">
-        <div class="kpi"><span>Diferença de caixa</span><b>${formatMoney(data.totalDiff)}</b></div>
-        <div class="kpi"><span>Lucro / retiradas</span><b>${formatMoney(data.totalLucro)}</b></div>
-        <div class="kpi"><span>Pendentes</span><b>${formatMoney(data.totalPendentes)}</b></div>
-        <div class="kpi"><span>Retiradas total</span><b>${formatMoney(data.totalRetiradas)}</b></div>
-        <div class="kpi"><span>Custo operacional</span><b>${formatMoney(data.totalCustoOperacional)}</b></div>
-        <div class="kpi"><span>Taxa Reca</span><b>${formatMoney(data.totalTaxaReca)}</b></div>
+      <div class="section">
+        <div class="section-title">Cargas</div>
+        <div class="charges">
+          <div class="charge"><span>Poker</span><b>${formatMoney(data.totalPoker)}</b></div>
+          <div class="charge"><span>Buffalo</span><b>${formatMoney(data.totalBuffalo)}</b></div>
+          <div class="charge"><span>Ganamos</span><b>${formatMoney(data.totalGanamos)}</b></div>
+        </div>
       </div>
 
-      <div class="filters">
-        Operador: ${operador}<br>
-        Supervisor: ${supervisor}<br>
-        Prévia resumida: apenas card principal, sem detalhamento dos fechamentos.
+      <div class="profit">
+        <div class="label">Lucro</div>
+        <strong>${formatMoney(data.totalLucro)}</strong>
       </div>
     </div>
 
@@ -5793,5 +6022,6 @@ body.side-drawer-open #sideMenuBtn{
     document.addEventListener("DOMContentLoaded", loadSavedLoginPreference);
 
 document.addEventListener("DOMContentLoaded",()=>{ setTimeout(window.__BK_FORCE_OPEN_APP__,4500); });
+
 </script>
 </body>
