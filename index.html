@@ -2762,6 +2762,12 @@ const firebaseConfig = {
     function bkHistoryTimestampMs(item){
       const t = item?.turno || {};
       const candidates = [
+        item?.sortAt,
+        t.sortAt,
+        item?.selectedSortAt,
+        t.selectedSortAt,
+        item?.adjustmentSortAt,
+        t.adjustmentSortAt,
         item?.submittedAt,
         t.submittedAt,
         t.adjustmentChosenDate,
@@ -3452,7 +3458,20 @@ function moneyToNumber(value){
     /* =========================================================
        AJUSTE INTERNO — DATA/HORA ESCOLHIDA
     ========================================================= */
-    function selectedAdjustmentDateTime(){
+    
+    function adjustmentSortPayload(){
+      const chosen = selectedAdjustmentDateTime();
+      const iso = chosen.toISOString();
+      return {
+        sortAt: chosen,
+        selectedSortAt: chosen,
+        adjustmentSortAt: chosen,
+        adjustmentChosenDate: iso,
+        adjustmentDate: iso
+      };
+    }
+
+function selectedAdjustmentDateTime(){
       const dateValue =
         $("adjustmentDate")?.value ||
         $("internalAdjustmentDate")?.value ||
@@ -3487,12 +3506,17 @@ function moneyToNumber(value){
     function applyChosenDateToAdjustmentTurno(turno){
       const chosen = selectedAdjustmentDateTime();
       const iso = chosen.toISOString();
+
       if(turno){
         turno.closingDate = iso;
         turno.dataFechamento = iso;
         turno.adjustmentDate = iso;
         turno.adjustmentChosenDate = iso;
+        turno.sortAt = iso;
+        turno.selectedSortAt = iso;
+        turno.adjustmentSortAt = iso;
       }
+
       return { chosen, iso };
     }
 
@@ -4304,6 +4328,7 @@ function renderCalculations(){
 
 
         await addDoc(collection(db,"history"),{
+        ...adjustmentSortPayload(),
           type:"closing",
           adjustment:false,
           turno:{
@@ -4413,6 +4438,7 @@ await addAudit("save_closing",`Fechamento salvo por ${turno.operadorName}`);
         if(typeof adjustment !== "undefined" && adjustment && adjustment.turno) applyChosenDateToAdjustmentTurno(adjustment.turno);
 
         await addDoc(collection(db,"history"), {
+        ...adjustmentSortPayload(),
           type:"capital_injection",
           adjustment:true,
           adjustmentType:"carga_rapida",
@@ -6037,7 +6063,7 @@ input:focus{
 
       try{
         box.innerHTML = `<div class="history-item">Carregando auditoria...</div>`;
-        const qh = query(collection(db,"audit_logs"), orderBy("createdAt","desc"), limit(50));
+        const qh = query(collection(db,"audit_logs"), orderBy("submittedAt","desc"), limit(50));
         const snap = await getDocs(qh);
 
         box.innerHTML = snap.docs.map(d=>{
