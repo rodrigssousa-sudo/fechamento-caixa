@@ -1889,6 +1889,40 @@ input:focus{
   border-radius:12px!important;
 }
 
+
+
+/* =========================================================
+   TECLADO BANCÁRIO FINAL
+========================================================= */
+input[data-bank-money="1"]{
+  font-variant-numeric:tabular-nums lining-nums;
+  letter-spacing:0!important;
+  caret-color:#111827;
+  -webkit-text-size-adjust:100%;
+}
+input[data-bank-money="1"]:focus{
+  outline:none!important;
+}
+
+
+/* =========================================================
+   PDF — FILTROS CATEGORIZADOS
+========================================================= */
+#reportEntryType,
+#reportDetailMode,
+#reportOperador,
+#reportSupervisor,
+#reportStart,
+#reportEnd{
+  font-weight:900;
+}
+.report-filter-grid,
+.pdf-filter-grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(180px,1fr));
+  gap:12px;
+}
+
 </style>
 
 <script>
@@ -2220,7 +2254,36 @@ document.addEventListener("focusout", ev=>{
 
     <section id="screenRanking" class="screen"><div class="section-divider">Performance por operador</div><div class="card"><div class="card-title"><h2>Ranking operadores</h2><span>Lucro por operador</span></div><div class="rank-tabs"><button class="active" data-rank="day">Diário</button><button data-rank="week">Semanal</button><button data-rank="month">Mensal</button><button data-rank="all">Total</button></div><div id="rankingList" class="rank-list"></div></div></section>
 
-    <section id="screenReports" class="screen"><div class="section-divider">Exportação institucional</div><div class="card"><div class="card-title"><h2>Relatórios premium</h2><span>PDF nível banco • 91 dias + anual sob demanda</span></div><div class="form-grid"><div class="field"><label>Data inicial</label><input id="reportStart" type="date" /></div><div class="field"><label>Data final</label><input id="reportEnd" type="date" /></div><div class="field"><label>Operador</label><input id="reportOperador" placeholder="Todos" /></div><div class="field"><label>Supervisor</label><input id="reportSupervisor" placeholder="Todos" /></div></div><div class="grid three"><div class="card" style="box-shadow:none;"><div class="muted">Fechamentos</div><div id="reportPreviewCount" class="metric">0</div></div><div class="card" style="box-shadow:none;"><div class="muted">Saldo líquido</div><div id="reportPreviewSaldo" class="metric">$ 0,00</div></div><div class="card" style="box-shadow:none;"><div class="muted">Diferença</div><div id="reportPreviewDiff" class="metric">$ 0,00</div></div></div><button id="previewReportBtn" class="btn secondary full" style="margin-top:14px;">Pré-visualizar resumo</button><button id="generateReportBtn" class="btn full" style="margin-top:10px;">Gerar PDF</button></div></section>
+    <section id="screenReports" class="screen"><div class="section-divider">Exportação institucional</div><div class="card"><div class="card-title"><h2>Relatórios premium</h2><span>PDF nível banco • 91 dias + anual sob demanda</span></div><div class="form-grid"><div class="field"><label>Data inicial</label><input id="reportStart" type="date" /></div><div class="field"><label>Data final</label><input id="reportEnd" type="date" /></div>
+            <div class="field">
+              <label>Operador</label>
+              <input id="reportOperador" placeholder="Todos os operadores" />
+            </div>
+            <div class="field">
+              <label>Supervisor</label>
+              <input id="reportSupervisor" placeholder="Todos os supervisores" />
+            </div>
+            <div class="field">
+              <label>Categoria do relatório</label>
+              <select id="reportEntryType">
+                <option value="all">Relatório completo</option>
+                <option value="closings">Fechamentos de operadores</option>
+                <option value="adjustments">Apenas ajustes internos</option>
+                <option value="loads">Apenas cargas de fichas / caixa</option>
+                <option value="profit">Apenas lucro / retiradas de lucro</option>
+                <option value="expenses">Apenas gastos operacionais</option>
+                <option value="taxa_reca">Apenas Taxa Reca</option>
+              </select>
+            </div>
+            <div class="field">
+              <label>Detalhamento</label>
+              <select id="reportDetailMode">
+                <option value="full">Com todos os detalhes</option>
+                <option value="summary">Resumo executivo</option>
+                <option value="main_card">Somente card principal</option>
+              </select>
+            </div>
+<div class="field"><label>Operador</label><input id="reportOperador" placeholder="Todos" /></div><div class="field"><label>Supervisor</label><input id="reportSupervisor" placeholder="Todos" /></div></div><div class="grid three"><div class="card" style="box-shadow:none;"><div class="muted">Fechamentos</div><div id="reportPreviewCount" class="metric">0</div></div><div class="card" style="box-shadow:none;"><div class="muted">Saldo líquido</div><div id="reportPreviewSaldo" class="metric">$ 0,00</div></div><div class="card" style="box-shadow:none;"><div class="muted">Diferença</div><div id="reportPreviewDiff" class="metric">$ 0,00</div></div></div><button id="previewReportBtn" class="btn secondary full" style="margin-top:14px;">Pré-visualizar resumo</button><button id="generateReportBtn" class="btn full" style="margin-top:10px;">Gerar PDF</button></div></section>
 
     <section id="screenAdmin" class="screen">
       <div class="card">
@@ -3118,72 +3181,259 @@ function historyItemDate(item){
       el.value = n.toLocaleString("pt-BR",{minimumFractionDigits:2,maximumFractionDigits:2});
     }
 
-    function installBankTypingFix(){
-      if(window.__bkStableTypingFixInstalled) return;
-      window.__bkStableTypingFixInstalled = true;
+    
+    /* =========================================================
+       TECLADO BANCÁRIO FINAL
+       - Digitação sempre entra pela última casa decimal.
+       - 1 => 0,01 | 11 => 0,11 | 111 => 1,11
+       - Permite corrigir número no meio sem perder os demais.
+       - Selecionar e apagar limpa o bloco selecionado.
+    ========================================================= */
+    function bkBankIsMoneyInput(el){
+      if(!el) return false;
+      const id = String(el.id || "").toLowerCase();
+      const name = String(el.name || "").toLowerCase();
+      const ph = String(el.placeholder || "").toLowerCase();
+      const cls = String(el.className || "").toLowerCase();
 
-      const normalizeAll = ()=>{
-        document.querySelectorAll("input").forEach(el=>{
-          if(bkStableIsMoneyInput(el)){
-            el.setAttribute("inputmode","decimal");
-            el.setAttribute("autocomplete","off");
-            if(el.type === "number"){
-              try{ el.type = "text"; }catch(_){}
-            }
+      return el.dataset.money === "1"
+        || el.dataset.currency === "1"
+        || cls.includes("money")
+        || id.includes("valor")
+        || id.includes("saldo")
+        || id.includes("reca")
+        || id.includes("suprema")
+        || id.includes("pppoker")
+        || id.includes("poker")
+        || id.includes("buffalo")
+        || id.includes("ganamos")
+        || id.includes("carga")
+        || id.includes("pendente")
+        || id.includes("saida")
+        || id.includes("custo")
+        || id.includes("taxa")
+        || id.includes("lucro")
+        || id.includes("meta")
+        || name.includes("valor")
+        || name.includes("saldo")
+        || ph.includes("$")
+        || ph.includes("valor");
+    }
+
+    function bkBankDigits(value){
+      return String(value ?? "").replace(/\D/g,"");
+    }
+
+    function bkBankNormalizeDigits(digits){
+      digits = String(digits || "").replace(/\D/g,"");
+      digits = digits.replace(/^0+(?=\d{3,})/,"");
+      return digits;
+    }
+
+    function bkBankFormatDigits(digits){
+      digits = bkBankNormalizeDigits(digits);
+
+      if(!digits) return "";
+
+      while(digits.length < 3){
+        digits = "0" + digits;
+      }
+
+      const cents = digits.slice(-2);
+      let intPart = digits.slice(0,-2).replace(/^0+(?=\d)/,"");
+      if(!intPart) intPart = "0";
+
+      intPart = intPart.replace(/\B(?=(\d{3})+(?!\d))/g,".");
+      return `${intPart},${cents}`;
+    }
+
+    function bkBankDigitIndexFromCaret(value, caret){
+      const before = String(value || "").slice(0, Math.max(0, caret || 0));
+      return bkBankDigits(before).length;
+    }
+
+    function bkBankCaretFromDigitIndex(value, digitIndex){
+      const text = String(value || "");
+      if(digitIndex <= 0) return 0;
+
+      let seen = 0;
+      for(let i=0;i<text.length;i++){
+        if(/\d/.test(text[i])){
+          seen++;
+          if(seen >= digitIndex){
+            return i + 1;
           }
-        });
+        }
+      }
+      return text.length;
+    }
+
+    function bkBankSetCaretByDigitIndex(el, digitIndex){
+      requestAnimationFrame(()=>{
+        try{
+          const pos = bkBankCaretFromDigitIndex(el.value, digitIndex);
+          el.setSelectionRange(pos,pos);
+        }catch(_){}
+      });
+    }
+
+    function bkBankReplaceDigits(el, replacementDigits, mode="insert"){
+      const value = String(el.value || "");
+      const oldDigits = bkBankDigits(value);
+      const start = el.selectionStart ?? value.length;
+      const end = el.selectionEnd ?? start;
+
+      const startIdx = bkBankDigitIndexFromCaret(value, start);
+      const endIdx = bkBankDigitIndexFromCaret(value, end);
+
+      let nextDigits = oldDigits;
+      let nextDigitIndex = startIdx;
+
+      if(mode === "replace"){
+        nextDigits = oldDigits.slice(0,startIdx) + replacementDigits + oldDigits.slice(endIdx);
+        nextDigitIndex = startIdx + replacementDigits.length;
+      }
+
+      if(mode === "backspace"){
+        if(start !== end){
+          nextDigits = oldDigits.slice(0,startIdx) + oldDigits.slice(endIdx);
+          nextDigitIndex = startIdx;
+        }else if(startIdx > 0){
+          nextDigits = oldDigits.slice(0,startIdx-1) + oldDigits.slice(startIdx);
+          nextDigitIndex = startIdx - 1;
+        }
+      }
+
+      if(mode === "delete"){
+        if(start !== end){
+          nextDigits = oldDigits.slice(0,startIdx) + oldDigits.slice(endIdx);
+          nextDigitIndex = startIdx;
+        }else{
+          nextDigits = oldDigits.slice(0,startIdx) + oldDigits.slice(startIdx+1);
+          nextDigitIndex = startIdx;
+        }
+      }
+
+      nextDigits = bkBankNormalizeDigits(nextDigits);
+      el.value = bkBankFormatDigits(nextDigits);
+      bkBankSetCaretByDigitIndex(el, nextDigitIndex);
+    }
+
+    function bkBankPrepareField(el){
+      if(!bkBankIsMoneyInput(el)) return;
+
+      el.setAttribute("inputmode","numeric");
+      el.setAttribute("autocomplete","off");
+      el.setAttribute("data-bank-money","1");
+
+      if(el.type === "number"){
+        try{ el.type = "text"; }catch(_){}
+      }
+
+      if(String(el.value || "").trim()){
+        const digits = bkBankDigits(el.value);
+        el.value = bkBankFormatDigits(digits);
+      }
+    }
+
+    function installBankTypingFix(){
+      if(window.__bkBankTypingFinalInstalled) return;
+      window.__bkBankTypingFinalInstalled = true;
+
+      const prepareAll = ()=>{
+        document.querySelectorAll("input").forEach(bkBankPrepareField);
       };
 
-      normalizeAll();
+      prepareAll();
 
       document.addEventListener("focusin", ev=>{
         const el = ev.target;
-        if(!el || el.tagName !== "INPUT" || !bkStableIsMoneyInput(el)) return;
-        const raw = String(el.value || "").trim();
-        const n = moneyToNumber(raw);
-        if(!raw || n === 0){ el.value = ""; return; }
-        const caret = el.selectionStart ?? raw.length;
-        const normalized = bkStableCleanMoney(raw, caret);
-        el.value = normalized.clean;
-        try{ el.setSelectionRange(normalized.caret, normalized.caret); }catch(_){}
+        if(!el || el.tagName !== "INPUT" || !bkBankIsMoneyInput(el)) return;
+
+        bkBankPrepareField(el);
+
+        const digits = bkBankDigits(el.value);
+        if(!digits || Number(digits) === 0){
+          el.value = "";
+          return;
+        }
+
+        el.value = bkBankFormatDigits(digits);
+      }, true);
+
+      document.addEventListener("beforeinput", ev=>{
+        const el = ev.target;
+        if(!el || el.tagName !== "INPUT" || !bkBankIsMoneyInput(el)) return;
+
+        const type = ev.inputType || "";
+        const data = ev.data || "";
+
+        if(type === "insertText"){
+          if(!/^\d+$/.test(data)) {
+            ev.preventDefault();
+            return;
+          }
+          ev.preventDefault();
+          bkBankReplaceDigits(el, data, "replace");
+          return;
+        }
+
+        if(type === "insertFromPaste"){
+          ev.preventDefault();
+          const pasted = (ev.clipboardData || window.clipboardData)?.getData("text") || "";
+          const digits = bkBankDigits(pasted);
+          bkBankReplaceDigits(el, digits, "replace");
+          return;
+        }
+
+        if(type === "deleteContentBackward"){
+          ev.preventDefault();
+          bkBankReplaceDigits(el, "", "backspace");
+          return;
+        }
+
+        if(type === "deleteContentForward"){
+          ev.preventDefault();
+          bkBankReplaceDigits(el, "", "delete");
+          return;
+        }
+
+        if(type === "deleteByCut"){
+          ev.preventDefault();
+          bkBankReplaceDigits(el, "", "delete");
+          return;
+        }
       }, true);
 
       document.addEventListener("input", ev=>{
         const el = ev.target;
-        if(!el || el.tagName !== "INPUT" || !bkStableIsMoneyInput(el)) return;
+        if(!el || el.tagName !== "INPUT" || !bkBankIsMoneyInput(el)) return;
 
-        // Não reformatar durante digitação no iPhone.
-        const start = el.selectionStart ?? 0;
-        const before = String(el.value || "");
-        const cleaned = before.replace(/[^\d,.\-]/g,"");
-
-        if(before !== cleaned){
-          el.value = cleaned;
-
-          try{
-            const next = Math.max(0, Math.min(cleaned.length, start - (before.length - cleaned.length)));
-
-            requestAnimationFrame(()=>{
-              try{
-                el.setSelectionRange(next,next);
-              }catch(_){}
-            });
-
-          }catch(_){}
+        // Fallback para navegadores que não aplicam beforeinput corretamente.
+        const digits = bkBankDigits(el.value);
+        const formatted = bkBankFormatDigits(digits);
+        if(el.value !== formatted){
+          const caretIndex = bkBankDigitIndexFromCaret(el.value, el.selectionStart ?? el.value.length);
+          el.value = formatted;
+          bkBankSetCaretByDigitIndex(el, caretIndex);
         }
       }, true);
 
       document.addEventListener("blur", ev=>{
         const el = ev.target;
-        if(!el || el.tagName !== "INPUT" || !bkStableIsMoneyInput(el)) return;
-        bkStableFormatInput(el);
+        if(!el || el.tagName !== "INPUT" || !bkBankIsMoneyInput(el)) return;
+
+        const digits = bkBankDigits(el.value);
+        el.value = bkBankFormatDigits(digits);
       }, true);
 
       try{
-        window.__bkStableMoneyObserver = new MutationObserver(normalizeAll);
-        window.__bkStableMoneyObserver.observe(document.body,{childList:true,subtree:true});
+        window.__bkBankTypingFinalObserver = new MutationObserver(prepareAll);
+        window.__bkBankTypingFinalObserver.observe(document.body,{childList:true,subtree:true});
       }catch(_){}
     }
+
+
 
 function moneyToNumber(value){
       if(value === null || value === undefined) return 0; if(typeof value === "number") return value;
@@ -3756,7 +4006,7 @@ function getAdjustmentParts(item){
 
       if($("pendingList")) $("pendingList").innerHTML = "";
       if($("outflowList")) $("outflowList").innerHTML = "";
-      initDate();
+      initDate(); ensureReportDateDefault();
       fillOperadorFromProfile();
       renderCalculations();
     }
@@ -4091,10 +4341,45 @@ function renderCalculations(){
       }).join("");
     }
     
-    function renderHistory(){
+    
+    /* =========================================================
+       HISTÓRICO — DIA ATUAL ABERTO POR PADRÃO
+       Ao abrir o histórico, mostra automaticamente o dia atual.
+       O calendário continua permitindo escolher outros dias.
+    ========================================================= */
+    function todayKeySP(){
+      return dateKeySP(nowSP());
+    }
+
+    function ensureHistoryTodayDefault(){
+      const input = $("historyDate");
+      if(!input) return;
+
+      // Só preenche automaticamente se o usuário ainda não escolheu uma data.
+      if(!input.value){
+        input.value = todayKeySP();
+      }
+    }
+
+    function resetHistoryToToday(){
+      const input = $("historyDate");
+      if(input){
+        input.value = todayKeySP();
+      }
+      historyDaysVisible = 1;
+      renderHistory();
+    }
+
+
+function renderHistory(){
+      ensureHistoryTodayDefault();
       const search = $("historySearch")?.value.trim().toLowerCase() || "";
       const date = $("historyDate")?.value || "";
       let list = visibleHistory();
+      const selectedHistoryDate = $("historyDate")?.value || todayKeySP();
+      if(selectedHistoryDate){
+        list = list.filter(item => isSameDaySP(historyItemDate(item), selectedHistoryDate));
+      }
 
       if(search){
         list = list.filter(x => getOperadorName(x).toLowerCase().includes(search));
@@ -4927,51 +5212,147 @@ function renderCalculations(){
       }
     }
 
-    function getReportItems(){
-      const start = $("reportStart")?.value;
-      const end = $("reportEnd")?.value;
-      const operador = ($("reportOperador")?.value || "").trim().toLowerCase();
-      const supervisor = ($("reportSupervisor")?.value || "").trim().toLowerCase();
+    
+    /* =========================================================
+       PDF — FILTROS POR DATA, OPERADOR E CATEGORIA
+    ========================================================= */
+    function reportFilterValue(id){
+      return String($(id)?.value || "").trim();
+    }
 
-      let useExtendedRange = false;
-      if(start && end){
-        const startDate = new Date(start + "T00:00:00");
-        const endDate = new Date(end + "T23:59:59");
-        if(!isNaN(startDate) && !isNaN(endDate)){
-          const diffDays = Math.ceil((endDate - startDate) / 86400000);
-          useExtendedRange = diffDays > HISTORY_RETENTION_DAYS;
-        }
+    function reportStartDate(){
+      return reportFilterValue("reportStart");
+    }
+
+    function reportEndDate(){
+      return reportFilterValue("reportEnd") || reportStartDate();
+    }
+
+    function reportEntryType(){
+      return reportFilterValue("reportEntryType") || "all";
+    }
+
+    function reportDetailMode(){
+      return reportFilterValue("reportDetailMode") || "full";
+    }
+
+    function itemMatchesReportDate(item){
+      const start = reportStartDate();
+      const end = reportEndDate();
+
+      const d = historyItemDate(item);
+      if(isNaN(d)) return false;
+
+      const key = dateKeySP(d);
+
+      if(start && key < start) return false;
+      if(end && key > end) return false;
+
+      return true;
+    }
+
+    function itemMatchesReportPeople(item){
+      const operador = reportFilterValue("reportOperador").toLowerCase();
+      const supervisor = reportFilterValue("reportSupervisor").toLowerCase();
+
+      const t = item?.turno || {};
+      const opName = String(getOperadorName(item) || "").toLowerCase();
+      const supName = String(item?.supervisorName || t.supervisorName || item?.supervisorEmail || t.supervisorEmail || "").toLowerCase();
+
+      if(operador && !opName.includes(operador)) return false;
+      if(supervisor && !supName.includes(supervisor)) return false;
+
+      return true;
+    }
+
+    function reportItemCategoryValue(item, category){
+      const t = item?.turno || {};
+
+      if(category === "profit"){
+        return turnCategoryTotal(t, "lucro", "retiradaLucroTotal");
       }
 
-      // Até 91 dias: fonte padrão otimizada.
-      // Acima de 91 dias: usa histórico carregado ampliado para balanço anual.
-      let items = useExtendedRange
-        ? historyCache.filter(canAccessHistoryItem)
-        : reportHistory();
-
-      if(start){
-        items = items.filter(x=>{
-          const d = historyItemDate(x);
-          return !isNaN(d) && isOnOrAfterDateSP(d,start);
-        });
+      if(category === "expenses"){
+        return turnCategoryTotal(t, "custo_operacional", "custoOperacionalTotal");
       }
 
-      if(end){
-        items = items.filter(x=>{
-          const d = historyItemDate(x);
-          return !isNaN(d) && isOnOrBeforeDateSP(d,end);
-        });
+      if(category === "taxa_reca"){
+        return turnCategoryTotal(t, "custo_reca", "custoRecaTotal");
       }
 
-      if(operador){
-        items = items.filter(x=>getOperadorName(x).toLowerCase().includes(operador));
+      if(category === "loads"){
+        const parts = typeof getAdjustmentParts === "function" ? getAdjustmentParts(item) : {};
+        return moneyToNumber(t.cargasPoker || 0) * 400
+          + moneyToNumber(t.cargasCasino || 0)
+          + moneyToNumber(t.cargaSuprema || 0)
+          + moneyToNumber(t.cargaPppoker || 0)
+          + moneyToNumber(t.cargaBuffalo || 0)
+          + moneyToNumber(t.cargaGanamos || 0)
+          + moneyToNumber(parts.cargaSuprema || 0)
+          + moneyToNumber(parts.cargaPppoker || 0)
+          + moneyToNumber(parts.cargaBuffalo || 0)
+          + moneyToNumber(parts.cargaGanamos || 0);
       }
 
-      if(supervisor){
-        items = items.filter(x=>String(x.supervisorName||x.turno?.supervisorName||x.supervisorEmail||x.turno?.supervisorEmail||"").toLowerCase().includes(supervisor));
-      }
+      return 0;
+    }
 
-      return items;
+    function itemMatchesReportCategory(item){
+      const type = reportEntryType();
+
+      if(type === "all") return true;
+      if(type === "closings") return !isAdjustmentItem(item);
+      if(type === "adjustments") return isAdjustmentItem(item);
+      if(type === "loads") return reportItemCategoryValue(item, "loads") > 0;
+      if(type === "profit") return reportItemCategoryValue(item, "profit") > 0;
+      if(type === "expenses") return reportItemCategoryValue(item, "expenses") > 0;
+      if(type === "taxa_reca") return reportItemCategoryValue(item, "taxa_reca") > 0;
+
+      return true;
+    }
+
+    function reportFilterLabel(){
+      const type = reportEntryType();
+      const labels = {
+        all: "Relatório completo",
+        closings: "Fechamentos de operadores",
+        adjustments: "Ajustes internos",
+        loads: "Cargas de fichas / caixa",
+        profit: "Lucro / retiradas de lucro",
+        expenses: "Gastos operacionais",
+        taxa_reca: "Taxa Reca"
+      };
+
+      return labels[type] || "Relatório";
+    }
+
+    function reportPeriodLabel(){
+      const start = reportStartDate();
+      const end = reportEndDate();
+
+      if(start && end && start !== end) return `${start} até ${end}`;
+      if(start) return start;
+      return "Todos os dias carregados";
+    }
+
+
+
+    function ensureReportDateDefault(){
+      const today = todayKeySP ? todayKeySP() : dateKeySP(nowSP());
+      if($("reportStart") && !$("reportStart").value) $("reportStart").value = today;
+      if($("reportEnd") && !$("reportEnd").value) $("reportEnd").value = $("reportStart")?.value || today;
+    }
+
+
+function getReportItems(){
+      let items = reportHistory();
+
+      items = items
+        .filter(itemMatchesReportDate)
+        .filter(itemMatchesReportPeople)
+        .filter(itemMatchesReportCategory);
+
+      return bkSortHistoryAsc(items);
     }
 
     
@@ -5050,6 +5431,8 @@ function getReportMainCardData(items){
       const reportCode = "BK-" + Date.now().toString().slice(-8);
       const userName = profileName ? profileName() : (currentUser?.email || "Usuário");
       const data = getReportMainCardData(items);
+      const categoryLabel = reportFilterLabel();
+      const periodLabel2 = reportPeriodLabel();
 
       const diffClass = data.totalDiff < 0 ? "danger" : "success";
 
@@ -5304,7 +5687,7 @@ input:focus{
           <div class="logo">BK</div>
           <div>
             <h1>Bank King</h1>
-            <p>Financial Internal Report</p>
+            <p>${categoryLabel}</p>
           </div>
         </div>
         <div class="meta">
@@ -5379,6 +5762,10 @@ input:focus{
 
     function previewReport(){ if(!$("reportPreviewCount")) return; const items=getReportItems(), totalSaldo=items.reduce((s,x)=>s+moneyToNumber(x.turno?.saldoLiquido??x.currentSaldoTotal),0), totalDiff=items.reduce((s,x)=>s+moneyToNumber(x.diff),0); $("reportPreviewCount").textContent=items.length; $("reportPreviewSaldo").textContent=formatMoney(totalSaldo); $("reportPreviewDiff").textContent=formatMoney(totalDiff); }
     function buildBankPdfHtml(items){
+      const categoryLabel = reportFilterLabel();
+      const periodLabel = reportPeriodLabel();
+      const detailMode = reportDetailMode();
+      const showPdfDetails = detailMode === "full";
       const generatedAt = formatDateTimeSP(nowSP());
       const reportCode = "BK-" + Date.now().toString().slice(-8);
       const totalSaldo = items.reduce((s,x)=>s + moneyToNumber(x.turno?.saldoLiquido ?? x.currentSaldoTotal), 0);
@@ -5939,7 +6326,7 @@ input:focus{
   box-shadow:none!important;
 }
 
-</style></head><body><div class="toolbar"><strong>Relatório Bank King • ${reportCode}</strong><div class="toolbar-actions"><button class="tool-btn secondary" onclick="window.close()">Voltar</button><button class="tool-btn secondary" onclick="window.print()">Imprimir</button><button class="tool-btn primary" onclick="window.print()">Salvar PDF</button></div></div><header class="cover"><div class="cover-top"><div class="brand"><div class="logo">BK</div><div><h1>Bank King</h1><p>Financial Internal Report</p></div></div><div class="meta">Código: ${reportCode}<br>Gerado em: ${generatedAt}<br>Usuário: ${currentProfile?.name || currentUser?.email || "-"}</div></div><div class="pdf-kpi-wrapper">
+</style></head><body><div class="toolbar"><strong>Relatório Bank King • ${reportCode}</strong><div class="toolbar-actions"><button class="tool-btn secondary" onclick="window.close()">Voltar</button><button class="tool-btn secondary" onclick="window.print()">Imprimir</button><button class="tool-btn primary" onclick="window.print()">Salvar PDF</button></div></div><header class="cover"><div class="cover-top"><div class="brand"><div class="logo">BK</div><div><h1>Bank King</h1><p>${categoryLabel}</p></div></div><div class="meta">Código: ${reportCode}<br>Gerado em: ${generatedAt}<br>Usuário: ${currentProfile?.name || currentUser?.email || "-"}</div></div><div class="pdf-kpi-wrapper">
   <div class="pdf-kpi-grid">
     <div class="pdf-kpi-card"><span>Custo operacional</span><b>${formatMoney(totalCustoOperacional)}</b></div>
     <div class="pdf-kpi-card"><span>Custo RECA</span><b>${formatMoney(totalCustoReca)}</b></div>
@@ -6541,7 +6928,21 @@ input:focus{
 
       $("loginBtn").onclick=async()=>{try{hideNotice("loginNotice");await applyLoginPersistence();await signInWithEmailAndPassword(auth,$("loginEmail").value.trim(),$("loginPassword").value);}catch(e){showNotice("loginNotice",friendlyError(e),"error");}}; $("registerBtn").onclick=registerAccess; $("resetPasswordBtn").onclick=async()=>{try{const email=$("loginEmail").value.trim(); if(!email) return showNotice("loginNotice","Informe o email.","error"); await sendPasswordResetEmail(auth,email); showNotice("loginNotice","Email de recuperação enviado.","ok");}catch(e){showNotice("loginNotice",friendlyError(e),"error");}}; $("receiptCloseBtn") && ($("receiptCloseBtn").onclick=closeHistoryReceipt);
       $("receiptExportPngBtn") && ($("receiptExportPngBtn").onclick=exportReceiptAsPng);
-      $("editCloseBtn").onclick=closeEdit; $("cancelEditBtn").onclick=closeEdit; $("saveEditBtn").onclick=saveEdit; $("editAddPendingBtn").onclick=()=>createDynamicRow("editPendingList","Nome / motivo"); $("editAddOutflowBtn").onclick=()=>createDynamicRow("editOutflowList","Descrição"); }
+      $("editCloseBtn").onclick=closeEdit; $("cancelEditBtn").onclick=closeEdit; $("saveEditBtn").onclick=saveEdit; $("editAddPendingBtn").onclick=()=>createDynamicRow("editPendingList","Nome / motivo"); $("editAddOutflowBtn").onclick=()=>createDynamicRow("editOutflowList","Descrição"); 
+      // historyDateTodayDefaultPatch
+      $("historyDate")?.addEventListener("change", ()=>{
+        historyDaysVisible = 1;
+        renderHistory();
+      });
+
+    
+      // pdfFilterEventsPatch
+      ["reportStart","reportEnd","reportOperador","reportSupervisor","reportEntryType","reportDetailMode"].forEach(id=>{
+        $(id)?.addEventListener("input", ()=>{ if($("reportPreview")) previewReport(); });
+        $(id)?.addEventListener("change", ()=>{ if($("reportPreview")) previewReport(); });
+      });
+
+    }
     
     function initQuickAdjustmentDateTime(){
       const d = nowSP();
@@ -6623,6 +7024,11 @@ document.addEventListener("DOMContentLoaded",()=>{ setTimeout(window.__BK_FORCE_
         window.__bkMoneyObserver = new MutationObserver(()=>normalizeExistingMoneyInputs());
         window.__bkMoneyObserver.observe(document.body,{childList:true,subtree:true});
       }catch(_){}
+    });
+
+    // historyTodayDOMContentLoadedPatch
+    document.addEventListener("DOMContentLoaded",()=>{
+      ensureHistoryTodayDefault();
     });
 </script>
 </body>
