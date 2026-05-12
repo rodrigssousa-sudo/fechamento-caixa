@@ -2555,7 +2555,8 @@ document.addEventListener("focusout", ev=>{
 
   <div id="appReloadLoader" class="app-reload-loader"><div class="reload-card"><div class="reload-spinner"></div><strong>Atualizando sistema</strong><span>Recalculando dados...</span></div></div>
 
-  <script type="module">\nwindow.__BK_FORCE_OPEN_APP__ = function(){
+  <script type="module">
+window.__BK_FORCE_OPEN_APP__ = function(){
       try{
         ["appSplash","splashScreen","splash","loadingScreen","introScreen"].forEach(id => {
           const el = document.getElementById(id);
@@ -3760,22 +3761,87 @@ function moneyToNumber(value){
       }) || null;
     }
 
-    function canEditHistoryItem(item){
-      if(!item) return false;
+    
+    function historyOwnerIdentity(item){
+      const t = item?.turno || {};
+      return {
+        uid: String(item?.createdBy || item?.operadorUid || t.createdBy || t.operadorUid || "").trim(),
+        email: String(item?.createdByEmail || item?.operadorEmail || t.createdByEmail || t.operadorEmail || "").trim().toLowerCase(),
+        name: String(getOperadorName(item) || "").trim().toLowerCase()
+      };
+    }
 
-      // Admin edita qualquer fechamento.
-      if(isAdmin()) return true;
+    function currentOperatorIdentity(){
+      return {
+        uid: String(currentUser?.uid || "").trim(),
+        email: String(currentUser?.email || "").trim().toLowerCase(),
+        name: String(profileName?.() || currentProfile?.name || currentProfile?.nome || currentUser?.displayName || "").trim().toLowerCase()
+      };
+    }
 
-      // Operador não edita ajustes internos/cargas rápidas.
+    function isOwnOperatorTurn(item){
+      if(!item || !currentUser) return false;
+      const owner = historyOwnerIdentity(item);
+      const me = currentOperatorIdentity();
+
+      return (!!me.uid && !!owner.uid && me.uid === owner.uid)
+        || (!!me.email && !!owner.email && me.email === owner.email)
+        || (!!me.name && !!owner.name && me.name === owner.name);
+    }
+
+    function lastOwnOperatorClosing(){
+      if(!currentUser) return null;
+
+      const mine = (historyCache || [])
+        .filter(item => item && !isAdjustmentItem(item))
+        .filter(isOwnOperatorTurn)
+        .sort((a,b)=>bkHistoryTimestampMs(b)-bkHistoryTimestampMs(a));
+
+      return mine[0] || null;
+    }
+
+    function isLastOwnOperatorClosing(item){
+      if(!item || isAdjustmentItem(item)) return false;
+      const last = lastOwnOperatorClosing();
+      return !!last && item.id === last.id;
+    }
+
+
+function canEditHistoryItem(item){
+      if(!item || !currentUser) return false;
+
+      // Admin e supervisor editam tudo.
+      if(isAdmin() || isSupervisor()) return true;
+
+      // Operador não edita ajuste interno/carga rápida.
       if(isAdjustmentItem(item)) return false;
 
-      // Operador pode editar somente os próprios fechamentos.
-      return isOwnHistoryItem(item);
+      // Operador edita 100% somente o último fechamento próprio.
+      if(isOperator()){
+        return isLastOwnOperatorClosing(item);
+      }
+
+      return false;
     }
 
     function canDeleteHistoryItem(item){
-      // Exclusão fica somente para admin.
-      return isAdmin();
+      if(!item || !currentUser) return false;
+
+      // Admin pode excluir tudo.
+      if(isAdmin()) return true;
+
+      // Supervisor pode excluir fechamentos.
+      if(isSupervisor()) return true;
+
+      // Operador não exclui ajustes internos.
+      if(isAdjustmentItem(item)) return false;
+
+      // Operador pode excluir somente o último fechamento próprio.
+      if(isOperator()){
+        return isLastOwnOperatorClosing(item);
+      }
+
+      return false;
     }
 
     function isAdjustmentItem(item){
@@ -7248,5 +7314,6 @@ document.addEventListener("DOMContentLoaded",()=>{ setTimeout(window.__BK_FORCE_
     // historyTodayDOMContentLoadedPatch
     document.addEventListener("DOMContentLoaded",()=>{
       ensureHistoryTodayDefault();
-    });\n</script>
+    });
+</script>
 </body>
