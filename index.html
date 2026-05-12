@@ -2182,6 +2182,10 @@ document.addEventListener("focusout", ev=>{
             </div>
             <div class="field"><label>Retirada do caixa</label><input id="quickRetiradaCaixa" class="money-input" inputmode="decimal" placeholder="0,00" /></div>
             <div class="field"><label>Tipo da retirada</label><select id="quickRetiradaTipo"><option value="lucro">Lucro</option><option value="custo_operacional">Custo operacional</option><option value="custo_reca">Taxa Reca</option></select></div>
+            <div class="quick-charge-source-grid quick-adjust-date-grid">
+              <div class="field"><label>Data do ajuste</label><input id="quickAdjustmentDate" type="date" /></div>
+              <div class="field"><label>Hora do ajuste</label><input id="quickAdjustmentTime" type="time" /></div>
+            </div>
             <div class="field"><label>Motivo</label><input id="quickCargaMotivo" placeholder="Ex: aporte de caixa / reposição banca" /></div>
             <div class="field"><label>Responsável</label><input id="quickCargaOperador" placeholder="Admin / responsável" /></div>
           </div>
@@ -3473,8 +3477,11 @@ function moneyToNumber(value){
 
 function selectedAdjustmentDateTime(){
       const dateValue =
+        $("quickAdjustmentDate")?.value ||
         $("adjustmentDate")?.value ||
         $("internalAdjustmentDate")?.value ||
+        $("quickCargaDate")?.value ||
+        $("quickChargeDate")?.value ||
         $("quickAdjustmentDate")?.value ||
         $("adjustDate")?.value ||
         $("ajusteData")?.value ||
@@ -3483,8 +3490,11 @@ function selectedAdjustmentDateTime(){
         "";
 
       const timeValue =
+        $("quickAdjustmentTime")?.value ||
         $("adjustmentTime")?.value ||
         $("internalAdjustmentTime")?.value ||
+        $("quickCargaTime")?.value ||
+        $("quickChargeTime")?.value ||
         $("quickAdjustmentTime")?.value ||
         $("adjustTime")?.value ||
         $("ajusteHora")?.value ||
@@ -3496,10 +3506,12 @@ function selectedAdjustmentDateTime(){
         const d = new Date(`${dateValue}T${timeValue}:00`);
         if(!isNaN(d)) return d;
       }
+
       if(dateValue){
         const d = new Date(`${dateValue}T12:00:00`);
         if(!isNaN(d)) return d;
       }
+
       return nowSP();
     }
 
@@ -4299,6 +4311,7 @@ function renderCalculations(){
       savingClosing = true;
       setButtonLoading($("saveClosingBtn"), true, "Salvando...");
       setGlobalLoading(true, "Salvando fechamento", "Não feche nem toque duas vezes. Estamos gravando o turno.");
+
       try{
         const turno = getTurnFromForm();
         const validationError = validateTurnBeforeSave(turno);
@@ -4308,27 +4321,11 @@ function renderCalculations(){
         turno.supervisorEmail = currentProfile?.supervisorEmail || (isSupervisor()?currentUser?.email:null) || null;
         turno.supervisorName = currentProfile?.supervisorName || (isSupervisor()?profileName():null) || null;
 
-        // MODELO FINAL:
-        // Ajuste interno altera a base operacional do próximo fechamento,
-        // mas não aparece como lucro operacional próprio.
         const baseSaldo = baseForNextClosing();
         const diff = baseSaldo === null ? 0 : turno.saldoLiquido - baseSaldo;
         turno.baseOperacional = calcularBaseOperacional(turno);
 
-        const __chosenAdjustmentDate = selectedAdjustmentDateTime();
-
-
-        if(typeof turno !== "undefined" && turno) applyChosenDateToAdjustmentTurno(turno);
-
-
-        if(typeof payload !== "undefined" && payload && payload.turno) applyChosenDateToAdjustmentTurno(payload.turno);
-
-
-        if(typeof adjustment !== "undefined" && adjustment && adjustment.turno) applyChosenDateToAdjustmentTurno(adjustment.turno);
-
-
         await addDoc(collection(db,"history"),{
-        ...adjustmentSortPayload(),
           type:"closing",
           adjustment:false,
           turno:{
@@ -4348,14 +4345,12 @@ function renderCalculations(){
           currentSaldoTotal:turno.saldoLiquido,
           operationalBase:turno.baseOperacional,
           diff,
-          submittedAt:__chosenAdjustmentDate,
+          submittedAt:serverTimestamp(),
           createdBy:currentUser?.uid||null,
           createdByEmail:currentUser?.email||null
         });
 
-        
-      await recalculateAllHistory();
-await addAudit("save_closing",`Fechamento salvo por ${turno.operadorName}`);
+        await addAudit("save_closing",`Fechamento salvo por ${turno.operadorName}`);
         clearClosingForm();
         alert("Fechamento salvo com sucesso.");
       }catch(e){
@@ -4370,9 +4365,13 @@ await addAudit("save_closing",`Fechamento salvo por ${turno.operadorName}`);
     async function addQuickCapitalInjection(){
       if(savingQuickCharge) return;
       if(!await requireAdmin()) return;
+
       savingQuickCharge = true;
       setButtonLoading($("quickChargeBtn"), true, "Salvando ajuste...");
       setGlobalLoading(true, "Salvando ajuste", "A carga rápida está sendo registrada com segurança.");
+
+      const chosenAdjustmentDate = selectedAdjustmentDateTime();
+      const chosenIso = chosenAdjustmentDate.toISOString();
 
       const cargasPoker = moneyToNumber($("quickCargaPoker")?.value || 0);
       const cargaPokerDestino = $("quickCargaPokerDestino")?.value || "suprema";
@@ -4383,35 +4382,49 @@ await addAudit("save_closing",`Fechamento salvo por ${turno.operadorName}`);
       const motivo = $("quickCargaMotivo")?.value.trim() || "Carga rápida de caixa";
       const operador = $("quickCargaOperador")?.value.trim() || profileName() || "Admin";
       const totalAjuste = (cargasPoker * 400) + cargasCasino - retiradaCaixa;
+
       const turno = {
         operadorName: operador,
         operatorName: operador,
         nomeOperador: operador,
-        closingDate:selectedAdjustmentDateTime().toISOString(),
+
+        closingDate: chosenIso,
+        dataFechamento: chosenIso,
+        adjustmentDate: chosenIso,
+        adjustmentChosenDate: chosenIso,
+        sortAt: chosenIso,
+        selectedSortAt: chosenIso,
+        adjustmentSortAt: chosenIso,
+
         webReca: 0,
         suprema: 0,
         pppoker: 0,
         buffalo: 0,
         ganamos: 0,
+
         cargasPoker,
         cargaPokerDestino,
         cargaSuprema: cargaPokerDestino === "suprema" ? cargasPoker * 400 : 0,
         cargaPppoker: cargaPokerDestino === "pppoker" ? cargasPoker * 400 : 0,
+
         cargasCasino,
         cargaCasinoDestino,
         cargaBuffalo: cargaCasinoDestino === "buffalo" ? cargasCasino : 0,
         cargaGanamos: cargaCasinoDestino === "ganamos" ? cargasCasino : 0,
+
         pendings: [],
         outflows: retiradaCaixa > 0 ? [{
           name: motivo,
           category: retiradaTipo,
           value: retiradaCaixa
         }] : [],
+
         pendentesTotal: 0,
         saidasTotal: retiradaCaixa,
         retiradaLucroTotal: retiradaTipo === "lucro" ? retiradaCaixa : 0,
         custoOperacionalTotal: retiradaTipo === "custo_operacional" ? retiradaCaixa : 0,
         custoRecaTotal: retiradaTipo === "custo_reca" ? retiradaCaixa : 0,
+
         ajusteTipo: "carga_rapida",
         ajusteMotivo: motivo,
         retiradaCaixa,
@@ -4421,6 +4434,9 @@ await addAudit("save_closing",`Fechamento salvo por ${turno.operadorName}`);
 
       if((cargasPoker <= 0 && cargasCasino <= 0 && retiradaCaixa <= 0)){
         alert("Informe uma carga ou uma retirada de caixa maior que zero.");
+        savingQuickCharge = false;
+        setButtonLoading($("quickChargeBtn"), false);
+        setGlobalLoading(false);
         return;
       }
 
@@ -4429,25 +4445,23 @@ await addAudit("save_closing",`Fechamento salvo por ${turno.operadorName}`);
       const diff = totalAjuste;
 
       try{
-        const __chosenAdjustmentDate = selectedAdjustmentDateTime();
-
-        if(typeof turno !== "undefined" && turno) applyChosenDateToAdjustmentTurno(turno);
-
-        if(typeof payload !== "undefined" && payload && payload.turno) applyChosenDateToAdjustmentTurno(payload.turno);
-
-        if(typeof adjustment !== "undefined" && adjustment && adjustment.turno) applyChosenDateToAdjustmentTurno(adjustment.turno);
-
         await addDoc(collection(db,"history"), {
-        ...adjustmentSortPayload(),
           type:"capital_injection",
           adjustment:true,
           adjustmentType:"carga_rapida",
           adjustmentReason:motivo,
+
+          sortAt: chosenAdjustmentDate,
+          selectedSortAt: chosenAdjustmentDate,
+          adjustmentSortAt: chosenAdjustmentDate,
+          adjustmentChosenDate: chosenIso,
+          adjustmentDate: chosenIso,
+
           turno,
           operadorName:operador,
           currentSaldoTotal,
           diff,
-          submittedAt:__chosenAdjustmentDate,
+          submittedAt:chosenAdjustmentDate,
           createdBy:currentUser?.uid || null,
           createdByEmail:currentUser?.email || null
         });
@@ -4458,15 +4472,14 @@ await addAudit("save_closing",`Fechamento salvo por ${turno.operadorName}`);
         if($("quickCargaPokerDestino")) $("quickCargaPokerDestino").value="suprema";
         if($("quickCargaCasinoDestino")) $("quickCargaCasinoDestino").value="buffalo";
         if($("quickRetiradaTipo")) $("quickRetiradaTipo").value="lucro";
+        initQuickAdjustmentDateTime();
 
-        if(isAdmin()){
-  await recalculateAllHistory();
-}
+        await recalculateAllHistory();
 
-renderAll("data");
-renderMonthlyGoal(visibleHistory());
+        renderAll("data");
+        renderMonthlyGoal(visibleHistory());
 
-alert("Carga adicionada ao sistema como ajuste auditável.");
+        alert("Carga adicionada ao sistema como ajuste auditável.");
       }catch(e){
         alert(friendlyError(e));
       }finally{
@@ -6529,7 +6542,25 @@ input:focus{
       $("loginBtn").onclick=async()=>{try{hideNotice("loginNotice");await applyLoginPersistence();await signInWithEmailAndPassword(auth,$("loginEmail").value.trim(),$("loginPassword").value);}catch(e){showNotice("loginNotice",friendlyError(e),"error");}}; $("registerBtn").onclick=registerAccess; $("resetPasswordBtn").onclick=async()=>{try{const email=$("loginEmail").value.trim(); if(!email) return showNotice("loginNotice","Informe o email.","error"); await sendPasswordResetEmail(auth,email); showNotice("loginNotice","Email de recuperação enviado.","ok");}catch(e){showNotice("loginNotice",friendlyError(e),"error");}}; $("receiptCloseBtn") && ($("receiptCloseBtn").onclick=closeHistoryReceipt);
       $("receiptExportPngBtn") && ($("receiptExportPngBtn").onclick=exportReceiptAsPng);
       $("editCloseBtn").onclick=closeEdit; $("cancelEditBtn").onclick=closeEdit; $("saveEditBtn").onclick=saveEdit; $("editAddPendingBtn").onclick=()=>createDynamicRow("editPendingList","Nome / motivo"); $("editAddOutflowBtn").onclick=()=>createDynamicRow("editOutflowList","Descrição"); }
-    function initDate(){ if($("closingDate")) $("closingDate").value = localInputSP(nowSP()); }
+    
+    function initQuickAdjustmentDateTime(){
+      const d = nowSP();
+      const yyyy = d.getFullYear();
+      const mm = String(d.getMonth()+1).padStart(2,"0");
+      const dd = String(d.getDate()).padStart(2,"0");
+      const hh = String(d.getHours()).padStart(2,"0");
+      const mi = String(d.getMinutes()).padStart(2,"0");
+
+      if($("quickAdjustmentDate") && !$("quickAdjustmentDate").value){
+        $("quickAdjustmentDate").value = `${yyyy}-${mm}-${dd}`;
+      }
+
+      if($("quickAdjustmentTime") && !$("quickAdjustmentTime").value){
+        $("quickAdjustmentTime").value = `${hh}:${mi}`;
+      }
+    }
+
+function initDate(){ if($("closingDate")) $("closingDate").value = localInputSP(nowSP()); }
 
     onAuthStateChanged(auth,async(user)=>{ currentUser=user; if(!user){document.body.classList.remove("role-admin","role-supervisor","role-operador");loadSavedLoginPreference();$("loginScreen").classList.remove("hidden");$("appShell").classList.add("hidden");$("bottomNav").classList.add("hidden");return;} currentProfile=await loadProfile(user); if(currentProfile.blocked){await signOut(auth);return alert("Usuário bloqueado.");} if(currentProfile.approved===false){$("loginScreen").classList.remove("hidden");$("appShell").classList.add("hidden");$("bottomNav").classList.add("hidden");showNotice("loginNotice","Usuário aguardando aprovação do admin.","error");return;} $("loginScreen").classList.add("hidden");$("appShell").classList.remove("hidden");$("bottomNav").classList.remove("hidden");$("topUserLabel").textContent=`${currentProfile.name||user.email} • ${isAdmin()?"Admin":isSupervisor()?"Supervisor":"Operador"}`;  $("adminStatus").textContent=isAdmin()?"Admin ativo":"Somente admin";
       if($("moreAdminBtn")) $("moreAdminBtn").style.display = isAdmin() ? "flex" : "none"; if($("sideAdminBtn")) $("sideAdminBtn").style.display = isAdmin() ? "grid" : "none"; updateSideDrawerProfile();
