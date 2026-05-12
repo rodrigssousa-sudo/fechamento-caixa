@@ -1836,6 +1836,59 @@ input::placeholder{
   opacity:.48!important;
 }
 
+
+/* =========================================================
+   iOS DIGITAÇÃO FIX
+========================================================= */
+input,
+textarea{
+  -webkit-appearance:none;
+  appearance:none;
+  transform:translateZ(0);
+  backface-visibility:hidden;
+  caret-color:#111827;
+}
+
+input[type="text"]{
+  font-variant-numeric:tabular-nums;
+  letter-spacing:0;
+}
+
+input:focus{
+  outline:none;
+  box-shadow:none!important;
+}
+
+
+
+/* =========================================================
+   HISTÓRICO — TEMA REVISADO
+   Fechamentos e ajustes com hierarquia visual mais clara.
+========================================================= */
+.history-item{
+  background:#ffffff!important;
+  border:1px solid rgba(17,24,39,.08)!important;
+  border-radius:18px!important;
+  box-shadow:0 10px 28px rgba(17,24,39,.06)!important;
+}
+
+.history-item.history-closing{
+  border-left:4px solid rgba(22,199,132,.72)!important;
+}
+
+.history-item.history-adjustment{
+  border-left:4px solid rgba(90,167,255,.78)!important;
+  background:linear-gradient(90deg,rgba(90,167,255,.055),#fff 34%)!important;
+}
+
+.history-values b{
+  font-variant-numeric:tabular-nums lining-nums!important;
+}
+
+.history-actions .small-btn{
+  border-radius:12px!important;
+}
+
 </style>
 
 <script>
@@ -1918,6 +1971,19 @@ function updateHeroBalance(newValue){
 //   const random = lastBalance + (Math.random() * 50000 - 25000);
 //   updateHeroBalance(Math.max(0, random));
 // },3000);
+
+document.addEventListener("focusin", ev=>{
+  const el = ev.target;
+  if(!el || el.tagName !== "INPUT") return;
+  el.dataset.typingActive = "1";
+}, true);
+
+document.addEventListener("focusout", ev=>{
+  const el = ev.target;
+  if(!el || el.tagName !== "INPUT") return;
+  delete el.dataset.typingActive;
+}, true);
+
 </script>
 </head>
 <body>
@@ -2675,10 +2741,58 @@ const firebaseConfig = {
       return !!key && key <= yyyyMmDd;
     }
 
-    function historyItemDate(item){
-      return item?.submittedAt?.toDate
-        ? item.submittedAt.toDate()
-        : new Date(item?.turno?.closingDate || item?.createdAt || 0);
+    
+    /* =========================================================
+       HISTÓRICO — ORDEM REAL POR DATA/HORA
+       Usa submittedAt, closingDate e campos de ajuste para ordenar corretamente.
+    ========================================================= */
+    function bkDateFromAny(value){
+      if(!value) return null;
+      if(value?.toDate){
+        const d = value.toDate();
+        return isNaN(d) ? null : d;
+      }
+      if(value instanceof Date){
+        return isNaN(value) ? null : value;
+      }
+      const d = new Date(value);
+      return isNaN(d) ? null : d;
+    }
+
+    function bkHistoryTimestampMs(item){
+      const t = item?.turno || {};
+      const candidates = [
+        item?.submittedAt,
+        t.submittedAt,
+        t.adjustmentChosenDate,
+        t.adjustmentDate,
+        item?.adjustmentChosenDate,
+        item?.adjustmentDate,
+        t.closingDate,
+        t.dataFechamento,
+        item?.createdAt
+      ];
+
+      for(const c of candidates){
+        const d = bkDateFromAny(c);
+        if(d) return d.getTime();
+      }
+
+      return 0;
+    }
+
+    function bkSortHistoryDesc(list){
+      return [...(list || [])].sort((a,b)=>bkHistoryTimestampMs(b)-bkHistoryTimestampMs(a));
+    }
+
+    function bkSortHistoryAsc(list){
+      return [...(list || [])].sort((a,b)=>bkHistoryTimestampMs(a)-bkHistoryTimestampMs(b));
+    }
+
+
+function historyItemDate(item){
+      const ms = bkHistoryTimestampMs(item);
+      return ms ? new Date(ms) : new Date(NaN);
     }
 
     function historyDateWindowStart(){
@@ -3027,12 +3141,25 @@ const firebaseConfig = {
       document.addEventListener("input", ev=>{
         const el = ev.target;
         if(!el || el.tagName !== "INPUT" || !bkStableIsMoneyInput(el)) return;
-        const before = el.value;
-        const caret = el.selectionStart ?? before.length;
-        const normalized = bkStableCleanMoney(before, caret);
-        if(before !== normalized.clean){
-          el.value = normalized.clean;
-          try{ el.setSelectionRange(normalized.caret, normalized.caret); }catch(_){}
+
+        // Não reformatar durante digitação no iPhone.
+        const start = el.selectionStart ?? 0;
+        const before = String(el.value || "");
+        const cleaned = before.replace(/[^\d,.\-]/g,"");
+
+        if(before !== cleaned){
+          el.value = cleaned;
+
+          try{
+            const next = Math.max(0, Math.min(cleaned.length, start - (before.length - cleaned.length)));
+
+            requestAnimationFrame(()=>{
+              try{
+                el.setSelectionRange(next,next);
+              }catch(_){}
+            });
+
+          }catch(_){}
         }
       }, true);
 
@@ -3228,8 +3355,13 @@ function moneyToNumber(value){
     }
 
     function visibleHistory(){
-      // Interface e relatórios padrão ficam limitados aos últimos 91 dias.
-      return historyCache.filter(withinHistoryRetention).filter(canAccessHistoryItem);
+      let list = historyCache.filter(withinHistoryRetention).filter(canAccessHistoryItem);
+
+      if(!list.length && historyCache.length){
+        list = historyCache.filter(canAccessHistoryItem);
+      }
+
+      return bkSortHistoryDesc(list);
     }
 
     function reportHistory(){
@@ -3943,6 +4075,8 @@ function renderCalculations(){
         list = list.filter(shouldShowInHistoryWindow);
       }
 
+      list = bkSortHistoryDesc(list);
+
       const totalVisible = list.length;
 
       if($("historyCount")){
@@ -3967,7 +4101,7 @@ function renderCalculations(){
           ${canDelete ? `<button class="small-btn danger" data-delete="${item.id}">Excluir</button>` : ""}
         `;
 
-        return `<div class="history-item" data-receipt="${item.id}" style="cursor:pointer;">
+        return `<div class="history-item ${ajuste ? 'history-adjustment' : 'history-closing'}" data-receipt="${item.id}" style="cursor:pointer;">
           <div class="history-top">
             <strong>${operador} ${ajuste ? '<span class="badge" style="margin-left:6px;">AJUSTE</span>' : ''}${lastEditableBadge}</strong>
             <span>${dateLabel(item.submittedAt || t.closingDate)}</span>
@@ -4157,6 +4291,18 @@ function renderCalculations(){
         const diff = baseSaldo === null ? 0 : turno.saldoLiquido - baseSaldo;
         turno.baseOperacional = calcularBaseOperacional(turno);
 
+        const __chosenAdjustmentDate = selectedAdjustmentDateTime();
+
+
+        if(typeof turno !== "undefined" && turno) applyChosenDateToAdjustmentTurno(turno);
+
+
+        if(typeof payload !== "undefined" && payload && payload.turno) applyChosenDateToAdjustmentTurno(payload.turno);
+
+
+        if(typeof adjustment !== "undefined" && adjustment && adjustment.turno) applyChosenDateToAdjustmentTurno(adjustment.turno);
+
+
         await addDoc(collection(db,"history"),{
           type:"closing",
           adjustment:false,
@@ -4177,7 +4323,7 @@ function renderCalculations(){
           currentSaldoTotal:turno.saldoLiquido,
           operationalBase:turno.baseOperacional,
           diff,
-          submittedAt:selectedAdjustmentDateTime(),
+          submittedAt:__chosenAdjustmentDate,
           createdBy:currentUser?.uid||null,
           createdByEmail:currentUser?.email||null
         });
@@ -4216,7 +4362,7 @@ await addAudit("save_closing",`Fechamento salvo por ${turno.operadorName}`);
         operadorName: operador,
         operatorName: operador,
         nomeOperador: operador,
-        closingDate: nowSP().toISOString(),
+        closingDate:selectedAdjustmentDateTime().toISOString(),
         webReca: 0,
         suprema: 0,
         pppoker: 0,
@@ -4258,6 +4404,14 @@ await addAudit("save_closing",`Fechamento salvo por ${turno.operadorName}`);
       const diff = totalAjuste;
 
       try{
+        const __chosenAdjustmentDate = selectedAdjustmentDateTime();
+
+        if(typeof turno !== "undefined" && turno) applyChosenDateToAdjustmentTurno(turno);
+
+        if(typeof payload !== "undefined" && payload && payload.turno) applyChosenDateToAdjustmentTurno(payload.turno);
+
+        if(typeof adjustment !== "undefined" && adjustment && adjustment.turno) applyChosenDateToAdjustmentTurno(adjustment.turno);
+
         await addDoc(collection(db,"history"), {
           type:"capital_injection",
           adjustment:true,
@@ -4267,7 +4421,7 @@ await addAudit("save_closing",`Fechamento salvo por ${turno.operadorName}`);
           operadorName:operador,
           currentSaldoTotal,
           diff,
-          submittedAt:selectedAdjustmentDateTime(),
+          submittedAt:__chosenAdjustmentDate,
           createdBy:currentUser?.uid || null,
           createdByEmail:currentUser?.email || null
         });
@@ -5078,6 +5232,29 @@ function getReportMainCardData(items){
     .preview-shell{width:100%}
     .report-card{box-shadow:none;border-radius:0}
   }
+
+/* =========================================================
+   iOS DIGITAÇÃO FIX
+========================================================= */
+input,
+textarea{
+  -webkit-appearance:none;
+  appearance:none;
+  transform:translateZ(0);
+  backface-visibility:hidden;
+  caret-color:#111827;
+}
+
+input[type="text"]{
+  font-variant-numeric:tabular-nums;
+  letter-spacing:0;
+}
+
+input:focus{
+  outline:none;
+  box-shadow:none!important;
+}
+
 </style>
 </head>
 <body>
@@ -5700,6 +5877,29 @@ body.side-drawer-open #sideMenuBtn{
   .login-secondary-row{grid-template-columns:1fr 1fr;gap:8px;}
   .login-secondary-row .btn{font-size:12px;padding:0 8px;}
 }
+
+/* =========================================================
+   iOS DIGITAÇÃO FIX
+========================================================= */
+input,
+textarea{
+  -webkit-appearance:none;
+  appearance:none;
+  transform:translateZ(0);
+  backface-visibility:hidden;
+  caret-color:#111827;
+}
+
+input[type="text"]{
+  font-variant-numeric:tabular-nums;
+  letter-spacing:0;
+}
+
+input:focus{
+  outline:none;
+  box-shadow:none!important;
+}
+
 </style></head><body><div class="toolbar"><strong>Relatório Bank King • ${reportCode}</strong><div class="toolbar-actions"><button class="tool-btn secondary" onclick="window.close()">Voltar</button><button class="tool-btn secondary" onclick="window.print()">Imprimir</button><button class="tool-btn primary" onclick="window.print()">Salvar PDF</button></div></div><header class="cover"><div class="cover-top"><div class="brand"><div class="logo">BK</div><div><h1>Bank King</h1><p>Financial Internal Report</p></div></div><div class="meta">Código: ${reportCode}<br>Gerado em: ${generatedAt}<br>Usuário: ${currentProfile?.name || currentUser?.email || "-"}</div></div><div class="pdf-kpi-wrapper">
   <div class="pdf-kpi-grid">
     <div class="pdf-kpi-card"><span>Custo operacional</span><b>${formatMoney(totalCustoOperacional)}</b></div>
