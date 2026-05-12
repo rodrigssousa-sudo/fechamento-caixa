@@ -2555,8 +2555,7 @@ document.addEventListener("focusout", ev=>{
 
   <div id="appReloadLoader" class="app-reload-loader"><div class="reload-card"><div class="reload-spinner"></div><strong>Atualizando sistema</strong><span>Recalculando dados...</span></div></div>
 
-  <script type="module">
-window.__BK_FORCE_OPEN_APP__ = function(){
+  <script type="module">\nwindow.__BK_FORCE_OPEN_APP__ = function(){
       try{
         ["appSplash","splashScreen","splash","loadingScreen","introScreen"].forEach(id => {
           const el = document.getElementById(id);
@@ -3373,7 +3372,21 @@ function historyItemDate(item){
       }
     }
 
-    function installBankTypingFix(){
+    
+function syncMoneyRawValue(el){
+      if(!el) return;
+      const digits = String(el.value || "").replace(/\\D/g,"");
+      el.dataset.rawValue = digits || "000";
+    }
+
+    document.addEventListener("click", ev=>{
+      const el = ev.target;
+      if(el && el.tagName === "INPUT" && bkBankIsMoneyInput(el)){
+        syncMoneyRawValue(el);
+      }
+    }, true);
+
+function installBankTypingFix(){
       if(window.__bkBankTypingFinalInstalled) return;
       window.__bkBankTypingFinalInstalled = true;
 
@@ -3398,61 +3411,94 @@ function historyItemDate(item){
         el.value = bkBankFormatDigits(digits);
       }, true);
 
-      document.addEventListener("beforeinput", ev=>{
+      
+document.addEventListener("focusin", ev=>{
         const el = ev.target;
         if(!el || el.tagName !== "INPUT" || !bkBankIsMoneyInput(el)) return;
 
-        const type = ev.inputType || "";
-        const data = ev.data || "";
+        el.setAttribute("inputmode","decimal");
 
-        if(type === "insertText"){
-          if(!/^\d+$/.test(data)) {
-            ev.preventDefault();
-            return;
-          }
-          ev.preventDefault();
-          bkBankReplaceDigits(el, data, "replace");
-          return;
-        }
-
-        if(type === "insertFromPaste"){
-          ev.preventDefault();
-          const pasted = (ev.clipboardData || window.clipboardData)?.getData("text") || "";
-          const digits = bkBankDigits(pasted);
-          bkBankReplaceDigits(el, digits, "replace");
-          return;
-        }
-
-        if(type === "deleteContentBackward"){
-          ev.preventDefault();
-          bkBankReplaceDigits(el, "", "backspace");
-          return;
-        }
-
-        if(type === "deleteContentForward"){
-          ev.preventDefault();
-          bkBankReplaceDigits(el, "", "delete");
-          return;
-        }
-
-        if(type === "deleteByCut"){
-          ev.preventDefault();
-          bkBankReplaceDigits(el, "", "delete");
-          return;
-        }
+        const digits = String(el.value || "").replace(/\\D/g,"");
+        el.dataset.rawValue = digits || "000";
       }, true);
 
-      document.addEventListener("input", ev=>{
+      document.addEventListener("keydown", ev=>{
         const el = ev.target;
         if(!el || el.tagName !== "INPUT" || !bkBankIsMoneyInput(el)) return;
 
-        // Fallback para navegadores que não aplicam beforeinput corretamente.
-        const digits = bkBankDigits(el.value);
-        const formatted = bkBankFormatDigits(digits);
-        if(el.value !== formatted){
-          const caretIndex = bkBankDigitIndexFromCaret(el.value, el.selectionStart ?? el.value.length);
-          el.value = formatted;
-          bkBankSetCaretByDigitIndex(el, caretIndex);
+        const key = ev.key;
+
+        if(["ArrowLeft","ArrowRight","Tab","Home","End"].includes(key)) return;
+
+        if((key === "Backspace" || key === "Delete") && el.selectionStart !== el.selectionEnd){
+          ev.preventDefault();
+          el.dataset.rawValue = "000";
+          el.value = "0,00";
+          el.dispatchEvent(new Event("input",{bubbles:true}));
+          return;
+        }
+
+        if(key === "Backspace"){
+          ev.preventDefault();
+
+          let raw = (el.dataset.rawValue || "000").replace(/\\D/g,"");
+          raw = raw.slice(0,-1);
+
+          if(raw.length < 3){
+            raw = raw.padStart(3,"0");
+          }
+
+          el.dataset.rawValue = raw;
+
+          const num = Number(raw)/100;
+
+          el.value = num.toLocaleString("pt-BR",{
+            minimumFractionDigits:2,
+            maximumFractionDigits:2
+          });
+
+          requestAnimationFrame(()=>{
+            try{
+              el.setSelectionRange(el.value.length, el.value.length);
+            }catch(_){}
+          });
+
+          el.dispatchEvent(new Event("input",{bubbles:true}));
+          return;
+        }
+
+        if(/^[0-9]$/.test(key)){
+          ev.preventDefault();
+
+          let raw = (el.dataset.rawValue || "000").replace(/\\D/g,"");
+
+          raw += key;
+
+          raw = raw.replace(/^0+(?=\\d)/,"");
+
+          if(raw.length < 3){
+            raw = raw.padStart(3,"0");
+          }
+
+          raw = raw.slice(-15);
+
+          el.dataset.rawValue = raw;
+
+          const num = Number(raw)/100;
+
+          el.value = num.toLocaleString("pt-BR",{
+            minimumFractionDigits:2,
+            maximumFractionDigits:2
+          });
+
+          requestAnimationFrame(()=>{
+            try{
+              el.setSelectionRange(el.value.length, el.value.length);
+            }catch(_){}
+          });
+
+          el.dispatchEvent(new Event("input",{bubbles:true}));
+          return;
         }
       }, true);
 
@@ -7202,6 +7248,5 @@ document.addEventListener("DOMContentLoaded",()=>{ setTimeout(window.__BK_FORCE_
     // historyTodayDOMContentLoadedPatch
     document.addEventListener("DOMContentLoaded",()=>{
       ensureHistoryTodayDefault();
-    });
-</script>
+    });\n</script>
 </body>
