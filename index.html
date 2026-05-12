@@ -2937,6 +2937,117 @@ const firebaseConfig = {
     }
 
 
+
+    /* =========================================================
+       DIGITAÇÃO BANCÁRIA — CURSOR ESTÁVEL NO CELULAR
+    ========================================================= */
+    function bkStableCleanMoney(value, caret){
+      const raw = String(value ?? "");
+      let clean = "";
+      let nextCaret = Number(caret ?? raw.length);
+      for(let i=0;i<raw.length;i++){
+        const ch = raw[i];
+        const ok = /[\d,.-]/.test(ch);
+        if(ok){ clean += ch; }
+        else if(i < nextCaret){ nextCaret--; }
+      }
+      nextCaret = Math.max(0, Math.min(clean.length, nextCaret));
+      return { clean, caret: nextCaret };
+    }
+
+    function bkStableIsMoneyInput(el){
+      if(!el) return false;
+      const id = String(el.id || "").toLowerCase();
+      const name = String(el.name || "").toLowerCase();
+      const ph = String(el.placeholder || "").toLowerCase();
+      const cls = String(el.className || "").toLowerCase();
+      return el.dataset.money === "1"
+        || el.dataset.currency === "1"
+        || cls.includes("money")
+        || id.includes("valor")
+        || id.includes("saldo")
+        || id.includes("reca")
+        || id.includes("suprema")
+        || id.includes("pppoker")
+        || id.includes("poker")
+        || id.includes("buffalo")
+        || id.includes("ganamos")
+        || id.includes("carga")
+        || id.includes("pendente")
+        || id.includes("saida")
+        || id.includes("custo")
+        || id.includes("taxa")
+        || id.includes("lucro")
+        || id.includes("meta")
+        || name.includes("valor")
+        || name.includes("saldo")
+        || ph.includes("$")
+        || ph.includes("valor");
+    }
+
+    function bkStableFormatInput(el){
+      if(!bkStableIsMoneyInput(el)) return;
+      const raw = String(el.value || "").trim();
+      if(!raw){ el.value = ""; return; }
+      const n = moneyToNumber(raw);
+      if(!n){ el.value = ""; return; }
+      el.value = n.toLocaleString("pt-BR",{minimumFractionDigits:2,maximumFractionDigits:2});
+    }
+
+    function installBankTypingFix(){
+      if(window.__bkStableTypingFixInstalled) return;
+      window.__bkStableTypingFixInstalled = true;
+
+      const normalizeAll = ()=>{
+        document.querySelectorAll("input").forEach(el=>{
+          if(bkStableIsMoneyInput(el)){
+            el.setAttribute("inputmode","decimal");
+            el.setAttribute("autocomplete","off");
+            if(el.type === "number"){
+              try{ el.type = "text"; }catch(_){}
+            }
+          }
+        });
+      };
+
+      normalizeAll();
+
+      document.addEventListener("focusin", ev=>{
+        const el = ev.target;
+        if(!el || el.tagName !== "INPUT" || !bkStableIsMoneyInput(el)) return;
+        const raw = String(el.value || "").trim();
+        const n = moneyToNumber(raw);
+        if(!raw || n === 0){ el.value = ""; return; }
+        const caret = el.selectionStart ?? raw.length;
+        const normalized = bkStableCleanMoney(raw, caret);
+        el.value = normalized.clean;
+        try{ el.setSelectionRange(normalized.caret, normalized.caret); }catch(_){}
+      }, true);
+
+      document.addEventListener("input", ev=>{
+        const el = ev.target;
+        if(!el || el.tagName !== "INPUT" || !bkStableIsMoneyInput(el)) return;
+        const before = el.value;
+        const caret = el.selectionStart ?? before.length;
+        const normalized = bkStableCleanMoney(before, caret);
+        if(before !== normalized.clean){
+          el.value = normalized.clean;
+          try{ el.setSelectionRange(normalized.caret, normalized.caret); }catch(_){}
+        }
+      }, true);
+
+      document.addEventListener("blur", ev=>{
+        const el = ev.target;
+        if(!el || el.tagName !== "INPUT" || !bkStableIsMoneyInput(el)) return;
+        bkStableFormatInput(el);
+      }, true);
+
+      try{
+        window.__bkStableMoneyObserver = new MutationObserver(normalizeAll);
+        window.__bkStableMoneyObserver.observe(document.body,{childList:true,subtree:true});
+      }catch(_){}
+    }
+
 function moneyToNumber(value){
       if(value === null || value === undefined) return 0; if(typeof value === "number") return value;
       let s = String(value).trim().replace(/[^0-9,.-]/g, ""); if(!s) return 0;
@@ -3205,7 +3316,55 @@ function moneyToNumber(value){
       return visibleHistory().find(item => !isAdjustmentItem(item)) || null;
     }
 
-    function getAdjustmentParts(item){
+    
+    /* =========================================================
+       AJUSTE INTERNO — DATA/HORA ESCOLHIDA
+    ========================================================= */
+    function selectedAdjustmentDateTime(){
+      const dateValue =
+        $("adjustmentDate")?.value ||
+        $("internalAdjustmentDate")?.value ||
+        $("quickAdjustmentDate")?.value ||
+        $("adjustDate")?.value ||
+        $("ajusteData")?.value ||
+        $("internalDate")?.value ||
+        $("cashAdjustmentDate")?.value ||
+        "";
+
+      const timeValue =
+        $("adjustmentTime")?.value ||
+        $("internalAdjustmentTime")?.value ||
+        $("quickAdjustmentTime")?.value ||
+        $("adjustTime")?.value ||
+        $("ajusteHora")?.value ||
+        $("internalTime")?.value ||
+        $("cashAdjustmentTime")?.value ||
+        "";
+
+      if(dateValue && timeValue){
+        const d = new Date(`${dateValue}T${timeValue}:00`);
+        if(!isNaN(d)) return d;
+      }
+      if(dateValue){
+        const d = new Date(`${dateValue}T12:00:00`);
+        if(!isNaN(d)) return d;
+      }
+      return nowSP();
+    }
+
+    function applyChosenDateToAdjustmentTurno(turno){
+      const chosen = selectedAdjustmentDateTime();
+      const iso = chosen.toISOString();
+      if(turno){
+        turno.closingDate = iso;
+        turno.dataFechamento = iso;
+        turno.adjustmentDate = iso;
+        turno.adjustmentChosenDate = iso;
+      }
+      return { chosen, iso };
+    }
+
+function getAdjustmentParts(item){
       const t = item?.turno || {};
 
       const cargaPokerFichas = moneyToNumber(t.cargasPoker || 0);
@@ -4018,12 +4177,14 @@ function renderCalculations(){
           currentSaldoTotal:turno.saldoLiquido,
           operationalBase:turno.baseOperacional,
           diff,
-          submittedAt:serverTimestamp(),
+          submittedAt:selectedAdjustmentDateTime(),
           createdBy:currentUser?.uid||null,
           createdByEmail:currentUser?.email||null
         });
 
-        await addAudit("save_closing",`Fechamento salvo por ${turno.operadorName}`);
+        
+      await recalculateAllHistory();
+await addAudit("save_closing",`Fechamento salvo por ${turno.operadorName}`);
         clearClosingForm();
         alert("Fechamento salvo com sucesso.");
       }catch(e){
@@ -4106,7 +4267,7 @@ function renderCalculations(){
           operadorName:operador,
           currentSaldoTotal,
           diff,
-          submittedAt:serverTimestamp(),
+          submittedAt:selectedAdjustmentDateTime(),
           createdBy:currentUser?.uid || null,
           createdByEmail:currentUser?.email || null
         });
@@ -6195,7 +6356,7 @@ body.side-drawer-open #sideMenuBtn{
       });
     }
 
-    document.addEventListener("DOMContentLoaded",()=>{ forceHideReloadLoader(); bindEvents(); installMoneyTypingFix(); initDate(); initBankMicroUX(); setTimeout(()=>{const splash=$("appSplash"); splash?.classList.add("hide"); setTimeout(()=>splash?.remove(),800);},1600); runSelfTests(); });
+    document.addEventListener("DOMContentLoaded",()=>{ forceHideReloadLoader(); bindEvents(); installBankTypingFix(); installMoneyTypingFix(); initDate(); initBankMicroUX(); setTimeout(()=>{const splash=$("appSplash"); splash?.classList.add("hide"); setTimeout(()=>splash?.remove(),800);},1600); runSelfTests(); });
   
     document.addEventListener("DOMContentLoaded", loadSavedLoginPreference);
 
