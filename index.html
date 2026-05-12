@@ -1810,6 +1810,32 @@ body.role-admin [data-more-screen="Goals"]{
   pointer-events:none!important;
 }
 
+
+
+/* =========================================================
+   DIGITAÇÃO MONETÁRIA CORRIGIDA
+   Evita o zero sobreposto e melhora edição no celular.
+========================================================= */
+input{
+  caret-color:#111827;
+}
+
+input[data-money="1"],
+input[data-currency="1"],
+input[id*="valor" i],
+input[id*="saldo" i],
+input[id*="carga" i],
+input[id*="custo" i],
+input[id*="taxa" i],
+input[id*="lucro" i],
+input[id*="meta" i]{
+  font-variant-numeric:tabular-nums lining-nums;
+}
+
+input::placeholder{
+  opacity:.48!important;
+}
+
 </style>
 
 <script>
@@ -2360,9 +2386,6 @@ function updateHeroBalance(newValue){
   <div id="appReloadLoader" class="app-reload-loader"><div class="reload-card"><div class="reload-spinner"></div><strong>Atualizando sistema</strong><span>Recalculando dados...</span></div></div>
 
   <script type="module">
-
-
-
 window.__BK_FORCE_OPEN_APP__ = function(){
       try{
         ["appSplash","splashScreen","splash","loadingScreen","introScreen"].forEach(id => {
@@ -2778,7 +2801,143 @@ const firebaseConfig = {
       ]);
     }
 
-    function moneyToNumber(value){
+    
+    function normalizeMoneyTypingValue(value){
+      return String(value ?? "")
+        .replace(/\s/g,"")
+        .replace(/[^\d,.-]/g,"")
+        .replace(/\.(?=\d{3}(\D|$))/g,"");
+    }
+
+    function formatMoneyForInput(value){
+      const n = moneyToNumber(value);
+      if(!n) return "";
+      return n.toLocaleString("pt-BR", {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2
+      });
+    }
+
+    function isMoneyInput(el){
+      if(!el) return false;
+      const id = String(el.id || "").toLowerCase();
+      const name = String(el.name || "").toLowerCase();
+      const ph = String(el.placeholder || "").toLowerCase();
+      const cls = String(el.className || "").toLowerCase();
+
+      return el.dataset.money === "1"
+        || el.dataset.currency === "1"
+        || cls.includes("money")
+        || id.includes("valor")
+        || id.includes("saldo")
+        || id.includes("reca")
+        || id.includes("suprema")
+        || id.includes("pppoker")
+        || id.includes("poker")
+        || id.includes("buffalo")
+        || id.includes("ganamos")
+        || id.includes("carga")
+        || id.includes("pendente")
+        || id.includes("saida")
+        || id.includes("custo")
+        || id.includes("taxa")
+        || id.includes("lucro")
+        || id.includes("meta")
+        || name.includes("valor")
+        || name.includes("saldo")
+        || ph.includes("$")
+        || ph.includes("valor");
+    }
+
+    function prepareMoneyInputForTyping(el){
+      if(!isMoneyInput(el)) return;
+
+      const raw = String(el.value || "").trim();
+      const n = moneyToNumber(raw);
+
+      if(!raw || n === 0){
+        el.value = "";
+        return;
+      }
+
+      el.value = normalizeMoneyTypingValue(raw);
+      try{
+        const end = el.value.length;
+        el.setSelectionRange(end,end);
+      }catch(_){}
+    }
+
+    function finalizeMoneyInputTyping(el){
+      if(!isMoneyInput(el)) return;
+
+      const raw = String(el.value || "").trim();
+
+      if(!raw){
+        el.value = "";
+        return;
+      }
+
+      const n = moneyToNumber(raw);
+      if(!n){
+        el.value = "";
+        return;
+      }
+
+      el.value = formatMoneyForInput(n);
+    }
+
+    function normalizeExistingMoneyInputs(){
+      document.querySelectorAll("input").forEach(el=>{
+        if(isMoneyInput(el)){
+          el.setAttribute("inputmode","decimal");
+          el.setAttribute("autocomplete","off");
+          if(el.type === "number"){
+            try{ el.type = "text"; }catch(_){}
+          }
+        }
+      });
+    }
+
+    function installMoneyTypingFix(){
+      if(window.__bkMoneyTypingFixInstalled) return;
+      window.__bkMoneyTypingFixInstalled = true;
+
+      normalizeExistingMoneyInputs();
+
+      document.addEventListener("focusin", (ev)=>{
+        const el = ev.target;
+        if(el && el.tagName === "INPUT"){
+          prepareMoneyInputForTyping(el);
+        }
+      });
+
+      document.addEventListener("blur", (ev)=>{
+        const el = ev.target;
+        if(el && el.tagName === "INPUT"){
+          finalizeMoneyInputTyping(el);
+        }
+      }, true);
+
+      document.addEventListener("input", (ev)=>{
+        const el = ev.target;
+        if(!el || el.tagName !== "INPUT" || !isMoneyInput(el)) return;
+
+        const before = el.value;
+        const clean = normalizeMoneyTypingValue(before);
+
+        if(before !== clean){
+          const pos = el.selectionStart || clean.length;
+          el.value = clean;
+          try{
+            const next = Math.max(0, Math.min(clean.length, pos - (before.length - clean.length)));
+            el.setSelectionRange(next,next);
+          }catch(_){}
+        }
+      }, true);
+    }
+
+
+function moneyToNumber(value){
       if(value === null || value === undefined) return 0; if(typeof value === "number") return value;
       let s = String(value).trim().replace(/[^0-9,.-]/g, ""); if(!s) return 0;
       const hasComma = s.includes(","), hasDot = s.includes(".");
@@ -6036,13 +6195,16 @@ body.side-drawer-open #sideMenuBtn{
       });
     }
 
-    document.addEventListener("DOMContentLoaded",()=>{ forceHideReloadLoader(); bindEvents(); initDate(); initBankMicroUX(); setTimeout(()=>{const splash=$("appSplash"); splash?.classList.add("hide"); setTimeout(()=>splash?.remove(),800);},1600); runSelfTests(); });
+    document.addEventListener("DOMContentLoaded",()=>{ forceHideReloadLoader(); bindEvents(); installMoneyTypingFix(); initDate(); initBankMicroUX(); setTimeout(()=>{const splash=$("appSplash"); splash?.classList.add("hide"); setTimeout(()=>splash?.remove(),800);},1600); runSelfTests(); });
   
     document.addEventListener("DOMContentLoaded", loadSavedLoginPreference);
 
 document.addEventListener("DOMContentLoaded",()=>{ setTimeout(window.__BK_FORCE_OPEN_APP__,4500); });
-
-
-
+    document.addEventListener("DOMContentLoaded",()=>{
+      try{
+        window.__bkMoneyObserver = new MutationObserver(()=>normalizeExistingMoneyInputs());
+        window.__bkMoneyObserver.observe(document.body,{childList:true,subtree:true});
+      }catch(_){}
+    });
 </script>
 </body>
