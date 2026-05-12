@@ -2556,6 +2556,235 @@ document.addEventListener("focusout", ev=>{
   <div id="appReloadLoader" class="app-reload-loader"><div class="reload-card"><div class="reload-spinner"></div><strong>Atualizando sistema</strong><span>Recalculando dados...</span></div></div>
 
   <script type="module">
+
+/* =========================================================
+   MOBILE BANK INPUT ENGINE — FIX DEFINITIVO
+========================================================= */
+
+function bkSafeDigits(v){
+  return String(v || "").replace(/\D/g,"");
+}
+
+function bkFormatMoneyFromDigits(digits){
+  let raw = bkSafeDigits(digits);
+
+  if(!raw) raw = "000";
+  if(raw.length < 3) raw = raw.padStart(3,"0");
+
+  const number = Number(raw) / 100;
+
+  return number.toLocaleString("pt-BR",{
+    minimumFractionDigits:2,
+    maximumFractionDigits:2
+  });
+}
+
+function bkMoveCursorToEnd(el){
+  try{
+    const len = el.value.length;
+    el.setSelectionRange(len, len);
+  }catch(_){}
+}
+
+function bkInitMoneyField(el){
+  if(!el || el.dataset.bkMoneyReady === "1") return;
+
+  el.dataset.bkMoneyReady = "1";
+
+  el.setAttribute("inputmode","numeric");
+  el.setAttribute("autocomplete","off");
+  el.setAttribute("autocorrect","off");
+  el.setAttribute("spellcheck","false");
+
+  const sync = ()=>{
+    let digits = bkSafeDigits(el.value);
+
+    if(!digits){
+      digits = "000";
+    }
+
+    el.dataset.rawValue = digits;
+    el.value = bkFormatMoneyFromDigits(digits);
+  };
+
+  sync();
+
+  el.addEventListener("focus", ()=>{
+    sync();
+    requestAnimationFrame(()=>bkMoveCursorToEnd(el));
+  });
+
+  el.addEventListener("click", ()=>{
+    requestAnimationFrame(()=>bkMoveCursorToEnd(el));
+  });
+
+  el.addEventListener("touchstart", ()=>{
+    requestAnimationFrame(()=>bkMoveCursorToEnd(el));
+  }, { passive:true });
+
+  el.addEventListener("keydown", ev=>{
+    const key = ev.key;
+
+    if([
+      "Tab",
+      "Escape",
+      "Enter"
+    ].includes(key)){
+      return;
+    }
+
+    // trava cursor no final estilo banco
+    if([
+      "ArrowLeft",
+      "ArrowRight",
+      "ArrowUp",
+      "ArrowDown",
+      "Home",
+      "End"
+    ].includes(key)){
+      ev.preventDefault();
+      requestAnimationFrame(()=>bkMoveCursorToEnd(el));
+      return;
+    }
+
+    // apagar tudo se selecionar bloco inteiro
+    if(
+      (key === "Backspace" || key === "Delete") &&
+      el.selectionStart !== el.selectionEnd
+    ){
+      ev.preventDefault();
+
+      el.dataset.rawValue = "000";
+      el.value = "0,00";
+
+      el.dispatchEvent(new Event("input",{ bubbles:true }));
+
+      requestAnimationFrame(()=>bkMoveCursorToEnd(el));
+      return;
+    }
+
+    // backspace bancário
+    if(key === "Backspace"){
+      ev.preventDefault();
+
+      let digits = bkSafeDigits(el.dataset.rawValue);
+
+      digits = digits.slice(0,-1);
+
+      if(digits.length < 3){
+        digits = digits.padStart(3,"0");
+      }
+
+      el.dataset.rawValue = digits;
+      el.value = bkFormatMoneyFromDigits(digits);
+
+      el.dispatchEvent(new Event("input",{ bubbles:true }));
+
+      requestAnimationFrame(()=>bkMoveCursorToEnd(el));
+      return;
+    }
+
+    // somente números
+    if(/^[0-9]$/.test(key)){
+      ev.preventDefault();
+
+      let digits = bkSafeDigits(el.dataset.rawValue);
+
+      digits += key;
+
+      digits = digits.replace(/^0+(?=\d)/,"");
+
+      if(digits.length < 3){
+        digits = digits.padStart(3,"0");
+      }
+
+      // limite segurança
+      digits = digits.slice(-16);
+
+      el.dataset.rawValue = digits;
+      el.value = bkFormatMoneyFromDigits(digits);
+
+      el.dispatchEvent(new Event("input",{ bubbles:true }));
+
+      requestAnimationFrame(()=>bkMoveCursorToEnd(el));
+      return;
+    }
+
+    // bloqueia qualquer caractere estranho
+    if(key.length === 1){
+      ev.preventDefault();
+    }
+  });
+
+  // iOS fix
+  el.addEventListener("beforeinput", ev=>{
+    if(ev.inputType?.includes("insertText")){
+      ev.preventDefault();
+    }
+  });
+
+  // cola
+  el.addEventListener("paste", ev=>{
+    ev.preventDefault();
+
+    const text = (ev.clipboardData || window.clipboardData)
+      ?.getData("text") || "";
+
+    let digits = bkSafeDigits(text);
+
+    if(!digits){
+      digits = "000";
+    }
+
+    el.dataset.rawValue = digits;
+    el.value = bkFormatMoneyFromDigits(digits);
+
+    el.dispatchEvent(new Event("input",{ bubbles:true }));
+
+    requestAnimationFrame(()=>bkMoveCursorToEnd(el));
+  });
+}
+
+function bkInstallMoneyEngine(){
+  document.querySelectorAll('input').forEach(el=>{
+    const label = (
+      el.name ||
+      el.id ||
+      el.placeholder ||
+      ""
+    ).toLowerCase();
+
+    if(
+      label.includes("reca") ||
+      label.includes("suprema") ||
+      label.includes("poker") ||
+      label.includes("buffalo") ||
+      label.includes("ganamos") ||
+      label.includes("carga") ||
+      label.includes("saldo") ||
+      label.includes("retirada") ||
+      label.includes("pendente") ||
+      label.includes("lucro") ||
+      label.includes("taxa") ||
+      label.includes("custo")
+    ){
+      bkInitMoneyField(el);
+    }
+  });
+}
+
+document.addEventListener("DOMContentLoaded", bkInstallMoneyEngine);
+
+const bkMoneyObserver = new MutationObserver(()=>{
+  bkInstallMoneyEngine();
+});
+
+bkMoneyObserver.observe(document.body,{
+  childList:true,
+  subtree:true
+});
+
+
 window.__BK_FORCE_OPEN_APP__ = function(){
       try{
         ["appSplash","splashScreen","splash","loadingScreen","introScreen"].forEach(id => {
