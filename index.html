@@ -1923,6 +1923,43 @@ input[data-bank-money="1"]:focus{
   gap:12px;
 }
 
+
+/* =========================================================
+   RELATÓRIO DE AJUSTE INTERNO LIMPO
+========================================================= */
+.adjustment-clean{
+  margin:18px 0 0;
+  border-radius:22px;
+  border:1px solid rgba(17,24,39,.10);
+  background:#fff;
+  overflow:hidden;
+}
+.adjustment-clean-head{
+  background:#232323;
+  color:#fff;
+  padding:22px 24px;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:18px;
+}
+.adjustment-clean-head h2{margin:4px 0;font-size:28px;font-weight:950}
+.adjustment-clean-head p{margin:0;color:rgba(255,255,255,.68);font-weight:850}
+.adjustment-clean-head strong{font-size:28px;font-weight:950;white-space:nowrap}
+.adjustment-clean-head strong.pos{color:#22c55e}
+.adjustment-clean-head strong.neg{color:#fb7185}
+.mini-label{font-size:11px;letter-spacing:1.8px;text-transform:uppercase;font-weight:950;color:rgba(255,255,255,.62)}
+.adjustment-clean-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;padding:16px}
+.adjustment-clean-card{border-radius:18px;border:1px solid rgba(17,24,39,.08);padding:16px;background:#fafafa}
+.adjustment-clean-card h3{margin:0 0 12px;font-size:16px;font-weight:950}
+.clean-line{display:flex;justify-content:space-between;gap:16px;padding:10px 0;border-top:1px solid rgba(17,24,39,.08)}
+.clean-line span{color:#737684;font-weight:850}
+.clean-line b{color:#111827;font-weight:950;text-align:right}
+.clean-line.load b{color:#2563eb}
+.clean-line.profit b{color:#16a34a}
+.clean-line.expense b,.clean-line.out b{color:#ef4444}
+@media(max-width:800px){.adjustment-clean-grid{grid-template-columns:1fr}.adjustment-clean-head{align-items:flex-start;flex-direction:column}}
+
 </style>
 
 <script>
@@ -4371,29 +4408,85 @@ function renderCalculations(){
     }
 
 
-function renderHistory(){
-      ensureHistoryTodayDefault();
-      const search = $("historySearch")?.value.trim().toLowerCase() || "";
-      const date = $("historyDate")?.value || "";
-      let list = visibleHistory();
-      const selectedHistoryDate = $("historyDate")?.value || todayKeySP();
-      if(selectedHistoryDate){
-        list = list.filter(item => isSameDaySP(historyItemDate(item), selectedHistoryDate));
+
+    /* =========================================================
+       HISTÓRICO — ABRIR FECHAMENTOS DO DIA
+       Mostra o dia atual por padrão. Se não houver registros no dia atual,
+       mostra automaticamente o dia mais recente carregado.
+    ========================================================= */
+    function historyDateKeyFromItem(item){
+      const d = historyItemDate(item);
+      if(!d || isNaN(d)) return "";
+      return dateKeySP(d);
+    }
+
+    function latestAvailableHistoryDateKey(){
+      const list = bkSortHistoryDesc(
+        historyCache
+          .filter(withinHistoryRetention)
+          .filter(canAccessHistoryItem)
+          .filter(item => !isAdjustmentItem(item) || isAdmin() || isSupervisor())
+      );
+
+      const first = list.find(item => historyDateKeyFromItem(item));
+      return first ? historyDateKeyFromItem(first) : todayKeySP();
+    }
+
+    function hasHistoryForDateKey(dateKey){
+      if(!dateKey) return false;
+      return historyCache
+        .filter(withinHistoryRetention)
+        .filter(canAccessHistoryItem)
+        .some(item => historyDateKeyFromItem(item) === dateKey);
+    }
+
+    function ensureHistoryOpenDayDefault(){
+      const input = $("historyDate");
+      if(!input) return;
+
+      const today = todayKeySP();
+
+      // Se o usuário não escolheu data, tenta abrir hoje.
+      if(!input.value){
+        input.value = today;
       }
+
+      // Se o campo está em hoje, mas não existe registro hoje,
+      // abre o último dia disponível para não deixar o histórico vazio.
+      if(input.value === today && historyCache.length && !hasHistoryForDateKey(today)){
+        input.value = latestAvailableHistoryDateKey();
+      }
+
+      historyDaysVisible = 1;
+    }
+
+
+function renderHistory(){
+      ensureHistoryOpenDayDefault();
+
+      const search = $("historySearch")?.value.trim().toLowerCase() || "";
+      let date = $("historyDate")?.value || todayKeySP();
+
+      let list = visibleHistory();
 
       if(search){
         list = list.filter(x => getOperadorName(x).toLowerCase().includes(search));
       }
 
-      // Se o usuário escolheu uma data manualmente, mostra somente aquela data.
-      // Se não escolheu, abre hoje e vai liberando 1 dia antigo por clique.
       if(date){
-        list = list.filter(x => {
-          const d = historyItemDate(x);
-          return !isNaN(d) && isSameDaySP(d, date);
-        });
-      }else{
-        list = list.filter(shouldShowInHistoryWindow);
+        list = list.filter(x => historyDateKeyFromItem(x) === date);
+      }
+
+      // Fallback de segurança:
+      // se a data atual não tem registros por diferença de horário/campo,
+      // abre automaticamente o último dia que tem fechamento.
+      if(!list.length && !search && historyCache.length && date === todayKeySP()){
+        const fallbackDate = latestAvailableHistoryDateKey();
+        if(fallbackDate && fallbackDate !== date){
+          date = fallbackDate;
+          if($("historyDate")) $("historyDate").value = fallbackDate;
+          list = visibleHistory().filter(x => historyDateKeyFromItem(x) === fallbackDate);
+        }
       }
 
       list = bkSortHistoryDesc(list);
@@ -4401,13 +4494,12 @@ function renderHistory(){
       const totalVisible = list.length;
 
       if($("historyCount")){
-        $("historyCount").textContent = date
-          ? `${totalVisible} registros do dia`
-          : `${totalVisible} registros • ${historyDaysVisible} dia${historyDaysVisible > 1 ? "s" : ""} aberto${historyDaysVisible > 1 ? "s" : ""} de 91`;
+        $("historyCount").textContent = `${totalVisible} registros do dia`;
       }
 
       const MAX_HISTORY_DOM = 120;
       const domList = list.slice(0, MAX_HISTORY_DOM);
+
       const html = domList.map(item => {
         const t = item.turno || {};
         const operador = getOperadorName(item);
@@ -4425,50 +4517,44 @@ function renderHistory(){
         return `<div class="history-item ${ajuste ? 'history-adjustment' : 'history-closing'}" data-receipt="${item.id}" style="cursor:pointer;">
           <div class="history-top">
             <strong>${operador} ${ajuste ? '<span class="badge" style="margin-left:6px;">AJUSTE</span>' : ''}${lastEditableBadge}</strong>
-            <span>${dateLabel(item.submittedAt || t.closingDate)}</span>
+            <span>${dateLabel(historyItemDate(item))}</span>
           </div>
           <div class="history-values">
             <div><span class="muted">Saldo líquido</span><b>${formatMoney(saldo)}</b></div>
-            <div><span class="muted">Diferença</span><b style="color:${diff<0?'#ef4444':'#10b981'}">${formatMoney(diff)}</b></div>
+            <div><span class="muted">Diferença</span><b style="color:${diff < 0 ? '#ef4444' : '#16c784'}">${formatMoney(diff)}</b></div>
           </div>
           <div class="history-actions">${adminActions}</div>
         </div>`;
-      }).join("") || `<div class="history-item">Nenhum fechamento encontrado para este período.</div>`;
+      }).join("");
 
-      if($("historyList")) $("historyList").innerHTML = html;
-
-      document.querySelectorAll("[data-delete]").forEach(btn => btn.onclick = (ev) => {
-        ev.stopPropagation();
-        deleteHistory(btn.dataset.delete);
-      });
-
-      document.querySelectorAll("[data-edit]").forEach(btn => btn.onclick = (ev) => {
-        ev.stopPropagation();
-        openEditHistory(btn.dataset.edit);
-      });
-
-      document.querySelectorAll("[data-receipt]").forEach(card => card.onclick = () => openHistoryReceipt(card.dataset.receipt));
-
-      // Botão infinito: se não houver filtro de data manual, abre mais 1 dia antigo por clique.
-      if(!date && $("historyList")){
-        const totalAllFiltered = visibleHistory().filter(x => {
-          const searchNow = $("historySearch")?.value.trim().toLowerCase() || "";
-          if(searchNow && !getOperadorName(x).toLowerCase().includes(searchNow)) return false;
-          return true;
-        }).length;
-
-        if(totalVisible > MAX_HISTORY_DOM){
-          $("historyList").insertAdjacentHTML("beforeend", `<button class="btn secondary full" style="margin-top:6px;" disabled>Mostrando ${MAX_HISTORY_DOM} registros. Use filtros para refinar.</button>`);
-        }
-
-        if(totalVisible < totalAllFiltered){
-          $("historyList").insertAdjacentHTML("beforeend", `<button id="loadMoreHistoryBtn" class="btn secondary full" style="margin-top:6px;">Ver mais antigos</button>`);
-          $("loadMoreHistoryBtn").onclick = () => {
-            historyDaysVisible += 1;
-            renderHistory();
-          };
-        }
+      if($("historyList")){
+        $("historyList").innerHTML = html || `<div class="empty-state">Nenhum fechamento encontrado para ${date || "o dia selecionado"}.</div>`;
       }
+
+      if(totalVisible > MAX_HISTORY_DOM && $("historyList")){
+        $("historyList").insertAdjacentHTML("beforeend", `<button class="btn secondary full" style="margin-top:6px;" disabled>Mostrando ${MAX_HISTORY_DOM} registros. Use filtros para refinar.</button>`);
+      }
+
+      document.querySelectorAll("[data-edit]").forEach(btn=>{
+        btn.onclick = e => {
+          e.stopPropagation();
+          openEditHistory(btn.dataset.edit);
+        };
+      });
+
+      document.querySelectorAll("[data-delete]").forEach(btn=>{
+        btn.onclick = e => {
+          e.stopPropagation();
+          deleteHistory(btn.dataset.delete);
+        };
+      });
+
+      document.querySelectorAll("[data-receipt]").forEach(row=>{
+        row.onclick = e => {
+          if(e.target.closest("button")) return;
+          openReceipt(row.dataset.receipt);
+        };
+      });
     }
 
     function periodStart(range){ return periodStartSP(range); }
@@ -4776,7 +4862,106 @@ function renderHistory(){
 
     async function deleteHistory(id){ if(!await requireAdmin()) return; if(!confirm("Excluir este fechamento?")) return; try{await deleteDoc(doc(db,"history",id)); await addAudit("delete_history",`Fechamento excluído: ${id}`);}catch(e){alert(friendlyError(e));} }
 
-    function receiptLine(label, value){
+    
+    /* =========================================================
+       RELATÓRIO DE AJUSTE INTERNO — LIMPO
+       Mostra apenas o que foi modificado no ajuste.
+    ========================================================= */
+    function adjustmentOnlyRows(item){
+      const t = item?.turno || {};
+      const parts = typeof getAdjustmentParts === "function" ? getAdjustmentParts(item) : {};
+      const rows = [];
+
+      const add = (label, value, kind="") => {
+        const n = moneyToNumber(value);
+        if(Math.abs(n) > 0.0001){
+          rows.push({ label, value: n, kind });
+        }
+      };
+
+      add("Carga poker", moneyToNumber(t.cargasPoker || 0) * 400 || parts.cargaPoker, "load");
+      add("Carga Suprema", t.cargaSuprema || parts.cargaSuprema, "load");
+      add("Carga PPPoker", t.cargaPppoker || parts.cargaPppoker, "load");
+      add("Carga casino", t.cargasCasino || parts.cargaCasino, "load");
+      add("Carga Buffalo", t.cargaBuffalo || parts.cargaBuffalo, "load");
+      add("Carga Ganamos", t.cargaGanamos || parts.cargaGanamos, "load");
+      add("Retirada do caixa", t.retiradaCaixa || t.saidasTotal || parts.retiradaCaixa, "out");
+      add("Lucro", t.retiradaLucroTotal, "profit");
+      add("Custo operacional", t.custoOperacionalTotal, "expense");
+      add("Taxa Reca", t.custoRecaTotal, "expense");
+
+      return rows;
+    }
+
+    function adjustmentOnlyTextRows(item){
+      const t = item?.turno || {};
+      const rows = [];
+
+      const motivo = item?.adjustmentReason || t.ajusteMotivo || t.motivo || "";
+      const tipo = item?.adjustmentType || t.ajusteTipo || "ajuste interno";
+      const destinoPoker = t.cargaPokerDestino || t.quickCargaPokerDestino || "";
+      const destinoCasino = t.cargaCasinoDestino || t.quickCargaCasinoDestino || "";
+      const retiradaTipo = t.retiradaTipo || "";
+
+      rows.push(["Tipo", String(tipo).replaceAll("_"," ")]);
+      if(motivo) rows.push(["Motivo", motivo]);
+      if(destinoPoker) rows.push(["Destino poker", destinoPoker]);
+      if(destinoCasino) rows.push(["Destino casino", destinoCasino]);
+      if(retiradaTipo) rows.push(["Tipo da retirada", String(retiradaTipo).replaceAll("_"," ")]);
+      rows.push(["Responsável", getOperadorName(item)]);
+      rows.push(["Data/Hora aplicada", dateLabel(historyItemDate(item))]);
+
+      return rows;
+    }
+
+    function adjustmentOnlyImpact(item){
+      const direct = moneyToNumber(item?.diff ?? item?.turno?.saldoLiquido ?? 0);
+      if(direct) return direct;
+      if(typeof adjustmentImpact === "function") return adjustmentImpact(item);
+      return 0;
+    }
+
+    function adjustmentOnlySummaryHtml(item){
+      const valueRows = adjustmentOnlyRows(item);
+      const textRows = adjustmentOnlyTextRows(item);
+      const impact = adjustmentOnlyImpact(item);
+      const impactClass = impact < 0 ? "neg" : "pos";
+
+      return `
+        <section class="adjustment-clean">
+          <div class="adjustment-clean-head">
+            <div>
+              <div class="mini-label">Ajuste interno aplicado</div>
+              <h2>${getOperadorName(item)}</h2>
+              <p>${dateLabel(historyItemDate(item))}</p>
+            </div>
+            <strong class="${impactClass}">${formatMoney(impact)}</strong>
+          </div>
+
+          <div class="adjustment-clean-grid">
+            <div class="adjustment-clean-card">
+              <h3>Detalhes do ajuste</h3>
+              ${textRows.map(([label,value])=>`
+                <div class="clean-line"><span>${label}</span><b>${value}</b></div>
+              `).join("")}
+            </div>
+
+            <div class="adjustment-clean-card">
+              <h3>Valores modificados</h3>
+              ${valueRows.length ? valueRows.map(row=>`
+                <div class="clean-line ${row.kind}">
+                  <span>${row.label}</span>
+                  <b>${formatMoney(row.value)}</b>
+                </div>
+              `).join("") : `<div class="clean-line"><span>Nenhum valor financeiro detectado</span><b>-</b></div>`}
+            </div>
+          </div>
+        </section>
+      `;
+    }
+
+
+function receiptLine(label, value){
       return `<div class="receipt-line"><span>${label}</span><b>${value}</b></div>`;
     }
 
@@ -4853,59 +5038,13 @@ function renderHistory(){
     }
 
     function openQuickAdjustmentReceipt(item){
-      const t = item.turno || {};
-      const id = item.id || "";
-      const impacto = adjustmentImpact(item);
-      const parts = getAdjustmentParts(item);
-      const motivo = t.ajusteMotivo || item.adjustmentReason || "Ajuste interno";
-      const operador = getOperadorName(item);
-      const data = dateLabel(item.submittedAt || t.closingDate || item.createdAt);
-      const tipoRetirada = t.retiradaTipo ? outflowCategoryLabel(t.retiradaTipo) : "-";
+      $("receiptSaldoLiquido").textContent = formatMoney(adjustmentOnlyImpact(item));
+      $("receiptSubtitle").textContent = `Ajuste interno • ${dateLabel(historyItemDate(item))}`;
+      $("receiptCode").textContent = `ID: ${String(item.id || "").slice(0,8)} • ajuste`;
 
-      $("receiptSaldoLiquido").textContent = formatMoney(impacto);
-      $("receiptSubtitle").textContent = `Carga rápida / ajuste • ${data}`;
-      $("receiptCode").textContent = `ID: ${String(id).slice(0,8)} • ajuste rápido`;
+      $("receiptContent").innerHTML = adjustmentOnlySummaryHtml(item);
 
-      $("receiptContent").innerHTML = `
-        <div class="receipt-grid">
-          <div class="receipt-row"><span>Operador</span><b>${operador}</b></div>
-          <div class="receipt-row"><span>Data</span><b>${data}</b></div>
-          <div class="receipt-row"><span>Motivo</span><b>${motivo}</b></div>
-          <div class="receipt-row"><span>Impacto no caixa</span><b style="color:${impacto<0?'#ef4444':'#10b981'}">${formatMoney(impacto)}</b></div>
-        </div>
-
-        <div class="receipt-section">
-          <h3>Dados do ajuste</h3>
-          <div class="receipt-list">
-            ${receiptLine("Carga poker ×400", formatMoney(parts.cargaPoker))}
-            ${receiptLine("Destino poker", parts.cargaPokerDestino === "suprema" ? "Suprema" : parts.cargaPokerDestino === "pppoker" ? "PPPoker" : "-")}
-            ${receiptLine("Carga Suprema", formatMoney(parts.cargaSuprema || 0))}
-            ${receiptLine("Carga PPPoker", formatMoney(parts.cargaPppoker || 0))}
-            ${receiptLine("Carga casino / dinheiro", formatMoney(parts.cargaCasino))}
-            ${receiptLine("Destino casino", parts.cargaCasinoDestino === "buffalo" ? "Buffalo" : parts.cargaCasinoDestino === "ganamos" ? "Ganamos" : "-")}
-            ${receiptLine("Carga Buffalo", formatMoney(parts.cargaBuffalo || 0))}
-            ${receiptLine("Carga Ganamos", formatMoney(parts.cargaGanamos || 0))}
-            ${receiptLine("Retirada do caixa", formatMoney(parts.retiradaCaixa))}
-            ${receiptLine("Tipo da retirada", tipoRetirada)}
-          </div>
-        </div>
-      `;
-
-      const adminActions = $("receiptAdminActions");
-      adminActions?.classList.toggle("hidden", !(canEditHistoryItem(item) || canDeleteHistoryItem(item)));
-
-      const editBtn = $("receiptEditBtn");
-      const deleteBtn = $("receiptDeleteBtn");
-      if(editBtn){
-        editBtn.style.display = canEditHistoryItem(item) ? "" : "none";
-        editBtn.onclick = () => { closeHistoryReceipt(); openEditHistory(item.id); };
-      }
-      if(deleteBtn){
-        deleteBtn.style.display = canDeleteHistoryItem(item) ? "" : "none";
-        deleteBtn.onclick = () => { closeHistoryReceipt(); deleteHistory(item.id); };
-      }
-
-      $("receiptModal").classList.add("active");
+      openReceiptModal();
     }
 
     function closeHistoryReceipt(){
@@ -5780,6 +5919,22 @@ input:focus{
       const totalCustoReca = items.reduce((s,x)=>s + turnCategoryTotal(x.turno || {}, "custo_reca", "custoRecaTotal"), 0);
 
       const blocks = items.map((item, index)=>{
+        if(isAdjustmentItem(item)){
+          return `
+            <article class="pdf-block adjustment-pdf-block">
+              <div class="pdf-block-head">
+                <div>
+                  <span>Ajuste interno #${index+1}</span>
+                  <h2>${getOperadorName(item)}</h2>
+                  <p>${dateLabel(historyItemDate(item))}</p>
+                </div>
+                <strong>${formatMoney(adjustmentOnlyImpact(item))}</strong>
+              </div>
+              ${adjustmentOnlySummaryHtml(item)}
+            </article>
+          `;
+        }
+
         const t = item.turno || {};
         const ajuste = isAdjustmentItem(item);
         const diff = ajuste ? adjustmentImpact(item) : displayCashDiff(item);
@@ -6326,6 +6481,22 @@ input:focus{
   box-shadow:none!important;
 }
 
+
+  .adjustment-clean{margin:14px 0 0;border-radius:18px;border:1px solid #e5e7eb;background:#fff;overflow:hidden}
+  .adjustment-clean-head{background:#232323;color:#fff;padding:18px 20px;display:flex;justify-content:space-between;align-items:center;gap:14px}
+  .adjustment-clean-head h2{margin:4px 0;font-size:24px;font-weight:950}
+  .adjustment-clean-head p{margin:0;color:rgba(255,255,255,.68);font-weight:850}
+  .adjustment-clean-head strong{font-size:24px;font-weight:950;white-space:nowrap}
+  .adjustment-clean-head strong.pos{color:#22c55e}.adjustment-clean-head strong.neg{color:#fb7185}
+  .mini-label{font-size:10px;letter-spacing:1.5px;text-transform:uppercase;font-weight:950;color:rgba(255,255,255,.62)}
+  .adjustment-clean-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;padding:14px}
+  .adjustment-clean-card{border-radius:14px;border:1px solid #e5e7eb;padding:14px;background:#fafafa}
+  .adjustment-clean-card h3{margin:0 0 10px;font-size:15px;font-weight:950}
+  .clean-line{display:flex;justify-content:space-between;gap:12px;padding:8px 0;border-top:1px solid #e5e7eb}
+  .clean-line span{color:#737684;font-weight:850}.clean-line b{color:#111827;font-weight:950;text-align:right}
+  .clean-line.load b{color:#2563eb}.clean-line.profit b{color:#16a34a}.clean-line.expense b,.clean-line.out b{color:#ef4444}
+  .adjustment-pdf-block{background:#fff}
+
 </style></head><body><div class="toolbar"><strong>Relatório Bank King • ${reportCode}</strong><div class="toolbar-actions"><button class="tool-btn secondary" onclick="window.close()">Voltar</button><button class="tool-btn secondary" onclick="window.print()">Imprimir</button><button class="tool-btn primary" onclick="window.print()">Salvar PDF</button></div></div><header class="cover"><div class="cover-top"><div class="brand"><div class="logo">BK</div><div><h1>Bank King</h1><p>${categoryLabel}</p></div></div><div class="meta">Código: ${reportCode}<br>Gerado em: ${generatedAt}<br>Usuário: ${currentProfile?.name || currentUser?.email || "-"}</div></div><div class="pdf-kpi-wrapper">
   <div class="pdf-kpi-grid">
     <div class="pdf-kpi-card"><span>Custo operacional</span><b>${formatMoney(totalCustoOperacional)}</b></div>
@@ -6352,7 +6523,9 @@ input:focus{
 
     function generateBankPdfReport(){ const items=$("reportStart")?getReportItems():visibleHistory(); const win=window.open("","_blank"); if(!win) return alert("Permita pop-ups para gerar o PDF."); win.document.open(); win.document.write(buildBankPdfHtml(items)); win.document.close(); setTimeout(()=>{win.focus();win.print();},500); }
 
-    function startHistoryRealtimeListener(){ if(historyUnsubscribe) historyUnsubscribe(); const qh=query(collection(db,"history"),orderBy("submittedAt","desc"),limit(HISTORY_DEFAULT_LOAD_LIMIT)); historyUnsubscribe=onSnapshot(qh,snap=>{historyCache=snap.docs.map(d=>({id:d.id,...d.data()})); hideNotice("appNotice"); renderAll("data");},error=>{console.warn("History permission/listener:",error); showNotice("appNotice",friendlyError(error),"error"); historyCache=[]; renderAll("data");}); }
+    function startHistoryRealtimeListener(){ if(historyUnsubscribe) historyUnsubscribe(); const qh=query(collection(db,"history"),orderBy("submittedAt","desc"),limit(HISTORY_DEFAULT_LOAD_LIMIT)); historyUnsubscribe=onSnapshot(qh,snap=>{historyCache=snap.docs.map(d=>({id:d.id,...d.data()})); hideNotice("appNotice"); renderAll("data");
+        if(isScreenActive("History")) renderHistory();},error=>{console.warn("History permission/listener:",error); showNotice("appNotice",friendlyError(error),"error"); historyCache=[]; renderAll("data");
+        if(isScreenActive("History")) renderHistory();}); }
     function startSystemRealtime(){
       if(systemUnsubscribe) systemUnsubscribe();
 
