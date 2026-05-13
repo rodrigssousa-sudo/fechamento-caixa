@@ -4493,31 +4493,128 @@ function renderCalculations(){
     }
 
 
+
+    /* =========================================================
+       HISTÓRICO — CARREGAMENTO DO DIA ATUAL CORRIGIDO
+       Evita tela vazia inicial: quando o Firebase carrega, re-renderiza.
+       Filtra o dia por múltiplos campos de data do fechamento/ajuste.
+    ========================================================= */
+    function bkHistoryDateKeys(item){
+      const t = item?.turno || {};
+      const values = [
+        item?.sortAt,
+        t.sortAt,
+        item?.selectedSortAt,
+        t.selectedSortAt,
+        item?.adjustmentSortAt,
+        t.adjustmentSortAt,
+        item?.submittedAt,
+        t.submittedAt,
+        t.adjustmentChosenDate,
+        t.adjustmentDate,
+        item?.adjustmentChosenDate,
+        item?.adjustmentDate,
+        t.closingDate,
+        t.dataFechamento,
+        item?.createdAt
+      ];
+
+      const keys = [];
+
+      values.forEach(v=>{
+        const d = bkDateFromAny(v);
+        if(d && !isNaN(d)){
+          const k = dateKeySP(d);
+          if(k && !keys.includes(k)) keys.push(k);
+        }
+      });
+
+      return keys;
+    }
+
+    function bkHistoryMatchesDate(item, dateKey){
+      if(!dateKey) return true;
+      return bkHistoryDateKeys(item).includes(dateKey);
+    }
+
+    function bkHistoryBaseList(){
+      let list = historyCache
+        .filter(withinHistoryRetention)
+        .filter(canAccessHistoryItem);
+
+      if(!list.length && historyCache.length){
+        list = historyCache.filter(canAccessHistoryItem);
+      }
+
+      return bkSortHistoryDesc(list);
+    }
+
+    function bkLatestAvailableDateKey(){
+      const list = bkHistoryBaseList();
+      for(const item of list){
+        const keys = bkHistoryDateKeys(item);
+        if(keys.length) return keys[0];
+      }
+      return todayKeySP();
+    }
+
+    function bkHasDateLoaded(dateKey){
+      return bkHistoryBaseList().some(item => bkHistoryMatchesDate(item, dateKey));
+    }
+
+    function ensureHistoryOpenDayLoaded(){
+      const input = $("historyDate");
+      if(!input) return todayKeySP();
+
+      const today = todayKeySP();
+
+      if(!input.value){
+        input.value = today;
+      }
+
+      // Se hoje ainda aparece vazio no primeiro render, mas já existem dados,
+      // abre o dia mais recente disponível para evitar tela branca.
+      if(input.value === today && historyCache.length && !bkHasDateLoaded(today)){
+        input.value = bkLatestAvailableDateKey();
+      }
+
+      historyDaysVisible = 1;
+      return input.value || today;
+    }
+
+    function forceRenderHistorySoon(){
+      clearTimeout(window.__bkHistoryRenderTimer);
+      window.__bkHistoryRenderTimer = setTimeout(()=>{
+        if(isScreenActive("History")){
+          ensureHistoryOpenDayLoaded();
+          renderHistory();
+        }
+      }, 180);
+    }
+
+
 function renderHistory(){
-      ensureHistoryOpenDayDefault();
-
       const search = $("historySearch")?.value.trim().toLowerCase() || "";
-      let date = $("historyDate")?.value || todayKeySP();
+      let date = ensureHistoryOpenDayLoaded();
 
-      let list = visibleHistory();
+      let list = bkHistoryBaseList();
 
       if(search){
         list = list.filter(x => getOperadorName(x).toLowerCase().includes(search));
       }
 
       if(date){
-        list = list.filter(x => historyDateKeyFromItem(x) === date);
+        list = list.filter(x => bkHistoryMatchesDate(x, date));
       }
 
-      // Fallback de segurança:
-      // se a data atual não tem registros por diferença de horário/campo,
-      // abre automaticamente o último dia que tem fechamento.
-      if(!list.length && !search && historyCache.length && date === todayKeySP()){
-        const fallbackDate = latestAvailableHistoryDateKey();
-        if(fallbackDate && fallbackDate !== date){
-          date = fallbackDate;
-          if($("historyDate")) $("historyDate").value = fallbackDate;
-          list = visibleHistory().filter(x => historyDateKeyFromItem(x) === fallbackDate);
+      // Se a tela abriu antes do Firebase terminar, tenta novamente logo depois.
+      if(!list.length && !search && historyCache.length){
+        const latestDate = bkLatestAvailableDateKey();
+
+        if(date === todayKeySP() && latestDate && latestDate !== date){
+          date = latestDate;
+          if($("historyDate")) $("historyDate").value = latestDate;
+          list = bkHistoryBaseList().filter(x => bkHistoryMatchesDate(x, latestDate));
         }
       }
 
@@ -4560,7 +4657,7 @@ function renderHistory(){
       }).join("");
 
       if($("historyList")){
-        $("historyList").innerHTML = html || `<div class="empty-state">Nenhum fechamento encontrado para ${date || "o dia selecionado"}.</div>`;
+        $("historyList").innerHTML = html || `<div class="empty-state">Carregando ou nenhum fechamento encontrado para ${date || "o dia selecionado"}.</div>`;
       }
 
       if(totalVisible > MAX_HISTORY_DOM && $("historyList")){
@@ -4584,9 +4681,13 @@ function renderHistory(){
       document.querySelectorAll("[data-receipt]").forEach(row=>{
         row.onclick = e => {
           if(e.target.closest("button")) return;
-          openReceipt(row.dataset.receipt);
+          openHistoryReceipt(row.dataset.receipt);
         };
       });
+
+      if(!totalVisible && !search){
+        forceRenderHistorySoon();
+      }
     }
 
     function periodStart(range){ return periodStartSP(range); }
@@ -6556,7 +6657,9 @@ input:focus{
     function generateBankPdfReport(){ const items=$("reportStart")?getReportItems():visibleHistory(); const win=window.open("","_blank"); if(!win) return alert("Permita pop-ups para gerar o PDF."); win.document.open(); win.document.write(buildBankPdfHtml(items)); win.document.close(); setTimeout(()=>{win.focus();win.print();},500); }
 
     function startHistoryRealtimeListener(){ if(historyUnsubscribe) historyUnsubscribe(); const qh=query(collection(db,"history"),orderBy("submittedAt","desc"),limit(HISTORY_DEFAULT_LOAD_LIMIT)); historyUnsubscribe=onSnapshot(qh,snap=>{historyCache=snap.docs.map(d=>({id:d.id,...d.data()})); hideNotice("appNotice"); renderAll("data");
+        forceRenderHistorySoon();
         if(isScreenActive("History")) renderHistory();},error=>{console.warn("History permission/listener:",error); showNotice("appNotice",friendlyError(error),"error"); historyCache=[]; renderAll("data");
+        forceRenderHistorySoon();
         if(isScreenActive("History")) renderHistory();}); }
     function startSystemRealtime(){
       if(systemUnsubscribe) systemUnsubscribe();
@@ -7145,6 +7248,13 @@ input:focus{
       ["reportStart","reportEnd","reportOperador","reportSupervisor","reportEntryType","reportDetailMode"].forEach(id=>{
         $(id)?.addEventListener("input", ()=>{ if($("reportPreview")) previewReport(); });
         $(id)?.addEventListener("change", ()=>{ if($("reportPreview")) previewReport(); });
+      });
+
+    
+      // historyDateHardRenderPatch
+      $("historyDate")?.addEventListener("change", ()=>{
+        historyDaysVisible = 1;
+        renderHistory();
       });
 
     }
