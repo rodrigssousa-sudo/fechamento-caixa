@@ -4867,4 +4867,161 @@ input:focus{
 
         const willShow = input.type === "password";
         input.type = willShow ? "text" : "password";
-        btn.classList.toggle("is-visible", willS
+        btn.classList.toggle("is-visible", willShow);
+        btn.setAttribute("aria-label", willShow ? "Ocultar senha" : "Mostrar senha");
+        btn.setAttribute("title", willShow ? "Ocultar senha" : "Mostrar senha");
+      });
+
+      $("loginBtn").onclick=async()=>{try{hideNotice("loginNotice");await applyLoginPersistence();await signInWithEmailAndPassword(auth,$("loginEmail").value.trim(),$("loginPassword").value);}catch(e){showNotice("loginNotice",friendlyError(e),"error");}}; $("registerBtn").onclick=registerAccess; $("resetPasswordBtn").onclick=async()=>{try{const email=$("loginEmail").value.trim(); if(!email) return showNotice("loginNotice","Informe o email.","error"); await sendPasswordResetEmail(auth,email); showNotice("loginNotice","Email de recuperaÃ§Ã£o enviado.","ok");}catch(e){showNotice("loginNotice",friendlyError(e),"error");}}; $("receiptCloseBtn") && ($("receiptCloseBtn").onclick=closeHistoryReceipt);
+      $("receiptExportPngBtn") && ($("receiptExportPngBtn").onclick=exportReceiptAsPng);
+      $("editCloseBtn").onclick=closeEdit; $("cancelEditBtn").onclick=closeEdit; $("saveEditBtn").onclick=saveEdit; $("editAddPendingBtn").onclick=()=>createDynamicRow("editPendingList","Nome / motivo"); $("editAddOutflowBtn").onclick=()=>createDynamicRow("editOutflowList","DescriÃ§Ã£o");
+      // historyDateTodayDefaultPatch
+      $("historyDate")?.addEventListener("change", ()=>{
+        historyDaysVisible = 1;
+        renderHistory();
+      });
+
+
+      // pdfFilterEventsPatch
+      ["reportStart","reportEnd","reportOperador","reportSupervisor","reportEntryType","reportDetailMode"].forEach(id=>{
+        $(id)?.addEventListener("input", ()=>{ if($("reportPreview")) previewReport(); });
+        $(id)?.addEventListener("change", ()=>{ if($("reportPreview")) previewReport(); });
+      });
+
+
+      // historyDateHardRenderPatch
+      $("historyDate")?.addEventListener("change", ()=>{
+        historyDaysVisible = 1;
+        renderHistory();
+      });
+
+
+      // historyManualDateSelectionPatch
+      $("historyDate")?.addEventListener("input", ()=>{
+        markHistoryDateManual();
+        historyDaysVisible = 1;
+        renderHistory();
+      });
+      $("historyDate")?.addEventListener("change", ()=>{
+        markHistoryDateManual();
+        historyDaysVisible = 1;
+        renderHistory();
+      });
+
+    }
+
+    function initQuickAdjustmentDateTime(){
+      const d = nowSP();
+      const yyyy = d.getFullYear();
+      const mm = String(d.getMonth()+1).padStart(2,"0");
+      const dd = String(d.getDate()).padStart(2,"0");
+      const hh = String(d.getHours()).padStart(2,"0");
+      const mi = String(d.getMinutes()).padStart(2,"0");
+
+      if($("quickAdjustmentDate") && !$("quickAdjustmentDate").value){
+        $("quickAdjustmentDate").value = `${yyyy}-${mm}-${dd}`;
+      }
+
+      if($("quickAdjustmentTime") && !$("quickAdjustmentTime").value){
+        $("quickAdjustmentTime").value = `${hh}:${mi}`;
+      }
+    }
+
+function initDate(){ if($("closingDate")) $("closingDate").value = localInputSP(nowSP()); }
+
+    onAuthStateChanged(auth,async(user)=>{ currentUser=user; if(!user){document.body.classList.remove("role-admin","role-supervisor","role-operador");loadSavedLoginPreference();$("loginScreen").classList.remove("hidden");$("appShell").classList.add("hidden");$("bottomNav").classList.add("hidden");return;} currentProfile=await loadProfile(user); if(currentProfile.blocked){await signOut(auth);return alert("UsuÃ¡rio bloqueado.");} if(currentProfile.approved===false){$("loginScreen").classList.remove("hidden");$("appShell").classList.add("hidden");$("bottomNav").classList.add("hidden");showNotice("loginNotice","UsuÃ¡rio aguardando aprovaÃ§Ã£o do admin.","error");return;} $("loginScreen").classList.add("hidden");$("appShell").classList.remove("hidden");$("bottomNav").classList.remove("hidden");$("topUserLabel").textContent=`${currentProfile.name||user.email} â¢ ${isAdmin()?"Admin":isSupervisor()?"Supervisor":"Operador"}`;  $("adminStatus").textContent=isAdmin()?"Admin ativo":"Somente admin";
+      if($("moreAdminBtn")) $("moreAdminBtn").style.display = isAdmin() ? "flex" : "none"; if($("sideAdminBtn")) $("sideAdminBtn").style.display = isAdmin() ? "grid" : "none"; updateSideDrawerProfile();
+
+      applyRoleBodyClass(); updateRoleVisibility(); if(isAdmin()) loadAudit(); if(currentProfile.permissionError) showNotice("appNotice","Seu login entrou, mas o Firestore negou acesso ao perfil. Ajuste as regras ou coloque seu email em BOOTSTRAP_ADMIN_EMAILS.","error"); startHistoryRealtimeListener(); startSystemRealtime(); fillOperadorFromProfile(); renderAll("data"); });
+
+    function runSelfTests(){
+      const savedUser = currentUser;
+      const savedProfile = currentProfile;
+      const tests=[];
+      const assert=(name,cond)=>tests.push({name,pass:!!cond});
+
+      assert("money BR",moneyToNumber("1.234,56")===1234.56);
+      assert("money US",moneyToNumber("1,234.56")===1234.56);
+      assert("calc multipliers",calcularSaldoLiquido({webReca:100,suprema:1,pppoker:2,buffalo:10,ganamos:20,cargasPoker:1,cargasCasino:5,pendentesTotal:15,saidasTotal:7})===1327);
+      assert("history access approved",canAccessHistoryItem({createdBy:"u1",turno:{}})===true);
+
+      currentUser = savedUser;
+      currentProfile = savedProfile;
+      console.table(tests);
+      return tests;
+    }
+    window.BankKingTests={runSelfTests,moneyToNumber,calcularSaldoLiquido};
+
+    function bindHeroLiveGlow(){
+      // Removido: sem efeito de luz acompanhando o dedo.
+    }
+
+    function initBankMicroUX(){
+      const rippleTargets = ".btn,.small-btn,.admin-toggle,.nav-btn,.more-menu-btn,.icon-btn";
+      document.querySelectorAll(rippleTargets).forEach(btn=>{
+        if(btn.dataset.rippleBound) return;
+        btn.dataset.rippleBound = "1";
+        btn.addEventListener("click",(ev)=>{
+          const rect = btn.getBoundingClientRect();
+          const size = Math.max(rect.width, rect.height);
+          const ripple = document.createElement("span");
+          ripple.className = "ripple";
+          ripple.style.width = ripple.style.height = size + "px";
+          ripple.style.left = (ev.clientX - rect.left - size / 2) + "px";
+          ripple.style.top = (ev.clientY - rect.top - size / 2) + "px";
+          btn.appendChild(ripple);
+          setTimeout(()=>ripple.remove(), 620);
+        });
+      });
+
+      document.querySelectorAll(".screen.active .card,.screen.active .history-item,.screen.active .rank-item").forEach((card,index)=>{
+        card.classList.add("stagger-in");
+        card.style.setProperty("--stagger", index % 8);
+      });
+    }
+
+    document.addEventListener("DOMContentLoaded",()=>{ forceHideReloadLoader(); bindEvents();  installMoneyTypingFix(); initDate(); initBankMicroUX(); setTimeout(()=>{const splash=$("appSplash"); splash?.classList.add("hide"); setTimeout(()=>splash?.remove(),800);},1600); runSelfTests(); });
+
+    document.addEventListener("DOMContentLoaded", loadSavedLoginPreference);
+
+document.addEventListener("DOMContentLoaded",()=>{ setTimeout(window.__BK_FORCE_OPEN_APP__,4500); });
+    document.addEventListener("DOMContentLoaded",()=>{
+      try{
+        window.__bkMoneyObserver = new MutationObserver(()=>normalizeExistingMoneyInputs());
+        window.__bkMoneyObserver.observe(document.body,{childList:true,subtree:true});
+      }catch(_){}
+    });
+
+    // historyTodayDOMContentLoadedPatch
+    document.addEventListener("DOMContentLoaded",()=>{
+      ensureHistoryTodayDefault();
+    });
+    // historyNoClickDOMContentPatch
+    document.addEventListener("DOMContentLoaded",()=>{
+      setTimeout(()=>{
+        if(isScreenActive("History")) renderHistory();
+      }, 700);
+    });
+
+    // textKeyboardSafePatch
+    document.addEventListener("DOMContentLoaded",()=>{
+      setTimeout(fixTextKeyboardFields, 700);
+      setTimeout(fixTextKeyboardFields, 1800);
+    });
+// safeTextFieldObserverFinal
+document.addEventListener("DOMContentLoaded",()=>{
+  try{
+    const obs = new MutationObserver(()=>bkForceAllTextFields());
+    obs.observe(document.body,{childList:true,subtree:true});
+  }catch(_){}
+});
+// textFreeFinalObserver
+document.addEventListener("DOMContentLoaded",()=>{
+  try{
+    const obs = new MutationObserver(()=>bkForceAllTextFields());
+    obs.observe(document.body,{childList:true,subtree:true});
+  }catch(_){}
+});
+</script>
+</body>
+</html>
