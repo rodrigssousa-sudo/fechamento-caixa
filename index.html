@@ -2585,6 +2585,27 @@ document.addEventListener("focusout", ev=>{
   <div id="appReloadLoader" class="app-reload-loader"><div class="reload-card"><div class="reload-spinner"></div><strong>Atualizando sistema</strong><span>Recalculando dados...</span></div></div>
 
   <script type="module">
+// loginSplashFailsafePatch
+    window.__BK_FORCE_OPEN_APP__ = window.__BK_FORCE_OPEN_APP__ || function(){
+      try{
+        ["appSplash","splashScreen","splash","loadingScreen","introScreen"].forEach(id=>{
+          const el = document.getElementById(id);
+          if(el){
+            el.classList.add("hide");
+            el.classList.add("hidden");
+            el.style.display = "none";
+            el.style.opacity = "0";
+            el.style.pointerEvents = "none";
+          }
+        });
+        document.body.classList.remove("loading","is-loading","splash-active");
+      }catch(_){}
+    };
+
+    document.addEventListener("DOMContentLoaded",()=>{
+      setTimeout(window.__BK_FORCE_OPEN_APP__, 5500);
+    });
+
 window.__BK_FORCE_OPEN_APP__ = function(){
       try{
         ["appSplash","splashScreen","splash","loadingScreen","introScreen"].forEach(id => {
@@ -3286,12 +3307,7 @@ function bkMoneyFormatFromDigits(digits){
         "quickAdjustmentTime",
         "reportOperador",
         "reportSupervisor",
-        "historySearch",
-        "loginEmail",
-        "loginPassword",
-        "profileName",
-        "profileEmail",
-        "profilePassword"
+        "historySearch"
       ];
 
       textIds.forEach(id=>{
@@ -3306,18 +3322,14 @@ function bkMoneyFormatFromDigits(digits){
 
         if(lower.includes("date")){
           el.type = "date";
+          el.inputMode = "";
         }else if(lower.includes("time")){
           el.type = "time";
-        }else if(lower.includes("password")){
-          el.type = "password";
-        }else if(lower.includes("email")){
-          el.type = "email";
+          el.inputMode = "";
         }else{
           el.type = "text";
+          el.inputMode = "text";
         }
-
-        el.inputMode = "text";
-        el.autocomplete = "off";
       });
     }
 
@@ -3325,35 +3337,55 @@ function bkMoneyFormatFromDigits(digits){
 function bkMoneyIsField(el){
   if(!el || el.tagName !== "INPUT") return false;
 
-  const idName = String((el.id || "") + " " + (el.name || "") + " " + (el.placeholder || "")).toLowerCase();
-  if(idName.includes("motivo") || idName.includes("responsavel") || idName.includes("responsável") || idName.includes("operador") || idName.includes("nome") || idName.includes("email") || idName.includes("senha") || el.type === "date" || el.type === "time" || el.type === "email" || el.type === "password") return false;
-
-  var raw = [
+  const raw = [
     el.id || "",
     el.name || "",
     el.placeholder || "",
     el.className || "",
-    el.dataset ? (el.dataset.money || "") : "",
-    el.dataset ? (el.dataset.currency || "") : ""
+    el.dataset?.money || "",
+    el.dataset?.currency || ""
   ].join(" ").toLowerCase();
 
-  return raw.indexOf("saldo") >= 0
-    || raw.indexOf("valor") >= 0
-    || raw.indexOf("reca") >= 0
-    || raw.indexOf("suprema") >= 0
-    || raw.indexOf("pppoker") >= 0
-    || raw.indexOf("poker") >= 0
-    || raw.indexOf("buffalo") >= 0
-    || raw.indexOf("ganamos") >= 0
-    || raw.indexOf("carga") >= 0
-    || raw.indexOf("pendente") >= 0
-    || raw.indexOf("saida") >= 0
-    || raw.indexOf("lucro") >= 0
-    || raw.indexOf("custo") >= 0
-    || raw.indexOf("taxa") >= 0
-    || raw.indexOf("retirada") >= 0
-    || raw.indexOf("caixa") >= 0
-    || (el.dataset && (el.dataset.money === "1" || el.dataset.currency === "1"));
+  const textOnly =
+    raw.includes("motivo")
+    || raw.includes("responsavel")
+    || raw.includes("responsável")
+    || raw.includes("operador")
+    || raw.includes("admin")
+    || raw.includes("nome")
+    || raw.includes("name")
+    || raw.includes("email")
+    || raw.includes("senha")
+    || raw.includes("password")
+    || raw.includes("observacao")
+    || raw.includes("observação")
+    || raw.includes("descricao")
+    || raw.includes("descrição")
+    || el.type === "date"
+    || el.type === "time"
+    || el.type === "email"
+    || el.type === "password";
+
+  if(textOnly) return false;
+
+  return raw.includes("saldo")
+    || raw.includes("valor")
+    || raw.includes("reca")
+    || raw.includes("suprema")
+    || raw.includes("pppoker")
+    || raw.includes("poker")
+    || raw.includes("buffalo")
+    || raw.includes("ganamos")
+    || raw.includes("carga")
+    || raw.includes("pendente")
+    || raw.includes("saida")
+    || raw.includes("lucro")
+    || raw.includes("custo")
+    || raw.includes("taxa")
+    || raw.includes("retirada")
+    || raw.includes("caixa")
+    || el.dataset?.money === "1"
+    || el.dataset?.currency === "1";
 }
 
 function bkMoneyDigitIndexFromCaret(text, caret){
@@ -7467,14 +7499,11 @@ document.addEventListener("DOMContentLoaded",()=>{ setTimeout(window.__BK_FORCE_
         if(isScreenActive("History")) renderHistory();
       }, 700);
     });
-    // textKeyboardFieldsObserverPatch
+
+    // textKeyboardSafePatch
     document.addEventListener("DOMContentLoaded",()=>{
-      try{
-        const obs = new MutationObserver(()=>fixTextKeyboardFields());
-        obs.observe(document.body,{childList:true,subtree:true,attributes:true,attributeFilter:["data-money","data-bank-money-final","type","inputmode"]});
-      }catch(_){}
-      setTimeout(fixTextKeyboardFields, 400);
-      setTimeout(fixTextKeyboardFields, 1200);
+      setTimeout(fixTextKeyboardFields, 700);
+      setTimeout(fixTextKeyboardFields, 1800);
     });
 </script>
 </body>
