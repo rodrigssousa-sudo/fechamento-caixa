@@ -3442,6 +3442,20 @@ function bkMoneyPrepare(el){
   el.setAttribute("inputmode","numeric");
   el.setAttribute("autocomplete","off");
 
+  var rawValue = String(el.value || "").trim();
+
+  // CORREÇÃO EDITAR HISTÓRICO:
+  // quando o Firestore entrega número JS com ponto decimal (ex: 4841680.4),
+  // não podemos remover os caracteres e tratar como centavos, porque vira 484.168,04.
+  // Primeiro convertemos para formato BR completo: 4.841.680,40.
+  if(rawValue && /^-?\d+(\.\d{1,2})?$/.test(rawValue) && !rawValue.includes(",")){
+    var numericValue = Number(rawValue);
+    if(Number.isFinite(numericValue)){
+      el.value = numericValue.toLocaleString("pt-BR",{minimumFractionDigits:2,maximumFractionDigits:2});
+      return;
+    }
+  }
+
   var digits = bkMoneyOnlyDigits(el.value);
   if(digits){
     el.value = bkMoneyFormatFromDigits(digits);
@@ -5504,7 +5518,7 @@ function receiptLine(label, value){
       $("receiptModal").classList.add("active");
     }
 
-    async function openEditHistory(id){ const item=historyCache.find(x=>x.id===id); if(!item) return alert("Fechamento não encontrado no cache."); if(!canEditHistoryItem(item)) return alert("Você só pode editar o seu último fechamento de turno."); const t=item.turno||{}; $("editHistoryId").value=id; $("editOperadorName").value=getOperadorName(item)==="Sem operador" ? "" : getOperadorName(item); $("editClosingDate").value=toDateInputValue(t.closingDate||item.submittedAt); $("editWebReca").value=t.webReca??t.reca??0; $("editSuprema").value=t.suprema??0; $("editPppoker").value=t.pppoker??0; $("editBuffalo").value=t.buffalo??0; $("editGanamos").value=t.ganamos??0; $("editCargasPoker").value=t.cargasPoker??0; $("editCargasCasino").value=t.cargasCasino??t.cargas??0; setDynamicRows("editPendingList",t.pendings||[]); setDynamicRows("editOutflowList",t.outflows||[]); $("editHistoryModal").classList.add("active"); }
+    async function openEditHistory(id){ const item=historyCache.find(x=>x.id===id); if(!item) return alert("Fechamento não encontrado no cache."); if(!canEditHistoryItem(item)) return alert("Você só pode editar o seu último fechamento de turno."); const t=item.turno||{}; $("editHistoryId").value=id; $("editOperadorName").value=getOperadorName(item)==="Sem operador" ? "" : getOperadorName(item); $("editClosingDate").value=toDateInputValue(t.closingDate||item.submittedAt); $("editWebReca").value=formatInputMoney(t.webReca??t.reca??0); $("editSuprema").value=formatInputMoney(t.suprema??0); $("editPppoker").value=formatInputMoney(t.pppoker??0); $("editBuffalo").value=formatInputMoney(t.buffalo??0); $("editGanamos").value=formatInputMoney(t.ganamos??0); $("editCargasPoker").value=formatInputMoney(t.cargasPoker??0); $("editCargasCasino").value=formatInputMoney(t.cargasCasino??t.cargas??0); setDynamicRows("editPendingList",t.pendings||[]); setDynamicRows("editOutflowList",t.outflows||[]); ["editWebReca","editSuprema","editPppoker","editBuffalo","editGanamos","editCargasPoker","editCargasCasino"].forEach(function(fid){ const input=$(fid); if(input) bkMoneyPrepare(input); }); $("editHistoryModal").classList.add("active"); }
     function closeEdit(){ $("editHistoryModal").classList.remove("active"); }
     async function saveEdit(){ const id=$("editHistoryId").value; const ref=doc(db,"history",id); const original=historyCache.find(x=>x.id===id)||{}; if(!canEditHistoryItem(original)) return alert("Você só pode editar o seu último fechamento de turno."); const t={...(original.turno||{}),operadorName:$("editOperadorName").value.trim(),closingDate:$("editClosingDate").value||nowSP().toISOString(),webReca:moneyToNumber($("editWebReca").value),suprema:moneyToNumber($("editSuprema").value),pppoker:moneyToNumber($("editPppoker").value),buffalo:moneyToNumber($("editBuffalo").value),ganamos:moneyToNumber($("editGanamos").value),cargasPoker:moneyToNumber($("editCargasPoker").value),cargasCasino:moneyToNumber($("editCargasCasino").value),pendings:getDynamicRows("editPendingList"),outflows:getDynamicRows("editOutflowList")}; setOperadorNameOnTurno(t, t.operadorName); t.pendentesTotal=t.pendings.reduce((s,x)=>s+x.value,0); t.saidasTotal=t.outflows.reduce((s,x)=>s+x.value,0); t.retiradaLucroTotal=sumOutflowsByCategory(t.outflows,"lucro"); t.custoOperacionalTotal=sumOutflowsByCategory(t.outflows,"custo_operacional"); t.custoRecaTotal=sumOutflowsByCategory(t.outflows,"custo_reca"); t.operadorEmail = original?.turno?.operadorEmail || original?.operadorEmail || currentUser?.email || null;
       t.createdByEmail = original?.turno?.createdByEmail || original?.createdByEmail || currentUser?.email || null;
