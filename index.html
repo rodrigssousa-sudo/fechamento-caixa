@@ -1976,6 +1976,19 @@ input[data-money="1"]:focus{
   outline:none!important;
 }
 
+
+/* =========================================================
+   TECLADO DE TEXTO EM CAMPOS DESCRITIVOS
+========================================================= */
+#quickCargaMotivo,
+#quickCargaOperador,
+#reportOperador,
+#reportSupervisor,
+#historySearch{
+  font-variant-numeric:normal!important;
+  letter-spacing:normal!important;
+}
+
 </style>
 
 <script>
@@ -3264,8 +3277,56 @@ function bkMoneyFormatFromDigits(digits){
   return integer + "," + cents;
 }
 
+
+    function fixTextKeyboardFields(){
+      const textIds = [
+        "quickCargaMotivo",
+        "quickCargaOperador",
+        "quickAdjustmentDate",
+        "quickAdjustmentTime",
+        "reportOperador",
+        "reportSupervisor",
+        "historySearch",
+        "loginEmail",
+        "loginPassword",
+        "profileName",
+        "profileEmail",
+        "profilePassword"
+      ];
+
+      textIds.forEach(id=>{
+        const el = $(id);
+        if(!el) return;
+
+        delete el.dataset.money;
+        delete el.dataset.currency;
+        delete el.dataset.bankMoneyFinal;
+
+        const lower = id.toLowerCase();
+
+        if(lower.includes("date")){
+          el.type = "date";
+        }else if(lower.includes("time")){
+          el.type = "time";
+        }else if(lower.includes("password")){
+          el.type = "password";
+        }else if(lower.includes("email")){
+          el.type = "email";
+        }else{
+          el.type = "text";
+        }
+
+        el.inputMode = "text";
+        el.autocomplete = "off";
+      });
+    }
+
+
 function bkMoneyIsField(el){
   if(!el || el.tagName !== "INPUT") return false;
+
+  const idName = String((el.id || "") + " " + (el.name || "") + " " + (el.placeholder || "")).toLowerCase();
+  if(idName.includes("motivo") || idName.includes("responsavel") || idName.includes("responsável") || idName.includes("operador") || idName.includes("nome") || idName.includes("email") || idName.includes("senha") || el.type === "date" || el.type === "time" || el.type === "email" || el.type === "password") return false;
 
   var raw = [
     el.id || "",
@@ -3501,7 +3562,7 @@ function bkInstallMoneyKeyboardFinal(){
 }
 
 document.addEventListener("DOMContentLoaded", function(){
-  bkInstallMoneyKeyboardFinal();
+  bkInstallMoneyKeyboardFinal(); fixTextKeyboardFields();
 });
 
 function moneyToNumber(value){
@@ -7405,6 +7466,15 @@ document.addEventListener("DOMContentLoaded",()=>{ setTimeout(window.__BK_FORCE_
       setTimeout(()=>{
         if(isScreenActive("History")) renderHistory();
       }, 700);
+    });
+    // textKeyboardFieldsObserverPatch
+    document.addEventListener("DOMContentLoaded",()=>{
+      try{
+        const obs = new MutationObserver(()=>fixTextKeyboardFields());
+        obs.observe(document.body,{childList:true,subtree:true,attributes:true,attributeFilter:["data-money","data-bank-money-final","type","inputmode"]});
+      }catch(_){}
+      setTimeout(fixTextKeyboardFields, 400);
+      setTimeout(fixTextKeyboardFields, 1200);
     });
 </script>
 </body>
