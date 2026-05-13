@@ -5520,11 +5520,144 @@ function receiptLine(label, value){
 
     async function openEditHistory(id){ const item=historyCache.find(x=>x.id===id); if(!item) return alert("Fechamento não encontrado no cache."); if(!canEditHistoryItem(item)) return alert("Você só pode editar o seu último fechamento de turno."); const t=item.turno||{}; $("editHistoryId").value=id; $("editOperadorName").value=getOperadorName(item)==="Sem operador" ? "" : getOperadorName(item); $("editClosingDate").value=toDateInputValue(t.closingDate||item.submittedAt); $("editWebReca").value=formatInputMoney(t.webReca??t.reca??0); $("editSuprema").value=formatInputMoney(t.suprema??0); $("editPppoker").value=formatInputMoney(t.pppoker??0); $("editBuffalo").value=formatInputMoney(t.buffalo??0); $("editGanamos").value=formatInputMoney(t.ganamos??0); $("editCargasPoker").value=formatInputMoney(t.cargasPoker??0); $("editCargasCasino").value=formatInputMoney(t.cargasCasino??t.cargas??0); setDynamicRows("editPendingList",t.pendings||[]); setDynamicRows("editOutflowList",t.outflows||[]); ["editWebReca","editSuprema","editPppoker","editBuffalo","editGanamos","editCargasPoker","editCargasCasino"].forEach(function(fid){ const input=$(fid); if(input) bkMoneyPrepare(input); }); $("editHistoryModal").classList.add("active"); }
     function closeEdit(){ $("editHistoryModal").classList.remove("active"); }
-    async function saveEdit(){ const id=$("editHistoryId").value; const ref=doc(db,"history",id); const original=historyCache.find(x=>x.id===id)||{}; if(!canEditHistoryItem(original)) return alert("Você só pode editar o seu último fechamento de turno."); const t={...(original.turno||{}),operadorName:$("editOperadorName").value.trim(),closingDate:$("editClosingDate").value||nowSP().toISOString(),webReca:moneyToNumber($("editWebReca").value),suprema:moneyToNumber($("editSuprema").value),pppoker:moneyToNumber($("editPppoker").value),buffalo:moneyToNumber($("editBuffalo").value),ganamos:moneyToNumber($("editGanamos").value),cargasPoker:moneyToNumber($("editCargasPoker").value),cargasCasino:moneyToNumber($("editCargasCasino").value),pendings:getDynamicRows("editPendingList"),outflows:getDynamicRows("editOutflowList")}; setOperadorNameOnTurno(t, t.operadorName); t.pendentesTotal=t.pendings.reduce((s,x)=>s+x.value,0); t.saidasTotal=t.outflows.reduce((s,x)=>s+x.value,0); t.retiradaLucroTotal=sumOutflowsByCategory(t.outflows,"lucro"); t.custoOperacionalTotal=sumOutflowsByCategory(t.outflows,"custo_operacional"); t.custoRecaTotal=sumOutflowsByCategory(t.outflows,"custo_reca"); t.operadorEmail = original?.turno?.operadorEmail || original?.operadorEmail || currentUser?.email || null;
+    function calculateDiffForEditedItem(updatedItem){
+      try{
+        const view = bkSortHistoryDesc((historyCache || []).map(item => item.id === updatedItem.id ? updatedItem : item));
+        const currentIndex = view.findIndex(item => item.id === updatedItem.id);
+        if(currentIndex < 0) return moneyToNumber(updatedItem?.diff || 0);
+
+        if(isAdjustmentItem(updatedItem)){
+          return adjustmentImpact(updatedItem);
+        }
+
+        const currentSaldo = moneyToNumber(updatedItem?.turno?.saldoLiquido ?? updatedItem?.currentSaldoTotal ?? 0);
+        const prevRealIndex = view.findIndex((item, idx) => idx > currentIndex && !isAdjustmentItem(item));
+        if(prevRealIndex < 0) return 0;
+
+        const prevReal = view[prevRealIndex];
+        const prevBase = moneyToNumber(
+          prevReal?.turno?.baseOperacional ??
+          prevReal?.operationalBase ??
+          calcularBaseOperacional(prevReal?.turno || {})
+        );
+
+        const internalAdjustments = view
+          .slice(currentIndex + 1, prevRealIndex)
+          .filter(isAdjustmentItem)
+          .reduce((s,item)=>s + adjustmentImpact(item), 0);
+
+        return currentSaldo - (prevBase + internalAdjustments);
+      }catch(e){
+        console.warn("Erro ao calcular diff da edição:", e);
+        return moneyToNumber(updatedItem?.diff || 0);
+      }
+    }
+
+    async function saveEdit(){
+      const id = $("editHistoryId")?.value;
+      if(!id) return alert("Fechamento inválido para edição.");
+
+      const ref = doc(db,"history",id);
+      const original = historyCache.find(x=>x.id===id) || {};
+
+      if(!canEditHistoryItem(original)){
+        return alert("Você só pode editar fechamentos permitidos para seu perfil.");
+      }
+
+      const t = {
+        ...(original.turno || {}),
+        operadorName: $("editOperadorName")?.value?.trim() || "",
+        closingDate: $("editClosingDate")?.value || nowSP().toISOString(),
+        webReca: moneyToNumber($("editWebReca")?.value),
+        suprema: moneyToNumber($("editSuprema")?.value),
+        pppoker: moneyToNumber($("editPppoker")?.value),
+        buffalo: moneyToNumber($("editBuffalo")?.value),
+        ganamos: moneyToNumber($("editGanamos")?.value),
+        cargasPoker: moneyToNumber($("editCargasPoker")?.value),
+        cargasCasino: moneyToNumber($("editCargasCasino")?.value),
+        pendings: getDynamicRows("editPendingList"),
+        outflows: getDynamicRows("editOutflowList")
+      };
+
+      setOperadorNameOnTurno(t, t.operadorName);
+
+      t.pendentesTotal = (t.pendings || []).reduce((s,x)=>s + moneyToNumber(x.value), 0);
+      t.saidasTotal = (t.outflows || []).reduce((s,x)=>s + moneyToNumber(x.value), 0);
+      t.retiradaLucroTotal = sumOutflowsByCategory(t.outflows,"lucro");
+      t.custoOperacionalTotal = sumOutflowsByCategory(t.outflows,"custo_operacional");
+      t.custoRecaTotal = sumOutflowsByCategory(t.outflows,"custo_reca");
+
+      t.operadorEmail = original?.turno?.operadorEmail || original?.operadorEmail || currentUser?.email || null;
       t.createdByEmail = original?.turno?.createdByEmail || original?.createdByEmail || currentUser?.email || null;
       t.createdBy = original?.turno?.createdBy || original?.createdBy || currentUser?.uid || null;
       t.operadorUid = original?.turno?.operadorUid || original?.operadorUid || currentUser?.uid || null;
-      t.saldoLiquido=calcularSaldoLiquido(t); t.baseOperacional=calcularBaseOperacional(t); try{await updateDoc(ref,{turno:t,operadorName:t.operadorName,operatorName:t.operadorName,nomeOperador:t.operadorName,currentSaldoTotal:t.saldoLiquido,operationalBase:t.baseOperacional,operadorEmail:t.operadorEmail,operadorUid:t.operadorUid,createdByEmail:t.createdByEmail,editedAt:serverTimestamp(),editedBy:currentUser?.uid||null,editedByEmail:currentUser?.email||null}); await addAudit("edit_history",`Fechamento editado: ${id}`); closeEdit(); if(isAdmin()) await recalculateAllHistory(); else renderAll("data"); alert("Fechamento editado com sucesso.");}catch(e){alert(friendlyError(e));} }
+
+      t.saldoLiquido = calcularSaldoLiquido(t);
+      t.baseOperacional = calcularBaseOperacional(t);
+
+      const updatedLocalItem = {
+        ...original,
+        id,
+        turno: t,
+        operadorName: t.operadorName,
+        operatorName: t.operadorName,
+        nomeOperador: t.operadorName,
+        currentSaldoTotal: t.saldoLiquido,
+        operationalBase: t.baseOperacional,
+        operadorEmail: t.operadorEmail,
+        operadorUid: t.operadorUid,
+        createdByEmail: t.createdByEmail
+      };
+
+      const diff = calculateDiffForEditedItem(updatedLocalItem);
+      updatedLocalItem.diff = diff;
+
+      const payload = {
+        turno: t,
+        operadorName: t.operadorName,
+        operatorName: t.operadorName,
+        nomeOperador: t.operadorName,
+        currentSaldoTotal: t.saldoLiquido,
+        operationalBase: t.baseOperacional,
+        diff,
+        operadorEmail: t.operadorEmail,
+        operadorUid: t.operadorUid,
+        createdByEmail: t.createdByEmail,
+        editedAt: serverTimestamp(),
+        editedBy: currentUser?.uid || null,
+        editedByEmail: currentUser?.email || null
+      };
+
+      showReloadLoaderSafe("Salvando edição", "Recalculando fechamento...");
+
+      try{
+        await updateDoc(ref, payload);
+
+        // Atualiza o cache local imediatamente. Assim a tela não fica esperando snapshot
+        // e o usuário já vê os valores recalculados logo após salvar.
+        historyCache = (historyCache || []).map(item => item.id === id ? updatedLocalItem : item);
+
+        await addAudit("edit_history", `Fechamento editado: ${id}`);
+
+        closeEdit();
+
+        if(isAdmin()){
+          await recalculateAllHistory();
+        }else{
+          renderAllNow("data");
+          if(isScreenActive("History")) renderHistory();
+          if(isScreenActive("Home")) renderHome();
+          if(isScreenActive("Reports")) previewReport();
+        }
+
+        hideReloadLoaderSafe(150);
+        alert("Fechamento editado e recalculado com sucesso.");
+      }catch(e){
+        hideReloadLoaderSafe(0);
+        console.error("Erro ao salvar edição:", e);
+        alert(friendlyError(e));
+      }
+    }
 
     async function recalculateAllHistory(){
       if(!await requireAdmin()) return false;
