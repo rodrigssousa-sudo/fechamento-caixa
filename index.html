@@ -2584,6 +2584,51 @@ document.addEventListener("focusout", ev=>{
 
   <div id="appReloadLoader" class="app-reload-loader"><div class="reload-card"><div class="reload-spinner"></div><strong>Atualizando sistema</strong><span>Recalculando dados...</span></div></div>
 
+
+<script>
+/* =========================================================
+   BANK KING — FAILSAFE CLÁSSICO DE SPLASH
+   Roda fora do type=module. Assim, mesmo se Firebase/import externo falhar
+   no preview/mobile, a tela não fica presa no splash.
+========================================================= */
+(function(){
+  function bkClassicHideSplash(){
+    try{
+      var ids=["appSplash","splashScreen","splash","loadingScreen","introScreen"];
+      ids.forEach(function(id){
+        var el=document.getElementById(id);
+        if(el){
+          el.classList.add("hide");
+          el.classList.add("hidden");
+          el.style.display="none";
+          el.style.opacity="0";
+          el.style.pointerEvents="none";
+        }
+      });
+      document.body.classList.remove("loading","is-loading","splash-active");
+    }catch(e){
+      console.warn("Bank King classic splash failsafe:", e);
+    }
+  }
+
+  window.__BK_CLASSIC_HIDE_SPLASH__ = bkClassicHideSplash;
+
+  if(document.readyState === "loading"){
+    document.addEventListener("DOMContentLoaded", function(){
+      setTimeout(bkClassicHideSplash, 2600);
+      setTimeout(bkClassicHideSplash, 5200);
+    });
+  }else{
+    setTimeout(bkClassicHideSplash, 2600);
+    setTimeout(bkClassicHideSplash, 5200);
+  }
+
+  window.addEventListener("load", function(){
+    setTimeout(bkClassicHideSplash, 3200);
+  });
+})();
+</script>
+
   <script type="module">
 // loginSplashFailsafePatch
     window.__BK_FORCE_OPEN_APP__ = window.__BK_FORCE_OPEN_APP__ || function(){
@@ -3076,6 +3121,97 @@ function historyItemDate(item){
     }
 
     
+
+    /* =========================================================
+       TECLADO MONETÁRIO SEGURO — WHITELIST FINANCEIRA
+       Regra: somente campos financeiros explícitos recebem teclado/máscara.
+       Campos de texto (nome, motivo, responsável, operador, cliente etc.) ficam livres.
+    ========================================================= */
+    const BK_FINANCIAL_INPUT_IDS = new Set([
+      "webReca","suprema","pppoker","buffalo","ganamos",
+      "cargasPoker","cargasCasino",
+      "quickCargaPoker","quickCargaCasino","quickRetiradaCaixa",
+      "editWebReca","editSuprema","editPppoker","editBuffalo","editGanamos","editCargasPoker","editCargasCasino",
+      "calcSaldoLiquido","calcPendentes","calcSaidas","calcLucroSaida","calcCustoSaida","calcCustoRecaSaida","calcCargaPoker","calcCargaCasino",
+      "reportPreviewSaldo","reportPreviewDiff","monthlyGoalDone","monthlyGoalTarget"
+    ]);
+
+    const BK_TEXT_INPUT_KEYWORDS = [
+      "cliente","nome","name","motivo","responsavel","responsável","operador","operator",
+      "supervisor","admin","usuario","usuário","email","senha","password","observacao",
+      "observação","descricao","descrição","comentario","comentário","nota","buscar","search",
+      "photo","foto","url","perfil","profile"
+    ];
+
+    function bkInputTextSignature(el){
+      return [
+        el?.id || "",
+        el?.name || "",
+        el?.placeholder || "",
+        el?.className || ""
+      ].join(" ").toLowerCase();
+    }
+
+    function bkIsTextOnlyInput(el){
+      if(!el || el.tagName !== "INPUT") return false;
+
+      const type = String(el.type || "").toLowerCase();
+      if(["date","time","email","password","file","checkbox","hidden","datetime-local"].includes(type)) return true;
+
+      const raw = bkInputTextSignature(el);
+      return BK_TEXT_INPUT_KEYWORDS.some(key => raw.includes(key));
+    }
+
+    function bkIsWhitelistedFinancialInput(el){
+      if(!el || el.tagName !== "INPUT") return false;
+      if(bkIsTextOnlyInput(el)) return false;
+
+      const id = String(el.id || "").trim();
+      if(id && BK_FINANCIAL_INPUT_IDS.has(id)) return true;
+
+      // Linhas dinâmicas de valor criadas pelo próprio sistema.
+      if(el.classList?.contains("row-value")) return true;
+
+      // Campo monetário explícito no HTML. Não usa mais placeholder nem palavras soltas do ID.
+      if(el.classList?.contains("money-input")) return true;
+      if(el.dataset?.money === "1" || el.dataset?.currency === "1" || el.dataset?.bankMoney === "1" || el.dataset?.bankMoneyFinal === "1") return true;
+
+      return false;
+    }
+
+    function bkForceTextInput(el){
+      if(!el || el.tagName !== "INPUT") return;
+
+      delete el.dataset.money;
+      delete el.dataset.currency;
+      delete el.dataset.bankMoney;
+      delete el.dataset.bankMoneyFinal;
+      delete el.dataset.bankMoneyFinal;
+      el.classList.remove("money-input","input-filled","input-error");
+
+      const currentType = String(el.type || "").toLowerCase();
+      if(!["date","time","email","password","file","checkbox","hidden","datetime-local"].includes(currentType)){
+        try{ el.type = "text"; }catch(_){ }
+        el.setAttribute("inputmode","text");
+      }
+    }
+
+    function bkNormalizeKeyboardModes(scope=document){
+      scope.querySelectorAll?.("input")?.forEach(el => {
+        if(bkIsWhitelistedFinancialInput(el)){
+          el.dataset.money = "1";
+          el.dataset.bankMoneyFinal = "1";
+          if(el.type === "number"){
+            try{ el.type = "text"; }catch(_){ }
+          }
+          el.setAttribute("inputmode","numeric");
+          el.setAttribute("autocomplete","off");
+        }else if(bkIsTextOnlyInput(el)){
+          bkForceTextInput(el);
+        }
+      });
+    }
+
     function normalizeMoneyTypingValue(value){
       return String(value ?? "")
         .replace(/\s/g,"")
@@ -3093,34 +3229,7 @@ function historyItemDate(item){
     }
 
     function isMoneyInput(el){
-      if(!el) return false;
-      const id = String(el.id || "").toLowerCase();
-      const name = String(el.name || "").toLowerCase();
-      const ph = String(el.placeholder || "").toLowerCase();
-      const cls = String(el.className || "").toLowerCase();
-
-      return el.dataset.money === "1"
-        || el.dataset.currency === "1"
-        || cls.includes("money")
-        || id.includes("valor")
-        || id.includes("saldo")
-        || id.includes("reca")
-        || id.includes("suprema")
-        || id.includes("pppoker")
-        || id.includes("poker")
-        || id.includes("buffalo")
-        || id.includes("ganamos")
-        || id.includes("carga")
-        || id.includes("pendente")
-        || id.includes("saida")
-        || id.includes("custo")
-        || id.includes("taxa")
-        || id.includes("lucro")
-        || id.includes("meta")
-        || name.includes("valor")
-        || name.includes("saldo")
-        || ph.includes("$")
-        || ph.includes("valor");
+      return bkIsWhitelistedFinancialInput(el);
     }
 
     function prepareMoneyInputForTyping(el){
@@ -3230,33 +3339,7 @@ function historyItemDate(item){
     }
 
     function bkStableIsMoneyInput(el){
-      if(!el) return false;
-      const id = String(el.id || "").toLowerCase();
-      const name = String(el.name || "").toLowerCase();
-      const ph = String(el.placeholder || "").toLowerCase();
-      const cls = String(el.className || "").toLowerCase();
-      return el.dataset.money === "1"
-        || el.dataset.currency === "1"
-        || cls.includes("money")
-        || id.includes("valor")
-        || id.includes("saldo")
-        || id.includes("reca")
-        || id.includes("suprema")
-        || id.includes("pppoker")
-        || id.includes("poker")
-        || id.includes("buffalo")
-        || id.includes("ganamos")
-        || id.includes("carga")
-        || id.includes("pendente")
-        || id.includes("saida")
-        || id.includes("custo")
-        || id.includes("taxa")
-        || id.includes("lucro")
-        || id.includes("meta")
-        || name.includes("valor")
-        || name.includes("saldo")
-        || ph.includes("$")
-        || ph.includes("valor");
+      return bkIsWhitelistedFinancialInput(el);
     }
 
     function bkStableFormatInput(el){
@@ -3300,93 +3383,21 @@ function bkMoneyFormatFromDigits(digits){
 
 
     function fixTextKeyboardFields(){
-      const textIds = [
-        "quickCargaMotivo",
-        "quickCargaOperador",
-        "quickAdjustmentDate",
-        "quickAdjustmentTime",
-        "reportOperador",
-        "reportSupervisor",
-        "historySearch"
-      ];
+      bkNormalizeKeyboardModes(document);
 
-      textIds.forEach(id=>{
-        const el = $(id);
-        if(!el) return;
-
-        delete el.dataset.money;
-        delete el.dataset.currency;
-        delete el.dataset.bankMoneyFinal;
-
-        const lower = id.toLowerCase();
-
-        if(lower.includes("date")){
-          el.type = "date";
-          el.inputMode = "";
-        }else if(lower.includes("time")){
-          el.type = "time";
-          el.inputMode = "";
-        }else{
-          el.type = "text";
-          el.inputMode = "text";
+      document.querySelectorAll("input").forEach(el => {
+        if(!bkIsWhitelistedFinancialInput(el) && bkIsTextOnlyInput(el)){
+          bkForceTextInput(el);
         }
       });
     }
 
 
+
 function bkMoneyIsField(el){
-  if(!el || el.tagName !== "INPUT") return false;
-
-  const raw = [
-    el.id || "",
-    el.name || "",
-    el.placeholder || "",
-    el.className || "",
-    el.dataset?.money || "",
-    el.dataset?.currency || ""
-  ].join(" ").toLowerCase();
-
-  const textOnly =
-    raw.includes("motivo")
-    || raw.includes("responsavel")
-    || raw.includes("responsável")
-    || raw.includes("operador")
-    || raw.includes("admin")
-    || raw.includes("nome")
-    || raw.includes("name")
-    || raw.includes("email")
-    || raw.includes("senha")
-    || raw.includes("password")
-    || raw.includes("observacao")
-    || raw.includes("observação")
-    || raw.includes("descricao")
-    || raw.includes("descrição")
-    || el.type === "date"
-    || el.type === "time"
-    || el.type === "email"
-    || el.type === "password";
-
-  if(textOnly) return false;
-
-  return raw.includes("saldo")
-    || raw.includes("valor")
-    || raw.includes("reca")
-    || raw.includes("suprema")
-    || raw.includes("pppoker")
-    || raw.includes("poker")
-    || raw.includes("buffalo")
-    || raw.includes("ganamos")
-    || raw.includes("carga")
-    || raw.includes("pendente")
-    || raw.includes("saida")
-    || raw.includes("lucro")
-    || raw.includes("custo")
-    || raw.includes("taxa")
-    || raw.includes("retirada")
-    || raw.includes("caixa")
-    || el.dataset?.money === "1"
-    || el.dataset?.currency === "1";
+  return bkIsWhitelistedFinancialInput(el);
 }
+
 
 function bkMoneyDigitIndexFromCaret(text, caret){
   return bkMoneyOnlyDigits(String(text || "").slice(0, Math.max(0, caret || 0))).length;
@@ -3514,7 +3525,11 @@ function bkInstallMoneyKeyboardFinal(){
   window.__BK_MONEY_KEYBOARD_FINAL_INSTALLED = true;
 
   var prepareAll = function(){
-    document.querySelectorAll("input").forEach(bkMoneyPrepare);
+    bkNormalizeKeyboardModes(document);
+    document.querySelectorAll("input").forEach(function(input){
+      if(bkMoneyIsField(input)) bkMoneyPrepare(input);
+      else if(bkIsTextOnlyInput(input)) bkForceTextInput(input);
+    });
   };
 
   prepareAll();
@@ -3698,7 +3713,11 @@ function moneyToNumber(value){
     }
 
     function applyBankMoneyMaskAll(scope=document){
-      scope.querySelectorAll(".money-input").forEach(input => {
+      scope.querySelectorAll(".money-input, .row-value, input[data-money='1'], input[data-bank-money-final='1']").forEach(input => {
+        if(!bkIsWhitelistedFinancialInput(input)){
+          bkForceTextInput(input);
+          return;
+        }
         if(input.dataset.bankMask === "1") return;
         input.dataset.bankMask = "1";
         applyBankMoneyMask(input);
