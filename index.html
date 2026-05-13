@@ -7,70 +7,26 @@
 </head>
 <body>
 <script type="module">
-/* =========================================================
-   GUARDS DE FUNÇÕES BÁSICAS
-========================================================= */
-if(typeof window !== "undefined"){
-  window.__BK_BOOT_GUARDS__ = true;
-}
+// loginSplashFailsafePatch
+    window.__BK_FORCE_OPEN_APP__ = window.__BK_FORCE_OPEN_APP__ || function(){
+      try{
+        ["appSplash","splashScreen","splash","loadingScreen","introScreen"].forEach(id=>{
+          const el = document.getElementById(id);
+          if(el){
+            el.classList.add("hide");
+            el.classList.add("hidden");
+            el.style.display = "none";
+            el.style.opacity = "0";
+            el.style.pointerEvents = "none";
+          }
+        });
+        document.body.classList.remove("loading","is-loading","splash-active");
+      }catch(_){}
+    };
 
-
-/* =========================================================
-   BOOT SAFE FALLBACK — evita tela branca
-   Se Firebase/Auth demorar ou algum estado não renderizar,
-   mostra a tela de login sem apagar o app.
-========================================================= */
-function bkShowLoginFallbackIfBlank(){
-  try{
-    const visible = Array.from(document.body.querySelectorAll("section, main, .screen, #loginView, #appView, #app, #authScreen"))
-      .some(el=>{
-        const st = getComputedStyle(el);
-        const r = el.getBoundingClientRect();
-        return st.display !== "none" && st.visibility !== "hidden" && Number(st.opacity || 1) !== 0 && r.width > 20 && r.height > 20;
-      });
-
-    if(visible) return;
-
-    const possibleLogin = [
-      "loginView",
-      "authScreen",
-      "loginScreen",
-      "login",
-      "preLogin",
-      "authView"
-    ];
-
-    possibleLogin.forEach(id=>{
-      const el = document.getElementById(id);
-      if(el){
-        el.classList.remove("hidden","hide","d-none","inactive");
-        el.style.display = "";
-        el.style.visibility = "visible";
-        el.style.opacity = "1";
-        el.style.pointerEvents = "auto";
-      }
+    document.addEventListener("DOMContentLoaded",()=>{
+      setTimeout(window.__BK_FORCE_OPEN_APP__, 5500);
     });
-
-    document.body.classList.remove("loading","is-loading","splash-active","locked");
-  }catch(err){
-    console.error("bkShowLoginFallbackIfBlank", err);
-  }
-}
-
-window.addEventListener("error",(event)=>{
-  console.error("BankKing runtime error:", event.error || event.message);
-});
-
-window.addEventListener("unhandledrejection",(event)=>{
-  console.error("BankKing promise rejection:", event.reason);
-});
-
-document.addEventListener("DOMContentLoaded",()=>{
-  setTimeout(bkShowLoginFallbackIfBlank, 1200);
-  setTimeout(bkShowLoginFallbackIfBlank, 3500);
-  setTimeout(bkShowLoginFallbackIfBlank, 7000);
-});
-
 
 window.__BK_FORCE_OPEN_APP__ = function(){
       try{
@@ -116,7 +72,7 @@ import { initializeApp, deleteApp } from "https://www.gstatic.com/firebasejs/12.
 
 /*
 =========================================================
-FIRESTORE RULES NECESSÁRIAS PARA EDITAR O PRÓPRIO PERFIL
+FIRESTORE RULES NECESSÃRIAS PARA EDITAR O PRÃPRIO PERFIL
 Cole isso no Firebase Console > Firestore Database > Rules,
 adaptando junto com suas regras atuais.
 
@@ -137,14 +93,14 @@ service cloud.firestore {
     match /users/{userId} {
       allow read: if signedIn();
 
-      // Qualquer usuário logado pode criar/editar o próprio perfil.
+      // Qualquer usuÃ¡rio logado pode criar/editar o prÃ³prio perfil.
       allow create: if signedIn() && request.auth.uid == userId;
       allow update: if signedIn() && (
         request.auth.uid == userId ||
         isAdmin()
       );
 
-      // Exclusão de documento de usuário só admin.
+      // ExclusÃ£o de documento de usuÃ¡rio sÃ³ admin.
       allow delete: if isAdmin();
     }
 
@@ -171,9 +127,9 @@ service cloud.firestore {
 
 
     /* =========================================================
-       PERFORMANCE PATCH — FLUIDEZ SEM PERDER LÓGICA
+       PERFORMANCE PATCH â FLUIDEZ SEM PERDER LÃGICA
        - Coalesce renders com requestAnimationFrame
-       - Renderiza telas pesadas apenas quando visíveis
+       - Renderiza telas pesadas apenas quando visÃ­veis
        - Evita repetir DOM work em telas escondidas
     ========================================================= */
     let __bkRenderScheduled = false;
@@ -213,7 +169,7 @@ const firebaseConfig = {
 
     /* IMPORTANTE:
       Para evitar o erro "Missing or insufficient permissions" no primeiro acesso,
-      este código NÃO tenta mais ler a coleção users inteira antes de criar conta.
+      este cÃ³digo NÃO tenta mais ler a coleÃ§Ã£o users inteira antes de criar conta.
       Depois de criar sua primeira conta, coloque seu email aqui para ela entrar como admin automaticamente.
       Exemplo: const BOOTSTRAP_ADMIN_EMAILS = ["seuemail@gmail.com"];
     */
@@ -258,8 +214,8 @@ const firebaseConfig = {
     const $ = (id) => document.getElementById(id);
 
     /* =========================================================
-       TIMEZONE FIXO DO APP — SÃO PAULO / UTC-3
-       Usa America/Sao_Paulo para histórico, filtros, PDF e ranking.
+       TIMEZONE FIXO DO APP â SÃO PAULO / UTC-3
+       Usa America/Sao_Paulo para histÃ³rico, filtros, PDF e ranking.
     ========================================================= */
     const APP_TIMEZONE = "America/Sao_Paulo";
 
@@ -363,7 +319,7 @@ const firebaseConfig = {
 
 
     /* =========================================================
-       HISTÓRICO — ORDEM REAL POR DATA/HORA
+       HISTÃRICO â ORDEM REAL POR DATA/HORA
        Usa submittedAt, closingDate e campos de ajuste para ordenar corretamente.
     ========================================================= */
     function bkDateFromAny(value){
@@ -474,13 +430,13 @@ function historyItemDate(item){
     let currentUser = null, currentProfile = null, historyCache = [], historyUnsubscribe = null, systemUnsubscribe = null, currentRankRange = "day";
     let historyDaysVisible = 1;
 
-    // Histórico operacional: mantém/carrega 91 dias para permitir relatórios semanais, mensais e trimestrais.
-    // Para balanço anual, o app usa busca ampliada sob demanda no relatório.
+    // HistÃ³rico operacional: mantÃ©m/carrega 91 dias para permitir relatÃ³rios semanais, mensais e trimestrais.
+    // Para balanÃ§o anual, o app usa busca ampliada sob demanda no relatÃ³rio.
     const HISTORY_RETENTION_DAYS = 91;
     const HISTORY_DEFAULT_LOAD_LIMIT = 900;
     const HISTORY_ANNUAL_LOAD_LIMIT = 5000;
 
-    // Fonte única da porcentagem: Meta mensal e Bônus sempre usam este objeto.
+    // Fonte Ãºnica da porcentagem: Meta mensal e BÃ´nus sempre usam este objeto.
     let monthlyGoalProgressState = { target:0, done:0, percent:0, remaining:0 };
 
     function showNotice(targetId, message, type="error"){
@@ -490,9 +446,9 @@ function historyItemDate(item){
     function hideNotice(targetId){ $(targetId)?.classList.add("hidden"); }
     function friendlyError(error){
       const code = error?.code || "";
-      if(code.includes("permission-denied")) return "Permissão negada no Firestore. Ajuste as regras ou aprove este usuário como admin.";
-      if(code.includes("auth/email-already-in-use")) return "Este email já está cadastrado. Use Entrar no sistema.";
-      if(code.includes("auth/invalid-credential")) return "Email ou senha inválidos.";
+      if(code.includes("permission-denied")) return "PermissÃ£o negada no Firestore. Ajuste as regras ou aprove este usuÃ¡rio como admin.";
+      if(code.includes("auth/email-already-in-use")) return "Este email jÃ¡ estÃ¡ cadastrado. Use Entrar no sistema.";
+      if(code.includes("auth/invalid-credential")) return "Email ou senha invÃ¡lidos.";
       if(code.includes("auth/weak-password")) return "A senha precisa ter pelo menos 6 caracteres.";
       return error?.message || String(error);
     }
@@ -520,7 +476,7 @@ function historyItemDate(item){
 
       clearTimeout(window.__bkReloadSafetyTimer);
       window.__bkReloadSafetyTimer = setTimeout(() => {
-        console.warn("Loader fechado por segurança para evitar tela travada.");
+        console.warn("Loader fechado por seguranÃ§a para evitar tela travada.");
         forceHideReloadLoader();
       }, 9000);
 
@@ -534,7 +490,7 @@ function historyItemDate(item){
       else done();
     }
 
-    function withTimeout(promise, ms=8000, label="operação"){
+    function withTimeout(promise, ms=8000, label="operaÃ§Ã£o"){
       return Promise.race([
         promise,
         new Promise((_, reject) => setTimeout(() => reject(new Error(`Tempo limite excedido em ${label}`)), ms))
@@ -678,7 +634,7 @@ function historyItemDate(item){
 
 
     /* =========================================================
-       DIGITAÇÃO BANCÁRIA — CURSOR ESTÁVEL NO CELULAR
+       DIGITAÃÃO BANCÃRIA â CURSOR ESTÃVEL NO CELULAR
     ========================================================= */
     function bkStableCleanMoney(value, caret){
       const raw = String(value ?? "");
@@ -735,7 +691,49 @@ function historyItemDate(item){
 
 
 /* =========================================================
-   TECLADO BANCÁRIO DEFINITIVO
+   TEXT FIELDS HARD FIX
+   Garante teclado de texto para Motivo/ResponsÃ¡vel.
+========================================================= */
+function bkIsHardTextField(el){
+  if(!el || el.tagName !== "INPUT") return false;
+  const id = String(el.id || "").toLowerCase();
+  return id === "quickcargamotivo"
+    || id === "quickcargaoperador"
+    || id.includes("motivo")
+    || id.includes("responsavel")
+    || id.includes("responsÃ¡vel");
+}
+
+function bkForceTextField(el){
+  if(!bkIsHardTextField(el)) return;
+  delete el.dataset.money;
+  delete el.dataset.currency;
+  delete el.dataset.bankMoneyFinal;
+  el.dataset.textField = "1";
+  el.dataset.forceText = "1";
+  if(el.type !== "text") el.type = "text";
+  el.setAttribute("inputmode","text");
+  el.setAttribute("autocomplete","off");
+}
+
+function bkForceAllTextFields(){
+  document.querySelectorAll("input").forEach(bkForceTextField);
+}
+
+document.addEventListener("DOMContentLoaded",()=>{
+  bkForceAllTextFields();
+  setTimeout(bkForceAllTextFields, 200);
+  setTimeout(bkForceAllTextFields, 800);
+  setTimeout(bkForceAllTextFields, 1800);
+});
+
+document.addEventListener("focusin",(e)=>{
+  bkForceTextField(e.target);
+}, true);
+
+
+/* =========================================================
+   TECLADO BANCÃRIO DEFINITIVO
 ========================================================= */
 function bkMoneyOnlyDigits(value){
   return String(value == null ? "" : value).replace(/\D/g,"");
@@ -774,7 +772,8 @@ function bkMoneyFormatFromDigits(digits){
 
       textIds.forEach(id=>{
         const el = $(id);
-        if(el) bkForceTextField(el);
+        if(!el) return;
+        bkForceTextField(el);
       });
 
       const dateEl = $("quickAdjustmentDate");
@@ -797,100 +796,21 @@ function bkMoneyFormatFromDigits(digits){
     }
 
 
-
-/* TEXT FIELDS HARD FIX FINAL */
-function bkIsHardTextField(el){
-  if(!el || el.tagName !== "INPUT") return false;
-
-  const id = String(el.id || "").toLowerCase();
-  const name = String(el.name || "").toLowerCase();
-  const ph = String(el.placeholder || "").toLowerCase();
-
-  return id === "quickcargamotivo"
-    || id === "quickcargaoperador"
-    || id === "historysearch"
-    || id === "reportoperador"
-    || id === "reportsupervisor"
-    || id.includes("motivo")
-    || id.includes("responsavel")
-    || id.includes("responsável")
-    || name.includes("motivo")
-    || name.includes("responsavel")
-    || name.includes("responsável")
-    || ph.includes("motivo")
-    || ph.includes("responsável")
-    || ph.includes("responsavel")
-    || ph.includes("admin / responsável")
-    || ph.includes("aporte de caixa");
-}
-
-function bkForceTextField(el){
-  if(!bkIsHardTextField(el)) return;
-
-  delete el.dataset.money;
-  delete el.dataset.currency;
-  delete el.dataset.bankMoneyFinal;
-
-  el.dataset.textField = "1";
-  el.dataset.forceText = "1";
-
-  if(el.type !== "text"){
-    el.type = "text";
-  }
-
-  el.setAttribute("inputmode","text");
-  el.setAttribute("autocomplete","off");
-}
-
-function bkForceAllTextFields(){
-  document.querySelectorAll("input").forEach(el=>{
-    if(bkIsHardTextField(el)) bkForceTextField(el);
-  });
-}
-
-document.addEventListener("DOMContentLoaded",()=>{
-  bkForceAllTextFields();
-  setTimeout(bkForceAllTextFields, 120);
-  setTimeout(bkForceAllTextFields, 600);
-  setTimeout(bkForceAllTextFields, 1400);
-});
-
-document.addEventListener("focusin",(e)=>{
-  if(bkIsHardTextField(e.target)){
-    bkForceTextField(e.target);
-  }
-}, true);
-
-document.addEventListener("beforeinput",(e)=>{
-  const el = e.target;
-  if(!bkIsHardTextField(el)) return;
-  bkForceTextField(el);
-}, true);
-
-document.addEventListener("input",(e)=>{
-  const el = e.target;
-  if(!bkIsHardTextField(el)) return;
-  bkForceTextField(el);
-}, true);
-
-
 function bkMoneyIsField(el){
   if(!el || el.tagName !== "INPUT") return false;
 
-  if(typeof bkIsHardTextField === "function" && bkIsHardTextField(el)) return false;
   if(el.dataset?.textField === "1" || el.dataset?.forceText === "1") return false;
 
   const id = String(el.id || "").toLowerCase();
   const name = String(el.name || "").toLowerCase();
   const ph = String(el.placeholder || "").toLowerCase();
   const cls = String(el.className || "").toLowerCase();
-
-  if(el.type === "date" || el.type === "time" || el.type === "email" || el.type === "password") return false;
+  const raw = `${id} ${name} ${ph} ${cls}`;
 
   const textOnly =
     id.includes("motivo")
     || id.includes("responsavel")
-    || id.includes("responsável")
+    || id.includes("responsÃ¡vel")
     || id.includes("operador")
     || id.includes("email")
     || id.includes("senha")
@@ -900,15 +820,20 @@ function bkMoneyIsField(el){
     || id.includes("nome")
     || name.includes("motivo")
     || name.includes("responsavel")
-    || name.includes("responsável")
+    || name.includes("responsÃ¡vel")
     || ph.includes("motivo")
-    || ph.includes("responsável")
+    || ph.includes("responsÃ¡vel")
     || ph.includes("responsavel")
     || ph.includes("admin")
-    || ph.includes("operador");
+    || ph.includes("operador")
+    || el.type === "date"
+    || el.type === "time"
+    || el.type === "email"
+    || el.type === "password";
 
   if(textOnly) return false;
 
+  // Lista positiva: sÃ³ campos realmente financeiros entram no teclado bancÃ¡rio.
   const moneyIds = [
     "webreca",
     "saldo",
@@ -1088,7 +1013,6 @@ function bkInstallMoneyKeyboardFinal(){
 
   document.addEventListener("beforeinput", function(event){
     var el = event.target;
-    if(typeof bkIsHardTextField === "function" && bkIsHardTextField(el)) return;
     if(!bkMoneyIsField(el)) return;
 
     var type = event.inputType || "";
@@ -1117,14 +1041,13 @@ function bkInstallMoneyKeyboardFinal(){
 
     bkMoneyApplyEdit(el, type, data);
 
-    (window.queueMicrotask || function(cb){ return Promise.resolve().then(cb); })(function(){
+    queueMicrotask(function(){
       try{ el.dispatchEvent(new Event("change",{bubbles:true})); }catch(e){}
     });
   }, true);
 
   document.addEventListener("input", function(event){
     var el = event.target;
-    if(typeof bkIsHardTextField === "function" && bkIsHardTextField(el)) return;
     if(!bkMoneyIsField(el)) return;
 
     event.stopImmediatePropagation();
@@ -1173,7 +1096,7 @@ function moneyToNumber(value){
       if(!input.nextElementSibling || !input.nextElementSibling.classList?.contains("input-helper")){
         const helper = document.createElement("div");
         helper.className = "input-helper";
-        helper.innerHTML = `<span>Edite qualquer número</span><b>0,00</b>`;
+        helper.innerHTML = `<span>Edite qualquer nÃºmero</span><b>0,00</b>`;
         input.insertAdjacentElement("afterend", helper);
       }
 
@@ -1237,7 +1160,7 @@ function moneyToNumber(value){
       });
 
       input.addEventListener("focus", () => {
-        // Não seleciona tudo: permite apagar/mudar um único número no meio do valor.
+        // NÃ£o seleciona tudo: permite apagar/mudar um Ãºnico nÃºmero no meio do valor.
         updateVisual();
       });
 
@@ -1301,7 +1224,7 @@ function moneyToNumber(value){
         btn.style.display = canSee ? "" : "none";
       });
 
-      // Operador não pode permanecer na tela de meta.
+      // Operador nÃ£o pode permanecer na tela de meta.
       if(!canSee && $("screenGoals")?.classList.contains("active")){
         showScreen("Home");
       }
@@ -1317,12 +1240,12 @@ function moneyToNumber(value){
       applyGoalVisibility();
     }
     function profileName(){ return currentProfile?.name || currentUser?.email?.split("@")[0] || ""; }
-    async function requireAdmin(){ if(isAdmin()) return true; alert("Ação permitida somente para admin."); return false; }
+    async function requireAdmin(){ if(isAdmin()) return true; alert("AÃ§Ã£o permitida somente para admin."); return false; }
 
     function canAccessHistoryItem(item){
-      // Histórico de fechamentos liberado para operador, supervisor e admin.
-      // Operador também pode ver fechamentos dos demais operadores.
-      // Somente ajustes internos/carga rápida ficam ocultos para operador.
+      // HistÃ³rico de fechamentos liberado para operador, supervisor e admin.
+      // Operador tambÃ©m pode ver fechamentos dos demais operadores.
+      // Somente ajustes internos/carga rÃ¡pida ficam ocultos para operador.
       if(isAdmin() || isSupervisor()) return true;
       if(isAdjustmentItem(item)) return false;
       return true;
@@ -1339,14 +1262,14 @@ function moneyToNumber(value){
     }
 
     function reportHistory(){
-      // Fonte dos relatórios: 91 dias por padrão; anual usa fetchAnnualHistoryIfNeeded().
+      // Fonte dos relatÃ³rios: 91 dias por padrÃ£o; anual usa fetchAnnualHistoryIfNeeded().
       return visibleHistory();
     }
 
     function calculationHistory(){
-      // Usa o histórico carregado completo para cálculos internos.
+      // Usa o histÃ³rico carregado completo para cÃ¡lculos internos.
       // Operadores continuam sem ver ajustes internos na interface,
-      // mas o diff/base considera esses ajustes para não quebrar o caixa.
+      // mas o diff/base considera esses ajustes para nÃ£o quebrar o caixa.
       return historyCache;
     }
 
@@ -1397,15 +1320,15 @@ function moneyToNumber(value){
       // Admin edita qualquer fechamento.
       if(isAdmin()) return true;
 
-      // Operador não edita ajustes internos/cargas rápidas.
+      // Operador nÃ£o edita ajustes internos/cargas rÃ¡pidas.
       if(isAdjustmentItem(item)) return false;
 
-      // Operador pode editar somente os próprios fechamentos.
+      // Operador pode editar somente os prÃ³prios fechamentos.
       return isOwnHistoryItem(item);
     }
 
     function canDeleteHistoryItem(item){
-      // Exclusão fica somente para admin.
+      // ExclusÃ£o fica somente para admin.
       return isAdmin();
     }
 
@@ -1424,7 +1347,7 @@ function moneyToNumber(value){
 
 
     /* =========================================================
-       AJUSTE INTERNO — DATA/HORA ESCOLHIDA
+       AJUSTE INTERNO â DATA/HORA ESCOLHIDA
     ========================================================= */
 
     function adjustmentSortPayload(){
@@ -1528,7 +1451,7 @@ function getAdjustmentParts(item){
       const { cargaPoker, cargaCasino, retiradaCaixa } = getAdjustmentParts(item);
       const impacto = cargaPoker + cargaCasino - retiradaCaixa;
 
-      // Se tiver campos de ajuste, essa é a fonte da verdade.
+      // Se tiver campos de ajuste, essa Ã© a fonte da verdade.
       if(cargaPoker || cargaCasino || retiradaCaixa) return impacto;
 
       // Fallback para ajuste antigo sem estrutura.
@@ -1538,9 +1461,9 @@ function getAdjustmentParts(item){
 
     function baseForNextClosing(){
       // BASE OPERACIONAL FINAL:
-      // 1) Fechamento real passa para o próximo turno como: saldoLiquido - retiradas.
+      // 1) Fechamento real passa para o prÃ³ximo turno como: saldoLiquido - retiradas.
       // 2) Ajuste interno altera essa base.
-      // 3) Diff do próximo fechamento compara saldoLiquido atual contra essa base.
+      // 3) Diff do prÃ³ximo fechamento compara saldoLiquido atual contra essa base.
       const view = calculationHistory();
       const lastRealIndex = view.findIndex(item => !isAdjustmentItem(item));
       const lastReal = lastRealIndex >= 0 ? view[lastRealIndex] : null;
@@ -1565,7 +1488,7 @@ function getAdjustmentParts(item){
       const value = adjustmentImpact(item);
       const reason = t.ajusteMotivo || item.adjustmentReason || "Ajuste interno";
       const sign = value > 0 ? "+" : "";
-      return `${sign}${formatMoney(value)} • ${reason}`;
+      return `${sign}${formatMoney(value)} â¢ ${reason}`;
     }
 
     function previousRealClosingAfter(currentItem){
@@ -1600,7 +1523,7 @@ function getAdjustmentParts(item){
         );
 
         // Ajustes internos entre o fechamento anterior e o fechamento atual
-        // entram na base, mas não entram como lucro/diferença operacional.
+        // entram na base, mas nÃ£o entram como lucro/diferenÃ§a operacional.
         const internalAdjustments = view
           .slice(currentIndex + 1, prevRealIndex)
           .filter(isAdjustmentItem)
@@ -1657,15 +1580,15 @@ function getAdjustmentParts(item){
 
     function setOperadorNameOnTurno(turno, nome){
       turno.operadorName = nome || "";
-      // Compatibilidade com históricos antigos que ainda foram salvos como operatorName.
-      // Mantém os nomes antigos aparecendo sem precisar migrar manualmente o Firestore.
+      // Compatibilidade com histÃ³ricos antigos que ainda foram salvos como operatorName.
+      // MantÃ©m os nomes antigos aparecendo sem precisar migrar manualmente o Firestore.
       turno["operatorName"] = nome || "";
       return turno;
     }
 
     function getDynamicRows(containerId){ const el=$(containerId); if(!el) return []; return [...el.querySelectorAll(".row-item")].map(row=>({name:row.querySelector(".row-name")?.value||"",category:row.querySelector(".row-category")?.value||"",value:moneyToNumber(row.querySelector(".row-value")?.value||0)})).filter(x=>x.name||x.value); }
     function setDynamicRows(containerId, rows=[]){ const el=$(containerId); if(!el) return; el.innerHTML=""; (rows.length?rows:[{}]).forEach(r=>createDynamicRow(containerId,"Nome / motivo",r)); }
-    function createDynamicRow(containerId,label="Descrição",data={}){ const list=$(containerId); if(!list) return; const row=document.createElement("div"); const isOutflow=containerId.toLowerCase().includes("outflow"); row.className="row-item"+(isOutflow?" outflow-row":""); const safeName=String(data.name||"").replace(/"/g,'&quot;'); const value=data.value ? formatInputMoney(data.value) : ""; const category=data.category||data.type||"lucro"; row.innerHTML=isOutflow?`<input class="row-name" placeholder="${label}" value="${safeName}" /><select class="row-category"><option value="lucro">Lucro</option><option value="custo_operacional">Custo operacional</option><option value="custo_reca">Taxa Reca</option></select><input class="row-value money-input" inputmode="decimal" placeholder="0,00" value="${value}" /><button type="button" class="remove-row">×</button>`:`<input class="row-name" placeholder="${label}" value="${safeName}" /><input class="row-value money-input" inputmode="decimal" placeholder="0,00" value="${value}" /><button type="button" class="remove-row">×</button>`; if(isOutflow) row.querySelector(".row-category").value=category; row.querySelectorAll("input,select").forEach(i=>i.addEventListener("input",scheduleCalculations)); row.querySelectorAll("select").forEach(i=>i.addEventListener("change",scheduleCalculations)); row.querySelector(".remove-row").onclick=()=>{row.remove();renderCalculations();}; list.appendChild(row); applyBankMoneyMaskAll(row); enableClearOnFocus(); }
+    function createDynamicRow(containerId,label="DescriÃ§Ã£o",data={}){ const list=$(containerId); if(!list) return; const row=document.createElement("div"); const isOutflow=containerId.toLowerCase().includes("outflow"); row.className="row-item"+(isOutflow?" outflow-row":""); const safeName=String(data.name||"").replace(/"/g,'&quot;'); const value=data.value ? formatInputMoney(data.value) : ""; const category=data.category||data.type||"lucro"; row.innerHTML=isOutflow?`<input class="row-name" placeholder="${label}" value="${safeName}" /><select class="row-category"><option value="lucro">Lucro</option><option value="custo_operacional">Custo operacional</option><option value="custo_reca">Taxa Reca</option></select><input class="row-value money-input" inputmode="decimal" placeholder="0,00" value="${value}" /><button type="button" class="remove-row">Ã</button>`:`<input class="row-name" placeholder="${label}" value="${safeName}" /><input class="row-value money-input" inputmode="decimal" placeholder="0,00" value="${value}" /><button type="button" class="remove-row">Ã</button>`; if(isOutflow) row.querySelector(".row-category").value=category; row.querySelectorAll("input,select").forEach(i=>i.addEventListener("input",scheduleCalculations)); row.querySelectorAll("select").forEach(i=>i.addEventListener("change",scheduleCalculations)); row.querySelector(".remove-row").onclick=()=>{row.remove();renderCalculations();}; list.appendChild(row); applyBankMoneyMaskAll(row); enableClearOnFocus(); }
 
     function getTurnFromForm(){
       const webReca=moneyToNumber($("webReca")?.value), suprema=moneyToNumber($("suprema")?.value), pppoker=moneyToNumber($("pppoker")?.value), buffalo=moneyToNumber($("buffalo")?.value), ganamos=moneyToNumber($("ganamos")?.value), cargasPoker=moneyToNumber($("cargasPoker")?.value), cargasCasino=moneyToNumber($("cargasCasino")?.value);
@@ -1688,14 +1611,14 @@ function getAdjustmentParts(item){
         pendentes=moneyToNumber(turno.pendentesTotal??(turno.pendings||[]).reduce((s,x)=>s+moneyToNumber(x.value),0)),
         saidas=moneyToNumber(turno.saidasTotal??(turno.outflows||[]).reduce((s,x)=>s+moneyToNumber(x.value),0));
 
-      // Saldo líquido de conferência: soma retiradas porque elas saíram do caixa,
+      // Saldo lÃ­quido de conferÃªncia: soma retiradas porque elas saÃ­ram do caixa,
       // mas precisam ser reconhecidas no resultado daquele fechamento.
       return webReca+suprema+pppoker+buffalo+ganamos+cargasPoker+cargasCasino-pendentes+saidas;
     }
 
     function calcularBaseOperacional(turno={}){
-      // Base operacional é o caixa real que passa para o próximo turno.
-      // Por isso retiradas NÃO podem inflar a base do turno seguinte.
+      // Base operacional Ã© o caixa real que passa para o prÃ³ximo turno.
+      // Por isso retiradas NÃO podem inflar a base do turno seguinte.
       const saldoLiquido = moneyToNumber(turno.saldoLiquido ?? calcularSaldoLiquido(turno));
       const saidas = moneyToNumber(turno.saidasTotal ?? (turno.outflows||[]).reduce((s,x)=>s+moneyToNumber(x.value),0));
       return saldoLiquido - saidas;
@@ -1726,8 +1649,8 @@ function getAdjustmentParts(item){
     }
 
     function enableClearOnFocus(){
-      // Desativado: os campos não devem zerar ao clicar/focar,
-      // para permitir sair do app e voltar sem perder os números digitados.
+      // Desativado: os campos nÃ£o devem zerar ao clicar/focar,
+      // para permitir sair do app e voltar sem perder os nÃºmeros digitados.
     }
 
 
@@ -1772,9 +1695,9 @@ function renderCalculations(){
       const now = nowSP();
       const monthStart = new Date(now.getFullYear(), now.getMonth(), 1);
 
-      // FONTE ÚNICA:
-      // Meta mensal e Bônus representam exatamente a mesma realização de lucro do mês.
-      // A diferença é só visual: a Meta mostra valores, o Bônus mostra apenas a porcentagem.
+      // FONTE ÃNICA:
+      // Meta mensal e BÃ´nus representam exatamente a mesma realizaÃ§Ã£o de lucro do mÃªs.
+      // A diferenÃ§a Ã© sÃ³ visual: a Meta mostra valores, o BÃ´nus mostra apenas a porcentagem.
       const source = options.includeRestricted
         ? historyCache
         : (view || visibleHistory());
@@ -1821,22 +1744,22 @@ function renderCalculations(){
 
       if(!card || !fill || !valueEl) return;
 
-      // Visível para operador, supervisor e admin.
+      // VisÃ­vel para operador, supervisor e admin.
       card.classList.remove("hidden");
       card.style.display = "flex";
 
-      // BÔNUS = MESMA BARRA DA META MENSAL.
-      // Não recalcula com regra própria; usa o mesmo estado da meta.
-      // Se ainda não tiver estado neste render, calcula a meta primeiro.
+      // BÃNUS = MESMA BARRA DA META MENSAL.
+      // NÃ£o recalcula com regra prÃ³pria; usa o mesmo estado da meta.
+      // Se ainda nÃ£o tiver estado neste render, calcula a meta primeiro.
       const data = getMonthlyGoalProgressData(view, { includeRestricted:true });
       const percent = data.percent;
       const unlocked = data.target > 0 && data.done >= data.target;
 
       card.classList.toggle("bonus-unlocked", unlocked);
 
-      if(labelEl) labelEl.textContent = "BÔNUS";
+      if(labelEl) labelEl.textContent = "BÃNUS";
 
-      // Não mostra valor em dinheiro. Somente a porcentagem da meta mensal.
+      // NÃ£o mostra valor em dinheiro. Somente a porcentagem da meta mensal.
       valueEl.textContent = `${percent.toFixed(1)}%`;
       fill.style.width = `${percent}%`;
 
@@ -1849,7 +1772,7 @@ function renderCalculations(){
     }
 
     function renderMonthlyGoal(view){
-      // Calcula sempre para alimentar o card BÔNUS com a mesma %.
+      // Calcula sempre para alimentar o card BÃNUS com a mesma %.
       const { target, done, percent, remaining } = getMonthlyGoalProgressData(view, { includeRestricted:true });
 
       const card = $("monthlyGoalCard");
@@ -1870,7 +1793,7 @@ function renderCalculations(){
         btn.style.display = canSeeGoal ? "" : "none";
       });
 
-      // Operador: não renderiza nem exibe valores da meta mensal.
+      // Operador: nÃ£o renderiza nem exibe valores da meta mensal.
       if(!canSeeGoal) return;
 
       if($("monthlyGoalDone")) $("monthlyGoalDone").textContent = formatMoney(done);
@@ -1883,7 +1806,7 @@ function renderCalculations(){
         $("monthlyGoalFill").style.background = `linear-gradient(90deg, hsl(145 70% ${greenStrength}%) 0%, #22c55e 58%, #087f5b 100%)`;
       }
 
-      if($("monthlyGoalRemaining")) $("monthlyGoalRemaining").textContent = remaining > 0 ? `Faltam ${formatMoney(remaining)}` : "Meta alcançada";
+      if($("monthlyGoalRemaining")) $("monthlyGoalRemaining").textContent = remaining > 0 ? `Faltam ${formatMoney(remaining)}` : "Meta alcanÃ§ada";
       if($("monthlyGoalStatus")) $("monthlyGoalStatus").textContent = remaining > 0 ? "Em andamento" : "Meta batida";
     }
 
@@ -1992,7 +1915,7 @@ function renderCalculations(){
 
       if($("homeOperador")) $("homeOperador").textContent = last ? getOperadorName(last) : "-";
       if($("homeLastClose")) $("homeLastClose").textContent = last ? dateLabel(last.submittedAt || last.createdAt || last.turno?.closingDate) : "-";
-      if($("homeUpdatedAt")) $("homeUpdatedAt").textContent = last ? "Última atualização: " + dateLabel(last.submittedAt || last.createdAt) : "Aguardando fechamento";
+      if($("homeUpdatedAt")) $("homeUpdatedAt").textContent = last ? "Ãltima atualizaÃ§Ã£o: " + dateLabel(last.submittedAt || last.createdAt) : "Aguardando fechamento";
       renderMonthlyGoal(view);
       renderHomeBonusCard(view);
       renderChipsComparison(last, prev);
@@ -2047,7 +1970,7 @@ function renderCalculations(){
               <strong>${fmtValue(item, item.anterior)}</strong>
             </div>
             <div class="chips-row chips-diff-row">
-              <span>Diferença</span>
+              <span>DiferenÃ§a</span>
               <strong class="${item.positive ? "chips-good" : "chips-bad"}">${signText(item.diff)}${fmtValue(item, item.diff)}</strong>
             </div>
           </div>
@@ -2057,9 +1980,9 @@ function renderCalculations(){
 
 
     /* =========================================================
-       HISTÓRICO — DIA ATUAL ABERTO POR PADRÃO
-       Ao abrir o histórico, mostra automaticamente o dia atual.
-       O calendário continua permitindo escolher outros dias.
+       HISTÃRICO â DIA ATUAL ABERTO POR PADRÃO
+       Ao abrir o histÃ³rico, mostra automaticamente o dia atual.
+       O calendÃ¡rio continua permitindo escolher outros dias.
     ========================================================= */
     function todayKeySP(){
       return dateKeySP(nowSP());
@@ -2069,7 +1992,7 @@ function renderCalculations(){
       const input = $("historyDate");
       if(!input) return;
 
-      // Só preenche automaticamente se o usuário ainda não escolheu uma data.
+      // SÃ³ preenche automaticamente se o usuÃ¡rio ainda nÃ£o escolheu uma data.
       if(!input.value){
         input.value = todayKeySP();
       }
@@ -2086,8 +2009,8 @@ function renderCalculations(){
 
 
     /* =========================================================
-       HISTÓRICO — ABRIR FECHAMENTOS DO DIA
-       Mostra o dia atual por padrão. Se não houver registros no dia atual,
+       HISTÃRICO â ABRIR FECHAMENTOS DO DIA
+       Mostra o dia atual por padrÃ£o. Se nÃ£o houver registros no dia atual,
        mostra automaticamente o dia mais recente carregado.
     ========================================================= */
     function historyDateKeyFromItem(item){
@@ -2122,13 +2045,13 @@ function renderCalculations(){
 
       const today = todayKeySP();
 
-      // Se o usuário não escolheu data, tenta abrir hoje.
+      // Se o usuÃ¡rio nÃ£o escolheu data, tenta abrir hoje.
       if(!input.value){
         input.value = today;
       }
 
-      // Se o campo está em hoje, mas não existe registro hoje,
-      // abre o último dia disponível para não deixar o histórico vazio.
+      // Se o campo estÃ¡ em hoje, mas nÃ£o existe registro hoje,
+      // abre o Ãºltimo dia disponÃ­vel para nÃ£o deixar o histÃ³rico vazio.
       if(input.value === today && historyCache.length && !hasHistoryForDateKey(today)){
         input.value = latestAvailableHistoryDateKey();
       }
@@ -2138,9 +2061,9 @@ function renderCalculations(){
 
 
     /* =========================================================
-       HISTÓRICO — CARREGAMENTO DO DIA ATUAL CORRIGIDO
+       HISTÃRICO â CARREGAMENTO DO DIA ATUAL CORRIGIDO
        Evita tela vazia inicial: quando o Firebase carrega, re-renderiza.
-       Filtra o dia por múltiplos campos de data do fechamento/ajuste.
+       Filtra o dia por mÃºltiplos campos de data do fechamento/ajuste.
     ========================================================= */
     function bkHistoryDateKeys(item){
       const t = item?.turno || {};
@@ -2215,8 +2138,8 @@ function renderCalculations(){
         input.value = today;
       }
 
-      // Se hoje ainda aparece vazio no primeiro render, mas já existem dados,
-      // abre o dia mais recente disponível para evitar tela branca.
+      // Se hoje ainda aparece vazio no primeiro render, mas jÃ¡ existem dados,
+      // abre o dia mais recente disponÃ­vel para evitar tela branca.
       if(input.value === today && historyCache.length && !bkHasDateLoaded(today)){
         input.value = bkLatestAvailableDateKey();
       }
@@ -2237,9 +2160,9 @@ function renderCalculations(){
 
 
     /* =========================================================
-       HISTÓRICO — VISÍVEL SEM CLICAR
-       Primeiro carregamento sempre mostra registros disponíveis.
-       Calendário só filtra após escolha manual.
+       HISTÃRICO â VISÃVEL SEM CLICAR
+       Primeiro carregamento sempre mostra registros disponÃ­veis.
+       CalendÃ¡rio sÃ³ filtra apÃ³s escolha manual.
     ========================================================= */
     let historyDateWasManuallySelected = false;
 
@@ -2274,15 +2197,15 @@ function renderHistory(){
 
       let activeDate = $("historyDate")?.value || "";
 
-      // Se o usuário ainda não escolheu uma data, o app decide sozinho:
-      // hoje se tiver fechamento, senão o último dia carregado.
+      // Se o usuÃ¡rio ainda nÃ£o escolheu uma data, o app decide sozinho:
+      // hoje se tiver fechamento, senÃ£o o Ãºltimo dia carregado.
       if(!historyDateWasManuallySelected){
         activeDate = getHistoryDefaultDateKeyFromLoadedData();
         syncHistoryDateInputToVisibleDay(activeDate);
       }
 
-      // Se escolheu manualmente, respeita exatamente o calendário.
-      // Se não escolheu, sempre usa uma data com registros para não abrir vazio.
+      // Se escolheu manualmente, respeita exatamente o calendÃ¡rio.
+      // Se nÃ£o escolheu, sempre usa uma data com registros para nÃ£o abrir vazio.
       if(activeDate){
         let filtered = list.filter(x => bkHistoryMatchesDate(x, activeDate));
 
@@ -2314,7 +2237,7 @@ function renderHistory(){
         const diff = displayCashDiff(item);
         const canEdit = canEditHistoryItem(item);
         const canDelete = canDeleteHistoryItem(item);
-        const lastEditableBadge = canEdit && !isAdmin() ? `<span class="badge ok" style="margin-left:6px;">EDITÁVEL</span>` : "";
+        const lastEditableBadge = canEdit && !isAdmin() ? `<span class="badge ok" style="margin-left:6px;">EDITÃVEL</span>` : "";
         const adminActions = `
           ${canEdit ? `<button class="small-btn" data-edit="${item.id}">Editar</button>` : ""}
           ${canDelete ? `<button class="small-btn danger" data-delete="${item.id}">Excluir</button>` : ""}
@@ -2326,15 +2249,15 @@ function renderHistory(){
             <span>${dateLabel(historyItemDate(item))}</span>
           </div>
           <div class="history-values">
-            <div><span class="muted">Saldo líquido</span><b>${formatMoney(saldo)}</b></div>
-            <div><span class="muted">Diferença</span><b style="color:${diff < 0 ? '#ef4444' : '#16c784'}">${formatMoney(diff)}</b></div>
+            <div><span class="muted">Saldo lÃ­quido</span><b>${formatMoney(saldo)}</b></div>
+            <div><span class="muted">DiferenÃ§a</span><b style="color:${diff < 0 ? '#ef4444' : '#16c784'}">${formatMoney(diff)}</b></div>
           </div>
           <div class="history-actions">${adminActions}</div>
         </div>`;
       }).join("");
 
       if($("historyList")){
-        $("historyList").innerHTML = html || `<div class="empty-state">Carregando histórico...</div>`;
+        $("historyList").innerHTML = html || `<div class="empty-state">Carregando histÃ³rico...</div>`;
       }
 
       if(totalVisible > MAX_HISTORY_DOM && $("historyList")){
@@ -2461,7 +2384,7 @@ function renderHistory(){
     let savingClosing = false;
     let savingQuickCharge = false;
 
-    function setGlobalLoading(active, title="Processando", text="Aguarde, salvando com segurança..."){
+    function setGlobalLoading(active, title="Processando", text="Aguarde, salvando com seguranÃ§a..."){
       const overlay = $("globalLoading");
       if(!overlay) return;
       if($("globalLoadingTitle")) $("globalLoadingTitle").textContent = title;
@@ -2487,7 +2410,7 @@ function renderHistory(){
       if(savingClosing) return;
       savingClosing = true;
       setButtonLoading($("saveClosingBtn"), true, "Salvando...");
-      setGlobalLoading(true, "Salvando fechamento", "Não feche nem toque duas vezes. Estamos gravando o turno.");
+      setGlobalLoading(true, "Salvando fechamento", "NÃ£o feche nem toque duas vezes. Estamos gravando o turno.");
 
       try{
         const turno = getTurnFromForm();
@@ -2545,7 +2468,7 @@ function renderHistory(){
 
       savingQuickCharge = true;
       setButtonLoading($("quickChargeBtn"), true, "Salvando ajuste...");
-      setGlobalLoading(true, "Salvando ajuste", "A carga rápida está sendo registrada com segurança.");
+      setGlobalLoading(true, "Salvando ajuste", "A carga rÃ¡pida estÃ¡ sendo registrada com seguranÃ§a.");
 
       const chosenAdjustmentDate = selectedAdjustmentDateTime();
       const chosenIso = chosenAdjustmentDate.toISOString();
@@ -2556,7 +2479,7 @@ function renderHistory(){
       const cargaCasinoDestino = $("quickCargaCasinoDestino")?.value || "buffalo";
       const retiradaCaixa = moneyToNumber($("quickRetiradaCaixa")?.value || 0);
       const retiradaTipo = $("quickRetiradaTipo")?.value || "lucro";
-      const motivo = $("quickCargaMotivo")?.value.trim() || "Carga rápida de caixa";
+      const motivo = $("quickCargaMotivo")?.value.trim() || "Carga rÃ¡pida de caixa";
       const operador = $("quickCargaOperador")?.value.trim() || profileName() || "Admin";
       const totalAjuste = (cargasPoker * 400) + cargasCasino - retiradaCaixa;
 
@@ -2643,7 +2566,7 @@ function renderHistory(){
           createdByEmail:currentUser?.email || null
         });
 
-        await addAudit("quick_capital_injection", `Carga rápida adicionada: ${formatMoney(totalAjuste)} • ${motivo}`);
+        await addAudit("quick_capital_injection", `Carga rÃ¡pida adicionada: ${formatMoney(totalAjuste)} â¢ ${motivo}`);
 
         ["quickCargaPoker","quickCargaCasino","quickRetiradaCaixa","quickCargaMotivo","quickCargaOperador"].forEach(id=>{ if($(id)) $(id).value=""; });
         if($("quickCargaPokerDestino")) $("quickCargaPokerDestino").value="suprema";
@@ -2656,7 +2579,7 @@ function renderHistory(){
         renderAll("data");
         renderMonthlyGoal(visibleHistory());
 
-        alert("Carga adicionada ao sistema como ajuste auditável.");
+        alert("Carga adicionada ao sistema como ajuste auditÃ¡vel.");
       }catch(e){
         alert(friendlyError(e));
       }finally{
@@ -2666,11 +2589,11 @@ function renderHistory(){
       }
     }
 
-    async function deleteHistory(id){ if(!await requireAdmin()) return; if(!confirm("Excluir este fechamento?")) return; try{await deleteDoc(doc(db,"history",id)); await addAudit("delete_history",`Fechamento excluído: ${id}`);}catch(e){alert(friendlyError(e));} }
+    async function deleteHistory(id){ if(!await requireAdmin()) return; if(!confirm("Excluir este fechamento?")) return; try{await deleteDoc(doc(db,"history",id)); await addAudit("delete_history",`Fechamento excluÃ­do: ${id}`);}catch(e){alert(friendlyError(e));} }
 
 
     /* =========================================================
-       RELATÓRIO DE AJUSTE INTERNO — LIMPO
+       RELATÃRIO DE AJUSTE INTERNO â LIMPO
        Mostra apenas o que foi modificado no ajuste.
     ========================================================= */
     function adjustmentOnlyRows(item){
@@ -2714,7 +2637,7 @@ function renderHistory(){
       if(destinoPoker) rows.push(["Destino poker", destinoPoker]);
       if(destinoCasino) rows.push(["Destino casino", destinoCasino]);
       if(retiradaTipo) rows.push(["Tipo da retirada", String(retiradaTipo).replaceAll("_"," ")]);
-      rows.push(["Responsável", getOperadorName(item)]);
+      rows.push(["ResponsÃ¡vel", getOperadorName(item)]);
       rows.push(["Data/Hora aplicada", dateLabel(historyItemDate(item))]);
 
       return rows;
@@ -2773,12 +2696,12 @@ function receiptLine(label, value){
 
     function renderReceiptRows(title, rows, emptyText){
       const list = (rows || []).filter(x=>x.name || x.value);
-      return `<div class="receipt-section"><h3>${title}</h3><div class="receipt-list">${list.length ? list.map(x=>receiptLine(`${x.name || "Sem descrição"}${x.category ? " • " + outflowCategoryLabel(x.category) : ""}`, formatMoney(x.value || 0))).join("") : `<div class="receipt-line"><span>${emptyText}</span><b>-</b></div>`}</div></div>`;
+      return `<div class="receipt-section"><h3>${title}</h3><div class="receipt-list">${list.length ? list.map(x=>receiptLine(`${x.name || "Sem descriÃ§Ã£o"}${x.category ? " â¢ " + outflowCategoryLabel(x.category) : ""}`, formatMoney(x.value || 0))).join("") : `<div class="receipt-line"><span>${emptyText}</span><b>-</b></div>`}</div></div>`;
     }
 
     function openHistoryReceipt(id){
       const item = historyCache.find(x=>x.id===id);
-      if(!item) return alert("Fechamento não encontrado.");
+      if(!item) return alert("Fechamento nÃ£o encontrado.");
 
       if(isAdjustmentItem(item)){
         openQuickAdjustmentReceipt(item);
@@ -2797,26 +2720,26 @@ function receiptLine(label, value){
       const cargaCasino = moneyToNumber(t.cargasCasino ?? t.cargas ?? 0);
 
       $("receiptSaldoLiquido").textContent = formatMoney(saldo);
-      $("receiptSubtitle").textContent = `Fechamento completo • ${dateLabel(item.submittedAt || t.closingDate)}`;
-      $("receiptCode").textContent = `ID: ${String(id).slice(0,8)} • fechamento`;
+      $("receiptSubtitle").textContent = `Fechamento completo â¢ ${dateLabel(item.submittedAt || t.closingDate)}`;
+      $("receiptCode").textContent = `ID: ${String(id).slice(0,8)} â¢ fechamento`;
 
       $("receiptContent").innerHTML = `
         <div class="receipt-grid">
           <div class="receipt-row"><span>Operador</span><b>${getOperadorName(item)}</b></div>
           <div class="receipt-row"><span>Supervisor</span><b>${item.supervisorName || t.supervisorName || item.supervisorEmail || "-"}</b></div>
           <div class="receipt-row"><span>Data</span><b>${dateLabel(item.submittedAt || t.closingDate)}</b></div>
-          <div class="receipt-row"><span>Diferença de caixa</span><b style="color:${diff<0?'#ef4444':'#10b981'}">${formatMoney(diff)}</b></div>
+          <div class="receipt-row"><span>DiferenÃ§a de caixa</span><b style="color:${diff<0?'#ef4444':'#10b981'}">${formatMoney(diff)}</b></div>
         </div>
 
         <div class="receipt-section">
           <h3>Resumo financeiro</h3>
           <div class="receipt-list">
             ${receiptLine("Saldo Reca", formatMoney(t.webReca ?? t.reca ?? 0))}
-            ${receiptLine("Suprema ×400", formatMoney(moneyToNumber(t.suprema || 0) * 400))}
-            ${receiptLine("PPPoker ×400", formatMoney(moneyToNumber(t.pppoker || 0) * 400))}
+            ${receiptLine("Suprema Ã400", formatMoney(moneyToNumber(t.suprema || 0) * 400))}
+            ${receiptLine("PPPoker Ã400", formatMoney(moneyToNumber(t.pppoker || 0) * 400))}
             ${receiptLine("Buffalo", formatMoney(t.buffalo || 0))}
             ${receiptLine("Ganamos", formatMoney(t.ganamos || 0))}
-            ${receiptLine("Carga poker ×400", formatMoney(cargaPokerMoney))}
+            ${receiptLine("Carga poker Ã400", formatMoney(cargaPokerMoney))}
             ${receiptLine("Carga casino", formatMoney(cargaCasino))}
             ${receiptLine("Pagos pendentes", formatMoney(t.pendentesTotal || 0))}
           </div>
@@ -2845,8 +2768,8 @@ function receiptLine(label, value){
 
     function openQuickAdjustmentReceipt(item){
       $("receiptSaldoLiquido").textContent = formatMoney(adjustmentOnlyImpact(item));
-      $("receiptSubtitle").textContent = `Ajuste interno • ${dateLabel(historyItemDate(item))}`;
-      $("receiptCode").textContent = `ID: ${String(item.id || "").slice(0,8)} • ajuste`;
+      $("receiptSubtitle").textContent = `Ajuste interno â¢ ${dateLabel(historyItemDate(item))}`;
+      $("receiptCode").textContent = `ID: ${String(item.id || "").slice(0,8)} â¢ ajuste`;
 
       $("receiptContent").innerHTML = adjustmentOnlySummaryHtml(item);
 
@@ -2860,7 +2783,7 @@ function receiptLine(label, value){
     function exportReceiptAsPng(){
       const panel = document.querySelector(".receipt-panel");
       if(!panel){
-        alert("Resumo não encontrado.");
+        alert("Resumo nÃ£o encontrado.");
         return;
       }
 
@@ -2942,7 +2865,7 @@ function receiptLine(label, value){
             console.error("Erro PNG:", error);
             restorePanel(originalMaxHeight, originalOverflow, hiddenEls);
             resetButton();
-            alert("Não consegui gerar o PNG neste navegador.");
+            alert("NÃ£o consegui gerar o PNG neste navegador.");
           });
         }, 150);
       }
@@ -2957,7 +2880,7 @@ function receiptLine(label, value){
       script.onload = startExport;
       script.onerror = function(){
         resetButton();
-        alert("Não foi possível carregar o exportador PNG. Verifique a internet e tente novamente.");
+        alert("NÃ£o foi possÃ­vel carregar o exportador PNG. Verifique a internet e tente novamente.");
       };
       document.head.appendChild(script);
     }
@@ -2982,13 +2905,13 @@ function receiptLine(label, value){
       };
 
       if(type === "saldo"){
-        title = "Saldo líquido atual";
+        title = "Saldo lÃ­quido atual";
         total = moneyToNumber(t.saldoLiquido ?? last?.currentSaldoTotal ?? 0);
         content = `
-          <div class="receipt-section"><h3>Composição do saldo</h3><div class="receipt-list">
+          <div class="receipt-section"><h3>ComposiÃ§Ã£o do saldo</h3><div class="receipt-list">
             ${receiptLine("Saldo Reca", formatMoney(t.webReca ?? t.reca ?? 0))}
-            ${receiptLine("Suprema ×400", formatMoney(moneyToNumber(t.suprema || 0) * 400))}
-            ${receiptLine("PPPoker ×400", formatMoney(moneyToNumber(t.pppoker || 0) * 400))}
+            ${receiptLine("Suprema Ã400", formatMoney(moneyToNumber(t.suprema || 0) * 400))}
+            ${receiptLine("PPPoker Ã400", formatMoney(moneyToNumber(t.pppoker || 0) * 400))}
             ${receiptLine("Buffalo", formatMoney(t.buffalo || 0))}
             ${receiptLine("Ganamos", formatMoney(t.ganamos || 0))}
             ${receiptLine("Pagos pendentes", "- " + formatMoney(t.pendentesTotal || 0))}
@@ -3000,7 +2923,7 @@ function receiptLine(label, value){
       if(type === "pendentes"){
         title = "Pagos pendentes";
         total = moneyToNumber(t.pendentesTotal || 0);
-        content = `<div class="receipt-section"><h3>Lista de pendentes do último fechamento</h3><div class="receipt-list">${makeLines((t.pendings || []).map(p=>({label:p.name || "Sem descrição", value:p.value || 0})), "Sem pagos pendentes")}</div></div>`;
+        content = `<div class="receipt-section"><h3>Lista de pendentes do Ãºltimo fechamento</h3><div class="receipt-list">${makeLines((t.pendings || []).map(p=>({label:p.name || "Sem descriÃ§Ã£o", value:p.value || 0})), "Sem pagos pendentes")}</div></div>`;
       }
 
       if(type === "lucroHoje" || type === "lucroSemana"){
@@ -3015,7 +2938,7 @@ function receiptLine(label, value){
           (tt.outflows || []).forEach(o=>{
             if(o.category === "lucro"){
               rows.push({
-                label: `${getOperadorName(item)} • ${o.name || "Retirada lucro"}`,
+                label: `${getOperadorName(item)} â¢ ${o.name || "Retirada lucro"}`,
                 value: moneyToNumber(o.value || 0)
               });
             }
@@ -3023,7 +2946,7 @@ function receiptLine(label, value){
         });
 
         total = rows.reduce((s,x)=>s + moneyToNumber(x.value),0);
-        content = `<div class="receipt-section"><h3>Retiradas tipo lucro</h3><div class="receipt-list">${makeLines(rows, "Sem retiradas de lucro no período")}</div></div>`;
+        content = `<div class="receipt-section"><h3>Retiradas tipo lucro</h3><div class="receipt-list">${makeLines(rows, "Sem retiradas de lucro no perÃ­odo")}</div></div>`;
       }
 
       $("receiptSaldoLiquido").textContent = formatMoney(total);
@@ -3034,9 +2957,9 @@ function receiptLine(label, value){
       $("receiptModal").classList.add("active");
     }
 
-    async function openEditHistory(id){ const item=historyCache.find(x=>x.id===id); if(!item) return alert("Fechamento não encontrado no cache."); if(!canEditHistoryItem(item)) return alert("Você só pode editar o seu último fechamento de turno."); const t=item.turno||{}; $("editHistoryId").value=id; $("editOperadorName").value=getOperadorName(item)==="Sem operador" ? "" : getOperadorName(item); $("editClosingDate").value=toDateInputValue(t.closingDate||item.submittedAt); $("editWebReca").value=t.webReca??t.reca??0; $("editSuprema").value=t.suprema??0; $("editPppoker").value=t.pppoker??0; $("editBuffalo").value=t.buffalo??0; $("editGanamos").value=t.ganamos??0; $("editCargasPoker").value=t.cargasPoker??0; $("editCargasCasino").value=t.cargasCasino??t.cargas??0; setDynamicRows("editPendingList",t.pendings||[]); setDynamicRows("editOutflowList",t.outflows||[]); $("editHistoryModal").classList.add("active"); }
+    async function openEditHistory(id){ const item=historyCache.find(x=>x.id===id); if(!item) return alert("Fechamento nÃ£o encontrado no cache."); if(!canEditHistoryItem(item)) return alert("VocÃª sÃ³ pode editar o seu Ãºltimo fechamento de turno."); const t=item.turno||{}; $("editHistoryId").value=id; $("editOperadorName").value=getOperadorName(item)==="Sem operador" ? "" : getOperadorName(item); $("editClosingDate").value=toDateInputValue(t.closingDate||item.submittedAt); $("editWebReca").value=t.webReca??t.reca??0; $("editSuprema").value=t.suprema??0; $("editPppoker").value=t.pppoker??0; $("editBuffalo").value=t.buffalo??0; $("editGanamos").value=t.ganamos??0; $("editCargasPoker").value=t.cargasPoker??0; $("editCargasCasino").value=t.cargasCasino??t.cargas??0; setDynamicRows("editPendingList",t.pendings||[]); setDynamicRows("editOutflowList",t.outflows||[]); $("editHistoryModal").classList.add("active"); }
     function closeEdit(){ $("editHistoryModal").classList.remove("active"); }
-    async function saveEdit(){ const id=$("editHistoryId").value; const ref=doc(db,"history",id); const original=historyCache.find(x=>x.id===id)||{}; if(!canEditHistoryItem(original)) return alert("Você só pode editar o seu último fechamento de turno."); const t={...(original.turno||{}),operadorName:$("editOperadorName").value.trim(),closingDate:$("editClosingDate").value||nowSP().toISOString(),webReca:moneyToNumber($("editWebReca").value),suprema:moneyToNumber($("editSuprema").value),pppoker:moneyToNumber($("editPppoker").value),buffalo:moneyToNumber($("editBuffalo").value),ganamos:moneyToNumber($("editGanamos").value),cargasPoker:moneyToNumber($("editCargasPoker").value),cargasCasino:moneyToNumber($("editCargasCasino").value),pendings:getDynamicRows("editPendingList"),outflows:getDynamicRows("editOutflowList")}; setOperadorNameOnTurno(t, t.operadorName); t.pendentesTotal=t.pendings.reduce((s,x)=>s+x.value,0); t.saidasTotal=t.outflows.reduce((s,x)=>s+x.value,0); t.retiradaLucroTotal=sumOutflowsByCategory(t.outflows,"lucro"); t.custoOperacionalTotal=sumOutflowsByCategory(t.outflows,"custo_operacional"); t.custoRecaTotal=sumOutflowsByCategory(t.outflows,"custo_reca"); t.operadorEmail = original?.turno?.operadorEmail || original?.operadorEmail || currentUser?.email || null;
+    async function saveEdit(){ const id=$("editHistoryId").value; const ref=doc(db,"history",id); const original=historyCache.find(x=>x.id===id)||{}; if(!canEditHistoryItem(original)) return alert("VocÃª sÃ³ pode editar o seu Ãºltimo fechamento de turno."); const t={...(original.turno||{}),operadorName:$("editOperadorName").value.trim(),closingDate:$("editClosingDate").value||nowSP().toISOString(),webReca:moneyToNumber($("editWebReca").value),suprema:moneyToNumber($("editSuprema").value),pppoker:moneyToNumber($("editPppoker").value),buffalo:moneyToNumber($("editBuffalo").value),ganamos:moneyToNumber($("editGanamos").value),cargasPoker:moneyToNumber($("editCargasPoker").value),cargasCasino:moneyToNumber($("editCargasCasino").value),pendings:getDynamicRows("editPendingList"),outflows:getDynamicRows("editOutflowList")}; setOperadorNameOnTurno(t, t.operadorName); t.pendentesTotal=t.pendings.reduce((s,x)=>s+x.value,0); t.saidasTotal=t.outflows.reduce((s,x)=>s+x.value,0); t.retiradaLucroTotal=sumOutflowsByCategory(t.outflows,"lucro"); t.custoOperacionalTotal=sumOutflowsByCategory(t.outflows,"custo_operacional"); t.custoRecaTotal=sumOutflowsByCategory(t.outflows,"custo_reca"); t.operadorEmail = original?.turno?.operadorEmail || original?.operadorEmail || currentUser?.email || null;
       t.createdByEmail = original?.turno?.createdByEmail || original?.createdByEmail || currentUser?.email || null;
       t.createdBy = original?.turno?.createdBy || original?.createdBy || currentUser?.uid || null;
       t.operadorUid = original?.turno?.operadorUid || original?.operadorUid || currentUser?.uid || null;
@@ -3049,7 +2972,7 @@ function receiptLine(label, value){
 
       try{
         const qh=query(collection(db,"history"),orderBy("submittedAt","asc"));
-        const snap=await withTimeout(getDocs(qh), 8000, "buscar histórico");
+        const snap=await withTimeout(getDocs(qh), 8000, "buscar histÃ³rico");
         let operationalBaseSaldo=null;
 
         for(const item of snap.docs){
@@ -3088,14 +3011,14 @@ function receiptLine(label, value){
               updatePayload["turno.ajusteImpacto"] = saldoLiquido;
             }
 
-            await withTimeout(updateDoc(doc(db,"history",item.id), updatePayload), 5000, "atualizar histórico");
+            await withTimeout(updateDoc(doc(db,"history",item.id), updatePayload), 5000, "atualizar histÃ³rico");
           }catch(e){
-            console.warn("Histórico ignorado no recálculo:", item.id, e);
+            console.warn("HistÃ³rico ignorado no recÃ¡lculo:", item.id, e);
           }
         }
 
         try{
-          await withTimeout(addAudit("recalculate_history","Histórico recalculado com segurança"), 4000, "salvar auditoria");
+          await withTimeout(addAudit("recalculate_history","HistÃ³rico recalculado com seguranÃ§a"), 4000, "salvar auditoria");
         }catch(auditErr){
           console.warn("Auditoria ignorada:", auditErr);
         }
@@ -3103,7 +3026,7 @@ function receiptLine(label, value){
         renderAll("data");
         return true;
       }catch(e){
-        console.error("Erro no recálculo:", e);
+        console.error("Erro no recÃ¡lculo:", e);
         alert(friendlyError(e));
         return false;
       }finally{
@@ -3135,7 +3058,7 @@ function receiptLine(label, value){
 
         const diffDays = Math.ceil((endDate - startDate) / 86400000);
 
-        // Se o relatório passar de 91 dias, puxa mais documentos sob demanda.
+        // Se o relatÃ³rio passar de 91 dias, puxa mais documentos sob demanda.
         if(diffDays <= HISTORY_RETENTION_DAYS) return false;
 
         const qh = query(collection(db,"history"), orderBy("submittedAt","desc"), limit(HISTORY_ANNUAL_LOAD_LIMIT));
@@ -3152,14 +3075,14 @@ function receiptLine(label, value){
 
         return true;
       }catch(e){
-        console.warn("Não foi possível carregar histórico anual ampliado:", e);
+        console.warn("NÃ£o foi possÃ­vel carregar histÃ³rico anual ampliado:", e);
         return false;
       }
     }
 
 
     /* =========================================================
-       PDF — FILTROS POR DATA, OPERADOR E CATEGORIA
+       PDF â FILTROS POR DATA, OPERADOR E CATEGORIA
     ========================================================= */
     function reportFilterValue(id){
       return String($(id)?.value || "").trim();
@@ -3259,7 +3182,7 @@ function receiptLine(label, value){
     function reportFilterLabel(){
       const type = reportEntryType();
       const labels = {
-        all: "Relatório completo",
+        all: "RelatÃ³rio completo",
         closings: "Fechamentos de operadores",
         adjustments: "Ajustes internos",
         loads: "Cargas de fichas / caixa",
@@ -3268,14 +3191,14 @@ function receiptLine(label, value){
         taxa_reca: "Taxa Reca"
       };
 
-      return labels[type] || "Relatório";
+      return labels[type] || "RelatÃ³rio";
     }
 
     function reportPeriodLabel(){
       const start = reportStartDate();
       const end = reportEndDate();
 
-      if(start && end && start !== end) return `${start} até ${end}`;
+      if(start && end && start !== end) return `${start} atÃ© ${end}`;
       if(start) return start;
       return "Todos os dias carregados";
     }
@@ -3302,9 +3225,9 @@ function getReportItems(){
 
 
     function reportClosingCashDiffOnly(items){
-      // Diferença de caixa do PDF/prévia:
+      // DiferenÃ§a de caixa do PDF/prÃ©via:
       // soma somente fechamentos reais de caixa.
-      // Ajustes internos, cargas internas e registros de ajuste são ignorados.
+      // Ajustes internos, cargas internas e registros de ajuste sÃ£o ignorados.
       return (items || [])
         .filter(item => !isAdjustmentItem(item))
         .reduce((s,item)=>{
@@ -3373,7 +3296,7 @@ function getReportMainCardData(items){
     function buildReportPreviewMainCardHtml(items){
       const generatedAt = formatDateTimeSP(nowSP());
       const reportCode = "BK-" + Date.now().toString().slice(-8);
-      const userName = profileName ? profileName() : (currentUser?.email || "Usuário");
+      const userName = profileName ? profileName() : (currentUser?.email || "UsuÃ¡rio");
       const data = getReportMainCardData(items);
       const categoryLabel = reportFilterLabel();
       const periodLabel2 = reportPeriodLabel();
@@ -3385,7 +3308,7 @@ function getReportMainCardData(items){
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Pré-visualização • Bank King</title>
+<title>PrÃ©-visualizaÃ§Ã£o â¢ Bank King</title>
 <style>
   *{box-sizing:border-box}
   body{
@@ -3600,7 +3523,7 @@ function getReportMainCardData(items){
   }
 
 /* =========================================================
-   iOS DIGITAÇÃO FIX
+   iOS DIGITAÃÃO FIX
 ========================================================= */
 input,
 textarea{
@@ -3635,9 +3558,9 @@ input:focus{
           </div>
         </div>
         <div class="meta">
-          Código: ${reportCode}<br>
+          CÃ³digo: ${reportCode}<br>
           Gerado em: ${generatedAt}<br>
-          Usuário: ${userName}
+          UsuÃ¡rio: ${userName}
         </div>
       </div>
 
@@ -3651,7 +3574,7 @@ input:focus{
           <div class="value cost-value">${formatMoney(data.totalTaxaReca)}</div>
         </div>
         <div class="panel">
-          <div class="label">Diferença de caixa</div>
+          <div class="label">DiferenÃ§a de caixa</div>
           <div class="value ${diffClass}">${formatMoney(data.totalDiff)}</div>
         </div>
         <div class="panel">
@@ -3676,7 +3599,7 @@ input:focus{
     </div>
 
     <div class="actions">
-      <button class="print" onclick="window.print()">Imprimir prévia</button>
+      <button class="print" onclick="window.print()">Imprimir prÃ©via</button>
       <button class="close" onclick="window.close()">Fechar</button>
     </div>
   </div>
@@ -3691,7 +3614,7 @@ input:focus{
 
         const win = window.open("", "_blank");
         if(!win){
-          alert("Permita pop-ups para abrir a pré-visualização.");
+          alert("Permita pop-ups para abrir a prÃ©-visualizaÃ§Ã£o.");
           return;
         }
 
@@ -3699,8 +3622,8 @@ input:focus{
         win.document.write(buildReportPreviewMainCardHtml(items));
         win.document.close();
       }catch(e){
-        console.error("Erro na pré-visualização do relatório:", e);
-        alert("Não foi possível abrir a pré-visualização. Verifique os filtros do relatório.");
+        console.error("Erro na prÃ©-visualizaÃ§Ã£o do relatÃ³rio:", e);
+        alert("NÃ£o foi possÃ­vel abrir a prÃ©-visualizaÃ§Ã£o. Verifique os filtros do relatÃ³rio.");
       }
     }
 
@@ -3754,7 +3677,7 @@ input:focus{
         const cargaCasino = moneyToNumber(t.cargasCasino ?? t.cargas ?? 0);
 
         const pendentes = (t.pendings || []).filter(x=>x.name || x.value).map(p=>`<div class="line"><span>${p.name || "Pendente"}</span><b>${formatMoney(p.value || 0)}</b></div>`).join("") || `<div class="line muted-line"><span>Sem pendentes</span><b>-</b></div>`;
-        const retiradas = (t.outflows || []).filter(x=>x.name || x.value).map(o=>`<div class="line"><span>${o.name || "Retirada"} • ${outflowCategoryLabel(o.category)}</span><b>${formatMoney(o.value || 0)}</b></div>`).join("") || `<div class="line muted-line"><span>Sem retiradas</span><b>-</b></div>`;
+        const retiradas = (t.outflows || []).filter(x=>x.name || x.value).map(o=>`<div class="line"><span>${o.name || "Retirada"} â¢ ${outflowCategoryLabel(o.category)}</span><b>${formatMoney(o.value || 0)}</b></div>`).join("") || `<div class="line muted-line"><span>Sem retiradas</span><b>-</b></div>`;
 
         return `<section class="close-block">
           <div class="close-head">
@@ -3763,8 +3686,8 @@ input:focus{
           </div>
 
           <div class="main-card">
-            <div><span>Saldo líquido</span><strong>${formatMoney(saldo)}</strong></div>
-            <div><span>Diferença de caixa</span><strong class="${positive ? "txt-pos" : "txt-neg"}">${positive ? "+" : ""}${formatMoney(diff)}</strong></div>
+            <div><span>Saldo lÃ­quido</span><strong>${formatMoney(saldo)}</strong></div>
+            <div><span>DiferenÃ§a de caixa</span><strong class="${positive ? "txt-pos" : "txt-neg"}">${positive ? "+" : ""}${formatMoney(diff)}</strong></div>
             <div><span>Base operacional</span><strong>${formatMoney(base)}</strong></div>
             <div><span>Tipo</span><strong>${ajuste ? "Ajuste" : "Fechamento"}</strong></div>
           </div>
@@ -3772,8 +3695,8 @@ input:focus{
           <div class="detail-grid">
             <div class="detail-card"><h3>Saldos</h3>
               <div class="line"><span>Reca</span><b>${formatMoney(t.webReca ?? t.reca ?? 0)}</b></div>
-              <div class="line"><span>Suprema ×400</span><b>${formatMoney(moneyToNumber(t.suprema||0)*400)}</b></div>
-              <div class="line"><span>PPPoker ×400</span><b>${formatMoney(moneyToNumber(t.pppoker||0)*400)}</b></div>
+              <div class="line"><span>Suprema Ã400</span><b>${formatMoney(moneyToNumber(t.suprema||0)*400)}</b></div>
+              <div class="line"><span>PPPoker Ã400</span><b>${formatMoney(moneyToNumber(t.pppoker||0)*400)}</b></div>
               <div class="line"><span>Buffalo</span><b>${formatMoney(t.buffalo || 0)}</b></div>
               <div class="line"><span>Ganamos</span><b>${formatMoney(t.ganamos || 0)}</b></div>
             </div>
@@ -3800,7 +3723,7 @@ input:focus{
         </section>`;
       }).join("");
 
-      return `<!DOCTYPE html><html><head><meta charset="UTF-8"><title>Relatório Bank King</title><style>
+      return `<!DOCTYPE html><html><head><meta charset="UTF-8"><title>RelatÃ³rio Bank King</title><style>
         *{box-sizing:border-box}body{margin:0;background:#ffffff;color:#0d0d14;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif;padding:20px}.toolbar{position:sticky;top:0;z-index:10;background:rgba(255,255,255,.92);backdrop-filter:blur(18px);border:1px solid #e5e5e8;border-radius:18px;padding:12px 14px;margin-bottom:14px;display:flex;align-items:center;justify-content:space-between;gap:12px}.toolbar strong{font-size:14px}.toolbar-actions{display:flex;gap:8px}.tool-btn{height:38px;border:0;border-radius:12px;padding:0 14px;font-weight:900;cursor:pointer}.primary{background:#11111e;color:#fff}.secondary{background:#f4f4f6;color:#11111e}.cover{background:linear-gradient(135deg,#14141d,#050508);color:#fff;border-radius:28px;padding:26px;margin-bottom:16px;box-shadow:0 24px 70px rgba(0,0,0,.24)}.cover-top{display:flex;justify-content:space-between;gap:20px}.logo{width:54px;height:54px;border-radius:17px;background:#fff;color:#11111e;display:flex;align-items:center;justify-content:center;font-weight:950;font-size:20px}.brand{display:flex;gap:12px;align-items:center}.brand h1{margin:0;font-size:30px}.brand p,.meta{margin:4px 0 0;color:rgba(255,255,255,.78);font-weight:800;font-size:12px}.meta{text-align:right;line-height:1.55}.totals{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-top:18px}.total{background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.18);border-radius:16px;padding:12px}.total span{display:block;font-size:10px;text-transform:uppercase;opacity:.75;font-weight:900}.total b{display:block;margin-top:5px;font-size:15px}.close-block{background:#fff;border:1px solid #e5e5e8;border-radius:24px;padding:18px;margin-bottom:14px;box-shadow:0 16px 44px rgba(11,31,77,.09);break-inside:avoid;page-break-inside:avoid}.close-head{display:flex;justify-content:space-between;gap:14px;align-items:flex-start;margin-bottom:14px}.kicker{font-size:10px;color:#11111e;font-weight:950;text-transform:uppercase;letter-spacing:.5px}.close-head h2{margin:3px 0;font-size:20px}.close-head p{margin:0;color:#7a7a86;font-size:12px;font-weight:800}.diff{border-radius:999px;padding:9px 12px;font-size:13px;font-weight:950;white-space:nowrap}.pos{background:#dcfce7;color:#047857}.neg{background:#fee2e2;color:#b91c1c}.main-card{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;border-radius:20px;background:linear-gradient(135deg,#20202a,#050508);color:#fff;padding:14px;margin-bottom:12px}.main-card span{display:block;font-size:10px;opacity:.76;font-weight:900;text-transform:uppercase}.main-card strong{display:block;margin-top:5px;font-size:17px}.txt-pos{color:#6EE7B7!important}.txt-neg{color:#FCA5A5!important}.detail-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}.detail-card{border:1px solid #eeeeef;border-radius:18px;background:#ffffff;padding:12px}.detail-card.full{margin-top:10px}.detail-card h3{margin:0 0 8px;font-size:13px;color:#11111e}.line{display:flex;justify-content:space-between;gap:10px;padding:7px 0;border-top:1px solid #eeeeef;font-size:12px}.line:first-of-type{border-top:0}.line span{color:#7a7a86;font-weight:800}.line b{font-weight:950;text-align:right}.muted-line{opacity:.75}@media(max-width:760px){body{padding:10px}.cover-top{flex-direction:column}.meta{text-align:left}.totals,.main-card,.detail-grid{grid-template-columns:1fr}.toolbar{align-items:flex-start;flex-direction:column}.toolbar-actions{width:100%;display:grid;grid-template-columns:1fr 1fr 1fr}.tool-btn{width:100%}}@media print{@page{size:A4 portrait;margin:10mm}body{background:#fff;padding:0}.toolbar{display:none}.cover{border-radius:0;margin:0 0 8mm;box-shadow:none}.close-block{box-shadow:none;border-radius:18px;margin-bottom:8mm}.close-block{page-break-inside:avoid}.totals{grid-template-columns:repeat(4,1fr)}.main-card{grid-template-columns:repeat(4,1fr)}.detail-grid{grid-template-columns:1fr 1fr}}
 
         body{background:linear-gradient(180deg,#ffffff,#f4f4f6)!important;}
@@ -3814,7 +3737,7 @@ input:focus{
 
 
 /* =========================================================
-   PATCH FINAL — CHUMBO SÓLIDO SEM GRADIENTE
+   PATCH FINAL â CHUMBO SÃLIDO SEM GRADIENTE
    Cor base dos cards premium: #242424
 ========================================================= */
 :root{
@@ -3826,7 +3749,7 @@ input:focus{
   --navy2:#242424!important;
 }
 
-/* Cards/áreas premium que antes tinham azul ou gradiente */
+/* Cards/Ã¡reas premium que antes tinham azul ou gradiente */
 .hero-card,
 .hero-mini,
 .summary-head,
@@ -3901,14 +3824,14 @@ input:focus{
   font-weight:950!important;
 }
 
-/* Remove qualquer brilho/ruído azul residual dentro do hero */
+/* Remove qualquer brilho/ruÃ­do azul residual dentro do hero */
 .hero-card::before,
 .hero-card::after{
   background:none!important;
   background-image:none!important;
 }
 
-/* Botões secundários continuam claros, mas foco/acento fica chumbo */
+/* BotÃµes secundÃ¡rios continuam claros, mas foco/acento fica chumbo */
 .field input:focus,
 .field select:focus,
 .field textarea:focus,
@@ -3931,7 +3854,7 @@ input:focus{
   border-top-color:#242424!important;
 }
 
-/* PDF/PNG/recibo: garante fundo chumbo sólido nos blocos escuros */
+/* PDF/PNG/recibo: garante fundo chumbo sÃ³lido nos blocos escuros */
 .receipt-panel .receipt-total,
 #receiptModal .receipt-total,
 #receiptPanel .receipt-total,
@@ -3946,9 +3869,9 @@ input:focus{
 
 
 /* =========================================================
-   PDF PREMIUM — EXECUTIVE FINANCIAL DASHBOARD FINAL
+   PDF PREMIUM â EXECUTIVE FINANCIAL DASHBOARD FINAL
    Menos altura, mais contraste, valor maior, glow interno,
-   divisórias suaves e números alinhados
+   divisÃ³rias suaves e nÃºmeros alinhados
 ========================================================= */
 .pdf-kpi-wrapper{
   display:grid;
@@ -4182,7 +4105,7 @@ input:focus{
 
 
 /* =========================================================
-   LOGIN + HAMBÚRGUER LIMPO + PERMISSÕES
+   LOGIN + HAMBÃRGUER LIMPO + PERMISSÃES
 ========================================================= */
 .remember-login-row{
   display:flex;
@@ -4264,7 +4187,7 @@ body.side-drawer-open #sideMenuBtn{
 }
 
 /* =========================================================
-   iOS DIGITAÇÃO FIX
+   iOS DIGITAÃÃO FIX
 ========================================================= */
 input,
 textarea{
@@ -4301,11 +4224,11 @@ input:focus{
   .clean-line.load b{color:#2563eb}.clean-line.profit b{color:#16a34a}.clean-line.expense b,.clean-line.out b{color:#ef4444}
   .adjustment-pdf-block{background:#fff}
 
-</style></head><body><div class="toolbar"><strong>Relatório Bank King • ${reportCode}</strong><div class="toolbar-actions"><button class="tool-btn secondary" onclick="window.close()">Voltar</button><button class="tool-btn secondary" onclick="window.print()">Imprimir</button><button class="tool-btn primary" onclick="window.print()">Salvar PDF</button></div></div><header class="cover"><div class="cover-top"><div class="brand"><div class="logo">BK</div><div><h1>Bank King</h1><p>${categoryLabel}</p></div></div><div class="meta">Código: ${reportCode}<br>Gerado em: ${generatedAt}<br>Usuário: ${currentProfile?.name || currentUser?.email || "-"}</div></div><div class="pdf-kpi-wrapper">
+</style></head><body><div class="toolbar"><strong>RelatÃ³rio Bank King â¢ ${reportCode}</strong><div class="toolbar-actions"><button class="tool-btn secondary" onclick="window.close()">Voltar</button><button class="tool-btn secondary" onclick="window.print()">Imprimir</button><button class="tool-btn primary" onclick="window.print()">Salvar PDF</button></div></div><header class="cover"><div class="cover-top"><div class="brand"><div class="logo">BK</div><div><h1>Bank King</h1><p>${categoryLabel}</p></div></div><div class="meta">CÃ³digo: ${reportCode}<br>Gerado em: ${generatedAt}<br>UsuÃ¡rio: ${currentProfile?.name || currentUser?.email || "-"}</div></div><div class="pdf-kpi-wrapper">
   <div class="pdf-kpi-grid">
     <div class="pdf-kpi-card"><span>Custo operacional</span><b>${formatMoney(totalCustoOperacional)}</b></div>
     <div class="pdf-kpi-card"><span>Custo RECA</span><b>${formatMoney(totalCustoReca)}</b></div>
-    <div class="pdf-kpi-card ${totalDiff < 0 ? "negative" : "positive"}"><span>Diferença de caixa</span><b>${formatMoney(totalDiff)}</b></div>
+    <div class="pdf-kpi-card ${totalDiff < 0 ? "negative" : "positive"}"><span>DiferenÃ§a de caixa</span><b>${formatMoney(totalDiff)}</b></div>
     <div class="pdf-kpi-card"><span>Registros</span><b>${items.length}</b></div>
   </div>
 
@@ -4347,7 +4270,7 @@ input:focus{
         const last = lastRealClosing() || visibleHistory()[0];
         const historyReca = getSaldoRecaFromItem(last);
 
-        // Não deixa um documento realtime zerado apagar o Saldo Reca do último fechamento.
+        // NÃ£o deixa um documento realtime zerado apagar o Saldo Reca do Ãºltimo fechamento.
         const valueToShow = realtimeValue > 0 ? realtimeValue : historyReca;
 
         updateHeroBalance(valueToShow);
@@ -4355,14 +4278,14 @@ input:focus{
         if($("homeUpdatedAt")){
           $("homeUpdatedAt").textContent = data.updatedAt
             ? "Saldo realtime: " + dateLabel(data.updatedAt)
-            : "Última atualização: " + dateLabel(last?.submittedAt || last?.createdAt || last?.turno?.closingDate);
+            : "Ãltima atualizaÃ§Ã£o: " + dateLabel(last?.submittedAt || last?.createdAt || last?.turno?.closingDate);
         }
-      }, error => console.warn("Saldo Reca realtime não configurado:", error));
+      }, error => console.warn("Saldo Reca realtime nÃ£o configurado:", error));
     }
 
-    async function safeSetUserProfile(user, profile){ try{ await setDoc(doc(db,"users",user.uid), profile, { merge:true }); return true; }catch(e){ console.warn("Não conseguiu gravar perfil:",e); showNotice("appNotice",friendlyError(e),"error"); return false; } }
+    async function safeSetUserProfile(user, profile){ try{ await setDoc(doc(db,"users",user.uid), profile, { merge:true }); return true; }catch(e){ console.warn("NÃ£o conseguiu gravar perfil:",e); showNotice("appNotice",friendlyError(e),"error"); return false; } }
     async function loadProfile(user){ const ref=doc(db,"users",user.uid); try{ const snap=await getDoc(ref); if(snap.exists()) return snap.data(); const bootstrap=isBootstrapEmail(user.email); const profile={email:user.email,name:user.email.split("@")[0],role:bootstrap?"admin":"operador",status:bootstrap?"active":"pending",approved:bootstrap?true:false,blocked:false,createdAt:serverTimestamp()}; await safeSetUserProfile(user,profile); return profile; }catch(e){ console.warn("Erro ao ler perfil:",e); if(isBootstrapEmail(user.email)){ return {email:user.email,name:user.email.split("@")[0],role:"admin",approved:true,blocked:false,localOnly:true}; } showNotice("appNotice",friendlyError(e),"error"); return {email:user.email,name:user.email.split("@")[0],role:"operador",status:"pending",approved:false,blocked:false,permissionError:true}; } }
-    async function addAudit(action,description){ try{ await addDoc(collection(db,"audit_logs"),{action,description,uid:currentUser?.uid||null,email:currentUser?.email||null,createdAt:serverTimestamp()}); }catch(e){ console.warn("Audit não gravado:",e); } }
+    async function addAudit(action,description){ try{ await addDoc(collection(db,"audit_logs"),{action,description,uid:currentUser?.uid||null,email:currentUser?.email||null,createdAt:serverTimestamp()}); }catch(e){ console.warn("Audit nÃ£o gravado:",e); } }
 
     async function loadUsers(){
       if(!await requireAdmin()) return;
@@ -4376,7 +4299,7 @@ input:focus{
 
           return `<div class="user-item">
             <div>
-              <strong>${u.name || u.email || "Usuário"}</strong>
+              <strong>${u.name || u.email || "UsuÃ¡rio"}</strong>
               <div class="muted">${u.email || ""}</div>
               <div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:7px;">
                 <span class="badge ${u.approved?'ok':'off'}">${u.approved?'Aprovado':'Pendente'}</span>
@@ -4401,7 +4324,7 @@ input:focus{
               <button class="small-btn" data-run-user-action="${d.id}">Executar</button>
             </div>
           </div>`;
-        }).join("") || `<div class="user-item">Nenhum usuário encontrado.</div>`;
+        }).join("") || `<div class="user-item">Nenhum usuÃ¡rio encontrado.</div>`;
 
         document.querySelectorAll("[data-run-user-action]").forEach(btn=>btn.onclick=async()=>{
           const id = btn.dataset.runUserAction;
@@ -4410,7 +4333,7 @@ input:focus{
 
           if(action === "approve"){
             await updateDoc(doc(db,"users",id), { approved:true, role });
-            await addAudit("approve_user", `Usuário aprovado como ${role}`);
+            await addAudit("approve_user", `UsuÃ¡rio aprovado como ${role}`);
           }
 
           if(action === "save_role"){
@@ -4438,7 +4361,7 @@ input:focus{
       if(auditCard) auditCard.classList.toggle("hidden", !isAdmin());
       if(!box) return;
       if(!isAdmin()){
-        box.innerHTML = `<div class="history-item">Auditoria disponível somente para admin.</div>`;
+        box.innerHTML = `<div class="history-item">Auditoria disponÃ­vel somente para admin.</div>`;
         return;
       }
 
@@ -4451,7 +4374,7 @@ input:focus{
           const a = d.data();
           return `<div class="history-item">
             <div class="history-top">
-              <strong>${a.action || "ação"}</strong>
+              <strong>${a.action || "aÃ§Ã£o"}</strong>
               <span>${dateLabel(a.createdAt)}</span>
             </div>
             <div class="muted">${a.description || ""}<br>${a.email || ""}</div>
@@ -4463,8 +4386,8 @@ input:focus{
       }
     }
 
-    async function createInternalUser(){ if(!await requireAdmin()) return; const email=$("newUserEmail").value.trim(), password=$("newUserPassword").value, name=$("newUserName").value.trim(), role=$("newUserRole").value, supervisorRaw=$("newUserSupervisor")?.value.trim()||""; if(!email||!password) return alert("Informe email e senha."); if(password.length<6) return alert("A senha precisa ter pelo menos 6 caracteres."); const secondaryApp=initializeApp(firebaseConfig,"SecondaryUserCreator"+Date.now()), secondaryAuth=getAuth(secondaryApp); try{ const cred=await createUserWithEmailAndPassword(secondaryAuth,email,password); await setDoc(doc(db,"users",cred.user.uid),{email,name:name||email.split("@")[0],role,supervisorUid:role==="operador"&&!supervisorRaw.includes("@")?(supervisorRaw||null):null,supervisorEmail:role==="operador"&&supervisorRaw.includes("@")?supervisorRaw:null,approved:true,blocked:false,createdAt:serverTimestamp(),createdBy:currentUser?.uid||null}); await signOut(secondaryAuth); await deleteApp(secondaryApp); await addAudit("create_user",`Usuário criado: ${email}`); ["newUserEmail","newUserPassword","newUserName","newUserSupervisor"].forEach(id=>{if($(id)) $(id).value="";}); await loadUsers(); alert("Usuário criado com sucesso."); }catch(e){ try{await signOut(secondaryAuth);await deleteApp(secondaryApp);}catch(_ignored){} alert(friendlyError(e)); } }
-    async function registerAccess(){ const email=$("loginEmail").value.trim(), password=$("loginPassword").value; if(!email||!password) return showNotice("loginNotice","Informe email e senha para criar acesso.","error"); if(password.length<6) return showNotice("loginNotice","A senha precisa ter pelo menos 6 caracteres.","error"); try{ const bootstrap=isBootstrapEmail(email); await applyLoginPersistence(); const cred=await createUserWithEmailAndPassword(auth,email,password); saveLoginPreference(email); const profile={email,name:email.split("@")[0],role:bootstrap?"admin":"operador",status:bootstrap?"active":"pending",approved:bootstrap?true:false,blocked:false,createdAt:serverTimestamp()}; await safeSetUserProfile(cred.user,profile); showNotice("loginNotice",bootstrap?"Conta admin criada. Entrando...":"Conta criada. Aguarde aprovação do admin.",bootstrap?"ok":"error"); }catch(e){ showNotice("loginNotice",friendlyError(e),"error"); } }
+    async function createInternalUser(){ if(!await requireAdmin()) return; const email=$("newUserEmail").value.trim(), password=$("newUserPassword").value, name=$("newUserName").value.trim(), role=$("newUserRole").value, supervisorRaw=$("newUserSupervisor")?.value.trim()||""; if(!email||!password) return alert("Informe email e senha."); if(password.length<6) return alert("A senha precisa ter pelo menos 6 caracteres."); const secondaryApp=initializeApp(firebaseConfig,"SecondaryUserCreator"+Date.now()), secondaryAuth=getAuth(secondaryApp); try{ const cred=await createUserWithEmailAndPassword(secondaryAuth,email,password); await setDoc(doc(db,"users",cred.user.uid),{email,name:name||email.split("@")[0],role,supervisorUid:role==="operador"&&!supervisorRaw.includes("@")?(supervisorRaw||null):null,supervisorEmail:role==="operador"&&supervisorRaw.includes("@")?supervisorRaw:null,approved:true,blocked:false,createdAt:serverTimestamp(),createdBy:currentUser?.uid||null}); await signOut(secondaryAuth); await deleteApp(secondaryApp); await addAudit("create_user",`UsuÃ¡rio criado: ${email}`); ["newUserEmail","newUserPassword","newUserName","newUserSupervisor"].forEach(id=>{if($(id)) $(id).value="";}); await loadUsers(); alert("UsuÃ¡rio criado com sucesso."); }catch(e){ try{await signOut(secondaryAuth);await deleteApp(secondaryApp);}catch(_ignored){} alert(friendlyError(e)); } }
+    async function registerAccess(){ const email=$("loginEmail").value.trim(), password=$("loginPassword").value; if(!email||!password) return showNotice("loginNotice","Informe email e senha para criar acesso.","error"); if(password.length<6) return showNotice("loginNotice","A senha precisa ter pelo menos 6 caracteres.","error"); try{ const bootstrap=isBootstrapEmail(email); await applyLoginPersistence(); const cred=await createUserWithEmailAndPassword(auth,email,password); saveLoginPreference(email); const profile={email,name:email.split("@")[0],role:bootstrap?"admin":"operador",status:bootstrap?"active":"pending",approved:bootstrap?true:false,blocked:false,createdAt:serverTimestamp()}; await safeSetUserProfile(cred.user,profile); showNotice("loginNotice",bootstrap?"Conta admin criada. Entrando...":"Conta criada. Aguarde aprovaÃ§Ã£o do admin.",bootstrap?"ok":"error"); }catch(e){ showNotice("loginNotice",friendlyError(e),"error"); } }
 
     function showScreen(name){
       if(name === "Goals" && !canSeeMonthlyGoal()){
@@ -4533,13 +4456,13 @@ input:focus{
         if(wrapper) wrapper.style.display = canSeeAdmin ? "" : "none";
       });
 
-      // Operador não vê ajuste interno no card principal.
+      // Operador nÃ£o vÃª ajuste interno no card principal.
       if($("homeInternalAdjustmentCard")){
         $("homeInternalAdjustmentCard").classList.toggle("role-hidden", !canSeeManagement);
         $("homeInternalAdjustmentCard").style.display = canSeeManagement ? "" : "none";
       }
 
-      // Operador não vê meta mensal nem botão da meta.
+      // Operador nÃ£o vÃª meta mensal nem botÃ£o da meta.
       if($("monthlyGoalCard")){
         $("monthlyGoalCard").classList.toggle("hidden", !canSeeManagement);
         $("monthlyGoalCard").style.display = canSeeManagement ? "" : "none";
@@ -4571,7 +4494,7 @@ input:focus{
       }
 
       if($("sideAdminBtn")) $("sideAdminBtn").style.display = canSeeAdmin ? "grid" : "none";
-      // Histórico liberado para operador, supervisor e admin.
+      // HistÃ³rico liberado para operador, supervisor e admin.
       document.querySelectorAll('[data-screen="History"],[data-more-screen="History"]').forEach(btn=>{
         btn.classList.remove("hidden");
         btn.style.display = "";
@@ -4646,10 +4569,10 @@ input:focus{
       return new Promise((resolve,reject)=>{
         if(!file) return resolve("");
         const reader = new FileReader();
-        reader.onerror = () => reject(new Error("Não foi possível ler a imagem."));
+        reader.onerror = () => reject(new Error("NÃ£o foi possÃ­vel ler a imagem."));
         reader.onload = () => {
           const img = new Image();
-          img.onerror = () => reject(new Error("Arquivo de imagem inválido."));
+          img.onerror = () => reject(new Error("Arquivo de imagem invÃ¡lido."));
           img.onload = () => {
             const size = 360;
             const canvas = document.createElement("canvas");
@@ -4675,7 +4598,7 @@ input:focus{
       setButtonLoading(saveBtn, true, "Salvando perfil...");
 
       const oldEmail = String(currentUser.email || "").trim();
-      const name = ($("profileNameInput")?.value || "").trim() || oldEmail.split("@")[0] || "Usuário";
+      const name = ($("profileNameInput")?.value || "").trim() || oldEmail.split("@")[0] || "UsuÃ¡rio";
       const newEmail = ($("profileEmailInput")?.value || "").trim();
       const newPassword = $("profilePasswordInput")?.value || "";
       const passwordConfirm = $("profilePasswordConfirmInput")?.value || "";
@@ -4683,11 +4606,11 @@ input:focus{
       const file = $("profilePhotoInput")?.files?.[0];
 
       try{
-        if(!newEmail) return alert("Informe um email válido.");
+        if(!newEmail) return alert("Informe um email vÃ¡lido.");
 
         if(newPassword || passwordConfirm){
           if(newPassword.length < 6) return alert("A nova senha precisa ter pelo menos 6 caracteres.");
-          if(newPassword !== passwordConfirm) return alert("A confirmação da senha não confere.");
+          if(newPassword !== passwordConfirm) return alert("A confirmaÃ§Ã£o da senha nÃ£o confere.");
         }
 
         if(file) photoURL = await compressProfileImage(file);
@@ -4707,9 +4630,9 @@ input:focus{
           await setDoc(doc(db,"users",currentUser.uid), profilePayload, { merge:true });
           firestoreSaved = true;
         }catch(profileErr){
-          console.warn("Perfil não salvo no Firestore por regra:", profileErr);
-          // Mantém a experiência funcionando no app mesmo se a regra do Firestore ainda não foi liberada.
-          // O usuário vê nome/foto atualizados nesta sessão, e o admin só precisa colar as regras no Firebase.
+          console.warn("Perfil nÃ£o salvo no Firestore por regra:", profileErr);
+          // MantÃ©m a experiÃªncia funcionando no app mesmo se a regra do Firestore ainda nÃ£o foi liberada.
+          // O usuÃ¡rio vÃª nome/foto atualizados nesta sessÃ£o, e o admin sÃ³ precisa colar as regras no Firebase.
         }
 
         currentProfile = { ...(currentProfile || {}), ...profilePayload };
@@ -4723,7 +4646,7 @@ input:focus{
             try{
               await setDoc(doc(db,"users",currentUser.uid), { email:newEmail, updatedAt:serverTimestamp() }, { merge:true });
             }catch(e){
-              console.warn("Email alterado no Auth, mas não sincronizado no Firestore:", e);
+              console.warn("Email alterado no Auth, mas nÃ£o sincronizado no Firestore:", e);
             }
             currentProfile.email = newEmail;
             authChanged = true;
@@ -4732,11 +4655,11 @@ input:focus{
             if(code.includes("requires-recent-login")){
               authWarning = "Nome/foto foram aplicados. Para trocar o email, saia, entre novamente e tente de novo.";
             }else if(code.includes("auth/email-already-in-use")){
-              authWarning = "Nome/foto foram aplicados, mas este email já está em uso.";
+              authWarning = "Nome/foto foram aplicados, mas este email jÃ¡ estÃ¡ em uso.";
             }else if(code.includes("auth/invalid-email")){
-              authWarning = "Nome/foto foram aplicados, mas o email informado é inválido.";
+              authWarning = "Nome/foto foram aplicados, mas o email informado Ã© invÃ¡lido.";
             }else{
-              authWarning = "Nome/foto foram aplicados, mas não foi possível trocar o email.";
+              authWarning = "Nome/foto foram aplicados, mas nÃ£o foi possÃ­vel trocar o email.";
             }
           }
         }
@@ -4750,7 +4673,7 @@ input:focus{
             if(code.includes("requires-recent-login")){
               authWarning += " Para trocar a senha, saia, entre novamente e tente de novo.";
             }else{
-              authWarning += " Não foi possível trocar a senha agora.";
+              authWarning += " NÃ£o foi possÃ­vel trocar a senha agora.";
             }
           }
         }
@@ -4769,14 +4692,14 @@ input:focus{
         if(authWarning){
           showNotice("appNotice", authWarning.trim(), "error");
         }else if(!firestoreSaved){
-          showNotice("appNotice","Perfil aplicado nesta sessão. Para ficar salvo permanente, cole as regras do Firestore geradas no arquivo FIRESTORE_RULES_PERFIL_USUARIO.txt.","error");
+          showNotice("appNotice","Perfil aplicado nesta sessÃ£o. Para ficar salvo permanente, cole as regras do Firestore geradas no arquivo FIRESTORE_RULES_PERFIL_USUARIO.txt.","error");
         }else{
           showNotice("appNotice", authChanged ? "Perfil e acesso atualizados com sucesso." : "Perfil atualizado com sucesso.", "ok");
           setTimeout(()=>hideNotice("appNotice"), 2800);
         }
       }catch(e){
         console.warn("Erro ao salvar perfil:", e);
-        alert("Não foi possível salvar o perfil: " + friendlyError(e));
+        alert("NÃ£o foi possÃ­vel salvar o perfil: " + friendlyError(e));
       }finally{
         setButtonLoading(saveBtn, false);
       }
@@ -4815,7 +4738,7 @@ input:focus{
       setupAdminCollapsibleCards();
       if(bindEvents._bound) return;
       bindEvents._bound = true;
-      // logo volta para início
+      // logo volta para inÃ­cio
       if($("logoRefreshBtn")){
         $("logoRefreshBtn").onclick = () => {
           showScreen("Home");
@@ -4824,16 +4747,16 @@ input:focus{
       } applyBankMoneyMaskAll(document); enableClearOnFocus(); ["webReca","suprema","pppoker","buffalo","ganamos","cargasPoker","cargasCasino","quickCargaCasino","quickRetiradaCaixa","operadorName","closingDate","editWebReca","editSuprema","editPppoker","editBuffalo","editGanamos","editCargasPoker","editCargasCasino"].forEach(id=>$(id)?.addEventListener("input",scheduleCalculations)); document.addEventListener("bankmoney", renderCalculations); $("togglePendingBtn") && ($("togglePendingBtn").onclick=()=>{ const panel=$("pendingPanel"); panel?.classList.toggle("active"); $("togglePendingBtn").textContent = panel?.classList.contains("active") ? "Ocultar" : "Abrir"; });
       $("toggleOutflowBtn") && ($("toggleOutflowBtn").onclick=()=>{ const panel=$("outflowPanel"); panel?.classList.toggle("active"); $("toggleOutflowBtn").textContent = panel?.classList.contains("active") ? "Ocultar" : "Abrir"; });
       $("addPendingBtn") && ($("addPendingBtn").onclick=()=>createDynamicRow("pendingList","Nome / motivo"));
-      $("addOutflowBtn") && ($("addOutflowBtn").onclick=()=>createDynamicRow("outflowList","Descrição"));
+      $("addOutflowBtn") && ($("addOutflowBtn").onclick=()=>createDynamicRow("outflowList","DescriÃ§Ã£o"));
       $("quickChargeBtn") && ($("quickChargeBtn").onclick=addQuickCapitalInjection);
       $("toggleQuickChargeBtn") && ($("toggleQuickChargeBtn").onclick=()=>{
         const panel = $("quickChargePanel");
         panel?.classList.toggle("active");
-        $("toggleQuickChargeBtn").textContent = panel?.classList.contains("active") ? "Ocultar carga rápida" : "Mostrar carga rápida";
+        $("toggleQuickChargeBtn").textContent = panel?.classList.contains("active") ? "Ocultar carga rÃ¡pida" : "Mostrar carga rÃ¡pida";
       }); $("clearClosingBtn") && ($("clearClosingBtn").onclick=clearClosingForm);
       $("saveClosingBtn") && ($("saveClosingBtn").onclick=saveClosing);
       $("refreshBtn") && ($("refreshBtn").onclick=refreshInternal);
-      // BK já volta para Início e atualiza no começo do bindEvents()
+      // BK jÃ¡ volta para InÃ­cio e atualiza no comeÃ§o do bindEvents()
       $("recalculateBtn") && ($("recalculateBtn").onclick=recalculateAllHistory);
       $("pdfReportBtn") && ($("pdfReportBtn").onclick=generateBankPdfReport);
       $("previewReportBtn") && ($("previewReportBtn").onclick=openReportMainCardPreview);
@@ -4843,7 +4766,7 @@ input:focus{
       $("toggleCreateUserBtn") && ($("toggleCreateUserBtn").onclick=()=>{
         const panel = $("createUserPanel");
         panel?.classList.toggle("active");
-        $("toggleCreateUserBtn").textContent = panel?.classList.contains("active") ? "Ocultar criar usuário" : "Mostrar criar usuário";
+        $("toggleCreateUserBtn").textContent = panel?.classList.contains("active") ? "Ocultar criar usuÃ¡rio" : "Mostrar criar usuÃ¡rio";
       });
       $("createUserBtn") && ($("createUserBtn").onclick=createInternalUser);
       $("historySearch")?.addEventListener("input",()=>{ historyDaysVisible = 1; renderHistory(); });
@@ -4864,7 +4787,7 @@ input:focus{
       $("profilePhotoInput")?.addEventListener("change", async()=>{
         const file = $("profilePhotoInput")?.files?.[0];
         if(!file) return updateProfilePhotoPreview($("profilePhotoUrlInput")?.value,$("profileNameInput")?.value);
-        try{ updateProfilePhotoPreview(await compressProfileImage(file), $("profileNameInput")?.value); }catch(e){ alert(e.message || "Imagem inválida."); }
+        try{ updateProfilePhotoPreview(await compressProfileImage(file), $("profileNameInput")?.value); }catch(e){ alert(e.message || "Imagem invÃ¡lida."); }
       });
       $("sideLogoutBtn") && ($("sideLogoutBtn").onclick=async()=>{ closeSideDrawer(); if(historyUnsubscribe)historyUnsubscribe(); if(systemUnsubscribe)systemUnsubscribe(); await signOut(auth); });
       document.querySelectorAll("[data-home-detail]").forEach(card=>{
@@ -4895,7 +4818,7 @@ input:focus{
       });
       document.querySelectorAll("[data-more-screen]").forEach(btn=>btn.onclick=(ev)=>{ ev.stopPropagation(); showScreen(btn.dataset.moreScreen); }); document.querySelectorAll("[data-rank]").forEach(btn=>btn.onclick=()=>{document.querySelectorAll("[data-rank]").forEach(b=>b.classList.remove("active")); btn.classList.add("active"); currentRankRange=btn.dataset.rank; renderRanking();}); $("logoutBtn").onclick=async()=>{if(historyUnsubscribe)historyUnsubscribe();if(systemUnsubscribe)systemUnsubscribe();await signOut(auth);}; $("rememberLogin")?.addEventListener("change",()=>{
         saveLoginPreference($("loginEmail")?.value?.trim() || "");
-        applyLoginPersistence().catch(e=>console.warn("Persistência login:", e));
+        applyLoginPersistence().catch(e=>console.warn("PersistÃªncia login:", e));
       });
 
       $("loginEmail")?.addEventListener("input",()=>{
@@ -4916,9 +4839,9 @@ input:focus{
         btn.setAttribute("title", willShow ? "Ocultar senha" : "Mostrar senha");
       });
 
-      $("loginBtn").onclick=async()=>{try{hideNotice("loginNotice");await applyLoginPersistence();await signInWithEmailAndPassword(auth,$("loginEmail").value.trim(),$("loginPassword").value);}catch(e){showNotice("loginNotice",friendlyError(e),"error");}}; $("registerBtn").onclick=registerAccess; $("resetPasswordBtn").onclick=async()=>{try{const email=$("loginEmail").value.trim(); if(!email) return showNotice("loginNotice","Informe o email.","error"); await sendPasswordResetEmail(auth,email); showNotice("loginNotice","Email de recuperação enviado.","ok");}catch(e){showNotice("loginNotice",friendlyError(e),"error");}}; $("receiptCloseBtn") && ($("receiptCloseBtn").onclick=closeHistoryReceipt);
+      $("loginBtn").onclick=async()=>{try{hideNotice("loginNotice");await applyLoginPersistence();await signInWithEmailAndPassword(auth,$("loginEmail").value.trim(),$("loginPassword").value);}catch(e){showNotice("loginNotice",friendlyError(e),"error");}}; $("registerBtn").onclick=registerAccess; $("resetPasswordBtn").onclick=async()=>{try{const email=$("loginEmail").value.trim(); if(!email) return showNotice("loginNotice","Informe o email.","error"); await sendPasswordResetEmail(auth,email); showNotice("loginNotice","Email de recuperaÃ§Ã£o enviado.","ok");}catch(e){showNotice("loginNotice",friendlyError(e),"error");}}; $("receiptCloseBtn") && ($("receiptCloseBtn").onclick=closeHistoryReceipt);
       $("receiptExportPngBtn") && ($("receiptExportPngBtn").onclick=exportReceiptAsPng);
-      $("editCloseBtn").onclick=closeEdit; $("cancelEditBtn").onclick=closeEdit; $("saveEditBtn").onclick=saveEdit; $("editAddPendingBtn").onclick=()=>createDynamicRow("editPendingList","Nome / motivo"); $("editAddOutflowBtn").onclick=()=>createDynamicRow("editOutflowList","Descrição");
+      $("editCloseBtn").onclick=closeEdit; $("cancelEditBtn").onclick=closeEdit; $("saveEditBtn").onclick=saveEdit; $("editAddPendingBtn").onclick=()=>createDynamicRow("editPendingList","Nome / motivo"); $("editAddOutflowBtn").onclick=()=>createDynamicRow("editOutflowList","DescriÃ§Ã£o");
       // historyDateTodayDefaultPatch
       $("historyDate")?.addEventListener("change", ()=>{
         historyDaysVisible = 1;
@@ -4973,7 +4896,7 @@ input:focus{
 
 function initDate(){ if($("closingDate")) $("closingDate").value = localInputSP(nowSP()); }
 
-    onAuthStateChanged(auth,async(user)=>{ currentUser=user; if(!user){document.body.classList.remove("role-admin","role-supervisor","role-operador");loadSavedLoginPreference();$("loginScreen").classList.remove("hidden");$("appShell").classList.add("hidden");$("bottomNav").classList.add("hidden");return;} currentProfile=await loadProfile(user); if(currentProfile.blocked){await signOut(auth);return alert("Usuário bloqueado.");} if(currentProfile.approved===false){$("loginScreen").classList.remove("hidden");$("appShell").classList.add("hidden");$("bottomNav").classList.add("hidden");showNotice("loginNotice","Usuário aguardando aprovação do admin.","error");return;} $("loginScreen").classList.add("hidden");$("appShell").classList.remove("hidden");$("bottomNav").classList.remove("hidden");$("topUserLabel").textContent=`${currentProfile.name||user.email} • ${isAdmin()?"Admin":isSupervisor()?"Supervisor":"Operador"}`;  $("adminStatus").textContent=isAdmin()?"Admin ativo":"Somente admin";
+    onAuthStateChanged(auth,async(user)=>{ currentUser=user; if(!user){document.body.classList.remove("role-admin","role-supervisor","role-operador");loadSavedLoginPreference();$("loginScreen").classList.remove("hidden");$("appShell").classList.add("hidden");$("bottomNav").classList.add("hidden");return;} currentProfile=await loadProfile(user); if(currentProfile.blocked){await signOut(auth);return alert("UsuÃ¡rio bloqueado.");} if(currentProfile.approved===false){$("loginScreen").classList.remove("hidden");$("appShell").classList.add("hidden");$("bottomNav").classList.add("hidden");showNotice("loginNotice","UsuÃ¡rio aguardando aprovaÃ§Ã£o do admin.","error");return;} $("loginScreen").classList.add("hidden");$("appShell").classList.remove("hidden");$("bottomNav").classList.remove("hidden");$("topUserLabel").textContent=`${currentProfile.name||user.email} â¢ ${isAdmin()?"Admin":isSupervisor()?"Supervisor":"Operador"}`;  $("adminStatus").textContent=isAdmin()?"Admin ativo":"Somente admin";
       if($("moreAdminBtn")) $("moreAdminBtn").style.display = isAdmin() ? "flex" : "none"; if($("sideAdminBtn")) $("sideAdminBtn").style.display = isAdmin() ? "grid" : "none"; updateSideDrawerProfile();
 
       applyRoleBodyClass(); updateRoleVisibility(); if(isAdmin()) loadAudit(); if(currentProfile.permissionError) showNotice("appNotice","Seu login entrou, mas o Firestore negou acesso ao perfil. Ajuste as regras ou coloque seu email em BOOTSTRAP_ADMIN_EMAILS.","error"); startHistoryRealtimeListener(); startSystemRealtime(); fillOperadorFromProfile(); renderAll("data"); });
@@ -5053,13 +4976,6 @@ document.addEventListener("DOMContentLoaded",()=>{ setTimeout(window.__BK_FORCE_
       setTimeout(fixTextKeyboardFields, 1800);
     });
 // safeTextFieldObserverFinal
-document.addEventListener("DOMContentLoaded",()=>{
-  try{
-    const obs = new MutationObserver(()=>bkForceAllTextFields());
-    obs.observe(document.body,{childList:true,subtree:true});
-  }catch(_){}
-});
-// textFreeFinalObserver
 document.addEventListener("DOMContentLoaded",()=>{
   try{
     const obs = new MutationObserver(()=>bkForceAllTextFields());
