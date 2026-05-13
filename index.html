@@ -1960,6 +1960,22 @@ input[data-bank-money="1"]:focus{
 .clean-line.expense b,.clean-line.out b{color:#ef4444}
 @media(max-width:800px){.adjustment-clean-grid{grid-template-columns:1fr}.adjustment-clean-head{align-items:flex-start;flex-direction:column}}
 
+
+/* =========================================================
+   TECLADO BANCÁRIO DEFINITIVO
+========================================================= */
+input[data-bank-money-final="1"],
+input[data-money="1"]{
+  font-variant-numeric:tabular-nums lining-nums;
+  letter-spacing:0!important;
+  caret-color:#111827!important;
+  -webkit-text-size-adjust:100%;
+}
+input[data-bank-money-final="1"]:focus,
+input[data-money="1"]:focus{
+  outline:none!important;
+}
+
 </style>
 
 <script>
@@ -3219,439 +3235,273 @@ function historyItemDate(item){
     }
 
     
-    /* =========================================================
-       TECLADO BANCÁRIO FINAL
-       - Digitação sempre entra pela última casa decimal.
-       - 1 => 0,01 | 11 => 0,11 | 111 => 1,11
-       - Permite corrigir número no meio sem perder os demais.
-       - Selecionar e apagar limpa o bloco selecionado.
-    ========================================================= */
-    function bkBankIsMoneyInput(el){
-      if(!el) return false;
-      const id = String(el.id || "").toLowerCase();
-      const name = String(el.name || "").toLowerCase();
-      const ph = String(el.placeholder || "").toLowerCase();
-      const cls = String(el.className || "").toLowerCase();
-
-      return el.dataset.money === "1"
-        || el.dataset.currency === "1"
-        || cls.includes("money")
-        || id.includes("valor")
-        || id.includes("saldo")
-        || id.includes("reca")
-        || id.includes("suprema")
-        || id.includes("pppoker")
-        || id.includes("poker")
-        || id.includes("buffalo")
-        || id.includes("ganamos")
-        || id.includes("carga")
-        || id.includes("pendente")
-        || id.includes("saida")
-        || id.includes("custo")
-        || id.includes("taxa")
-        || id.includes("lucro")
-        || id.includes("meta")
-        || name.includes("valor")
-        || name.includes("saldo")
-        || ph.includes("$")
-        || ph.includes("valor");
-    }
-
-    function bkBankDigits(value){
-      return String(value ?? "").replace(/\D/g,"");
-    }
-
-    function bkBankNormalizeDigits(digits){
-      digits = String(digits || "").replace(/\D/g,"");
-      digits = digits.replace(/^0+(?=\d{3,})/,"");
-      return digits;
-    }
-
-    function bkBankFormatDigits(digits){
-      digits = bkBankNormalizeDigits(digits);
-
-      if(!digits) return "";
-
-      while(digits.length < 3){
-        digits = "0" + digits;
-      }
-
-      const cents = digits.slice(-2);
-      let intPart = digits.slice(0,-2).replace(/^0+(?=\d)/,"");
-      if(!intPart) intPart = "0";
-
-      intPart = intPart.replace(/\B(?=(\d{3})+(?!\d))/g,".");
-      return `${intPart},${cents}`;
-    }
-
-    function bkBankDigitIndexFromCaret(value, caret){
-      const before = String(value || "").slice(0, Math.max(0, caret || 0));
-      return bkBankDigits(before).length;
-    }
-
-    function bkBankCaretFromDigitIndex(value, digitIndex){
-      const text = String(value || "");
-      if(digitIndex <= 0) return 0;
-
-      let seen = 0;
-      for(let i=0;i<text.length;i++){
-        if(/\d/.test(text[i])){
-          seen++;
-          if(seen >= digitIndex){
-            return i + 1;
-          }
-        }
-      }
-      return text.length;
-    }
-
-    function bkBankSetCaretByDigitIndex(el, digitIndex){
-      requestAnimationFrame(()=>{
-        try{
-          const pos = bkBankCaretFromDigitIndex(el.value, digitIndex);
-          el.setSelectionRange(pos,pos);
-        }catch(_){}
-      });
-    }
-
-    function bkBankReplaceDigits(el, replacementDigits, mode="insert"){
-      const value = String(el.value || "");
-      const oldDigits = bkBankDigits(value);
-      const start = el.selectionStart ?? value.length;
-      const end = el.selectionEnd ?? start;
-
-      const startIdx = bkBankDigitIndexFromCaret(value, start);
-      const endIdx = bkBankDigitIndexFromCaret(value, end);
-
-      let nextDigits = oldDigits;
-      let nextDigitIndex = startIdx;
-
-      if(mode === "replace"){
-        nextDigits = oldDigits.slice(0,startIdx) + replacementDigits + oldDigits.slice(endIdx);
-        nextDigitIndex = startIdx + replacementDigits.length;
-      }
-
-      if(mode === "backspace"){
-        if(start !== end){
-          nextDigits = oldDigits.slice(0,startIdx) + oldDigits.slice(endIdx);
-          nextDigitIndex = startIdx;
-        }else if(startIdx > 0){
-          nextDigits = oldDigits.slice(0,startIdx-1) + oldDigits.slice(startIdx);
-          nextDigitIndex = startIdx - 1;
-        }
-      }
-
-      if(mode === "delete"){
-        if(start !== end){
-          nextDigits = oldDigits.slice(0,startIdx) + oldDigits.slice(endIdx);
-          nextDigitIndex = startIdx;
-        }else{
-          nextDigits = oldDigits.slice(0,startIdx) + oldDigits.slice(startIdx+1);
-          nextDigitIndex = startIdx;
-        }
-      }
-
-      nextDigits = bkBankNormalizeDigits(nextDigits);
-      el.value = bkBankFormatDigits(nextDigits);
-      bkBankSetCaretByDigitIndex(el, nextDigitIndex);
-    }
-
-    function bkBankPrepareField(el){
-      if(!bkBankIsMoneyInput(el)) return;
-
-      el.setAttribute("inputmode","numeric");
-      el.setAttribute("autocomplete","off");
-      el.setAttribute("data-bank-money","1");
-
-      if(el.type === "number"){
-        try{ el.type = "text"; }catch(_){}
-      }
-
-      if(String(el.value || "").trim()){
-        const digits = bkBankDigits(el.value);
-        el.value = bkBankFormatDigits(digits);
-      }
-    }
-
-    function installBankTypingFix(){
-      if(window.__bkBankTypingFinalInstalled) return;
-      window.__bkBankTypingFinalInstalled = true;
-
-      const prepareAll = ()=>{
-        document.querySelectorAll("input").forEach(bkBankPrepareField);
-      };
-
-      prepareAll();
-
-      document.addEventListener("focusin", ev=>{
-        const el = ev.target;
-        if(!el || el.tagName !== "INPUT" || !bkBankIsMoneyInput(el)) return;
-
-        bkBankPrepareField(el);
-
-        const digits = bkBankDigits(el.value);
-        if(!digits || Number(digits) === 0){
-          el.value = "";
-          return;
-        }
-
-        el.value = bkBankFormatDigits(digits);
-      }, true);
-
-      document.addEventListener("beforeinput", ev=>{
-        const el = ev.target;
-        if(!el || el.tagName !== "INPUT" || !bkBankIsMoneyInput(el)) return;
-
-        const type = ev.inputType || "";
-        const data = ev.data || "";
-
-        if(type === "insertText"){
-          if(!/^\d+$/.test(data)) {
-            ev.preventDefault();
-            return;
-          }
-          ev.preventDefault();
-          bkBankReplaceDigits(el, data, "replace");
-          return;
-        }
-
-        if(type === "insertFromPaste"){
-          ev.preventDefault();
-          const pasted = (ev.clipboardData || window.clipboardData)?.getData("text") || "";
-          const digits = bkBankDigits(pasted);
-          bkBankReplaceDigits(el, digits, "replace");
-          return;
-        }
-
-        if(type === "deleteContentBackward"){
-          ev.preventDefault();
-          bkBankReplaceDigits(el, "", "backspace");
-          return;
-        }
-
-        if(type === "deleteContentForward"){
-          ev.preventDefault();
-          bkBankReplaceDigits(el, "", "delete");
-          return;
-        }
-
-        if(type === "deleteByCut"){
-          ev.preventDefault();
-          bkBankReplaceDigits(el, "", "delete");
-          return;
-        }
-      }, true);
-
-      document.addEventListener("input", ev=>{
-        const el = ev.target;
-        if(!el || el.tagName !== "INPUT" || !bkBankIsMoneyInput(el)) return;
-
-        // Fallback para navegadores que não aplicam beforeinput corretamente.
-        const digits = bkBankDigits(el.value);
-        const formatted = bkBankFormatDigits(digits);
-        if(el.value !== formatted){
-          const caretIndex = bkBankDigitIndexFromCaret(el.value, el.selectionStart ?? el.value.length);
-          el.value = formatted;
-          bkBankSetCaretByDigitIndex(el, caretIndex);
-        }
-      }, true);
-
-      document.addEventListener("blur", ev=>{
-        const el = ev.target;
-        if(!el || el.tagName !== "INPUT" || !bkBankIsMoneyInput(el)) return;
-
-        const digits = bkBankDigits(el.value);
-        el.value = bkBankFormatDigits(digits);
-      }, true);
-
-      try{
-        window.__bkBankTypingFinalObserver = new MutationObserver(prepareAll);
-        window.__bkBankTypingFinalObserver.observe(document.body,{childList:true,subtree:true});
-      }catch(_){}
-    }
-
-
-
-
+    
 /* =========================================================
-   ENGINE GLOBAL DE DIGITAÇÃO BANCÁRIA
+   TECLADO BANCÁRIO DEFINITIVO
 ========================================================= */
-function bkDigits(v){
-  return String(v ?? "").replace(/\D/g,"");
+function bkMoneyOnlyDigits(value){
+  return String(value == null ? "" : value).replace(/\D/g,"");
 }
 
-function bkFormatCurrencyFromDigits(d){
-  d = bkDigits(d);
-  if(!d) return "0,00";
+function bkMoneyNormalizeDigits(digits){
+  digits = String(digits || "").replace(/\D/g,"");
+  digits = digits.replace(/^0+(?=\d{3,})/,"");
+  return digits;
+}
 
-  while(d.length < 3){
-    d = "0" + d;
+function bkMoneyFormatFromDigits(digits){
+  digits = bkMoneyNormalizeDigits(digits);
+  if(!digits) return "0,00";
+
+  while(digits.length < 3){
+    digits = "0" + digits;
   }
 
-  let cents = d.slice(-2);
-  let ints = d.slice(0,-2).replace(/^0+(?=\d)/,"");
-
-  if(!ints) ints = "0";
-
-  ints = ints.replace(/\B(?=(\d{3})+(?!\d))/g,".");
-
-  return `${ints},${cents}`;
+  var cents = digits.slice(-2);
+  var integer = digits.slice(0,-2).replace(/^0+(?=\d)/,"");
+  if(!integer) integer = "0";
+  integer = integer.replace(/\B(?=(\d{3})+(?!\d))/g,".");
+  return integer + "," + cents;
 }
 
-function bkIsMoneyField(el){
+function bkMoneyIsField(el){
   if(!el || el.tagName !== "INPUT") return false;
 
-  const txt = (
-    (el.id || "") + " " +
-    (el.name || "") + " " +
-    (el.placeholder || "") + " " +
-    (el.className || "")
-  ).toLowerCase();
+  var raw = [
+    el.id || "",
+    el.name || "",
+    el.placeholder || "",
+    el.className || "",
+    el.dataset ? (el.dataset.money || "") : "",
+    el.dataset ? (el.dataset.currency || "") : ""
+  ].join(" ").toLowerCase();
 
-  return txt.includes("saldo")
-    || txt.includes("valor")
-    || txt.includes("reca")
-    || txt.includes("suprema")
-    || txt.includes("pppoker")
-    || txt.includes("poker")
-    || txt.includes("buffalo")
-    || txt.includes("ganamos")
-    || txt.includes("carga")
-    || txt.includes("pendente")
-    || txt.includes("lucro")
-    || txt.includes("custo")
-    || txt.includes("taxa")
-    || txt.includes("retirada")
-    || txt.includes("caixa")
-    || el.dataset.money === "1";
+  return raw.indexOf("saldo") >= 0
+    || raw.indexOf("valor") >= 0
+    || raw.indexOf("reca") >= 0
+    || raw.indexOf("suprema") >= 0
+    || raw.indexOf("pppoker") >= 0
+    || raw.indexOf("poker") >= 0
+    || raw.indexOf("buffalo") >= 0
+    || raw.indexOf("ganamos") >= 0
+    || raw.indexOf("carga") >= 0
+    || raw.indexOf("pendente") >= 0
+    || raw.indexOf("saida") >= 0
+    || raw.indexOf("lucro") >= 0
+    || raw.indexOf("custo") >= 0
+    || raw.indexOf("taxa") >= 0
+    || raw.indexOf("retirada") >= 0
+    || raw.indexOf("caixa") >= 0
+    || (el.dataset && (el.dataset.money === "1" || el.dataset.currency === "1"));
 }
 
-function bkDigitIndexFromCaret(text, caret){
-  return bkDigits(String(text).slice(0, caret)).length;
+function bkMoneyDigitIndexFromCaret(text, caret){
+  return bkMoneyOnlyDigits(String(text || "").slice(0, Math.max(0, caret || 0))).length;
 }
 
-function bkCaretFromDigitIndex(text, digitIndex){
-  let seen = 0;
+function bkMoneyCaretFromDigitIndex(text, digitIndex){
+  var value = String(text || "");
+  if(digitIndex <= 0) return 0;
 
-  for(let i=0;i<text.length;i++){
-    if(/\d/.test(text[i])){
+  var seen = 0;
+  for(var i=0;i<value.length;i++){
+    if(/\d/.test(value[i])){
       seen++;
-      if(seen >= digitIndex){
-        return i + 1;
-      }
+      if(seen >= digitIndex) return i + 1;
     }
   }
-
-  return text.length;
+  return value.length;
 }
 
-function bkSetCaret(el, digitIndex){
-  requestAnimationFrame(()=>{
+function bkMoneySetCaret(el, digitIndex){
+  var pos = bkMoneyCaretFromDigitIndex(el.value, digitIndex);
+  try{ el.setSelectionRange(pos,pos); }catch(e){}
+
+  requestAnimationFrame(function(){
     try{
-      const pos = bkCaretFromDigitIndex(el.value, digitIndex);
-      el.setSelectionRange(pos,pos);
+      var p = bkMoneyCaretFromDigitIndex(el.value, digitIndex);
+      el.setSelectionRange(p,p);
     }catch(e){}
   });
 }
 
-function bkPrepareMoneyField(el){
-  if(!bkIsMoneyField(el)) return;
+function bkMoneyPrepare(el){
+  if(!bkMoneyIsField(el)) return;
 
   el.dataset.money = "1";
-  el.type = "text";
-  el.inputMode = "numeric";
+  el.dataset.bankMoneyFinal = "1";
 
-  const digits = bkDigits(el.value);
+  if(el.type === "number"){
+    try{ el.type = "text"; }catch(e){}
+  }
 
+  el.setAttribute("inputmode","numeric");
+  el.setAttribute("autocomplete","off");
+
+  var digits = bkMoneyOnlyDigits(el.value);
   if(digits){
-    el.value = bkFormatCurrencyFromDigits(digits);
+    el.value = bkMoneyFormatFromDigits(digits);
+  }else if(document.activeElement === el){
+    el.value = "0,00";
   }
 }
 
-function bkInstallGlobalMoneyTyping(){
-  if(window.__BK_BANK_TYPING_INSTALLED) return;
-  window.__BK_BANK_TYPING_INSTALLED = true;
+function bkMoneyApplyEdit(el, inputType, data){
+  var currentValue = String(el.value || "");
+  var digits = bkMoneyOnlyDigits(currentValue);
 
-  const prepareAll = ()=>{
-    document.querySelectorAll("input").forEach(bkPrepareMoneyField);
+  var start = el.selectionStart == null ? currentValue.length : el.selectionStart;
+  var end = el.selectionEnd == null ? start : el.selectionEnd;
+
+  var startIndex = bkMoneyDigitIndexFromCaret(currentValue, start);
+  var endIndex = bkMoneyDigitIndexFromCaret(currentValue, end);
+  var hasSelection = start !== end;
+  var nextIndex = startIndex;
+
+  if(inputType === "insertText"){
+    var incoming = bkMoneyOnlyDigits(data || "");
+    if(!incoming) return;
+
+    if(hasSelection){
+      digits = digits.slice(0,startIndex) + digits.slice(endIndex);
+    }
+
+    digits = digits.slice(0,startIndex) + incoming + digits.slice(startIndex);
+    nextIndex = startIndex + incoming.length;
+  }
+
+  if(inputType === "insertFromPaste"){
+    var pasted = bkMoneyOnlyDigits(data || "");
+    if(!pasted) return;
+
+    if(hasSelection){
+      digits = digits.slice(0,startIndex) + digits.slice(endIndex);
+    }
+
+    digits = digits.slice(0,startIndex) + pasted + digits.slice(startIndex);
+    nextIndex = startIndex + pasted.length;
+  }
+
+  if(inputType === "deleteContentBackward"){
+    if(hasSelection){
+      digits = digits.slice(0,startIndex) + digits.slice(endIndex);
+      nextIndex = startIndex;
+    }else{
+      if(startIndex <= 0) return;
+      digits = digits.slice(0,startIndex - 1) + digits.slice(startIndex);
+      nextIndex = startIndex - 1;
+    }
+  }
+
+  if(inputType === "deleteContentForward" || inputType === "deleteByCut"){
+    if(hasSelection){
+      digits = digits.slice(0,startIndex) + digits.slice(endIndex);
+      nextIndex = startIndex;
+    }else{
+      digits = digits.slice(0,startIndex) + digits.slice(startIndex + 1);
+      nextIndex = startIndex;
+    }
+  }
+
+  digits = bkMoneyNormalizeDigits(digits);
+  el.value = bkMoneyFormatFromDigits(digits);
+
+  var oldTotal = bkMoneyOnlyDigits(currentValue).length;
+  var newTotal = bkMoneyOnlyDigits(el.value).length;
+
+  if(startIndex >= oldTotal && !hasSelection){
+    nextIndex = newTotal;
+  }
+
+  bkMoneySetCaret(el, nextIndex);
+}
+
+function bkInstallMoneyKeyboardFinal(){
+  if(window.__BK_MONEY_KEYBOARD_FINAL_INSTALLED) return;
+  window.__BK_MONEY_KEYBOARD_FINAL_INSTALLED = true;
+
+  var prepareAll = function(){
+    document.querySelectorAll("input").forEach(bkMoneyPrepare);
   };
 
   prepareAll();
 
-  new MutationObserver(()=>{
-    prepareAll();
-  }).observe(document.body,{childList:true,subtree:true});
+  try{
+    window.__BK_MONEY_KEYBOARD_OBSERVER = new MutationObserver(prepareAll);
+    window.__BK_MONEY_KEYBOARD_OBSERVER.observe(document.body,{childList:true,subtree:true});
+  }catch(e){}
 
-  document.addEventListener("beforeinput",(e)=>{
-    const el = e.target;
+  document.addEventListener("focusin", function(event){
+    var el = event.target;
+    if(!bkMoneyIsField(el)) return;
 
-    if(!bkIsMoneyField(el)) return;
+    bkMoneyPrepare(el);
+    if(!bkMoneyOnlyDigits(el.value)){
+      el.value = "0,00";
+    }
 
-    const type = e.inputType || "";
-    const data = e.data || "";
+    bkMoneySetCaret(el, bkMoneyOnlyDigits(el.value).length);
+  }, true);
 
-    let digits = bkDigits(el.value);
+  document.addEventListener("beforeinput", function(event){
+    var el = event.target;
+    if(!bkMoneyIsField(el)) return;
 
-    const start = el.selectionStart ?? 0;
-    const end = el.selectionEnd ?? start;
+    var type = event.inputType || "";
+    var allowed = {
+      insertText:true,
+      insertFromPaste:true,
+      deleteContentBackward:true,
+      deleteContentForward:true,
+      deleteByCut:true
+    };
 
-    let startIndex = bkDigitIndexFromCaret(el.value, start);
-    let endIndex = bkDigitIndexFromCaret(el.value, end);
+    if(!allowed[type]) return;
 
-    const hasSelection = start !== end;
+    event.preventDefault();
+    event.stopImmediatePropagation();
 
-    if(type === "insertText"){
-      if(!/^\d+$/.test(data)){
-        e.preventDefault();
-        return;
-      }
+    var data = event.data || "";
+    if(type === "insertFromPaste"){
+      data = "";
+      try{ data = (event.clipboardData || window.clipboardData).getData("text") || ""; }catch(e){}
+    }
 
-      e.preventDefault();
-
-      if(hasSelection){
-        digits = digits.slice(0,startIndex) + digits.slice(endIndex);
-      }
-
-      digits =
-        digits.slice(0,startIndex) +
-        data +
-        digits.slice(startIndex);
-
-      el.value = bkFormatCurrencyFromDigits(digits);
-
-      bkSetCaret(el, startIndex + data.length);
+    if(type === "insertText" && !/^\d+$/.test(data)){
       return;
     }
 
-    if(type === "deleteContentBackward"){
-      e.preventDefault();
+    bkMoneyApplyEdit(el, type, data);
 
-      if(hasSelection){
-        digits =
-          digits.slice(0,startIndex) +
-          digits.slice(endIndex);
+    queueMicrotask(function(){
+      try{ el.dispatchEvent(new Event("change",{bubbles:true})); }catch(e){}
+    });
+  }, true);
 
-        el.value = bkFormatCurrencyFromDigits(digits);
-        bkSetCaret(el, startIndex);
-        return;
-      }
+  document.addEventListener("input", function(event){
+    var el = event.target;
+    if(!bkMoneyIsField(el)) return;
 
-      if(startIndex <= 0) return;
+    event.stopImmediatePropagation();
 
-      digits =
-        digits.slice(0,startIndex - 1) +
-        digits.slice(startIndex);
+    var digitIndex = bkMoneyDigitIndexFromCaret(el.value, el.selectionStart == null ? el.value.length : el.selectionStart);
+    var formatted = bkMoneyFormatFromDigits(el.value);
 
-      el.value = bkFormatCurrencyFromDigits(digits);
-
-      bkSetCaret(el, startIndex - 1);
-      return;
+    if(el.value !== formatted){
+      el.value = formatted;
+      bkMoneySetCaret(el, Math.min(digitIndex, bkMoneyOnlyDigits(formatted).length));
     }
+  }, true);
+
+  document.addEventListener("blur", function(event){
+    var el = event.target;
+    if(!bkMoneyIsField(el)) return;
+    el.value = bkMoneyFormatFromDigits(el.value);
   }, true);
 }
 
-document.addEventListener("DOMContentLoaded",()=>{
-  bkInstallGlobalMoneyTyping();
+document.addEventListener("DOMContentLoaded", function(){
+  bkInstallMoneyKeyboardFinal();
 });
 
 function moneyToNumber(value){
@@ -7369,7 +7219,7 @@ function initDate(){ if($("closingDate")) $("closingDate").value = localInputSP(
       });
     }
 
-    document.addEventListener("DOMContentLoaded",()=>{ forceHideReloadLoader(); bindEvents(); installBankTypingFix(); installMoneyTypingFix(); initDate(); initBankMicroUX(); setTimeout(()=>{const splash=$("appSplash"); splash?.classList.add("hide"); setTimeout(()=>splash?.remove(),800);},1600); runSelfTests(); });
+    document.addEventListener("DOMContentLoaded",()=>{ forceHideReloadLoader(); bindEvents();  installMoneyTypingFix(); initDate(); initBankMicroUX(); setTimeout(()=>{const splash=$("appSplash"); splash?.classList.add("hide"); setTimeout(()=>splash?.remove(),800);},1600); runSelfTests(); });
   
     document.addEventListener("DOMContentLoaded", loadSavedLoginPreference);
 
