@@ -4593,29 +4593,64 @@ function renderCalculations(){
     }
 
 
+
+    /* =========================================================
+       HISTÓRICO — VISÍVEL SEM CLICAR
+       Primeiro carregamento sempre mostra registros disponíveis.
+       Calendário só filtra após escolha manual.
+    ========================================================= */
+    let historyDateWasManuallySelected = false;
+
+    function markHistoryDateManual(){
+      historyDateWasManuallySelected = true;
+    }
+
+    function getHistoryDefaultDateKeyFromLoadedData(){
+      const today = todayKeySP();
+
+      if(bkHasDateLoaded && bkHasDateLoaded(today)) return today;
+
+      const latest = bkLatestAvailableDateKey ? bkLatestAvailableDateKey() : "";
+      return latest || today;
+    }
+
+    function syncHistoryDateInputToVisibleDay(dateKey){
+      if($("historyDate") && dateKey){
+        $("historyDate").value = dateKey;
+      }
+    }
+
+
 function renderHistory(){
       const search = $("historySearch")?.value.trim().toLowerCase() || "";
-      let date = ensureHistoryOpenDayLoaded();
 
-      let list = bkHistoryBaseList();
+      let list = bkHistoryBaseList ? bkHistoryBaseList() : visibleHistory();
 
       if(search){
         list = list.filter(x => getOperadorName(x).toLowerCase().includes(search));
       }
 
-      if(date){
-        list = list.filter(x => bkHistoryMatchesDate(x, date));
+      let activeDate = $("historyDate")?.value || "";
+
+      // Se o usuário ainda não escolheu uma data, o app decide sozinho:
+      // hoje se tiver fechamento, senão o último dia carregado.
+      if(!historyDateWasManuallySelected){
+        activeDate = getHistoryDefaultDateKeyFromLoadedData();
+        syncHistoryDateInputToVisibleDay(activeDate);
       }
 
-      // Se a tela abriu antes do Firebase terminar, tenta novamente logo depois.
-      if(!list.length && !search && historyCache.length){
-        const latestDate = bkLatestAvailableDateKey();
+      // Se escolheu manualmente, respeita exatamente o calendário.
+      // Se não escolheu, sempre usa uma data com registros para não abrir vazio.
+      if(activeDate){
+        let filtered = list.filter(x => bkHistoryMatchesDate(x, activeDate));
 
-        if(date === todayKeySP() && latestDate && latestDate !== date){
-          date = latestDate;
-          if($("historyDate")) $("historyDate").value = latestDate;
-          list = bkHistoryBaseList().filter(x => bkHistoryMatchesDate(x, latestDate));
+        if(!historyDateWasManuallySelected && !filtered.length && list.length){
+          activeDate = bkLatestAvailableDateKey();
+          syncHistoryDateInputToVisibleDay(activeDate);
+          filtered = list.filter(x => bkHistoryMatchesDate(x, activeDate));
         }
+
+        list = filtered;
       }
 
       list = bkSortHistoryDesc(list);
@@ -4657,7 +4692,7 @@ function renderHistory(){
       }).join("");
 
       if($("historyList")){
-        $("historyList").innerHTML = html || `<div class="empty-state">Carregando ou nenhum fechamento encontrado para ${date || "o dia selecionado"}.</div>`;
+        $("historyList").innerHTML = html || `<div class="empty-state">Carregando histórico...</div>`;
       }
 
       if(totalVisible > MAX_HISTORY_DOM && $("historyList")){
@@ -4684,10 +4719,6 @@ function renderHistory(){
           openHistoryReceipt(row.dataset.receipt);
         };
       });
-
-      if(!totalVisible && !search){
-        forceRenderHistorySoon();
-      }
     }
 
     function periodStart(range){ return periodStartSP(range); }
@@ -6657,6 +6688,8 @@ input:focus{
     function generateBankPdfReport(){ const items=$("reportStart")?getReportItems():visibleHistory(); const win=window.open("","_blank"); if(!win) return alert("Permita pop-ups para gerar o PDF."); win.document.open(); win.document.write(buildBankPdfHtml(items)); win.document.close(); setTimeout(()=>{win.focus();win.print();},500); }
 
     function startHistoryRealtimeListener(){ if(historyUnsubscribe) historyUnsubscribe(); const qh=query(collection(db,"history"),orderBy("submittedAt","desc"),limit(HISTORY_DEFAULT_LOAD_LIMIT)); historyUnsubscribe=onSnapshot(qh,snap=>{historyCache=snap.docs.map(d=>({id:d.id,...d.data()})); hideNotice("appNotice"); renderAll("data");
+        // renderHistoryVisibilityPatch
+        if(isScreenActive("History")) renderHistory();
         forceRenderHistorySoon();
         if(isScreenActive("History")) renderHistory();},error=>{console.warn("History permission/listener:",error); showNotice("appNotice",friendlyError(error),"error"); historyCache=[]; renderAll("data");
         forceRenderHistorySoon();
@@ -6818,6 +6851,15 @@ input:focus{
       if(name==="Ranking") renderRanking(); setTimeout(initBankMicroUX, 30);
       if(name==="Reports") previewReport();
       if(name==="Goals") renderMonthlyGoal(visibleHistory());
+    
+      // historyOpenImmediateRenderPatch
+      if(name === "History"){
+        historyDateWasManuallySelected = false;
+        renderHistory();
+        setTimeout(renderHistory, 250);
+        setTimeout(renderHistory, 900);
+      }
+
     }
     function updateRoleVisibility(){
       applyRoleBodyClass();
@@ -7257,6 +7299,19 @@ input:focus{
         renderHistory();
       });
 
+    
+      // historyManualDateSelectionPatch
+      $("historyDate")?.addEventListener("input", ()=>{
+        markHistoryDateManual();
+        historyDaysVisible = 1;
+        renderHistory();
+      });
+      $("historyDate")?.addEventListener("change", ()=>{
+        markHistoryDateManual();
+        historyDaysVisible = 1;
+        renderHistory();
+      });
+
     }
     
     function initQuickAdjustmentDateTime(){
@@ -7344,6 +7399,12 @@ document.addEventListener("DOMContentLoaded",()=>{ setTimeout(window.__BK_FORCE_
     // historyTodayDOMContentLoadedPatch
     document.addEventListener("DOMContentLoaded",()=>{
       ensureHistoryTodayDefault();
+    });
+    // historyNoClickDOMContentPatch
+    document.addEventListener("DOMContentLoaded",()=>{
+      setTimeout(()=>{
+        if(isScreenActive("History")) renderHistory();
+      }, 700);
     });
 </script>
 </body>
