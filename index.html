@@ -4053,19 +4053,10 @@ function getAdjustmentParts(item){
     }
 
     function baseForNextClosing(){
-      // BASE OPERACIONAL FINAL CORRIGIDA:
-      // O ajuste interno já vem com sinal próprio.
-      // Fórmula desejada para o próximo fechamento real:
-      // diferença = saldoAtual - saldoAnteriorReal + somaDosAjustesInternos
-      //
-      // Como o saveClosing usa: diff = saldoAtual - baseSaldo,
-      // a base precisa ser: saldoAnteriorReal - somaDosAjustesInternos.
-      // Exemplo:
-      // saldoAnterior 7.489.701,48
-      // ajuste -129.687,32
-      // saldoAtual 7.602.095,03
-      // base = 7.489.701,48 - (-129.687,32) = 7.619.388,80
-      // diff = 7.602.095,03 - 7.619.388,80 = -17.293,77
+      // BASE OPERACIONAL FINAL:
+      // 1) Fechamento real passa para o próximo turno como: saldoLiquido - retiradas.
+      // 2) Ajuste interno altera essa base.
+      // 3) Diff do próximo fechamento compara saldoLiquido atual contra essa base.
       const view = calculationHistory();
       const lastRealIndex = view.findIndex(item => !isAdjustmentItem(item));
       const lastReal = lastRealIndex >= 0 ? view[lastRealIndex] : null;
@@ -4077,7 +4068,7 @@ function getAdjustmentParts(item){
         .filter(isAdjustmentItem)
         .reduce((s,item)=>s + adjustmentImpact(item), 0);
 
-      return lastRealBase - adjustmentsAfterLastReal;
+      return lastRealBase + adjustmentsAfterLastReal;
     }
 
     function latestInternalAdjustment(){
@@ -4125,14 +4116,16 @@ function getAdjustmentParts(item){
         );
 
         // Ajustes internos entre o fechamento anterior e o fechamento atual
-        // entram na base, mas não entram como lucro/diferença operacional.
+        // devem preservar o próprio sinal.
+        // Fórmula correta:
+        // diferença = fechamentoAtual - fechamentoAnterior + somaDosAjustesEntreEles
+        // Ex.: 7.602.095,03 - 7.489.701,48 + (-129.687,32) = -17.293,77
         const internalAdjustments = view
           .slice(currentIndex + 1, prevRealIndex)
           .filter(isAdjustmentItem)
           .reduce((s,x)=>s + adjustmentImpact(x), 0);
 
-        const baseComparacao = prevBase + internalAdjustments;
-        return currentSaldo - baseComparacao;
+        return currentSaldo - prevBase + internalAdjustments;
       }catch(e){
         console.warn("Erro displayCashDiff:", e);
         return 0;
@@ -5616,7 +5609,9 @@ function receiptLine(label, value){
           .filter(isAdjustmentItem)
           .reduce((s,item)=>s + adjustmentImpact(item), 0);
 
-        return currentSaldo - (prevBase + internalAdjustments);
+        // Mantém o sinal real do ajuste interno.
+        // diferença = fechamentoAtual - fechamentoAnterior + somaDosAjustesEntreEles
+        return currentSaldo - prevBase + internalAdjustments;
       }catch(e){
         console.warn("Erro ao calcular diff da edição:", e);
         return moneyToNumber(updatedItem?.diff || 0);
@@ -5750,15 +5745,13 @@ function receiptLine(label, value){
             let currentSaldoTotal, diff;
 
             if(isAdjustment){
-              // Ajuste interno já possui sinal próprio.
-              // Não pode ser invertido no próximo fechamento.
-              // Para manter a fórmula diff = saldoAtual - base,
-              // a base de comparação recebe o ajuste ao contrário:
-              // ajuste negativo aumenta a base; ajuste positivo reduz a base.
-              // Assim o próximo fechamento fica:
-              // saldoAtual - saldoAnteriorReal + ajuste
               diff = saldoLiquido;
               currentSaldoTotal = saldoLiquido;
+              // Ajuste interno altera a base de comparação com sinal invertido,
+              // porque a diferença do próximo fechamento deve ser:
+              // fechamentoAtual - fechamentoAnterior + ajusteInterno.
+              // Ex.: ajuste -129.687,32 aumenta a base de comparação,
+              // evitando virar +129.687,32 por engano.
               operationalBaseSaldo = (operationalBaseSaldo ?? 0) - diff;
             }else{
               currentSaldoTotal = saldoLiquido;
