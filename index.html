@@ -2136,7 +2136,7 @@ document.addEventListener("focusout", ev=>{
 
     <section id="screenHome" class="screen active">
       <div class="hero-card">
-        <div class="hero-label">Saldo Reca</div>
+        <div class="hero-label">Saldo Reca total</div>
         <div id="homeSaldoReca" class="hero-value">$ 0,00</div>
         <div id="homeUpdatedAt" class="hero-sub">Aguardando atualização</div>
 
@@ -2200,6 +2200,7 @@ document.addEventListener("focusout", ev=>{
           </div>
           <div class="field"><label>Data do fechamento</label><input id="closingDate" type="datetime-local" /></div>
           <div class="field"><label>Saldo Reca</label><input id="webReca" class="money-input" inputmode="decimal" placeholder="0,00" /></div>
+          <div class="field"><label>Reca automática</label><input id="recaAutomatica" class="money-input" inputmode="decimal" placeholder="0,00" /></div>
           
           <div class="field"><label>Suprema</label><input id="suprema" class="money-input" inputmode="decimal" placeholder="0,00" /></div>
           <div class="field"><label>PPPoker</label><input id="pppoker" class="money-input" inputmode="decimal" placeholder="0,00" /></div>
@@ -2249,6 +2250,7 @@ document.addEventListener("focusout", ev=>{
             <div class="summary-box"><span>Taxa Reca</span><b id="calcCustoRecaSaida">$ 0,00</b></div>
           </div>
           <div class="summary-note">
+            <span>Reca total: <b id="calcRecaTotal">$ 0,00</b></span>
             <span>Carga poker: <b id="calcCargaPoker">$ 0,00</b></span>
             <span>Carga casino: <b id="calcCargaCasino">$ 0,00</b></span>
             
@@ -2580,6 +2582,7 @@ document.addEventListener("focusout", ev=>{
   </div>
 
   <div id="editHistoryModal" class="edit-modal"><div class="edit-panel"><div class="edit-panel-head"><h2>Editar fechamento</h2><button id="editCloseBtn" class="edit-close">×</button></div><input id="editHistoryId" type="hidden" /><div class="form-grid"><div class="field"><label>Operador</label><input id="editOperadorName" /></div><div class="field"><label>Data do fechamento</label><input id="editClosingDate" type="datetime-local" /></div><div class="field"><label>Reca</label><input id="editWebReca" class="money-input" inputmode="decimal" /></div>
+        <div class="field"><label>Reca automática</label><input id="editRecaAutomatica" class="money-input" inputmode="decimal" /></div>
         <div class="field"><label>Suprema</label><input id="editSuprema" class="money-input" inputmode="decimal" /></div><div class="field"><label>PPPoker</label><input id="editPppoker" class="money-input" inputmode="decimal" /></div><div class="field"><label>Buffalo</label><input id="editBuffalo" class="money-input" inputmode="decimal" /></div><div class="field"><label>Ganamos</label><input id="editGanamos" class="money-input" inputmode="decimal" /></div><div class="field"><label>Carga poker</label><input id="editCargasPoker" class="money-input" inputmode="decimal" /></div><div class="field"><label>Carga casino</label><input id="editCargasCasino" class="money-input" inputmode="decimal" /></div></div><div class="grid two"><div class="card" style="box-shadow:none;margin-top:12px;"><div class="card-title"><h2>Pagos pendentes</h2><button id="editAddPendingBtn" class="small-btn">+ Adicionar</button></div><div id="editPendingList" class="dynamic-list"></div></div><div class="card" style="box-shadow:none;margin-top:12px;"><div class="card-title"><h2>Retiradas</h2><button id="editAddOutflowBtn" class="small-btn">+ Adicionar</button></div><div id="editOutflowList" class="dynamic-list"></div></div></div><div class="edit-actions"><button id="saveEditBtn" class="btn">Salvar alterações</button><button id="cancelEditBtn" class="btn secondary">Cancelar</button></div></div></div>
 
   <div id="appReloadLoader" class="app-reload-loader"><div class="reload-card"><div class="reload-spinner"></div><strong>Atualizando sistema</strong><span>Recalculando dados...</span></div></div>
@@ -3128,10 +3131,10 @@ function historyItemDate(item){
        Campos de texto (nome, motivo, responsável, operador, cliente etc.) ficam livres.
     ========================================================= */
     const BK_FINANCIAL_INPUT_IDS = new Set([
-      "webReca","suprema","pppoker","buffalo","ganamos",
+      "webReca","recaAutomatica","suprema","pppoker","buffalo","ganamos",
       "cargasPoker","cargasCasino",
       "quickCargaPoker","quickCargaCasino","quickRetiradaCaixa",
-      "editWebReca","editSuprema","editPppoker","editBuffalo","editGanamos","editCargasPoker","editCargasCasino",
+      "editWebReca","editRecaAutomatica","editSuprema","editPppoker","editBuffalo","editGanamos","editCargasPoker","editCargasCasino",
       "calcSaldoLiquido","calcPendentes","calcSaidas","calcLucroSaida","calcCustoSaida","calcCustoRecaSaida","calcCargaPoker","calcCargaCasino",
       "reportPreviewSaldo","reportPreviewDiff","monthlyGoalDone","monthlyGoalTarget"
     ]);
@@ -3596,7 +3599,10 @@ function bkInstallMoneyKeyboardFinal(){
     bkMoneyApplyEdit(el, type, data);
 
     queueMicrotask(function(){
+      try{ el.dispatchEvent(new Event("bankmoney",{bubbles:true})); }catch(e){}
       try{ el.dispatchEvent(new Event("change",{bubbles:true})); }catch(e){}
+      try{ if(typeof scheduleCalculations === "function") scheduleCalculations(); }catch(e){}
+      try{ if(typeof renderCalculations === "function") renderCalculations(); }catch(e){}
     });
   }, true);
 
@@ -3623,8 +3629,37 @@ function bkInstallMoneyKeyboardFinal(){
 }
 
 document.addEventListener("DOMContentLoaded", function(){
-  bkInstallMoneyKeyboardFinal(); fixTextKeyboardFields();
+  bkInstallMoneyKeyboardFinal(); fixTextKeyboardFields(); bkForceLiveSummary();
 });
+
+/* =========================================================
+   RESUMO EM TEMPO REAL — PATCH FINAL
+   A máscara monetária usa beforeinput, então alguns browsers não disparam
+   input nativo. Este patch recalcula o resumo em qualquer edição/tecla/cola.
+========================================================= */
+function bkForceLiveSummary(){
+  try{ if(typeof scheduleCalculations === "function") scheduleCalculations(); }catch(e){}
+  try{ if(typeof renderCalculations === "function") renderCalculations(); }catch(e){}
+}
+
+document.addEventListener("input", function(ev){
+  const el = ev.target;
+  if(!el || !el.closest || !el.closest("#screenClose, #editHistoryModal")) return;
+  bkForceLiveSummary();
+}, true);
+
+document.addEventListener("change", function(ev){
+  const el = ev.target;
+  if(!el || !el.closest || !el.closest("#screenClose, #editHistoryModal")) return;
+  bkForceLiveSummary();
+}, true);
+
+document.addEventListener("keyup", function(ev){
+  const el = ev.target;
+  if(!el || !el.closest || !el.closest("#screenClose, #editHistoryModal")) return;
+  bkForceLiveSummary();
+}, true);
+
 
 function moneyToNumber(value){
       if(value === null || value === undefined) return 0; if(typeof value === "number") return value;
@@ -4106,7 +4141,21 @@ function getAdjustmentParts(item){
         || "Sem operador";
     }
 
-    function getSaldoRecaFromItem(item={}){
+    function getRecaAutomaticaFromItem(item={}){
+      const t = item.turno || {};
+      return moneyToNumber(
+        t.recaAutomatica ??
+        t.reca_automatica ??
+        t.recaAuto ??
+        t.recaAutomatico ??
+        item.recaAutomatica ??
+        item.reca_automatica ??
+        item.recaAuto ??
+        0
+      );
+    }
+
+    function getSaldoRecaManualFromItem(item={}){
       const t = item.turno || {};
 
       const candidates = [
@@ -4136,6 +4185,10 @@ function getAdjustmentParts(item){
       return 0;
     }
 
+    function getSaldoRecaFromItem(item={}){
+      return getSaldoRecaManualFromItem(item) + getRecaAutomaticaFromItem(item);
+    }
+
     function setOperadorNameOnTurno(turno, nome){
       turno.operadorName = nome || "";
       // Compatibilidade com históricos antigos que ainda foram salvos como operatorName.
@@ -4149,17 +4202,18 @@ function getAdjustmentParts(item){
     function createDynamicRow(containerId,label="Descrição",data={}){ const list=$(containerId); if(!list) return; const row=document.createElement("div"); const isOutflow=containerId.toLowerCase().includes("outflow"); row.className="row-item"+(isOutflow?" outflow-row":""); const safeName=String(data.name||"").replace(/"/g,'&quot;'); const value=data.value ? formatInputMoney(data.value) : ""; const category=data.category||data.type||"lucro"; row.innerHTML=isOutflow?`<input class="row-name" placeholder="${label}" value="${safeName}" /><select class="row-category"><option value="lucro">Lucro</option><option value="custo_operacional">Custo operacional</option><option value="custo_reca">Taxa Reca</option></select><input class="row-value money-input" inputmode="decimal" placeholder="0,00" value="${value}" /><button type="button" class="remove-row">×</button>`:`<input class="row-name" placeholder="${label}" value="${safeName}" /><input class="row-value money-input" inputmode="decimal" placeholder="0,00" value="${value}" /><button type="button" class="remove-row">×</button>`; if(isOutflow) row.querySelector(".row-category").value=category; row.querySelectorAll("input,select").forEach(i=>i.addEventListener("input",scheduleCalculations)); row.querySelectorAll("select").forEach(i=>i.addEventListener("change",scheduleCalculations)); row.querySelector(".remove-row").onclick=()=>{row.remove();renderCalculations();}; list.appendChild(row); applyBankMoneyMaskAll(row); enableClearOnFocus(); }
 
     function getTurnFromForm(){
-      const webReca=moneyToNumber($("webReca")?.value), suprema=moneyToNumber($("suprema")?.value), pppoker=moneyToNumber($("pppoker")?.value), buffalo=moneyToNumber($("buffalo")?.value), ganamos=moneyToNumber($("ganamos")?.value), cargasPoker=moneyToNumber($("cargasPoker")?.value), cargasCasino=moneyToNumber($("cargasCasino")?.value);
+      const webReca=moneyToNumber($("webReca")?.value), recaAutomatica=moneyToNumber($("recaAutomatica")?.value), suprema=moneyToNumber($("suprema")?.value), pppoker=moneyToNumber($("pppoker")?.value), buffalo=moneyToNumber($("buffalo")?.value), ganamos=moneyToNumber($("ganamos")?.value), cargasPoker=moneyToNumber($("cargasPoker")?.value), cargasCasino=moneyToNumber($("cargasCasino")?.value);
       const pendings=getDynamicRows("pendingList"), outflows=getDynamicRows("outflowList");
       const pendentesTotal=pendings.reduce((s,x)=>s+x.value,0), saidasTotal=outflows.reduce((s,x)=>s+x.value,0), retiradaLucroTotal=sumOutflowsByCategory(outflows,"lucro"), custoOperacionalTotal=sumOutflowsByCategory(outflows,"custo_operacional"), custoRecaTotal=sumOutflowsByCategory(outflows,"custo_reca");
       const nomeOperador = $("operadorName")?.value.trim() || "";
-      const turno={operadorName:nomeOperador, closingDate:$("closingDate")?.value||nowSP().toISOString(), webReca,suprema,pppoker,buffalo,ganamos,cargasPoker,cargasCasino,pendings,outflows,pendentesTotal,saidasTotal,retiradaLucroTotal,custoOperacionalTotal,custoRecaTotal};
+      const turno={operadorName:nomeOperador, closingDate:$("closingDate")?.value||nowSP().toISOString(), webReca,recaAutomatica,suprema,pppoker,buffalo,ganamos,cargasPoker,cargasCasino,pendings,outflows,pendentesTotal,saidasTotal,retiradaLucroTotal,custoOperacionalTotal,custoRecaTotal};
       setOperadorNameOnTurno(turno, nomeOperador);
       turno.saldoLiquido=calcularSaldoLiquido(turno);
       return turno;
     }
     function calcularSaldoLiquido(turno={}){
       const webReca=moneyToNumber(turno.webReca??turno.reca??turno.banco??0),
+        recaAutomatica=moneyToNumber(turno.recaAutomatica??turno.reca_automatica??turno.recaAuto??0),
         suprema=moneyToNumber(turno.suprema??0)*400,
         pppoker=moneyToNumber(turno.pppoker??0)*400,
         buffalo=moneyToNumber(turno.buffalo??0),
@@ -4171,7 +4225,7 @@ function getAdjustmentParts(item){
 
       // Saldo líquido de conferência: soma retiradas porque elas saíram do caixa,
       // mas precisam ser reconhecidas no resultado daquele fechamento.
-      return webReca+suprema+pppoker+buffalo+ganamos+cargasPoker+cargasCasino-pendentes+saidas;
+      return webReca+recaAutomatica+suprema+pppoker+buffalo+ganamos+cargasPoker+cargasCasino-pendentes+saidas;
     }
 
     function calcularBaseOperacional(turno={}){
@@ -4195,7 +4249,7 @@ function getAdjustmentParts(item){
     }
 
     function clearClosingForm(){
-      ["webReca","suprema","pppoker","buffalo","ganamos","cargasPoker","cargasCasino"].forEach(id=>{
+      ["webReca","recaAutomatica","suprema","pppoker","buffalo","ganamos","cargasPoker","cargasCasino"].forEach(id=>{
         if($(id)) $(id).value = "";
       });
 
@@ -4231,6 +4285,7 @@ function renderCalculations(){
       if($("calcLucroSaida")) $("calcLucroSaida").textContent = formatMoney(turno.retiradaLucroTotal || 0);
       if($("calcCustoSaida")) $("calcCustoSaida").textContent = formatMoney(turno.custoOperacionalTotal || 0);
       if($("calcCustoRecaSaida")) $("calcCustoRecaSaida").textContent = formatMoney(turno.custoRecaTotal || 0);
+      if($("calcRecaTotal")) $("calcRecaTotal").textContent = formatMoney(moneyToNumber(turno.webReca || 0) + moneyToNumber(turno.recaAutomatica || 0));
       if($("calcCargaPoker")) $("calcCargaPoker").textContent = formatMoney((turno.cargasPoker || 0) * 400);
       if($("calcCargaCasino")) $("calcCargaCasino").textContent = formatMoney(turno.cargasCasino || 0);
       
@@ -4811,6 +4866,7 @@ function renderHistory(){
           </div>
           <div class="history-values">
             <div><span class="muted">Saldo líquido</span><b>${formatMoney(saldo)}</b></div>
+            <div><span class="muted">Reca total</span><b>${formatMoney(getSaldoRecaFromItem(item))}</b></div>
             <div><span class="muted">Diferença</span><b style="color:${diff < 0 ? '#ef4444' : '#16c784'}">${formatMoney(diff)}</b></div>
           </div>
           <div class="history-actions">${adminActions}</div>
@@ -4935,7 +4991,7 @@ function renderHistory(){
     }
 
     function validateTurnBeforeSave(turno){
-      const hasMainValue = [turno.webReca, turno.suprema, turno.pppoker, turno.buffalo, turno.ganamos, turno.cargasPoker, turno.cargasCasino, turno.pendentesTotal, turno.saidasTotal].some(v=>moneyToNumber(v)>0);
+      const hasMainValue = [turno.webReca, turno.recaAutomatica, turno.suprema, turno.pppoker, turno.buffalo, turno.ganamos, turno.cargasPoker, turno.cargasCasino, turno.pendentesTotal, turno.saidasTotal].some(v=>moneyToNumber(v)>0);
       if(!getOperadorName({turno}) || getOperadorName({turno}) === "Sem operador") return "Informe o operador.";
       if(!hasMainValue) return "Informe pelo menos um valor antes de salvar.";
       
@@ -5058,6 +5114,7 @@ function renderHistory(){
         adjustmentSortAt: chosenIso,
 
         webReca: 0,
+        recaAutomatica: 0,
         suprema: 0,
         pppoker: 0,
         buffalo: 0,
@@ -5296,6 +5353,8 @@ function receiptLine(label, value){
           <h3>Resumo financeiro</h3>
           <div class="receipt-list">
             ${receiptLine("Saldo Reca", formatMoney(t.webReca ?? t.reca ?? 0))}
+            ${receiptLine("Reca automática", formatMoney(t.recaAutomatica ?? t.reca_automatica ?? t.recaAuto ?? 0))}
+            ${receiptLine("Reca total", formatMoney(getSaldoRecaFromItem(item)))}
             ${receiptLine("Suprema ×400", formatMoney(moneyToNumber(t.suprema || 0) * 400))}
             ${receiptLine("PPPoker ×400", formatMoney(moneyToNumber(t.pppoker || 0) * 400))}
             ${receiptLine("Buffalo", formatMoney(t.buffalo || 0))}
@@ -5471,6 +5530,8 @@ function receiptLine(label, value){
         content = `
           <div class="receipt-section"><h3>Composição do saldo</h3><div class="receipt-list">
             ${receiptLine("Saldo Reca", formatMoney(t.webReca ?? t.reca ?? 0))}
+            ${receiptLine("Reca automática", formatMoney(t.recaAutomatica ?? t.reca_automatica ?? t.recaAuto ?? 0))}
+            ${receiptLine("Reca total", formatMoney(getSaldoRecaFromItem(last)))}
             ${receiptLine("Suprema ×400", formatMoney(moneyToNumber(t.suprema || 0) * 400))}
             ${receiptLine("PPPoker ×400", formatMoney(moneyToNumber(t.pppoker || 0) * 400))}
             ${receiptLine("Buffalo", formatMoney(t.buffalo || 0))}
@@ -5518,7 +5579,7 @@ function receiptLine(label, value){
       $("receiptModal").classList.add("active");
     }
 
-    async function openEditHistory(id){ const item=historyCache.find(x=>x.id===id); if(!item) return alert("Fechamento não encontrado no cache."); if(!canEditHistoryItem(item)) return alert("Você só pode editar o seu último fechamento de turno."); const t=item.turno||{}; $("editHistoryId").value=id; $("editOperadorName").value=getOperadorName(item)==="Sem operador" ? "" : getOperadorName(item); $("editClosingDate").value=toDateInputValue(t.closingDate||item.submittedAt); $("editWebReca").value=formatInputMoney(t.webReca??t.reca??0); $("editSuprema").value=formatInputMoney(t.suprema??0); $("editPppoker").value=formatInputMoney(t.pppoker??0); $("editBuffalo").value=formatInputMoney(t.buffalo??0); $("editGanamos").value=formatInputMoney(t.ganamos??0); $("editCargasPoker").value=formatInputMoney(t.cargasPoker??0); $("editCargasCasino").value=formatInputMoney(t.cargasCasino??t.cargas??0); setDynamicRows("editPendingList",t.pendings||[]); setDynamicRows("editOutflowList",t.outflows||[]); ["editWebReca","editSuprema","editPppoker","editBuffalo","editGanamos","editCargasPoker","editCargasCasino"].forEach(function(fid){ const input=$(fid); if(input) bkMoneyPrepare(input); }); $("editHistoryModal").classList.add("active"); }
+    async function openEditHistory(id){ const item=historyCache.find(x=>x.id===id); if(!item) return alert("Fechamento não encontrado no cache."); if(!canEditHistoryItem(item)) return alert("Você só pode editar o seu último fechamento de turno."); const t=item.turno||{}; $("editHistoryId").value=id; $("editOperadorName").value=getOperadorName(item)==="Sem operador" ? "" : getOperadorName(item); $("editClosingDate").value=toDateInputValue(t.closingDate||item.submittedAt); $("editWebReca").value=formatInputMoney(t.webReca??t.reca??0); $("editRecaAutomatica").value=formatInputMoney(t.recaAutomatica??t.reca_automatica??t.recaAuto??0); $("editSuprema").value=formatInputMoney(t.suprema??0); $("editPppoker").value=formatInputMoney(t.pppoker??0); $("editBuffalo").value=formatInputMoney(t.buffalo??0); $("editGanamos").value=formatInputMoney(t.ganamos??0); $("editCargasPoker").value=formatInputMoney(t.cargasPoker??0); $("editCargasCasino").value=formatInputMoney(t.cargasCasino??t.cargas??0); setDynamicRows("editPendingList",t.pendings||[]); setDynamicRows("editOutflowList",t.outflows||[]); ["editWebReca","editRecaAutomatica","editSuprema","editPppoker","editBuffalo","editGanamos","editCargasPoker","editCargasCasino"].forEach(function(fid){ const input=$(fid); if(input) bkMoneyPrepare(input); }); $("editHistoryModal").classList.add("active"); }
     function closeEdit(){ $("editHistoryModal").classList.remove("active"); }
     function calculateDiffForEditedItem(updatedItem){
       try{
@@ -5569,6 +5630,7 @@ function receiptLine(label, value){
         operadorName: $("editOperadorName")?.value?.trim() || "",
         closingDate: $("editClosingDate")?.value || nowSP().toISOString(),
         webReca: moneyToNumber($("editWebReca")?.value),
+        recaAutomatica: moneyToNumber($("editRecaAutomatica")?.value),
         suprema: moneyToNumber($("editSuprema")?.value),
         pppoker: moneyToNumber($("editPppoker")?.value),
         buffalo: moneyToNumber($("editBuffalo")?.value),
@@ -6322,7 +6384,7 @@ input:focus{
       }
     }
 
-    function previewReport(){ if(!$("reportPreviewCount")) return; const items=getReportItems(), totalSaldo=items.reduce((s,x)=>s+moneyToNumber(x.turno?.saldoLiquido??x.currentSaldoTotal),0), totalDiff=items.reduce((s,x)=>s+moneyToNumber(x.diff),0); $("reportPreviewCount").textContent=items.length; $("reportPreviewSaldo").textContent=formatMoney(totalSaldo); $("reportPreviewDiff").textContent=formatMoney(totalDiff); }
+    function previewReport(){ if(!$("reportPreviewCount")) return; const items=getReportItems(), totalSaldo=items.reduce((s,x)=>s+moneyToNumber(x.turno?.saldoLiquido??x.currentSaldoTotal),0), totalDiff=reportClosingCashDiffOnly(items); $("reportPreviewCount").textContent=items.length; $("reportPreviewSaldo").textContent=formatMoney(totalSaldo); $("reportPreviewDiff").textContent=formatMoney(totalDiff); }
     function buildBankPdfHtml(items){
       const categoryLabel = reportFilterLabel();
       const periodLabel = reportPeriodLabel();
@@ -6331,6 +6393,9 @@ input:focus{
       const generatedAt = formatDateTimeSP(nowSP());
       const reportCode = "BK-" + Date.now().toString().slice(-8);
       const totalSaldo = items.reduce((s,x)=>s + moneyToNumber(x.turno?.saldoLiquido ?? x.currentSaldoTotal), 0);
+      const totalRecaManual = items.reduce((s,x)=>s + getSaldoRecaManualFromItem(x), 0);
+      const totalRecaAutomatica = items.reduce((s,x)=>s + getRecaAutomaticaFromItem(x), 0);
+      const totalRecaGeral = totalRecaManual + totalRecaAutomatica;
       const totalDiff = reportClosingCashDiffOnly(items);
       const totalAjustes = items.filter(isAdjustmentItem).reduce((s,x)=>s + adjustmentImpact(x), 0);
       const ajusteParts = items.filter(isAdjustmentItem).map(getAdjustmentParts);
@@ -6390,6 +6455,8 @@ input:focus{
           <div class="detail-grid">
             <div class="detail-card"><h3>Saldos</h3>
               <div class="line"><span>Reca</span><b>${formatMoney(t.webReca ?? t.reca ?? 0)}</b></div>
+              <div class="line"><span>Reca automática</span><b>${formatMoney(t.recaAutomatica ?? t.reca_automatica ?? t.recaAuto ?? 0)}</b></div>
+              <div class="line"><span>Reca total</span><b>${formatMoney(getSaldoRecaFromItem(item))}</b></div>
               <div class="line"><span>Suprema ×400</span><b>${formatMoney(moneyToNumber(t.suprema||0)*400)}</b></div>
               <div class="line"><span>PPPoker ×400</span><b>${formatMoney(moneyToNumber(t.pppoker||0)*400)}</b></div>
               <div class="line"><span>Buffalo</span><b>${formatMoney(t.buffalo || 0)}</b></div>
@@ -6922,6 +6989,8 @@ input:focus{
 
 </style></head><body><div class="toolbar"><strong>Relatório Bank King • ${reportCode}</strong><div class="toolbar-actions"><button class="tool-btn secondary" onclick="window.close()">Voltar</button><button class="tool-btn secondary" onclick="window.print()">Imprimir</button><button class="tool-btn primary" onclick="window.print()">Salvar PDF</button></div></div><header class="cover"><div class="cover-top"><div class="brand"><div class="logo">BK</div><div><h1>Bank King</h1><p>${categoryLabel}</p></div></div><div class="meta">Código: ${reportCode}<br>Gerado em: ${generatedAt}<br>Usuário: ${currentProfile?.name || currentUser?.email || "-"}</div></div><div class="pdf-kpi-wrapper">
   <div class="pdf-kpi-grid">
+    <div class="pdf-kpi-card"><span>Reca total</span><b>${formatMoney(totalRecaGeral)}</b></div>
+    <div class="pdf-kpi-card"><span>Reca automática</span><b>${formatMoney(totalRecaAutomatica)}</b></div>
     <div class="pdf-kpi-card"><span>Custo operacional</span><b>${formatMoney(totalCustoOperacional)}</b></div>
     <div class="pdf-kpi-card"><span>Custo RECA</span><b>${formatMoney(totalCustoReca)}</b></div>
     <div class="pdf-kpi-card ${totalDiff < 0 ? "negative" : "positive"}"><span>Diferença de caixa</span><b>${formatMoney(totalDiff)}</b></div>
@@ -6964,10 +7033,12 @@ input:focus{
 
         const realtimeValue = moneyToNumber(data.valor);
         const last = lastRealClosing() || visibleHistory()[0];
+        const autoReca = getRecaAutomaticaFromItem(last);
         const historyReca = getSaldoRecaFromItem(last);
 
-        // Não deixa um documento realtime zerado apagar o Saldo Reca do último fechamento.
-        const valueToShow = realtimeValue > 0 ? realtimeValue : historyReca;
+        // Realtime representa a RECA principal. A RECA automática é somada como segunda conta bancária.
+        // Se o realtime vier zerado, usa o total salvo no último fechamento.
+        const valueToShow = realtimeValue > 0 ? realtimeValue + autoReca : historyReca;
 
         updateHeroBalance(valueToShow);
 
@@ -7440,7 +7511,13 @@ input:focus{
           showScreen("Home");
           refreshInternal();
         };
-      } applyBankMoneyMaskAll(document); enableClearOnFocus(); ["webReca","suprema","pppoker","buffalo","ganamos","cargasPoker","cargasCasino","quickCargaCasino","quickRetiradaCaixa","operadorName","closingDate","editWebReca","editSuprema","editPppoker","editBuffalo","editGanamos","editCargasPoker","editCargasCasino"].forEach(id=>$(id)?.addEventListener("input",scheduleCalculations)); document.addEventListener("bankmoney", renderCalculations); $("togglePendingBtn") && ($("togglePendingBtn").onclick=()=>{ const panel=$("pendingPanel"); panel?.classList.toggle("active"); $("togglePendingBtn").textContent = panel?.classList.contains("active") ? "Ocultar" : "Abrir"; });
+      } applyBankMoneyMaskAll(document); enableClearOnFocus(); ["webReca","recaAutomatica","suprema","pppoker","buffalo","ganamos","cargasPoker","cargasCasino","quickCargaCasino","quickRetiradaCaixa","operadorName","closingDate","editWebReca","editRecaAutomatica","editSuprema","editPppoker","editBuffalo","editGanamos","editCargasPoker","editCargasCasino"].forEach(id=>{
+        const el=$(id);
+        if(!el) return;
+        el.addEventListener("input",scheduleCalculations);
+        el.addEventListener("change",scheduleCalculations);
+        el.addEventListener("keyup",scheduleCalculations);
+      }); document.addEventListener("bankmoney", function(){ try{ scheduleCalculations(); }catch(e){} try{ renderCalculations(); }catch(e){} }); $("togglePendingBtn") && ($("togglePendingBtn").onclick=()=>{ const panel=$("pendingPanel"); panel?.classList.toggle("active"); $("togglePendingBtn").textContent = panel?.classList.contains("active") ? "Ocultar" : "Abrir"; });
       $("toggleOutflowBtn") && ($("toggleOutflowBtn").onclick=()=>{ const panel=$("outflowPanel"); panel?.classList.toggle("active"); $("toggleOutflowBtn").textContent = panel?.classList.contains("active") ? "Ocultar" : "Abrir"; });
       $("addPendingBtn") && ($("addPendingBtn").onclick=()=>createDynamicRow("pendingList","Nome / motivo"));
       $("addOutflowBtn") && ($("addOutflowBtn").onclick=()=>createDynamicRow("outflowList","Descrição"));
@@ -7606,6 +7683,7 @@ function initDate(){ if($("closingDate")) $("closingDate").value = localInputSP(
       assert("money BR",moneyToNumber("1.234,56")===1234.56);
       assert("money US",moneyToNumber("1,234.56")===1234.56);
       assert("calc multipliers",calcularSaldoLiquido({webReca:100,suprema:1,pppoker:2,buffalo:10,ganamos:20,cargasPoker:1,cargasCasino:5,pendentesTotal:15,saidasTotal:7})===1327);
+      assert("reca automatica soma no saldo",calcularSaldoLiquido({webReca:100,recaAutomatica:50,pendentesTotal:0,saidasTotal:0})===150);
       assert("history access approved",canAccessHistoryItem({createdBy:"u1",turno:{}})===true);
 
       currentUser = savedUser;
