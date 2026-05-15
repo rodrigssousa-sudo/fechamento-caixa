@@ -1,3 +1,7 @@
+BANKKING_ESTAVEL_CORRIGIDO_FINAL.html
+
+
+
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
@@ -3860,10 +3864,10 @@ function moneyToNumber(value){
     }
 
     function calculationHistory(){
-      // Fonte única para cálculo: histórico completo ORDENADO pela data/hora real do fechamento/ajuste.
-      // Importante: não usar a ordem bruta do Firestore, porque ajuste interno pode ser criado depois
-      // mas com horário escolhido entre dois fechamentos.
-      return bkSortHistoryDesc(historyCache || []);
+      // Usa o histórico carregado completo para cálculos internos.
+      // Operadores continuam sem ver ajustes internos na interface,
+      // mas o diff/base considera esses ajustes para não quebrar o caixa.
+      return historyCache;
     }
 
     function historyItemOwnerEmail(item){
@@ -4095,8 +4099,6 @@ function getAdjustmentParts(item){
       try{
         if(!item) return 0;
 
-        // Ajuste interno não é fechamento operacional.
-        // No card dele mostramos somente o impacto de auditoria.
         if(isAdjustmentItem(item)){
           return adjustmentImpact(item);
         }
@@ -4111,20 +4113,21 @@ function getAdjustmentParts(item){
         if(prevRealIndex < 0) return 0;
 
         const prevReal = view[prevRealIndex];
-        const prevSaldo = moneyToNumber(prevReal.turno?.saldoLiquido ?? prevReal.currentSaldoTotal ?? 0);
+        const prevBase = moneyToNumber(
+          prevReal.turno?.baseOperacional ??
+          prevReal.operationalBase ??
+          calcularBaseOperacional(prevReal.turno || {})
+        );
 
-        // REGRA FINAL BANK KING:
-        // [FECHAMENTO REAL ANTERIOR]
-        // +/- [AJUSTES INTERNOS]  -> alteram a BASE do próximo fechamento
-        // [PRÓXIMO FECHAMENTO REAL]
-        // Diferença exibida = fechamento atual - (fechamento anterior + ajustes internos entre eles)
-        const ajustesEntreFechamentos = view
+        // Ajustes internos entre o fechamento anterior e o fechamento atual
+        // entram na base, mas não entram como lucro/diferença operacional.
+        const internalAdjustments = view
           .slice(currentIndex + 1, prevRealIndex)
           .filter(isAdjustmentItem)
-          .reduce((s, ajuste) => s + adjustmentImpact(ajuste), 0);
+          .reduce((s,x)=>s + adjustmentImpact(x), 0);
 
-        const baseAjustada = prevSaldo + ajustesEntreFechamentos;
-        return currentSaldo - baseAjustada;
+        const baseComparacao = prevBase + internalAdjustments;
+        return currentSaldo - baseComparacao;
       }catch(e){
         console.warn("Erro displayCashDiff:", e);
         return 0;
@@ -4868,7 +4871,7 @@ function renderHistory(){
           <div class="history-values">
             <div><span class="muted">Saldo líquido</span><b>${formatMoney(saldo)}</b></div>
             <div><span class="muted">Reca total</span><b>${formatMoney(getSaldoRecaFromItem(item))}</b></div>
-            <div><span class="muted">${ajuste ? 'Impacto auditoria' : 'Diferença'}</span><b style="color:${diff < 0 ? '#ef4444' : '#16c784'}">${formatMoney(diff)}</b></div>
+            <div><span class="muted">Diferença</span><b style="color:${diff < 0 ? '#ef4444' : '#16c784'}">${formatMoney(diff)}</b></div>
           </div>
           <div class="history-actions">${adminActions}</div>
         </div>`;
@@ -5597,13 +5600,18 @@ function receiptLine(label, value){
         if(prevRealIndex < 0) return 0;
 
         const prevReal = view[prevRealIndex];
-        const prevSaldo = moneyToNumber(prevReal?.turno?.saldoLiquido ?? prevReal?.currentSaldoTotal ?? 0);
-        const ajustesEntreFechamentos = view
+        const prevBase = moneyToNumber(
+          prevReal?.turno?.baseOperacional ??
+          prevReal?.operationalBase ??
+          calcularBaseOperacional(prevReal?.turno || {})
+        );
+
+        const internalAdjustments = view
           .slice(currentIndex + 1, prevRealIndex)
           .filter(isAdjustmentItem)
-          .reduce((s, ajuste) => s + adjustmentImpact(ajuste), 0);
+          .reduce((s,item)=>s + adjustmentImpact(item), 0);
 
-        return currentSaldo - (prevSaldo + ajustesEntreFechamentos);
+        return currentSaldo - (prevBase + internalAdjustments);
       }catch(e){
         console.warn("Erro ao calcular diff da edição:", e);
         return moneyToNumber(updatedItem?.diff || 0);
@@ -5720,61 +5728,33 @@ function receiptLine(label, value){
     async function recalculateAllHistory(){
       if(!await requireAdmin()) return false;
 
-      showReloadLoaderSafe("Atualizando sistema", "Recalculando dados pela ordem real...");
+      showReloadLoaderSafe("Atualizando sistema", "Recalculando dados...");
 
       try{
-        // NÃO usar apenas submittedAt para recalcular, porque ajuste interno pode ser criado depois
-        // com data/hora escolhida entre dois fechamentos. A ordem correta é a ordem operacional real.
-        const qh=query(collection(db,"history"));
-        const snap=await withTimeout(getDocs(qh), 12000, "buscar histórico");
+        const qh=query(collection(db,"history"),orderBy("submittedAt","asc"));
+        const snap=await withTimeout(getDocs(qh), 8000, "buscar histórico");
+        let operationalBaseSaldo=null;
 
-        const docsOrdenados = snap.docs
-          .map(d => ({ id:d.id, data:d.data() }))
-          .sort((a,b) => bkHistoryTimestampMs({ id:a.id, ...(a.data||{}) }) - bkHistoryTimestampMs({ id:b.id, ...(b.data||{}) }));
-
-        let baseAjustada=null;
-        let ultimoFechamentoReal=null;
-
-        for(const item of docsOrdenados){
+        for(const item of snap.docs){
           try{
-            const data=item.data || {};
+            const data=item.data();
             const turno=data.turno||{};
             const isAdjustment = data.adjustment === true || data.type === "capital_injection" || turno.ajusteTipo === "carga_rapida";
             const adjustmentParts = isAdjustment ? getAdjustmentParts({ ...data, turno }) : null;
-
-            let saldoLiquido, currentSaldoTotal, diff, baseOperacional;
+            const saldoLiquido = isAdjustment ? adjustmentImpact({ ...data, turno }) : calcularSaldoLiquido(turno);
+            let currentSaldoTotal, diff;
 
             if(isAdjustment){
-              // AJUSTE INTERNO:
-              // - entra na base líquida do próximo fechamento real
-              // - aparece somente como auditoria/impacto
-              // - NÃO é diferença operacional
-              saldoLiquido = adjustmentImpact({ ...data, turno });
+              diff = saldoLiquido;
               currentSaldoTotal = saldoLiquido;
-              diff = 0;
-
-              if(baseAjustada === null){
-                baseAjustada = ultimoFechamentoReal ?? 0;
-              }
-              baseAjustada += saldoLiquido;
-              baseOperacional = baseAjustada;
+              operationalBaseSaldo = (operationalBaseSaldo ?? 0) + diff;
             }else{
-              // FECHAMENTO REAL:
-              // T1 ajustado = T1 + ajustes internos entre T1 e T2
-              // Diferença real = T2 - T1 ajustado
-              saldoLiquido = calcularSaldoLiquido(turno);
               currentSaldoTotal = saldoLiquido;
-
-              if(baseAjustada === null){
-                diff = 0;
-              }else{
-                diff = currentSaldoTotal - baseAjustada;
-              }
-
-              ultimoFechamentoReal = currentSaldoTotal;
-              baseAjustada = currentSaldoTotal;
-              baseOperacional = currentSaldoTotal;
+              diff = operationalBaseSaldo===null ? 0 : currentSaldoTotal - operationalBaseSaldo;
+              operationalBaseSaldo = calcularBaseOperacional({ ...turno, saldoLiquido });
             }
+
+            const baseOperacional = isAdjustment ? operationalBaseSaldo : calcularBaseOperacional({ ...turno, saldoLiquido });
 
             const updatePayload = {
               "turno.saldoLiquido": saldoLiquido,
@@ -5798,12 +5778,11 @@ function receiptLine(label, value){
         }
 
         try{
-          await withTimeout(addAudit("recalculate_history","Histórico recalculado pela base operacional ajustada"), 4000, "salvar auditoria");
+          await withTimeout(addAudit("recalculate_history","Histórico recalculado com segurança"), 4000, "salvar auditoria");
         }catch(auditErr){
           console.warn("Auditoria ignorada:", auditErr);
         }
 
-        await loadHistory?.();
         renderAll("data");
         return true;
       }catch(e){
