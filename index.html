@@ -5726,11 +5726,18 @@ function receiptLine(label, value){
             let currentSaldoTotal, diff;
 
             if(isAdjustment){
-              // Ajuste interno segue auditável como retirada/carga interna.
-              // Ele pode alterar a base operacional, mas NÃO entra na diferença real do fechamento.
-              diff = saldoLiquido;
+              // AJUSTE INTERNO:
+              // altera a base operacional do próximo fechamento,
+              // mas NÃO aparece como diferença operacional real.
+              diff = 0;
+
+              // soma ou reduz da base do próximo fechamento
+              operationalBaseSaldo =
+                (operationalBaseSaldo ?? lastRealSaldoTotal ?? 0)
+                + saldoLiquido;
+
+              // mantém apenas auditoria visual
               currentSaldoTotal = saldoLiquido;
-              operationalBaseSaldo = (operationalBaseSaldo ?? 0) + diff;
             }else{
               currentSaldoTotal = saldoLiquido;
               // Diferença real do fechamento = T2 - T1.
