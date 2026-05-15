@@ -4095,6 +4095,8 @@ function getAdjustmentParts(item){
       try{
         if(!item) return 0;
 
+        // Ajuste interno não é fechamento operacional.
+        // No card dele mostramos somente o impacto de auditoria.
         if(isAdjustmentItem(item)){
           return adjustmentImpact(item);
         }
@@ -4111,10 +4113,18 @@ function getAdjustmentParts(item){
         const prevReal = view[prevRealIndex];
         const prevSaldo = moneyToNumber(prevReal.turno?.saldoLiquido ?? prevReal.currentSaldoTotal ?? 0);
 
-        // Diferença de caixa REAL exibida na tela:
-        // T2 - T1. Ajustes internos NÃO entram nesse número.
-        // Retirada/carga interna fica separada no card/relatório de ajuste interno.
-        return currentSaldo - prevSaldo;
+        // REGRA FINAL BANK KING:
+        // [FECHAMENTO REAL ANTERIOR]
+        // +/- [AJUSTES INTERNOS]  -> alteram a BASE do próximo fechamento
+        // [PRÓXIMO FECHAMENTO REAL]
+        // Diferença exibida = fechamento atual - (fechamento anterior + ajustes internos entre eles)
+        const ajustesEntreFechamentos = view
+          .slice(currentIndex + 1, prevRealIndex)
+          .filter(isAdjustmentItem)
+          .reduce((s, ajuste) => s + adjustmentImpact(ajuste), 0);
+
+        const baseAjustada = prevSaldo + ajustesEntreFechamentos;
+        return currentSaldo - baseAjustada;
       }catch(e){
         console.warn("Erro displayCashDiff:", e);
         return 0;
@@ -4858,7 +4868,7 @@ function renderHistory(){
           <div class="history-values">
             <div><span class="muted">Saldo líquido</span><b>${formatMoney(saldo)}</b></div>
             <div><span class="muted">Reca total</span><b>${formatMoney(getSaldoRecaFromItem(item))}</b></div>
-            <div><span class="muted">Diferença</span><b style="color:${diff < 0 ? '#ef4444' : '#16c784'}">${formatMoney(diff)}</b></div>
+            <div><span class="muted">${ajuste ? 'Impacto auditoria' : 'Diferença'}</span><b style="color:${diff < 0 ? '#ef4444' : '#16c784'}">${formatMoney(diff)}</b></div>
           </div>
           <div class="history-actions">${adminActions}</div>
         </div>`;
@@ -5588,10 +5598,12 @@ function receiptLine(label, value){
 
         const prevReal = view[prevRealIndex];
         const prevSaldo = moneyToNumber(prevReal?.turno?.saldoLiquido ?? prevReal?.currentSaldoTotal ?? 0);
+        const ajustesEntreFechamentos = view
+          .slice(currentIndex + 1, prevRealIndex)
+          .filter(isAdjustmentItem)
+          .reduce((s, ajuste) => s + adjustmentImpact(ajuste), 0);
 
-        // Na edição, mantém a mesma regra da tela:
-        // diferença real = T2 - T1, sem misturar ajuste interno.
-        return currentSaldo - prevSaldo;
+        return currentSaldo - (prevSaldo + ajustesEntreFechamentos);
       }catch(e){
         console.warn("Erro ao calcular diff da edição:", e);
         return moneyToNumber(updatedItem?.diff || 0);
@@ -5727,23 +5739,24 @@ function receiptLine(label, value){
 
             if(isAdjustment){
               // AJUSTE INTERNO:
-              // altera a base operacional do próximo fechamento,
-              // mas NÃO aparece como diferença operacional real.
+              // altera a base do próximo fechamento real, mas não cria diferença operacional.
               diff = 0;
 
-              // soma ou reduz da base do próximo fechamento
               operationalBaseSaldo =
                 (operationalBaseSaldo ?? lastRealSaldoTotal ?? 0)
                 + saldoLiquido;
 
-              // mantém apenas auditoria visual
               currentSaldoTotal = saldoLiquido;
             }else{
               currentSaldoTotal = saldoLiquido;
-              // Diferença real do fechamento = T2 - T1.
-              // Ajustes internos ficam em relatório próprio e não inflam esse número.
-              diff = lastRealSaldoTotal===null ? 0 : currentSaldoTotal - lastRealSaldoTotal;
-              operationalBaseSaldo = calcularBaseOperacional({ ...turno, saldoLiquido });
+
+              // REGRA FINAL:
+              // diferença = fechamento atual - base ajustada
+              // base ajustada = último fechamento real + ajustes internos entre os fechamentos.
+              diff = operationalBaseSaldo === null ? 0 : currentSaldoTotal - operationalBaseSaldo;
+
+              // Depois que fecha um turno real, ele vira a nova base para o próximo ciclo.
+              operationalBaseSaldo = currentSaldoTotal;
               lastRealSaldoTotal = currentSaldoTotal;
             }
 
