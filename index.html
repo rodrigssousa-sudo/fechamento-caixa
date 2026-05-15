@@ -4109,23 +4109,12 @@ function getAdjustmentParts(item){
         if(prevRealIndex < 0) return 0;
 
         const prevReal = view[prevRealIndex];
-        const prevBase = moneyToNumber(
-          prevReal.turno?.baseOperacional ??
-          prevReal.operationalBase ??
-          calcularBaseOperacional(prevReal.turno || {})
-        );
+        const prevSaldo = moneyToNumber(prevReal.turno?.saldoLiquido ?? prevReal.currentSaldoTotal ?? 0);
 
-        // Ajustes internos entre o fechamento anterior e o fechamento atual
-        // devem preservar o próprio sinal.
-        // Fórmula correta:
-        // diferença = fechamentoAtual - fechamentoAnterior + somaDosAjustesEntreEles
-        // Ex.: 7.602.095,03 - 7.489.701,48 + (-129.687,32) = -17.293,77
-        const internalAdjustments = view
-          .slice(currentIndex + 1, prevRealIndex)
-          .filter(isAdjustmentItem)
-          .reduce((s,x)=>s + adjustmentImpact(x), 0);
-
-        return currentSaldo - prevBase + internalAdjustments;
+        // Diferença de caixa REAL exibida na tela:
+        // T2 - T1. Ajustes internos NÃO entram nesse número.
+        // Retirada/carga interna fica separada no card/relatório de ajuste interno.
+        return currentSaldo - prevSaldo;
       }catch(e){
         console.warn("Erro displayCashDiff:", e);
         return 0;
@@ -5598,20 +5587,11 @@ function receiptLine(label, value){
         if(prevRealIndex < 0) return 0;
 
         const prevReal = view[prevRealIndex];
-        const prevBase = moneyToNumber(
-          prevReal?.turno?.baseOperacional ??
-          prevReal?.operationalBase ??
-          calcularBaseOperacional(prevReal?.turno || {})
-        );
+        const prevSaldo = moneyToNumber(prevReal?.turno?.saldoLiquido ?? prevReal?.currentSaldoTotal ?? 0);
 
-        const internalAdjustments = view
-          .slice(currentIndex + 1, prevRealIndex)
-          .filter(isAdjustmentItem)
-          .reduce((s,item)=>s + adjustmentImpact(item), 0);
-
-        // Mantém o sinal real do ajuste interno.
-        // diferença = fechamentoAtual - fechamentoAnterior + somaDosAjustesEntreEles
-        return currentSaldo - prevBase + internalAdjustments;
+        // Na edição, mantém a mesma regra da tela:
+        // diferença real = T2 - T1, sem misturar ajuste interno.
+        return currentSaldo - prevSaldo;
       }catch(e){
         console.warn("Erro ao calcular diff da edição:", e);
         return moneyToNumber(updatedItem?.diff || 0);
@@ -5734,6 +5714,7 @@ function receiptLine(label, value){
         const qh=query(collection(db,"history"),orderBy("submittedAt","asc"));
         const snap=await withTimeout(getDocs(qh), 8000, "buscar histórico");
         let operationalBaseSaldo=null;
+        let lastRealSaldoTotal=null;
 
         for(const item of snap.docs){
           try{
@@ -5745,18 +5726,18 @@ function receiptLine(label, value){
             let currentSaldoTotal, diff;
 
             if(isAdjustment){
+              // Ajuste interno segue auditável como retirada/carga interna.
+              // Ele pode alterar a base operacional, mas NÃO entra na diferença real do fechamento.
               diff = saldoLiquido;
               currentSaldoTotal = saldoLiquido;
-              // Ajuste interno altera a base de comparação com sinal invertido,
-              // porque a diferença do próximo fechamento deve ser:
-              // fechamentoAtual - fechamentoAnterior + ajusteInterno.
-              // Ex.: ajuste -129.687,32 aumenta a base de comparação,
-              // evitando virar +129.687,32 por engano.
-              operationalBaseSaldo = (operationalBaseSaldo ?? 0) - diff;
+              operationalBaseSaldo = (operationalBaseSaldo ?? 0) + diff;
             }else{
               currentSaldoTotal = saldoLiquido;
-              diff = operationalBaseSaldo===null ? 0 : currentSaldoTotal - operationalBaseSaldo;
+              // Diferença real do fechamento = T2 - T1.
+              // Ajustes internos ficam em relatório próprio e não inflam esse número.
+              diff = lastRealSaldoTotal===null ? 0 : currentSaldoTotal - lastRealSaldoTotal;
               operationalBaseSaldo = calcularBaseOperacional({ ...turno, saldoLiquido });
+              lastRealSaldoTotal = currentSaldoTotal;
             }
 
             const baseOperacional = isAdjustment ? operationalBaseSaldo : calcularBaseOperacional({ ...turno, saldoLiquido });
