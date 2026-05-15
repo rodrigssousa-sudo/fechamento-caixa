@@ -4053,10 +4053,19 @@ function getAdjustmentParts(item){
     }
 
     function baseForNextClosing(){
-      // BASE OPERACIONAL FINAL:
-      // 1) Fechamento real passa para o próximo turno como: saldoLiquido - retiradas.
-      // 2) Ajuste interno altera essa base.
-      // 3) Diff do próximo fechamento compara saldoLiquido atual contra essa base.
+      // BASE OPERACIONAL FINAL CORRIGIDA:
+      // O ajuste interno já vem com sinal próprio.
+      // Fórmula desejada para o próximo fechamento real:
+      // diferença = saldoAtual - saldoAnteriorReal + somaDosAjustesInternos
+      //
+      // Como o saveClosing usa: diff = saldoAtual - baseSaldo,
+      // a base precisa ser: saldoAnteriorReal - somaDosAjustesInternos.
+      // Exemplo:
+      // saldoAnterior 7.489.701,48
+      // ajuste -129.687,32
+      // saldoAtual 7.602.095,03
+      // base = 7.489.701,48 - (-129.687,32) = 7.619.388,80
+      // diff = 7.602.095,03 - 7.619.388,80 = -17.293,77
       const view = calculationHistory();
       const lastRealIndex = view.findIndex(item => !isAdjustmentItem(item));
       const lastReal = lastRealIndex >= 0 ? view[lastRealIndex] : null;
@@ -4068,7 +4077,7 @@ function getAdjustmentParts(item){
         .filter(isAdjustmentItem)
         .reduce((s,item)=>s + adjustmentImpact(item), 0);
 
-      return lastRealBase + adjustmentsAfterLastReal;
+      return lastRealBase - adjustmentsAfterLastReal;
     }
 
     function latestInternalAdjustment(){
@@ -5741,9 +5750,16 @@ function receiptLine(label, value){
             let currentSaldoTotal, diff;
 
             if(isAdjustment){
+              // Ajuste interno já possui sinal próprio.
+              // Não pode ser invertido no próximo fechamento.
+              // Para manter a fórmula diff = saldoAtual - base,
+              // a base de comparação recebe o ajuste ao contrário:
+              // ajuste negativo aumenta a base; ajuste positivo reduz a base.
+              // Assim o próximo fechamento fica:
+              // saldoAtual - saldoAnteriorReal + ajuste
               diff = saldoLiquido;
               currentSaldoTotal = saldoLiquido;
-              operationalBaseSaldo = (operationalBaseSaldo ?? 0) + diff;
+              operationalBaseSaldo = (operationalBaseSaldo ?? 0) - diff;
             }else{
               currentSaldoTotal = saldoLiquido;
               diff = operationalBaseSaldo===null ? 0 : currentSaldoTotal - operationalBaseSaldo;
