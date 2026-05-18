@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
-  <title>Bank King V3</title>
+  <title>Bank King V3 — Reca Passarela</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
@@ -1989,6 +1989,74 @@ input[data-money="1"]:focus{
   letter-spacing:normal!important;
 }
 
+
+
+/* =========================================================
+   ALERTA DE DIFERENÇA DE CAIXA + BOTÃO COPIAR DADOS
+========================================================= */
+.bk-diff-alert-overlay{
+  position:fixed;
+  inset:0;
+  z-index:1000002;
+  background:rgba(3,9,21,.54);
+  backdrop-filter:blur(14px);
+  -webkit-backdrop-filter:blur(14px);
+  display:none;
+  align-items:center;
+  justify-content:center;
+  padding:18px;
+}
+.bk-diff-alert-overlay.active{display:flex;}
+.bk-diff-alert-card{
+  width:min(440px,100%);
+  border-radius:24px;
+  background:#fff;
+  color:#111827;
+  border:1px solid rgba(255,255,255,.76);
+  box-shadow:0 28px 90px rgba(0,0,0,.30);
+  overflow:hidden;
+}
+.bk-diff-alert-head{
+  padding:22px 22px 18px;
+  background:linear-gradient(145deg,#2b2b34,#1a1a2e,#0b0b10);
+  color:#fff;
+}
+.bk-diff-alert-kicker{
+  font-size:11px;
+  line-height:1;
+  font-weight:950;
+  letter-spacing:1.2px;
+  text-transform:uppercase;
+  color:rgba(255,255,255,.66);
+}
+.bk-diff-alert-head h2{
+  margin:8px 0 0;
+  font-size:22px;
+  line-height:1.08;
+  letter-spacing:-.75px;
+  font-weight:950;
+}
+.bk-diff-alert-body{padding:18px 22px 22px;display:grid;gap:12px;}
+.bk-diff-alert-value{
+  border-radius:18px;
+  padding:16px;
+  font-size:30px;
+  line-height:1;
+  font-weight:950;
+  letter-spacing:-1px;
+  text-align:center;
+  font-variant-numeric:tabular-nums lining-nums;
+}
+.bk-diff-alert-value.positive{background:#ecfdf5;color:#047857;border:1px solid rgba(4,120,87,.16);}
+.bk-diff-alert-value.negative{background:#fff1f2;color:#be123c;border:1px solid rgba(190,18,60,.16);}
+.bk-diff-alert-meta{display:grid;gap:7px;font-size:13px;font-weight:800;color:#475569;}
+.bk-diff-alert-meta div{display:flex;justify-content:space-between;gap:12px;border-bottom:1px solid rgba(15,23,42,.08);padding-bottom:7px;}
+.bk-diff-alert-meta b{color:#111827;text-align:right;}
+.bk-diff-alert-actions{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:4px;}
+.bk-copy-data-btn{margin-top:14px;width:100%;height:46px;border-radius:14px;background:linear-gradient(145deg,#1a1a2e,#11111e);color:#fff;font-size:13px;font-weight:950;box-shadow:0 12px 26px rgba(26,26,46,.18);}
+.bk-copy-data-btn.copied{background:linear-gradient(145deg,#047857,#059669)!important;}
+@media(max-width:430px){.bk-diff-alert-actions{grid-template-columns:1fr}.bk-diff-alert-value{font-size:26px}}
+
 </style>
 
 <script>
@@ -2200,7 +2268,7 @@ document.addEventListener("focusout", ev=>{
           </div>
           <div class="field"><label>Data do fechamento</label><input id="closingDate" type="datetime-local" /></div>
           <div class="field"><label>Saldo Reca</label><input id="webReca" class="money-input" inputmode="decimal" placeholder="0,00" /></div>
-          <div class="field"><label>Reca automática</label><input id="recaAutomatica" class="money-input" inputmode="decimal" placeholder="0,00" /></div>
+          <div class="field"><label>Reca Passarela</label><input id="recaAutomatica" class="money-input" inputmode="decimal" placeholder="0,00" /></div>
           
           <div class="field"><label>Suprema</label><input id="suprema" class="money-input" inputmode="decimal" placeholder="0,00" /></div>
           <div class="field"><label>PPPoker</label><input id="pppoker" class="money-input" inputmode="decimal" placeholder="0,00" /></div>
@@ -2351,7 +2419,7 @@ document.addEventListener("focusout", ev=>{
                 <option value="main_card">Somente card principal</option>
               </select>
             </div>
-<div class="field"><label>Operador</label><input id="reportOperador" placeholder="Todos" /></div><div class="field"><label>Supervisor</label><input id="reportSupervisor" placeholder="Todos" /></div></div><div class="grid three"><div class="card" style="box-shadow:none;"><div class="muted">Fechamentos</div><div id="reportPreviewCount" class="metric">0</div></div><div class="card" style="box-shadow:none;"><div class="muted">Saldo líquido</div><div id="reportPreviewSaldo" class="metric">$ 0,00</div></div><div class="card" style="box-shadow:none;"><div class="muted">Diferença</div><div id="reportPreviewDiff" class="metric">$ 0,00</div></div></div><button id="previewReportBtn" class="btn secondary full" style="margin-top:14px;">Pré-visualizar resumo</button><button id="generateReportBtn" class="btn full" style="margin-top:10px;">Gerar PDF</button></div></section>
+</div><div class="grid three"><div class="card" style="box-shadow:none;"><div class="muted">Fechamentos</div><div id="reportPreviewCount" class="metric">0</div></div><div class="card" style="box-shadow:none;"><div class="muted">Saldo líquido</div><div id="reportPreviewSaldo" class="metric">$ 0,00</div></div><div class="card" style="box-shadow:none;"><div class="muted">Diferença</div><div id="reportPreviewDiff" class="metric">$ 0,00</div></div></div><button id="previewReportBtn" class="btn secondary full" style="margin-top:14px;">Pré-visualizar resumo</button><button id="generateReportBtn" class="btn full" style="margin-top:10px;">Gerar PDF</button></div></section>
 
     <section id="screenAdmin" class="screen">
       <div class="card">
@@ -2582,7 +2650,7 @@ document.addEventListener("focusout", ev=>{
   </div>
 
   <div id="editHistoryModal" class="edit-modal"><div class="edit-panel"><div class="edit-panel-head"><h2>Editar fechamento</h2><button id="editCloseBtn" class="edit-close">×</button></div><input id="editHistoryId" type="hidden" /><div class="form-grid"><div class="field"><label>Operador</label><input id="editOperadorName" /></div><div class="field"><label>Data do fechamento</label><input id="editClosingDate" type="datetime-local" /></div><div class="field"><label>Reca</label><input id="editWebReca" class="money-input" inputmode="decimal" /></div>
-        <div class="field"><label>Reca automática</label><input id="editRecaAutomatica" class="money-input" inputmode="decimal" /></div>
+        <div class="field"><label>Reca Passarela</label><input id="editRecaAutomatica" class="money-input" inputmode="decimal" /></div>
         <div class="field"><label>Suprema</label><input id="editSuprema" class="money-input" inputmode="decimal" /></div><div class="field"><label>PPPoker</label><input id="editPppoker" class="money-input" inputmode="decimal" /></div><div class="field"><label>Buffalo</label><input id="editBuffalo" class="money-input" inputmode="decimal" /></div><div class="field"><label>Ganamos</label><input id="editGanamos" class="money-input" inputmode="decimal" /></div><div class="field"><label>Carga poker</label><input id="editCargasPoker" class="money-input" inputmode="decimal" /></div><div class="field"><label>Carga casino</label><input id="editCargasCasino" class="money-input" inputmode="decimal" /></div></div><div class="grid two"><div class="card" style="box-shadow:none;margin-top:12px;"><div class="card-title"><h2>Pagos pendentes</h2><button id="editAddPendingBtn" class="small-btn">+ Adicionar</button></div><div id="editPendingList" class="dynamic-list"></div></div><div class="card" style="box-shadow:none;margin-top:12px;"><div class="card-title"><h2>Retiradas</h2><button id="editAddOutflowBtn" class="small-btn">+ Adicionar</button></div><div id="editOutflowList" class="dynamic-list"></div></div></div><div class="edit-actions"><button id="saveEditBtn" class="btn">Salvar alterações</button><button id="cancelEditBtn" class="btn secondary">Cancelar</button></div></div></div>
 
   <div id="appReloadLoader" class="app-reload-loader"><div class="reload-card"><div class="reload-spinner"></div><strong>Atualizando sistema</strong><span>Recalculando dados...</span></div></div>
@@ -3492,7 +3560,25 @@ function bkMoneyApplyEdit(el, inputType, data){
   }
 
   if(inputType === "insertFromPaste"){
-    var pasted = bkMoneyOnlyDigits(data || "");
+    var rawPaste = String(data || "").trim();
+    if(!rawPaste) return;
+
+    // Permite colar valores já pontuados: 1.234,56 / 1234,56 / 1234.56 / $ 1.234,56.
+    // Quando o texto colado tem separador decimal, respeita o valor real em vez de tratar tudo como centavos soltos.
+    var hasDecimalSeparator = /[,.]/.test(rawPaste);
+    var parsedPaste = moneyToNumber(rawPaste);
+
+    if(Number.isFinite(parsedPaste) && parsedPaste !== 0 && hasDecimalSeparator){
+      var formattedPaste = parsedPaste.toLocaleString("pt-BR", { minimumFractionDigits:2, maximumFractionDigits:2 });
+
+      // Na prática operacional, colar em campo financeiro quase sempre significa substituir o valor inteiro.
+      // Isso evita duplicar números quando o campo já tinha 0,00 ou outro saldo preenchido.
+      el.value = formattedPaste;
+      bkMoneySetCaret(el, bkMoneyOnlyDigits(el.value).length);
+      return;
+    }
+
+    var pasted = bkMoneyOnlyDigits(rawPaste);
     if(!pasted) return;
 
     if(hasSelection){
@@ -3604,6 +3690,29 @@ function bkInstallMoneyKeyboardFinal(){
       try{ if(typeof scheduleCalculations === "function") scheduleCalculations(); }catch(e){}
       try{ if(typeof renderCalculations === "function") renderCalculations(); }catch(e){}
     });
+  }, true);
+
+
+  document.addEventListener("paste", function(event){
+    var el = event.target;
+    if(!bkMoneyIsField(el)) return;
+
+    var text = "";
+    try{ text = (event.clipboardData || window.clipboardData).getData("text") || ""; }catch(e){}
+    if(!text) return;
+
+    if(/[,.]/.test(text)){
+      var parsed = moneyToNumber(text);
+      if(Number.isFinite(parsed) && parsed !== 0){
+        event.preventDefault();
+        event.stopImmediatePropagation();
+        el.value = parsed.toLocaleString("pt-BR", { minimumFractionDigits:2, maximumFractionDigits:2 });
+        bkMoneySetCaret(el, bkMoneyOnlyDigits(el.value).length);
+        try{ el.dispatchEvent(new Event("bankmoney", { bubbles:true })); }catch(e){}
+        try{ el.dispatchEvent(new Event("change", { bubbles:true })); }catch(e){}
+        try{ if(typeof scheduleCalculations === "function") scheduleCalculations(); }catch(e){}
+      }
+    }
   }, true);
 
   document.addEventListener("input", function(event){
@@ -4429,6 +4538,174 @@ function renderCalculations(){
     }
 
 
+
+    /* =========================================================
+       ALERTA DE DIFERENÇA DE CAIXA GRANDE
+       Mostra caixa para admin/supervisor ao entrar e também quando o app renderiza.
+    ========================================================= */
+    const BK_DIFF_ALERT_THRESHOLD = 1000000;
+    const BK_DIFF_ALERT_SESSION = new Set();
+
+    function ensureDiffAlertModal(){
+      let overlay = document.getElementById("bkDiffAlertOverlay");
+      if(overlay) return overlay;
+
+      overlay = document.createElement("div");
+      overlay.id = "bkDiffAlertOverlay";
+      overlay.className = "bk-diff-alert-overlay";
+      overlay.innerHTML = `
+        <div class="bk-diff-alert-card" role="dialog" aria-modal="true" aria-label="Alerta de diferença de caixa">
+          <div class="bk-diff-alert-head">
+            <div class="bk-diff-alert-kicker">Alerta financeiro</div>
+            <h2 id="bkDiffAlertTitle">Diferença de caixa detectada</h2>
+          </div>
+          <div class="bk-diff-alert-body">
+            <div id="bkDiffAlertValue" class="bk-diff-alert-value">$ 0,00</div>
+            <div class="bk-diff-alert-meta">
+              <div><span>Operador</span><b id="bkDiffAlertOperator">-</b></div>
+              <div><span>Turno</span><b id="bkDiffAlertTurno">-</b></div>
+              <div><span>Tipo</span><b id="bkDiffAlertTipo">-</b></div>
+            </div>
+            <div class="bk-diff-alert-actions">
+              <button id="bkDiffAlertClose" class="btn secondary" type="button">Entendi</button>
+              <button id="bkDiffAlertOpen" class="btn" type="button">Ver detalhes</button>
+            </div>
+          </div>
+        </div>
+      `;
+      document.body.appendChild(overlay);
+
+      overlay.querySelector("#bkDiffAlertClose")?.addEventListener("click", () => overlay.classList.remove("active"));
+      overlay.addEventListener("click", (ev) => {
+        if(ev.target === overlay) overlay.classList.remove("active");
+      });
+
+      return overlay;
+    }
+
+    function maybeShowLargeCashDiffAlert(item, options={}){
+      try{
+        if(!item || isAdjustmentItem(item)) return;
+
+        const diff = displayCashDiff(item);
+        const abs = Math.abs(moneyToNumber(diff));
+        if(abs < BK_DIFF_ALERT_THRESHOLD) return;
+
+        // Operador continua vendo diferenças no card; alerta automático de entrada fica para admin/supervisor.
+        if(options.onLogin && !(isAdmin() || isSupervisor())) return;
+
+        const key = `${item.id || "sem-id"}:${Math.round(diff)}`;
+        if(BK_DIFF_ALERT_SESSION.has(key)) return;
+        BK_DIFF_ALERT_SESSION.add(key);
+
+        const overlay = ensureDiffAlertModal();
+        const positive = diff > 0;
+        const title = positive ? "Diferença positiva de caixa" : "Diferença negativa de caixa";
+
+        const valueEl = overlay.querySelector("#bkDiffAlertValue");
+        overlay.querySelector("#bkDiffAlertTitle").textContent = title;
+        valueEl.textContent = `${positive ? "+" : ""}${formatMoney(diff)}`;
+        valueEl.className = `bk-diff-alert-value ${positive ? "positive" : "negative"}`;
+        overlay.querySelector("#bkDiffAlertOperator").textContent = getOperadorName(item);
+        overlay.querySelector("#bkDiffAlertTurno").textContent = dateLabel(item.submittedAt || item.createdAt || item.turno?.closingDate);
+        overlay.querySelector("#bkDiffAlertTipo").textContent = positive ? "Sobra / diferença positiva" : "Falta / diferença negativa";
+
+        const openBtn = overlay.querySelector("#bkDiffAlertOpen");
+        if(openBtn){
+          openBtn.onclick = () => {
+            overlay.classList.remove("active");
+            openFullClosingReceipt(item);
+          };
+        }
+
+        overlay.classList.add("active");
+      }catch(e){
+        console.warn("Erro no alerta de diferença de caixa:", e);
+      }
+    }
+
+    function bkFormatSignedMoney(value){
+      const n = moneyToNumber(value || 0);
+      return `${n > 0 ? "+" : n < 0 ? "-" : ""}${formatMoney(Math.abs(n))}`;
+    }
+
+    function bkFormatChipsWithMoney(chips){
+      const qtd = moneyToNumber(chips || 0);
+      const money = qtd * 400;
+      const qtdText = qtd.toLocaleString("pt-BR", { minimumFractionDigits:2, maximumFractionDigits:2 });
+      return `${qtdText} fichas (${formatMoney(money)})`;
+    }
+
+    function buildHomeSaldoCopyText(item){
+      const t = item?.turno || {};
+      const diff = item ? displayCashDiff(item) : 0;
+      const saldo = moneyToNumber(t.saldoLiquido ?? item?.currentSaldoTotal ?? 0);
+      const recaManual = moneyToNumber(t.webReca ?? t.reca ?? 0);
+      const recaAuto = moneyToNumber(t.recaAutomatica ?? t.reca_automatica ?? t.recaAuto ?? 0);
+      const recaTotal = recaManual + recaAuto;
+      const pendentesTotal = moneyToNumber(t.pendentesTotal || 0);
+
+      const lines = [
+        "BANK KING — DETALHAMENTO DO SALDO LÍQUIDO",
+        `Operador: ${item ? getOperadorName(item) : "-"}`,
+        `Data/turno: ${item ? dateLabel(item.submittedAt || item.createdAt || t.closingDate) : "-"}`,
+        "",
+        `Saldo líquido: ${formatMoney(saldo)}`,
+        `Diferença de caixa: ${bkFormatSignedMoney(diff)}`,
+        "",
+        "Composição:",
+        `Saldo Reca: ${formatMoney(recaManual)}`,
+        `Reca Passarela: ${formatMoney(recaAuto)}`,
+        `*Reca total: ${formatMoney(recaTotal)}*`,
+        "",
+        `Suprema: ${bkFormatChipsWithMoney(t.suprema || 0)}`,
+        `PPPoker: ${bkFormatChipsWithMoney(t.pppoker || 0)}`,
+        `Buffalo: ${formatMoney(t.buffalo || 0)}`,
+        `Ganamos: ${formatMoney(t.ganamos || 0)}`,
+        "",
+        "------ PENDENTES ------",
+        "",
+        `Pagos pendentes: - ${formatMoney(pendentesTotal)}`
+      ];
+
+      if(Array.isArray(t.pendings) && t.pendings.length){
+        lines.push("", "", "Pendentes detalhados:");
+        t.pendings.forEach((p, i) => {
+          lines.push(`${i+1}. ${p.name || "Sem descrição"} : ${formatMoney(p.value || 0)}`);
+        });
+      }
+
+      return lines.join("\n");
+    }
+
+    async function copyHomeSaldoData(btn){
+      const item = lastRealClosing() || visibleHistory()[0] || null;
+      const text = buildHomeSaldoCopyText(item);
+      try{
+        if(navigator.clipboard?.writeText){
+          await navigator.clipboard.writeText(text);
+        }else{
+          const ta = document.createElement("textarea");
+          ta.value = text;
+          ta.style.position = "fixed";
+          ta.style.opacity = "0";
+          document.body.appendChild(ta);
+          ta.focus();
+          ta.select();
+          document.execCommand("copy");
+          ta.remove();
+        }
+        if(btn){
+          const old = btn.textContent;
+          btn.textContent = "DADOS COPIADOS";
+          btn.classList.add("copied");
+          setTimeout(()=>{ btn.textContent = old || "COPIAR DADOS"; btn.classList.remove("copied"); }, 1600);
+        }
+      }catch(e){
+        alert("Não foi possível copiar automaticamente. Selecione o texto do comprovante e copie manualmente.");
+      }
+    }
+
     function getInitials(nameOrEmail){
       const raw = String(nameOrEmail || "BK").trim();
       const name = raw.includes("@") ? raw.split("@")[0] : raw;
@@ -4532,6 +4809,7 @@ function renderCalculations(){
       renderMonthlyGoal(view);
       renderHomeBonusCard(view);
       renderChipsComparison(last, prev);
+      maybeShowLargeCashDiffAlert(last, { onLogin:true });
     }
 
     function renderChipsComparison(last, prev){
@@ -5353,7 +5631,7 @@ function receiptLine(label, value){
           <h3>Resumo financeiro</h3>
           <div class="receipt-list">
             ${receiptLine("Saldo Reca", formatMoney(t.webReca ?? t.reca ?? 0))}
-            ${receiptLine("Reca automática", formatMoney(t.recaAutomatica ?? t.reca_automatica ?? t.recaAuto ?? 0))}
+            ${receiptLine("Reca Passarela", formatMoney(t.recaAutomatica ?? t.reca_automatica ?? t.recaAuto ?? 0))}
             ${receiptLine("Reca total", formatMoney(getSaldoRecaFromItem(item)))}
             ${receiptLine("Suprema ×400", formatMoney(moneyToNumber(t.suprema || 0) * 400))}
             ${receiptLine("PPPoker ×400", formatMoney(moneyToNumber(t.pppoker || 0) * 400))}
@@ -5527,19 +5805,45 @@ function receiptLine(label, value){
       if(type === "saldo"){
         title = "Saldo líquido atual";
         total = moneyToNumber(t.saldoLiquido ?? last?.currentSaldoTotal ?? 0);
-        content = `
-          <div class="receipt-section"><h3>Composição do saldo</h3><div class="receipt-list">
-            ${receiptLine("Saldo Reca", formatMoney(t.webReca ?? t.reca ?? 0))}
-            ${receiptLine("Reca automática", formatMoney(t.recaAutomatica ?? t.reca_automatica ?? t.recaAuto ?? 0))}
-            ${receiptLine("Reca total", formatMoney(getSaldoRecaFromItem(last)))}
-            ${receiptLine("Suprema ×400", formatMoney(moneyToNumber(t.suprema || 0) * 400))}
-            ${receiptLine("PPPoker ×400", formatMoney(moneyToNumber(t.pppoker || 0) * 400))}
-            ${receiptLine("Buffalo", formatMoney(t.buffalo || 0))}
-            ${receiptLine("Ganamos", formatMoney(t.ganamos || 0))}
-            ${receiptLine("Pagos pendentes", "- " + formatMoney(t.pendentesTotal || 0))}
-            ${receiptLine("Retiradas", "+ " + formatMoney(t.saidasTotal || 0))}
-            ${receiptLine("Data do fechamento", last ? dateLabel(last.submittedAt || last.createdAt || t.closingDate) : "-")}
-          </div></div>`;
+
+        const pendentesDetalhadosHtml = Array.isArray(t.pendings) && t.pendings.length
+          ? t.pendings.map((p, i) => receiptLine(`${i+1}. ${p.name || "Sem descrição"}`, formatMoney(p.value || 0))).join("")
+          : `<div class="receipt-line"><span>Sem pendentes detalhados</span><b>-</b></div>`;
+
+        // Para operador, o card fica com aparência de comprovante bancário e só mostra
+        // os dados úteis para copiar/mandar em outro lugar.
+        if(!isAdmin() && !isSupervisor()){
+          content = `
+            <div class="receipt-section"><h3>Composição</h3><div class="receipt-list">
+              ${receiptLine("Saldo Reca", formatMoney(t.webReca ?? t.reca ?? 0))}
+              ${receiptLine("Reca Passarela", formatMoney(t.recaAutomatica ?? t.reca_automatica ?? t.recaAuto ?? 0))}
+              ${receiptLine("Reca total", formatMoney(getSaldoRecaFromItem(last)))}
+              ${receiptLine("Suprema", bkFormatChipsWithMoney(t.suprema || 0))}
+              ${receiptLine("PPPoker", bkFormatChipsWithMoney(t.pppoker || 0))}
+              ${receiptLine("Buffalo", formatMoney(t.buffalo || 0))}
+              ${receiptLine("Ganamos", formatMoney(t.ganamos || 0))}
+            </div></div>
+            <div class="receipt-section"><h3>------ PENDENTES ------</h3><div class="receipt-list">
+              ${receiptLine("Pagos pendentes", "- " + formatMoney(t.pendentesTotal || 0))}
+            </div></div>
+            <div class="receipt-section"><h3>Pendentes detalhados</h3><div class="receipt-list">${pendentesDetalhadosHtml}</div></div>
+            <button id="copyHomeSaldoDataBtn" class="bk-copy-data-btn" type="button">COPIAR DADOS</button>`;
+        }else{
+          content = `
+            <div class="receipt-section"><h3>Composição do saldo</h3><div class="receipt-list">
+              ${receiptLine("Saldo Reca", formatMoney(t.webReca ?? t.reca ?? 0))}
+              ${receiptLine("Reca Passarela", formatMoney(t.recaAutomatica ?? t.reca_automatica ?? t.recaAuto ?? 0))}
+              ${receiptLine("Reca total", formatMoney(getSaldoRecaFromItem(last)))}
+              ${receiptLine("Suprema ×400", formatMoney(moneyToNumber(t.suprema || 0) * 400))}
+              ${receiptLine("PPPoker ×400", formatMoney(moneyToNumber(t.pppoker || 0) * 400))}
+              ${receiptLine("Buffalo", formatMoney(t.buffalo || 0))}
+              ${receiptLine("Ganamos", formatMoney(t.ganamos || 0))}
+              ${receiptLine("Pagos pendentes", "- " + formatMoney(t.pendentesTotal || 0))}
+              ${receiptLine("Retiradas", "+ " + formatMoney(t.saidasTotal || 0))}
+              ${receiptLine("Data do fechamento", last ? dateLabel(last.submittedAt || last.createdAt || t.closingDate) : "-")}
+            </div></div>
+            <button id="copyHomeSaldoDataBtn" class="bk-copy-data-btn" type="button">COPIAR DADOS</button>`;
+        }
       }
 
       if(type === "pendentes"){
@@ -5575,6 +5879,10 @@ function receiptLine(label, value){
       $("receiptSubtitle").textContent = title;
       $("receiptCode").textContent = "Detalhamento da tela inicial";
       $("receiptContent").innerHTML = content;
+      if(type === "saldo"){
+        const copyBtn = $("copyHomeSaldoDataBtn");
+        if(copyBtn) copyBtn.onclick = () => copyHomeSaldoData(copyBtn);
+      }
       $("receiptAdminActions")?.classList.add("hidden");
       $("receiptModal").classList.add("active");
     }
@@ -6455,7 +6763,7 @@ input:focus{
           <div class="detail-grid">
             <div class="detail-card"><h3>Saldos</h3>
               <div class="line"><span>Reca</span><b>${formatMoney(t.webReca ?? t.reca ?? 0)}</b></div>
-              <div class="line"><span>Reca automática</span><b>${formatMoney(t.recaAutomatica ?? t.reca_automatica ?? t.recaAuto ?? 0)}</b></div>
+              <div class="line"><span>Reca Passarela</span><b>${formatMoney(t.recaAutomatica ?? t.reca_automatica ?? t.recaAuto ?? 0)}</b></div>
               <div class="line"><span>Reca total</span><b>${formatMoney(getSaldoRecaFromItem(item))}</b></div>
               <div class="line"><span>Suprema ×400</span><b>${formatMoney(moneyToNumber(t.suprema||0)*400)}</b></div>
               <div class="line"><span>PPPoker ×400</span><b>${formatMoney(moneyToNumber(t.pppoker||0)*400)}</b></div>
@@ -6990,7 +7298,7 @@ input:focus{
 </style></head><body><div class="toolbar"><strong>Relatório Bank King • ${reportCode}</strong><div class="toolbar-actions"><button class="tool-btn secondary" onclick="window.close()">Voltar</button><button class="tool-btn secondary" onclick="window.print()">Imprimir</button><button class="tool-btn primary" onclick="window.print()">Salvar PDF</button></div></div><header class="cover"><div class="cover-top"><div class="brand"><div class="logo">BK</div><div><h1>Bank King</h1><p>${categoryLabel}</p></div></div><div class="meta">Código: ${reportCode}<br>Gerado em: ${generatedAt}<br>Usuário: ${currentProfile?.name || currentUser?.email || "-"}</div></div><div class="pdf-kpi-wrapper">
   <div class="pdf-kpi-grid">
     <div class="pdf-kpi-card"><span>Reca total</span><b>${formatMoney(totalRecaGeral)}</b></div>
-    <div class="pdf-kpi-card"><span>Reca automática</span><b>${formatMoney(totalRecaAutomatica)}</b></div>
+    <div class="pdf-kpi-card"><span>Reca Passarela</span><b>${formatMoney(totalRecaAutomatica)}</b></div>
     <div class="pdf-kpi-card"><span>Custo operacional</span><b>${formatMoney(totalCustoOperacional)}</b></div>
     <div class="pdf-kpi-card"><span>Custo RECA</span><b>${formatMoney(totalCustoReca)}</b></div>
     <div class="pdf-kpi-card ${totalDiff < 0 ? "negative" : "positive"}"><span>Diferença de caixa</span><b>${formatMoney(totalDiff)}</b></div>
@@ -7683,7 +7991,7 @@ function initDate(){ if($("closingDate")) $("closingDate").value = localInputSP(
       assert("money BR",moneyToNumber("1.234,56")===1234.56);
       assert("money US",moneyToNumber("1,234.56")===1234.56);
       assert("calc multipliers",calcularSaldoLiquido({webReca:100,suprema:1,pppoker:2,buffalo:10,ganamos:20,cargasPoker:1,cargasCasino:5,pendentesTotal:15,saidasTotal:7})===1327);
-      assert("reca automatica soma no saldo",calcularSaldoLiquido({webReca:100,recaAutomatica:50,pendentesTotal:0,saidasTotal:0})===150);
+      assert("reca passarela soma no saldo",calcularSaldoLiquido({webReca:100,recaAutomatica:50,pendentesTotal:0,saidasTotal:0})===150);
       assert("history access approved",canAccessHistoryItem({createdBy:"u1",turno:{}})===true);
 
       currentUser = savedUser;
