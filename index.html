@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
-  <title>Bank King — Private Banking UI</title>
+  <title>Bank King — V4</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
@@ -7344,7 +7344,7 @@ document.addEventListener("focusout", ev=>{
       <div class="card">
         <div class="card-title">
           <h2>Painel Admin</h2>
-          <button id="toggleCreateUserBtn" class="admin-toggle">Mostrar criar usuário</button>
+          <button id="toggleCreateUserBtn" class="admin-toggle">Mostrar</button>
         </div>
         <span id="adminStatus" class="muted">Protegido</span>
         <div id="createUserPanel" class="admin-create-panel">
@@ -7453,7 +7453,7 @@ document.addEventListener("focusout", ev=>{
         <div class="side-drawer-avatar-wrap"><div id="sideDrawerAvatar" class="side-drawer-avatar photo-slot">BK</div><div class="side-drawer-avatar-label">Perfil</div></div>
         <div class="side-drawer-title">
           <strong id="sideDrawerName">Bank King</strong>
-          <span id="sideDrawerRole">Sistema financeiro</span>
+          <span id="sideDrawerRole">Sistema interno</span>
           <div class="side-drawer-data">
             <div><b>Email</b><span id="sideDrawerEmail">-</span></div>
             <div><b>Data</b><span id="sideDrawerDate">-</span></div>
@@ -13684,7 +13684,7 @@ input:focus{
       $("toggleCreateUserBtn") && ($("toggleCreateUserBtn").onclick=()=>{
         const panel = $("createUserPanel");
         panel?.classList.toggle("active");
-        $("toggleCreateUserBtn").textContent = panel?.classList.contains("active") ? "Ocultar criar usuário" : "Mostrar criar usuário";
+        $("toggleCreateUserBtn").textContent = panel?.classList.contains("active") ? "Ocultar" : "Mostrar";
       });
       $("createUserBtn") && ($("createUserBtn").onclick=createInternalUser);
       $("historySearch")?.addEventListener("input",()=>{ historyDaysVisible = 1; renderHistory(); });
