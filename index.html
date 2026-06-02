@@ -9834,9 +9834,9 @@ function renderCalculations(){
         `Diferença de caixa: ${bkFormatSignedMoney(diff)}`,
         "",
         "Composição:",
-        `Saldo Reca: ${formatMoney(0)}`,
-        `Reca Passarela: ${formatMoney(0)}`,
-        `*Reca total: ${formatMoney(0)}*`,
+        `Saldo Reca: ${formatMoney(recaManual)}`,
+        `Reca Passarela: ${formatMoney(recaAuto)}`,
+        `*Reca total: ${formatMoney(recaTotal)}*`,
         `Paraguai Bank: ${formatMoney(paraguaiBank)}`,
         "",
         `Suprema: ${bkFormatChipsWithMoney(t.suprema || 0)}`,
@@ -11211,39 +11211,6 @@ function receiptLine(label, value){
       return `<div class="receipt-line"><span>${label}</span><b>${value}</b></div>`;
     }
 
-    function bkIsPrivateRecaReceiptLabel(label){
-      const clean = String(label || "").toLowerCase().normalize("NFD").replace(/[Ĭ-$f]/g, "").trim();
-      return clean === "saldo reca" || clean === "reca passarela" || clean === "reca total" || clean === "saldo reca total";
-    }
-
-    function bkMaskedReceiptValue(label, value){
-      return bkIsPrivateRecaReceiptLabel(label) ? formatMoney(0) : value;
-    }
-
-    function receiptPrivateLine(label, value){
-      return receiptLine(label, bkMaskedReceiptValue(label, value));
-    }
-
-    function bkMaskPrivateRecaInReceiptPanel(panel){
-      const changed = [];
-      if(!panel) return changed;
-      panel.querySelectorAll(".receipt-line").forEach(function(line){
-        const label = line.querySelector("span")?.textContent || "";
-        if(!bkIsPrivateRecaReceiptLabel(label)) return;
-        const valueEl = line.querySelector("b");
-        if(!valueEl) return;
-        changed.push({ el:valueEl, text:valueEl.textContent });
-        valueEl.textContent = formatMoney(0);
-      });
-      return changed;
-    }
-
-    function bkRestoreMaskedReceiptValues(changed){
-      (changed || []).forEach(function(item){
-        if(item && item.el) item.el.textContent = item.text;
-      });
-    }
-
     function bkExtractMoneyFromText(text){
       const raw = String(text || "").trim();
       if(!raw) return 0;
@@ -11455,14 +11422,13 @@ function receiptLine(label, value){
         }
       }
 
-      function restorePanel(originalMaxHeight, originalOverflow, hiddenEls, maskedEls){
+      function restorePanel(originalMaxHeight, originalOverflow, hiddenEls){
         panel.style.maxHeight = originalMaxHeight;
         panel.style.overflow = originalOverflow;
         hiddenEls.forEach(function(el){
           el.style.display = el.getAttribute("data-old-display") || "";
           el.removeAttribute("data-old-display");
         });
-        bkRestoreMaskedReceiptValues(maskedEls);
       }
 
       if(btn){
@@ -11480,8 +11446,6 @@ function receiptLine(label, value){
           el.style.display = "none";
         });
 
-        const maskedEls = bkMaskPrivateRecaInReceiptPanel(panel);
-
         panel.style.maxHeight = "none";
         panel.style.overflow = "visible";
 
@@ -11492,7 +11456,7 @@ function receiptLine(label, value){
             useCORS: true,
             logging: false
           }).then(function(canvas){
-            restorePanel(originalMaxHeight, originalOverflow, hiddenEls, maskedEls);
+            restorePanel(originalMaxHeight, originalOverflow, hiddenEls);
 
             const fileName = "bank-king-resumo-" + Date.now() + ".png";
 
@@ -11524,7 +11488,7 @@ function receiptLine(label, value){
             }
           }).catch(function(error){
             console.error("Erro PNG:", error);
-            restorePanel(originalMaxHeight, originalOverflow, hiddenEls, maskedEls);
+            restorePanel(originalMaxHeight, originalOverflow, hiddenEls);
             resetButton();
             alert("Não consegui gerar o PNG neste navegador.");
           });
